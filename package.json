@@ -1,0 +1,25 @@
+{
+  "name": "competitor-radar-panel",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/sync-radar-public.mjs && vite build",
+    "preview": "vite preview",
+    "pages:prepare": "node scripts/prepare-pages-docs.mjs",
+    "radar:sync": "node scripts/sync-radar-public.mjs",
+    "radar:generate": "node scripts/generate-radar-data.mjs",
+    "radar:push": "node scripts/push-radar-to-github.mjs",
+    "radar:refresh": "node scripts/run-radar-refresh.mjs",
+    "repo:publish": "node scripts/publish-project-to-github.mjs"
+  },
+  "dependencies": {
+    "@vueuse/core": "^14.3.0",
+    "vue": "^3.5.38"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.7",
+    "vite": "^7.3.5"
+  }
+}
