@@ -307,6 +307,15 @@ function confirmOutbound() {
   outboundItem.value = null;
 }
 
+function openSourceExample(item, example) {
+  askOutbound({
+    title: example.label,
+    url: example.url,
+    platformLabel: item.platformLabel,
+    domain: safeDomain(example.url)
+  });
+}
+
 function formatDate(value) {
   return new Intl.DateTimeFormat("zh-CN", {
     month: "short",
@@ -583,6 +592,31 @@ function formatDate(value) {
               <p>{{ activeItem.topicInfo.playbook }}</p>
             </section>
           </div>
+
+          <section class="sources-block">
+            <div class="sources-head">
+              <div>
+                <h3>来源入口</h3>
+                <p>这不是单一结论页，而是给你继续追到原帖、话题页和平台讨论链的入口。</p>
+              </div>
+              <button class="button ghost" @click="copy(activeItem.sourceQuery)">
+                复制搜索词
+              </button>
+            </div>
+            <div class="query-chip">{{ activeItem.sourceQuery }}</div>
+            <div class="source-links">
+              <button
+                v-for="example in activeItem.sourceExamples"
+                :key="example.label"
+                class="source-link-card"
+                @click="openSourceExample(activeItem, example)"
+              >
+                <strong>{{ example.label }}</strong>
+                <span>{{ example.note }}</span>
+                <em>{{ safeDomain(example.url) }}</em>
+              </button>
+            </div>
+          </section>
 
           <section v-if="relatedItems.length" class="related-block">
             <h3>关联信号</h3>
