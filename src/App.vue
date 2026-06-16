@@ -326,13 +326,11 @@ function formatDate(value) {
     <header class="hero card">
       <div class="hero-copy">
         <p class="eyebrow">Social Hotspot Radar</p>
-        <h1>一个给面试官看的热点雷达 Demo</h1>
-        <p class="subtitle">
-          首页先展示“我能看懂热点”，下半区再展示“我能分析热点”。这是一版可展示的 MVP，而不是后台配置页。
-        </p>
+        <h1>社交热点雷达</h1>
+        <p class="subtitle">追踪不同地区、主题与平台上的高传播内容与话题信号。</p>
         <div class="hero-actions">
-          <button class="button primary" @click="jumpToWorkspace()">进入分析工作台</button>
-          <button class="button ghost" @click="jumpToWorkspace('ai-tools')">先看 AI 工具热点</button>
+          <button class="button primary" @click="jumpToWorkspace()">查看热点库</button>
+          <button class="button ghost" @click="jumpToWorkspace('ai-tools')">AI 工具</button>
         </div>
       </div>
       <div class="hero-side">
@@ -365,27 +363,6 @@ function formatDate(value) {
         <strong>{{ featuredItem.heat }}</strong>
         <span>热度值</span>
         <button class="button ghost" @click="openDetail(featuredItem)">展开解读</button>
-      </div>
-    </section>
-
-    <section class="path card">
-      <div>
-        <p class="eyebrow">How To Use</p>
-        <h3>先看热点，再进分析</h3>
-      </div>
-      <div class="path-steps">
-        <article>
-          <strong>01</strong>
-          <span>从主题卡片里选一个你最想讲给面试官听的方向</span>
-        </article>
-        <article>
-          <strong>02</strong>
-          <span>进入工作台后再按地区、平台、时间和关键词细化</span>
-        </article>
-        <article>
-          <strong>03</strong>
-          <span>打开详情看洞察、关联信号和是否跳原文</span>
-        </article>
       </div>
     </section>
 
@@ -423,12 +400,12 @@ function formatDate(value) {
     <section id="analysis-workspace" class="workspace card">
       <div class="workspace-head">
         <div>
-          <p class="eyebrow">Analysis Workspace</p>
-          <h2>热点分析工作台</h2>
-          <p>这里保留研究分析能力，但放在展示层之后，用户路径会更顺。</p>
+          <p class="eyebrow">Library</p>
+          <h2>热点库</h2>
+          <p>按主题、地区、平台与时间检索热点信号。</p>
         </div>
         <button class="button ghost" @click="workspaceVisible = !workspaceVisible">
-          {{ workspaceVisible ? "收起工作台" : "展开工作台" }}
+          {{ workspaceVisible ? "收起" : "展开" }}
         </button>
       </div>
 
