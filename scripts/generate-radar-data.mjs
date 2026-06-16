@@ -7,6 +7,95 @@ const rootDir = path.resolve(__dirname, "..");
 const outputPath = path.join(rootDir, "competitor-radar", "data.json");
 const publicOutputPath = path.join(rootDir, "public", "competitor-radar", "data.json");
 
+function buildSearchUrl(platform, query) {
+  const encoded = encodeURIComponent(query);
+
+  if (platform === "x") return `https://x.com/search?q=${encoded}&src=typed_query`;
+  if (platform === "instagram") return `https://www.instagram.com/explore/search/keyword/?q=${encoded}`;
+  if (platform === "weibo") return `https://s.weibo.com/weibo?q=${encoded}`;
+  if (platform === "xiaohongshu") return `https://www.xiaohongshu.com/search_result?keyword=${encoded}`;
+  if (platform === "douyin") return `https://www.douyin.com/search/${encoded}`;
+  return "https://x.com/";
+}
+
+function buildTopicUrl(platform, trackKey) {
+  const topicMap = {
+    travel: {
+      x: "travel",
+      instagram: "travel",
+      weibo: "旅行",
+      xiaohongshu: "旅行",
+      douyin: "旅行"
+    },
+    "ai-tools": {
+      x: "aitools",
+      instagram: "aitools",
+      weibo: "AI工具",
+      xiaohongshu: "AI工具",
+      douyin: "AI工具"
+    },
+    creator: {
+      x: "contentcreator",
+      instagram: "contentcreator",
+      weibo: "创作者",
+      xiaohongshu: "创作者",
+      douyin: "vlog"
+    },
+    lifestyle: {
+      x: "lifestyle",
+      instagram: "lifestyle",
+      weibo: "生活方式",
+      xiaohongshu: "生活方式",
+      douyin: "citywalk"
+    },
+    consumer: {
+      x: "productreview",
+      instagram: "productreview",
+      weibo: "种草",
+      xiaohongshu: "种草",
+      douyin: "好物"
+    },
+    funding: {
+      x: "venturecapital",
+      instagram: "startupfunding",
+      weibo: "融资",
+      xiaohongshu: "融资",
+      douyin: "创业"
+    }
+  };
+
+  const token = topicMap[trackKey]?.[platform] ?? "trend";
+
+  if (platform === "x") return `https://x.com/search?q=%23${encodeURIComponent(token)}&src=typed_query`;
+  if (platform === "instagram") return `https://www.instagram.com/explore/tags/${encodeURIComponent(token)}/`;
+  if (platform === "weibo") return `https://s.weibo.com/weibo?q=%23${encodeURIComponent(token)}%23`;
+  if (platform === "xiaohongshu") return `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(token)}`;
+  if (platform === "douyin") return `https://www.douyin.com/search/${encodeURIComponent(token)}`;
+  return "https://x.com/";
+}
+
+function buildSourceExamples(item) {
+  const query = `${item.region} ${item.track} ${item.title}`;
+
+  return [
+    {
+      label: `${item.platformLabel} 搜索入口`,
+      note: "从平台内搜索该热点标题与关键词，适合继续追帖子原文。",
+      url: buildSearchUrl(item.platform, query)
+    },
+    {
+      label: `${item.platformLabel} 主题入口`,
+      note: "查看同主题下的扩散内容、相似帖子和二次创作。",
+      url: buildTopicUrl(item.platform, item.trackKey)
+    },
+    {
+      label: `${item.platformLabel} 平台主页`,
+      note: "回到平台首页或探索页，继续顺着账号与话题找原始内容。",
+      url: item.url
+    }
+  ];
+}
+
 const seedItems = [
   ["cn-travel-1", "微博热议暑期高铁城市周末逃离路线", "用户集中讨论两天一夜短途出行、预算控制和避开热门景点拥堵的真实体验。", "cn", "国内", "travel", "旅行出行", 94, "微博热议", "weibo", "微博", "https://weibo.com/", "国内旅行热点已经从‘去哪’转到‘怎么高效玩’，短平快路线很容易形成传播。", 2],
   ["cn-ai-1", "小红书笔记爆出 AI 做简历和面试模拟的新工作流", "大量职场用户在评论区交换 prompt 和效率截图，收藏率明显上升。", "cn", "国内", "ai-tools", "AI 工具应用", 91, "小红书热门笔记", "xiaohongshu", "小红书", "https://www.xiaohongshu.com/", "用户不再满足于工具介绍，更愿意保存可复用的完整工作流。", 5],
@@ -60,22 +149,30 @@ const items = seedItems.map(
     url,
     insight,
     hoursAgo
-  ]) => ({
-    id,
-    title,
-    summary,
-    regionKey,
-    region,
-    trackKey,
-    track,
-    heat,
-    source,
-    platform,
-    platformLabel,
-    url,
-    insight,
-    time: new Date(Date.now() - hoursAgo * 60 * 60 * 1000).toISOString()
-  })
+  ]) => {
+    const item = {
+      id,
+      title,
+      summary,
+      regionKey,
+      region,
+      trackKey,
+      track,
+      heat,
+      source,
+      platform,
+      platformLabel,
+      url,
+      insight,
+      sourceQuery: `${region} ${track} ${title}`,
+      time: new Date(Date.now() - hoursAgo * 60 * 60 * 1000).toISOString()
+    };
+
+    return {
+      ...item,
+      sourceExamples: buildSourceExamples(item)
+    };
+  }
 );
 
 const payload = {
