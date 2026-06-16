@@ -15,9 +15,11 @@ const regionOptions = [
 
 const trackOptions = [
   { id: "all", label: "🔭 全部" },
-  { id: "trip-planning", label: "✈️ AI 旅行规划" },
-  { id: "ota-assistant", label: "🏨 OTA AI 助手" },
-  { id: "social-travel", label: "👥 社交+旅行" },
+  { id: "travel", label: "✈️ 旅行出行" },
+  { id: "ai-tools", label: "🤖 AI 工具应用" },
+  { id: "creator", label: "🎬 创作者内容" },
+  { id: "lifestyle", label: "🏙️ 城市生活方式" },
+  { id: "consumer", label: "🛍️ 消费种草" },
   { id: "funding", label: "💰 融资动态" }
 ];
 
@@ -40,15 +42,17 @@ const sortOptions = [
 const platformMeta = {
   x: { label: "X", mood: "讨论热度", action: "适合追踪官方账号发声、评论链和投资人观点的放大效应。" },
   instagram: { label: "Instagram", mood: "内容扩散", action: "适合看创作者视觉表达、Reels 带动的功能理解和种草效率。" },
-  weibo: { label: "微博", mood: "热点聚合", action: "适合捕捉话题词、热搜延展和泛用户对旅行 AI 的即时反馈。" },
+  weibo: { label: "微博", mood: "热点聚合", action: "适合捕捉话题词、热搜延展和泛用户对强情绪热点的即时反馈。" },
   xiaohongshu: { label: "小红书", mood: "口碑发酵", action: "适合看真实体验、收藏导向内容和产品被怎样包装成生活方式。" },
   douyin: { label: "抖音", mood: "视频转化", action: "适合观察爆款切口、结果展示能力和评论区的强购买意图。" }
 };
 
 const trackPlaybooks = {
-  "trip-planning": "优先做‘一键出路线 + 可执行理由’的表达，少讲抽象 AI，多讲时间、预算和动线。",
-  "ota-assistant": "强调提醒、重排和服务链串联能力，让用户感觉是一个真能替你处理琐事的助手。",
-  "social-travel": "聚焦陪伴、安全感和兴趣匹配，把社交从功能点改成情绪价值和场景价值。",
+  travel: "拆成目的地热度、出行方式、预算场景和真实体验四层，不只看景点本身。",
+  "ai-tools": "重点抓‘是否真提升效率’和‘用户自发分享工作流’，避免只看模型噱头。",
+  creator: "看创作者如何包装一个话题，以及评论区有没有跟拍、模仿和扩散迹象。",
+  lifestyle: "关注城市生活方式里的场景词和情绪词，它们往往比功能词更能带动传播。",
+  consumer: "优先看种草链路是否形成，从内容浏览到评论问链接再到站外搜索是否连起来。",
   funding: "把融资讨论拆成增长、留存、变现三个维度，避免只看‘拿没拿钱’。"
 };
 
@@ -163,7 +167,7 @@ const laneSummary = computed(() => {
       note: items.length ? (platformMeta[items[0].platform]?.action ?? "继续追踪扩散链路。") : "暂无数据"
     },
     {
-      title: "最强赛道",
+      title: "最强主题",
       value: topGroup(items, "track"),
       note: items.length ? (trackPlaybooks[items[0].trackKey] ?? "继续做分层监测。") : "暂无数据"
     },
@@ -263,9 +267,9 @@ function formatDate(value) {
     <header class="hero card">
       <div class="hero-copy">
         <p class="eyebrow">Competitor Radar</p>
-        <h1>竞品雷达 · AI 旅行赛道</h1>
+        <h1>热点雷达 · 社交平台趋势</h1>
         <p class="subtitle">
-          不只是看热度，而是把社交平台信号拆成地区、赛道、平台语境和可执行动作。
+          不再只盯旅行赛道，而是把社交平台热点拆成地区、主题、平台语境和可执行动作。
         </p>
       </div>
       <div class="hero-side">
@@ -317,7 +321,7 @@ function formatDate(value) {
         </div>
 
         <div class="filter-group">
-          <label>赛道</label>
+          <label>主题</label>
           <div class="chip-row">
             <button
               v-for="option in trackOptions"
@@ -458,7 +462,7 @@ function formatDate(value) {
               <h3>信号拆解</h3>
               <div class="meta-grid">
                 <span>地区：{{ activeItem.region }}</span>
-                <span>赛道：{{ activeItem.track }}</span>
+                <span>主题：{{ activeItem.track }}</span>
                 <span>平台：{{ activeItem.platformLabel }}</span>
                 <span>来源：{{ activeItem.source }}</span>
                 <span>时间：{{ formatDate(activeItem.time) }}</span>
