@@ -77,23 +77,32 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.9);b
 </style>
 </head>
 <body>
-<nav><div class="nw">
-  <a href="/08/portfolio/" class="logo">AI <em>&times;</em> 08</a>
-  <a href="/08/portfolio/" class="back">
-    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    返回
-  </a>
-</div></nav>
+<nav>
+  <div class="nw">
+    <a href="/08/portfolio/" class="logo">AI <em>&times;</em> 08</a>
+    <a href="/08/portfolio/" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      返回
+    </a>
+  </div>
+</nav>
+
 <div class="hero">
   <div class="tag">效率工具</div>
   <h1>会议纪要拆解器</h1>
   <p>粘贴会议记录，AI 自动提取结论、待办与决策。</p>
 </div>
+
 <div class="ws">
   <div class="panel ip">
     <div class="ph">
-      <div class="pi"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-      <div><div class="pt">输入会议记录</div><div class="ps">粘贴原始内容即可</div></div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div>
+        <div class="pt">输入区</div>
+        <div class="ps">粘贴原始会议记录</div>
+      </div>
     </div>
     <div class="pb">
       <div class="f">
@@ -126,26 +135,33 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.9);b
       </button>
     </div>
   </div>
+
   <div class="panel op">
     <div class="ph">
-      <div class="pi"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-      <div><div class="pt">分析结果</div><div class="ps" id="outSub">等待生成</div></div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div>
+        <div class="pt">分析结果</div>
+        <div class="ps" id="outSub">等待生成</div>
+      </div>
     </div>
     <div class="ob" id="ob">
       <div class="skel">
-        <div class="sl" style="width:70%"></div>
-        <div class="sl" style="width:90%"></div>
-        <div class="sl" style="width:50%"></div>
-        <div class="sb" style="height:80px"></div>
-        <div class="sl" style="width:80%"></div>
         <div class="sl" style="width:60%"></div>
-        <div class="sb" style="height:120px"></div>
-        <div class="sl" style="width:40%"></div>
+        <div class="sl" style="width:85%"></div>
+        <div class="sb" style="height:72px;margin-top:4px"></div>
+        <div class="sl" style="width:70%;margin-top:8px"></div>
+        <div class="sl" style="width:50%"></div>
+        <div class="sb" style="height:100px;margin-top:4px"></div>
+        <div class="sl" style="width:40%;margin-top:8px"></div>
       </div>
     </div>
   </div>
 </div>
+
 <div id="toast">已复制</div>
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 var PROVIDERS=[
@@ -169,10 +185,10 @@ async function callAI(prompt){
         var d2=await res.json();
         text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
       }
-      if(text){console.log('OK',p.name);return text;}
+      if(text){console.log('\u2713',p.name);return text;}
     }catch(err){console.warn(p.name,err.message);}
   }
-  throw new Error('所有AI服务均不可用');
+  throw new Error('\u6240\u6709AI\u670d\u52a1\u5747\u4e0d\u53ef\u7528');
 }
 var _lastResult='';
 function typeWrite(text,el,onDone){
@@ -201,7 +217,7 @@ function copyText(){
   });
 }
 
-var selScale='3-5人',selFmt='标准';
+var selScale='3-5\u4eba',selFmt='\u6807\u51c6';
 function initChips(id,setter){
   var cs=document.querySelectorAll('#'+id+' .chip');
   cs.forEach(function(c){
@@ -224,21 +240,24 @@ async function gen(){
   var ob=document.getElementById('ob');
   var sub=document.getElementById('outSub');
   btn.disabled=true;
-  if(sub)sub.textContent='AI 处理中…';
-  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI 正在提取要点…</span></div>';
-  var prompt='你是专业会议助理，请将以下会议记录整理成结构化纪要。\n\n'+(topic?'会议主题：'+topic+'\n':'')+'参与规模：'+selScale+'\n输出格式：'+selFmt+'\n\n会议记录：\n'+content+'\n\n请输出（Markdown）：\n\n# 会议纪要'+(topic?'：'+topic:'')+'\n\n## 核心结论\n（2-3条，每条一句话）\n\n## 待办事项\n| 任务 | 负责人 | 截止时间 | 优先级 |\n|------|--------|----------|--------|\n（从记录提取，未提及填「待定」）\n\n## 关键决策\n（已确定的决策）\n\n## 风险与待确认\n（分歧、需确认的事项）\n\n## 下次会议\n（如有提及）';
+  if(sub)sub.textContent='AI \u5904\u7406\u4e2d\u2026';
+  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI \u6b63\u5728\u63d0\u53d6\u8981\u70b9\u2026</span></div>';
+  var prompt='\u4f60\u662f\u4e13\u4e1a\u4f1a\u8bae\u52a9\u7406\uff0c\u8bf7\u5c06\u4ee5\u4e0b\u4f1a\u8bae\u8bb0\u5f55\u6574\u7406\u6210\u7ed3\u6784\u5316\u7eaa\u8981\u3002\n\n'
+    +(topic?'\u4f1a\u8bae\u4e3b\u9898\uff1a'+topic+'\n':'')
+    +'\u53c2\u4e0e\u89c4\u6a21\uff1a'+selScale+'\n\u8f93\u51fa\u683c\u5f0f\uff1a'+selFmt+'\n\n\u4f1a\u8bae\u8bb0\u5f55\uff1a\n'+content+'\n\n'
+    +'\u8bf7\u8f93\u51fa\uff08Markdown\uff09\uff1a\n\n# \u4f1a\u8bae\u7eaa\u8981'+(topic?'\uff1a'+topic:'')+'\n\n## \u6838\u5fc3\u7ed3\u8bba\n\uff082-3\u6761\uff0c\u6bcf\u6761\u4e00\u53e5\u8bdd\uff09\n\n## \u5f85\u529e\u4e8b\u9879\n| \u4efb\u52a1 | \u8d1f\u8d23\u4eba | \u622a\u6b62\u65f6\u95f4 | \u4f18\u5148\u7ea7 |\n|------|--------|----------|--------|\n\n## \u5173\u952e\u51b3\u7b56\n\uff08\u5df2\u786e\u5b9a\u7684\u51b3\u7b56\uff09\n\n## \u98ce\u9669\u4e0e\u5f85\u786e\u8ba4\n\uff08\u5206\u6b67\u3001\u9700\u786e\u8ba4\u7684\u4e8b\u9879\uff09\n\n## \u4e0b\u6b21\u4f1a\u8bae\n\uff08\u5982\u6709\u63d0\u53ca\uff09';
   try{
     var text=await callAI(prompt);
-    if(sub)sub.textContent='生成完成';
-    typeWrite(text,ob,function(){
-      document.querySelector('.op').insertAdjacentHTML('beforeend','<div class="ebar"><button class="ebtn" onclick="copyText()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button><button class="ebtn" onclick="doExport(\'会议纪要.md\')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button></div>');
+    if(sub)sub.textContent='\u751f\u6210\u5b8c\u6210';
+    typeWrite(text,document.getElementById('ob'),function(){
+      document.querySelector('.op').insertAdjacentHTML('beforeend','<div class="ebar"><button class="ebtn" onclick="copyText()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>\u590d\u5236</button><button class="ebtn" onclick="doExport(\'\u4f1a\u8bae\u7eaa\u8981.md\')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>\u5bfc\u51fa</button></div>');
     });
   }catch(e){
-    ob.innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">生成失败，请稍后重试</div>';
-    if(sub)sub.textContent='失败';
+    document.getElementById('ob').innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">\u751f\u6210\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5</div>';
+    if(sub)sub.textContent='\u5931\u8d25';
   }
   btn.disabled=false;
-  btn.innerHTML='<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>重新生成';
+  btn.innerHTML='<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>\u91cd\u65b0\u751f\u6210';
 }
 </script>
 </body>
