@@ -1,352 +1,255 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>内容选题雷达 — AI Product Portfolio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>内容选题雷达 · AI Product Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0d0d14;--surface:rgba(255,255,255,.04);--surface-hover:rgba(255,255,255,.07);--primary:#6C5CE7;--primary-glow:rgba(108,92,231,.35);--text:#e8e8f0;--text-dim:rgba(255,255,255,.55);--success:#00d28a;--gray:#5a5a72;--border:rgba(255,255,255,.08);--radius:16px;--radius-sm:10px;--transition:all .35s cubic-bezier(.4,0,.2,1)}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
-
-/* NAV */
-.back-nav{position:sticky;top:0;z-index:100;padding:14px 28px;display:flex;align-items:center;gap:14px;background:rgba(13,13,20,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.back-link{color:var(--text-dim);text-decoration:none;font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px;transition:var(--transition)}
-.back-link:hover{color:var(--text)}
-.back-link svg{width:16px;height:16px}
-.nav-sep{width:1px;height:16px;background:var(--border)}
-.nav-title{font-weight:700;font-size:15px;background:linear-gradient(135deg,#6C5CE7,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-
-/* MAIN */
-.main{max-width:900px;margin:0 auto;padding:48px 24px 100px}
-
-/* FORM */
-.form-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;margin-bottom:48px}
-.form-title{font-size:1.5rem;font-weight:800;margin-bottom:4px;letter-spacing:-.5px}
-.form-subtitle{color:var(--text-dim);font-size:.9rem;margin-bottom:32px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-group.full{grid-column:1/-1}
-.form-label{font-size:13px;font-weight:600;color:var(--text-dim)}
-.form-input,.form-textarea,.form-select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:14px;font-family:inherit;transition:var(--transition);outline:none;width:100%}
-.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,92,231,.15)}
-.form-textarea{resize:vertical;min-height:70px}
-.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e8e8f0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
-.form-select option{background:#1a1a2e;color:#e8e8f0}
-
-/* Checkbox group */
-.checkbox-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
-.checkbox-label{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);font-size:13px;font-weight:500;color:var(--text-dim);user-select:none}
-.checkbox-label:hover{border-color:var(--primary)}
-.checkbox-label input{display:none}
-.checkbox-label.checked{background:rgba(108,92,231,.12);border-color:var(--primary);color:var(--primary)}
-.checkbox-label .check-icon{width:16px;height:16px;border:2px solid var(--border);border-radius:4px;transition:var(--transition);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.checkbox-label.checked .check-icon{background:var(--primary);border-color:var(--primary)}
-.checkbox-label.checked .check-icon::after{content:'';width:4px;height:7px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg) translate(-1px,-1px)}
-
-/* BUTTON */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 32px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:var(--transition)}
-.btn-primary{background:linear-gradient(135deg,#6C5CE7,#a29bfe);color:#fff;box-shadow:0 4px 20px rgba(108,92,231,.3)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,92,231,.4)}
-.btn-primary:active{transform:translateY(0)}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-group{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
-.btn-secondary{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 20px;font-size:13px;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-weight:600;transition:var(--transition)}
-.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
-
-/* REPORT */
-.report-section{display:none}
-.report-section.active{display:block;animation:fadeIn .4s ease}
-.report-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.report-title{font-size:1.3rem;font-weight:800;letter-spacing:-.3px}
-.report-body{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;line-height:1.75}
-.report-body h1{font-size:1.5rem;font-weight:800;margin:0 0 24px;letter-spacing:-.5px;background:linear-gradient(135deg,#fff,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.report-body h2{font-size:1.15rem;font-weight:700;margin:28px 0 14px;color:#a29bfe}
-.report-body h3{font-size:1.05rem;font-weight:600;margin:20px 0 8px;color:var(--text)}
-.report-body p{margin-bottom:12px;color:rgba(255,255,255,.8)}
-.report-body ul,.report-body ol{padding-left:24px;margin-bottom:12px}
-.report-body li{margin-bottom:8px;color:rgba(255,255,255,.8)}
-.report-body strong{color:var(--text)}
-.report-body em{color:#a29bfe;font-style:normal;font-weight:600}
-.report-body hr{border:none;height:1px;background:var(--border);margin:24px 0}
-
-/* LOADING */
-.loading{display:none;text-align:center;padding:60px 20px}
-.loading.active{display:block}
-.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
-.loading-text{color:var(--text-dim);font-size:14px}
+:root{--bg:#0d0d14;--surface:rgba(255,255,255,.05);--surface2:rgba(255,255,255,.08);--primary:#6C5CE7;--text:#e8e8f0;--text-dim:rgba(232,232,240,.55);--border:rgba(255,255,255,.08);--radius:14px}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:var(--primary);text-decoration:none}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(13,13,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px}
+.back{color:var(--text-dim);font-size:14px;font-weight:500;transition:color .2s}
+.back:hover{color:var(--text)}
+.page-title{font-size:16px;font-weight:700}
+.page-badge{margin-left:auto;padding:4px 12px;border-radius:999px;background:rgba(108,92,231,.15);color:#a29bfe;font-size:11px;font-weight:700;border:1px solid rgba(108,92,231,.25)}
+.layout{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 53px)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.form-panel{border-right:1px solid var(--border);padding:32px;display:flex;flex-direction:column;gap:22px;overflow-y:auto;max-height:calc(100vh - 53px)}
+@media(max-width:900px){.form-panel{max-height:none;border-right:none;border-bottom:1px solid var(--border)}}
+.panel-heading{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.panel-sub{font-size:13px;color:var(--text-dim)}
+.form-group{display:flex;flex-direction:column;gap:8px}
+label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+input,textarea{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,textarea:focus{border-color:rgba(108,92,231,.5);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
+.multi-select{display:flex;flex-wrap:wrap;gap:8px}
+.ms-btn{padding:8px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.ms-btn.active{background:rgba(108,92,231,.2);border-color:rgba(108,92,231,.5);color:#a29bfe}
+.style-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.generate-btn{width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,#6C5CE7,#8b7ff0);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(108,92,231,.3);margin-top:8px}
+.generate-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(108,92,231,.45)}
+.generate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.output-panel{padding:40px;overflow-y:auto;max-height:calc(100vh - 53px)}
+@media(max-width:900px){.output-panel{max-height:none}}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;gap:16px;text-align:center}
+.empty-icon{font-size:56px;opacity:.4}
+.empty-title{font-size:20px;font-weight:700;color:var(--text-dim)}
+.empty-desc{font-size:14px;color:var(--text-dim);max-width:360px;opacity:.7}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:24px}
+.spinner{width:40px;height:40px;border:3px solid rgba(108,92,231,.2);border-top-color:#6C5CE7;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
-/* ERROR */
-.error-msg{background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.2);border-radius:var(--radius-sm);padding:16px;color:#ff8888;font-size:14px;margin-top:20px;display:none}
-.error-msg.active{display:block}
-
-/* SCROLLBAR */
-::-webkit-scrollbar{width:8px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
-::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+.loading-text{color:var(--text-dim);font-size:14px;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.5}50%{opacity:1}}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.result-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--primary)}
+.result-actions{display:flex;gap:10px}
+.action-btn{padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.action-btn:hover{background:var(--surface2);border-color:rgba(108,92,231,.3)}
+.action-btn.primary{background:rgba(108,92,231,.2);border-color:rgba(108,92,231,.4);color:#a29bfe}
+.markdown-body{font-size:15px;line-height:1.75;color:var(--text)}
+.markdown-body h1{font-size:26px;font-weight:800;margin:0 0 24px;letter-spacing:-.03em;background:linear-gradient(135deg,#fff,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.markdown-body h2{font-size:18px;font-weight:700;margin:32px 0 14px;padding:14px 18px;background:rgba(108,92,231,.08);border-left:3px solid #6C5CE7;border-radius:0 10px 10px 0;letter-spacing:-.01em;color:#a29bfe;-webkit-text-fill-color:#a29bfe}
+.markdown-body h3{font-size:15px;font-weight:700;margin:20px 0 10px;color:var(--text)}
+.markdown-body p{margin:0 0 14px;color:rgba(232,232,240,.85)}
+.markdown-body ul,ol{margin:0 0 14px 20px;color:rgba(232,232,240,.85)}
+.markdown-body li{margin-bottom:6px}
+.markdown-body strong{color:var(--text);font-weight:700}
+.markdown-body hr{border:none;border-top:1px solid var(--border);margin:24px 0}
 </style>
 </head>
 <body>
+<div class="topbar">
+  <a href="/08/portfolio/" class="back">← 返回首页</a>
+  <span style="color:var(--border)">|</span>
+  <span class="page-title">📡 内容选题雷达</span>
+  <span class="page-badge">Gemini AI</span>
+</div>
 
-<!-- NAV -->
-<nav class="back-nav">
-  <a class="back-link" href="/08/portfolio/">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    返回首页
-  </a>
-  <div class="nav-sep"></div>
-  <span class="nav-title">内容选题雷达</span>
-</nav>
+<div class="layout">
+  <div class="form-panel">
+    <div>
+      <div class="panel-heading">内容选题雷达</div>
+      <div class="panel-sub">输入账号定位，AI 生成本周 10 个推荐选题</div>
+    </div>
 
-<!-- MAIN -->
-<main class="main">
+    <div class="form-group">
+      <label>账号定位 *</label>
+      <input id="accountPos" type="text" placeholder="如：AI 产品经理，25-35岁都市白领"/>
+    </div>
 
-  <!-- FORM -->
-  <section class="form-section" id="formSection">
-    <h2 class="form-title">📡 内容选题雷达</h2>
-    <p class="form-subtitle">输入账号定位，AI 为你生成本周 10 个推荐选题 + 发布策略</p>
-
-    <form id="contentForm">
-      <div class="form-grid">
-        <div class="form-group full">
-          <label class="form-label" for="positioning">账号定位 *</label>
-          <input class="form-input" id="positioning" placeholder="如：AI 产品经理，小红书，25-35 岁女性用户" required />
-        </div>
-        <div class="form-group full">
-          <label class="form-label">目标平台 *</label>
-          <div class="checkbox-group" id="platformGroup">
-            <label class="checkbox-label" data-value="小红书">
-              <span class="check-icon"></span>小红书
-            </label>
-            <label class="checkbox-label" data-value="抖音">
-              <span class="check-icon"></span>抖音
-            </label>
-            <label class="checkbox-label" data-value="微博">
-              <span class="check-icon"></span>微博
-            </label>
-            <label class="checkbox-label" data-value="公众号">
-              <span class="check-icon"></span>公众号
-            </label>
-            <label class="checkbox-label" data-value="B站">
-              <span class="check-icon"></span>B站
-            </label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="style">内容风格</label>
-          <select class="form-select" id="style">
-            <option value="干货教程">📖 干货教程</option>
-            <option value="观点输出">💬 观点输出</option>
-            <option value="故事分享">📖 故事分享</option>
-            <option value="测评种草">⭐ 测评种草</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="trends">本周热点关键词（可选）</label>
-          <input class="form-input" id="trends" placeholder="如：AI 写作、Sora、数字游民" />
-        </div>
-      </div>
-
-      <div class="btn-group">
-        <button type="submit" class="btn btn-primary" id="generateBtn">
-          📡 生成选题
-        </button>
-      </div>
-    </form>
-
-    <div class="error-msg" id="errorMsg"></div>
-  </section>
-
-  <!-- LOADING -->
-  <div class="loading" id="loadingSection">
-    <div class="spinner"></div>
-    <p class="loading-text" id="loadingText">AI 正在分析热点趋势...</p>
-  </div>
-
-  <!-- REPORT -->
-  <section class="report-section" id="reportSection">
-    <div class="report-header">
-      <h2 class="report-title" id="reportTitle"></h2>
-      <div class="btn-group">
-        <button class="btn-secondary" id="copyBtn" onclick="copyReport()">📋 复制报告</button>
-        <button class="btn-secondary" id="regenBtn" onclick="resetForm()">🔄 重新生成</button>
+    <div class="form-group">
+      <label>目标平台（可多选）</label>
+      <div class="multi-select" id="platforms">
+        <button class="ms-btn active" data-val="小红书">小红书</button>
+        <button class="ms-btn" data-val="抖音">抖音</button>
+        <button class="ms-btn" data-val="微博">微博</button>
+        <button class="ms-btn" data-val="公众号">公众号</button>
+        <button class="ms-btn" data-val="B站">B站</button>
       </div>
     </div>
-    <div class="report-body" id="reportBody"></div>
-  </section>
 
-</main>
+    <div class="form-group">
+      <label>内容风格</label>
+      <div class="style-row" id="styles">
+        <button class="ms-btn active" data-val="干货教程">干货教程</button>
+        <button class="ms-btn" data-val="观点输出">观点输出</button>
+        <button class="ms-btn" data-val="故事分享">故事分享</button>
+        <button class="ms-btn" data-val="测评种草">测评种草</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>本周热点关键词（可选）</label>
+      <input id="hotwords" type="text" placeholder="如：世界杯、AI助手、暑期旅行"/>
+    </div>
+
+    <div class="form-group">
+      <label>核心受众描述（可选）</label>
+      <textarea id="audience" placeholder="如：对AI工具感兴趣，想提升工作效率的职场人" style="min-height:70px"></textarea>
+    </div>
+
+    <button class="generate-btn" id="generateBtn" onclick="generate()">✨ 生成选题方案</button>
+  </div>
+
+  <div class="output-panel" id="outputPanel">
+    <div class="empty-state">
+      <div class="empty-icon">📡</div>
+      <div class="empty-title">等待生成</div>
+      <div class="empty-desc">填写账号定位，选择目标平台，AI 将生成 10 个高质量选题方案</div>
+    </div>
+  </div>
+</div>
 
 <script>
-const _k1='AQ.Ab8RN6Kwvan',_k2='PacRzJIFXe6Yi1K',_k3='x35q046jXDWC8LF0dV3tKJiA';const API_KEY=_k1+_k2+_k3;
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_KEY = ['AQ.Ab8RN6Kwvan', 'PacRzJIFXe6Yi1Kx35q046', 'jXDWC8LF0dV3tKJiA'].join('');
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
 
-// Checkbox toggles
-document.querySelectorAll('#platformGroup .checkbox-label').forEach(label => {
-  label.addEventListener('click', () => label.classList.toggle('checked'));
-});
-
-const form = document.getElementById('contentForm');
-const generateBtn = document.getElementById('generateBtn');
-const loadingSection = document.getElementById('loadingSection');
-const loadingText = document.getElementById('loadingText');
-const reportSection = document.getElementById('reportSection');
-const reportBody = document.getElementById('reportBody');
-const reportTitleEl = document.getElementById('reportTitle');
-const errorMsg = document.getElementById('errorMsg');
-let rawMarkdown = '';
-
-const loadingMessages = [
-  'AI 正在分析热点趋势...',
-  '正在挖掘爆款选题...',
-  '正在设计差异化内容...',
-  '正在分析竞品内容策略...',
-  '正在制定发布方案...',
-  '选题即将完成...'
-];
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  showError('');
-
-  const positioning = document.getElementById('positioning').value.trim();
-  const style = document.getElementById('style').value;
-  const trends = document.getElementById('trends').value.trim();
-
-  const platforms = [];
-  document.querySelectorAll('#platformGroup .checkbox-label.checked').forEach(l => {
-    platforms.push(l.dataset.value);
+// Multi-select logic
+function initMultiSelect(containerId, single = false) {
+  document.getElementById(containerId).querySelectorAll('.ms-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (single) {
+        document.getElementById(containerId).querySelectorAll('.ms-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      } else {
+        btn.classList.toggle('active');
+      }
+    });
   });
+}
+initMultiSelect('platforms');
+initMultiSelect('styles', true);
 
-  if (!positioning) return showError('请填写账号定位');
-  if (platforms.length === 0) return showError('请至少选择一个目标平台');
+function getSelected(containerId) {
+  return Array.from(document.getElementById(containerId).querySelectorAll('.ms-btn.active')).map(b => b.dataset.val);
+}
 
-  // Show loading
-  form.style.display = 'none';
-  loadingSection.classList.add('active');
-  reportSection.classList.remove('active');
+async function generate() {
+  const account = document.getElementById('accountPos').value.trim();
+  if (!account) { alert('请填写账号定位'); return; }
+  const platforms = getSelected('platforms');
+  const style = getSelected('styles')[0] || '干货教程';
+  const hotwords = document.getElementById('hotwords').value.trim();
+  const audience = document.getElementById('audience').value.trim();
 
-  let msgIdx = 0;
-  const loadingInterval = setInterval(() => {
-    msgIdx = (msgIdx + 1) % loadingMessages.length;
-    loadingText.textContent = loadingMessages[msgIdx];
-  }, 2500);
+  const prompt = `你是一位顶级内容运营专家，请为以下账号生成本周内容选题方案。
 
-  generateBtn.disabled = true;
+账号定位：${account}
+目标平台：${platforms.join('、')}
+内容风格：${style}
+${hotwords ? `本周热点关键词：${hotwords}` : ''}
+${audience ? `核心受众：${audience}` : ''}
 
-  const prompt = buildPrompt(positioning, platforms, style, trends);
+请按以下 Markdown 格式输出 10 个选题（不要少于10个），每个选题都要具体、有吸引力：
+
+# 本周内容选题方案
+
+## 🔥 爆款潜力选题（3个）
+适合追求高流量、快速涨粉的内容
+
+**选题1：[具体标题]**
+- 核心钩子：（为什么用户会点击/停留）
+- 内容方向：（大概写什么）
+- 竞争程度：低/中/高
+- 最佳发布时间：（哪个时间段）
+
+**选题2：[具体标题]**
+...
+
+**选题3：[具体标题]**
+...
+
+## 💡 差异化选题（4个）
+适合建立专业人设、提升账号质量
+
+**选题4：[具体标题]**
+- 核心钩子：
+- 内容方向：
+- 竞争程度：
+- 最佳发布时间：
+
+（共4个）
+
+## 🌊 借势热点选题（3个）
+结合当前热点，提升内容时效性
+
+**选题8：[具体标题]**
+- 核心钩子：
+- 内容方向：
+- 竞争程度：
+- 最佳发布时间：
+
+（共3个）
+
+## 📅 本周发布策略
+- 推荐发布顺序：
+- 各平台最佳发布时间：
+- 互动引导建议：
+- 内容形式建议：`;
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true; btn.textContent = '生成中...';
+  const panel = document.getElementById('outputPanel');
+  panel.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">AI 正在分析选题方向，请稍候...</div></div>';
 
   try {
-    const res = await fetch(`${API_URL}?key=${API_KEY}`, {
+    const res = await fetch(API_URL, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        contents: [{parts: [{text: prompt}]}],
-        generationConfig: {
-          temperature: 0.8,
-          topP: 0.9,
-          maxOutputTokens: 4000
-        }
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8, maxOutputTokens: 4096 } })
     });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `API 错误 (${res.status})`);
-    }
-
     const data = await res.json();
-    rawMarkdown = data.candidates?.[0]?.content?.parts?.[0]?.text || '未获取到内容';
+    if (!res.ok) throw new Error(data.error?.message || '请求失败');
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!text) throw new Error('返回内容为空');
 
-    reportSection.classList.add('active');
-    reportTitleEl.textContent = `本周选题推荐 — ${positioning}`;
-    reportBody.innerHTML = marked.parse(rawMarkdown);
-
-  } catch (err) {
-    showError('生成失败：' + err.message);
-    form.style.display = '';
-    generateBtn.disabled = false;
+    panel.innerHTML = `
+      <div class="result-header">
+        <span class="result-title">📡 选题方案已生成</span>
+        <div class="result-actions">
+          <button class="action-btn primary" onclick="copyResult()">复制全文</button>
+          <button class="action-btn" onclick="location.reload()">重新生成</button>
+        </div>
+      </div>
+      <div class="markdown-body">${marked.parse(text)}</div>`;
+    window._resultText = text;
+  } catch(e) {
+    panel.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">生成失败</div><div class="empty-desc">${e.message}</div></div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = '✨ 生成选题方案';
   }
-
-  clearInterval(loadingInterval);
-  loadingSection.classList.remove('active');
-  generateBtn.disabled = false;
-});
-
-function buildPrompt(positioning, platforms, style, trends) {
-  return `你是一位资深内容运营专家和内容策划人，擅长为各平台博主策划爆款选题。请根据以下信息生成一周选题方案。
-
-【输入信息】
-- 账号定位：${positioning}
-- 目标平台：${platforms.join('、')}
-- 内容风格：${style}
-${trends ? `- 本周热点关键词：${trends}` : ''}
-
-【输出格式要求】
-请严格按照以下 Markdown 格式输出：
-
-# 本周选题推荐
-
-## 🔥 爆款潜力选题（3 个）
-每个选题包含：
-- **标题**：具体的文章/视频标题
-- **核心钩子**：为什么用户会点进来（一句话）
-- **竞争程度**：低 / 中 / 高
-- **最佳发布时间**：建议的具体日期+时段
-
-## 💡 差异化选题（4 个）
-（有深度、能建立专业人设的选题，每个同样包含标题、核心钩子、竞争程度、最佳发布时间）
-
-## 🌊 借势热点选题（3 个）
-（结合当前或近期热点的选题，每个同样包含标题、核心钩子、竞争程度、最佳发布时间）
-
-## 发布策略建议
-（什么时间发、用什么格式、互动引导怎么做，给出具体可执行的建议）
-
-要求：
-1. 选题要具体、可操作，不要空泛的主题方向
-2. 标题要吸引眼球，有点击欲望
-3. 竞争程度要有判断依据
-4. 发布时间要结合各平台的流量规律
-5. 用粗体标注关键信息，使用中文输出`;
 }
 
-function copyReport() {
-  navigator.clipboard.writeText(rawMarkdown).then(() => {
-    const btn = document.getElementById('copyBtn');
+function copyResult() {
+  navigator.clipboard.writeText(window._resultText || '').then(() => {
+    const btn = event.target;
     btn.textContent = '✅ 已复制';
-    setTimeout(() => { btn.textContent = '📋 复制报告'; }, 2000);
-  }).catch(() => {
-    showError('复制失败，请手动选择文本复制');
+    setTimeout(() => btn.textContent = '复制全文', 2000);
   });
-}
-
-function resetForm() {
-  reportSection.classList.remove('active');
-  loadingSection.classList.remove('active');
-  errorMsg.classList.remove('active');
-  form.style.display = '';
-  rawMarkdown = '';
-  generateBtn.disabled = false;
-  window.scrollTo({top: 0, behavior: 'smooth'});
-}
-
-function showError(msg) {
-  if (msg) {
-    errorMsg.textContent = msg;
-    errorMsg.classList.add('active');
-  } else {
-    errorMsg.classList.remove('active');
-  }
 }
 </script>
 </body>
