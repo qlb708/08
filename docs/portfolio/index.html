@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AI Product Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d0d14;--surface:rgba(255,255,255,.04);--surface-hover:rgba(255,255,255,.07);--primary:#6C5CE7;--primary-glow:rgba(108,92,231,.35);--text:#e8e8f0;--text-dim:rgba(255,255,255,.55);--success:#00d28a;--success-glow:rgba(0,210,138,.25);--gray:#5a5a72;--border:rgba(255,255,255,.08);--radius:16px;--radius-sm:10px;--transition:all .35s cubic-bezier(.4,0,.2,1)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ─── NAV ─── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;justify-content:space-between;align-items:center;transition:var(--transition)}
+.nav.scrolled{background:rgba(13,13,20,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-weight:800;font-size:18px;background:linear-gradient(135deg,#6C5CE7,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px}
+.nav-link{color:var(--text-dim);text-decoration:none;font-size:14px;font-weight:500;transition:var(--transition);display:flex;align-items:center;gap:6px}
+.nav-link:hover{color:var(--text)}
+.nav-link svg{width:16px;height:16px;fill:currentColor}
+
+/* ─── HERO ─── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 24px 80px;position:relative}
+.hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(108,92,231,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
+.hero>*{position:relative;z-index:1}
+.hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1.1;letter-spacing:-2px;margin-bottom:20px;background:linear-gradient(135deg,#fff 0%,#a29bfe 50%,#6C5CE7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:clamp(1rem,2vw,1.25rem);color:var(--text-dim);max-width:560px;margin:0 auto 32px;font-weight:400}
+.tags{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.tag{padding:6px 16px;border-radius:100px;font-size:13px;font-weight:500;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);transition:var(--transition)}
+.tag:hover{border-color:var(--primary);color:var(--primary)}
+
+/* ─── SECTIONS ─── */
+.section{max-width:1200px;margin:0 auto;padding:0 24px 100px}
+.section-title{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--primary);margin-bottom:12px}
+.section-heading{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;letter-spacing:-1px;margin-bottom:48px}
+
+/* ─── GRID ─── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
+
+/* ─── CARD ─── */
+.card{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;cursor:pointer;transition:var(--transition);overflow:hidden;text-decoration:none;display:block;opacity:0;transform:translateY(30px)}
+.card.visible{opacity:1;transform:translateY(0)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(108,92,231,0),transparent);transition:var(--transition)}
+.card:hover{transform:translateY(-6px);border-color:rgba(108,92,231,.3);box-shadow:0 8px 40px -12px var(--primary-glow)}
+.card:hover::before{background:linear-gradient(90deg,transparent,rgba(108,92,231,.6),transparent)}
+.card.coming-soon{cursor:default;opacity:.7}
+.card.coming-soon.visible{opacity:.7}
+.card.coming-soon:hover{opacity:.85;border-color:rgba(255,255,255,.12)}
+.card.coming-soon:hover::after{content:'🚀 即将上线';position:absolute;top:12px;right:16px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:100px;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--text-dim);white-space:nowrap;animation:fadeIn .3s ease}
+.card-icon{font-size:36px;margin-bottom:16px;display:block}
+.card h3{font-size:1.15rem;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+.card p{font-size:.9rem;color:var(--text-dim);margin-bottom:16px;line-height:1.5}
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.card-tags span{font-size:11px;padding:3px 10px;border-radius:100px;background:rgba(108,92,231,.1);color:rgba(108,92,231,.8);font-weight:600}
+.card-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:100px}
+.badge-live{background:rgba(0,210,138,.12);color:var(--success)}
+.badge-soon{background:rgba(255,255,255,.06);color:var(--gray)}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge-live .badge-dot{background:var(--success);box-shadow:0 0 6px var(--success-glow)}
+
+/* ─── METHODOLOGY ─── */
+.method-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+@media(max-width:768px){.method-grid{grid-template-columns:1fr}}
+.method-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:var(--transition);opacity:0;transform:translateY(20px)}
+.method-card.visible{opacity:1;transform:translateY(0)}
+.method-card:hover{border-color:rgba(108,92,231,.25)}
+.method-card h4{font-size:1.05rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.method-card p{font-size:.88rem;color:var(--text-dim);line-height:1.5}
+
+/* ─── FOOTER ─── */
+.footer{text-align:center;padding:60px 24px 40px;border-top:1px solid var(--border);margin-top:40px}
+.footer p{color:var(--text-dim);font-size:14px;margin-bottom:8px}
+.footer a{color:var(--primary);text-decoration:none;font-weight:500;transition:var(--transition)}
+.footer a:hover{opacity:.8}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── GLOW ORB ─── */
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);z-index:0}
+.orb-1{width:400px;height:400px;background:rgba(108,92,231,.08);top:60%;left:-100px}
+.orb-2{width:300px;height:300px;background:rgba(162,155,254,.06);top:80%;right:-50px}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="nav-logo" href="/08/portfolio/">AI × Product</a>
+  <a class="nav-link" href="https://github.com/qlb708" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    github.com/qlb708
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>AI Product Portfolio</h1>
+  <p>探索 AI 如何重新定义产品、运营与用户体验</p>
+  <div class="tags">
+    <span class="tag">AI 产品设计</span>
+    <span class="tag">用户研究</span>
+    <span class="tag">数据分析</span>
+    <span class="tag">内容运营</span>
+    <span class="tag">Vibe-coding</span>
+  </div>
+</section>
+
+<!-- DEMOS -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<section class="section">
+  <div class="section-title">Demos</div>
+  <h2 class="section-heading">AI 能力作品集</h2>
+  <div class="grid" id="demoGrid">
+
+    <a class="card" href="/08/" style="transition-delay:.05s">
+      <span class="card-icon">🎯</span>
+      <h3>竞品雷达</h3>
+      <p>实时追踪 AI 旅行赛道社交热点，支持多维筛选与详情解读</p>
+      <div class="card-tags"><span>数据分析</span><span>竞品监测</span></div>
+      <span class="card-badge badge-live"><span class="badge-dot"></span>可体验</span>
+    </a>
+
+    <a class="card" href="/08/portfolio/ux-research/" style="transition-delay:.1s">
+      <span class="card-icon">📋</span>
+      <h3>用研报告生成器</h3>
+      <p>输入产品背景，AI 秒出结构化用研报告与用户洞察</p>
+      <div class="card-tags"><span>用户研究</span><span>AI 提效</span></div>
+      <span class="card-badge badge-live"><span class="badge-dot"></span>可体验</span>
+    </a>
+
+    <a class="card" href="/08/portfolio/content-radar/" style="transition-delay:.15s">
+      <span class="card-icon">📡</span>
+      <h3>内容选题雷达</h3>
+      <p>输入账号定位，AI 生成本周推荐选题 + 竞争度分析</p>
+      <div class="card-tags"><span>内容运营</span><span>AI 提效</span></div>
+      <span class="card-badge badge-live"><span class="badge-dot"></span>可体验</span>
+    </a>
+
+    <div class="card coming-soon" style="transition-delay:.2s">
+      <span class="card-icon">📝</span>
+      <h3>PRD 速写台</h3>
+      <p>一句话需求 → 完整 PRD 骨架，10 秒生成可用文档</p>
+      <div class="card-tags"><span>产品设计</span><span>AI 提效</span></div>
+      <span class="card-badge badge-soon"><span class="badge-dot"></span>开发中</span>
+    </div>
+
+    <div class="card coming-soon" style="transition-delay:.25s">
+      <span class="card-icon">📈</span>
+      <h3>增长实验模拟器</h3>
+      <p>输入产品瓶颈，AI 设计 A/B 实验方案与预期收益</p>
+      <div class="card-tags"><span>增长产品</span><span>数据分析</span></div>
+      <span class="card-badge badge-soon"><span class="badge-dot"></span>开发中</span>
+    </div>
+
+    <div class="card coming-soon" style="transition-delay:.3s">
+      <span class="card-icon">🗺️</span>
+      <h3>用户旅程地图</h3>
+      <p>输入产品场景，自动生成可视化用户旅程与机会点</p>
+      <div class="card-tags"><span>UX 设计</span><span>产品设计</span></div>
+      <span class="card-badge badge-soon"><span class="badge-dot"></span>开发中</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="section">
+  <div class="section-title">Methodology</div>
+  <h2 class="section-heading">能力与方法论</h2>
+  <div class="method-grid">
+
+    <div class="method-card" style="transition-delay:.1s">
+      <h4>🤖 AI 优先工作流</h4>
+      <p>用 AI 把用研、PRD、竞品分析速度提升 5 倍，让产品团队把精力聚焦在决策与创意上。</p>
+    </div>
+
+    <div class="method-card" style="transition-delay:.2s">
+      <h4>📊 数据驱动决策</h4>
+      <p>从社交热点追踪到增长实验设计，用数据而非直觉支撑每一个产品决策。</p>
+    </div>
+
+    <div class="method-card" style="transition-delay:.3s">
+      <h4>⚡ 快速 MVP 验证</h4>
+      <p>Vibe-coding 落地可交互 demo，比 PPT 更有说服力——先跑起来，再优化。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>用 AI 构建 · 2026</p>
+  <p><a href="https://github.com/qlb708/08" target="_blank" rel="noopener">GitHub · qlb708/08</a></p>
+</footer>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+},{passive:true});
+
+// Intersection Observer for staggered fade-in
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, {threshold: 0.1, rootMargin: '0px 0px -40px 0px'});
+
+document.querySelectorAll('.card, .method-card').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
