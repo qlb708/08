@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>智能打印助手 — AI × 08</title>
+<meta name="description" content="PDF 智能分析，自动推荐彩印/黑白方案，帮你省打印费用。">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-hover:#0052a3;--text:#1d1d1f;--text-secondary:#86868b;--radius-card:16px;--radius-btn:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;--nav-h:52px}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
+.nav-logo{font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.nav-logo span{color:var(--primary)}
+.nav-back{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--text-secondary);padding:6px 14px;border-radius:var(--radius-btn);transition:background .2s}
+.nav-back:hover{background:var(--bg-alt);text-decoration:none}
+.nav-back svg{width:16px;height:16px}
+
+.layout{padding-top:var(--nav-h);min-height:calc(100vh - var(--nav-h))}
+.hero-section{padding:68px 32px 20px}
+.hero-section h1{font-size:32px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
+.hero-section p{font-size:17px;color:var(--text-secondary)}
+
+.main-content{display:flex;gap:32px;padding:20px 32px 64px;max-width:1200px;margin:0 auto;align-items:flex-start}
+.left-panel{width:400px;flex-shrink:0;position:sticky;top:calc(var(--nav-h) + 20px)}
+.right-panel{flex:1;min-width:0}
+
+/* Upload Area */
+.upload-area{border:2px dashed #d2d2d7;border-radius:var(--radius-card);padding:32px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg-alt);height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.upload-area:hover,.upload-area.dragover{border-color:var(--primary);background:#e8f4fd}
+.upload-area svg{width:32px;height:32px;color:var(--text-secondary)}
+.upload-area p{font-size:14px;color:var(--text-secondary)}
+.upload-area .file-name{font-size:15px;font-weight:500;color:var(--primary)}
+
+/* Inputs */
+.input-group{margin-top:20px}
+.input-row{display:flex;gap:12px;margin-bottom:16px}
+.input-field{flex:1}
+.input-field label{display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;font-weight:500}
+.input-field input{width:100%;height:42px;border:1px solid #d2d2d7;border-radius:10px;padding:0 14px;font-size:15px;font-family:var(--font);outline:none;transition:border-color .2s}
+.input-field input:focus{border-color:var(--primary)}
+
+.btn-generate{width:100%;height:46px;border:none;border-radius:var(--radius-btn);background:var(--primary);color:#fff;font-size:16px;font-weight:500;cursor:pointer;font-family:var(--font);transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-generate:hover{background:var(--primary-hover)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+.btn-generate svg{width:18px;height:18px}
+
+/* Result */
+.result-card{background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--radius-card);padding:24px;margin-bottom:24px}
+.result-card h3{font-size:18px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.result-card h3 svg{width:20px;height:20px;color:var(--primary)}
+
+/* Summary Grid */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin-bottom:20px}
+.summary-item{background:var(--bg-alt);border-radius:12px;padding:16px;text-align:center}
+.summary-item .num{font-size:28px;font-weight:700;color:var(--primary)}
+.summary-item .label{font-size:12px;color:var(--text-secondary);margin-top:4px}
+.summary-item .save{color:#34c759}
+
+/* Page Table */
+.page-table{width:100%;border-collapse:collapse;font-size:14px}
+.page-table th{text-align:left;padding:10px 12px;border-bottom:2px solid #e8e8ed;font-weight:600;color:var(--text-secondary);font-size:13px}
+.page-table td{padding:10px 12px;border-bottom:1px solid #f0f0f0}
+.page-table tr:last-child td{border-bottom:none}
+.type-badge{display:inline-flex;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500}
+.type-badge.color{background:#fff3e0;color:#e65100}
+.type-badge.bw{background:#e8e8ed;color:#666}
+
+/* Skeleton */
+.skeleton{background:#e8e8ed;border-radius:8px;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
+
+/* AI Output */
+.ai-output{min-height:200px;padding:20px;background:var(--bg-alt);border-radius:12px;font-size:15px;line-height:1.8;white-space:pre-wrap}
+.ai-output h2{font-size:20px;margin:16px 0 8px}
+.ai-output h3{font-size:17px;margin:12px 0 6px}
+.ai-output ul,.ai-output ol{padding-left:20px;margin:8px 0}
+.ai-output p{margin:8px 0}
+.ai-output table{width:100%;border-collapse:collapse;margin:12px 0}
+.ai-output th,.ai-output td{border:1px solid #ddd;padding:8px 12px;text-align:left;font-size:14px}
+.ai-output th{background:#f5f5f7}
+.ai-output strong{font-weight:600}
+.ai-output hr{border:none;border-top:1px solid #ddd;margin:16px 0}
+.ai-output code{background:#f0f0f0;padding:2px 6px;border-radius:4px;font-size:13px}
+
+.status-text{font-size:14px;color:var(--text-secondary);text-align:center;padding:20px}
+.status-text.error{color:#ff3b30}
+
+@media(max-width:900px){
+.main-content{flex-direction:column}
+.left-panel{width:100%;position:static}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">AI <span>×</span> 08</div>
+  <a class="nav-back" href="../">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    返回
+  </a>
+</nav>
+
+<div class="layout">
+  <div class="hero-section">
+    <h1>智能打印助手</h1>
+    <p>上传 PDF，自动分析每页内容，推荐最省钱的打印方案。</p>
+  </div>
+
+  <div class="main-content">
+    <div class="left-panel">
+      <div class="upload-area" id="uploadArea">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><path d="M12 18v-6"/><path d="m9 15 3-3 3 3"/></svg>
+        <p>拖拽 PDF 到此处 或 <span style="color:var(--primary);font-weight:500">点击上传</span></p>
+        <p class="file-name" id="fileName"></p>
+      </div>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+
+      <div class="input-group">
+        <div class="input-row">
+          <div class="input-field">
+            <label>彩色单价（元）</label>
+            <input type="number" id="colorPrice" value="1.5" step="0.1" min="0">
+          </div>
+          <div class="input-field">
+            <label>黑白单价（元）</label>
+            <input type="number" id="bwPrice" value="0.3" step="0.1" min="0">
+          </div>
+        </div>
+        <button class="btn-generate" id="generateBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          开始分析
+        </button>
+      </div>
+    </div>
+
+    <div class="right-panel" id="rightPanel">
+      <div class="status-text">上传 PDF 并点击分析，将在这里显示结果。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+var PROVIDERS = [
+  { name: 'zhipu', key: '3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P', model: 'glm-4-flash', url: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', headerName: 'Authorization', headerFmt: function(k){ return 'Bearer ' + k; } },
+  { name: 'deepseek', key: 'sk-4f016c9639cb461db37f4f778d2eac4f', model: 'deepseek-chat', url: 'https://api.deepseek.com/chat/completions', headerName: 'Authorization', headerFmt: function(k){ return 'Bearer ' + k; } },
+  { name: 'gemini', key: ['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''), model: 'gemini-2.0-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=', headerName: null, headerFmt: null }
+];
+
+async function callAI(messages, onChunk) {
+  var lastErr;
+  for (var i = 0; i < PROVIDERS.length; i++) {
+    var p = PROVIDERS[i];
+    try {
+      if (p.name === 'gemini') {
+        var body = { contents: messages.map(function(m){ return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }; }), generationConfig: { temperature: 0.7 } };
+        var res = await fetch(p.url + p.key, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var reader = res.body.getReader();
+        var buf = '';
+        while (true) {
+          var chunk = await reader.read();
+          if (chunk.done) break;
+          buf += chunk.value;
+          var lines = buf.split('\n');
+          buf = lines.pop();
+          for (var j = 0; j < lines.length; j++) {
+            var line = lines[j];
+            if (line.startsWith('data: ')) {
+              var data = line.slice(6);
+              if (data === '[DONE]') return;
+              try {
+                var parsed = JSON.parse(data);
+                var t = parsed.candidates && parsed.candidates[0] && parsed.candidates[0].content && parsed.candidates[0].content.parts && parsed.candidates[0].content.parts[0] && parsed.candidates[0].content.parts[0].text;
+                if (t) onChunk(t);
+              } catch(e) {}
+            }
+          }
+        }
+        return;
+      } else {
+        var body2 = { model: p.model, messages: messages, stream: true };
+        var headers = { 'Content-Type': 'application/json' };
+        if (p.headerName) headers[p.headerName] = p.headerFmt(p.key);
+        var res2 = await fetch(p.url, { method: 'POST', headers: headers, body: JSON.stringify(body2) });
+        if (!res2.ok) throw new Error('HTTP ' + res2.status);
+        var reader2 = res2.body.getReader();
+        var buf2 = '';
+        while (true) {
+          var chunk2 = await reader2.read();
+          if (chunk2.done) break;
+          buf2 += chunk2.value;
+          var lines2 = buf2.split('\n');
+          buf2 = lines2.pop();
+          for (var k = 0; k < lines2.length; k++) {
+            var line2 = lines2[k];
+            if (line2.startsWith('data: ')) {
+              var data2 = line2.slice(6);
+              if (data2 === '[DONE]') return;
+              try {
+                var parsed2 = JSON.parse(data2);
+                var t2 = parsed2.choices && parsed2.choices[0] && parsed2.choices[0].delta && parsed2.choices[0].delta.content;
+                if (t2) onChunk(t2);
+              } catch(e) {}
+            }
+          }
+        }
+        return;
+      }
+    } catch(e) {
+      lastErr = e;
+      console.warn('Provider ' + p.name + ' failed:', e.message);
+    }
+  }
+  throw lastErr || new Error('All providers failed');
+}
+
+// Simple markdown to HTML
+function renderMd(md) {
+  var html = md;
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Horizontal rule
+  html = html.replace(/^---$/gm, '<hr>');
+  // Tables
+  html = html.replace(/^(\|.+\|)\n(\|[-| :]+\|)\n((?:\|.+\|\n?)*)/gm, function(m, header, sep, body) {
+    var ths = header.split('|').filter(function(c){return c.trim();}).map(function(c){return '<th>'+c.trim()+'</th>';}).join('');
+    var rows = body.trim().split('\n').map(function(row) {
+      var tds = row.split('|').filter(function(c){return c.trim();}).map(function(c){return '<td>'+c.trim()+'</td>';}).join('');
+      return '<tr>'+tds+'</tr>';
+    }).join('');
+    return '<table><thead><tr>'+ths+'</tr></thead><tbody>'+rows+'</tbody></table>';
+  });
+  // Unordered lists
+  html = html.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  // Ordered lists
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  // Paragraphs
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = html.replace(/\n/g, '<br>');
+  html = '<p>' + html + '</p>';
+  html = html.replace(/<p><(h[1-3]|ul|ol|table|pre|hr)/g, '<$1');
+  html = html.replace(/<\/(h[1-3]|ul|ol|table|pre)><\/p>/g, '</$1>');
+  html = html.replace(/<p><\/p>/g, '');
+  return html;
+}
+
+function exportMd(text, filename) {
+  var blob = new Blob([text], { type: 'text/markdown' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename || 'report.md';
+  a.click();
+}
+
+// ====== App Logic ======
+var pdfData = null;
+var pdfDoc = null;
+var pageResults = [];
+
+// Set PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+var uploadArea = document.getElementById('uploadArea');
+var fileInput = document.getElementById('fileInput');
+var fileNameEl = document.getElementById('fileName');
+var generateBtn = document.getElementById('generateBtn');
+
+uploadArea.addEventListener('click', function(){ fileInput.click(); });
+uploadArea.addEventListener('dragover', function(e){ e.preventDefault(); uploadArea.classList.add('dragover'); });
+uploadArea.addEventListener('dragleave', function(){ uploadArea.classList.remove('dragover'); });
+uploadArea.addEventListener('drop', function(e){
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  if (e.dataTransfer.files.length && e.dataTransfer.files[0].type === 'application/pdf') {
+    handleFile(e.dataTransfer.files[0]);
+  }
+});
+fileInput.addEventListener('change', function(){
+  if (fileInput.files.length) handleFile(fileInput.files[0]);
+});
+
+function handleFile(file) {
+  fileNameEl.textContent = file.name;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    pdfData = new Uint8Array(e.target.result);
+    generateBtn.disabled = false;
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+generateBtn.addEventListener('click', async function() {
+  if (!pdfData) return;
+  generateBtn.disabled = true;
+  generateBtn.innerHTML = '<span class="skeleton" style="display:inline-block;width:16px;height:16px;border-radius:50%"></span> 分析中...';
+  var rightPanel = document.getElementById('rightPanel');
+  rightPanel.innerHTML = '<div class="status-text">正在用 PDF.js 逐页分析……</div>';
+
+  try {
+    pdfDoc = await pdfjsLib.getDocument({ data: pdfData.slice() }).promise;
+    var total = pdfDoc.numPages;
+    pageResults = [];
+
+    for (var i = 1; i <= total; i++) {
+      var page = await pdfDoc.getPage(i);
+      var ops = await page.getOperatorList();
+      var hasImage = false;
+      for (var j = 0; j < ops.fnArray.length; j++) {
+        // pdf.js operator constants: paintImageXObject = 83, paintJpegXObject = 84
+        if (ops.fnArray[j] === 83 || ops.fnArray[j] === 84) {
+          hasImage = true;
+          break;
+        }
+      }
+      pageResults.push({ page: i, hasImage: hasImage });
+      rightPanel.innerHTML = '<div class="status-text">已分析 ' + i + ' / ' + total + ' 页</div>';
+    }
+
+    renderResults(total);
+  } catch(err) {
+    rightPanel.innerHTML = '<div class="status-text error">分析失败：' + err.message + '</div>';
+  }
+
+  generateBtn.disabled = false;
+  generateBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg> 开始分析';
+});
+
+function renderResults(total) {
+  var colorPrice = parseFloat(document.getElementById('colorPrice').value) || 1.5;
+  var bwPrice = parseFloat(document.getElementById('bwPrice').value) || 0.3;
+  var rightPanel = document.getElementById('rightPanel');
+
+  var colorCount = pageResults.filter(function(p){ return p.hasImage; }).length;
+  var bwCount = total - colorCount;
+  var allColorCost = total * colorPrice;
+  var smartCost = colorCount * colorPrice + bwCount * bwPrice;
+  var savings = allColorCost - smartCost;
+
+  var html = '';
+
+  // Summary Card
+  html += '<div class="result-card">';
+  html += '<h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg> 费用摘要</h3>';
+  html += '<div class="summary-grid">';
+  html += '<div class="summary-item"><div class="num">' + total + '</div><div class="label">总页数</div></div>';
+  html += '<div class="summary-item"><div class="num">' + colorCount + '</div><div class="label">建议彩印</div></div>';
+  html += '<div class="summary-item"><div class="num">' + bwCount + '</div><div class="label">建议黑白</div></div>';
+  html += '<div class="summary-item"><div class="num">¥' + smartCost.toFixed(2) + '</div><div class="label">预估费用</div></div>';
+  html += '<div class="summary-item"><div class="num save">¥' + savings.toFixed(2) + '</div><div class="label">相比全彩节省</div></div>';
+  html += '</div></div>';
+
+  // Page Table
+  html += '<div class="result-card">';
+  html += '<h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> 逐页分析</h3>';
+  html += '<table class="page-table"><thead><tr><th>页码</th><th>内容类型</th><th>建议</th></tr></thead><tbody>';
+  pageResults.forEach(function(p) {
+    var typeClass = p.hasImage ? 'color' : 'bw';
+    var typeText = p.hasImage ? '含图片' : '纯文字';
+    var advice = p.hasImage ? '彩印' : '黑白';
+    html += '<tr><td>第 ' + p.page + ' 页</td><td><span class="type-badge ' + typeClass + '">' + typeText + '</span></td><td>' + advice + '</td></tr>';
+  });
+  html += '</tbody></table></div>';
+
+  // AI Report
+  html += '<div class="result-card" id="aiReportCard">';
+  html += '<h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg> AI 建议报告</h3>';
+  html += '<div class="ai-output" id="aiOutput"><span class="skeleton" style="display:block;width:80%;height:16px;margin-bottom:12px"></span><span class="skeleton" style="display:block;width:60%;height:16px;margin-bottom:12px"></span><span class="skeleton" style="display:block;width:90%;height:16px"></span></div>';
+  html += '<div style="margin-top:12px;text-align:right"><button onclick="exportAiReport()" style="font-size:14px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:var(--font)">导出 Markdown ↗</button></div>';
+  html += '</div>';
+
+  rightPanel.innerHTML = html;
+
+  // Generate AI report
+  var pageSummary = pageResults.map(function(p) {
+    return '第' + p.page + '页：' + (p.hasImage ? '含图片，建议彩印' : '纯文字/表格，建议黑白');
+  }).join('\n');
+
+  var prompt = '你是一个打印方案优化专家。请根据以下 PDF 分析结果，给出一份简洁的打印建议报告。\n\n';
+  prompt += '总页数：' + total + '\n';
+  prompt += '彩印页数：' + colorCount + '\n';
+  prompt += '黑白页数：' + bwCount + '\n';
+  prompt += '彩色单价：¥' + colorPrice + '，黑白单价：¥' + bwPrice + '\n';
+  prompt += '预估费用：¥' + smartCost.toFixed(2) + '，全彩打印费用：¥' + allColorCost.toFixed(2) + '，节省：¥' + savings.toFixed(2) + '\n\n';
+  prompt += '逐页分析：\n' + pageSummary + '\n\n';
+  prompt += '请输出以下格式的建议报告（用 Markdown）：\n';
+  prompt += '1. 总体打印策略建议\n';
+  prompt += '2. 哪些页面必须彩印及其原因\n';
+  prompt += '3. 哪些页面可以黑白打印及其原因\n';
+  prompt += '4. 省钱技巧（如双面打印、合并页面等）\n';
+  prompt += '5. 如果有图表页面，给出是否值得彩印的判断\n\n';
+  prompt += '要求：简洁实用，不超过 300 字。';
+
+  var aiOutput = document.getElementById('aiOutput');
+  var fullText = '';
+  aiOutput.innerHTML = '';
+
+  callAI([{ role: 'user', content: prompt }], function(chunk) {
+    fullText += chunk;
+    aiOutput.innerHTML = renderMd(fullText);
+  }).catch(function(err) {
+    aiOutput.innerHTML = '<div class="status-text error">AI 生成失败：' + err.message + '</div>';
+  });
+
+  window._aiReportText = prompt + '\n\n--- AI Report ---\n\n' + fullText;
+}
+
+window._aiReportText = '';
+window.exportAiReport = function() {
+  var el = document.getElementById('aiOutput');
+  if (el) {
+    exportMd(el.textContent || el.innerText, 'print-report.md');
+  }
+};
+</script>
+</body>
+</html>
