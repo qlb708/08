@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>产品文档速写台 · AI Product Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d0d14;--surface:rgba(255,255,255,.05);--surface2:rgba(255,255,255,.08);--primary:#6C5CE7;--text:#e8e8f0;--text-dim:rgba(232,232,240,.55);--border:rgba(255,255,255,.08);--radius:14px}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:var(--primary);text-decoration:none}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(13,13,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px}
+.back{color:var(--text-dim);font-size:14px;font-weight:500;transition:color .2s}
+.back:hover{color:var(--text)}
+.page-title{font-size:16px;font-weight:700}
+.page-badge{margin-left:auto;padding:4px 12px;border-radius:999px;background:rgba(108,92,231,.15);color:#a29bfe;font-size:11px;font-weight:700;border:1px solid rgba(108,92,231,.25)}
+/* DOC TYPE TABS */
+.doc-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 40px;overflow-x:auto}
+.doc-tab{padding:14px 20px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;margin-bottom:-1px}
+.doc-tab.active{color:#a29bfe;border-bottom-color:#6C5CE7}
+.doc-tab:hover:not(.active){color:var(--text)}
+.layout{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 100px)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.form-panel{border-right:1px solid var(--border);padding:28px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;max-height:calc(100vh - 100px)}
+@media(max-width:900px){.form-panel{max-height:none;border-right:none;border-bottom:1px solid var(--border)}}
+.panel-heading{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-bottom:2px}
+.panel-sub{font-size:13px;color:var(--text-dim);line-height:1.5}
+.form-group{display:flex;flex-direction:column;gap:7px}
+label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+input,textarea,select{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,textarea:focus,select:focus{border-color:rgba(108,92,231,.5);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
+textarea{resize:vertical;min-height:80px}
+select option{background:#1a1a2e}
+.generate-btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#6C5CE7,#8b7ff0);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(108,92,231,.3);margin-top:6px}
+.generate-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(108,92,231,.45)}
+.generate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.output-panel{padding:36px;overflow-y:auto;max-height:calc(100vh - 100px)}
+@media(max-width:900px){.output-panel{max-height:none}}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;gap:16px;text-align:center}
+.empty-icon{font-size:56px;opacity:.4}
+.empty-title{font-size:20px;font-weight:700;color:var(--text-dim)}
+.empty-desc{font-size:14px;color:var(--text-dim);max-width:360px;opacity:.7}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:24px}
+.spinner{width:40px;height:40px;border:3px solid rgba(108,92,231,.2);border-top-color:#6C5CE7;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-dim);font-size:14px;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.5}50%{opacity:1}}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.result-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--primary)}
+.result-actions{display:flex;gap:10px}
+.action-btn{padding:7px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.action-btn:hover{background:var(--surface2);border-color:rgba(108,92,231,.3)}
+.action-btn.primary{background:rgba(108,92,231,.2);border-color:rgba(108,92,231,.4);color:#a29bfe}
+.markdown-body{font-size:14px;line-height:1.75;color:var(--text)}
+.markdown-body h1{font-size:24px;font-weight:800;margin:0 0 20px;letter-spacing:-.03em;background:linear-gradient(135deg,#fff,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.markdown-body h2{font-size:16px;font-weight:700;margin:28px 0 12px;padding:12px 16px;background:rgba(108,92,231,.08);border-left:3px solid #6C5CE7;border-radius:0 10px 10px 0;color:#a29bfe;-webkit-text-fill-color:#a29bfe}
+.markdown-body h3{font-size:14px;font-weight:700;margin:18px 0 8px;color:var(--text)}
+.markdown-body p{margin:0 0 12px;color:rgba(232,232,240,.85)}
+.markdown-body ul,ol{margin:0 0 12px 18px;color:rgba(232,232,240,.85)}
+.markdown-body li{margin-bottom:5px}
+.markdown-body strong{color:var(--text);font-weight:700}
+.markdown-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.markdown-body th{background:rgba(108,92,231,.12);padding:10px 14px;text-align:left;font-weight:700;color:#a29bfe;border:1px solid var(--border)}
+.markdown-body td{padding:9px 14px;border:1px solid var(--border);color:rgba(232,232,240,.85)}
+.markdown-body tr:hover td{background:rgba(255,255,255,.03)}
+.markdown-body hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/08/portfolio/" class="back">← 返回首页</a>
+  <span style="color:var(--border)">|</span>
+  <span class="page-title">📄 产品文档速写台</span>
+  <span class="page-badge">Gemini AI</span>
+</div>
+
+<!-- DOC TYPE TABS -->
+<div class="doc-tabs" id="docTabs">
+  <div class="doc-tab active" data-type="brd">BRD 商业需求</div>
+  <div class="doc-tab" data-type="mrd">MRD 市场需求</div>
+  <div class="doc-tab" data-type="prd">PRD 产品需求</div>
+  <div class="doc-tab" data-type="okr">OKR 目标规划</div>
+  <div class="doc-tab" data-type="retro">复盘报告</div>
+  <div class="doc-tab" data-type="ops">运营方案</div>
+  <div class="doc-tab" data-type="research">竞品分析</div>
+</div>
+
+<div class="layout">
+  <div class="form-panel" id="formPanel">
+    <!-- 动态渲染 -->
+  </div>
+  <div class="output-panel" id="outputPanel">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📄</div>
+      <div class="empty-title">选择文档类型</div>
+      <div class="empty-desc">从上方 Tab 选择文档类型，填写关键信息，AI 10 秒生成专业文档</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GEMINI_KEY = ['AQ.Ab8RN6Kwvan', 'PacRzJIFXe6Yi1Kx35q046', 'jXDWC8LF0dV3tKJiA'].join('');
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
+
+const docConfigs = {
+  brd: {
+    name: 'BRD 商业需求文档',
+    desc: '用于立项、向管理层汇报商业价值',
+    fields: [
+      { id: 'projectName', label: '项目名称 *', type: 'input', placeholder: '如：AI 旅行规划功能' },
+      { id: 'background', label: '项目背景与问题 *', type: 'textarea', placeholder: '当前面临什么问题或机会？' },
+      { id: 'businessGoal', label: '商业目标 *', type: 'input', placeholder: '如：GMV 提升 20%，新增用户 50万' },
+      { id: 'targetMarket', label: '目标市场', type: 'input', placeholder: '如：国内 25-35岁旅行爱好者' },
+      { id: 'investBudget', label: '预估投入', type: 'input', placeholder: '如：研发 3人月，市场费用 50万' },
+    ],
+    prompt: (f) => `生成一份专业的 BRD（商业需求文档），格式为 Markdown：
+
+项目名称：${f.projectName}
+项目背景：${f.background}
+商业目标：${f.businessGoal}
+目标市场：${f.targetMarket || '未指定'}
+预估投入：${f.investBudget || '待评估'}
+
+请按以下结构输出：
+# BRD：${f.projectName}
+
+## 一、项目背景
+## 二、市场机会
+## 三、商业目标与 KPI
+## 四、目标用户
+## 五、核心价值主张
+## 六、竞争格局
+## 七、商业模式
+## 八、投入产出分析
+## 九、风险与应对
+## 十、立项建议`
+  },
+  mrd: {
+    name: 'MRD 市场需求文档',
+    desc: '市场调研结论，支撑产品立项决策',
+    fields: [
+      { id: 'productName', label: '产品/功能名称 *', type: 'input', placeholder: '如：AI 行程规划助手' },
+      { id: 'marketSize', label: '目标市场规模', type: 'input', placeholder: '如：国内在线旅游市场 8000亿' },
+      { id: 'targetUser', label: '目标用户群 *', type: 'textarea', placeholder: '描述目标用户的特征、行为和需求' },
+      { id: 'competitors', label: '主要竞品', type: 'input', placeholder: '如：携程 AI、飞猪、Wanderlog' },
+      { id: 'coreNeed', label: '核心需求假设 *', type: 'textarea', placeholder: '你认为用户最核心的未被满足的需求是什么？' },
+    ],
+    prompt: (f) => `生成专业的 MRD（市场需求文档），格式为 Markdown：
+
+产品名称：${f.productName}
+目标市场：${f.marketSize || '待调研'}
+目标用户：${f.targetUser}
+竞品：${f.competitors || '待分析'}
+核心需求假设：${f.coreNeed}
+
+按以下结构输出：
+# MRD：${f.productName}
+
+## 一、市场背景与规模
+## 二、目标用户画像
+## 三、用户需求分析（功能性/情感性/社交性）
+## 四、竞品分析矩阵
+## 五、市场机会与切入点
+## 六、产品定位建议
+## 七、需求优先级矩阵
+## 八、市场验证建议`
+  },
+  prd: {
+    name: 'PRD 产品需求文档',
+    desc: '研发交付文档，含功能设计与验收标准',
+    fields: [
+      { id: 'featureName', label: '功能/模块名称 *', type: 'input', placeholder: '如：AI 行程规划功能 v1.0' },
+      { id: 'userStory', label: '用户故事 *', type: 'textarea', placeholder: '作为____，我希望____，以便____' },
+      { id: 'coreFunc', label: '核心功能点 *', type: 'textarea', placeholder: '列出 3-5 个核心功能，一行一个' },
+      { id: 'outOfScope', label: '不在本期范围', type: 'input', placeholder: '如：支付功能、社交分享' },
+      { id: 'successMetric', label: '成功指标', type: 'input', placeholder: '如：7日留存率提升5%，功能使用率>30%' },
+    ],
+    prompt: (f) => `生成专业的 PRD（产品需求文档），格式为 Markdown，包含详细的功能设计：
+
+功能名称：${f.featureName}
+用户故事：${f.userStory}
+核心功能：${f.coreFunc}
+排除范围：${f.outOfScope || '无'}
+成功指标：${f.successMetric || '待定'}
+
+按以下结构输出，要具体可执行：
+# PRD：${f.featureName}
+
+## 一、需求背景
+## 二、用户故事与使用场景
+## 三、功能清单（含优先级 P0/P1/P2）
+## 四、详细功能设计
+### 4.1 [功能一]
+### 4.2 [功能二]
+...
+## 五、交互设计要点
+## 六、数据需求
+## 七、接口设计（概要）
+## 八、验收标准
+## 九、排除范围
+## 十、成功指标与埋点`
+  },
+  okr: {
+    name: 'OKR 目标规划',
+    desc: '季度/年度目标与关键结果设定',
+    fields: [
+      { id: 'team', label: '团队/个人 *', type: 'input', placeholder: '如：AI产品团队 / 个人' },
+      { id: 'period', label: '规划周期 *', type: 'input', placeholder: '如：2026年 Q3（7-9月）' },
+      { id: 'strategy', label: '上级战略目标', type: 'textarea', placeholder: '公司或部门的核心战略方向' },
+      { id: 'focus', label: '本期核心聚焦 *', type: 'textarea', placeholder: '本期你认为最重要的 2-3 件事是什么？' },
+      { id: 'resources', label: '可用资源', type: 'input', placeholder: '如：3名研发，1名设计，预算20万' },
+    ],
+    prompt: (f) => `生成专业的 OKR 规划文档，格式为 Markdown：
+
+团队：${f.team}
+周期：${f.period}
+上级战略：${f.strategy || '未指定'}
+核心聚焦：${f.focus}
+可用资源：${f.resources || '未指定'}
+
+按以下结构输出，O要有挑战性，KR要可量化：
+# OKR：${f.team} · ${f.period}
+
+## 战略背景
+
+## Objective 1：[挑战性目标]
+- KR1.1：[可量化的关键结果]
+- KR1.2：
+- KR1.3：
+
+## Objective 2：[挑战性目标]
+- KR2.1：
+- KR2.2：
+- KR2.3：
+
+## Objective 3：[挑战性目标]（如适用）
+...
+
+## 执行路径与里程碑
+## 风险与依赖
+## 资源规划`
+  },
+  retro: {
+    name: '复盘报告',
+    desc: '项目/活动/版本上线后的结构化复盘',
+    fields: [
+      { id: 'projectName', label: '项目/活动名称 *', type: 'input', placeholder: '如：618大促活动' },
+      { id: 'period', label: '执行周期', type: 'input', placeholder: '如：2026年5月20日-6月18日' },
+      { id: 'goal', label: '原定目标 *', type: 'textarea', placeholder: '活动/项目的原定目标是什么？' },
+      { id: 'result', label: '实际结果 *', type: 'textarea', placeholder: '最终达成情况如何？关键数据是什么？' },
+      { id: 'keyEvent', label: '关键事件', type: 'textarea', placeholder: '过程中有哪些重要节点或转折？' },
+    ],
+    prompt: (f) => `生成专业的复盘报告，格式为 Markdown：
+
+项目名称：${f.projectName}
+执行周期：${f.period || '未填写'}
+原定目标：${f.goal}
+实际结果：${f.result}
+关键事件：${f.keyEvent || '未填写'}
+
+按以下结构输出，要客观分析，不要美化也不要过于批判：
+# 复盘报告：${f.projectName}
+
+## 一、项目概述
+## 二、目标 vs 结果对比
+## 三、做得好的地方（Keep）
+## 四、待改进的地方（Improve）
+## 五、根因分析
+## 六、关键决策复盘
+## 七、经验沉淀
+## 八、下一步行动建议`
+  },
+  ops: {
+    name: '运营方案',
+    desc: '活动/增长/拉新/促活运营策划方案',
+    fields: [
+      { id: 'campaignName', label: '活动/方案名称 *', type: 'input', placeholder: '如：暑期旅行 AI 挑战赛' },
+      { id: 'opsGoal', label: '运营目标 *', type: 'textarea', placeholder: '如：拉新2万用户，DAU提升30%，UGC内容500篇' },
+      { id: 'targetUser', label: '目标用户', type: 'input', placeholder: '如：18-30岁爱旅行的年轻用户' },
+      { id: 'budget', label: '预算', type: 'input', placeholder: '如：总预算50万，其中KOL合作30万' },
+      { id: 'duration', label: '执行周期', type: 'input', placeholder: '如：2026年7月1日-8月31日，为期2个月' },
+    ],
+    prompt: (f) => `生成专业的运营方案，格式为 Markdown：
+
+活动名称：${f.campaignName}
+运营目标：${f.opsGoal}
+目标用户：${f.targetUser || '未指定'}
+预算：${f.budget || '待定'}
+执行周期：${f.duration || '待定'}
+
+按以下结构输出，要具体可落地：
+# 运营方案：${f.campaignName}
+
+## 一、活动背景与目标
+## 二、目标用户分析
+## 三、活动核心玩法设计
+## 四、用户旅程与转化路径
+## 五、渠道策略与投放计划
+## 六、KOL/KOC 合作策略
+## 七、内容策略
+## 八、激励机制与奖品设计
+## 九、执行时间线（甘特图文字版）
+## 十、预算分配
+## 十一、效果衡量指标
+## 十二、风险预案`
+  },
+  research: {
+    name: '竞品分析报告',
+    desc: '系统性竞品对比分析，支撑产品决策',
+    fields: [
+      { id: 'myProduct', label: '我方产品/功能 *', type: 'input', placeholder: '如：AI 行程规划 App' },
+      { id: 'competitors', label: '竞品列表 *', type: 'input', placeholder: '如：携程AI、飞猪、Wanderlog、Mindtrip' },
+      { id: 'dimension', label: '核心分析维度', type: 'textarea', placeholder: '如：核心功能、用户体验、商业模式、用户口碑、增长策略' },
+      { id: 'purpose', label: '分析目的 *', type: 'textarea', placeholder: '做这份竞品分析是为了解决什么问题或支持什么决策？' },
+    ],
+    prompt: (f) => `生成专业的竞品分析报告，格式为 Markdown：
+
+我方产品：${f.myProduct}
+竞品：${f.competitors}
+分析维度：${f.dimension || '功能、体验、商业模式、增长策略'}
+分析目的：${f.purpose}
+
+按以下结构输出，要有独立判断，不要只是描述：
+# 竞品分析报告：${f.myProduct} vs 同行
+
+## 一、分析背景与目的
+## 二、竞品概览
+## 三、核心功能对比矩阵（表格）
+## 四、用户体验对比
+## 五、商业模式对比
+## 六、增长策略对比
+## 七、各竞品核心优劣势
+## 八、市场空白与机会点
+## 九、对我方产品的启示
+## 十、策略建议`
+  }
+};
+
+let currentType = 'brd';
+
+function switchTab(type) {
+  currentType = type;
+  document.querySelectorAll('.doc-tab').forEach(t => t.classList.toggle('active', t.dataset.type === type));
+  renderForm(type);
+  document.getElementById('outputPanel').innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">📄</div>
+      <div class="empty-title">${docConfigs[type].name}</div>
+      <div class="empty-desc">${docConfigs[type].desc}<br><br>填写左侧信息，AI 将生成完整文档</div>
+    </div>`;
+}
+
+function renderForm(type) {
+  const config = docConfigs[type];
+  const panel = document.getElementById('formPanel');
+  let html = `<div><div class="panel-heading">${config.name}</div><div class="panel-sub">${config.desc}</div></div>`;
+  config.fields.forEach(f => {
+    html += `<div class="form-group"><label>${f.label}</label>`;
+    if (f.type === 'textarea') {
+      html += `<textarea id="${f.id}" placeholder="${f.placeholder}"></textarea>`;
+    } else {
+      html += `<input id="${f.id}" type="text" placeholder="${f.placeholder}"/>`;
+    }
+    html += `</div>`;
+  });
+  html += `<button class="generate-btn" id="generateBtn" onclick="generate()">✨ 生成 ${config.name}</button>`;
+  panel.innerHTML = html;
+}
+
+async function generate() {
+  const config = docConfigs[currentType];
+  const fieldValues = {};
+  let missing = false;
+  config.fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (el) {
+      fieldValues[f.id] = el.value.trim();
+      if (f.label.includes('*') && !fieldValues[f.id]) missing = true;
+    }
+  });
+  if (missing) { alert('请填写所有必填项（带 * 的字段）'); return; }
+
+  const prompt = config.prompt(fieldValues);
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true; btn.textContent = '生成中...';
+  const panel = document.getElementById('outputPanel');
+  panel.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">AI 正在撰写文档，请稍候...</div></div>';
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 4096 } })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || '请求失败');
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!text) throw new Error('返回内容为空');
+
+    panel.innerHTML = `
+      <div class="result-header">
+        <span class="result-title">📄 ${config.name} 已生成</span>
+        <div class="result-actions">
+          <button class="action-btn primary" onclick="copyDoc()">复制全文</button>
+          <button class="action-btn" onclick="downloadDoc()">下载 .md</button>
+          <button class="action-btn" onclick="switchTab('${currentType}')">重新生成</button>
+        </div>
+      </div>
+      <div class="markdown-body" id="docContent">${marked.parse(text)}</div>`;
+    window._docText = text;
+    window._docName = config.name;
+  } catch(e) {
+    panel.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">生成失败</div><div class="empty-desc">${e.message}</div></div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = `✨ 生成 ${config.name}`;
+  }
+}
+
+function copyDoc() {
+  navigator.clipboard.writeText(window._docText || '').then(() => {
+    const btn = event.target;
+    btn.textContent = '✅ 已复制';
+    setTimeout(() => btn.textContent = '复制全文', 2000);
+  });
+}
+
+function downloadDoc() {
+  const blob = new Blob([window._docText || ''], { type: 'text/markdown' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${window._docName || 'document'}-${new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')}.md`;
+  a.click();
+}
+
+// Init tabs
+document.querySelectorAll('.doc-tab').forEach(tab => {
+  tab.addEventListener('click', () => switchTab(tab.dataset.type));
+});
+renderForm('brd');
+</script>
+</body>
+</html>
