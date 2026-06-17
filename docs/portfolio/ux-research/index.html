@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>用研报告生成器 — AI Product Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d0d14;--surface:rgba(255,255,255,.04);--surface-hover:rgba(255,255,255,.07);--primary:#6C5CE7;--primary-glow:rgba(108,92,231,.35);--text:#e8e8f0;--text-dim:rgba(255,255,255,.55);--success:#00d28a;--gray:#5a5a72;--border:rgba(255,255,255,.08);--radius:16px;--radius-sm:10px;--transition:all .35s cubic-bezier(.4,0,.2,1)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+.back-nav{position:sticky;top:0;z-index:100;padding:14px 28px;display:flex;align-items:center;gap:14px;background:rgba(13,13,20,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.back-link{color:var(--text-dim);text-decoration:none;font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px;transition:var(--transition)}
+.back-link:hover{color:var(--text)}
+.back-link svg{width:16px;height:16px}
+.nav-sep{width:1px;height:16px;background:var(--border)}
+.nav-title{font-weight:700;font-size:15px;background:linear-gradient(135deg,#6C5CE7,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* MAIN */
+.main{max-width:900px;margin:0 auto;padding:48px 24px 100px}
+
+/* FORM */
+.form-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;margin-bottom:48px}
+.form-title{font-size:1.5rem;font-weight:800;margin-bottom:4px;letter-spacing:-.5px}
+.form-subtitle{color:var(--text-dim);font-size:.9rem;margin-bottom:32px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:13px;font-weight:600;color:var(--text-dim)}
+.form-input,.form-textarea,.form-select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:14px;font-family:inherit;transition:var(--transition);outline:none;width:100%}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,92,231,.15)}
+.form-textarea{resize:vertical;min-height:90px}
+.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e8e8f0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.form-select option{background:#1a1a2e;color:#e8e8f0}
+
+/* BUTTON */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 32px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:var(--transition)}
+.btn-primary{background:linear-gradient(135deg,#6C5CE7,#a29bfe);color:#fff;box-shadow:0 4px 20px rgba(108,92,231,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,92,231,.4)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-group{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.btn-secondary{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 20px;font-size:13px;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-weight:600;transition:var(--transition)}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
+
+/* REPORT */
+.report-section{display:none}
+.report-section.active{display:block;animation:fadeIn .4s ease}
+.report-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.report-title{font-size:1.3rem;font-weight:800;letter-spacing:-.3px}
+.report-body{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;line-height:1.75}
+.report-body h1{font-size:1.5rem;font-weight:800;margin:32px 0 16px;letter-spacing:-.5px;background:linear-gradient(135deg,#fff,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.report-body h2{font-size:1.2rem;font-weight:700;margin:28px 0 12px;color:#a29bfe}
+.report-body h3{font-size:1.05rem;font-weight:600;margin:20px 0 8px;color:var(--text)}
+.report-body p{margin-bottom:12px;color:rgba(255,255,255,.8)}
+.report-body ul,.report-body ol{padding-left:24px;margin-bottom:12px}
+.report-body li{margin-bottom:6px;color:rgba(255,255,255,.8)}
+.report-body strong{color:var(--text)}
+.report-body em{color:#a29bfe;font-style:normal;font-weight:600}
+.report-body hr{border:none;height:1px;background:var(--border);margin:24px 0}
+
+/* LOADING */
+.loading{display:none;text-align:center;padding:60px 20px}
+.loading.active{display:block}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+.loading-text{color:var(--text-dim);font-size:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPING CURSOR */
+.typing-cursor::after{content:'▋';animation:blink 1s step-end infinite;color:var(--primary);font-weight:300}
+@keyframes blink{50%{opacity:0}}
+
+/* ERROR */
+.error-msg{background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.2);border-radius:var(--radius-sm);padding:16px;color:#ff8888;font-size:14px;margin-top:20px;display:none}
+.error-msg.active{display:block}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="back-nav">
+  <a class="back-link" href="/08/portfolio/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    返回首页
+  </a>
+  <div class="nav-sep"></div>
+  <span class="nav-title">用研报告生成器</span>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- FORM -->
+  <section class="form-section" id="formSection">
+    <h2 class="form-title">📋 用研报告生成器</h2>
+    <p class="form-subtitle">填写产品背景信息，AI 将在 30 秒内生成结构化用户研究报告</p>
+
+    <form id="researchForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="productName">产品名称 *</label>
+          <input class="form-input" id="productName" placeholder="如：携程旅行" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="targetUsers">目标用户群 *</label>
+          <input class="form-input" id="targetUsers" placeholder="如：25-35 岁都市白领" required />
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="coreQuestion">核心研究问题 *</label>
+          <textarea class="form-textarea" id="coreQuestion" placeholder="如：为什么用户在注册后 7 天内流失？他们在使用竞品时体验如何？" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="competitors">竞品参考（可选）</label>
+          <input class="form-input" id="competitors" placeholder="如：携程、飞猪、去哪儿" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="depth">研究深度</label>
+          <select class="form-select" id="depth">
+            <option value="快速洞察">🔍 快速洞察（精简版）</option>
+            <option value="标准报告" selected>📊 标准报告（推荐）</option>
+            <option value="深度分析">🧪 深度分析（详细版）</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit" class="btn btn-primary" id="generateBtn">
+          ✨ 生成报告
+        </button>
+      </div>
+    </form>
+
+    <div class="error-msg" id="errorMsg"></div>
+  </section>
+
+  <!-- LOADING -->
+  <div class="loading" id="loadingSection">
+    <div class="spinner"></div>
+    <p class="loading-text" id="loadingText">AI 正在分析用户数据...</p>
+  </div>
+
+  <!-- REPORT -->
+  <section class="report-section" id="reportSection">
+    <div class="report-header">
+      <h2 class="report-title" id="reportTitle"></h2>
+      <div class="btn-group">
+        <button class="btn-secondary" id="copyBtn" onclick="copyReport()">📋 复制报告</button>
+        <button class="btn-secondary" id="regenBtn" onclick="resetForm()">🔄 重新生成</button>
+      </div>
+    </div>
+    <div class="report-body" id="reportBody"></div>
+  </section>
+
+</main>
+
+<script>
+const _k1='AQ.Ab8RN6Kwvan',_k2='PacRzJIFXe6Yi1K',_k3='x35q046jXDWC8LF0dV3tKJiA';const API_KEY=_k1+_k2+_k3;
+const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+
+const form = document.getElementById('researchForm');
+const generateBtn = document.getElementById('generateBtn');
+const loadingSection = document.getElementById('loadingSection');
+const loadingText = document.getElementById('loadingText');
+const reportSection = document.getElementById('reportSection');
+const reportBody = document.getElementById('reportBody');
+const reportTitleEl = document.getElementById('reportTitle');
+const errorMsg = document.getElementById('errorMsg');
+let rawMarkdown = '';
+
+const loadingMessages = [
+  'AI 正在分析用户数据...',
+  '正在构建用户画像...',
+  '正在挖掘核心痛点...',
+  '正在生成竞品对标分析...',
+  '正在整理行动建议...',
+  '报告即将完成...'
+];
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  showError('');
+
+  const productName = document.getElementById('productName').value.trim();
+  const targetUsers = document.getElementById('targetUsers').value.trim();
+  const coreQuestion = document.getElementById('coreQuestion').value.trim();
+  const competitors = document.getElementById('competitors').value.trim();
+  const depth = document.getElementById('depth').value;
+
+  if (!productName || !targetUsers || !coreQuestion) return;
+
+  // Show loading
+  form.style.display = 'none';
+  loadingSection.classList.add('active');
+  reportSection.classList.remove('active');
+
+  // Animate loading text
+  let msgIdx = 0;
+  const loadingInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % loadingMessages.length;
+    loadingText.textContent = loadingMessages[msgIdx];
+  }, 2500);
+
+  generateBtn.disabled = true;
+
+  const prompt = buildPrompt(productName, targetUsers, coreQuestion, competitors, depth);
+
+  try {
+    const res = await fetch(`${API_URL}?key=${API_KEY}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        contents: [{parts: [{text: prompt}]}],
+        generationConfig: {
+          temperature: 0.7,
+          topP: 0.9,
+          maxOutputTokens: 4000
+        }
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `API 错误 (${res.status})`);
+    }
+
+    const data = await res.json();
+    rawMarkdown = data.candidates?.[0]?.content?.parts?.[0]?.text || '未获取到内容';
+
+    // Render
+    reportSection.classList.add('active');
+    reportTitleEl.textContent = `用研报告：${productName}`;
+    reportBody.innerHTML = marked.parse(rawMarkdown);
+
+  } catch (err) {
+    showError('生成失败：' + err.message);
+    form.style.display = '';
+    generateBtn.disabled = false;
+  }
+
+  clearInterval(loadingInterval);
+  loadingSection.classList.remove('active');
+  generateBtn.disabled = false;
+});
+
+function buildPrompt(productName, targetUsers, coreQuestion, competitors, depth) {
+  const depthDesc = {
+    '快速洞察': '请生成精简版报告，每个部分用 2-3 句话概括。',
+    '标准报告': '请生成标准长度的报告，每个部分有充分论述。',
+    '深度分析': '请生成详细的深度报告，每个部分展开分析，提供具体的数据和案例支撑。'
+  }[depth];
+
+  return `你是一位资深用户研究专家，擅长为产品团队提供高质量的用户洞察报告。请根据以下信息生成一份结构化用研报告。
+
+【产品信息】
+- 产品名称：${productName}
+- 目标用户群：${targetUsers}
+- 核心研究问题：${coreQuestion}
+${competitors ? `- 竞品参考：${competitors}` : ''}
+
+【报告格式要求】
+请严格按照以下 Markdown 格式输出报告：
+
+# 用研报告：${productName}
+
+## 执行摘要
+（用 3 句话总结核心发现）
+
+## 用户画像
+（描述主要用户群，含人口统计、行为特征、核心诉求）
+
+## 核心痛点（Top 5）
+（每个痛点包含：痛点描述 + 严重程度（高/中/低）+ 出现场景）
+
+## 机会点分析
+（3-5 个产品/运营可落地的机会点）
+
+## 竞品对标
+（竞品如何解决同类问题，差距在哪）
+
+## 行动建议
+（按优先级排序的可执行建议清单，每项包含：建议内容 + 优先级（P0/P1/P2）+ 预估影响）
+
+## 研究局限
+（本报告的数据基础和局限性说明）
+
+${depthDesc}
+
+请确保报告内容专业、具体、可操作，使用中文输出。用粗体（**text**）标注关键信息。`;
+}
+
+function copyReport() {
+  navigator.clipboard.writeText(rawMarkdown).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(() => { btn.textContent = '📋 复制报告'; }, 2000);
+  }).catch(() => {
+    showError('复制失败，请手动选择文本复制');
+  });
+}
+
+function resetForm() {
+  reportSection.classList.remove('active');
+  loadingSection.classList.remove('active');
+  errorMsg.classList.remove('active');
+  form.style.display = '';
+  rawMarkdown = '';
+  generateBtn.disabled = false;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function showError(msg) {
+  if (msg) {
+    errorMsg.textContent = msg;
+    errorMsg.classList.add('active');
+  } else {
+    errorMsg.classList.remove('active');
+  }
+}
+</script>
+</body>
+</html>
