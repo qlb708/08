@@ -3,271 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>产品文档速写台 - 08 AI Tools</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>08</text></svg>">
+<title>产品文档速写台 · AI × 08</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-h:#0055aa;--text:#1d1d1f;--text2:#86868b;--card-r:20px;--el-r:12px;--btn-r:999px;--shadow:0 2px 16px rgba(0,0,0,.06);--shadow-h:0 8px 32px rgba(0,0,0,.1)}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:var(--primary);text-decoration:none}
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);height:52px;display:flex;align-items:center;justify-content:center}
-nav .inner{width:100%;max-width:1400px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
-nav .logo{font-weight:700;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px}
-nav .logo span{color:var(--primary)}
-nav .logo .sep{color:#d2d2d7}
-nav a.back{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:4px}
-nav a.back:hover{color:var(--text)}
-.page-hero{padding:32px 0 16px;text-align:center}
-.page-hero h1{font-size:28px;font-weight:700}
-.page-hero p{font-size:15px;color:var(--text2);margin-top:6px}
-.workspace{display:flex;gap:0;max-width:1400px;margin:0 auto;padding:0 24px 64px;align-items:flex-start;min-height:500px}
-.sidebar{width:160px;flex-shrink:0;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r) 0 0 var(--card-r);padding:12px 0;position:sticky;top:76px;max-height:calc(100vh - 100px);overflow-y:auto}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;font-size:14px;color:var(--text2);transition:all .2s;border-left:3px solid transparent;position:relative}
-.sidebar-item:hover{background:var(--bg-alt);color:var(--text)}
-.sidebar-item.active{color:var(--primary);background:rgba(0,102,204,.04);border-left-color:var(--primary);font-weight:600}
-.sidebar-item svg{width:18px;height:18px;flex-shrink:0}
-.panel-input{width:360px;flex-shrink:0;background:var(--bg);border:1px solid #e8e8ed;border-left:none;padding:24px;position:sticky;top:76px;max-height:calc(100vh - 100px);overflow-y:auto}
-.panel-output{flex:1;min-width:0;background:var(--bg);border:1px solid #e8e8ed;border-left:none;border-radius:0 var(--card-r) var(--card-r) 0;padding:24px;min-height:400px}
-.panel-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0f0f5}
-.panel-header svg{width:20px;height:20px;color:var(--primary)}
-.panel-header h2{font-size:16px;font-weight:600}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
-.form-group input,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid #d2d2d7;border-radius:var(--el-r);font-size:14px;font-family:inherit;transition:border-color .2s;background:var(--bg);color:var(--text)}
-.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary)}
-.form-group textarea{resize:vertical;min-height:60px}
-.btn-generate{width:100%;padding:14px;border:none;border-radius:var(--btn-r);background:var(--primary);color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:inherit}
-.btn-generate:hover{background:var(--primary-h);transform:translateY(-1px)}
-.btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-generate svg{width:18px;height:18px}
-.skeleton{display:flex;flex-direction:column;gap:12px;padding:8px 0}
-.skeleton-block{border-radius:var(--el-r);background:linear-gradient(90deg,#f0f0f5 25%,#e8e8ed 50%,#f0f0f5 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-.skeleton-block:nth-child(1){height:24px;width:60%}
-.skeleton-block:nth-child(2){height:16px;width:100%}
-.skeleton-block:nth-child(3){height:16px;width:85%}
-.skeleton-block:nth-child(4){height:16px;width:70%}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.output-content{font-size:15px;line-height:1.8;color:var(--text)}
-.output-content h1{font-size:22px;font-weight:700;margin:24px 0 12px}
-.output-content h2{font-size:18px;font-weight:600;margin:20px 0 10px}
-.output-content h3{font-size:16px;font-weight:600;margin:16px 0 8px}
-.output-content p{margin-bottom:10px;color:var(--text2)}
-.output-content ul,.output-content ol{margin:8px 0 8px 20px;color:var(--text2)}
-.output-content li{margin-bottom:4px}
-.output-content strong{color:var(--text);font-weight:600}
-.output-content code{background:var(--bg-alt);padding:2px 6px;border-radius:4px;font-size:13px}
-.output-content pre{background:var(--bg-alt);padding:16px;border-radius:var(--el-r);overflow-x:auto;margin:12px 0}
-.output-content blockquote{border-left:3px solid var(--primary);padding-left:16px;margin:12px 0;color:var(--text2)}
-.output-content table{width:100%;border-collapse:collapse;margin:12px 0}
-.output-content th,.output-content td{border:1px solid #e8e8ed;padding:8px 12px;text-align:left;font-size:14px}
-.output-content th{background:var(--bg-alt);font-weight:600}
-.btn-export{margin-top:20px;padding:10px 20px;border:1.5px solid #d2d2d7;border-radius:var(--btn-r);background:var(--bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;font-family:inherit}
-.btn-export:hover{border-color:var(--primary);color:var(--primary)}
-.doc-label{font-size:12px;color:var(--text2);padding:4px 16px 8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+:root{
+  --bg:#fff;--bg2:#f5f5f7;--blue:#0066cc;--bs:rgba(0,102,204,.08);--bb:rgba(0,102,204,.2);
+  --text:#1d1d1f;--soft:#6e6e73;--muted:#aeaeb2;
+  --bd:rgba(0,0,0,.08);--sh:0 2px 16px rgba(0,0,0,.06);
+  --r:18px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+}
+body{font-family:var(--font);color:var(--text);background:var(--bg2);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:inherit}
 
-.upload-zone{border:1.5px dashed rgba(0,102,204,.3);border-radius:11px;padding:11px 13px;background:rgba(0,102,204,.03);cursor:pointer;transition:all .2s;text-align:center;margin-bottom:12px}
-.upload-zone:hover{border-color:#0066cc;background:rgba(0,102,204,.06)}
-.upload-zone input{display:none}
-.upload-zone label{cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;color:#0066cc;font-weight:600}
-.upload-zone label svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
-.upload-zone .fname{font-size:11px;color:#6e6e73;margin-top:3px}
-.kb-mini{margin-top:16px;border-top:1px solid rgba(0,0,0,.07);padding-top:14px}
-.kb-mini-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#aeaeb2;margin-bottom:8px}
-.kb-mini-grid{display:flex;flex-direction:column;gap:6px}
-.kb-mini-item{padding:9px 11px;border-radius:9px;border:1px solid rgba(0,0,0,.07);cursor:pointer;transition:border-color .2s}
-.kb-mini-item:hover{border-color:rgba(0,102,204,.3)}
-.kb-mini-item.open{border-color:rgba(0,102,204,.3);background:rgba(0,102,204,.03)}
-.km-hd{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600}
-.km-hd svg{width:12px;height:12px;fill:none;stroke:#aeaeb2;stroke-width:2;transition:transform .25s}
-.kb-mini-item.open .km-hd svg{transform:rotate(90deg)}
-.km-body{font-size:11px;color:#6e6e73;line-height:1.6;max-height:0;overflow:hidden;transition:max-height .3s}
-.kb-mini-item.open .km-body{max-height:150px;margin-top:6px}
+nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center}
+.nw{max-width:1400px;margin:0 auto;padding:0 32px;width:100%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:16px;font-weight:800;letter-spacing:-.03em}.logo em{color:var(--blue);font-style:normal}
+.back{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--soft);transition:color .2s}
+.back:hover{color:var(--blue)}.back svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.hero{max-width:1400px;margin:0 auto;padding:68px 32px 20px}
+.htag{display:inline-flex;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);background:var(--bs);padding:4px 12px;border-radius:var(--pill);margin-bottom:10px;border:1px solid var(--bb)}
+.hero h1{font-size:clamp(22px,2.8vw,34px);font-weight:800;letter-spacing:-.04em;margin-bottom:5px}
+.hero p{font-size:14px;color:var(--soft)}
+
+/* 3-col layout */
+.workspace{max-width:1400px;margin:0 auto;padding:0 32px 80px;display:grid;grid-template-columns:160px 380px 1fr;gap:16px;align-items:start}
+
+/* sidebar */
+.sidebar{position:sticky;top:68px;background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);padding:10px 0;overflow:hidden}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 14px 4px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:10px 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--soft);transition:all .18s;position:relative;border-left:3px solid transparent}
+.sb-item:hover{background:var(--bg2);color:var(--text)}
+.sb-item.active{color:var(--blue);font-weight:700;border-left-color:var(--blue);background:var(--bs)}
+.sb-item svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* input panel */
+.panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.inp-p{position:sticky;top:68px}
+.ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:9px}
+.ph-icon{width:28px;height:28px;border-radius:8px;background:var(--bs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ph-icon svg{width:13px;height:13px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ph-t{font-size:14px;font-weight:700}.ph-s{font-size:11px;color:var(--soft)}
+.pb{padding:18px}
+.f{margin-bottom:14px}
+.f label{display:block;font-size:12px;font-weight:700;letter-spacing:.01em;color:var(--text);margin-bottom:5px}
+.fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:3px}
+.f input,.f textarea,.f select{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.f input:focus,.f textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--bs);background:#fff}
+.f textarea{resize:vertical;min-height:70px;line-height:1.55}
+
+/* upload zone */
+.uzone{border:1.5px dashed rgba(0,102,204,.28);border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .2s;margin-bottom:14px}
+.uzone:hover{border-color:var(--blue);background:var(--bs)}
+.uzone input{display:none}
+.uzone label{cursor:pointer;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--blue);font-weight:600}
+.uzone label svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;flex-shrink:0}
+.uzone .ufn{font-size:11px;color:var(--muted);margin-top:3px;padding-left:20px}
+
+/* knowledge base */
+.kb{border-top:1px solid var(--bd);padding-top:14px;margin-top:14px}
+.kb-hd{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.kb-item{border:1px solid var(--bd);border-radius:9px;overflow:hidden;margin-bottom:6px;cursor:pointer}
+.kb-item-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;font-size:12px;font-weight:600;background:var(--bg2);transition:background .2s}
+.kb-item-hd:hover{background:#ebebf0}
+.kb-arr{width:12px;height:12px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
+.kb-item.open .kb-arr{transform:rotate(90deg);stroke:var(--blue)}
+.kb-body{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:11.5px;color:var(--soft);line-height:1.65;padding:0 11px}
+.kb-item.open .kb-body{max-height:200px;padding:9px 11px}
+
+/* gen btn */
+.gbtn{width:100%;padding:12px;border-radius:var(--pill);background:var(--blue);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 12px rgba(0,102,204,.22);transition:all .2s}
+.gbtn:hover:not(:disabled){background:#0055aa;transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,102,204,.3)}
+.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.gbtn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* output */
+.out-p{min-height:520px;display:flex;flex-direction:column}
+.ob{flex:1;padding:22px;overflow-y:auto;min-height:460px}
+
+/* skeleton */
+.sk{display:flex;flex-direction:column;gap:10px;opacity:.45}
+.sk-t{height:15px;border-radius:5px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite}
+.sk-l{height:10px;border-radius:5px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite}
+.sk-b{border-radius:9px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-sec{margin-bottom:16px}
+
+/* thinking */
+.thinking{display:flex;align-items:center;gap:10px;padding:48px 0;color:var(--soft);font-size:14px}
+.dots span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);animation:bo 1.4s infinite ease-in-out;margin-right:4px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bo{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* md output */
+.md-out{font-size:13.5px;line-height:1.8;color:var(--text)}
+.md-out h1{font-size:18px;font-weight:800;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--bd);letter-spacing:-.02em}
+.md-out h2{font-size:15px;font-weight:700;margin:18px 0 7px;color:var(--text)}
+.md-out h3{font-size:13px;font-weight:700;margin:13px 0 5px}
+.md-out p{margin-bottom:10px}
+.md-out ul,.md-out ol{margin:6px 0 10px 16px}
+.md-out li{margin-bottom:4px}
+.md-out strong{font-weight:700}
+.md-out blockquote{border-left:3px solid var(--blue);padding:8px 12px;margin:12px 0;background:var(--bs);border-radius:0 8px 8px 0;color:var(--soft);font-size:12.5px}
+.md-out table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px}
+.md-out th,.md-out td{padding:7px 10px;border:1px solid var(--bd);text-align:left;vertical-align:top}
+.md-out th{background:var(--bg2);font-weight:600}
+.md-out code{background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:12px}
+.md-out hr{border:none;border-top:1px solid var(--bd);margin:16px 0}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:0}}
+.cursor2{display:inline-block;width:2px;height:13px;background:var(--blue);margin-left:1px;vertical-align:middle;animation:bk .6s infinite}
+
+.ebar{padding:12px 18px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.ebtn:hover{border-color:var(--bb);color:var(--blue)}.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+.ai-badge{font-size:11px;color:var(--muted)}
+
+/* doc type badge */
+.dtype-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--blue);background:var(--bs);padding:3px 10px;border-radius:var(--pill);margin-bottom:14px;border:1px solid var(--bb)}
+
+@media(max-width:1100px){.workspace{grid-template-columns:140px 340px 1fr}}
+@media(max-width:900px){.workspace{grid-template-columns:1fr}.sidebar{position:static;display:flex;overflow-x:auto;padding:8px;gap:4px;flex-direction:row}.sb-item{border-left:none;border-bottom:3px solid transparent;border-radius:8px;white-space:nowrap}.sb-item.active{border-bottom-color:var(--blue);border-left-color:transparent}}
+@media(max-width:600px){.workspace{padding:0 16px 60px}.hero{padding:66px 16px 16px}}
 </style>
 </head>
 <body>
-<nav><div class="inner">
-  <a class="logo" href="https://qlb708.github.io/08/"><span>08</span><span class="sep">/</span>产品文档速写台</a>
-  <a class="back" href="https://qlb708.github.io/08/">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-    返回首页
-  </a>
-</div></nav>
-<div class="page-hero"><h1>产品文档速写台</h1><p>一键生成 BRD/PRD/MRD 等 7 种标准产品文档</p></div>
+<nav>
+  <div class="nw">
+    <div class="logo">AI <em>×</em> 08</div>
+    <a class="back" href="/08/portfolio/"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="htag">产品文档</div>
+  <h1>产品文档速写台</h1>
+  <p>7 种文档类型，AI 生成专业初稿，输入越详细输出越精准。</p>
+</div>
+
 <div class="workspace">
+  <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="doc-label">文档类型</div>
-    <div class="sidebar-item active" data-doc="brd" onclick="selectDoc(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      BRD
+    <div class="sb-label">文档类型</div>
+    <div class="sb-item active" data-type="BRD" onclick="selectType(this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>BRD
     </div>
-    <div class="sidebar-item" data-doc="mrd" onclick="selectDoc(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      MRD
+    <div class="sb-item" data-type="MRD" onclick="selectType(this)">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>MRD
     </div>
-    <div class="sidebar-item" data-doc="prd" onclick="selectDoc(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      PRD
+    <div class="sb-item" data-type="PRD" onclick="selectType(this)">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PRD
     </div>
-    <div class="sidebar-item" data-doc="okr" onclick="selectDoc(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      OKR
+    <div class="sb-item" data-type="OKR" onclick="selectType(this)">
+      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>OKR
     </div>
-    <div class="sidebar-item" data-doc="competitor" onclick="selectDoc(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-      竞品分析
+    <div class="sb-item" data-type="竞品分析" onclick="selectType(this)">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>竞品分析
     </div>
-    <div class="sidebar-item" data-doc="userstory" onclick="selectDoc(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      用户故事
+    <div class="sb-item" data-type="用户故事" onclick="selectType(this)">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>用户故事
     </div>
-    <div class="sidebar-item" data-doc="release" onclick="selectDoc(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      发版说明
+    <div class="sb-item" data-type="发版说明" onclick="selectType(this)">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>发版说明
     </div>
   </div>
-  <div class="panel-input">
-    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><h2>产品信息</h2></div>
-    <div class="form-group"><label>产品名称</label><input id="prodName" placeholder="例如：飞书"/></div>
-    <div class="form-group"><label>产品简述</label><textarea id="prodDesc" placeholder="一句话描述产品的核心价值和功能"></textarea></div>
-    <div class="form-group"><label>目标用户</label><input id="prodUser" placeholder="例如：中大型企业的协作团队"/></div>
-    <div class="form-group"><label>补充说明（选填）</label><textarea id="prodExtra" placeholder="任何额外的背景信息或要求"></textarea></div>
-    <button class="btn-generate" id="generateBtn" onclick="handleGenerate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>生成文档</button>
+
+  <!-- INPUT PANEL -->
+  <div class="panel inp-p">
+    <div class="ph">
+      <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      <div><div class="ph-t">产品信息</div><div class="ph-s" id="phSub">当前：BRD 商业需求文档</div></div>
+    </div>
+    <div class="pb">
+      <div class="f"><label>产品名称</label><input id="pname" type="text" placeholder="例如：AI 旅行规划 App"></div>
+      <div class="f"><label>产品简述</label><textarea id="pdesc" placeholder="例如：面向年轻旅行者的 AI 行程规划工具，支持一键生成7天行程、本地推荐、协作规划" rows="3"></textarea></div>
+      <div class="f"><label>目标用户</label><input id="ptarget" type="text" placeholder="例如：25-35岁独立旅行的都市白领"></div>
+      <div class="f"><label>补充说明 <span class="fn">选填</span></label><textarea id="pextra" placeholder="例如：产品处于 MVP 阶段，核心功能是行程生成，需要聚焦核心价值主张" rows="2"></textarea></div>
+
+      <!-- 文件上传 -->
+      <div class="uzone" id="uzone">
+        <input type="file" id="fileInput" accept=".txt,.md,.csv,.json">
+        <label for="fileInput">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          上传参考资料（可选）
+        </label>
+        <div class="ufn" id="ufn">支持 .txt .md .csv，内容将注入 Prompt</div>
+      </div>
+
+      <!-- 知识库 -->
+      <div class="kb">
+        <div class="kb-hd">文档要素速查</div>
+        <div class="kb-item" id="kb0">
+          <div class="kb-item-hd" onclick="toggleKb('kb0')">BRD 核心要素 <svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="kb-body">商业背景与机会 → 产品愿景与目标 → 目标用户与市场规模（TAM/SAM/SOM）→ 核心业务需求 → 商业模式与变现路径 → 资源投入与风险评估 → 成功指标（KPI）</div>
+        </div>
+        <div class="kb-item" id="kb1">
+          <div class="kb-item-hd" onclick="toggleKb('kb1')">PRD 核心要素 <svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="kb-body">背景与目标 → 用户故事（Who/What/Why）→ 功能需求（主流程+边界+异常）→ 非功能需求（性能/安全/兼容性）→ 原型与交互说明 → 验收标准 → 上线计划</div>
+        </div>
+        <div class="kb-item" id="kb2">
+          <div class="kb-item-hd" onclick="toggleKb('kb2')">OKR 写法原则 <svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="kb-body">O：鼓舞人心、质性描述、不含数字。<br>KR：可量化、有截止日期、挑战但可达（70%完成率为佳）。<br>建议每个 O 对应 2-4 个 KR，季度维度为主。<br>避免：把任务当 KR、KR 互相重叠。</div>
+        </div>
+        <div class="kb-item" id="kb3">
+          <div class="kb-item-hd" onclick="toggleKb('kb3')">竞品分析框架 <svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="kb-body">① 定位分析（目标用户/核心价值主张）<br>② 功能对比（核心功能/差异功能/缺失功能）<br>③ 用户体验评测（Onboarding/核心流程/留存机制）<br>④ 商业模式 ⑤ 增长策略 ⑥ SWOT ⑦ 机会点</div>
+        </div>
+      </div>
+
+      <button class="gbtn" id="gbtn" onclick="generate()">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+        生成文档
+      </button>
+    </div>
   </div>
-  <div class="panel-output">
-    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><h2 id="outputTitle">文档预览</h2></div>
-    <div id="skeleton" class="skeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
-    <div id="output" class="output-content" style="display:none"></div>
-    <button id="exportBtn" class="btn-export" style="display:none" onclick="exportMarkdown()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出 Markdown</button>
+
+  <!-- OUTPUT PANEL -->
+  <div class="panel out-p">
+    <div class="ph">
+      <div class="ph-icon" style="background:rgba(52,199,89,.1)"><svg viewBox="0 0 24 24" style="stroke:#34c759"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div><div class="ph-t">文档预览</div><div class="ph-s" id="outSub">填写左侧信息后生成</div></div>
+    </div>
+    <div class="ob" id="ob">
+      <div class="sk">
+        <div class="sk-sec"><div class="sk-t" style="width:45%"></div><div class="sk-b" style="height:60px;margin-top:8px"></div></div>
+        <div class="sk-sec"><div class="sk-t" style="width:32%"></div><div class="sk-l w90" style="margin-top:8px;width:90%"></div><div class="sk-l" style="margin-top:5px;width:75%"></div><div class="sk-l" style="margin-top:5px;width:60%"></div></div>
+        <div class="sk-sec"><div class="sk-t" style="width:38%"></div><div class="sk-b" style="height:80px;margin-top:8px"></div></div>
+        <div class="sk-sec"><div class="sk-t" style="width:28%"></div><div class="sk-l" style="margin-top:8px;width:88%"></div><div class="sk-l" style="margin-top:5px;width:70%"></div></div>
+      </div>
+    </div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-const PROVIDERS=[
-  {name:"智谱",url:"https://open.bigmodel.cn/api/paas/v4/chat/completions",key:"3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P",model:"glm-4-flash",type:"openai"},
-  {name:"DeepSeek",url:"https://api.deepseek.com/chat/completions",key:"sk-4f016c9639cb461db37f4f778d2eac4f",model:"deepseek-chat",type:"openai"},
-  {name:"Gemini",url:"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",key:["AQ.Ab8RN6Kwvan","PacRzJIFXe6Yi1Kx35q046","jXDWC8LF0dV3tKJiA"].join(""),type:"gemini"},
+// ── AI 瀑布降级 ──
+var PROVIDERS = [
+  {name:'智谱', url:'https://open.bigmodel.cn/api/paas/v4/chat/completions', key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P', model:'glm-4-flash', type:'openai'},
+  {name:'DeepSeek', url:'https://api.deepseek.com/chat/completions', key:'sk-4f016c9639cb461db37f4f778d2eac4f', model:'deepseek-chat', type:'openai'},
+  {name:'Gemini', url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''), type:'gemini'}
 ];
-async function callAI(prompt){
-  for(const p of PROVIDERS){
-    try{
-      let text="";
-      if(p.type==="openai"){
-        const res=await fetch(p.url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+p.key},body:JSON.stringify({model:p.model,messages:[{role:"user",content:prompt}],max_tokens:8000,temperature:0.7}),signal:AbortSignal.timeout(25000)});
-        if(!res.ok){const e=await res.json();console.warn(p.name,e);continue;}
-        const d=await res.json();text=d.choices?.[0]?.message?.content||"";
+
+async function callAI(prompt) {
+  for (var i = 0; i < PROVIDERS.length; i++) {
+    var p = PROVIDERS[i];
+    try {
+      var res, text = '';
+      if (p.type === 'openai') {
+        res = await fetch(p.url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + p.key},
+          body: JSON.stringify({model: p.model, messages: [{role: 'user', content: prompt}], max_tokens: 8000, temperature: 0.7}),
+          signal: AbortSignal.timeout(25000)
+        });
+        if (!res.ok) { var e = await res.json(); console.warn(p.name, e); continue; }
+        var d = await res.json();
+        text = (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || '';
       } else {
-        const res=await fetch(p.url+"?key="+p.key,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
-        if(!res.ok){continue;}
-        const d=await res.json();text=d.candidates?.[0]?.content?.parts?.[0]?.text||"";
+        res = await fetch(p.url + '?key=' + p.key, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({contents: [{parts: [{text: prompt}]}], generationConfig: {maxOutputTokens: 8000, temperature: 0.7}}),
+          signal: AbortSignal.timeout(20000)
+        });
+        if (!res.ok) { continue; }
+        var d2 = await res.json();
+        text = (d2.candidates && d2.candidates[0] && d2.candidates[0].content && d2.candidates[0].content.parts && d2.candidates[0].content.parts[0] && d2.candidates[0].content.parts[0].text) || '';
       }
-      if(text){console.log("✓ used",p.name);return text;}
-    }catch(e){console.warn(p.name,"failed:",e.message);continue;}
+      if (text) { console.log('✓ used', p.name); return text; }
+    } catch(err) { console.warn(p.name, 'failed:', err.message); }
   }
-  throw new Error("所有 AI 服务均不可用，请检查网络");
+  throw new Error('所有 AI 服务均不可用，请检查网络');
 }
-var GK=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
-var GU='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GK;
-var rawMd='';
-var activeDoc='brd';
-var docNames={brd:'BRD 商业需求文档',mrd:'MRD 市场需求文档',prd:'PRD 产品需求文档',okr:'OKR 目标与关键结果',competitor:'竞品分析报告',userstory:'用户故事地图',release:'发版说明'};
-function selectDoc(el){
-  document.querySelectorAll('.sidebar-item').forEach(function(e){e.classList.remove('active')});
-  el.classList.add('active');activeDoc=el.dataset.doc;
-}
-var prompts={
-brd:'你是一位资深产品经理。请为以下产品生成一份 BRD（Business Requirements Document）商业需求文档。\n\n产品名称：{name}\n产品简述：{desc}\n目标用户：{user}\n{extra}\n\nBRD 应包含：\n1. 产品概述与愿景\n2. 市场机会与商业价值\n3. 目标用户与市场规模\n4. 核心功能与商业目标\n5. 收入模式与成本预估\n6. 风险评估与应对策略\n7. 里程碑与资源需求\n\n使用 Markdown 格式，内容详实。',
-mrd:'你是一位资深市场分析师。请为以下产品生成一份 MRD（Market Requirements Document）市场需求文档。\n\n产品名称：{name}\n产品简述：{desc}\n目标用户：{user}\n{extra}\n\nMRD 应包含：\n1. 市场概述与趋势分析\n2. 目标市场细分与规模\n3. 用户需求分析\n4. 竞品市场定位分析\n5. 产品市场机会\n6. 功能优先级建议\n7. 市场进入策略\n\n使用 Markdown 格式。',
-prd:'你是一位资深产品经理。请为以下产品生成一份 PRD（Product Requirements Document）产品需求文档。\n\n产品名称：{name}\n产品简述：{desc}\n目标用户：{user}\n{extra}\n\nPRD 应包含：\n1. 产品概述\n2. 用户画像\n3. 功能需求清单（含优先级）\n4. 功能详细描述（用户故事格式）\n5. 非功能需求（性能/安全/兼容性）\n6. 交互设计要点\n7. 数据埋点需求\n8. 版本规划与里程碑\n\n使用 Markdown 格式。',
-okr:'你是一位资深 OKR 教练。请为以下产品制定一套 OKR（Objectives and Key Results）。\n\n产品名称：{name}\n产品简述：{desc}\n目标用户：{user}\n{extra}\n\nOKR 应包含：\n1. 产品整体目标陈述\n2. 3-4 个 Objective\n3. 每个 Objective 对应 3-4 个 Key Result（可量化）\n4. 每个 KR 的衡量方法和数据来源\n5. 风险与依赖项\n\n使用 Markdown 格式。',
-competitor:'你是一位资深战略分析师。请为以下产品生成一份竞品分析报告。\n\n产品名称：{name}\n产品简述：{desc}\n目标用户：{user}\n{extra}\n\n竞品分析应包含：\n1. 行业竞争格局概述\n2. 主要竞品选择（至少3个）\n3. 功能对比矩阵（表格）\n4. 用户群体对比\n5. 商业模式对比\n6. 优劣势 SWOT 分析\n7. 差异化策略建议\n\n使用 Markdown 格式。',
-userstory:'你是一位资深用户体验设计师。请为以下产品生成一份用户故事地图（User Story Map）。\n\n产品名称：{name}\n产品简述：{desc}\n目标用户：{user}\n{extra}\n\n用户故事地图应包含：\n1. 用户旅程主干（Activity 层级）\n2. 每个 Activity 下的 Task 拆分\n3. 每个 Task 下的 User Story（As a... I want to... So that...）\n4. MVP 范围标注\n5. 优先级排序（P0/P1/P2）\n6. 验收标准（Given/When/Then）\n\n使用 Markdown 格式，用表格呈现主干结构。',
-release:'你是一位资深技术文档工程师。请为以下产品生成一份发版说明（Release Notes）。\n\n产品名称：{name}\n产品简述：{desc}\n目标用户：{user}\n{extra}\n\n发版说明应包含：\n1. 版本号与发布日期\n2. 版本亮点概述\n3. 新增功能列表（含详细描述）\n4. 功能优化与改进\n5. 已知问题与限制\n6. 升级注意事项\n7. 已知 Bug 修复列表\n\n使用 Markdown 格式。'
+
+// ── 状态 ──
+var currentType = 'BRD';
+var fileContent = '';
+var lastResult = '';
+
+// ── 文档类型描述 ──
+var typeDesc = {
+  'BRD': 'BRD 商业需求文档',
+  'MRD': 'MRD 市场需求文档',
+  'PRD': 'PRD 产品需求文档',
+  'OKR': 'OKR 目标与关键结果',
+  '竞品分析': '竞品分析报告',
+  '用户故事': '用户故事地图',
+  '发版说明': '版本发布说明'
 };
-function handleGenerate(){
-  var name=document.getElementById('prodName').value.trim();
-  var desc=document.getElementById('prodDesc').value.trim();
-  var user=document.getElementById('prodUser').value.trim();
-  if(!name){alert('请填写产品名称');return}
-  if(!desc){alert('请填写产品简述');return}
-  var extra=document.getElementById('prodExtra').value.trim();
-  var tpl=prompts[activeDoc];
-  var prompt=tpl.replace('{name}',name).replace('{desc}',desc).replace('{user}',user).replace('{extra}',extra?'补充说明：'+extra:'');
-  doGenerate(prompt);
-}
-async function doGenerate(prompt){
-  var btn=document.getElementById('generateBtn');
-  btn.disabled=true;
-  document.getElementById('skeleton').style.display='flex';
-  document.getElementById('output').style.display='none';
-  document.getElementById('exportBtn').style.display='none';
-  document.getElementById('outputTitle').textContent=docNames[activeDoc]||'文档预览';
-  try{
-    var resp=await fetch(GU,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:8192}}));
-    var data=await resp.json();
-    rawMd=data.candidates[0].content.parts[0].text;
-    document.getElementById('skeleton').style.display='none';
-    document.getElementById('output').style.display='block';
-    document.getElementById('exportBtn').style.display='inline-flex';
-    typeRender(rawMd);
-  }catch(e){
-    document.getElementById('skeleton').style.display='none';
-    document.getElementById('output').style.display='block';
-    document.getElementById('output').innerHTML='<p style="color:#e53e3e">生成失败：'+e.message+'</p>';
-  }
-  btn.disabled=false;
-}
-function typeRender(md){
-  var el=document.getElementById('output');
-  var plain=md.replace(/[#*`_|>\-\[\]()]/g,'').replace(/\n/g,' ');
-  var idx=0;var done=false;var html=mdToHtml(md);
-  function tick(){
-    if(idx<=plain.length){
-      el.innerHTML=mdToHtml(md.substring(0,Math.min(md.length,idx*2)));
-      idx+=3;setTimeout(tick,20);
-    }else if(!done){done=true;el.innerHTML=html}
-  }
-  tick();
-}
-function mdToHtml(md){
-  var lines=md.split('\n');var html='';var inList=false;var inTable=false;var rows=[];
-  for(var i=0;i<lines.length;i++){
-    var l=lines[i];
-    if(l.startsWith('|')){if(!inTable){inTable=true;rows=[]}rows.push(l);continue}
-    else if(inTable){html+=renderTable(rows);inTable=false;rows=[]}
-    if(l.startsWith('### ')){html+='<h3>'+esc(l.slice(4))+'</h3>';continue}
-    if(l.startsWith('## ')){html+='<h2>'+esc(l.slice(3))+'</h2>';continue}
-    if(l.startsWith('# ')){html+='<h1>'+esc(l.slice(2))+'</h1>';continue}
-    if(l.startsWith('- ')||l.startsWith('* ')){if(!inList){html+='<ul>';inList=true}html+='<li>'+inline(esc(l.slice(2)))+'</li>';continue}
-    if(l.match(/^\d+\.\s/)){if(!inList){html+='<ol>';inList=true}html+='<li>'+inline(esc(l.replace(/^\d+\.\s/,'')))+'</li>';continue}
-    if(inList){html+='</ul>';inList=false}
-    if(l.startsWith('> ')){html+='<blockquote>'+inline(esc(l.slice(2)))+'</blockquote>';continue}
-    if(l.trim()===''){continue}
-    html+='<p>'+inline(esc(l))+'</p>';
-  }
-  if(inTable)html+=renderTable(rows);
-  if(inList)html+='</ul>';
-  return html;
-}
-function renderTable(rows){
-  if(rows.length<2)return'';var h='<table>';
-  var hdrs=rows[0].split('|').filter(function(c){return c.trim()});
-  h+='<tr>';hdrs.forEach(function(c){h+='<th>'+esc(c.trim())+'</th>'});h+='</tr>';
-  for(var i=2;i<rows.length;i++){var cells=rows[i].split('|').filter(function(c){return c.trim()});h+='<tr>';cells.forEach(function(c){h+='<td>'+inline(esc(c.trim()))+'</td>'});h+='</tr>'}
-  h+='</table>';return h;
-}
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function inline(s){return s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>')}
-function exportMarkdown(){var b=new Blob([rawMd],{type:'text/markdown'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=activeDoc+'-document.md';a.click()}
 
-var docFileContent = '';
-function handleDocFile(input) {
-  const file = input.files[0];
+// ── 各类型 Prompt ──
+var prompts = {
+  'BRD': function(n,d,t,e,f) {
+    return '你是资深产品负责人，帮我写一份完整的 BRD（商业需求文档）。\n\n产品：' + n + '\n简述：' + d + '\n目标用户：' + t + (e?'\n补充：'+e:'') + (f?'\n参考资料：'+f:'') + '\n\n请按以下结构输出（Markdown）：\n\n# BRD：' + n + '\n\n## 一、商业背景与机会\n（市场现状、痛点、时机）\n\n## 二、产品愿景与目标\n（一句话愿景 + 阶段性目标）\n\n## 三、目标用户\n（用户画像、核心需求、规模估算）\n\n## 四、核心业务需求\n（按优先级列出，P0/P1/P2 标注）\n\n## 五、商业模式\n（变现路径、关键指标）\n\n## 六、成功指标（KPI）\n（可量化的关键指标，含目标值）\n\n## 七、风险与应对\n（主要风险点 + 应对策略）';
+  },
+  'MRD': function(n,d,t,e,f) {
+    return '你是资深产品经理，帮我写一份完整的 MRD（市场需求文档）。\n\n产品：' + n + '\n简述：' + d + '\n目标用户：' + t + (e?'\n补充：'+e:'') + (f?'\n参考资料：'+f:'') + '\n\n请输出（Markdown）：\n\n# MRD：' + n + '\n\n## 一、市场背景\n（行业现状、规模、增速、趋势）\n\n## 二、用户研究\n（目标用户画像、核心痛点、未满足需求）\n\n## 三、竞品格局\n（主要竞品对比表：功能/定价/优劣势）\n\n## 四、市场机会\n（差异化切入点、竞争优势）\n\n## 五、产品定位\n（核心价值主张、目标市场定位）\n\n## 六、市场策略\n（GTM 策略、渠道、用户获取）\n\n## 七、市场目标\n（可量化的市场目标，时间节点）';
+  },
+  'PRD': function(n,d,t,e,f) {
+    return '你是资深产品经理，帮我写一份完整的 PRD（产品需求文档）。\n\n产品：' + n + '\n简述：' + d + '\n目标用户：' + t + (e?'\n补充：'+e:'') + (f?'\n参考资料：'+f:'') + '\n\n请输出（Markdown）：\n\n# PRD：' + n + '\n\n## 一、背景与目标\n（为什么做、解决什么问题、预期效果）\n\n## 二、用户故事\n（As a [用户], I want to [做什么], So that [获得什么]，列出 3-5 条核心用户故事）\n\n## 三、功能需求\n### 3.1 核心功能（P0）\n（必须上线的功能，含主流程描述）\n### 3.2 重要功能（P1）\n### 3.3 边界说明\n（明确不做什么）\n\n## 四、交互说明\n（关键页面的交互逻辑，用文字描述）\n\n## 五、非功能需求\n（性能、安全、兼容性要求）\n\n## 六、验收标准\n（每个核心功能的验收 Checklist）\n\n## 七、上线计划\n（里程碑节点）';
+  },
+  'OKR': function(n,d,t,e,f) {
+    return '你是资深产品负责人，帮我为以下产品制定一份季度 OKR。\n\n产品：' + n + '\n简述：' + d + '\n目标用户：' + t + (e?'\n补充说明：'+e:'') + (f?'\n参考：'+f:'') + '\n\n请输出（Markdown）：\n\n# ' + n + ' 季度 OKR\n\n> 说明：O 为质性目标（鼓舞人心），KR 为可量化结果（挑战但可达）\n\n## Objective 1：[核心增长目标]\n\n| Key Result | 当前值 | 目标值 | 截止日期 |\n|---|---|---|---|\n| KR1.1 | - | - | Q末 |\n| KR1.2 | - | - | Q末 |\n| KR1.3 | - | - | Q末 |\n\n**关键举措**：\n- 举措1\n- 举措2\n\n## Objective 2：[产品体验目标]\n\n（同上格式）\n\n## Objective 3：[商业化/运营目标]\n\n（同上格式）\n\n---\n\n## OKR 使用说明\n（如何 check-in、复盘建议、注意事项）';
+  },
+  '竞品分析': function(n,d,t,e,f) {
+    return '你是资深产品策略分析师，帮我写一份竞品分析报告。\n\n我们的产品：' + n + '\n产品简述：' + d + '\n目标用户：' + t + (e?'\n补充：'+e:'') + (f?'\n参考资料：'+f:'') + '\n\n请输出（Markdown）：\n\n# 竞品分析报告：' + n + '\n\n## 一、分析目的与范围\n\n## 二、竞品选取（3-4 个）\n（说明为什么选这几个竞品）\n\n## 三、多维度对比\n\n| 维度 | ' + n + ' | 竞品A | 竞品B | 竞品C |\n|---|---|---|---|---|\n| 核心定位 | | | | |\n| 目标用户 | | | | |\n| 核心功能 | | | | |\n| 差异功能 | | | | |\n| 定价模式 | | | | |\n| 用户规模 | | | | |\n| 优势 | | | | |\n| 劣势 | | | | |\n\n## 四、各竞品深度分析\n（对每个竞品：用户体验评测、增长策略、商业模式）\n\n## 五、SWOT 分析（我们的产品）\n\n## 六、差异化机会\n（基于竞品分析发现的 3 个核心机会点）\n\n## 七、策略建议';
+  },
+  '用户故事': function(n,d,t,e,f) {
+    return '你是资深产品经理，帮我为以下产品写一份用户故事地图。\n\n产品：' + n + '\n简述：' + d + '\n目标用户：' + t + (e?'\n补充：'+e:'') + (f?'\n参考：'+f:'') + '\n\n请输出（Markdown）：\n\n# 用户故事地图：' + n + '\n\n## 用户画像\n（描述核心用户，含痛点和目标）\n\n## 核心旅程（主干）\n（用户完成核心任务的主要步骤，横向排列）\n\n## 用户故事详细列表\n\n按「活动 → 任务 → 用户故事」三层结构输出：\n\n### 活动一：[名称]\n\n**任务 1.1**：[任务名]\n- US-001：As a [用户], I want to [行为], So that [价值]\n  - 验收标准：Given [前提], When [操作], Then [结果]\n  - 优先级：P0 | 估点：3\n- US-002：...\n\n（重复输出所有活动和任务，覆盖完整使用流程）\n\n## 发布规划建议\n（哪些故事放 MVP，哪些放 v1.1，哪些放 Backlog）';
+  },
+  '发版说明': function(n,d,t,e,f) {
+    return '你是资深产品经理，帮我写一份产品版本发布说明（Release Notes）。\n\n产品：' + n + '\n版本背景：' + d + '\n目标用户：' + t + (e?'\n本次版本重点：'+e:'') + (f?'\n参考：'+f:'') + '\n\n请输出（Markdown）：\n\n# ' + n + ' 版本发布说明\n\n> 发布日期：[日期] | 版本号：vX.X.X\n\n## 本次更新亮点\n（2-3 句话概括核心价值）\n\n## 新功能\n\n### 功能一：[功能名]\n**背景**：（为什么做）\n**内容**：（做了什么）\n**使用方式**：（如何使用）\n**影响范围**：（哪些用户受益）\n\n（重复输出 3-5 个新功能）\n\n## 优化与改进\n（列表形式，每条一句话）\n\n## Bug 修复\n（列表，含影响范围）\n\n## 已知问题\n（正在处理的问题，预期修复时间）\n\n## 升级注意事项\n（如有数据迁移、接口变更、需要用户操作的事项）\n\n## 下个版本预告';
+  }
+};
+
+// ── 文件上传 ──
+document.getElementById('fileInput').addEventListener('change', function() {
+  var file = this.files[0];
   if (!file) return;
-  document.getElementById('docFileName').textContent = '已选择：' + file.name;
-  const reader = new FileReader();
-  reader.onload = e => { docFileContent = e.target.result.slice(0, 3000); };
+  document.getElementById('ufn').textContent = '已选择：' + file.name;
+  var reader = new FileReader();
+  reader.onload = function(e) { fileContent = e.target.result.slice(0, 3000); };
   reader.readAsText(file, 'utf-8');
+});
+
+// ── 类型切换 ──
+function selectType(el) {
+  document.querySelectorAll('.sb-item').forEach(function(i) { i.classList.remove('active'); });
+  el.classList.add('active');
+  currentType = el.getAttribute('data-type');
+  document.getElementById('phSub').textContent = '当前：' + typeDesc[currentType];
 }
 
+// ── 知识库折叠 ──
+function toggleKb(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ── 打字渲染 ──
+function typeRender(text, el) {
+  lastResult = text;
+  var i = 0;
+  var iv = setInterval(function() {
+    i = Math.min(i + 5, text.length);
+    el.innerHTML = '<div class="dtype-badge">' + currentType + '</div><div class="md-out">' + marked.parse(text.slice(0, i)) + '</div>' + (i < text.length ? '<span class="cursor2"></span>' : '');
+    if (i >= text.length) {
+      clearInterval(iv);
+      el.innerHTML = '<div class="dtype-badge">' + currentType + '</div><div class="md-out">' + marked.parse(text) + '</div>';
+      el.closest('.panel').querySelector('.ebar') && el.closest('.panel').querySelector('.ebar').remove();
+      el.closest('.panel').insertAdjacentHTML('beforeend',
+        '<div class="ebar"><span class="ai-badge">AI 生成 · ' + currentType + '</span>' +
+        '<button class="ebtn" onclick="exportMd()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出 Markdown</button></div>'
+      );
+    }
+  }, 16);
+}
+
+// ── 主生成函数 ──
+async function generate() {
+  var name = document.getElementById('pname').value.trim();
+  var desc = document.getElementById('pdesc').value.trim();
+  var target = document.getElementById('ptarget').value.trim();
+  var extra = document.getElementById('pextra').value.trim();
+
+  if (!name) { document.getElementById('pname').focus(); document.getElementById('pname').style.borderColor = '#ff3b30'; return; }
+  if (!desc) { document.getElementById('pdesc').focus(); document.getElementById('pdesc').style.borderColor = '#ff3b30'; return; }
+  document.getElementById('pname').style.borderColor = '';
+  document.getElementById('pdesc').style.borderColor = '';
+
+  var btn = document.getElementById('gbtn');
+  var ob = document.getElementById('ob');
+  var sub = document.getElementById('outSub');
+
+  btn.disabled = true;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>生成中…';
+  sub.textContent = 'AI 正在撰写 ' + currentType + '…';
+  ob.innerHTML = '<div class="thinking"><div class="dots"><span></span><span></span><span></span></div><span>AI 正在生成 ' + currentType + '，请稍候…</span></div>';
+
+  var promptFn = prompts[currentType];
+  var prompt = promptFn(name, desc, target || '未指定', extra, fileContent);
+
+  try {
+    var text = await callAI(prompt);
+    sub.textContent = currentType + ' 已生成';
+    typeRender(text, ob);
+  } catch(err) {
+    ob.innerHTML = '<div style="padding:40px;text-align:center;color:var(--soft);font-size:14px">' +
+      '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#aeaeb2" stroke-width="1.5" style="display:block;margin:0 auto 12px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+      err.message + '</div>';
+    sub.textContent = '生成失败';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>重新生成';
+}
+
+function exportMd() {
+  if (!lastResult) return;
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([lastResult], {type: 'text/markdown'}));
+  a.download = currentType + '-' + (document.getElementById('pname').value || 'doc') + '.md';
+  a.click();
+}
 </script>
 </body>
 </html>
