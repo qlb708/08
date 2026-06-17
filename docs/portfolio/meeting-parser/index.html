@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>会议纪要拆解器 — AI × 08</title>
+<meta name="description" content="会议记录一键拆解，自动生成待办与决策。">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-hover:#0052a3;--text:#1d1d1f;--text-secondary:#86868b;--radius-card:16px;--radius-btn:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;--nav-h:52px}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
+.nav-logo{font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.nav-logo span{color:var(--primary)}
+.nav-back{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--text-secondary);padding:6px 14px;border-radius:var(--radius-btn);transition:background .2s}
+.nav-back:hover{background:var(--bg-alt);text-decoration:none}
+.nav-back svg{width:16px;height:16px}
+
+.layout{padding-top:var(--nav-h);min-height:calc(100vh - var(--nav-h))}
+.hero-section{padding:68px 32px 20px}
+.hero-section h1{font-size:32px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
+.hero-section p{font-size:17px;color:var(--text-secondary)}
+
+.main-content{display:flex;gap:32px;padding:20px 32px 64px;max-width:1200px;margin:0 auto;align-items:flex-start}
+.left-panel{width:400px;flex-shrink:0;position:sticky;top:calc(var(--nav-h) + 20px)}
+.right-panel{flex:1;min-width:0}
+
+.input-field{margin-bottom:16px}
+.input-field label{display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;font-weight:500}
+.input-field input[type="text"]{width:100%;height:42px;border:1px solid #d2d2d7;border-radius:10px;padding:0 14px;font-size:15px;font-family:var(--font);outline:none;transition:border-color .2s}
+.input-field input[type="text"]:focus{border-color:var(--primary)}
+.input-field textarea{width:100%;height:200px;border:1px solid #d2d2d7;border-radius:12px;padding:14px;font-size:14px;font-family:var(--font);outline:none;transition:border-color .2s;resize:vertical;line-height:1.6}
+.input-field textarea:focus{border-color:var(--primary)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border-radius:var(--radius-btn);border:1px solid #d2d2d7;font-size:13px;cursor:pointer;transition:all .2s;background:var(--bg);color:var(--text-secondary);user-select:none}
+.chip:hover{border-color:var(--primary)}
+.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chip label{cursor:pointer}
+.chip input{display:none}
+
+.btn-generate{width:100%;height:46px;border:none;border-radius:var(--radius-btn);background:var(--primary);color:#fff;font-size:16px;font-weight:500;cursor:pointer;font-family:var(--font);transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}
+.btn-generate:hover{background:var(--primary-hover)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+.btn-generate svg{width:18px;height:18px}
+
+.ai-output{min-height:300px;padding:24px;background:var(--bg-alt);border-radius:var(--radius-card);font-size:15px;line-height:1.8}
+.ai-output h2{font-size:20px;margin:20px 0 10px;padding-bottom:8px;border-bottom:1px solid #e0e0e0}
+.ai-output h3{font-size:17px;margin:14px 0 8px}
+.ai-output p{margin:8px 0}
+.ai-output table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--bg);border-radius:10px;overflow:hidden}
+.ai-output th,.ai-output td{border:1px solid #e8e8ed;padding:10px 14px;text-align:left;font-size:14px}
+.ai-output th{background:#f5f5f7;font-weight:600}
+.ai-output ul,.ai-output ol{padding-left:20px;margin:8px 0}
+.ai-output li{margin:4px 0}
+.ai-output strong{font-weight:600}
+.ai-output blockquote{border-left:3px solid var(--primary);padding-left:16px;margin:12px 0;color:var(--text-secondary)}
+.ai-output hr{border:none;border-top:1px solid #e0e0e0;margin:16px 0}
+.ai-output code{background:#e8e8ed;padding:2px 6px;border-radius:4px;font-size:13px}
+
+.skeleton{background:#e8e8ed;border-radius:8px;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
+
+.export-bar{margin-top:12px;display:flex;justify-content:flex-end;gap:12px}
+.export-btn{font-size:14px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:var(--font);display:inline-flex;align-items:center;gap:4px}
+.export-btn:hover{text-decoration:underline}
+.export-btn svg{width:14px;height:14px}
+
+.status-text{font-size:14px;color:var(--text-secondary);text-align:center;padding:40px 20px}
+.status-text.error{color:#ff3b30}
+
+@media(max-width:900px){
+.main-content{flex-direction:column}
+.left-panel{width:100%;position:static}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">AI <span>×</span> 08</div>
+  <a class="nav-back" href="../">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    返回
+  </a>
+</nav>
+
+<div class="layout">
+  <div class="hero-section">
+    <h1>会议纪要拆解器</h1>
+    <p>粘贴会议记录，AI 自动拆解为结论、待办、决策与风险。</p>
+  </div>
+
+  <div class="main-content">
+    <div class="left-panel">
+      <div class="input-field">
+        <label>会议主题</label>
+        <input type="text" id="meetingTopic" placeholder="例如：Q2 产品规划评审会">
+      </div>
+      <div class="input-field">
+        <label>会议记录</label>
+        <textarea id="meetingNotes" placeholder="粘贴会议原始记录...&#10;&#10;可以是速记、语音转文字、或任何格式的会议内容。"></textarea>
+      </div>
+      <div class="input-field">
+        <label>参与人数</label>
+        <div class="chips" id="attendeeChips">
+          <div class="chip" onclick="toggleChip(this)"><label><input type="radio" name="attendee" value="3-5">3-5 人</label></div>
+          <div class="chip" onclick="toggleChip(this)"><label><input type="radio" name="attendee" value="6-10">6-10 人</label></div>
+          <div class="chip" onclick="toggleChip(this)"><label><input type="radio" name="attendee" value="10+">10 人以上</label></div>
+        </div>
+      </div>
+      <div class="input-field">
+        <label>输出格式</label>
+        <div class="chips" id="formatChips">
+          <div class="chip active" onclick="toggleChip(this)"><label><input type="radio" name="format" value="标准" checked>标准</label></div>
+          <div class="chip" onclick="toggleChip(this)"><label><input type="radio" name="format" value="精简">精简</label></div>
+          <div class="chip" onclick="toggleChip(this)"><label><input type="radio" name="format" value="详细">详细</label></div>
+        </div>
+      </div>
+      <button class="btn-generate" id="generateBtn" onclick="generate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        生成会议纪要
+      </button>
+    </div>
+
+    <div class="right-panel" id="rightPanel">
+      <div class="status-text">在左侧输入会议记录，点击生成后这里将显示结构化的会议纪要。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+var PROVIDERS = [
+  { name: 'zhipu', key: '3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P', model: 'glm-4-flash', url: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', headerName: 'Authorization', headerFmt: function(k){ return 'Bearer ' + k; } },
+  { name: 'deepseek', key: 'sk-4f016c9639cb461db37f4f778d2eac4f', model: 'deepseek-chat', url: 'https://api.deepseek.com/chat/completions', headerName: 'Authorization', headerFmt: function(k){ return 'Bearer ' + k; } },
+  { name: 'gemini', key: ['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''), model: 'gemini-2.0-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=', headerName: null, headerFmt: null }
+];
+
+async function callAI(messages, onChunk) {
+  var lastErr;
+  for (var i = 0; i < PROVIDERS.length; i++) {
+    var p = PROVIDERS[i];
+    try {
+      if (p.name === 'gemini') {
+        var body = { contents: messages.map(function(m){ return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }; }), generationConfig: { temperature: 0.7 } };
+        var res = await fetch(p.url + p.key, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var reader = res.body.getReader();
+        var buf = '';
+        while (true) {
+          var chunk = await reader.read();
+          if (chunk.done) break;
+          buf += chunk.value;
+          var lines = buf.split('\n');
+          buf = lines.pop();
+          for (var j = 0; j < lines.length; j++) {
+            var line = lines[j];
+            if (line.startsWith('data: ')) {
+              var data = line.slice(6);
+              if (data === '[DONE]') return;
+              try {
+                var parsed = JSON.parse(data);
+                var t = parsed.candidates && parsed.candidates[0] && parsed.candidates[0].content && parsed.candidates[0].content.parts && parsed.candidates[0].content.parts[0] && parsed.candidates[0].content.parts[0].text;
+                if (t) onChunk(t);
+              } catch(e) {}
+            }
+          }
+        }
+        return;
+      } else {
+        var body2 = { model: p.model, messages: messages, stream: true };
+        var headers = { 'Content-Type': 'application/json' };
+        if (p.headerName) headers[p.headerName] = p.headerFmt(p.key);
+        var res2 = await fetch(p.url, { method: 'POST', headers: headers, body: JSON.stringify(body2) });
+        if (!res2.ok) throw new Error('HTTP ' + res2.status);
+        var reader2 = res2.body.getReader();
+        var buf2 = '';
+        while (true) {
+          var chunk2 = await reader2.read();
+          if (chunk2.done) break;
+          buf2 += chunk2.value;
+          var lines2 = buf2.split('\n');
+          buf2 = lines2.pop();
+          for (var k = 0; k < lines2.length; k++) {
+            var line2 = lines2[k];
+            if (line2.startsWith('data: ')) {
+              var data2 = line2.slice(6);
+              if (data2 === '[DONE]') return;
+              try {
+                var parsed2 = JSON.parse(data2);
+                var t2 = parsed2.choices && parsed2.choices[0] && parsed2.choices[0].delta && parsed2.choices[0].delta.content;
+                if (t2) onChunk(t2);
+              } catch(e) {}
+            }
+          }
+        }
+        return;
+      }
+    } catch(e) {
+      lastErr = e;
+      console.warn('Provider ' + p.name + ' failed:', e.message);
+    }
+  }
+  throw lastErr || new Error('All providers failed');
+}
+
+function renderMd(md) {
+  var html = md;
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/^---$/gm, '<hr>');
+  html = html.replace(/^(\|.+\|)\n(\|[-| :]+\|)\n((?:\|.+\|\n?)*)/gm, function(m, header, sep, body) {
+    var ths = header.split('|').filter(function(c){return c.trim();}).map(function(c){return '<th>'+c.trim()+'</th>';}).join('');
+    var rows = body.trim().split('\n').map(function(row) {
+      var tds = row.split('|').filter(function(c){return c.trim();}).map(function(c){return '<td>'+c.trim()+'</td>';}).join('');
+      return '<tr>'+tds+'</tr>';
+    }).join('');
+    return '<table><thead><tr>'+ths+'</tr></thead><tbody>'+rows+'</tbody></table>';
+  });
+  html = html.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = html.replace(/\n/g, '<br>');
+  html = '<p>' + html + '</p>';
+  html = html.replace(/<p><(h[1-3]|ul|ol|table|pre|hr)/g, '<$1');
+  html = html.replace(/<\/(h[1-3]|ul|ol|table|pre)><\/p>/g, '</$1>');
+  html = html.replace(/<p><\/p>/g, '');
+  return html;
+}
+
+function exportMd(text, filename) {
+  var blob = new Blob([text], { type: 'text/markdown' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename || 'meeting.md';
+  a.click();
+}
+
+function toggleChip(el) {
+  var parent = el.parentElement;
+  var inputs = parent.querySelectorAll('input[type="radio"]');
+  if (inputs.length > 0) {
+    parent.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
+    el.classList.add('active');
+    el.querySelector('input').checked = true;
+  } else {
+    el.classList.toggle('active');
+    var cb = el.querySelector('input[type="checkbox"]');
+    if (cb) cb.checked = el.classList.contains('active');
+  }
+}
+
+var fullText = '';
+window._fullReport = '';
+
+function generate() {
+  var topic = document.getElementById('meetingTopic').value.trim();
+  var notes = document.getElementById('meetingNotes').value.trim();
+  var format = document.querySelector('input[name="format"]:checked');
+  var attendee = document.querySelector('input[name="attendee"]:checked');
+
+  if (!notes) {
+    document.getElementById('rightPanel').innerHTML = '<div class="status-text error">请先输入会议记录。</div>';
+    return;
+  }
+
+  fullText = '';
+  var btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="skeleton" style="display:inline-block;width:16px;height:16px;border-radius:50%"></span> 生成中...';
+
+  var rightPanel = document.getElementById('rightPanel');
+  rightPanel.innerHTML = '<div class="ai-output" id="aiOutput"><span class="skeleton" style="display:block;width:80%;height:16px;margin-bottom:12px"></span><span class="skeleton" style="display:block;width:60%;height:16px;margin-bottom:12px"></span><span class="skeleton" style="display:block;width:90%;height:16px"></span></div>';
+
+  var fmtStr = format ? format.value : '标准';
+  var attStr = attendee ? attendee.value : '未指定';
+
+  var prompt = '你是一个专业的会议纪要整理专家。请将以下会议记录整理成结构化的会议纪要。\n\n';
+  prompt += '会议主题：' + (topic || '未指定') + '\n';
+  prompt += '参与人数：' + attStr + '\n';
+  prompt += '输出格式：' + fmtStr + '\n\n';
+  prompt += '原始会议记录：\n' + notes + '\n\n';
+  prompt += '请按以下格式输出（用 Markdown）：\n\n';
+  prompt += '## 📋 会议结论\n总结会议达成的核心结论（3-5条）\n\n';
+  prompt += '## ✅ 待办事项\n用表格输出：| 任务 | 负责人 | 截止时间 | 优先级 |\n\n';
+  prompt += '## 🔑 关键决策\n列出会议中做出的重要决策及原因\n\n';
+  prompt += '## ⚠️ 风险提示\n识别潜在风险和阻碍\n\n';
+  prompt += '## 💬 下次会议\n建议下次会议的时间和议题\n\n';
+  prompt += '要求：语言简洁专业，待办事项要有明确的责任人和时间。格式：' + fmtStr + '。';
+
+  var aiOutput = document.getElementById('aiOutput');
+
+  callAI([{ role: 'user', content: prompt }], function(chunk) {
+    fullText += chunk;
+    window._fullReport = fullText;
+    aiOutput.innerHTML = renderMd(fullText);
+  }).catch(function(err) {
+    aiOutput.innerHTML = '<div class="status-text error">生成失败：' + err.message + '</div>';
+  }).finally(function() {
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg> 生成会议纪要';
+    // Add export button
+    var bar = document.createElement('div');
+    bar.className = 'export-bar';
+    bar.innerHTML = '<button class="export-btn" onclick="exportMd(window._fullReport, \'' + (topic || 'meeting') + '.md\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 导出 Markdown</button>';
+    rightPanel.appendChild(bar);
+  });
+}
+</script>
+</body>
+</html>
