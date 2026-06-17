@@ -73,6 +73,24 @@ nav a.back:hover{color:var(--text)}
 .modal-btns .btn-generate{flex:1}
 .modal-btns .btn-cancel{flex:1;padding:14px;border:1.5px solid #d2d2d7;border-radius:var(--btn-r);background:var(--bg);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
 .modal-btns .btn-cancel:hover{border-color:var(--text)}
+
+.upload-zone{border:1.5px dashed rgba(0,102,204,.3);border-radius:12px;padding:12px 14px;background:rgba(0,102,204,.03);cursor:pointer;transition:all .2s;text-align:center;margin-bottom:14px}
+.upload-zone:hover{border-color:var(--primary);background:rgba(0,102,204,.06)}
+.upload-zone input{display:none}
+.upload-zone label{cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--primary);font-weight:600}
+.upload-zone label svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+.upload-zone .fname{font-size:12px;color:var(--text-soft);margin-top:4px}
+.kb-bar{margin-top:20px;border-top:1px solid var(--border);padding-top:16px}
+.kb-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.kb-title svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
+.kb-cards{display:flex;flex-direction:column;gap:8px}
+.kb-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer}
+.kb-card-hd{padding:9px 13px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;background:var(--bg-soft);transition:background .2s}
+.kb-card-hd:hover{background:#ebebf0}
+.kb-card-hd .kb-arr{width:13px;height:13px;fill:none;stroke:var(--text-muted);stroke-width:2;transition:transform .25s}
+.kb-card.open .kb-arr{transform:rotate(90deg)}
+.kb-card-body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 13px;font-size:12px;color:var(--text-soft);line-height:1.6}
+.kb-card.open .kb-card-body{max-height:200px;padding:10px 13px}
 </style>
 </head>
 <body>
@@ -91,6 +109,33 @@ nav a.back:hover{color:var(--text)}
     <div class="form-group"><label>目标用户</label><input id="targetUser" placeholder="例如：25-35岁互联网从业者"/></div>
     <div class="form-group"><label>行业赛道</label><div class="chip-group" id="industryChips"><div class="chip" data-v="电商">电商</div><div class="chip" data-v="社交">社交</div><div class="chip" data-v="SaaS">SaaS</div><div class="chip" data-v="AI/大模型">AI/大模型</div><div class="chip" data-v="教育">教育</div><div class="chip" data-v="健康">健康</div><div class="chip" data-v="金融">金融</div><div class="chip" data-v="内容社区">内容社区</div></div></div>
     <div class="form-group"><label>研究目的（选填）</label><textarea id="researchPurpose" placeholder="例如：了解目标用户的核心痛点和未被满足的需求"></textarea></div>
+    
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept=".txt,.md,.csv,.json" onchange="handleFile(this)">
+      <label for="fileInput">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        上传参考文件（可选）
+      </label>
+      <div class="fname" id="fileName">支持 .txt .md .csv .json，内容将自动注入 Prompt</div>
+    </div>
+    <div class="kb-bar">
+      <div class="kb-title"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>用研方法知识库</div>
+      <div class="kb-cards">
+        <div class="kb-card" onclick="toggleKb(this)">
+          <div class="kb-card-hd">访谈法（深度访谈）<svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="kb-card-body">适用场景：探索用户动机、痛点、决策路径。<br>关键技巧：用「为什么」追问，避免封闭式问题，单次访谈30-60分钟，样本5-8人即可得到饱和信息。<br>输出：用户洞察报告、用户故事。</div>
+        </div>
+        <div class="kb-card" onclick="toggleKb(this)">
+          <div class="kb-card-hd">可用性测试<svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="kb-card-body">适用场景：验证设计方案、发现交互问题。<br>方法：让用户在真实环境完成任务，观察而非引导。5个用户能发现85%的可用性问题（Nielsen定律）。<br>输出：问题清单 + 优先级矩阵。</div>
+        </div>
+        <div class="kb-card" onclick="toggleKb(this)">
+          <div class="kb-card-hd">NPS + 问卷调研<svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="kb-card-body">适用场景：量化用户满意度、大样本验证假设。<br>NPS基准：60+为优秀，40-60良好，<40需关注。<br>问卷设计原则：单题只问一个维度，选项互斥穷举，总题数≤15道。</div>
+        </div>
+      </div>
+    </div>
+
     <button class="btn-generate" id="generateBtn" onclick="handleGenerate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>生成报告</button>
   </div>
   <div class="panel-right">
@@ -253,6 +298,20 @@ function exportMarkdown(){
   a.download='ux-research-report.md';
   a.click();
 }
+
+var fileContent = '';
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('fileName').textContent = '已选择：' + file.name;
+  const reader = new FileReader();
+  reader.onload = e => { fileContent = e.target.result.slice(0, 3000); };
+  reader.readAsText(file, 'utf-8');
+}
+function toggleKb(card) {
+  card.classList.toggle('open');
+}
+
 </script>
 </body>
 </html>
