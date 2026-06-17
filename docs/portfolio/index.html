@@ -8,130 +8,158 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--text:#1d1d1f;--text-secondary:#6e6e73;
-  --card-bg:#fff;--card-border:rgba(0,0,0,.06);--card-shadow:0 2px 20px rgba(0,0,0,.08);
-  --card-shadow-hover:0 8px 30px rgba(0,0,0,.12);--radius:18px;--radius-pill:999px;
+  --bg:#fff;--bg-alt:#f5f5f7;--bg-deep:#ebebed;
+  --primary:#0066cc;--primary-soft:rgba(0,102,204,.08);--primary-mid:rgba(0,102,204,.15);
+  --text:#1d1d1f;--text-2:#3d3d3f;--text-soft:#6e6e73;--text-muted:#aeaeb2;
+  --border:rgba(0,0,0,.06);--border-strong:rgba(0,0,0,.1);
+  --card-shadow:0 2px 16px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
+  --card-shadow-hover:0 12px 40px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --radius:20px;--radius-sm:14px;--pill:999px;
   --font:-apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Display","Helvetica Neue",sans-serif;
 }
-html{scroll-behavior:smooth;font-size:16px}
+html{scroll-behavior:smooth}
 body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
 a{color:var(--primary);text-decoration:none}
-a:hover{text-decoration:underline}
-.container{max-width:1080px;margin:0 auto;padding:0 24px}
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:all .3s ease}
-nav.scrolled{background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border)}
-.nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
-.nav-logo{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.02em}
-.nav-logo span{color:var(--primary)}
-.nav-link{font-size:14px;color:var(--text-secondary);transition:color .2s}
-.nav-link:hover{color:var(--primary);text-decoration:none}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0;transition:all .3s}
+nav.scrolled{background:rgba(255,255,255,.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 32px;height:52px;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.nav-logo em{color:var(--primary);font-style:normal}
+.nav-link{font-size:14px;color:var(--text-soft);transition:color .2s;display:flex;align-items:center;gap:4px}
+.nav-link:hover{color:var(--text)}
+.nav-link svg{opacity:.6}
 
-/* HERO */
-.hero{padding:160px 0 100px;text-align:center;background:var(--bg)}
-.hero-tag{display:inline-block;font-size:14px;font-weight:600;color:var(--text-secondary);background:var(--bg-alt);padding:6px 16px;border-radius:var(--radius-pill);margin-bottom:24px;letter-spacing:.02em}
-.hero h1{font-size:clamp(48px,6vw,80px);font-weight:800;line-height:1.08;letter-spacing:-.04em;color:var(--text);margin-bottom:24px}
-.hero h1 br{display:block}
-.hero p{font-size:17px;color:var(--text-secondary);max-width:520px;margin:0 auto 40px;line-height:1.6}
-.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--radius-pill);font-size:17px;font-weight:600;cursor:pointer;transition:all .2s ease;border:none;font-family:var(--font)}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:#0055aa;text-decoration:none;transform:scale(1.02)}
-.btn-ghost{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
-.btn-ghost:hover{background:rgba(0,102,204,.06);text-decoration:none}
+/* ── HERO ── */
+.hero{padding:140px 0 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(0,102,204,.06) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--primary);background:var(--primary-soft);padding:6px 16px;border-radius:var(--pill);margin-bottom:28px;border:1px solid rgba(0,102,204,.12)}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero h1{font-size:clamp(44px,6.5vw,88px);font-weight:800;line-height:1.06;letter-spacing:-.05em;color:var(--text);margin-bottom:24px}
+.hero h1 .accent{color:var(--primary)}
+.hero-sub{font-size:19px;color:var(--text-soft);max-width:500px;margin:0 auto 48px;line-height:1.55;font-weight:400}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--pill);font-size:16px;font-weight:600;cursor:pointer;transition:all .22s ease;border:none;font-family:var(--font);letter-spacing:-.01em}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 14px rgba(0,102,204,.3)}
+.btn-primary:hover{background:#0055aa;box-shadow:0 6px 20px rgba(0,102,204,.4);transform:translateY(-1px)}
+.btn-ghost{background:rgba(0,0,0,.04);color:var(--text);border:1px solid var(--border-strong)}
+.btn-ghost:hover{background:rgba(0,0,0,.08);transform:translateY(-1px)}
 
-/* STATS */
-.stats{padding:80px 0;background:var(--bg-alt)}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;text-align:center}
-.stat-num{font-size:clamp(48px,5vw,72px);font-weight:800;color:var(--text);letter-spacing:-.04em;line-height:1}
-.stat-num span{font-size:clamp(28px,3vw,48px);font-weight:600}
-.stat-label{font-size:15px;color:var(--text-secondary);margin-top:8px;font-weight:500}
+/* live ticker in hero */
+.hero-live{margin:48px auto 0;max-width:640px;background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;text-align:left}
+.hero-live-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.hero-live-label::before{content:'';width:6px;height:6px;border-radius:50%;background:#34c759;animation:pulse 1.5s infinite}
+.hero-live-text{font-size:14px;color:var(--text-2);line-height:1.7;font-family:"SF Mono",Menlo,Monaco,monospace;min-height:42px}
+.cursor-blink{animation:blink .7s infinite;color:var(--primary)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-/* SECTION */
-.section{padding:120px 0}
+/* ── STATS ── */
+.stats{padding:72px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center}
+.stats-grid .stat{padding:8px 0;border-right:1px solid var(--border)}
+.stats-grid .stat:last-child{border-right:none}
+.stat-num{font-size:clamp(36px,4vw,56px);font-weight:800;color:var(--text);letter-spacing:-.04em;line-height:1}
+.stat-num sup{font-size:.5em;font-weight:600;vertical-align:super}
+.stat-label{font-size:14px;color:var(--text-soft);margin-top:6px;font-weight:500}
+
+/* ── SECTION ── */
+.section{padding:100px 0}
 .section-alt{background:var(--bg-alt)}
-.section-title{font-size:clamp(28px,3.5vw,48px);font-weight:700;text-align:center;margin-bottom:16px;letter-spacing:-.03em}
-.section-desc{text-align:center;font-size:17px;color:var(--text-secondary);max-width:560px;margin:0 auto 64px;line-height:1.6}
+.section-label{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;display:block}
+.section-title{font-size:clamp(26px,3.5vw,44px);font-weight:800;letter-spacing:-.035em;margin-bottom:14px;color:var(--text)}
+.section-desc{font-size:17px;color:var(--text-soft);max-width:520px;line-height:1.6;margin-bottom:56px}
+.section-head{margin-bottom:56px}
 
-/* CARDS */
+/* ── CARDS GRID ── */
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{background:var(--card-bg);border-radius:var(--radius);padding:22px;border:1px solid var(--card-border);box-shadow:var(--card-shadow);transition:all .35s cubic-bezier(.25,.46,.45,.94);position:relative;overflow:hidden;cursor:pointer}
-.card:hover{transform:translateY(-5px);box-shadow:var(--card-shadow-hover);border-color:rgba(0,0,0,.1)}
-.card-tag{display:inline-block;font-size:11px;font-weight:600;color:var(--text-secondary);background:var(--bg-alt);padding:3px 10px;border-radius:var(--radius-pill);margin-bottom:12px}
-.card-icon{font-size:36px;margin-bottom:12px;display:block}
-.card h3{font-size:17px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em}
-.card p{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--card-border)}
-.card-status{font-size:12px;font-weight:600;padding:3px 9px;border-radius:var(--radius-pill)}
+.card{background:#fff;border-radius:var(--radius);padding:24px;border:1px solid var(--border);box-shadow:var(--card-shadow);transition:all .3s cubic-bezier(.25,.46,.45,.94);position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column}
+.card::after{content:'';position:absolute;inset:0;border-radius:var(--radius);opacity:0;transition:opacity .3s;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(0,102,204,.06),transparent 60%)}
+.card:hover{transform:translateY(-6px);box-shadow:var(--card-shadow-hover);border-color:rgba(0,102,204,.15)}
+.card:hover::after{opacity:1}
+/* icon circle instead of emoji */
+.card-icon-wrap{width:44px;height:44px;border-radius:12px;background:var(--primary-soft);display:flex;align-items:center;justify-content:center;margin-bottom:16px;flex-shrink:0}
+.card-icon-wrap svg{width:22px;height:22px;color:var(--primary);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-tag{display:inline-block;font-size:11px;font-weight:600;color:var(--text-soft);background:var(--bg-alt);padding:3px 10px;border-radius:var(--pill);margin-bottom:14px;letter-spacing:.01em;align-self:flex-start}
+.card h3{font-size:17px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em;flex:1}
+.card p{font-size:13px;color:var(--text-soft);line-height:1.55;margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border);margin-top:auto}
+.card-status{font-size:12px;font-weight:600;padding:3px 10px;border-radius:var(--pill)}
 .card-status.active{color:#34c759;background:rgba(52,199,89,.1)}
-.card-status.soon{color:var(--text-secondary);background:var(--bg-alt)}
-.card-link{font-size:13px;font-weight:600;color:var(--primary);display:inline-flex;align-items:center;gap:4px}
-.card-link:hover{text-decoration:none}
+.card-status.soon{color:var(--text-muted);background:var(--bg-alt)}
+.card-cta{font-size:13px;font-weight:600;color:var(--primary);display:inline-flex;align-items:center;gap:3px;transition:gap .2s}
+.card:hover .card-cta{gap:7px}
+.card.disabled{cursor:default}
+.card.disabled:hover{transform:none;box-shadow:var(--card-shadow);border-color:var(--border)}
 
-/* CAPABILITIES */
+/* ── CAPABILITIES ── */
 .cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
-.cap-item{text-align:center;padding:32px 16px}
-.cap-icon{font-size:48px;margin-bottom:20px;display:block}
-.cap-item h3{font-size:20px;font-weight:700;margin-bottom:12px;letter-spacing:-.01em}
-.cap-item p{font-size:15px;color:var(--text-secondary);line-height:1.6}
+.cap-item{padding:0 8px}
+.cap-icon-wrap{width:52px;height:52px;border-radius:14px;background:var(--primary-soft);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.cap-icon-wrap svg{width:26px;height:26px;color:var(--primary);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cap-item h3{font-size:19px;font-weight:700;margin-bottom:10px;letter-spacing:-.02em}
+.cap-item p{font-size:15px;color:var(--text-soft);line-height:1.65}
 
-/* FAQ */
+/* ── FAQ ── */
 .faq-list{max-width:720px;margin:0 auto}
-.faq-item{border-bottom:1px solid var(--card-border)}
-.faq-q{padding:24px 0;font-size:17px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:color .2s}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{padding:22px 0;font-size:17px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:color .2s;gap:16px}
 .faq-q:hover{color:var(--primary)}
-.faq-q::after{content:'+';font-size:24px;font-weight:300;color:var(--text-secondary);transition:transform .3s ease}
-.faq-item.open .faq-q::after{content:'−'}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease;font-size:15px;color:var(--text-secondary);line-height:1.7}
-.faq-item.open .faq-a{max-height:400px;padding-bottom:24px}
+.faq-arrow{width:28px;height:28px;border-radius:50%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;color:var(--text-soft)}
+.faq-item.open .faq-arrow{background:var(--primary);color:#fff;transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .35s ease;font-size:15px;color:var(--text-soft);line-height:1.75}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:22px}
 
-/* FOOTER */
-footer{padding:48px 0;text-align:center;border-top:1px solid var(--card-border);background:var(--bg)}
-footer p{font-size:14px;color:var(--text-secondary)}
-footer a{color:var(--primary);margin-left:8px}
+/* ── FOOTER ── */
+footer{padding:48px 0;border-top:1px solid var(--border)}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+footer p{font-size:14px;color:var(--text-soft)}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:14px;color:var(--text-soft);transition:color .2s}
+.footer-links a:hover{color:var(--text)}
 
-/* SCROLL ANIMATIONS */
-.fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+/* ── ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
 .fade-up.visible{opacity:1;transform:translateY(0)}
-.fade-up:nth-child(2){transition-delay:.08s}
-.fade-up:nth-child(3){transition-delay:.16s}
-.fade-up:nth-child(4){transition-delay:.24s}
-.fade-up:nth-child(5){transition-delay:.32s}
-.fade-up:nth-child(6){transition-delay:.4s}
+.fade-up:nth-child(2){transition-delay:.07s}
+.fade-up:nth-child(3){transition-delay:.14s}
+.fade-up:nth-child(4){transition-delay:.21s}
+.fade-up:nth-child(5){transition-delay:.28s}
+.fade-up:nth-child(6){transition-delay:.35s}
 
-/* RESPONSIVE */
-@media(max-width:900px){
-  .cards-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:768px){
-  .cards-grid{grid-template-columns:1fr}
-  .cap-grid{grid-template-columns:1fr;gap:20px}
-  .stats-grid{grid-template-columns:1fr;gap:32px}
-  .hero h1{font-size:clamp(36px,8vw,56px)}
-  .section{padding:80px 0}
-}
+/* ── RESPONSIVE ── */
+@media(max-width:960px){.cards-grid{grid-template-columns:repeat(2,1fr)}.cap-grid{grid-template-columns:1fr 1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}.stats-grid .stat:nth-child(2){border-right:none}.stats-grid .stat:nth-child(3){border-top:1px solid var(--border)}}
+@media(max-width:680px){.cards-grid{grid-template-columns:1fr}.cap-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.hero h1{letter-spacing:-.04em}.section{padding:72px 0}.container{padding:0 20px}}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav id="nav">
   <div class="nav-inner">
-    <div class="nav-logo">AI <span>×</span> Product</div>
-    <a class="nav-link" href="https://github.com/qlb708" target="_blank" rel="noopener">github.com/qlb708 ↗</a>
+    <div class="nav-logo">AI <em>×</em> Product</div>
+    <a class="nav-link" href="https://github.com/qlb708" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.8c.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10.01 10.01 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
+      github.com/qlb708
+    </a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="container">
-    <div class="hero-tag fade-up">AI Product Portfolio · 2026</div>
-    <h1 class="fade-up">用 AI 重新定义<br>产品与运营</h1>
-    <p class="fade-up">从竞品分析到用户研究，从内容选题到产品文档——每一个环节都有 AI 工具为你加速。</p>
+    <div class="hero-eyebrow fade-up">AI Product Portfolio · 2026</div>
+    <h1 class="fade-up">用 AI 重新定义<br><span class="accent">产品</span>与运营</h1>
+    <p class="hero-sub fade-up">从竞品分析到用户研究，从内容选题到产品文档——每一个环节都有 AI 工具为你加速。</p>
     <div class="hero-btns fade-up">
       <a href="#demos" class="btn btn-primary">查看 Demo</a>
       <a href="https://github.com/qlb708" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+    </div>
+    <!-- Live AI ticker -->
+    <div class="hero-live fade-up">
+      <div class="hero-live-label">AI 正在运行中</div>
+      <div class="hero-live-text" id="liveTicker"></div>
     </div>
   </div>
 </section>
@@ -140,9 +168,10 @@ footer a{color:var(--primary);margin-left:8px}
 <section class="stats">
   <div class="container">
     <div class="stats-grid">
-      <div class="fade-up"><div class="stat-num">6<span>个</span></div><div class="stat-label">可交互 Demo</div></div>
-      <div class="fade-up"><div class="stat-num">5<span>×</span></div><div class="stat-label">工作效率提升</div></div>
-      <div class="fade-up"><div class="stat-num">100<span>%</span></div><div class="stat-label">Vibe-coding 构建</div></div>
+      <div class="stat fade-up"><div class="stat-num">6<sup>个</sup></div><div class="stat-label">可交互 Demo</div></div>
+      <div class="stat fade-up"><div class="stat-num">5<sup>×</sup></div><div class="stat-label">工作效率提升</div></div>
+      <div class="stat fade-up"><div class="stat-num">7</div><div class="stat-label">文档类型覆盖</div></div>
+      <div class="stat fade-up"><div class="stat-num">10<sup>s</sup></div><div class="stat-label">平均生成时间</div></div>
     </div>
   </div>
 </section>
@@ -150,51 +179,73 @@ footer a{color:var(--primary);margin-left:8px}
 <!-- DEMOS -->
 <section class="section" id="demos">
   <div class="container">
-    <h2 class="section-title fade-up">探索所有工具</h2>
-    <p class="section-desc fade-up">每个工具都是真实可用的 AI 产品，不是预设样本。</p>
+    <div class="section-head">
+      <span class="section-label fade-up">AI 工具集</span>
+      <h2 class="section-title fade-up">探索所有工具</h2>
+      <p class="section-desc fade-up">每个工具都是真实可用的 AI 产品，不是预设样本。</p>
+    </div>
     <div class="cards-grid">
+
       <div class="card fade-up" onclick="location.href='/08/'">
         <span class="card-tag">数据分析</span>
-        <span class="card-icon">🎯</span>
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
         <h3>竞品雷达</h3>
         <p>实时追踪 AI 旅行赛道社交热点，支持多维筛选与趋势分析</p>
-        <div class="card-footer"><span class="card-status active">可体验</span><a class="card-link" href="/08/">体验 →</a></div>
+        <div class="card-footer"><span class="card-status active">可体验</span><span class="card-cta">体验 →</span></div>
       </div>
+
       <div class="card fade-up" onclick="location.href='/08/portfolio/ux-research/'">
         <span class="card-tag">用户研究</span>
-        <span class="card-icon">📋</span>
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
         <h3>用研报告生成器</h3>
-        <p>对话式 AI 用研，输入背景即可生成完整报告</p>
-        <div class="card-footer"><span class="card-status active">可体验</span><a class="card-link" href="/08/portfolio/ux-research/">体验 →</a></div>
+        <p>对话式 AI 用研，输入产品背景即可生成完整研究报告</p>
+        <div class="card-footer"><span class="card-status active">可体验</span><span class="card-cta">体验 →</span></div>
       </div>
+
       <div class="card fade-up" onclick="location.href='/08/portfolio/content-radar/'">
         <span class="card-tag">内容运营</span>
-        <span class="card-icon">📡</span>
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
         <h3>内容选题雷达</h3>
-        <p>输入账号定位，AI 生成本周 10 个高质量选题</p>
-        <div class="card-footer"><span class="card-status active">可体验</span><a class="card-link" href="/08/portfolio/content-radar/">体验 →</a></div>
+        <p>输入账号定位，AI 生成本周 10 个高质量差异化选题</p>
+        <div class="card-footer"><span class="card-status active">可体验</span><span class="card-cta">体验 →</span></div>
       </div>
+
       <div class="card fade-up" onclick="location.href='/08/portfolio/doc-writer/'">
         <span class="card-tag">产品设计</span>
-        <span class="card-icon">📄</span>
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
         <h3>产品文档速写台</h3>
-        <p>BRD/MRD/PRD/OKR 等 7 种文档，10 秒生成</p>
-        <div class="card-footer"><span class="card-status active">可体验</span><a class="card-link" href="/08/portfolio/doc-writer/">体验 →</a></div>
+        <p>BRD / MRD / PRD / OKR 等 7 种文档，10 秒生成可下载</p>
+        <div class="card-footer"><span class="card-status active">可体验</span><span class="card-cta">体验 →</span></div>
       </div>
-      <div class="card fade-up">
+
+      <div class="card disabled fade-up">
         <span class="card-tag">增长产品</span>
-        <span class="card-icon">📈</span>
+        <div class="card-icon-wrap" style="background:var(--bg-alt)">
+          <svg viewBox="0 0 24 24" style="color:var(--text-muted)"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
         <h3>增长实验模拟器</h3>
-        <p>输入瓶颈，AI 设计 A/B 方案并预测收益</p>
-        <div class="card-footer"><span class="card-status soon">即将上线</span><span class="card-link" style="color:var(--text-secondary)">关注 →</span></div>
+        <p>输入增长瓶颈，AI 设计 A/B 方案并预测关键指标收益</p>
+        <div class="card-footer"><span class="card-status soon">即将上线</span><span style="font-size:13px;color:var(--text-muted)">敬请期待</span></div>
       </div>
-      <div class="card fade-up">
+
+      <div class="card disabled fade-up">
         <span class="card-tag">UX 设计</span>
-        <span class="card-icon">🗺️</span>
+        <div class="card-icon-wrap" style="background:var(--bg-alt)">
+          <svg viewBox="0 0 24 24" style="color:var(--text-muted)"><path d="M3 3h18v18H3z" fill="none"/><path d="M9 3v18M3 9h18"/></svg>
+        </div>
         <h3>用户旅程地图</h3>
-        <p>自动生成可视化用户旅程与机会点分析</p>
-        <div class="card-footer"><span class="card-status soon">即将上线</span><span class="card-link" style="color:var(--text-secondary)">关注 →</span></div>
+        <p>自动生成可视化用户旅程，标注关键触点与机会点</p>
+        <div class="card-footer"><span class="card-status soon">即将上线</span><span style="font-size:13px;color:var(--text-muted)">敬请期待</span></div>
       </div>
+
     </div>
   </div>
 </section>
@@ -202,12 +253,33 @@ footer a{color:var(--primary);margin-left:8px}
 <!-- CAPABILITIES -->
 <section class="section section-alt">
   <div class="container">
-    <h2 class="section-title fade-up">AI 优先的工作方法</h2>
-    <p class="section-desc fade-up">不是替代人，而是让人做得更好。</p>
+    <div class="section-head">
+      <span class="section-label fade-up">核心能力</span>
+      <h2 class="section-title fade-up">AI 优先的工作方法</h2>
+      <p class="section-desc fade-up">不是替代人，而是让人做得更好、更快。</p>
+    </div>
     <div class="cap-grid">
-      <div class="cap-item fade-up"><span class="cap-icon">⚡</span><h3>AI 优先工作流</h3><p>用研、PRD、竞品分析全面 AI 化，速度提升 5x，质量不打折</p></div>
-      <div class="cap-item fade-up"><span class="cap-icon">📊</span><h3>数据驱动决策</h3><p>从社交热点到增长实验，每个决策背后都有信号支撑</p></div>
-      <div class="cap-item fade-up"><span class="cap-icon">🚀</span><h3>快速 MVP 验证</h3><p>Vibe-coding 从想法到线上产品，最快一天，比 PPT 更有说服力</p></div>
+      <div class="cap-item fade-up">
+        <div class="cap-icon-wrap">
+          <svg viewBox="0 0 24 24"><bolt/><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>AI 优先工作流</h3>
+        <p>用研、PRD、竞品分析全面 AI 化，速度提升 5x，质量不打折扣</p>
+      </div>
+      <div class="cap-item fade-up">
+        <div class="cap-icon-wrap">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <h3>数据驱动决策</h3>
+        <p>从社交热点到增长实验，每个决策背后都有真实信号支撑</p>
+      </div>
+      <div class="cap-item fade-up">
+        <div class="cap-icon-wrap">
+          <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h3>快速 MVP 验证</h3>
+        <p>从想法到线上产品最快一天，Vibe-coding 让概念比 PPT 更有说服力</p>
+      </div>
     </div>
   </div>
 </section>
@@ -215,14 +287,32 @@ footer a{color:var(--primary);margin-left:8px}
 <!-- FAQ -->
 <section class="section">
   <div class="container">
-    <h2 class="section-title fade-up">常见问题</h2>
-    <p class="section-desc fade-up">关于这些工具，你可能想知道的。</p>
+    <div class="section-head" style="text-align:center">
+      <span class="section-label fade-up" style="display:block">FAQ</span>
+      <h2 class="section-title fade-up">常见问题</h2>
+      <p class="section-desc fade-up" style="margin:0 auto 56px">关于这些工具，你可能想知道的。</p>
+    </div>
     <div class="faq-list">
-      <div class="faq-item fade-up"><div class="faq-q">这些 Demo 是真实可用的还是演示性质的？</div><div class="faq-a">全部真实可用。AI 工具类 Demo 调用 Google Gemini API，数据实时生成，不是预设好的样本数据。竞品雷达的数据来自真实的社交平台热点采集。</div></div>
-      <div class="faq-item fade-up"><div class="faq-q">用了哪些技术？</div><div class="faq-a">前端使用 Vue 3 + Vite（Vibe-coding 方式构建），部署在 GitHub Pages。AI 调用使用 Google Gemini 1.5 Flash。数据存储在 GitHub 仓库，通过 GitHub API 动态更新。整个项目从构思到上线不超过两天。</div></div>
-      <div class="faq-item fade-up"><div class="faq-q">AI 生成的内容质量怎么样？</div><div class="faq-a">每个工具都有精心设计的 Prompt，输出内容有固定的专业结构框架（如用研报告的 7 个章节），质量稳定可用，可以作为真实工作的初稿直接使用。</div></div>
-      <div class="faq-item fade-up"><div class="faq-q">这些工具体现了哪些产品能力？</div><div class="faq-a">体现了 AI 产品设计能力（对话式交互设计）、Prompt 工程能力（专业输出结构设计）、数据架构能力（实时数据管道设计）、以及快速落地能力（Vibe-coding 方式构建 MVP）。</div></div>
-      <div class="faq-item fade-up"><div class="faq-q">可以在实际工作中使用这些工具吗？</div><div class="faq-a">可以。产品文档速写台和用研报告生成器已经在实际工作中用于提升文档效率。竞品雷达也已用于 AI 旅行赛道的日常监测。</div></div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">这些 Demo 是真实可用的还是演示性质的？<span class="faq-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></div>
+        <div class="faq-a">全部真实可用。AI 工具类 Demo 调用 Google Gemini API，数据实时生成，不是预设好的样本数据。竞品雷达的数据来自真实的社交平台热点采集。</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">用了哪些技术？<span class="faq-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></div>
+        <div class="faq-a">前端使用 Vue 3 + Vite（Vibe-coding 方式构建），Portfolio 子页面使用纯 HTML/CSS/JS，部署在 GitHub Pages。AI 调用使用 Google Gemini 1.5 Flash。整个项目从构思到上线不超过两天。</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">AI 生成的内容质量怎么样？<span class="faq-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></div>
+        <div class="faq-a">每个工具都有精心设计的 Prompt，输出内容有固定的专业结构框架，质量稳定可用，可以作为真实工作的初稿直接使用。用研报告生成器支持 AI 反问，进一步提升输出精准度。</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">这些工具体现了哪些产品能力？<span class="faq-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></div>
+        <div class="faq-a">体现了 AI 产品设计能力（对话式交互设计）、Prompt 工程能力（专业输出结构设计）、数据架构能力（实时数据管道设计），以及快速落地能力（Vibe-coding 方式构建 MVP）。</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">可以在实际工作中使用这些工具吗？<span class="faq-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></div>
+        <div class="faq-a">可以。产品文档速写台和用研报告生成器已经在实际工作中用于提升文档效率。竞品雷达也已用于 AI 旅行赛道的日常监测，数据每日更新。</div>
+      </div>
     </div>
   </div>
 </section>
@@ -230,21 +320,60 @@ footer a{color:var(--primary);margin-left:8px}
 <!-- FOOTER -->
 <footer>
   <div class="container">
-    <p>用 AI 构建 · 2026<a href="https://github.com/qlb708" target="_blank" rel="noopener">GitHub ↗</a></p>
+    <div class="footer-inner">
+      <p>用 AI 构建 · 2026</p>
+      <div class="footer-links">
+        <a href="https://github.com/qlb708" target="_blank">GitHub</a>
+        <a href="/08/">竞品雷达</a>
+      </div>
+    </div>
   </div>
 </footer>
 
 <script>
 // NAV scroll
 const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>50)},{passive:true});
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>30),{passive:true});
 
-// SCROLL animations
-const io=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+// IntersectionObserver fade-up
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})},{threshold:.08,rootMargin:'0px 0px -32px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
 
+// Card mouse glow
+document.querySelectorAll('.card:not(.disabled)').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+    card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+  });
+});
+
 // FAQ accordion
-document.querySelectorAll('.faq-q').forEach(q=>{q.addEventListener('click',()=>{q.parentElement.classList.toggle('open')})});
+document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('open')));
+
+// Live ticker in hero
+const lines=[
+  '正在分析竞品「同程旅行」近期社交热点数据...',
+  '发现高热度话题：AI 旅行规划 × 微信生态，热度 98 ↑',
+  '生成用研报告：AI 旅行 App 用户流失分析...',
+  '关键发现：7 天留存率低于行业均值 23%，主要流失节点在「行程确认」步骤',
+  '内容选题生成中：本周小红书 AI 旅行赛道差异化选题 10 条...',
+  '高潜力选题：「用 AI 规划一次 0 废话云南 5 日游」预计互动率 +40%',
+];
+let li=0,ci=0;
+const ticker=document.getElementById('liveTicker');
+function typeLine(){
+  if(!ticker)return;
+  const line=lines[li%lines.length];
+  if(ci<=line.length){
+    ticker.innerHTML=line.slice(0,ci)+'<span class="cursor-blink">|</span>';
+    ci++;
+    setTimeout(typeLine,28);
+  } else {
+    setTimeout(()=>{li++;ci=0;typeLine();},2200);
+  }
+}
+setTimeout(typeLine,600);
 </script>
 </body>
 </html>
