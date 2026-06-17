@@ -77,28 +77,37 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.9);b
 </style>
 </head>
 <body>
-<nav><div class="nw">
-  <a href="/08/portfolio/" class="logo">AI <em>&times;</em> 08</a>
-  <a href="/08/portfolio/" class="back">
-    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    返回
-  </a>
-</div></nav>
+<nav>
+  <div class="nw">
+    <a href="/08/portfolio/" class="logo">AI <em>&times;</em> 08</a>
+    <a href="/08/portfolio/" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      返回
+    </a>
+  </div>
+</nav>
+
 <div class="hero">
   <div class="tag">数据工具</div>
   <h1>数据解读助手</h1>
-  <p>粘贴产品数据，AI 诊断问题并输出策略报告。</p>
+  <p>粘贴产品数据，AI 输出诊断结论与策略建议。</p>
 </div>
+
 <div class="ws">
   <div class="panel ip">
     <div class="ph">
-      <div class="pi"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-      <div><div class="pt">输入数据</div><div class="ps">粘贴关键指标即可</div></div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div>
+        <div class="pt">数据输入</div>
+        <div class="ps">粘贴关键指标即可</div>
+      </div>
     </div>
     <div class="pb">
       <div class="f">
         <label>产品名称</label>
-        <input type="text" id="pname" placeholder="例如：增长引擎 v2.0">
+        <input type="text" id="pname" placeholder="例如：用户增长平台">
       </div>
       <div class="f">
         <label>数据内容</label>
@@ -113,7 +122,7 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.9);b
         </div>
       </div>
       <div class="f">
-        <label>分析重点</label>
+        <label>分析重点 <span class="fn">可多选</span></label>
         <div class="chips" id="focusChips">
           <span class="chip active" data-v="用户增长">用户增长</span>
           <span class="chip active" data-v="留存">留存</span>
@@ -121,32 +130,39 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.9);b
           <span class="chip active" data-v="变现">变现</span>
         </div>
       </div>
-      <button class="gbtn" id="gbtn" onclick="gen()">
+      <button class="gbtn" id="gbtnData" onclick="gen()">
         <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
         生成策略报告
       </button>
     </div>
   </div>
+
   <div class="panel op">
     <div class="ph">
-      <div class="pi"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <div><div class="pt">策略报告</div><div class="ps" id="outSub">等待生成</div></div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div>
+        <div class="pt">策略报告</div>
+        <div class="ps" id="outSub">等待生成</div>
+      </div>
     </div>
     <div class="ob" id="ob">
       <div class="skel">
-        <div class="sl" style="width:60%"></div>
-        <div class="sb" style="height:60px"></div>
-        <div class="sl" style="width:80%"></div>
-        <div class="sl" style="width:45%"></div>
-        <div class="sb" style="height:100px"></div>
-        <div class="sl" style="width:70%"></div>
         <div class="sl" style="width:55%"></div>
-        <div class="sb" style="height:90px"></div>
+        <div class="sl" style="width:80%"></div>
+        <div class="sb" style="height:64px;margin-top:4px"></div>
+        <div class="sl" style="width:65%;margin-top:8px"></div>
+        <div class="sb" style="height:90px;margin-top:4px"></div>
+        <div class="sl" style="width:45%;margin-top:8px"></div>
+        <div class="sl" style="width:70%"></div>
       </div>
     </div>
   </div>
 </div>
+
 <div id="toast">已复制</div>
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 var PROVIDERS=[
@@ -170,10 +186,10 @@ async function callAI(prompt){
         var d2=await res.json();
         text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
       }
-      if(text){console.log('OK',p.name);return text;}
+      if(text){console.log('\u2713',p.name);return text;}
     }catch(err){console.warn(p.name,err.message);}
   }
-  throw new Error('所有AI服务均不可用');
+  throw new Error('\u6240\u6709AI\u670d\u52a1\u5747\u4e0d\u53ef\u7528');
 }
 var _lastResult='';
 function typeWrite(text,el,onDone){
@@ -202,8 +218,7 @@ function copyText(){
   });
 }
 
-var selCycle='周报';
-// 初始化单选 chips
+var selCycle='\u5468\u62a5';
 (function(){
   var cs=document.querySelectorAll('#cycleChips .chip');
   cs.forEach(function(c){
@@ -215,7 +230,7 @@ var selCycle='周报';
   });
   if(cs[1])cs[1].classList.add('sel');
 })();
-// 初始化多选 chips
+
 (function(){
   var cs=document.querySelectorAll('#focusChips .chip');
   cs.forEach(function(c){
@@ -227,32 +242,33 @@ var selCycle='周报';
 
 async function gen(){
   var pname=document.getElementById('pname').value.trim();
-  var dataContent=document.getElementById('data').value.trim();
-  if(!dataContent){document.getElementById('data').focus();return;}
-  var activeFocus=[];
-  document.querySelectorAll('#focusChips .chip.active').forEach(function(c){
-    activeFocus.push(c.dataset.v);
-  });
-  if(activeFocus.length===0){activeFocus=['综合分析'];}
-  var btn=document.getElementById('gbtn');
+  var dataVal=document.getElementById('data').value.trim();
+  if(!dataVal){document.getElementById('data').focus();return;}
+  var focuses=[];
+  document.querySelectorAll('#focusChips .chip.active').forEach(function(c){focuses.push(c.dataset.v);});
+  if(!focuses.length)focuses=['\u7efc\u5408\u5206\u6790'];
+  var btn=document.getElementById('gbtnData');
   var ob=document.getElementById('ob');
   var sub=document.getElementById('outSub');
   btn.disabled=true;
-  if(sub)sub.textContent='AI 分析中\u2026';
-  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI 正在解读数据\u2026</span></div>';
-  var prompt='你是资深数据分析师，请对以下产品数据进行深度解读。\n\n'+(pname?'产品名称：'+pname+'\n':'')+'数据周期：'+selCycle+'\n分析重点：'+activeFocus.join('\u3001')+'\n\n数据内容：\n'+dataContent+'\n\n请以 Markdown 格式输出以下结构：\n\n# 数据分析报告'+(pname?' \u2014\u2014 '+pname:'')+'\n\n## 数据健康诊断\n（对每个核心指标给出健康状态：绿/黄/红 信号灯 + 一句话评价）\n\n## 核心问题定位\n（从数据中定位最关键的问题，按优先级排序）\n\n## 短期策略（1-2周）\n（立即可以执行的行动）\n\n## 中期策略（1-3个月）\n（需要一定投入但回报明确的方向）\n\n## 长期策略（3-6个月）\n（结构性优化方向）\n\n## 实验方案\n（设计一个A/B测试实验来验证关键假设，包含：假设、指标、分组、预期结果）\n\n## 监控指标\n（列出需要持续跟踪的关键指标及警戒阈值）';
+  if(sub)sub.textContent='AI \u5206\u6790\u4e2d\u2026';
+  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI \u6b63\u5728\u89e3\u8bfb\u6570\u636e\u2026</span></div>';
+  var prompt='\u4f60\u662f\u8d44\u6df1\u4ea7\u54c1\u6570\u636e\u5206\u6790\u5e08\uff0c\u8bf7\u5bf9\u4ee5\u4e0b\u4ea7\u54c1\u6570\u636e\u8fdb\u884c\u6df1\u5ea6\u89e3\u8bfb\u5e76\u7ed9\u51fa\u7b56\u7565\u5efa\u8bae\u3002\n\n'
+    +(pname?'\u4ea7\u54c1\u540d\u79f0\uff1a'+pname+'\n':'')
+    +'\u6570\u636e\u5468\u671f\uff1a'+selCycle+'\n\u5206\u6790\u91cd\u70b9\uff1a'+focuses.join('\u3001')+'\n\n\u6570\u636e\u5185\u5bb9\uff1a\n'+dataVal+'\n\n'
+    +'\u8bf7\u4ee5 Markdown \u683c\u5f0f\u8f93\u51fa\uff1a\n\n# \u6570\u636e\u8bca\u65ad\u62a5\u544a\n\n## \u6570\u636e\u5065\u5eb7\u8bca\u65ad\n\uff08\u7528\u7eff/\u9ec4/\u7ea2\u4fe1\u53f7\u706f + \u6307\u6807\u8bc4\u4f30\uff09\n\n## \u6838\u5fc3\u95ee\u9898\u5b9a\u4f4d\n\uff08\u6309\u4f18\u5148\u7ea7\u6392\u5e8f\u5217\u51fa\u6700\u5173\u952e\u95ee\u9898\uff09\n\n## \u77ed\u671f\u7b56\u7565\uff081-2\u5468\uff09\n\uff08\u7acb\u5373\u53ef\u6267\u884c\u7684\u884c\u52a8\uff09\n\n## \u4e2d\u671f\u7b56\u7565\uff081-3\u4e2a\u6708\uff09\n\uff08\u9700\u8981\u4e00\u5b9a\u6295\u5165\u4f46\u56de\u62a5\u660e\u786e\u7684\u65b9\u5411\uff09\n\n## \u957f\u671f\u7b56\u7565\uff083-6\u4e2a\u6708\uff09\n\uff08\u7ed3\u6784\u6027\u4f18\u5316\u65b9\u5411\uff09\n\n## \u5b9e\u9a8c\u65b9\u6848\n\uff08\u8bbe\u8ba1\u4e00\u4e2aA/B\u6d4b\u8bd5\u5b9e\u9a8c\uff1a\u5047\u8bbe\u3001\u6307\u6807\u3001\u5206\u7ec4\u3001\u9884\u671f\u7ed3\u679c\uff09\n\n## \u76d1\u63a7\u6307\u6807\n\uff08\u9700\u6301\u7eed\u8ddf\u8e2a\u7684\u5173\u952e\u6307\u6807\u53ca\u8b66\u621e\u9608\u5024\uff09';
   try{
     var text=await callAI(prompt);
-    if(sub)sub.textContent='分析完成';
-    typeWrite(text,ob,function(){
-      document.querySelector('.op').insertAdjacentHTML('beforeend','<div class="ebar"><button class="ebtn" onclick="copyText()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button><button class="ebtn" onclick="doExport(\'策略报告.md\')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button></div>');
+    if(sub)sub.textContent='\u751f\u6210\u5b8c\u6210';
+    typeWrite(text,document.getElementById('ob'),function(){
+      document.querySelector('.op').insertAdjacentHTML('beforeend','<div class="ebar"><button class="ebtn" onclick="copyText()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>\u590d\u5236</button><button class="ebtn" onclick="doExport(\'\u7b56\u7565\u62a5\u544a.md\')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>\u5bfc\u51fa</button></div>');
     });
   }catch(e){
-    ob.innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">生成失败，请稍后重试</div>';
-    if(sub)sub.textContent='失败';
+    document.getElementById('ob').innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">\u751f\u6210\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5</div>';
+    if(sub)sub.textContent='\u5931\u8d25';
   }
   btn.disabled=false;
-  btn.innerHTML='<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>重新生成';
+  btn.innerHTML='<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>\u91cd\u65b0\u751f\u6210';
 }
 </script>
 </body>
