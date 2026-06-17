@@ -123,6 +123,29 @@ nav a.back:hover{color:var(--text)}
   </div>
 </div>
 <script>
+const PROVIDERS=[
+  {name:"智谱",url:"https://open.bigmodel.cn/api/paas/v4/chat/completions",key:"3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P",model:"glm-4-flash",type:"openai"},
+  {name:"DeepSeek",url:"https://api.deepseek.com/chat/completions",key:"sk-4f016c9639cb461db37f4f778d2eac4f",model:"deepseek-chat",type:"openai"},
+  {name:"Gemini",url:"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",key:["AQ.Ab8RN6Kwvan","PacRzJIFXe6Yi1Kx35q046","jXDWC8LF0dV3tKJiA"].join(""),type:"gemini"},
+];
+async function callAI(prompt){
+  for(const p of PROVIDERS){
+    try{
+      let text="";
+      if(p.type==="openai"){
+        const res=await fetch(p.url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+p.key},body:JSON.stringify({model:p.model,messages:[{role:"user",content:prompt}],max_tokens:8000,temperature:0.7}),signal:AbortSignal.timeout(25000)});
+        if(!res.ok){const e=await res.json();console.warn(p.name,e);continue;}
+        const d=await res.json();text=d.choices?.[0]?.message?.content||"";
+      } else {
+        const res=await fetch(p.url+"?key="+p.key,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
+        if(!res.ok){continue;}
+        const d=await res.json();text=d.candidates?.[0]?.content?.parts?.[0]?.text||"";
+      }
+      if(text){console.log("✓ used",p.name);return text;}
+    }catch(e){console.warn(p.name,"failed:",e.message);continue;}
+  }
+  throw new Error("所有 AI 服务均不可用，请检查网络");
+}
 var GK=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
 var GU='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GK;
 var rawMd='';
