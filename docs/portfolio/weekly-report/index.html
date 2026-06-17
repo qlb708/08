@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>周报生成器 · AI × 08</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fff;--bg2:#f5f5f7;--blue:#0066cc;--bs:rgba(0,102,204,.08);--bb:rgba(0,102,204,.2);
+  --text:#1d1d1f;--soft:#6e6e73;--muted:#aeaeb2;
+  --bd:rgba(0,0,0,.08);--sh:0 2px 16px rgba(0,0,0,.06);
+  --r:16px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+}
+body{font-family:var(--font);color:var(--text);background:var(--bg2);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:var(--blue)}
+nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd)}
+.nav-i{max-width:1280px;margin:0 auto;padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.logo em{color:var(--blue);font-style:normal}
+.logo a{color:inherit}
+.back{display:flex;align-items:center;gap:5px;font-size:14px;color:var(--soft);transition:color .2s}
+.back:hover{color:var(--text)}
+.back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.hero{padding:72px 32px 20px;max-width:1280px;margin:0 auto}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:var(--bs);padding:4px 12px;border-radius:var(--pill);margin-bottom:12px;border:1px solid var(--bb)}
+.hero h1{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
+.hero p{font-size:14px;color:var(--soft)}
+.workspace{max-width:1280px;margin:0 auto;padding:0 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:20px;align-items:start}
+.panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.in-panel{position:sticky;top:68px}
+.ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.pi{width:28px;height:28px;border-radius:8px;background:var(--bs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pt{font-size:13px;font-weight:700}
+.ps{font-size:11px;color:var(--soft)}
+.pb{padding:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text)}
+.fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
+.field input,.field textarea{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--bs);background:#fff}
+.field textarea{resize:vertical;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.chip:hover{border-color:var(--bb);color:var(--blue)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn{width:100%;margin-top:4px;padding:12px;border-radius:var(--pill);background:var(--blue);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 12px rgba(0,102,204,.22);transition:all .2s}
+.btn:hover:not(:disabled){background:#0055aa;transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,102,204,.3)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.out-panel{min-height:480px;display:flex;flex-direction:column}
+.ob{flex:1;padding:22px}
+.skel{display:flex;flex-direction:column;gap:10px;opacity:.45}
+.sl{height:12px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
+.sb{height:72px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:10px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.think{display:flex;align-items:center;gap:10px;padding:28px 0;color:var(--soft);font-size:13px}
+.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin-right:3px}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bou{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+.md-out{font-size:13px;line-height:1.8;color:var(--text)}
+.md-out h1{font-size:18px;font-weight:800;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.md-out h2{font-size:14px;font-weight:700;margin:18px 0 7px}
+.md-out h3{font-size:13px;font-weight:700;margin:14px 0 5px}
+.md-out p{margin-bottom:10px}
+.md-out ul,.md-out ol{margin:6px 0 10px 16px}
+.md-out li{margin-bottom:4px}
+.md-out strong{font-weight:700}
+.md-out blockquote{border-left:3px solid var(--blue);padding:8px 12px;margin:12px 0;background:var(--bs);border-radius:0 8px 8px 0;color:var(--soft);font-size:12px}
+.md-out table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.md-out th,.md-out td{padding:7px 10px;border:1px solid var(--bd);text-align:left}
+.md-out th{background:var(--bg2);font-weight:600}
+.md-out code{background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:12px}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
+.cursor2::after{content:'|';animation:bl .6s infinite;color:var(--blue);font-weight:300}
+.ebar{padding:12px 18px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
+.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.ebtn:hover{border-color:var(--bb);color:var(--blue)}
+.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+.copy-toast{position:fixed;bottom:24px;right:24px;background:#1d1d1f;color:#fff;padding:10px 18px;border-radius:var(--pill);font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+.copy-toast.show{opacity:1}
+/* 快速填入提示 */
+.quick-tips{margin-bottom:14px}
+.qt-label{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.qt-chips{display:flex;flex-wrap:wrap;gap:5px}
+.qt-chip{padding:4px 10px;border-radius:var(--pill);border:1px solid var(--bd);background:#fff;color:var(--soft);font-size:11px;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.qt-chip:hover{border-color:var(--bb);color:var(--blue);background:var(--bs)}
+@media(max-width:900px){.workspace{grid-template-columns:1fr}.in-panel{position:static}}
+@media(max-width:600px){.workspace{padding:0 16px 60px}.hero{padding:68px 16px 16px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-i">
+    <div class="logo"><a href="/08/portfolio/">AI <em>×</em> 08</a></div>
+    <a class="back" href="/08/portfolio/">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>返回
+    </a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="tag">职场效率</div>
+  <h1>周报生成器</h1>
+  <p>把这周做的事情扔进来，AI 帮你整理成专业周报，直接发群。</p>
+</div>
+
+<div class="workspace">
+  <div class="panel in-panel">
+    <div class="ph">
+      <div class="pi">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div><div class="pt">本周工作内容</div><div class="ps">零散碎片都行，AI 来整理</div></div>
+    </div>
+    <div class="pb">
+      <div class="field">
+        <label>你的角色 / 团队 <span class="fn">选填</span></label>
+        <input id="role" type="text" placeholder="例如：产品运营实习生 / AI 产品组">
+      </div>
+
+      <div class="quick-tips">
+        <div class="qt-label">快速场景</div>
+        <div class="qt-chips">
+          <span class="qt-chip" onclick="fillExample('intern')">实习生通用</span>
+          <span class="qt-chip" onclick="fillExample('product')">产品周报</span>
+          <span class="qt-chip" onclick="fillExample('ops')">运营周报</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>本周完成的事 <span class="fn">零散描述即可</span></label>
+        <textarea id="done" rows="4" placeholder="例如：
+- 跟进了新功能的用研访谈，整理了5份用户反馈
+- 写了竞品分析报告初稿
+- 参与了两个需求评审会议
+- 帮运营同学做了活动数据复盘"></textarea>
+      </div>
+      <div class="field">
+        <label>遇到的问题 / 阻塞 <span class="fn">选填</span></label>
+        <textarea id="block" rows="2" placeholder="例如：等待研发排期确认、需要 XX 同学提供数据"></textarea>
+      </div>
+      <div class="field">
+        <label>下周计划 <span class="fn">选填，不填 AI 会自动推断</span></label>
+        <textarea id="plan" rows="2" placeholder="例如：完成用研报告终稿，推进下个版本需求评审"></textarea>
+      </div>
+      <div class="field">
+        <label>周报风格</label>
+        <div class="chips" id="styleChips">
+          <button class="chip on" data-v="简洁专业">简洁专业</button>
+          <button class="chip" data-v="详细完整">详细完整</button>
+          <button class="chip" data-v="飞书格式">飞书格式</button>
+          <button class="chip" data-v="英文双语">中英双语</button>
+        </div>
+      </div>
+      <button class="btn" id="genBtn" onclick="generate()">
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        生成周报
+      </button>
+    </div>
+  </div>
+
+  <div class="panel out-panel">
+    <div class="ph">
+      <div class="pi" style="background:rgba(255,149,0,.1)">
+        <svg viewBox="0 0 24 24" style="stroke:#ff9500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div><div class="pt">周报草稿</div><div class="ps" id="outSub">填完左边点生成</div></div>
+    </div>
+    <div class="ob" id="outBody">
+      <div class="skel">
+        <div class="sl" style="width:50%"></div>
+        <div class="sb"></div>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-top:4px">
+          <div class="sl" style="width:80%"></div>
+          <div class="sl" style="width:65%"></div>
+          <div class="sl" style="width:90%"></div>
+        </div>
+        <div class="sb" style="height:52px;margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="copy-toast" id="toast">已复制到剪贴板</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+var PROVIDERS=[
+  {name:'智谱',url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P',model:'glm-4-flash',type:'openai'},
+  {name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',key:'sk-4f016c9639cb461db37f4f778d2eac4f',model:'deepseek-chat',type:'openai'},
+  {name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''),type:'gemini'}
+];
+async function callAI(prompt){
+  for(var i=0;i<PROVIDERS.length;i++){
+    var p=PROVIDERS[i];
+    try{
+      var res,text='';
+      if(p.type==='openai'){
+        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:0.6}),signal:AbortSignal.timeout(25000)});
+        if(!res.ok){var e=await res.json();console.warn(p.name,e);continue;}
+        var d=await res.json();
+        text=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
+      }else{
+        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:4000,temperature:0.6}}),signal:AbortSignal.timeout(20000)});
+        if(!res.ok)continue;
+        var d2=await res.json();
+        text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
+      }
+      if(text){console.log('✓',p.name);return text;}
+    }catch(err){console.warn(p.name,err.message);}
+  }
+  throw new Error('所有 AI 服务均不可用');
+}
+
+var lastResult='';
+function typeRender(text,el,onDone){
+  lastResult=text;
+  var i=0;
+  var iv=setInterval(function(){
+    i=Math.min(i+6,text.length);
+    el.innerHTML='<div class="md-out">'+marked.parse(text.slice(0,i))+'</div>'+(i<text.length?'<span class="cursor2"></span>':'');
+    if(i>=text.length){
+      clearInterval(iv);
+      el.innerHTML='<div class="md-out">'+marked.parse(text)+'</div>';
+      if(onDone)onDone();
+    }
+  },16);
+}
+
+var selStyle='简洁专业';
+document.querySelectorAll('#styleChips .chip').forEach(function(c){
+  c.addEventListener('click',function(){
+    document.querySelectorAll('#styleChips .chip').forEach(function(x){x.classList.remove('on');});
+    c.classList.add('on');
+    selStyle=c.dataset.v;
+  });
+});
+
+function fillExample(type){
+  var done=document.getElementById('done');
+  var plan=document.getElementById('plan');
+  var role=document.getElementById('role');
+  if(type==='intern'){
+    role.value='产品运营实习生';
+    done.value='- 参与了竞品调研，整理了3份竞品功能对比报告\n- 协助运营同学完成活动数据复盘，发现次留问题\n- 跟进用户反馈，整理成结构化问题清单提交给产品\n- 参与了两次需求评审和一次设计走查';
+    plan.value='下周完成用研访谈大纲，推进下个版本功能需求对齐';
+  }else if(type==='product'){
+    role.value='产品经理';
+    done.value='- 完成了 AI 搜索功能 PRD v2.0，通过评审\n- 推进了3个需求的研发排期，预计下周开始开发\n- 完成了与设计同学的 UI 走查，提出12个改进意见\n- 用户调研：访谈5名重度用户，整理核心痛点';
+    plan.value='推进 AI 搜索功能开发，跟进上线节点；启动新功能的用户调研';
+  }else if(type==='ops'){
+    role.value='产品运营';
+    done.value='- 上周活动 DAU +15%，超出预期目标 5%\n- 完成了 Q3 内容选题策划，共 30 个选题方向\n- 跟进了 KOL 合作谈判，3位已确认合作\n- 新用户引导流程优化上线，次日留存提升 8%';
+    plan.value='启动 Q3 活动策划，对齐资源；分析本周数据，优化投放策略';
+  }
+}
+
+async function generate(){
+  var done=document.getElementById('done').value.trim();
+  if(!done){document.getElementById('done').focus();return;}
+  var role=document.getElementById('role').value.trim();
+  var block=document.getElementById('block').value.trim();
+  var plan=document.getElementById('plan').value.trim();
+  var btn=document.getElementById('genBtn');
+  var body=document.getElementById('outBody');
+  var sub=document.getElementById('outSub');
+  btn.disabled=true;
+  sub.textContent='生成中…';
+  body.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI 正在整理周报，帮你把碎片变成亮点…</span></div>';
+
+  var styleGuide={
+    '简洁专业':'简洁清晰，每条工作用一句话概括，重点突出，去掉废话',
+    '详细完整':'详细描述每项工作内容、进度和影响，适合向上级汇报',
+    '飞书格式':'使用飞书文档风格，包含标题/分组/数字标号，方便直接复制到飞书',
+    '中英双语':'每个section先输出中文，再附英文版本，适合国际化团队'
+  };
+
+  var prompt='你是职场写作专家，擅长将零散的工作记录整理成专业的周报。\n\n'
+    +(role?'角色/团队：'+role+'\n':'')
+    +'周报风格：'+selStyle+'（'+styleGuide[selStyle]+'）\n\n'
+    +'本周完成的工作：\n'+done+'\n\n'
+    +(block?'遇到的问题/阻塞：\n'+block+'\n\n':'')
+    +(plan?'下周计划：\n'+plan+'\n\n':'')
+    +'请按以下结构生成周报（Markdown 格式）：\n\n'
+    +'# 本周工作周报\n\n'
+    +'## 📌 本周概要\n'
+    +'（用 1-2 句话概括本周核心工作和成果，突出亮点）\n\n'
+    +'## ✅ 本周完成\n'
+    +'（将工作内容整理归类，突出每项工作的成果/影响，不只是描述做了什么）\n\n'
+    +(block?'## ⚠️ 问题与阻塞\n（需要支持的事项，格式：问题描述 + 需要谁的帮助）\n\n':'')
+    +'## 🎯 下周计划\n'
+    +(plan?'（基于下周计划整理，加上预期成果）\n\n':'（根据本周工作推断合理的下周计划）\n\n')
+    +'**注意**：工作描述要量化（有数字更好），突出产出和价值，不要只列举动作。';
+
+  try{
+    var text=await callAI(prompt);
+    sub.textContent='周报已生成';
+    typeRender(text,body,function(){
+      document.querySelector('.out-panel').insertAdjacentHTML('beforeend',
+        '<div class="ebar">'
+        +'<button class="ebtn" onclick="copyResult()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button>'
+        +'<button class="ebtn" onclick="exportMd()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button>'
+        +'</div>');
+    });
+  }catch(e){
+    body.innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">网络请求失败，请稍后重试</div>';
+    sub.textContent='失败';
+  }
+  btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>重新生成';
+}
+
+function copyResult(){
+  if(!lastResult)return;
+  navigator.clipboard.writeText(lastResult).then(function(){
+    var t=document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');},2000);
+  });
+}
+function exportMd(){
+  if(!lastResult)return;
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([lastResult],{type:'text/markdown'}));
+  a.download='周报.md';a.click();
+}
+</script>
+</body>
+</html>
