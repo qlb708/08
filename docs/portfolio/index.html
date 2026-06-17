@@ -3,212 +3,263 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>08 AI Tools</title>
+<title>AI × 08</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-h:#0055aa;--text:#1d1d1f;--text2:#86868b;--card-r:20px;--el-r:12px;--btn-r:999px;--shadow:0 2px 16px rgba(0,0,0,.06);--shadow-h:0 8px 32px rgba(0,0,0,.1)}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:var(--primary);text-decoration:none}
-a:hover{color:var(--primary-h)}
+:root{
+  --bg:#fff;--bg2:#f5f5f7;--blue:#0066cc;--blue-soft:rgba(0,102,204,.08);--blue-border:rgba(0,102,204,.18);
+  --text:#1d1d1f;--soft:#6e6e73;--muted:#aeaeb2;
+  --bd:rgba(0,0,0,.07);--sh:0 2px 16px rgba(0,0,0,.06);--sh2:0 8px 32px rgba(0,0,0,.1);
+  --r:20px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
 
-/* Nav */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);height:52px;display:flex;align-items:center;justify-content:center}
-nav .inner{width:100%;max-width:1080px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
-nav .logo{font-weight:700;font-size:17px;color:var(--text)}
-nav .logo span{color:var(--primary)}
-nav a.gh{display:inline-flex;align-items:center;gap:6px;color:var(--text2);font-size:13px;transition:color .2s}
-nav a.gh:hover{color:var(--text)}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center}
+.nav-w{max-width:1200px;margin:0 auto;padding:0 40px;width:100%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:17px;font-weight:800;letter-spacing:-.03em}
+.logo em{color:var(--blue);font-style:normal}
+.nav-r{display:flex;align-items:center;gap:20px}
+.nav-r a{font-size:13px;color:var(--soft);transition:color .2s}
+.nav-r a:hover{color:var(--text)}
+.nav-gh{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--blue) !important}
 
-/* Hero */
-.hero{padding:72px 0 24px;text-align:center;max-width:820px;margin:0 auto;padding-left:24px;padding-right:24px}
-.hero h1{font-size:clamp(32px,5vw,52px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
-.hero h1 em{font-style:normal;color:var(--primary)}
-.hero p{margin-top:12px;font-size:17px;color:var(--text2)}
-.hero-btns{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 28px;border-radius:var(--btn-r);font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;border:none}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:var(--primary-h);transform:translateY(-2px)}
-.btn-outline{background:transparent;color:var(--text);border:1.5px solid #d2d2d7}
-.btn-outline:hover{border-color:var(--text);transform:translateY(-2px)}
+/* HERO */
+.hero{max-width:1200px;margin:0 auto;padding:140px 40px 80px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--blue-soft);padding:5px 15px;border-radius:var(--pill);margin-bottom:28px;border:1px solid var(--blue-border)}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero h1{font-size:clamp(40px,5.5vw,72px);font-weight:800;letter-spacing:-.04em;line-height:1.08;margin-bottom:20px}
+.hero p{font-size:18px;color:var(--soft);margin-bottom:36px}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:13px 28px;border-radius:var(--pill);background:var(--blue);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:all .2s;box-shadow:0 4px 14px rgba(0,102,204,.25)}
+.btn-primary:hover{background:#0055aa;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,102,204,.35)}
+.btn-ghost{padding:13px 28px;border-radius:var(--pill);background:transparent;color:var(--text);font-size:15px;font-weight:600;border:1.5px solid var(--bd);cursor:pointer;font-family:var(--font);transition:all .2s}
+.btn-ghost:hover{border-color:var(--blue-border);color:var(--blue)}
 
-/* Ticker */
-.ticker{margin:20px auto 0;max-width:560px;background:var(--bg-alt);border-radius:var(--el-r);padding:12px 20px;font-size:14px;color:var(--text2);min-height:40px;overflow:hidden;position:relative}
-.ticker .cursor{display:inline-block;width:2px;height:1em;background:var(--primary);margin-left:2px;animation:blink .6s infinite}
+/* TICKER */
+.ticker-wrap{max-width:700px;margin:48px auto 0;padding:16px 22px;background:var(--bg2);border-radius:16px;border:1px solid var(--bd);display:flex;align-items:flex-start;gap:12px}
+.ticker-icon{width:28px;height:28px;border-radius:8px;background:var(--blue-soft);border:1px solid var(--blue-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ticker-icon svg{width:13px;height:13px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round}
+.ticker-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+#ticker-text{font-size:14px;color:var(--soft);line-height:1.6;min-height:22px}
+.cursor{display:inline-block;width:2px;height:14px;background:var(--blue);margin-left:1px;vertical-align:middle;animation:blink .6s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-/* Tools Grid */
-#tools{max-width:1080px;margin:0 auto;padding:64px 24px}
-#tools h2{font-size:28px;font-weight:700;text-align:center;margin-bottom:40px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.grid{grid-template-columns:1fr}}
-.card{background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:28px;transition:all .3s;position:relative;overflow:hidden}
-.card:hover{box-shadow:var(--shadow-h);transform:translateY(-4px);border-color:transparent}
-.card .icon{width:48px;height:48px;border-radius:var(--el-r);background:var(--bg-alt);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
-.card .icon svg{width:24px;height:24px;color:var(--primary)}
-.card .tag{display:inline-block;font-size:11px;font-weight:600;color:var(--primary);background:rgba(0,102,204,.08);border-radius:6px;padding:3px 10px;margin-bottom:10px}
-.card h3{font-size:17px;font-weight:600;margin-bottom:6px}
-.card p{font-size:14px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card .bottom{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid #f0f0f5}
-.badge{font-size:11px;font-weight:500;color:#30a46c;background:rgba(48,164,108,.08);border-radius:6px;padding:3px 8px}
-.card .link{font-size:14px;font-weight:500;color:var(--primary);display:inline-flex;align-items:center;gap:4px}
-.card .link svg{width:14px;height:14px;transition:transform .2s}
-.card:hover .link svg{transform:translateX(3px)}
+/* TOOLS */
+.section{max-width:1200px;margin:0 auto;padding:80px 40px}
+.sec-label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+.sec-title{font-size:clamp(28px,3.5vw,40px);font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.sec-sub{font-size:16px;color:var(--soft)}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+.tool-card{background:#fff;border:1.5px solid var(--bd);border-radius:var(--r);padding:24px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.tool-card:hover{border-color:var(--blue-border);box-shadow:var(--sh2);transform:translateY(-4px)}
+.tool-card::before{content:'';position:absolute;inset:0;opacity:0;background:radial-gradient(400px at var(--mx,50%) var(--my,50%),rgba(0,102,204,.04),transparent);transition:opacity .3s;pointer-events:none}
+.tool-card:hover::before{opacity:1}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.card-icon{width:40px;height:40px;border-radius:12px;background:var(--bg2);display:flex;align-items:center;justify-content:center;border:1px solid var(--bd)}
+.card-icon svg{width:18px;height:18px;fill:none;stroke:var(--blue);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--pill);background:rgba(52,199,89,.1);color:#1a8a3a;border:1px solid rgba(52,199,89,.2)}
+.card-type{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-.02em}
+.card-desc{font-size:13px;color:var(--soft);line-height:1.55;flex:1}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)}
+.card-link{font-size:13px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px}
+.card-link svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.5;transition:transform .2s}
+.tool-card:hover .card-link svg{transform:translateX(3px)}
 
 /* FAQ */
-.faq{max-width:680px;margin:0 auto;padding:48px 24px 64px}
-.faq h2{font-size:24px;font-weight:700;text-align:center;margin-bottom:32px}
-.faq-item{border-bottom:1px solid #e8e8ed;padding:18px 0}
-.faq-item h3{font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
-.faq-item h3 svg{width:20px;height:20px;color:var(--text2);transition:transform .25s}
-.faq-item h3.open svg{transform:rotate(180deg)}
-.faq-item .ans{max-height:0;overflow:hidden;transition:max-height .35s ease;font-size:14px;color:var(--text2);line-height:1.7}
-.faq-item .ans.show{max-height:200px;padding-top:10px}
+.faq-wrap{max-width:720px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--bd);overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:20px 0;cursor:pointer;font-size:15px;font-weight:600;gap:16px;transition:color .2s}
+.faq-q:hover{color:var(--blue)}
+.faq-icon{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s}
+.faq-icon svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.5;transition:transform .25s}
+.faq-item.open .faq-icon{background:var(--blue);border-color:var(--blue)}
+.faq-item.open .faq-icon svg{stroke:#fff;transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease}
+.faq-item.open .faq-a{max-height:400px;padding-bottom:20px}
+.faq-a p{font-size:14px;color:var(--soft);line-height:1.7}
+.faq-a strong{color:var(--text);font-weight:600}
 
-/* Footer */
-footer{text-align:center;padding:32px 24px;border-top:1px solid #e8e8ed;font-size:13px;color:var(--text2)}
-footer a{color:var(--primary)}
+/* DIVIDER */
+.divider{height:1px;background:var(--bd);max-width:1200px;margin:0 auto}
+
+/* FOOTER */
+footer{max-width:1200px;margin:0 auto;padding:32px 40px;display:flex;justify-content:space-between;align-items:center}
+footer p{font-size:13px;color:var(--muted)}
+footer a{font-size:13px;color:var(--soft);display:flex;align-items:center;gap:5px}
+footer a:hover{color:var(--blue)}
+
+@media(max-width:900px){.tools-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.tools-grid{grid-template-columns:1fr}.hero{padding:100px 20px 60px}.section{padding:60px 20px}.nav-w{padding:0 20px}}
 </style>
 </head>
 <body>
-<nav><div class="inner">
-  <div class="logo"><span>08</span> AI Tools</div>
-  <a class="gh" href="https://github.com/qlb708/08" target="_blank">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-    GitHub
-  </a>
-</div></nav>
+<nav>
+  <div class="nav-w">
+    <div class="logo">AI <em>×</em> 08</div>
+    <div class="nav-r">
+      <a href="#tools">工具</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/qlb708/08" target="_blank" class="nav-gh">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
 
 <section class="hero">
-  <h1>Hi，这是 <em>08</em> 构建的<br>AI 提效工具。</h1>
+  <div class="hero-badge"><span class="dot"></span>AI 提效工具集</div>
+  <h1>Hi，这是 08 构建的<br>AI 提效工具。</h1>
   <p>一些真实在用的 AI 工具。</p>
   <div class="hero-btns">
-    <a class="btn btn-primary" href="#tools">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      查看工具
-    </a>
-    <a class="btn btn-outline" href="https://github.com/qlb708/08" target="_blank">
-      GitHub
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-    </a>
+    <button class="btn-primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">查看工具</button>
+    <a href="https://github.com/qlb708/08" target="_blank"><button class="btn-ghost">GitHub ↗</button></a>
+  </div>
+  <div class="ticker-wrap">
+    <div class="ticker-icon">
+      <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    </div>
+    <div>
+      <div class="ticker-label">AI 正在运行中</div>
+      <div id="ticker-text"><span class="cursor"></span></div>
+    </div>
   </div>
 </section>
 
-<div class="ticker"><span id="tickerText"></span><span class="cursor"></span></div>
+<div class="divider"></div>
 
-<section id="tools">
-  <h2>全部工具</h2>
-  <div class="grid">
+<section class="section" id="tools">
+  <div class="sec-label">AI 工具集</div>
+  <div class="sec-title">探索所有工具</div>
+  <div class="sec-sub">每个工具都是真实可用的 AI 产品，不是演示样本。</div>
+  <div class="tools-grid" id="toolsGrid"></div>
+</section>
 
-    <a class="card" href="https://qlb708.github.io/08/" target="_blank">
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+<div class="divider"></div>
+
+<section class="section" id="faq" style="background:var(--bg2);max-width:100%;padding:80px 40px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="sec-label" style="text-align:center">FAQ</div>
+    <div class="sec-title" style="text-align:center;margin-bottom:8px">面试官常问</div>
+    <div class="sec-sub" style="text-align:center;margin-bottom:48px">直接给你答案。</div>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>这些工具是真实在用的吗，还是只是 Demo？</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </div>
+        <div class="faq-a"><p>都是<strong>真实在用</strong>的。用研报告生成器、内容选题雷达、产品文档速写台在实习期间实际用于日常工作，大幅减少了重复性文档写作时间。增长实验模拟器和用户旅程地图是在此基础上扩展的，同样接入了真实 AI 接口。</p></div>
       </div>
-      <span class="tag">数据分析</span>
-      <h3>竞品雷达</h3>
-      <p>实时追踪竞品动态，按区域筛选，自动生成每日热点简报。</p>
-      <div class="bottom"><span class="badge">可体验</span><span class="link">体验 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
-    </a>
-
-    <a class="card" href="https://qlb708.github.io/08/portfolio/ux-research/" target="_blank">
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>这些工具用了多少时间做出来？</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </div>
+        <div class="faq-a"><p>全部是 Vibe coding 项目，<strong>从构思到上线不超过两天</strong>。核心思路是：先想清楚用户需求和交互路径，再用 AI 辅助实现。产品设计占了大部分时间，代码生成反而很快。</p></div>
       </div>
-      <span class="tag">AI 生成</span>
-      <h3>用研报告生成器</h3>
-      <p>输入产品信息，AI 自动生成结构化的用户研究报告。</p>
-      <div class="bottom"><span class="badge">可体验</span><span class="link">体验 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
-    </a>
-
-    <a class="card" href="https://qlb708.github.io/08/portfolio/content-radar/" target="_blank">
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>AI 生成的内容质量怎么样，能直接用吗？</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </div>
+        <div class="faq-a"><p>可以作为<strong>高质量初稿</strong>直接使用。输入信息越详细，输出质量越高。实际使用中，PRD 初稿可以省去 60-70% 的写作时间，用研报告框架可以直接发给团队讨论。最终版本仍需人工 review 和调整业务细节。</p></div>
       </div>
-      <span class="tag">内容策略</span>
-      <h3>内容选题雷达</h3>
-      <p>基于账号定位和平台特性，AI 推荐高潜力内容选题方向。</p>
-      <div class="bottom"><span class="badge">可体验</span><span class="link">体验 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
-    </a>
-
-    <a class="card" href="https://qlb708.github.io/08/portfolio/doc-writer/" target="_blank">
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>为什么选择做这几个工具，而不是其他方向？</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </div>
+        <div class="faq-a"><p>来自实习中的<strong>真实痛点</strong>：写 PRD 需要查大量模板、用研报告框架每次从零开始、竞品分析耗时费力。这几个场景的共同特点是：有固定结构、需要大量重复思考、但核心内容因产品而异——正好是 AI 最擅长的。</p></div>
       </div>
-      <span class="tag">效率工具</span>
-      <h3>产品文档速写台</h3>
-      <p>一键生成 BRD/PRD/MRD 等 7 种标准产品文档。</p>
-      <div class="bottom"><span class="badge">可体验</span><span class="link">体验 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
-    </a>
-
-    <a class="card" href="https://qlb708.github.io/08/portfolio/growth-simulator/" target="_blank">
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>这能体现什么产品能力？</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </div>
+        <div class="faq-a"><p>主要体现三点：<strong>① 需求洞察</strong>——能从实际工作中发现值得解决的真实问题；<strong>② AI Prompt 设计</strong>——针对不同文档类型设计了差异化的 Prompt，输出结构化内容；<strong>③ 快速 MVP 验证</strong>——从想法到上线两天内完成，具备 0→1 的产品执行力。</p></div>
       </div>
-      <span class="tag">增长策略</span>
-      <h3>增长实验模拟器</h3>
-      <p>描述增长瓶颈，AI 给出具体的 A/B 实验方案与预期收益。</p>
-      <div class="bottom"><span class="badge">可体验</span><span class="link">体验 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
-    </a>
-
-    <a class="card" href="https://qlb708.github.io/08/portfolio/journey-map/" target="_blank">
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      </div>
-      <span class="tag">用户体验</span>
-      <h3>用户旅程地图</h3>
-      <p>描述核心场景，AI 生成完整的分阶段用户旅程分析。</p>
-      <div class="bottom"><span class="badge">可体验</span><span class="link">体验 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
-    </a>
-
+    </div>
   </div>
 </section>
 
-<section class="faq">
-  <h2>常见问题</h2>
-  <div class="faq-item">
-    <h3 onclick="toggleFaq(this)">这些工具免费吗？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h3>
-    <div class="ans">是的，所有工具均免费使用，基于 Gemini AI 提供智能生成能力。</div>
-  </div>
-  <div class="faq-item">
-    <h3 onclick="toggleFaq(this)">数据来源是什么？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h3>
-    <div class="ans">内容由 AI 基于行业知识和最佳实践生成，建议结合实际业务场景进行验证和调整。</div>
-  </div>
-  <div class="faq-item">
-    <h3 onclick="toggleFaq(this)">可以贡献代码或提建议吗？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h3>
-    <div class="ans">当然可以，项目完全开源，欢迎在 GitHub 提交 Issue 或 PR。</div>
-  </div>
-</section>
-
+<div class="divider"></div>
 <footer>
-  <p>Hi，这是 <a href="https://github.com/qlb708" target="_blank">08</a> 构建的 AI 提效工具。</p>
+  <p>Hi，这是 08 构建的 AI 提效工具。</p>
+  <a href="https://github.com/qlb708/08" target="_blank">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    GitHub
+  </a>
 </footer>
 
 <script>
+const TOOLS = [
+  {icon:'<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>',type:'竞品分析',title:'竞品雷达',desc:'实时追踪 AI 旅行赛道社交热点，按地区/赛道筛选，支持详情查看。',href:'/08/',badge:'可体验'},
+  {icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>',type:'用户研究',title:'用研报告生成器',desc:'输入产品信息，AI 生成结构化用研报告初稿，含 AI 反问追踪真实需求。',href:'/08/portfolio/ux-research/',badge:'可体验'},
+  {icon:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',type:'内容运营',title:'内容选题雷达',desc:'选择平台与风格，AI 批量生成差异化选题方案，覆盖小红书/微博/抖音等。',href:'/08/portfolio/content-radar/',badge:'可体验'},
+  {icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>',type:'产品文档',title:'产品文档速写台',desc:'BRD/MRD/PRD/OKR/竞品分析等 7 种文档，AI 生成专业初稿，支持导出。',href:'/08/portfolio/doc-writer/',badge:'可体验'},
+  {icon:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',type:'增长产品',title:'增长实验模拟器',desc:'描述增长瓶颈，AI 给出 A/B 实验方案含假设、变量设计与预期提升幅度。',href:'/08/portfolio/growth-simulator/',badge:'可体验'},
+  {icon:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',type:'UX 设计',title:'用户旅程地图',desc:'输入核心场景，AI 按阶段生成行为/情绪/触点/痛点/机会点完整旅程分析。',href:'/08/portfolio/journey-map/',badge:'可体验'},
+];
+
+const grid = document.getElementById('toolsGrid');
+TOOLS.forEach(t=>{
+  const a = document.createElement('a');
+  a.href = t.href;
+  a.innerHTML=`<div class="tool-card">
+    <div class="card-top">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg></div>
+      <span class="card-badge">${t.badge}</span>
+    </div>
+    <div class="card-type">${t.type}</div>
+    <div class="card-title">${t.title}</div>
+    <div class="card-desc">${t.desc}</div>
+    <div class="card-footer">
+      <span class="card-link">体验 <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+    </div>
+  </div>`;
+  const card = a.querySelector('.tool-card');
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    card.style.setProperty('--mx',(e.clientX-r.left)+'px');
+    card.style.setProperty('--my',(e.clientY-r.top)+'px');
+  });
+  grid.appendChild(a);
+});
+
 // Ticker
 const lines=[
-  '正在分析竞品动态...',
-  '已生成 3 条高潜力选题方向',
-  '用户旅程地图已生成，共 5 个阶段',
-  'A/B 实验方案就绪，预期注册转化 +18%',
-  'PRD 文档已生成，包含 12 个功能点',
-  '用研报告完成，发现 2 个关键洞察'
+  '正在分析旅行 App 7 日留存下滑原因…',
+  '生成小红书 Q3 选题方案（美食+旅行方向）…',
+  '输出 PRD：AI 行程规划 2.0 版本需求文档…',
+  '识别用户旅程中情绪低谷：行程确认页流失率高…',
+  '设计 A/B 实验：注册流程第 2 步简化方案…',
 ];
-let li=0,ci=0,el=document.getElementById('tickerText');
-function typeTicker(){
-  if(ci<=lines[li].length){
-    el.textContent=lines[li].slice(0,ci);
+let li=0,ci=0,del=false;
+const el=document.getElementById('ticker-text');
+function tick(){
+  const line=lines[li];
+  if(!del){
+    el.innerHTML=line.slice(0,ci)+'<span class="cursor"></span>';
     ci++;
-    setTimeout(typeTicker,50+Math.random()*30);
+    if(ci>line.length){del=true;setTimeout(tick,1800);return;}
   } else {
-    setTimeout(()=>{ci=0;li=(li+1)%lines.length;typeTicker()},2000);
+    ci--;el.innerHTML=line.slice(0,ci)+'<span class="cursor"></span>';
+    if(ci===0){del=false;li=(li+1)%lines.length;setTimeout(tick,400);return;}
   }
+  setTimeout(tick,del?30:45);
 }
-typeTicker();
+tick();
 
-// FAQ
-function toggleFaq(h){
-  h.classList.toggle('open');
-  h.nextElementSibling.classList.toggle('show');
+function toggleFaq(el){
+  const item=el.closest('.faq-item');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!isOpen) item.classList.add('open');
 }
 </script>
 </body>
