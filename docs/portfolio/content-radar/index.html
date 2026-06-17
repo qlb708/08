@@ -1,256 +1,273 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>内容选题雷达 · AI Product Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0d0d14;--surface:rgba(255,255,255,.05);--surface2:rgba(255,255,255,.08);--primary:#6C5CE7;--text:#e8e8f0;--text-dim:rgba(232,232,240,.55);--border:rgba(255,255,255,.08);--radius:14px}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--text:#1d1d1f;--text-secondary:#6e6e73;--card-bg:#fff;--card-border:rgba(0,0,0,.06);--card-shadow:0 2px 20px rgba(0,0,0,.08);--radius:18px;--radius-pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Display","Helvetica Neue",sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(13,13,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px}
-.back{color:var(--text-dim);font-size:14px;font-weight:500;transition:color .2s}
-.back:hover{color:var(--text)}
-.page-title{font-size:16px;font-weight:700}
-.page-badge{margin-left:auto;padding:4px 12px;border-radius:999px;background:rgba(108,92,231,.15);color:#a29bfe;font-size:11px;font-weight:700;border:1px solid rgba(108,92,231,.25)}
-.layout{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 53px)}
-@media(max-width:900px){.layout{grid-template-columns:1fr}}
-.form-panel{border-right:1px solid var(--border);padding:32px;display:flex;flex-direction:column;gap:22px;overflow-y:auto;max-height:calc(100vh - 53px)}
-@media(max-width:900px){.form-panel{max-height:none;border-right:none;border-bottom:1px solid var(--border)}}
-.panel-heading{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
-.panel-sub{font-size:13px;color:var(--text-dim)}
-.form-group{display:flex;flex-direction:column;gap:8px}
-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
-input,textarea{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
-input:focus,textarea:focus{border-color:rgba(108,92,231,.5);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
-.multi-select{display:flex;flex-wrap:wrap;gap:8px}
-.ms-btn{padding:8px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.ms-btn.active{background:rgba(108,92,231,.2);border-color:rgba(108,92,231,.5);color:#a29bfe}
-.style-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.generate-btn{width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,#6C5CE7,#8b7ff0);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(108,92,231,.3);margin-top:8px}
-.generate-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(108,92,231,.45)}
-.generate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.output-panel{padding:40px;overflow-y:auto;max-height:calc(100vh - 53px)}
-@media(max-width:900px){.output-panel{max-height:none}}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;gap:16px;text-align:center}
-.empty-icon{font-size:56px;opacity:.4}
-.empty-title{font-size:20px;font-weight:700;color:var(--text-dim)}
-.empty-desc{font-size:14px;color:var(--text-dim);max-width:360px;opacity:.7}
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:24px}
-.spinner{width:40px;height:40px;border:3px solid rgba(108,92,231,.2);border-top-color:#6C5CE7;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{color:var(--text-dim);font-size:14px;animation:blink 1.5s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:.5}50%{opacity:1}}
-.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:12px}
-.result-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--primary)}
-.result-actions{display:flex;gap:10px}
-.action-btn{padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.action-btn:hover{background:var(--surface2);border-color:rgba(108,92,231,.3)}
-.action-btn.primary{background:rgba(108,92,231,.2);border-color:rgba(108,92,231,.4);color:#a29bfe}
-.markdown-body{font-size:15px;line-height:1.75;color:var(--text)}
-.markdown-body h1{font-size:26px;font-weight:800;margin:0 0 24px;letter-spacing:-.03em;background:linear-gradient(135deg,#fff,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.markdown-body h2{font-size:18px;font-weight:700;margin:32px 0 14px;padding:14px 18px;background:rgba(108,92,231,.08);border-left:3px solid #6C5CE7;border-radius:0 10px 10px 0;letter-spacing:-.01em;color:#a29bfe;-webkit-text-fill-color:#a29bfe}
-.markdown-body h3{font-size:15px;font-weight:700;margin:20px 0 10px;color:var(--text)}
-.markdown-body p{margin:0 0 14px;color:rgba(232,232,240,.85)}
-.markdown-body ul,ol{margin:0 0 14px 20px;color:rgba(232,232,240,.85)}
-.markdown-body li{margin-bottom:6px}
-.markdown-body strong{color:var(--text);font-weight:700}
-.markdown-body hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border)}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-size:17px;font-weight:700;color:var(--text)}
+.nav-logo a{color:var(--text)}
+.nav-logo span{color:var(--primary)}
+.nav-link{font-size:14px;color:var(--text-secondary);transition:color .2s}
+.nav-link:hover{color:var(--primary)}
+
+.tool-header{padding:140px 0 60px;text-align:center;background:var(--bg-alt)}
+.tool-tag{display:inline-block;font-size:13px;font-weight:600;color:var(--primary);background:rgba(0,102,204,.08);padding:5px 14px;border-radius:var(--radius-pill);margin-bottom:16px}
+.tool-header h1{font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:16px}
+.tool-header p{font-size:17px;color:var(--text-secondary);max-width:520px;margin:0 auto;line-height:1.6}
+
+.workspace{padding:60px 0 100px}
+.workspace-inner{max-width:720px;margin:0 auto}
+
+.panel{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--card-border);box-shadow:var(--card-shadow);overflow:hidden;margin-bottom:32px}
+.panel-header{padding:20px 24px;border-bottom:1px solid var(--card-border);font-size:15px;font-weight:600;color:var(--text)}
+.panel-body{padding:24px}
+
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 16px;border:1px solid var(--card-border);border-radius:12px;font-size:15px;font-family:var(--font);background:var(--bg-alt);color:var(--text);transition:border-color .2s;outline:none}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--primary)}
+.form-group textarea{resize:vertical;min-height:80px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:var(--radius-pill);font-size:15px;font-weight:600;cursor:pointer;transition:all .2s ease;border:none;font-family:var(--font);width:100%}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#0055aa;transform:scale(1.01)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* TOPIC CARDS */
+.topic-list{display:flex;flex-direction:column;gap:16px}
+.topic-card{background:var(--bg-alt);border-radius:16px;padding:20px 24px;border:1px solid transparent;transition:all .2s ease}
+.topic-card:hover{border-color:var(--primary);background:rgba(0,102,204,.03)}
+.topic-num{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:8px}
+.topic-card h4{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text);line-height:1.4}
+.topic-card p{font-size:14px;color:var(--text-secondary);line-height:1.6}
+.topic-card .tags{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.topic-card .tags span{font-size:12px;font-weight:500;padding:3px 10px;border-radius:var(--radius-pill);background:var(--card-bg);color:var(--text-secondary);border:1px solid var(--card-border)}
+
+/* THINKING */
+.thinking{display:flex;align-items:center;gap:12px;padding:32px 24px;font-size:15px;color:var(--text-secondary)}
+.thinking-dots{display:flex;gap:4px}
+.thinking-dots span{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:dot-bounce 1.4s infinite ease-in-out}
+.thinking-dots span:nth-child(2){animation-delay:.2s}
+.thinking-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot-bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.cursor{animation:blink .6s infinite;color:var(--primary)}
+
+/* OUTPUT */
+.output-area{padding:24px;font-size:15px;line-height:1.8;color:var(--text)}
+.output-area h1,.output-area h2,.output-area h3{margin:20px 0 12px;font-weight:700}
+.output-area h1{font-size:22px;border-bottom:1px solid var(--card-border);padding-bottom:10px}
+.output-area h2{font-size:18px}
+.output-area h3{font-size:16px}
+.output-area p{margin-bottom:12px}
+.output-area ul,.output-area ol{margin:10px 0 12px 20px}
+.output-area li{margin-bottom:6px}
+.output-area strong{font-weight:600}
+
+.output-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;color:var(--text-secondary)}
+.output-empty .icon{font-size:48px;margin-bottom:16px;opacity:.4}
+.output-empty p{font-size:15px}
+
+/* HISTORY */
+.history-section{margin-top:40px}
+.history-section h3{font-size:18px;font-weight:700;margin-bottom:16px}
+.history-item{background:var(--bg-alt);border-radius:12px;padding:14px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s}
+.history-item:hover{background:rgba(0,102,204,.05)}
+.history-item .title{font-size:14px;font-weight:600}
+.history-item .time{font-size:12px;color:var(--text-secondary)}
+
+/* EXPORT BTN */
+.btn-export{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--card-border);background:var(--card-bg);color:var(--text);transition:all .2s;font-family:var(--font)}
+.btn-export:hover{border-color:var(--primary);color:var(--primary)}
+.actions-bar{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid var(--card-border)}
+
+@media(max-width:768px){
+  .workspace-inner{padding:0 16px}
+}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <a href="/08/portfolio/" class="back">← 返回首页</a>
-  <span style="color:var(--border)">|</span>
-  <span class="page-title">📡 内容选题雷达</span>
-  <span class="page-badge">Gemini AI</span>
-</div>
 
-<div class="layout">
-  <div class="form-panel">
-    <div>
-      <div class="panel-heading">内容选题雷达</div>
-      <div class="panel-sub">输入账号定位，AI 生成本周 10 个推荐选题</div>
-    </div>
-
-    <div class="form-group">
-      <label>账号定位 *</label>
-      <input id="accountPos" type="text" placeholder="如：AI 产品经理，25-35岁都市白领"/>
-    </div>
-
-    <div class="form-group">
-      <label>目标平台（可多选）</label>
-      <div class="multi-select" id="platforms">
-        <button class="ms-btn active" data-val="小红书">小红书</button>
-        <button class="ms-btn" data-val="抖音">抖音</button>
-        <button class="ms-btn" data-val="微博">微博</button>
-        <button class="ms-btn" data-val="公众号">公众号</button>
-        <button class="ms-btn" data-val="B站">B站</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>内容风格</label>
-      <div class="style-row" id="styles">
-        <button class="ms-btn active" data-val="干货教程">干货教程</button>
-        <button class="ms-btn" data-val="观点输出">观点输出</button>
-        <button class="ms-btn" data-val="故事分享">故事分享</button>
-        <button class="ms-btn" data-val="测评种草">测评种草</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>本周热点关键词（可选）</label>
-      <input id="hotwords" type="text" placeholder="如：世界杯、AI助手、暑期旅行"/>
-    </div>
-
-    <div class="form-group">
-      <label>核心受众描述（可选）</label>
-      <textarea id="audience" placeholder="如：对AI工具感兴趣，想提升工作效率的职场人" style="min-height:70px"></textarea>
-    </div>
-
-    <button class="generate-btn" id="generateBtn" onclick="generate()">✨ 生成选题方案</button>
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo"><a href="/08/portfolio/">AI <span>×</span> Product</a></div>
+    <a class="nav-link" href="/08/portfolio/">返回 Portfolio</a>
   </div>
+</nav>
 
-  <div class="output-panel" id="outputPanel">
-    <div class="empty-state">
-      <div class="empty-icon">📡</div>
-      <div class="empty-title">等待生成</div>
-      <div class="empty-desc">填写账号定位，选择目标平台，AI 将生成 10 个高质量选题方案</div>
-    </div>
+<div class="tool-header">
+  <div class="container">
+    <span class="tool-tag">内容运营</span>
+    <h1>内容选题雷达</h1>
+    <p>输入你的账号定位，AI 结合热点趋势生成本周 10 个高质量选题。</p>
   </div>
 </div>
 
-<script>
-const GEMINI_KEY = ['AQ.Ab8RN6Kwvan', 'PacRzJIFXe6Yi1Kx35q046', 'jXDWC8LF0dV3tKJiA'].join('');
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
-
-// Multi-select logic
-function initMultiSelect(containerId, single = false) {
-  document.getElementById(containerId).querySelectorAll('.ms-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (single) {
-        document.getElementById(containerId).querySelectorAll('.ms-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      } else {
-        btn.classList.toggle('active');
-      }
-    });
-  });
-}
-initMultiSelect('platforms');
-initMultiSelect('styles', true);
-
-function getSelected(containerId) {
-  return Array.from(document.getElementById(containerId).querySelectorAll('.ms-btn.active')).map(b => b.dataset.val);
-}
-
-async function generate() {
-  const account = document.getElementById('accountPos').value.trim();
-  if (!account) { alert('请填写账号定位'); return; }
-  const platforms = getSelected('platforms');
-  const style = getSelected('styles')[0] || '干货教程';
-  const hotwords = document.getElementById('hotwords').value.trim();
-  const audience = document.getElementById('audience').value.trim();
-
-  const prompt = `你是一位顶级内容运营专家，请为以下账号生成本周内容选题方案。
-
-账号定位：${account}
-目标平台：${platforms.join('、')}
-内容风格：${style}
-${hotwords ? `本周热点关键词：${hotwords}` : ''}
-${audience ? `核心受众：${audience}` : ''}
-
-请按以下 Markdown 格式输出 10 个选题（不要少于10个），每个选题都要具体、有吸引力：
-
-# 本周内容选题方案
-
-## 🔥 爆款潜力选题（3个）
-适合追求高流量、快速涨粉的内容
-
-**选题1：[具体标题]**
-- 核心钩子：（为什么用户会点击/停留）
-- 内容方向：（大概写什么）
-- 竞争程度：低/中/高
-- 最佳发布时间：（哪个时间段）
-
-**选题2：[具体标题]**
-...
-
-**选题3：[具体标题]**
-...
-
-## 💡 差异化选题（4个）
-适合建立专业人设、提升账号质量
-
-**选题4：[具体标题]**
-- 核心钩子：
-- 内容方向：
-- 竞争程度：
-- 最佳发布时间：
-
-（共4个）
-
-## 🌊 借势热点选题（3个）
-结合当前热点，提升内容时效性
-
-**选题8：[具体标题]**
-- 核心钩子：
-- 内容方向：
-- 竞争程度：
-- 最佳发布时间：
-
-（共3个）
-
-## 📅 本周发布策略
-- 推荐发布顺序：
-- 各平台最佳发布时间：
-- 互动引导建议：
-- 内容形式建议：`;
-
-  const btn = document.getElementById('generateBtn');
-  btn.disabled = true; btn.textContent = '生成中...';
-  const panel = document.getElementById('outputPanel');
-  panel.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">AI 正在分析选题方向，请稍候...</div></div>';
-
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8, maxOutputTokens: 4096 } })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error?.message || '请求失败');
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!text) throw new Error('返回内容为空');
-
-    panel.innerHTML = `
-      <div class="result-header">
-        <span class="result-title">📡 选题方案已生成</span>
-        <div class="result-actions">
-          <button class="action-btn primary" onclick="copyResult()">复制全文</button>
-          <button class="action-btn" onclick="location.reload()">重新生成</button>
+<div class="workspace">
+  <div class="workspace-inner">
+    <!-- INPUT -->
+    <div class="panel">
+      <div class="panel-header">定义你的内容方向</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label>账号定位 / 领域</label>
+          <input type="text" id="accountType" placeholder="例如：AI 工具测评博主">
         </div>
+        <div class="form-group">
+          <label>目标受众</label>
+          <input type="text" id="audience" placeholder="例如：职场新人、大学生">
+        </div>
+        <div class="form-group">
+          <label>平台</label>
+          <select id="platform">
+            <option>小红书</option><option>微信公众号</option><option>抖音</option><option>B站</option><option>知乎</option><option>微博</option><option>全平台</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>额外要求（选填）</label>
+          <textarea id="extraReq" placeholder="例如：偏实用教程类，避免太理论的内容"></textarea>
+        </div>
+        <button class="btn btn-primary" id="genBtn" onclick="generate()">生成本周选题</button>
       </div>
-      <div class="markdown-body">${marked.parse(text)}</div>`;
-    window._resultText = text;
-  } catch(e) {
-    panel.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">生成失败</div><div class="empty-desc">${e.message}</div></div>`;
-  } finally {
-    btn.disabled = false; btn.textContent = '✨ 生成选题方案';
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="panel" id="outputPanel">
+      <div class="panel-header">AI 选题推荐</div>
+      <div id="outputBody">
+        <div class="output-empty"><div class="icon">📡</div><p>填写上方信息后<br>AI 将为你生成 10 个选题</p></div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="history-section" id="historySection" style="display:none">
+      <h3>📌 历史选题</h3>
+      <div id="historyList"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const API_KEY=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
+const API_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+API_KEY;
+
+function formatDate(d){const m=String(d.getMonth()+1).padStart(2,'0');return `${d.getFullYear()}-${m}-${String(d.getDate()).padStart(2,'0')}`}
+
+async function generate(){
+  const type=document.getElementById('accountType').value.trim();
+  const audience=document.getElementById('audience').value.trim();
+  const platform=document.getElementById('platform').value;
+  const extra=document.getElementById('extraReq').value.trim();
+  if(!type){alert('请填写账号定位');return}
+  if(!audience){alert('请填写目标受众');return}
+
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;btn.textContent='AI 正在扫描热点...';
+
+  const out=document.getElementById('outputBody');
+  out.innerHTML='<div class="thinking"><div class="thinking-dots"><span></span><span></span><span></span></div><span>AI 正在分析热点并生成选题...</span></div>';
+
+  const weekStart=new Date();weekStart.setDate(weekStart.getDate()-weekStart.getDay()+1);
+  const weekEnd=new Date(weekStart);weekEnd.setDate(weekEnd.getDate()+6);
+  const weekRange=`${formatDate(weekStart)} ~ ${formatDate(weekEnd)}`;
+
+  const prompt=`你是一位资深内容运营专家。请为以下账号生成本周（${weekRange}）的 10 个内容选题。
+
+账号信息：
+- 账号定位：${type}
+- 目标受众：${audience}
+- 发布平台：${platform}${extra?'\n- 额外要求：'+extra:''}
+
+请按以下格式输出（使用 Markdown）：
+
+# 📡 本周选题推荐
+
+> 账号定位：${type} | 目标受众：${audience} | 平台：${platform}
+> 周期：${weekRange}
+
+（然后依次输出 10 个选题，每个选题包含：）
+
+### 选题 N：[标题]
+- **选题方向**：xxx
+- **核心角度**：xxx（说明为什么这个选题值得关注）
+- **内容形式建议**：xxx（如图文教程/短视频/清单/对比测评等）
+- **预计热度**：⭐️⭐️⭐️⭐️（1-5星）
+- **标签**：#xxx #xxx #xxx
+
+请确保选题新颖、实用、贴合目标受众，避免泛泛而谈的大话题。`;
+
+  try{
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.8}})});
+    const data=await resp.json();
+    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'抱歉，生成失败，请重试。';
+    typewriterRender(text,out);
+    saveToHistory(type,text);
+  }catch(e){
+    out.innerHTML='<div class="output-empty"><div class="icon">⚠️</div><p>请求失败，请检查网络后重试</p></div>';
   }
+  btn.disabled=false;btn.textContent='重新生成';
 }
 
-function copyResult() {
-  navigator.clipboard.writeText(window._resultText || '').then(() => {
-    const btn = event.target;
-    btn.textContent = '✅ 已复制';
-    setTimeout(() => btn.textContent = '复制全文', 2000);
-  });
+function typewriterRender(fullText,container){
+  let i=0;
+  container.innerHTML='';
+  const interval=setInterval(()=>{
+    i+=3;
+    const current=fullText.slice(0,i);
+    container.innerHTML='<div class="output-area">'+marked.parse(current)+'</div><span class="cursor">|</span>';
+    if(i>=fullText.length){
+      clearInterval(interval);
+      container.innerHTML='<div class="output-area">'+marked.parse(fullText)+'</div><div class="actions-bar"><div></div><button class="btn-export" onclick="exportResult()">📥 导出 Markdown</button></div>';
+      // Store result for export
+      window._lastResult=fullText;
+    }
+  },18);
 }
+
+function saveToHistory(type,text){
+  let history=JSON.parse(localStorage.getItem('content_radar_history')||'[]');
+  history.unshift({title:type,time:new Date().toLocaleString('zh-CN'),content:text});
+  if(history.length>10)history=history.slice(0,10);
+  localStorage.setItem('content_radar_history',JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory(){
+  const history=JSON.parse(localStorage.getItem('content_radar_history')||'[]');
+  if(!history.length)return;
+  const sec=document.getElementById('historySection');
+  sec.style.display='block';
+  const list=document.getElementById('historyList');
+  list.innerHTML=history.map((h,i)=>`<div class="history-item" onclick="showHistory(${i})"><span class="title">${h.title}</span><span class="time">${h.time}</span></div>`).join('');
+}
+
+function showHistory(i){
+  const history=JSON.parse(localStorage.getItem('content_radar_history')||'[]');
+  const out=document.getElementById('outputBody');
+  out.innerHTML='<div class="output-area">'+marked.parse(history[i].content)+'</div>';
+}
+
+function exportResult(){
+  if(!window._lastResult)return;
+  const blob=new Blob([window._lastResult],{type:'text/markdown'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`选题推荐_${formatDate(new Date())}.md`;a.click();
+}
+
+// Load history on page load
+renderHistory();
 </script>
 </body>
 </html>
