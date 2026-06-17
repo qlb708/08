@@ -3,271 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>内容选题雷达 · AI Product Portfolio</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+<title>内容选题雷达 - 08 AI Tools</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>08</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--text:#1d1d1f;--text-secondary:#6e6e73;--card-bg:#fff;--card-border:rgba(0,0,0,.06);--card-shadow:0 2px 20px rgba(0,0,0,.08);--radius:18px;--radius-pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Display","Helvetica Neue",sans-serif}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh}
+:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-h:#0055aa;--text:#1d1d1f;--text2:#86868b;--card-r:20px;--el-r:12px;--btn-r:999px;--shadow:0 2px 16px rgba(0,0,0,.06);--shadow-h:0 8px 32px rgba(0,0,0,.1)}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:var(--primary);text-decoration:none}
-
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border)}
-.nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
-.nav-logo{font-size:17px;font-weight:700;color:var(--text)}
-.nav-logo a{color:var(--text)}
-.nav-logo span{color:var(--primary)}
-.nav-link{font-size:14px;color:var(--text-secondary);transition:color .2s}
-.nav-link:hover{color:var(--primary)}
-
-.tool-header{padding:140px 0 60px;text-align:center;background:var(--bg-alt)}
-.tool-tag{display:inline-block;font-size:13px;font-weight:600;color:var(--primary);background:rgba(0,102,204,.08);padding:5px 14px;border-radius:var(--radius-pill);margin-bottom:16px}
-.tool-header h1{font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:16px}
-.tool-header p{font-size:17px;color:var(--text-secondary);max-width:520px;margin:0 auto;line-height:1.6}
-
-.workspace{padding:60px 0 100px}
-.workspace-inner{max-width:720px;margin:0 auto}
-
-.panel{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--card-border);box-shadow:var(--card-shadow);overflow:hidden;margin-bottom:32px}
-.panel-header{padding:20px 24px;border-bottom:1px solid var(--card-border);font-size:15px;font-weight:600;color:var(--text)}
-.panel-body{padding:24px}
-
-.form-group{margin-bottom:20px}
-.form-group label{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px}
-.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 16px;border:1px solid var(--card-border);border-radius:12px;font-size:15px;font-family:var(--font);background:var(--bg-alt);color:var(--text);transition:border-color .2s;outline:none}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--primary)}
-.form-group textarea{resize:vertical;min-height:80px}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:var(--radius-pill);font-size:15px;font-weight:600;cursor:pointer;transition:all .2s ease;border:none;font-family:var(--font);width:100%}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:#0055aa;transform:scale(1.01)}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-/* TOPIC CARDS */
-.topic-list{display:flex;flex-direction:column;gap:16px}
-.topic-card{background:var(--bg-alt);border-radius:16px;padding:20px 24px;border:1px solid transparent;transition:all .2s ease}
-.topic-card:hover{border-color:var(--primary);background:rgba(0,102,204,.03)}
-.topic-num{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:8px}
-.topic-card h4{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text);line-height:1.4}
-.topic-card p{font-size:14px;color:var(--text-secondary);line-height:1.6}
-.topic-card .tags{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.topic-card .tags span{font-size:12px;font-weight:500;padding:3px 10px;border-radius:var(--radius-pill);background:var(--card-bg);color:var(--text-secondary);border:1px solid var(--card-border)}
-
-/* THINKING */
-.thinking{display:flex;align-items:center;gap:12px;padding:32px 24px;font-size:15px;color:var(--text-secondary)}
-.thinking-dots{display:flex;gap:4px}
-.thinking-dots span{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:dot-bounce 1.4s infinite ease-in-out}
-.thinking-dots span:nth-child(2){animation-delay:.2s}
-.thinking-dots span:nth-child(3){animation-delay:.4s}
-@keyframes dot-bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
-
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.cursor{animation:blink .6s infinite;color:var(--primary)}
-
-/* OUTPUT */
-.output-area{padding:24px;font-size:15px;line-height:1.8;color:var(--text)}
-.output-area h1,.output-area h2,.output-area h3{margin:20px 0 12px;font-weight:700}
-.output-area h1{font-size:22px;border-bottom:1px solid var(--card-border);padding-bottom:10px}
-.output-area h2{font-size:18px}
-.output-area h3{font-size:16px}
-.output-area p{margin-bottom:12px}
-.output-area ul,.output-area ol{margin:10px 0 12px 20px}
-.output-area li{margin-bottom:6px}
-.output-area strong{font-weight:600}
-
-.output-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;color:var(--text-secondary)}
-.output-empty .icon{font-size:48px;margin-bottom:16px;opacity:.4}
-.output-empty p{font-size:15px}
-
-/* HISTORY */
-.history-section{margin-top:40px}
-.history-section h3{font-size:18px;font-weight:700;margin-bottom:16px}
-.history-item{background:var(--bg-alt);border-radius:12px;padding:14px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s}
-.history-item:hover{background:rgba(0,102,204,.05)}
-.history-item .title{font-size:14px;font-weight:600}
-.history-item .time{font-size:12px;color:var(--text-secondary)}
-
-/* EXPORT BTN */
-.btn-export{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--card-border);background:var(--card-bg);color:var(--text);transition:all .2s;font-family:var(--font)}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);height:52px;display:flex;align-items:center;justify-content:center}
+nav .inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+nav .logo{font-weight:700;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--primary)}
+nav .logo .sep{color:#d2d2d7}
+nav a.back{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:4px}
+nav a.back:hover{color:var(--text)}
+.page-hero{padding:32px 0 16px;text-align:center}
+.page-hero h1{font-size:28px;font-weight:700}
+.page-hero p{font-size:15px;color:var(--text2);margin-top:6px}
+.workspace{display:flex;gap:24px;max-width:1200px;margin:0 auto;padding:0 24px 64px;align-items:flex-start}
+.panel-left{width:400px;flex-shrink:0;position:sticky;top:76px;max-height:calc(100vh - 100px);overflow-y:auto;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:24px}
+.panel-right{flex:1;min-width:0;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:24px;min-height:400px}
+.panel-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0f0f5}
+.panel-header svg{width:20px;height:20px;color:var(--primary)}
+.panel-header h2{font-size:16px;font-weight:600}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.form-group input,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid #d2d2d7;border-radius:var(--el-r);font-size:14px;font-family:inherit;transition:border-color .2s;background:var(--bg);color:var(--text)}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary)}
+.form-group textarea{resize:vertical;min-height:60px}
+.chip-group{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:6px 14px;border-radius:var(--btn-r);font-size:13px;cursor:pointer;border:1.5px solid #d2d2d7;background:var(--bg);color:var(--text2);transition:all .2s;user-select:none}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-generate{width:100%;padding:14px;border:none;border-radius:var(--btn-r);background:var(--primary);color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:inherit}
+.btn-generate:hover{background:var(--primary-h);transform:translateY(-1px)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-generate svg{width:18px;height:18px}
+.skeleton{display:flex;flex-direction:column;gap:12px;padding:8px 0}
+.skeleton-block{border-radius:var(--el-r);background:linear-gradient(90deg,#f0f0f5 25%,#e8e8ed 50%,#f0f0f5 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+.skeleton-block:nth-child(1){height:24px;width:60%}
+.skeleton-block:nth-child(2){height:16px;width:100%}
+.skeleton-block:nth-child(3){height:16px;width:85%}
+.skeleton-block:nth-child(4){height:16px;width:70%}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.output-content{font-size:15px;line-height:1.8;color:var(--text)}
+.output-content h1{font-size:22px;font-weight:700;margin:24px 0 12px}
+.output-content h2{font-size:18px;font-weight:600;margin:20px 0 10px}
+.output-content h3{font-size:16px;font-weight:600;margin:16px 0 8px}
+.output-content p{margin-bottom:10px;color:var(--text2)}
+.output-content ul,.output-content ol{margin:8px 0 8px 20px;color:var(--text2)}
+.output-content li{margin-bottom:4px}
+.output-content strong{color:var(--text);font-weight:600}
+.output-content code{background:var(--bg-alt);padding:2px 6px;border-radius:4px;font-size:13px}
+.output-content pre{background:var(--bg-alt);padding:16px;border-radius:var(--el-r);overflow-x:auto;margin:12px 0}
+.output-content blockquote{border-left:3px solid var(--primary);padding-left:16px;margin:12px 0;color:var(--text2)}
+.output-content table{width:100%;border-collapse:collapse;margin:12px 0}
+.output-content th,.output-content td{border:1px solid #e8e8ed;padding:8px 12px;text-align:left;font-size:14px}
+.output-content th{background:var(--bg-alt);font-weight:600}
+.btn-export{margin-top:20px;padding:10px 20px;border:1.5px solid #d2d2d7;border-radius:var(--btn-r);background:var(--bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;font-family:inherit}
 .btn-export:hover{border-color:var(--primary);color:var(--primary)}
-.actions-bar{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid var(--card-border)}
-
-@media(max-width:768px){
-  .workspace-inner{padding:0 16px}
-}
+.history-bar{margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f5}
+.history-bar h4{font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.history-item{padding:8px 12px;border-radius:var(--el-r);background:var(--bg-alt);margin-bottom:6px;font-size:13px;color:var(--text2);cursor:pointer;transition:background .2s;display:flex;justify-content:space-between;align-items:center}
+.history-item:hover{background:#e8e8ed}
+.history-item .del{color:#e53e3e;font-size:12px;cursor:pointer;opacity:0;transition:opacity .2s}
+.history-item:hover .del{opacity:1}
 </style>
 </head>
 <body>
-
-<nav>
-  <div class="nav-inner">
-    <div class="nav-logo"><a href="/08/portfolio/">AI <span>×</span> Product</a></div>
-    <a style="display:flex;align-items:center;gap:6px;font-size:14px;color:#6e6e73;text-decoration:none;font-family:inherit;font-weight:500;transition:color .2s" href="/08/portfolio/">← 返回 Portfolio</a>
-  </div>
-</nav>
-
-<div class="tool-header">
-  <div class="container">
-    <span class="tool-tag">内容运营</span>
-    <h1>内容选题雷达</h1>
-    <p>输入你的账号定位，AI 结合热点趋势生成本周 10 个高质量选题。</p>
-  </div>
-</div>
-
+<nav><div class="inner">
+  <a class="logo" href="https://qlb708.github.io/08/"><span>08</span><span class="sep">/</span>内容选题雷达</a>
+  <a class="back" href="https://qlb708.github.io/08/">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    返回首页
+  </a>
+</div></nav>
+<div class="page-hero"><h1>内容选题雷达</h1><p>基于账号定位和平台特性，AI 推荐高潜力内容选题方向</p></div>
 <div class="workspace">
-  <div class="workspace-inner">
-    <!-- INPUT -->
-    <div class="panel">
-      <div class="panel-header">定义你的内容方向</div>
-      <div class="panel-body">
-        <div class="form-group">
-          <label>账号定位 / 领域</label>
-          <input type="text" id="accountType" placeholder="例如：AI 工具测评博主">
-        </div>
-        <div class="form-group">
-          <label>目标受众</label>
-          <input type="text" id="audience" placeholder="例如：职场新人、大学生">
-        </div>
-        <div class="form-group">
-          <label>平台</label>
-          <select id="platform">
-            <option>小红书</option><option>微信公众号</option><option>抖音</option><option>B站</option><option>知乎</option><option>微博</option><option>全平台</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>额外要求（选填）</label>
-          <textarea id="extraReq" placeholder="例如：偏实用教程类，避免太理论的内容"></textarea>
-        </div>
-        <button class="btn btn-primary" id="genBtn" onclick="generate()">生成本周选题</button>
-      </div>
-    </div>
-
-    <!-- OUTPUT -->
-    <div class="panel" id="outputPanel">
-      <div class="panel-header">AI 选题推荐</div>
-      <div id="outputBody">
-        <div class="output-empty"><div class="icon">📡</div><p>填写上方信息后<br>AI 将为你生成 10 个选题</p></div>
-      </div>
-    </div>
-
-    <!-- HISTORY -->
-    <div class="history-section" id="historySection" style="display:none">
-      <h3>📌 历史选题</h3>
-      <div id="historyList"></div>
-    </div>
+  <div class="panel-left">
+    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><h2>账号与偏好设置</h2></div>
+    <div class="form-group"><label>账号定位</label><input id="accountPos" placeholder="例如：科技数码博主"/></div>
+    <div class="form-group"><label>目标受众</label><input id="targetAudience" placeholder="例如：18-28岁大学生和职场新人"/></div>
+    <div class="form-group"><label>发布平台</label><div class="chip-group" id="platformChips"><div class="chip active" data-v="小红书">小红书</div><div class="chip" data-v="微博">微博</div><div class="chip" data-v="抖音">抖音</div><div class="chip" data-v="B站">B站</div><div class="chip" data-v="公众号">公众号</div><div class="chip" data-v="知乎">知乎</div></div></div>
+    <div class="form-group"><label>内容风格偏好</label><div class="chip-group" id="styleChips"><div class="chip" data-v="干货教程">干货教程</div><div class="chip" data-v="轻松娱乐">轻松娱乐</div><div class="chip" data-v="数据测评">数据测评</div><div class="chip" data-v="情感共鸣">情感共鸣</div><div class="chip" data-v="热点蹭流">热点蹭流</div></div></div>
+    <div class="form-group"><label>额外要求（选填）</label><textarea id="extraReq" placeholder="例如：避免硬广风格，注重实用性"></textarea></div>
+    <button class="btn-generate" id="generateBtn" onclick="handleGenerate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>生成选题</button>
+    <div class="history-bar" id="historyBar" style="display:none"><h4>历史记录</h4><div id="historyList"></div></div>
+  </div>
+  <div class="panel-right">
+    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><h2>选题推荐</h2></div>
+    <div id="skeleton" class="skeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
+    <div id="output" class="output-content" style="display:none"></div>
+    <button id="exportBtn" class="btn-export" style="display:none" onclick="exportMarkdown()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出 Markdown</button>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-const API_KEY=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
-const API_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+API_KEY;
-
-function formatDate(d){const m=String(d.getMonth()+1).padStart(2,'0');return `${d.getFullYear()}-${m}-${String(d.getDate()).padStart(2,'0')}`}
-
-async function generate(){
-  const type=document.getElementById('accountType').value.trim();
-  const audience=document.getElementById('audience').value.trim();
-  const platform=document.getElementById('platform').value;
-  const extra=document.getElementById('extraReq').value.trim();
-  if(!type){alert('请填写账号定位');return}
-  if(!audience){alert('请填写目标受众');return}
-
-  const btn=document.getElementById('genBtn');
-  btn.disabled=true;btn.textContent='AI 正在扫描热点...';
-
-  const out=document.getElementById('outputBody');
-  out.innerHTML='<div class="thinking"><div class="thinking-dots"><span></span><span></span><span></span></div><span>AI 正在分析热点并生成选题...</span></div>';
-
-  const weekStart=new Date();weekStart.setDate(weekStart.getDate()-weekStart.getDay()+1);
-  const weekEnd=new Date(weekStart);weekEnd.setDate(weekEnd.getDate()+6);
-  const weekRange=`${formatDate(weekStart)} ~ ${formatDate(weekEnd)}`;
-
-  const prompt=`你是一位资深内容运营专家。请为以下账号生成本周（${weekRange}）的 10 个内容选题。
-
-账号信息：
-- 账号定位：${type}
-- 目标受众：${audience}
-- 发布平台：${platform}${extra?'\n- 额外要求：'+extra:''}
-
-请按以下格式输出（使用 Markdown）：
-
-# 📡 本周选题推荐
-
-> 账号定位：${type} | 目标受众：${audience} | 平台：${platform}
-> 周期：${weekRange}
-
-（然后依次输出 10 个选题，每个选题包含：）
-
-### 选题 N：[标题]
-- **选题方向**：xxx
-- **核心角度**：xxx（说明为什么这个选题值得关注）
-- **内容形式建议**：xxx（如图文教程/短视频/清单/对比测评等）
-- **预计热度**：⭐️⭐️⭐️⭐️（1-5星）
-- **标签**：#xxx #xxx #xxx
-
-请确保选题新颖、实用、贴合目标受众，避免泛泛而谈的大话题。`;
-
+var GK=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
+var GU='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GK;
+var rawMd='';
+document.querySelectorAll('#platformChips .chip').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('active')})});
+document.querySelectorAll('#styleChips .chip').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('active')})});
+loadHistory();
+function handleGenerate(){
+  var pos=document.getElementById('accountPos').value.trim();
+  var aud=document.getElementById('targetAudience').value.trim();
+  var plats=[...document.querySelectorAll('#platformChips .chip.active')].map(function(c){return c.dataset.v});
+  var styles=[...document.querySelectorAll('#styleChips .chip.active')].map(function(c){return c.dataset.v});
+  var extra=document.getElementById('extraReq').value.trim();
+  if(!pos){alert('请填写账号定位');return}
+  if(!aud){alert('请填写目标受众');return}
+  if(!plats.length){alert('请至少选择一个发布平台');return}
+  var prompt='你是一位资深内容策略专家。请为以下账号生成内容选题推荐。\n\n账号定位：'+pos+'\n目标受众：'+aud+'\n发布平台：'+plats.join('、')+(styles.length?'\n内容风格：'+styles.join('、'):'')+(extra?'\n额外要求：'+extra:'')+'\n\n请给出 10 个具体的选题方向，每个选题包含：\n1. 选题标题\n2. 内容角度/切入点\n3. 适合的发布平台\n4. 预期互动指标（点赞/收藏/评论）\n5. 选题理由\n\n使用 Markdown 格式，按优先级排序。';
+  doGenerate(prompt);
+  saveHistory(pos+' | '+plats.join('、'));
+}
+async function doGenerate(prompt){
+  var btn=document.getElementById('generateBtn');
+  btn.disabled=true;
+  document.getElementById('skeleton').style.display='flex';
+  document.getElementById('output').style.display='none';
+  document.getElementById('exportBtn').style.display='none';
   try{
-    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.8}})});
-    const data=await resp.json();
-    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'抱歉，生成失败，请重试。';
-    typewriterRender(text,out);
-    saveToHistory(type,text);
+    var resp=await fetch(GU,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,maxOutputTokens:8192}})});
+    var data=await resp.json();
+    rawMd=data.candidates[0].content.parts[0].text;
+    document.getElementById('skeleton').style.display='none';
+    document.getElementById('output').style.display='block';
+    document.getElementById('exportBtn').style.display='inline-flex';
+    typeRender(rawMd);
   }catch(e){
-    out.innerHTML='<div class="output-empty"><div class="icon">⚠️</div><p>请求失败，请检查网络后重试</p></div>';
+    document.getElementById('skeleton').style.display='none';
+    document.getElementById('output').style.display='block';
+    document.getElementById('output').innerHTML='<p style="color:#e53e3e">生成失败：'+e.message+'</p>';
   }
-  btn.disabled=false;btn.textContent='重新生成';
+  btn.disabled=false;
 }
-
-function typewriterRender(fullText,container){
-  let i=0;
-  container.innerHTML='';
-  const interval=setInterval(()=>{
-    i+=3;
-    const current=fullText.slice(0,i);
-    container.innerHTML='<div class="output-area">'+marked.parse(current)+'</div><span class="cursor">|</span>';
-    if(i>=fullText.length){
-      clearInterval(interval);
-      container.innerHTML='<div class="output-area">'+marked.parse(fullText)+'</div><div class="actions-bar"><div></div><button class="btn-export" onclick="exportResult()">📥 导出 Markdown</button></div>';
-      // Store result for export
-      window._lastResult=fullText;
-    }
-  },18);
+function typeRender(md){
+  var el=document.getElementById('output');
+  var plainText=md.replace(/[#*`_|>\-\[\]()]/g,'').replace(/\n/g,' ');
+  var idx=0;var fullDone=false;var html=mdToHtml(md);
+  function tick(){
+    if(idx<=plainText.length){
+      el.innerHTML=mdToHtml(md.substring(0,Math.min(md.length,idx*2)));
+      idx+=3;setTimeout(tick,20);
+    }else if(!fullDone){fullDone=true;el.innerHTML=html}
+  }
+  tick();
 }
-
-function saveToHistory(type,text){
-  let history=JSON.parse(localStorage.getItem('content_radar_history')||'[]');
-  history.unshift({title:type,time:new Date().toLocaleString('zh-CN'),content:text});
-  if(history.length>10)history=history.slice(0,10);
-  localStorage.setItem('content_radar_history',JSON.stringify(history));
-  renderHistory();
+function mdToHtml(md){
+  var lines=md.split('\n');var html='';var inList=false;var inTable=false;var tableRows=[];
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i];
+    if(l.startsWith('|')){if(!inTable){inTable=true;tableRows=[]}tableRows.push(l);continue}
+    else if(inTable){html+=renderTable(tableRows);inTable=false;tableRows=[]}
+    if(l.startsWith('### ')){html+='<h3>'+esc(l.slice(4))+'</h3>';continue}
+    if(l.startsWith('## ')){html+='<h2>'+esc(l.slice(3))+'</h2>';continue}
+    if(l.startsWith('# ')){html+='<h1>'+esc(l.slice(2))+'</h1>';continue}
+    if(l.startsWith('- ')||l.startsWith('* ')){if(!inList){html+='<ul>';inList=true}html+='<li>'+inline(esc(l.slice(2)))+'</li>';continue}
+    if(l.match(/^\d+\.\s/)){if(!inList){html+='<ol>';inList=true}html+='<li>'+inline(esc(l.replace(/^\d+\.\s/,'')))+'</li>';continue}
+    if(inList){html+='</'+(html.indexOf('<ol')>html.lastIndexOf('</')?'ol':'ul')+'>';inList=false}
+    if(l.startsWith('> ')){html+='<blockquote>'+inline(esc(l.slice(2)))+'</blockquote>';continue}
+    if(l.trim()===''){continue}
+    html+='<p>'+inline(esc(l))+'</p>';
+  }
+  if(inTable)html+=renderTable(tableRows);
+  if(inList)html+='</ul>';
+  return html;
 }
-
-function renderHistory(){
-  const history=JSON.parse(localStorage.getItem('content_radar_history')||'[]');
-  if(!history.length)return;
-  const sec=document.getElementById('historySection');
-  sec.style.display='block';
-  const list=document.getElementById('historyList');
-  list.innerHTML=history.map((h,i)=>`<div class="history-item" onclick="showHistory(${i})"><span class="title">${h.title}</span><span class="time">${h.time}</span></div>`).join('');
+function renderTable(rows){
+  if(rows.length<2)return'';var h='<table>';
+  var headers=rows[0].split('|').filter(function(c){return c.trim()});
+  h+='<tr>';headers.forEach(function(c){h+='<th>'+esc(c.trim())+'</th>'});h+='</tr>';
+  for(var i=2;i<rows.length;i++){var cells=rows[i].split('|').filter(function(c){return c.trim()});h+='<tr>';cells.forEach(function(c){h+='<td>'+inline(esc(c.trim()))+'</td>'});h+='</tr>'}
+  h+='</table>';return h;
 }
-
-function showHistory(i){
-  const history=JSON.parse(localStorage.getItem('content_radar_history')||'[]');
-  const out=document.getElementById('outputBody');
-  out.innerHTML='<div class="output-area">'+marked.parse(history[i].content)+'</div>';
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function inline(s){return s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>')}
+function exportMarkdown(){var b=new Blob([rawMd],{type:'text/markdown'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='content-radar.md';a.click()}
+function saveHistory(label){
+  var h=JSON.parse(localStorage.getItem('cr_history')||'[]');
+  h.unshift({label:label,time:new Date().toLocaleString()});
+  if(h.length>10)h=h.slice(0,10);
+  localStorage.setItem('cr_history',JSON.stringify(h));loadHistory();
 }
-
-function exportResult(){
-  if(!window._lastResult)return;
-  const blob=new Blob([window._lastResult],{type:'text/markdown'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=`选题推荐_${formatDate(new Date())}.md`;a.click();
+function loadHistory(){
+  var h=JSON.parse(localStorage.getItem('cr_history')||'[]');
+  var bar=document.getElementById('historyBar');var list=document.getElementById('historyList');
+  if(!h.length){bar.style.display='none';return}
+  bar.style.display='block';list.innerHTML='';
+  h.forEach(function(item,idx){
+    var d=document.createElement('div');d.className='history-item';
+    d.innerHTML='<span>'+esc(item.label)+' <small style="color:#aaa">'+item.time+'</small></span><span class="del" onclick="event.stopPropagation();delHistory('+idx+')">删除</span>';
+    list.appendChild(d);
+  });
 }
-
-// Load history on page load
-renderHistory();
+function delHistory(idx){
+  var h=JSON.parse(localStorage.getItem('cr_history')||'[]');h.splice(idx,1);
+  localStorage.setItem('cr_history',JSON.stringify(h));loadHistory();
+}
 </script>
 </body>
 </html>
