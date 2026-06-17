@@ -1,444 +1,483 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>产品文档速写台 · AI Product Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0d0d14;--surface:rgba(255,255,255,.05);--surface2:rgba(255,255,255,.08);--primary:#6C5CE7;--text:#e8e8f0;--text-dim:rgba(232,232,240,.55);--border:rgba(255,255,255,.08);--radius:14px}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--text:#1d1d1f;--text-secondary:#6e6e73;--card-bg:#fff;--card-border:rgba(0,0,0,.06);--card-shadow:0 2px 20px rgba(0,0,0,.08);--radius:18px;--radius-pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Display","Helvetica Neue",sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(13,13,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px}
-.back{color:var(--text-dim);font-size:14px;font-weight:500;transition:color .2s}
-.back:hover{color:var(--text)}
-.page-title{font-size:16px;font-weight:700}
-.page-badge{margin-left:auto;padding:4px 12px;border-radius:999px;background:rgba(108,92,231,.15);color:#a29bfe;font-size:11px;font-weight:700;border:1px solid rgba(108,92,231,.25)}
-/* DOC TYPE TABS */
-.doc-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 40px;overflow-x:auto}
-.doc-tab{padding:14px 20px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;margin-bottom:-1px}
-.doc-tab.active{color:#a29bfe;border-bottom-color:#6C5CE7}
-.doc-tab:hover:not(.active){color:var(--text)}
-.layout{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 100px)}
-@media(max-width:900px){.layout{grid-template-columns:1fr}}
-.form-panel{border-right:1px solid var(--border);padding:28px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;max-height:calc(100vh - 100px)}
-@media(max-width:900px){.form-panel{max-height:none;border-right:none;border-bottom:1px solid var(--border)}}
-.panel-heading{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-bottom:2px}
-.panel-sub{font-size:13px;color:var(--text-dim);line-height:1.5}
-.form-group{display:flex;flex-direction:column;gap:7px}
-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
-input,textarea,select{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
-input:focus,textarea:focus,select:focus{border-color:rgba(108,92,231,.5);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
-textarea{resize:vertical;min-height:80px}
-select option{background:#1a1a2e}
-.generate-btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#6C5CE7,#8b7ff0);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(108,92,231,.3);margin-top:6px}
-.generate-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(108,92,231,.45)}
-.generate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.output-panel{padding:36px;overflow-y:auto;max-height:calc(100vh - 100px)}
-@media(max-width:900px){.output-panel{max-height:none}}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;gap:16px;text-align:center}
-.empty-icon{font-size:56px;opacity:.4}
-.empty-title{font-size:20px;font-weight:700;color:var(--text-dim)}
-.empty-desc{font-size:14px;color:var(--text-dim);max-width:360px;opacity:.7}
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:24px}
-.spinner{width:40px;height:40px;border:3px solid rgba(108,92,231,.2);border-top-color:#6C5CE7;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{color:var(--text-dim);font-size:14px;animation:blink 1.5s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:.5}50%{opacity:1}}
-.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.result-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--primary)}
-.result-actions{display:flex;gap:10px}
-.action-btn{padding:7px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.action-btn:hover{background:var(--surface2);border-color:rgba(108,92,231,.3)}
-.action-btn.primary{background:rgba(108,92,231,.2);border-color:rgba(108,92,231,.4);color:#a29bfe}
-.markdown-body{font-size:14px;line-height:1.75;color:var(--text)}
-.markdown-body h1{font-size:24px;font-weight:800;margin:0 0 20px;letter-spacing:-.03em;background:linear-gradient(135deg,#fff,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.markdown-body h2{font-size:16px;font-weight:700;margin:28px 0 12px;padding:12px 16px;background:rgba(108,92,231,.08);border-left:3px solid #6C5CE7;border-radius:0 10px 10px 0;color:#a29bfe;-webkit-text-fill-color:#a29bfe}
-.markdown-body h3{font-size:14px;font-weight:700;margin:18px 0 8px;color:var(--text)}
-.markdown-body p{margin:0 0 12px;color:rgba(232,232,240,.85)}
-.markdown-body ul,ol{margin:0 0 12px 18px;color:rgba(232,232,240,.85)}
-.markdown-body li{margin-bottom:5px}
-.markdown-body strong{color:var(--text);font-weight:700}
-.markdown-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
-.markdown-body th{background:rgba(108,92,231,.12);padding:10px 14px;text-align:left;font-weight:700;color:#a29bfe;border:1px solid var(--border)}
-.markdown-body td{padding:9px 14px;border:1px solid var(--border);color:rgba(232,232,240,.85)}
-.markdown-body tr:hover td{background:rgba(255,255,255,.03)}
-.markdown-body hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border)}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-size:17px;font-weight:700;color:var(--text)}
+.nav-logo a{color:var(--text)}
+.nav-logo span{color:var(--primary)}
+.nav-link{font-size:14px;color:var(--text-secondary);transition:color .2s}
+.nav-link:hover{color:var(--primary)}
+
+.tool-header{padding:140px 0 60px;text-align:center;background:var(--bg-alt)}
+.tool-tag{display:inline-block;font-size:13px;font-weight:600;color:var(--primary);background:rgba(0,102,204,.08);padding:5px 14px;border-radius:var(--radius-pill);margin-bottom:16px}
+.tool-header h1{font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:16px}
+.tool-header p{font-size:17px;color:var(--text-secondary);max-width:520px;margin:0 auto;line-height:1.6}
+
+.workspace{padding:60px 0 100px}
+.workspace-inner{max-width:1080px;margin:0 auto}
+
+/* TABS */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px}
+.tab{padding:10px 20px;border-radius:var(--radius-pill);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;border:1.5px solid var(--card-border);background:var(--card-bg);color:var(--text-secondary);font-family:var(--font)}
+.tab:hover{border-color:var(--primary);color:var(--primary)}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* GRID */
+.workspace-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+@media(max-width:860px){.workspace-grid{grid-template-columns:1fr}}
+
+.panel{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--card-border);box-shadow:var(--card-shadow);overflow:hidden}
+.panel-header{padding:20px 24px;border-bottom:1px solid var(--card-border);font-size:15px;font-weight:600;color:var(--text)}
+.panel-body{padding:24px}
+
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 16px;border:1px solid var(--card-border);border-radius:12px;font-size:15px;font-family:var(--font);background:var(--bg-alt);color:var(--text);transition:border-color .2s;outline:none}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--primary)}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-group select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236e6e73' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:var(--radius-pill);font-size:15px;font-weight:600;cursor:pointer;transition:all .2s ease;border:none;font-family:var(--font);width:100%}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#0055aa;transform:scale(1.01)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* OUTPUT */
+.output-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;color:var(--text-secondary)}
+.output-empty .icon{font-size:48px;margin-bottom:16px;opacity:.4}
+.output-empty p{font-size:15px}
+
+.thinking{display:flex;align-items:center;gap:12px;padding:32px 24px;font-size:15px;color:var(--text-secondary)}
+.thinking-dots{display:flex;gap:4px}
+.thinking-dots span{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:dot-bounce 1.4s infinite ease-in-out}
+.thinking-dots span:nth-child(2){animation-delay:.2s}
+.thinking-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot-bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.cursor{animation:blink .6s infinite;color:var(--primary)}
+
+.md-output{padding:24px;font-size:15px;line-height:1.8;color:var(--text)}
+.md-output h1{font-size:24px;font-weight:700;margin:24px 0 12px;border-bottom:1px solid var(--card-border);padding-bottom:12px}
+.md-output h2{font-size:20px;font-weight:700;margin:20px 0 10px}
+.md-output h3{font-size:17px;font-weight:600;margin:16px 0 8px}
+.md-output p{margin-bottom:12px}
+.md-output ul,.md-output ol{margin:10px 0 12px 20px}
+.md-output li{margin-bottom:6px}
+.md-output strong{font-weight:600}
+.md-output table{width:100%;border-collapse:collapse;margin:16px 0}
+.md-output th,.md-output td{padding:10px 14px;border:1px solid var(--card-border);text-align:left;font-size:14px}
+.md-output th{background:var(--bg-alt);font-weight:600}
+.md-output blockquote{border-left:3px solid var(--primary);padding:12px 16px;margin:16px 0;background:var(--bg-alt);border-radius:0 12px 12px 0;color:var(--text-secondary)}
+
+.actions-bar{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid var(--card-border)}
+.btn-export{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--card-border);background:var(--card-bg);color:var(--text);transition:all .2s;font-family:var(--font)}
+.btn-export:hover{border-color:var(--primary);color:var(--primary)}
+
+.doc-type-badge{display:inline-block;font-size:12px;font-weight:600;color:var(--primary);background:rgba(0,102,204,.08);padding:4px 12px;border-radius:var(--radius-pill);margin-bottom:12px}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <a href="/08/portfolio/" class="back">← 返回首页</a>
-  <span style="color:var(--border)">|</span>
-  <span class="page-title">📄 产品文档速写台</span>
-  <span class="page-badge">Gemini AI</span>
-</div>
 
-<!-- DOC TYPE TABS -->
-<div class="doc-tabs" id="docTabs">
-  <div class="doc-tab active" data-type="brd">BRD 商业需求</div>
-  <div class="doc-tab" data-type="mrd">MRD 市场需求</div>
-  <div class="doc-tab" data-type="prd">PRD 产品需求</div>
-  <div class="doc-tab" data-type="okr">OKR 目标规划</div>
-  <div class="doc-tab" data-type="retro">复盘报告</div>
-  <div class="doc-tab" data-type="ops">运营方案</div>
-  <div class="doc-tab" data-type="research">竞品分析</div>
-</div>
-
-<div class="layout">
-  <div class="form-panel" id="formPanel">
-    <!-- 动态渲染 -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo"><a href="/08/portfolio/">AI <span>×</span> Product</a></div>
+    <a class="nav-link" href="/08/portfolio/">返回 Portfolio</a>
   </div>
-  <div class="output-panel" id="outputPanel">
-    <div class="empty-state" id="emptyState">
-      <div class="empty-icon">📄</div>
-      <div class="empty-title">选择文档类型</div>
-      <div class="empty-desc">从上方 Tab 选择文档类型，填写关键信息，AI 10 秒生成专业文档</div>
+</nav>
+
+<div class="tool-header">
+  <div class="container">
+    <span class="tool-tag">产品设计</span>
+    <h1>产品文档速写台</h1>
+    <p>选择文档类型，输入产品背景，10 秒生成专业产品文档。</p>
+  </div>
+</div>
+
+<div class="workspace">
+  <div class="workspace-inner">
+    <!-- TABS -->
+    <div class="tabs" id="docTabs">
+      <div class="tab active" data-type="BRD">BRD</div>
+      <div class="tab" data-type="MRD">MRD</div>
+      <div class="tab" data-type="PRD">PRD</div>
+      <div class="tab" data-type="OKR">OKR</div>
+      <div class="tab" data-type="竞品分析">竞品分析</div>
+      <div class="tab" data-type="用户故事地图">用户故事地图</div>
+      <div class="tab" data-type="版本发布说明">版本发布说明</div>
+    </div>
+
+    <!-- GRID -->
+    <div class="workspace-grid">
+      <!-- LEFT: INPUT -->
+      <div class="panel">
+        <div class="panel-header">📝 文档信息</div>
+        <div class="panel-body">
+          <div class="form-group"><label>产品/项目名称</label><input type="text" id="productName" placeholder="例如：AI 旅行规划助手"></div>
+          <div class="form-group"><label>产品简述</label><textarea id="productDesc" placeholder="用一两句话描述你的产品是什么，解决什么问题"></textarea></div>
+          <div class="form-group"><label>目标用户</label><input type="text" id="targetUser" placeholder="例如：25-35 岁有旅行需求的职场人"></div>
+          <div class="form-group"><label>补充说明（选填）</label><textarea id="extraInfo" placeholder="任何你想让 AI 知道的信息"></textarea></div>
+          <button class="btn btn-primary" id="genBtn" onclick="generate()">生成文档</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: OUTPUT -->
+      <div class="panel" id="outputPanel">
+        <div class="panel-header" id="outputTitle">AI 文档输出</div>
+        <div id="outputBody">
+          <div class="output-empty"><div class="icon">📄</div><p>填写左侧信息后<br>AI 将为你生成专业文档</p></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-const GEMINI_KEY = ['AQ.Ab8RN6Kwvan', 'PacRzJIFXe6Yi1Kx35q046', 'jXDWC8LF0dV3tKJiA'].join('');
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
+const API_KEY=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
+const API_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+API_KEY;
 
-const docConfigs = {
-  brd: {
-    name: 'BRD 商业需求文档',
-    desc: '用于立项、向管理层汇报商业价值',
-    fields: [
-      { id: 'projectName', label: '项目名称 *', type: 'input', placeholder: '如：AI 旅行规划功能' },
-      { id: 'background', label: '项目背景与问题 *', type: 'textarea', placeholder: '当前面临什么问题或机会？' },
-      { id: 'businessGoal', label: '商业目标 *', type: 'input', placeholder: '如：GMV 提升 20%，新增用户 50万' },
-      { id: 'targetMarket', label: '目标市场', type: 'input', placeholder: '如：国内 25-35岁旅行爱好者' },
-      { id: 'investBudget', label: '预估投入', type: 'input', placeholder: '如：研发 3人月，市场费用 50万' },
-    ],
-    prompt: (f) => `生成一份专业的 BRD（商业需求文档），格式为 Markdown：
+let currentDocType='BRD';
 
-项目名称：${f.projectName}
-项目背景：${f.background}
-商业目标：${f.businessGoal}
-目标市场：${f.targetMarket || '未指定'}
-预估投入：${f.investBudget || '待评估'}
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    currentDocType=tab.dataset.type;
+  });
+});
 
-请按以下结构输出：
-# BRD：${f.projectName}
+const docPrompts={
+  'BRD':`你是一位资深产品经理。请为以下产品撰写一份商业需求文档（BRD）。
 
-## 一、项目背景
-## 二、市场机会
-## 三、商业目标与 KPI
-## 四、目标用户
-## 五、核心价值主张
-## 六、竞争格局
-## 七、商业模式
-## 八、投入产出分析
-## 九、风险与应对
-## 十、立项建议`
-  },
-  mrd: {
-    name: 'MRD 市场需求文档',
-    desc: '市场调研结论，支撑产品立项决策',
-    fields: [
-      { id: 'productName', label: '产品/功能名称 *', type: 'input', placeholder: '如：AI 行程规划助手' },
-      { id: 'marketSize', label: '目标市场规模', type: 'input', placeholder: '如：国内在线旅游市场 8000亿' },
-      { id: 'targetUser', label: '目标用户群 *', type: 'textarea', placeholder: '描述目标用户的特征、行为和需求' },
-      { id: 'competitors', label: '主要竞品', type: 'input', placeholder: '如：携程 AI、飞猪、Wanderlog' },
-      { id: 'coreNeed', label: '核心需求假设 *', type: 'textarea', placeholder: '你认为用户最核心的未被满足的需求是什么？' },
-    ],
-    prompt: (f) => `生成专业的 MRD（市场需求文档），格式为 Markdown：
+产品信息：
+- 产品/项目名称：{name}
+- 产品简述：{desc}
+- 目标用户：{user}
+- 补充说明：{extra}
 
-产品名称：${f.productName}
-目标市场：${f.marketSize || '待调研'}
-目标用户：${f.targetUser}
-竞品：${f.competitors || '待分析'}
-核心需求假设：${f.coreNeed}
+请按以下结构输出（使用 Markdown 格式）：
 
-按以下结构输出：
-# MRD：${f.productName}
+# BRD 商业需求文档：{name}
 
-## 一、市场背景与规模
-## 二、目标用户画像
-## 三、用户需求分析（功能性/情感性/社交性）
-## 四、竞品分析矩阵
-## 五、市场机会与切入点
-## 六、产品定位建议
-## 七、需求优先级矩阵
-## 八、市场验证建议`
-  },
-  prd: {
-    name: 'PRD 产品需求文档',
-    desc: '研发交付文档，含功能设计与验收标准',
-    fields: [
-      { id: 'featureName', label: '功能/模块名称 *', type: 'input', placeholder: '如：AI 行程规划功能 v1.0' },
-      { id: 'userStory', label: '用户故事 *', type: 'textarea', placeholder: '作为____，我希望____，以便____' },
-      { id: 'coreFunc', label: '核心功能点 *', type: 'textarea', placeholder: '列出 3-5 个核心功能，一行一个' },
-      { id: 'outOfScope', label: '不在本期范围', type: 'input', placeholder: '如：支付功能、社交分享' },
-      { id: 'successMetric', label: '成功指标', type: 'input', placeholder: '如：7日留存率提升5%，功能使用率>30%' },
-    ],
-    prompt: (f) => `生成专业的 PRD（产品需求文档），格式为 Markdown，包含详细的功能设计：
+## 一、文档概述
+（文档版本、作者、日期、审批人等）
 
-功能名称：${f.featureName}
-用户故事：${f.userStory}
-核心功能：${f.coreFunc}
-排除范围：${f.outOfScope || '无'}
-成功指标：${f.successMetric || '待定'}
+## 二、商业背景
+（行业背景、商业痛点、市场机会）
 
-按以下结构输出，要具体可执行：
-# PRD：${f.featureName}
+## 三、商业目标
+（量化的商业目标，如收入、用户增长等）
 
-## 一、需求背景
-## 二、用户故事与使用场景
-## 三、功能清单（含优先级 P0/P1/P2）
-## 四、详细功能设计
-### 4.1 [功能一]
-### 4.2 [功能二]
-...
-## 五、交互设计要点
-## 六、数据需求
-## 七、接口设计（概要）
-## 八、验收标准
-## 九、排除范围
-## 十、成功指标与埋点`
-  },
-  okr: {
-    name: 'OKR 目标规划',
-    desc: '季度/年度目标与关键结果设定',
-    fields: [
-      { id: 'team', label: '团队/个人 *', type: 'input', placeholder: '如：AI产品团队 / 个人' },
-      { id: 'period', label: '规划周期 *', type: 'input', placeholder: '如：2026年 Q3（7-9月）' },
-      { id: 'strategy', label: '上级战略目标', type: 'textarea', placeholder: '公司或部门的核心战略方向' },
-      { id: 'focus', label: '本期核心聚焦 *', type: 'textarea', placeholder: '本期你认为最重要的 2-3 件事是什么？' },
-      { id: 'resources', label: '可用资源', type: 'input', placeholder: '如：3名研发，1名设计，预算20万' },
-    ],
-    prompt: (f) => `生成专业的 OKR 规划文档，格式为 Markdown：
+## 四、产品概述
+（产品定位、核心价值主张）
 
-团队：${f.team}
-周期：${f.period}
-上级战略：${f.strategy || '未指定'}
-核心聚焦：${f.focus}
-可用资源：${f.resources || '未指定'}
+## 五、目标市场分析
+（目标用户画像、市场规模、竞争格局）
 
-按以下结构输出，O要有挑战性，KR要可量化：
-# OKR：${f.team} · ${f.period}
+## 六、商业模式
+（收入来源、成本结构、盈利预期）
 
-## 战略背景
+## 七、风险评估与应对
+（商业风险、技术风险、运营风险）
 
-## Objective 1：[挑战性目标]
-- KR1.1：[可量化的关键结果]
-- KR1.2：
-- KR1.3：
+## 八、资源需求与预算
+（团队、时间、资金预算）
 
-## Objective 2：[挑战性目标]
-- KR2.1：
-- KR2.2：
-- KR2.3：
+## 九、里程碑规划
+（关键时间节点与交付物）
 
-## Objective 3：[挑战性目标]（如适用）
-...
+请确保内容专业、具体、可操作。`,
 
-## 执行路径与里程碑
-## 风险与依赖
-## 资源规划`
-  },
-  retro: {
-    name: '复盘报告',
-    desc: '项目/活动/版本上线后的结构化复盘',
-    fields: [
-      { id: 'projectName', label: '项目/活动名称 *', type: 'input', placeholder: '如：618大促活动' },
-      { id: 'period', label: '执行周期', type: 'input', placeholder: '如：2026年5月20日-6月18日' },
-      { id: 'goal', label: '原定目标 *', type: 'textarea', placeholder: '活动/项目的原定目标是什么？' },
-      { id: 'result', label: '实际结果 *', type: 'textarea', placeholder: '最终达成情况如何？关键数据是什么？' },
-      { id: 'keyEvent', label: '关键事件', type: 'textarea', placeholder: '过程中有哪些重要节点或转折？' },
-    ],
-    prompt: (f) => `生成专业的复盘报告，格式为 Markdown：
+  'MRD':`你是一位资深产品经理。请为以下产品撰写一份市场需求文档（MRD）。
 
-项目名称：${f.projectName}
-执行周期：${f.period || '未填写'}
-原定目标：${f.goal}
-实际结果：${f.result}
-关键事件：${f.keyEvent || '未填写'}
+产品信息：
+- 产品/项目名称：{name}
+- 产品简述：{desc}
+- 目标用户：{user}
+- 补充说明：{extra}
 
-按以下结构输出，要客观分析，不要美化也不要过于批判：
-# 复盘报告：${f.projectName}
+请按以下结构输出（使用 Markdown 格式）：
 
-## 一、项目概述
-## 二、目标 vs 结果对比
-## 三、做得好的地方（Keep）
-## 四、待改进的地方（Improve）
-## 五、根因分析
-## 六、关键决策复盘
-## 七、经验沉淀
-## 八、下一步行动建议`
-  },
-  ops: {
-    name: '运营方案',
-    desc: '活动/增长/拉新/促活运营策划方案',
-    fields: [
-      { id: 'campaignName', label: '活动/方案名称 *', type: 'input', placeholder: '如：暑期旅行 AI 挑战赛' },
-      { id: 'opsGoal', label: '运营目标 *', type: 'textarea', placeholder: '如：拉新2万用户，DAU提升30%，UGC内容500篇' },
-      { id: 'targetUser', label: '目标用户', type: 'input', placeholder: '如：18-30岁爱旅行的年轻用户' },
-      { id: 'budget', label: '预算', type: 'input', placeholder: '如：总预算50万，其中KOL合作30万' },
-      { id: 'duration', label: '执行周期', type: 'input', placeholder: '如：2026年7月1日-8月31日，为期2个月' },
-    ],
-    prompt: (f) => `生成专业的运营方案，格式为 Markdown：
+# MRD 市场需求文档：{name}
 
-活动名称：${f.campaignName}
-运营目标：${f.opsGoal}
-目标用户：${f.targetUser || '未指定'}
-预算：${f.budget || '待定'}
-执行周期：${f.duration || '待定'}
+## 一、市场概述
+（行业现状、发展趋势、市场规模）
 
-按以下结构输出，要具体可落地：
-# 运营方案：${f.campaignName}
-
-## 一、活动背景与目标
 ## 二、目标用户分析
-## 三、活动核心玩法设计
-## 四、用户旅程与转化路径
-## 五、渠道策略与投放计划
-## 六、KOL/KOC 合作策略
-## 七、内容策略
-## 八、激励机制与奖品设计
-## 九、执行时间线（甘特图文字版）
-## 十、预算分配
-## 十一、效果衡量指标
-## 十二、风险预案`
-  },
-  research: {
-    name: '竞品分析报告',
-    desc: '系统性竞品对比分析，支撑产品决策',
-    fields: [
-      { id: 'myProduct', label: '我方产品/功能 *', type: 'input', placeholder: '如：AI 行程规划 App' },
-      { id: 'competitors', label: '竞品列表 *', type: 'input', placeholder: '如：携程AI、飞猪、Wanderlog、Mindtrip' },
-      { id: 'dimension', label: '核心分析维度', type: 'textarea', placeholder: '如：核心功能、用户体验、商业模式、用户口碑、增长策略' },
-      { id: 'purpose', label: '分析目的 *', type: 'textarea', placeholder: '做这份竞品分析是为了解决什么问题或支持什么决策？' },
-    ],
-    prompt: (f) => `生成专业的竞品分析报告，格式为 Markdown：
+（用户画像、需求场景、用户旅程）
 
-我方产品：${f.myProduct}
-竞品：${f.competitors}
-分析维度：${f.dimension || '功能、体验、商业模式、增长策略'}
-分析目的：${f.purpose}
+## 三、竞品分析
+（主要竞品对比、差异化定位）
 
-按以下结构输出，要有独立判断，不要只是描述：
-# 竞品分析报告：${f.myProduct} vs 同行
+## 四、需求优先级
+（Must have / Should have / Nice to have 分级）
+
+## 五、产品功能需求
+（核心功能列表及描述）
+
+## 六、市场进入策略
+（Go-to-market 策略、推广渠道）
+
+## 七、成功指标
+（关键指标定义与目标值）
+
+请确保内容专业、具体、可操作。`,
+
+  'PRD':`你是一位资深产品经理。请为以下产品撰写一份产品需求文档（PRD）。
+
+产品信息：
+- 产品/项目名称：{name}
+- 产品简述：{desc}
+- 目标用户：{user}
+- 补充说明：{extra}
+
+请按以下结构输出（使用 Markdown 格式）：
+
+# PRD 产品需求文档：{name}
+
+## 一、文档信息
+（版本历史、作者、日期）
+
+## 二、产品概述
+（产品定位、目标、核心价值）
+
+## 三、用户角色与场景
+（用户画像、核心使用场景描述）
+
+## 四、功能需求
+### 4.1 [功能模块1]
+（详细描述、用户故事、验收标准）
+### 4.2 [功能模块2]
+...
+
+## 五、非功能需求
+（性能、安全、兼容性要求）
+
+## 六、数据需求
+（数据模型、埋点方案）
+
+## 七、UI/UX 要求
+（设计原则、关键页面描述）
+
+## 八、项目计划
+（迭代计划、里程碑）
+
+请确保内容专业、具体、可操作。`,
+
+  'OKR':`你是一位资深产品负责人。请为以下产品制定一份 OKR（目标与关键结果）。
+
+产品信息：
+- 产品/项目名称：{name}
+- 产品简述：{desc}
+- 目标用户：{user}
+- 补充说明：{extra}
+
+请按以下结构输出（使用 Markdown 格式）：
+
+# OKR 目标管理：{name}
+
+## 总体愿景
+（一句话描述产品的长期愿景）
+
+## Objective 1：[目标描述]
+- KR 1.1：[可量化的关键结果]
+- KR 1.2：[可量化的关键结果]
+- KR 1.3：[可量化的关键结果]
+
+## Objective 2：[目标描述]
+- KR 2.1：[可量化的关键结果]
+- KR 2.2：[可量化的关键结果]
+- KR 2.3：[可量化的关键结果]
+
+## Objective 3：[目标描述]
+- KR 3.1：[可量化的关键结果]
+- KR 3.2：[可量化的关键结果]
+- KR 3.3：[可量化的关键结果]
+
+## 执行计划
+（按季度/月度拆解的关键行动）
+
+请确保每个 KR 都是可量化、可衡量、有挑战性的。`,
+
+  '竞品分析':`你是一位资深产品分析师。请为以下产品撰写一份竞品分析报告。
+
+产品信息：
+- 产品/项目名称：{name}
+- 产品简述：{desc}
+- 目标用户：{user}
+- 补充说明：{extra}
+
+请按以下结构输出（使用 Markdown 格式）：
+
+# 竞品分析报告：{name}
 
 ## 一、分析背景与目的
-## 二、竞品概览
-## 三、核心功能对比矩阵（表格）
-## 四、用户体验对比
-## 五、商业模式对比
-## 六、增长策略对比
-## 七、各竞品核心优劣势
-## 八、市场空白与机会点
-## 九、对我方产品的启示
-## 十、策略建议`
-  }
+（为什么做竞品分析、分析范围）
+
+## 二、竞品选择
+（列出4-5个主要竞品及选择理由）
+
+## 三、竞品对比分析
+### 3.1 产品定位对比
+### 3.2 核心功能对比（表格形式）
+### 3.3 用户体验对比
+### 3.4 商业模式对比
+
+## 四、竞品优劣势总结
+（每个竞品的核心优势和短板）
+
+## 五、机会点与差异化策略
+（基于分析给出差异化建议）
+
+## 六、结论与行动建议
+（总结核心发现，给出可执行建议）
+
+请确保分析深入、对比清晰、建议可操作。`,
+
+  '用户故事地图':`你是一位资深 UX 设计师。请为以下产品创建用户故事地图。
+
+产品信息：
+- 产品/项目名称：{name}
+- 产品简述：{desc}
+- 目标用户：{user}
+- 补充说明：{extra}
+
+请按以下结构输出（使用 Markdown 格式）：
+
+# 用户故事地图：{name}
+
+## 一、用户角色
+（主要用户角色及其核心目标）
+
+## 二、用户旅程阶段
+（从发现→了解→使用→留存的完整旅程）
+
+## 三、故事地图
+按用户旅程阶段列出用户故事：
+
+### 阶段1：[阶段名称]
+- 作为[角色]，我希望[做什么]，以便[获得什么价值]
+- ...
+
+### 阶段2：[阶段名称]
+...
+
+## 四、版本规划
+### MVP 版本（必须有）
+...
+### V2 版本（应该有）
+...
+### V3 版本（可以有）
+...
+
+## 五、关键体验设计建议
+（提升用户体验的具体建议）
+
+请确保故事完整、优先级清晰。`,
+
+  '版本发布说明':`你是一位资深产品经理。请为以下产品撰写一份版本发布说明（Release Notes）。
+
+产品信息：
+- 产品/项目名称：{name}
+- 产品简述：{desc}
+- 目标用户：{user}
+- 补充说明：{extra}
+
+请按以下结构输出（使用 Markdown 格式）：
+
+# 📢 Release Notes：{name}
+
+## 版本信息
+- 版本号：v1.0.0
+- 发布日期：${new Date().toLocaleDateString('zh-CN')}
+- 类型：Major Release
+
+## 🎉 新功能
+（列出3-5个新功能，每个包含简短描述）
+
+## ✨ 优化改进
+（列出3-5个体验优化点）
+
+## 🐛 问题修复
+（列出2-3个已修复的问题）
+
+## 📋 已知问题
+（列出1-2个已知问题及临时解决方案）
+
+## 📌 升级须知
+（如有升级注意事项）
+
+请确保内容清晰、专业、面向用户友好。`
 };
 
-let currentType = 'brd';
+async function generate(){
+  const name=document.getElementById('productName').value.trim();
+  const desc=document.getElementById('productDesc').value.trim();
+  const user=document.getElementById('targetUser').value.trim();
+  const extra=document.getElementById('extraInfo').value.trim();
+  if(!name){alert('请填写产品名称');return}
+  if(!desc){alert('请填写产品简述');return}
 
-function switchTab(type) {
-  currentType = type;
-  document.querySelectorAll('.doc-tab').forEach(t => t.classList.toggle('active', t.dataset.type === type));
-  renderForm(type);
-  document.getElementById('outputPanel').innerHTML = `
-    <div class="empty-state">
-      <div class="empty-icon">📄</div>
-      <div class="empty-title">${docConfigs[type].name}</div>
-      <div class="empty-desc">${docConfigs[type].desc}<br><br>填写左侧信息，AI 将生成完整文档</div>
-    </div>`;
-}
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;btn.textContent='AI 正在撰写...';
 
-function renderForm(type) {
-  const config = docConfigs[type];
-  const panel = document.getElementById('formPanel');
-  let html = `<div><div class="panel-heading">${config.name}</div><div class="panel-sub">${config.desc}</div></div>`;
-  config.fields.forEach(f => {
-    html += `<div class="form-group"><label>${f.label}</label>`;
-    if (f.type === 'textarea') {
-      html += `<textarea id="${f.id}" placeholder="${f.placeholder}"></textarea>`;
-    } else {
-      html += `<input id="${f.id}" type="text" placeholder="${f.placeholder}"/>`;
-    }
-    html += `</div>`;
-  });
-  html += `<button class="generate-btn" id="generateBtn" onclick="generate()">✨ 生成 ${config.name}</button>`;
-  panel.innerHTML = html;
-}
+  const out=document.getElementById('outputBody');
+  const title=document.getElementById('outputTitle');
+  title.textContent=`${currentDocType} 文档`;
+  out.innerHTML='<div class="thinking"><div class="thinking-dots"><span></span><span></span><span></span></div><span>AI 正在生成专业文档...</span></div>';
 
-async function generate() {
-  const config = docConfigs[currentType];
-  const fieldValues = {};
-  let missing = false;
-  config.fields.forEach(f => {
-    const el = document.getElementById(f.id);
-    if (el) {
-      fieldValues[f.id] = el.value.trim();
-      if (f.label.includes('*') && !fieldValues[f.id]) missing = true;
-    }
-  });
-  if (missing) { alert('请填写所有必填项（带 * 的字段）'); return; }
+  let prompt=docPrompts[currentDocType]
+    .replace(/{name}/g,name)
+    .replace(/{desc}/g,desc)
+    .replace(/{user}/g,user)
+    .replace(/{extra}/g,extra||'无');
 
-  const prompt = config.prompt(fieldValues);
-  const btn = document.getElementById('generateBtn');
-  btn.disabled = true; btn.textContent = '生成中...';
-  const panel = document.getElementById('outputPanel');
-  panel.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">AI 正在撰写文档，请稍候...</div></div>';
-
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 4096 } })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error?.message || '请求失败');
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!text) throw new Error('返回内容为空');
-
-    panel.innerHTML = `
-      <div class="result-header">
-        <span class="result-title">📄 ${config.name} 已生成</span>
-        <div class="result-actions">
-          <button class="action-btn primary" onclick="copyDoc()">复制全文</button>
-          <button class="action-btn" onclick="downloadDoc()">下载 .md</button>
-          <button class="action-btn" onclick="switchTab('${currentType}')">重新生成</button>
-        </div>
-      </div>
-      <div class="markdown-body" id="docContent">${marked.parse(text)}</div>`;
-    window._docText = text;
-    window._docName = config.name;
-  } catch(e) {
-    panel.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">生成失败</div><div class="empty-desc">${e.message}</div></div>`;
-  } finally {
-    btn.disabled = false; btn.textContent = `✨ 生成 ${config.name}`;
+  try{
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.7}})});
+    const data=await resp.json();
+    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'抱歉，生成失败，请重试。';
+    typewriterRender(text,out,currentDocType);
+  }catch(e){
+    out.innerHTML='<div class="output-empty"><div class="icon">⚠️</div><p>请求失败，请检查网络后重试</p></div>';
   }
+  btn.disabled=false;btn.textContent='重新生成';
 }
 
-function copyDoc() {
-  navigator.clipboard.writeText(window._docText || '').then(() => {
-    const btn = event.target;
-    btn.textContent = '✅ 已复制';
-    setTimeout(() => btn.textContent = '复制全文', 2000);
-  });
+function typewriterRender(fullText,container,docType){
+  let i=0;
+  container.innerHTML='';
+  const interval=setInterval(()=>{
+    i+=3;
+    const current=fullText.slice(0,i);
+    container.innerHTML='<div class="md-output">'+marked.parse(current)+'</div><span class="cursor">|</span>';
+    if(i>=fullText.length){
+      clearInterval(interval);
+      container.innerHTML='<div class="md-output">'+marked.parse(fullText)+'</div><div class="actions-bar"><span class="doc-type-badge">'+docType+'</span><button class="btn-export" onclick="exportResult()">📥 导出 Markdown</button></div>';
+      window._lastResult=fullText;
+    }
+  },18);
 }
 
-function downloadDoc() {
-  const blob = new Blob([window._docText || ''], { type: 'text/markdown' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${window._docName || 'document'}-${new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')}.md`;
-  a.click();
+function exportResult(){
+  if(!window._lastResult)return;
+  const blob=new Blob([window._lastResult],{type:'text/markdown'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`${currentDocType}_${new Date().toLocaleDateString('zh-CN')}.md`;a.click();
 }
-
-// Init tabs
-document.querySelectorAll('.doc-tab').forEach(tab => {
-  tab.addEventListener('click', () => switchTab(tab.dataset.type));
-});
-renderForm('brd');
 </script>
 </body>
 </html>
