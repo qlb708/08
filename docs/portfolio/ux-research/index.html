@@ -1,219 +1,283 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>用研报告生成器 · AI Product Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0d0d14;--surface:rgba(255,255,255,.05);--surface2:rgba(255,255,255,.08);--primary:#6C5CE7;--text:#e8e8f0;--text-dim:rgba(232,232,240,.55);--border:rgba(255,255,255,.08);--radius:14px}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--text:#1d1d1f;--text-secondary:#6e6e73;--card-bg:#fff;--card-border:rgba(0,0,0,.06);--card-shadow:0 2px 20px rgba(0,0,0,.08);--radius:18px;--radius-pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Display","Helvetica Neue",sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
-/* TOPBAR */
-.topbar{position:sticky;top:0;z-index:50;background:rgba(13,13,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px}
-.back{color:var(--text-dim);font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px;transition:color .2s}
-.back:hover{color:var(--text)}
-.page-title{font-size:16px;font-weight:700}
-.page-badge{margin-left:auto;padding:4px 12px;border-radius:999px;background:rgba(108,92,231,.15);color:#a29bfe;font-size:11px;font-weight:700;border:1px solid rgba(108,92,231,.25)}
-/* LAYOUT */
-.layout{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 53px)}
-@media(max-width:900px){.layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}}
-/* FORM PANEL */
-.form-panel{border-right:1px solid var(--border);padding:32px;display:flex;flex-direction:column;gap:24px;overflow-y:auto;max-height:calc(100vh - 53px)}
-@media(max-width:900px){.form-panel{max-height:none;border-right:none;border-bottom:1px solid var(--border)}}
-.panel-heading{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
-.panel-sub{font-size:13px;color:var(--text-dim)}
-.form-group{display:flex;flex-direction:column;gap:8px}
-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
-input,textarea,select{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
-input:focus,textarea:focus,select:focus{border-color:rgba(108,92,231,.5);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
-textarea{resize:vertical;min-height:100px}
-select option{background:#1a1a2e}
-.depth-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.depth-btn{padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s}
-.depth-btn.active{background:rgba(108,92,231,.2);border-color:rgba(108,92,231,.5);color:#a29bfe}
-.generate-btn{width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,#6C5CE7,#8b7ff0);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(108,92,231,.3);margin-top:8px}
-.generate-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(108,92,231,.45)}
-.generate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-/* OUTPUT PANEL */
-.output-panel{padding:40px;overflow-y:auto;max-height:calc(100vh - 53px)}
-@media(max-width:900px){.output-panel{max-height:none}}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;gap:16px;text-align:center}
-.empty-icon{font-size:56px;opacity:.4}
-.empty-title{font-size:20px;font-weight:700;color:var(--text-dim)}
-.empty-desc{font-size:14px;color:var(--text-dim);max-width:360px;opacity:.7}
-/* LOADING */
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:24px}
-.spinner{width:40px;height:40px;border:3px solid rgba(108,92,231,.2);border-top-color:#6C5CE7;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{color:var(--text-dim);font-size:14px;animation:blink 1.5s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:.5}50%{opacity:1}}
-/* RESULT */
-.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:12px}
-.result-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--primary)}
-.result-actions{display:flex;gap:10px}
-.action-btn{padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.action-btn:hover{background:var(--surface2);border-color:rgba(108,92,231,.3)}
-.action-btn.primary{background:rgba(108,92,231,.2);border-color:rgba(108,92,231,.4);color:#a29bfe}
-/* MARKDOWN */
-.markdown-body{font-size:15px;line-height:1.75;color:var(--text)}
-.markdown-body h1{font-size:26px;font-weight:800;margin:0 0 24px;letter-spacing:-.03em;background:linear-gradient(135deg,#fff,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.markdown-body h2{font-size:18px;font-weight:700;margin:32px 0 14px;padding:14px 18px;background:rgba(108,92,231,.08);border-left:3px solid #6C5CE7;border-radius:0 10px 10px 0;letter-spacing:-.01em;color:#a29bfe;-webkit-text-fill-color:#a29bfe}
-.markdown-body h3{font-size:15px;font-weight:700;margin:20px 0 10px;color:var(--text)}
-.markdown-body p{margin:0 0 14px;color:rgba(232,232,240,.85)}
-.markdown-body ul,ol{margin:0 0 14px 20px;color:rgba(232,232,240,.85)}
-.markdown-body li{margin-bottom:6px}
-.markdown-body strong{color:var(--text);font-weight:700}
-.markdown-body code{background:rgba(108,92,231,.12);padding:2px 6px;border-radius:5px;font-size:13px;color:#a29bfe}
-.markdown-body hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+.container{max-width:1080px;margin:0 auto;padding:0 24px}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:all .3s;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border)}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-size:17px;font-weight:700;color:var(--text)}
+.nav-logo a{color:var(--text)}
+.nav-logo span{color:var(--primary)}
+.nav-link{font-size:14px;color:var(--text-secondary);transition:color .2s}
+.nav-link:hover{color:var(--primary)}
+
+/* TOOL HEADER */
+.tool-header{padding:140px 0 60px;text-align:center;background:var(--bg-alt)}
+.tool-tag{display:inline-block;font-size:13px;font-weight:600;color:var(--primary);background:rgba(0,102,204,.08);padding:5px 14px;border-radius:var(--radius-pill);margin-bottom:16px}
+.tool-header h1{font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:16px}
+.tool-header p{font-size:17px;color:var(--text-secondary);max-width:520px;margin:0 auto;line-height:1.6}
+
+/* WORKSPACE */
+.workspace{padding:60px 0 100px}
+.workspace-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+@media(max-width:860px){.workspace-grid{grid-template-columns:1fr}}
+
+/* PANEL */
+.panel{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--card-border);box-shadow:var(--card-shadow);overflow:hidden}
+.panel-header{padding:20px 24px;border-bottom:1px solid var(--card-border);font-size:15px;font-weight:600;color:var(--text)}
+.panel-body{padding:24px}
+
+/* FORM */
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 16px;border:1px solid var(--card-border);border-radius:12px;font-size:15px;font-family:var(--font);background:var(--bg-alt);color:var(--text);transition:border-color .2s;outline:none}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--primary)}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-group select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236e6e73' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:var(--radius-pill);font-size:15px;font-weight:600;cursor:pointer;transition:all .2s ease;border:none;font-family:var(--font);width:100%}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#0055aa;transform:scale(1.01)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* OUTPUT */
+.output-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;color:var(--text-secondary)}
+.output-empty .icon{font-size:48px;margin-bottom:16px;opacity:.4}
+.output-empty p{font-size:15px}
+
+/* THINKING ANIMATION */
+.thinking{display:flex;align-items:center;gap:12px;padding:32px 24px;font-size:15px;color:var(--text-secondary)}
+.thinking-dots{display:flex;gap:4px}
+.thinking-dots span{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:dot-bounce 1.4s infinite ease-in-out}
+.thinking-dots span:nth-child(2){animation-delay:.2s}
+.thinking-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot-bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* CURSOR */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.cursor{animation:blink .6s infinite;color:var(--primary);font-weight:400}
+
+/* MARKDOWN OUTPUT */
+.md-output{padding:24px;font-size:15px;line-height:1.8;color:var(--text)}
+.md-output h1,.md-output h2,.md-output h3{margin:24px 0 12px;font-weight:700;color:var(--text)}
+.md-output h1{font-size:24px;border-bottom:1px solid var(--card-border);padding-bottom:12px}
+.md-output h2{font-size:20px}
+.md-output h3{font-size:17px}
+.md-output p{margin-bottom:16px}
+.md-output ul,.md-output ol{margin:12px 0 16px 20px}
+.md-output li{margin-bottom:6px}
+.md-output strong{font-weight:600}
+.md-output blockquote{border-left:3px solid var(--primary);padding:12px 16px;margin:16px 0;background:var(--bg-alt);border-radius:0 12px 12px 0;color:var(--text-secondary)}
+.md-output code{background:var(--bg-alt);padding:2px 6px;border-radius:4px;font-size:14px}
+.md-output pre{background:var(--bg-alt);padding:16px;border-radius:12px;overflow-x:auto;margin:16px 0}
+.md-output pre code{background:none;padding:0}
+.md-output table{width:100%;border-collapse:collapse;margin:16px 0}
+.md-output th,.md-output td{padding:10px 14px;border:1px solid var(--card-border);text-align:left;font-size:14px}
+.md-output th{background:var(--bg-alt);font-weight:600}
+
+/* FOLLOW-UP MODAL */
+.followup{padding:24px}
+.followup h4{font-size:16px;font-weight:600;margin-bottom:20px;color:var(--text)}
+.followup-q{margin-bottom:16px}
+.followup-q label{display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)}
+.followup-q input{width:100%;padding:10px 14px;border:1px solid var(--card-border);border-radius:12px;font-size:14px;font-family:var(--font);background:var(--bg-alt);outline:none}
+.followup-q input:focus{border-color:var(--primary)}
+.btn-sm{padding:12px 24px;font-size:14px;width:auto}
+
+/* BACK BTN */
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--text-secondary);margin-bottom:16px;transition:color .2s}
+.back-link:hover{color:var(--primary)}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <a href="/08/portfolio/" class="back">← 返回首页</a>
-  <span style="color:var(--border)">|</span>
-  <span class="page-title">📋 用研报告生成器</span>
-  <span class="page-badge">Gemini AI</span>
-</div>
 
-<div class="layout">
-  <div class="form-panel">
-    <div>
-      <div class="panel-heading">生成用研报告</div>
-      <div class="panel-sub">填写产品背景，AI 自动生成结构化用研报告</div>
-    </div>
-
-    <div class="form-group">
-      <label>产品名称 *</label>
-      <input id="productName" type="text" placeholder="如：AI 旅行规划 App"/>
-    </div>
-    <div class="form-group">
-      <label>目标用户群 *</label>
-      <input id="targetUser" type="text" placeholder="如：25-35岁都市白领，爱好旅行"/>
-    </div>
-    <div class="form-group">
-      <label>核心研究问题 *</label>
-      <textarea id="researchQ" placeholder="如：为什么用户在注册后 7 天内流失？他们真正需要什么功能？"></textarea>
-    </div>
-    <div class="form-group">
-      <label>竞品参考（可选）</label>
-      <input id="competitors" type="text" placeholder="如：携程、飞猪、Wanderlog"/>
-    </div>
-    <div class="form-group">
-      <label>报告深度</label>
-      <div class="depth-row">
-        <button class="depth-btn" data-val="quick">快速洞察</button>
-        <button class="depth-btn active" data-val="standard">标准报告</button>
-        <button class="depth-btn" data-val="deep">深度分析</button>
-      </div>
-    </div>
-    <button class="generate-btn" id="generateBtn" onclick="generate()">✨ 生成用研报告</button>
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo"><a href="/08/portfolio/">AI <span>×</span> Product</a></div>
+    <a class="nav-link" href="/08/portfolio/">返回 Portfolio</a>
   </div>
+</nav>
 
-  <div class="output-panel" id="outputPanel">
-    <div class="empty-state" id="emptyState">
-      <div class="empty-icon">📋</div>
-      <div class="empty-title">等待生成</div>
-      <div class="empty-desc">填写左侧表单，点击「生成用研报告」，AI 将在几秒内输出完整的结构化报告</div>
-    </div>
+<div class="tool-header">
+  <div class="container">
+    <span class="tool-tag">用户研究</span>
+    <h1>用研报告生成器</h1>
+    <p>告诉 AI 你的产品背景，10 秒生成一份结构完整的用户研究报告。</p>
   </div>
 </div>
 
-<script>
-const GEMINI_KEY = ['AQ.Ab8RN6Kwvan', 'PacRzJIFXe6Yi1Kx35q046', 'jXDWC8LF0dV3tKJiA'].join('');
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
-
-let depth = 'standard';
-document.querySelectorAll('.depth-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.depth-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    depth = btn.dataset.val;
-  });
-});
-
-async function generate() {
-  const name = document.getElementById('productName').value.trim();
-  const user = document.getElementById('targetUser').value.trim();
-  const question = document.getElementById('researchQ').value.trim();
-  const comp = document.getElementById('competitors').value.trim();
-  if (!name || !user || !question) { alert('请填写产品名称、目标用户群和研究问题'); return; }
-
-  const depthMap = { quick: '简洁版（每个章节2-3句话，总字数800字以内）', standard: '标准版（每个章节4-6句话，总字数1500字左右）', deep: '深度版（详细展开每个章节，总字数2500字以上，包含更多细节和数据推演）' };
-
-  const prompt = `你是一位资深用户研究专家，请为以下产品生成一份专业的用研报告（${depthMap[depth]}）。
-
-产品名称：${name}
-目标用户群：${user}
-核心研究问题：${question}
-${comp ? `竞品参考：${comp}` : ''}
-
-请严格按照以下 Markdown 格式输出，不要添加额外内容：
-
-# 用研报告：${name}
-
-## 执行摘要
-（3句话总结核心发现，突出最重要的洞察）
-
-## 用户画像
-（描述主要用户群，包含：人口统计特征、行为习惯、核心诉求、使用场景）
-
-## 核心痛点（Top 5）
-（列出5个最重要的用户痛点，每个痛点包含：具体描述、严重程度、典型出现场景）
-
-## 机会点分析
-（基于痛点，提炼3-5个产品或运营可落地的机会点，说明为什么是机会）
-
-## 竞品对标
-（分析竞品如何解决类似问题，找出差距和超越机会）
-
-## 行动建议
-（给出优先级排序的可执行建议清单，分短期/中期/长期）
-
-## 研究局限
-（说明本报告的数据基础、假设前提和局限性）`;
-
-  const btn = document.getElementById('generateBtn');
-  btn.disabled = true; btn.textContent = '生成中...';
-  const panel = document.getElementById('outputPanel');
-  panel.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">AI 正在生成报告，请稍候...</div></div>';
-
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 4096 } })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error?.message || '请求失败');
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!text) throw new Error('返回内容为空');
-
-    panel.innerHTML = `
-      <div class="result-header">
-        <span class="result-title">📋 用研报告已生成</span>
-        <div class="result-actions">
-          <button class="action-btn primary" onclick="copyReport()">复制全文</button>
-          <button class="action-btn" onclick="location.reload()">重新生成</button>
+<div class="workspace">
+  <div class="container" style="display:flex;justify-content:flex-end;width:100%">
+    <div style="width:100%;max-width:1080px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
+      <!-- LEFT: INPUT -->
+      <div class="panel">
+        <div class="panel-header">告诉 AI 你的需求</div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label>产品/项目名称</label>
+            <input type="text" id="productName" placeholder="例如：AI 旅行规划助手">
+          </div>
+          <div class="form-group">
+            <label>目标用户</label>
+            <input type="text" id="targetUser" placeholder="例如：25-35 岁一线城市白领">
+          </div>
+          <div class="form-group">
+            <label>行业领域</label>
+            <select id="industry">
+              <option value="">选择行业</option>
+              <option>AI / 人工智能</option><option>电商 / 零售</option><option>社交 / 社区</option>
+              <option>教育</option><option>金融 / 保险</option><option>医疗 / 健康</option>
+              <option>旅游 / 出行</option><option>内容 / 媒体</option><option>企业服务 / SaaS</option><option>其他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>研究目的（选填）</label>
+            <textarea id="researchGoal" placeholder="例如：了解用户对 AI 旅行规划功能的接受度和付费意愿"></textarea>
+          </div>
+          <button class="btn btn-primary" id="genBtn" onclick="startGen()">生成报告</button>
         </div>
       </div>
-      <div class="markdown-body" id="reportContent">${marked.parse(text)}</div>`;
-    window._reportText = text;
-  } catch(e) {
-    panel.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">生成失败</div><div class="empty-desc">${e.message}<br><br><button class="action-btn" onclick="location.reload()">重试</button></div></div>`;
-  } finally {
-    btn.disabled = false; btn.textContent = '✨ 生成用研报告';
-  }
+
+      <!-- RIGHT: OUTPUT -->
+      <div class="panel" id="outputPanel">
+        <div class="panel-header">AI 洞察报告</div>
+        <div id="outputBody">
+          <div class="output-empty"><div class="icon">📋</div><p>填写左侧信息后<br>AI 将为你生成完整报告</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOLLOWUP MODAL -->
+<div id="followupModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:200;display:none;align-items:center;justify-content:center">
+  <div style="background:var(--card-bg);border-radius:var(--radius);max-width:480px;width:90%;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.15)">
+    <h4 style="font-size:17px;font-weight:700;margin-bottom:6px">在生成报告前，我有 2 个问题想了解一下：</h4>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px">这能帮助我生成更精准的分析。</p>
+    <div class="followup">
+      <div class="followup-q"><label>1. 你的产品目前处于哪个阶段？</label><input type="text" id="fq1" placeholder="例如：0-1 阶段 / 成长期 / 成熟期"></div>
+      <div class="followup-q"><label>2. 你最希望这份报告帮你解决什么决策？</label><input type="text" id="fq2" placeholder="例如：是否应该增加付费功能"></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:20px">
+      <button class="btn btn-primary btn-sm" onclick="confirmFollowup()" style="flex:1">开始生成</button>
+      <button class="btn btn-sm" onclick="skipFollowup()" style="flex:1;background:var(--bg-alt);color:var(--text)">跳过</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const API_KEY=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
+const API_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+API_KEY;
+
+let followupAnswers={q1:'',q2:''};
+
+function startGen(){
+  const name=document.getElementById('productName').value.trim();
+  const user=document.getElementById('targetUser').value.trim();
+  const industry=document.getElementById('industry').value;
+  if(!name){alert('请填写产品名称');return}
+  if(!user){alert('请填写目标用户');return}
+  // Show followup modal
+  document.getElementById('followupModal').style.display='flex';
 }
 
-function copyReport() {
-  navigator.clipboard.writeText(window._reportText || '').then(() => {
-    const btn = event.target;
-    btn.textContent = '✅ 已复制';
-    setTimeout(() => btn.textContent = '复制全文', 2000);
-  });
+function confirmFollowup(){
+  followupAnswers.q1=document.getElementById('fq1').value.trim();
+  followupAnswers.q2=document.getElementById('fq2').value.trim();
+  document.getElementById('followupModal').style.display='none';
+  doGenerate();
+}
+function skipFollowup(){
+  document.getElementById('followupModal').style.display='none';
+  doGenerate();
+}
+
+async function doGenerate(){
+  const name=document.getElementById('productName').value.trim();
+  const user=document.getElementById('targetUser').value.trim();
+  const industry=document.getElementById('industry').value;
+  const goal=document.getElementById('researchGoal').value.trim();
+
+  let extra='';
+  if(followupAnswers.q1) extra+=`\n产品阶段：${followupAnswers.q1}`;
+  if(followupAnswers.q2) extra+=`\n核心决策诉求：${followupAnswers.q2}`;
+
+  const prompt=`你是一位资深用户研究员。请为以下产品生成一份完整的用户研究报告。
+
+产品信息：
+- 产品/项目名称：${name}
+- 目标用户：${user}
+- 行业领域：${industry||'未指定'}${goal?'\n- 研究目的：'+goal:''}${extra}
+
+请按以下结构输出报告（使用 Markdown 格式）：
+
+# 用户研究报告：${name}
+
+## 一、研究背景与目的
+（简要说明研究背景）
+
+## 二、目标用户画像
+（包含年龄、职业、需求痛点、行为特征等）
+
+## 三、市场需求分析
+（市场规模、趋势、用户需求分层）
+
+## 四、竞品分析
+（列出3-5个主要竞品，对比分析）
+
+## 五、用户核心痛点
+（列出并分析3-5个核心痛点）
+
+## 六、机会点与建议
+（基于分析给出具体产品建议）
+
+## 七、总结与下一步
+（总结核心发现，给出可执行的下一步行动）
+
+请确保内容专业、具体、可操作，不要泛泛而谈。`;
+
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;btn.textContent='AI 正在思考...';
+
+  // Show thinking animation
+  const out=document.getElementById('outputBody');
+  out.innerHTML='<div class="thinking"><div class="thinking-dots"><span></span><span></span><span></span></div><span>AI 正在分析并生成报告...</span></div>';
+
+  try{
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.7}})});
+    const data=await resp.json();
+    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'抱歉，生成失败，请重试。';
+    // Typewriter render
+    typewriterRender(text,out);
+  }catch(e){
+    out.innerHTML='<div class="output-empty"><div class="icon">⚠️</div><p>请求失败，请检查网络后重试</p></div>';
+  }
+  btn.disabled=false;btn.textContent='重新生成';
+}
+
+function typewriterRender(fullText,container){
+  let i=0;
+  container.innerHTML='';
+  const interval=setInterval(()=>{
+    i+=3;
+    const current=fullText.slice(0,i);
+    container.innerHTML='<div class="md-output">'+marked.parse(current)+'</div><span class="cursor">|</span>';
+    if(i>=fullText.length){
+      clearInterval(interval);
+      container.innerHTML='<div class="md-output">'+marked.parse(fullText)+'</div>';
+    }
+  },18);
 }
 </script>
 </body>
