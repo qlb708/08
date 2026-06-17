@@ -77,35 +77,44 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.9);b
 </style>
 </head>
 <body>
-<nav><div class="nw">
-  <a href="/08/portfolio/" class="logo">AI <em>&times;</em> 08</a>
-  <a href="/08/portfolio/" class="back">
-    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    返回
-  </a>
-</div></nav>
+<nav>
+  <div class="nw">
+    <a href="/08/portfolio/" class="logo">AI <em>&times;</em> 08</a>
+    <a href="/08/portfolio/" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      返回
+    </a>
+  </div>
+</nav>
+
 <div class="hero">
   <div class="tag">产研工具</div>
   <h1>需求评审检查器</h1>
-  <p>粘贴需求文档，AI 自动检查完整度并指出遗漏。</p>
+  <p>粘贴需求文档，AI 自动检查完整度并指出问题。</p>
 </div>
+
 <div class="ws">
   <div class="panel ip">
     <div class="ph">
-      <div class="pi"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-      <div><div class="pt">输入需求文档</div><div class="ps">粘贴原始 PRD 或需求说明</div></div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div>
+        <div class="pt">需求输入</div>
+        <div class="ps">粘贴 PRD 或需求描述</div>
+      </div>
     </div>
     <div class="pb">
       <div class="f">
         <label>产品名称</label>
-        <input type="text" id="pname" placeholder="例如：用户中心 v3">
+        <input type="text" id="pname" placeholder="例如：用户成长体系">
       </div>
       <div class="f">
         <label>需求文档</label>
-        <textarea id="req" rows="7" placeholder="粘贴需求文档全文，或概要描述"></textarea>
+        <textarea id="req" rows="7" placeholder="粘贴需求文档全文或关键内容&#10;口语化描述也没关系"></textarea>
       </div>
       <div class="f">
-        <label>检查维度</label>
+        <label>检查维度 <span class="fn">可多选</span></label>
         <div class="chips" id="dimChips">
           <span class="chip active" data-v="用户故事">用户故事</span>
           <span class="chip active" data-v="成功指标">成功指标</span>
@@ -124,32 +133,39 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.9);b
           <span class="chip" data-v="其他">其他</span>
         </div>
       </div>
-      <button class="gbtn" id="gbtn" onclick="gen()">
-        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
+      <button class="gbtn" id="gbtnReq" onclick="gen()">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         开始检查
       </button>
     </div>
   </div>
+
   <div class="panel op">
     <div class="ph">
-      <div class="pi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-      <div><div class="pt">检查结果</div><div class="ps" id="outSub">等待检查</div></div>
+      <div class="pi">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div>
+        <div class="pt">检查报告</div>
+        <div class="ps" id="outSub">等待检查</div>
+      </div>
     </div>
     <div class="ob" id="ob">
       <div class="skel">
         <div class="sl" style="width:40%"></div>
-        <div class="sb" style="height:50px"></div>
-        <div class="sl" style="width:75%"></div>
-        <div class="sl" style="width:65%"></div>
-        <div class="sb" style="height:80px"></div>
-        <div class="sl" style="width:50%"></div>
-        <div class="sl" style="width:85%"></div>
-        <div class="sb" style="height:70px"></div>
+        <div class="sb" style="height:56px;margin-top:4px"></div>
+        <div class="sl" style="width:75%;margin-top:8px"></div>
+        <div class="sl" style="width:60%"></div>
+        <div class="sb" style="height:88px;margin-top:4px"></div>
+        <div class="sl" style="width:50%;margin-top:8px"></div>
+        <div class="sl" style="width:80%"></div>
       </div>
     </div>
   </div>
 </div>
+
 <div id="toast">已复制</div>
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 var PROVIDERS=[
@@ -173,10 +189,10 @@ async function callAI(prompt){
         var d2=await res.json();
         text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
       }
-      if(text){console.log('OK',p.name);return text;}
+      if(text){console.log('\u2713',p.name);return text;}
     }catch(err){console.warn(p.name,err.message);}
   }
-  throw new Error('所有AI服务均不可用');
+  throw new Error('\u6240\u6709AI\u670d\u52a1\u5747\u4e0d\u53ef\u7528');
 }
 var _lastResult='';
 function typeWrite(text,el,onDone){
@@ -206,7 +222,6 @@ function copyText(){
 }
 
 var selType='PRD';
-// 初始化单选 chips
 (function(){
   var cs=document.querySelectorAll('#typeChips .chip');
   cs.forEach(function(c){
@@ -218,7 +233,7 @@ var selType='PRD';
   });
   if(cs[0])cs[0].classList.add('sel');
 })();
-// 初始化多选 chips
+
 (function(){
   var cs=document.querySelectorAll('#dimChips .chip');
   cs.forEach(function(c){
@@ -230,32 +245,33 @@ var selType='PRD';
 
 async function gen(){
   var pname=document.getElementById('pname').value.trim();
-  var reqContent=document.getElementById('req').value.trim();
-  if(!reqContent){document.getElementById('req').focus();return;}
-  var activeDims=[];
-  document.querySelectorAll('#dimChips .chip.active').forEach(function(c){
-    activeDims.push(c.dataset.v);
-  });
-  if(activeDims.length===0){activeDims=['全面检查'];}
-  var btn=document.getElementById('gbtn');
+  var reqVal=document.getElementById('req').value.trim();
+  if(!reqVal){document.getElementById('req').focus();return;}
+  var dims=[];
+  document.querySelectorAll('#dimChips .chip.active').forEach(function(c){dims.push(c.dataset.v);});
+  if(!dims.length)dims=['\u5168\u9762\u68c0\u67e5'];
+  var btn=document.getElementById('gbtnReq');
   var ob=document.getElementById('ob');
   var sub=document.getElementById('outSub');
   btn.disabled=true;
-  if(sub)sub.textContent='AI 检查中\u2026';
-  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI 正在逐项审查需求\u2026</span></div>';
-  var prompt='你是资深产品经理，请对以下需求文档进行评审。\n\n'+(pname?'产品名称：'+pname+'\n':'')+'文档类型：'+selType+'\n检查维度：'+activeDims.join('\u3001')+'\n\n需求文档内容：\n'+reqContent+'\n\n请以 Markdown 格式输出以下结构：\n\n# 需求评审报告'+(pname?' —— '+pname:'')+'\n\n## 需求完整度评分\n（给出 X/10 的评分 + 一句话总评）\n\n## 高优问题\n（阻塞性问题，必须修复后才能进入评审）\n\n## 中优问题\n（影响开发质量，建议修复）\n\n## 低优问题\n（锦上添花，有时间再补）\n\n## 做得好的\n（值得肯定的部分）\n\n## 复查 Checklist\n（列出开发前需要再次确认的检查项）';
+  if(sub)sub.textContent='AI \u68c0\u67e5\u4e2d\u2026';
+  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI \u6b63\u5728\u9010\u9879\u5ba1\u67e5\u2026</span></div>';
+  var prompt='\u4f60\u662f\u8d44\u6df1\u4ea7\u54c1\u7ecf\u7406\uff0c\u8bf7\u5bf9\u4ee5\u4e0b'+selType+'\u8fdb\u884c\u8bc4\u5ba1\u68c0\u67e5\u3002\n\n'
+    +(pname?'\u4ea7\u54c1\u540d\u79f0\uff1a'+pname+'\n':'')
+    +'\u68c0\u67e5\u7ef4\u5ea6\uff1a'+dims.join('\u3001')+'\n\n\u9700\u6c42\u6587\u6863\uff1a\n'+reqVal+'\n\n'
+    +'\u8bf7\u4ee5 Markdown \u683c\u5f0f\u8f93\u51fa\uff1a\n\n# \u9700\u6c42\u8bc4\u5ba1\u62a5\u544a\n\n## \u9700\u6c42\u5b8c\u6574\u5ea6\u8bc4\u5206\n\uff08X/10 \u8bc4\u5206 + \u4e00\u53e5\u8bdd\u603b\u8bc4\uff09\n\n## \u9ad8\u4f18\u95ee\u9898\n\uff08\u963b\u585e\u6027\u95ee\u9898\uff0c\u5fc5\u987b\u4fee\u590d\u540e\u624d\u80fd\u5165\u5f00\u53d1\uff09\n\n## \u4e2d\u4f18\u95ee\u9898\n\uff08\u5f71\u54cd\u5f00\u53d1\u8d28\u91cf\uff0c\u5efa\u8bae\u4fee\u590d\uff09\n\n## \u4f4e\u4f18\u95ee\u9898\n\uff08\u9510\u4e0a\u6dfb\u82b1\uff0c\u6709\u65f6\u95f4\u518d\u8865\uff09\n\n## \u505a\u5f97\u597d\u7684\n\uff08\u5024\u5f97\u80af\u5b9a\u7684\u90e8\u5206\uff09\n\n## \u590d\u67e5 Checklist\n\uff08\u5f00\u53d1\u524d\u9700\u518d\u6b21\u786e\u8ba4\u7684\u68c0\u67e5\u9879\uff09';
   try{
     var text=await callAI(prompt);
-    if(sub)sub.textContent='检查完成';
-    typeWrite(text,ob,function(){
-      document.querySelector('.op').insertAdjacentHTML('beforeend','<div class="ebar"><button class="ebtn" onclick="copyText()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button><button class="ebtn" onclick="doExport(\'需求检查报告.md\')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button></div>');
+    if(sub)sub.textContent='\u68c0\u67e5\u5b8c\u6210';
+    typeWrite(text,document.getElementById('ob'),function(){
+      document.querySelector('.op').insertAdjacentHTML('beforeend','<div class="ebar"><button class="ebtn" onclick="copyText()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>\u590d\u5236</button><button class="ebtn" onclick="doExport(\'\u9700\u6c42\u68c0\u67e5\u62a5\u544a.md\')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>\u5bfc\u51fa</button></div>');
     });
   }catch(e){
-    ob.innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">生成失败，请稍后重试</div>';
-    if(sub)sub.textContent='失败';
+    document.getElementById('ob').innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">\u751f\u6210\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5</div>';
+    if(sub)sub.textContent='\u5931\u8d25';
   }
   btn.disabled=false;
-  btn.innerHTML='<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>重新检查';
+  btn.innerHTML='<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>\u91cd\u65b0\u68c0\u67e5';
 }
 </script>
 </body>
