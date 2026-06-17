@@ -3,363 +3,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>用研报告生成器 · AI × Product</title>
+<title>用研报告生成器 - 08 AI Tools</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>08</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-soft:rgba(0,102,204,.08);
-  --text:#1d1d1f;--text-soft:#6e6e73;--text-muted:#aeaeb2;
-  --border:rgba(0,0,0,.06);--border-strong:rgba(0,0,0,.1);
-  --shadow:0 2px 16px rgba(0,0,0,.06);--shadow-hover:0 8px 32px rgba(0,0,0,.1);
-  --radius:20px;--radius-sm:14px;--pill:999px;
-  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Display","Helvetica Neue",sans-serif;
-}
-body{font-family:var(--font);color:var(--text);background:var(--bg-alt);-webkit-font-smoothing:antialiased;min-height:100vh}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;background:rgba(255,255,255,.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 32px;width:100%;display:flex;justify-content:space-between;align-items:center}
-.nav-logo{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.02em}
-.nav-logo em{color:var(--primary);font-style:normal}
-.nav-logo a{color:inherit;text-decoration:none}
-.back-btn{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text-soft);text-decoration:none;transition:color .2s}
-.back-btn:hover{color:var(--text)}
-.back-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
-
-/* HERO */
-.tool-hero{padding:88px 0 40px;background:#fff;border-bottom:1px solid var(--border)}
-.tool-hero .inner{max-width:1200px;margin:0 auto;padding:0 32px}
-.tool-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);background:var(--primary-soft);padding:5px 14px;border-radius:var(--pill);margin-bottom:16px;border:1px solid rgba(0,102,204,.12)}
-.tool-hero h1{font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-.04em;margin-bottom:10px}
-.tool-hero p{font-size:16px;color:var(--text-soft);max-width:480px}
-
-/* WORKSPACE */
-.workspace{max-width:1200px;margin:0 auto;padding:40px 32px 80px;display:grid;grid-template-columns:420px 1fr;gap:24px;align-items:start}
-@media(max-width:900px){.workspace{grid-template-columns:1fr}}
-
-/* PANEL */
-.panel{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;position:sticky;top:72px}
-.panel-hd{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.panel-hd-icon{width:32px;height:32px;border-radius:9px;background:var(--primary-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.panel-hd-icon svg{width:16px;height:16px;fill:none;stroke:var(--primary);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.panel-hd-title{font-size:15px;font-weight:700}
-.panel-hd-sub{font-size:12px;color:var(--text-soft);margin-top:1px}
-.panel-body{padding:22px}
-
-/* FORM */
-.field{margin-bottom:18px}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px}
-.field-hint{font-size:12px;color:var(--text-muted);font-weight:400;margin-left:4px}
-.field input,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:var(--font);background:var(--bg-alt);color:var(--text);transition:border-color .2s,box-shadow .2s;outline:none}
-.field input:focus,.field textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:#fff}
-.field textarea{resize:vertical;min-height:80px;line-height:1.55}
-/* chips instead of select */
-.chip-group{display:flex;flex-wrap:wrap;gap:7px}
-.chip{padding:6px 14px;border-radius:var(--pill);border:1.5px solid var(--border);background:#fff;color:var(--text-soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;font-family:var(--font)}
-.chip:hover{border-color:rgba(0,102,204,.25);color:var(--primary)}
-.chip.active{background:var(--primary);border-color:var(--primary);color:#fff}
-
-.gen-btn{width:100%;padding:14px;border-radius:var(--pill);background:var(--primary);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:all .22s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;box-shadow:0 4px 14px rgba(0,102,204,.28)}
-.gen-btn:hover:not(:disabled){background:#0055aa;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,102,204,.38)}
-.gen-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
-
-/* OUTPUT PANEL */
-.output-panel{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;min-height:520px;display:flex;flex-direction:column}
-.output-hd{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.output-hd-left{display:flex;align-items:center;gap:10px}
-.output-hd-icon{width:32px;height:32px;border-radius:9px;background:rgba(52,199,89,.1);display:flex;align-items:center;justify-content:center}
-.output-hd-icon svg{width:16px;height:16px;fill:none;stroke:#34c759;stroke-width:2}
-.output-hd-title{font-size:15px;font-weight:700}
-.output-hd-sub{font-size:12px;color:var(--text-soft);margin-top:1px}
-.output-body{flex:1;padding:24px;position:relative}
-
-/* EMPTY STATE with preview */
-.empty-state{display:flex;flex-direction:column;gap:16px}
-.empty-title{font-size:15px;font-weight:600;color:var(--text-muted)}
-.preview-blocks{display:flex;flex-direction:column;gap:10px;opacity:.45;pointer-events:none;user-select:none}
-.preview-block{border-radius:10px;background:var(--bg-alt);height:12px}
-.preview-block.lg{width:70%;height:16px}
-.preview-block.md{width:90%}
-.preview-block.sm{width:55%}
-.preview-block.xl{height:20px;width:45%;background:rgba(0,102,204,.12)}
-.preview-section{margin-bottom:16px}
-.preview-label{height:10px;width:30%;background:rgba(0,102,204,.15);border-radius:6px;margin-bottom:8px}
-
-/* THINKING */
-.thinking{display:flex;align-items:center;gap:12px;padding:40px 0;color:var(--text-soft);font-size:14px}
-.dots{display:flex;gap:5px}
-.dots span{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:bounce 1.4s infinite ease-in-out}
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
-
-/* MARKDOWN */
-.md{font-size:15px;line-height:1.8;color:var(--text)}
-.md h1{font-size:22px;font-weight:800;margin:0 0 20px;padding-bottom:14px;border-bottom:1px solid var(--border);letter-spacing:-.02em}
-.md h2{font-size:17px;font-weight:700;margin:24px 0 10px;color:var(--text)}
-.md h3{font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--text)}
-.md p{margin-bottom:14px}
-.md ul,.md ol{margin:10px 0 14px 18px}
-.md li{margin-bottom:5px}
-.md strong{font-weight:700}
-.md blockquote{border-left:3px solid var(--primary);padding:12px 16px;margin:16px 0;background:var(--primary-soft);border-radius:0 12px 12px 0;color:var(--text-soft);font-size:14px}
-.md code{background:var(--bg-alt);padding:2px 7px;border-radius:5px;font-size:13px;font-family:"SF Mono",Menlo,monospace}
-.md table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
-.md th,.md td{padding:9px 12px;border:1px solid var(--border);text-align:left}
-.md th{background:var(--bg-alt);font-weight:600}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.cursor{animation:blink .6s infinite;color:var(--primary)}
-
-/* FOLLOWUP OVERLAY */
-.followup-mask{position:fixed;inset:0;background:rgba(0,0,0,.3);backdrop-filter:blur(6px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px}
-.followup-mask.show{display:flex}
-.followup-box{background:#fff;border-radius:var(--radius);max-width:480px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.15);padding:32px;position:relative}
-.followup-box h3{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
-.followup-box p{font-size:14px;color:var(--text-soft);margin-bottom:24px;line-height:1.6}
-.fq{margin-bottom:18px}
-.fq label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
-.fq input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:var(--font);background:var(--bg-alt);outline:none;transition:border-color .2s}
-.fq input:focus{border-color:var(--primary);background:#fff}
-.fq-btns{display:flex;gap:10px;margin-top:24px}
-.fq-confirm{flex:1;padding:13px;border-radius:var(--pill);background:var(--primary);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:all .2s}
-.fq-confirm:hover{background:#0055aa}
-.fq-skip{flex:1;padding:13px;border-radius:var(--pill);background:var(--bg-alt);color:var(--text-soft);font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:var(--font);transition:all .2s}
-.fq-skip:hover{background:var(--bg-deep,#e5e5e7);color:var(--text)}
+:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-h:#0055aa;--text:#1d1d1f;--text2:#86868b;--card-r:20px;--el-r:12px;--btn-r:999px;--shadow:0 2px 16px rgba(0,0,0,.06);--shadow-h:0 8px 32px rgba(0,0,0,.1)}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--primary);text-decoration:none}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);height:52px;display:flex;align-items:center;justify-content:center}
+nav .inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+nav .logo{font-weight:700;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--primary)}
+nav .logo .sep{color:#d2d2d7}
+nav a.back{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:4px}
+nav a.back:hover{color:var(--text)}
+.page-hero{padding:32px 0 16px;text-align:center}
+.page-hero h1{font-size:28px;font-weight:700}
+.page-hero p{font-size:15px;color:var(--text2);margin-top:6px}
+.workspace{display:flex;gap:24px;max-width:1200px;margin:0 auto;padding:0 24px 64px;align-items:flex-start}
+.panel-left{width:420px;flex-shrink:0;position:sticky;top:76px;max-height:calc(100vh - 100px);overflow-y:auto;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:24px}
+.panel-right{flex:1;min-width:0;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:24px;min-height:400px}
+.panel-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0f0f5}
+.panel-header svg{width:20px;height:20px;color:var(--primary)}
+.panel-header h2{font-size:16px;font-weight:600}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.form-group input,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid #d2d2d7;border-radius:var(--el-r);font-size:14px;font-family:inherit;transition:border-color .2s;background:var(--bg);color:var(--text)}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary)}
+.form-group textarea{resize:vertical;min-height:60px}
+.chip-group{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:6px 14px;border-radius:var(--btn-r);font-size:13px;cursor:pointer;border:1.5px solid #d2d2d7;background:var(--bg);color:var(--text2);transition:all .2s;user-select:none}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-generate{width:100%;padding:14px;border:none;border-radius:var(--btn-r);background:var(--primary);color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:inherit}
+.btn-generate:hover{background:var(--primary-h);transform:translateY(-1px)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-generate svg{width:18px;height:18px}
+.skeleton{display:flex;flex-direction:column;gap:12px;padding:8px 0}
+.skeleton-block{border-radius:var(--el-r);background:linear-gradient(90deg,#f0f0f5 25%,#e8e8ed 50%,#f0f0f5 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+.skeleton-block:nth-child(1){height:24px;width:60%}
+.skeleton-block:nth-child(2){height:16px;width:100%}
+.skeleton-block:nth-child(3){height:16px;width:85%}
+.skeleton-block:nth-child(4){height:16px;width:70%}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.output-content{font-size:15px;line-height:1.8;color:var(--text)}
+.output-content h1{font-size:22px;font-weight:700;margin:24px 0 12px}
+.output-content h2{font-size:18px;font-weight:600;margin:20px 0 10px}
+.output-content h3{font-size:16px;font-weight:600;margin:16px 0 8px}
+.output-content p{margin-bottom:10px;color:var(--text2)}
+.output-content ul,.output-content ol{margin:8px 0 8px 20px;color:var(--text2)}
+.output-content li{margin-bottom:4px}
+.output-content strong{color:var(--text);font-weight:600}
+.output-content code{background:var(--bg-alt);padding:2px 6px;border-radius:4px;font-size:13px}
+.output-content pre{background:var(--bg-alt);padding:16px;border-radius:var(--el-r);overflow-x:auto;margin:12px 0}
+.output-content blockquote{border-left:3px solid var(--primary);padding-left:16px;margin:12px 0;color:var(--text2)}
+.output-content table{width:100%;border-collapse:collapse;margin:12px 0}
+.output-content th,.output-content td{border:1px solid #e8e8ed;padding:8px 12px;text-align:left;font-size:14px}
+.output-content th{background:var(--bg-alt);font-weight:600}
+.btn-export{margin-top:20px;padding:10px 20px;border:1.5px solid #d2d2d7;border-radius:var(--btn-r);background:var(--bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;font-family:inherit}
+.btn-export:hover{border-color:var(--primary);color:var(--primary)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal{background:var(--bg);border-radius:var(--card-r);padding:32px;max-width:480px;width:90%;box-shadow:var(--shadow-h);transform:translateY(20px);transition:transform .25s}
+.modal-overlay.show .modal{transform:translateY(0)}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:6px}
+.modal p{font-size:14px;color:var(--text2);margin-bottom:20px}
+.modal .form-group{margin-bottom:14px}
+.modal-btns{display:flex;gap:10px;margin-top:20px}
+.modal-btns .btn-generate{flex:1}
+.modal-btns .btn-cancel{flex:1;padding:14px;border:1.5px solid #d2d2d7;border-radius:var(--btn-r);background:var(--bg);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.modal-btns .btn-cancel:hover{border-color:var(--text)}
 </style>
 </head>
 <body>
-
-<nav>
-  <div class="nav-inner">
-    <div class="nav-logo"><a href="/08/portfolio/">AI <em>×</em> Product</a></div>
-    <a class="back-btn" href="/08/portfolio/">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      返回 Portfolio
-    </a>
-  </div>
-</nav>
-
-<div class="tool-hero">
-  <div class="inner">
-    <span class="tool-tag">用户研究</span>
-    <h1>用研报告生成器</h1>
-    <p>告诉 AI 你的产品背景，10 秒生成一份结构完整的用户研究报告。</p>
-  </div>
-</div>
-
+<nav><div class="inner">
+  <a class="logo" href="https://qlb708.github.io/08/"><span>08</span><span class="sep">/</span>用研报告生成器</a>
+  <a class="back" href="https://qlb708.github.io/08/">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    返回首页
+  </a>
+</div></nav>
+<div class="page-hero"><h1>用研报告生成器</h1><p>输入产品信息，AI 自动生成结构化的用户研究报告</p></div>
 <div class="workspace">
-
-  <!-- LEFT -->
-  <div class="panel">
-    <div class="panel-hd">
-      <div class="panel-hd-icon">
-        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </div>
-      <div><div class="panel-hd-title">填写产品信息</div><div class="panel-hd-sub">3 个核心字段，60 秒搞定</div></div>
-    </div>
-    <div class="panel-body">
-      <div class="field">
-        <label>产品名称</label>
-        <input id="productName" type="text" placeholder="例如：AI 旅行规划助手">
-      </div>
-      <div class="field">
-        <label>目标用户</label>
-        <input id="targetUser" type="text" placeholder="例如：25-35 岁一线城市白领">
-      </div>
-      <div class="field">
-        <label>行业赛道 <span class="field-hint">点击选择</span></label>
-        <div class="chip-group" id="industryChips">
-          <button class="chip" data-v="AI / 人工智能">AI / 人工智能</button>
-          <button class="chip" data-v="旅游 / 出行">旅游 / 出行</button>
-          <button class="chip" data-v="电商 / 零售">电商 / 零售</button>
-          <button class="chip" data-v="社交 / 社区">社交 / 社区</button>
-          <button class="chip" data-v="教育">教育</button>
-          <button class="chip" data-v="金融 / 保险">金融 / 保险</button>
-          <button class="chip" data-v="医疗 / 健康">医疗 / 健康</button>
-          <button class="chip" data-v="企业 SaaS">企业 SaaS</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>研究目的 <span class="field-hint">选填</span></label>
-        <textarea id="researchGoal" placeholder="例如：了解用户为什么在 7 天内流失，找到关键流失节点"></textarea>
-      </div>
-      <button class="gen-btn" id="genBtn" onclick="startGen()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        生成研究报告
-      </button>
-    </div>
+  <div class="panel-left">
+    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h2>填写产品信息</h2></div>
+    <div class="form-group"><label>产品名称</label><input id="productName" placeholder="例如：Notion"/></div>
+    <div class="form-group"><label>目标用户</label><input id="targetUser" placeholder="例如：25-35岁互联网从业者"/></div>
+    <div class="form-group"><label>行业赛道</label><div class="chip-group" id="industryChips"><div class="chip" data-v="电商">电商</div><div class="chip" data-v="社交">社交</div><div class="chip" data-v="SaaS">SaaS</div><div class="chip" data-v="AI/大模型">AI/大模型</div><div class="chip" data-v="教育">教育</div><div class="chip" data-v="健康">健康</div><div class="chip" data-v="金融">金融</div><div class="chip" data-v="内容社区">内容社区</div></div></div>
+    <div class="form-group"><label>研究目的（选填）</label><textarea id="researchPurpose" placeholder="例如：了解目标用户的核心痛点和未被满足的需求"></textarea></div>
+    <button class="btn-generate" id="generateBtn" onclick="handleGenerate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>生成报告</button>
   </div>
-
-  <!-- RIGHT -->
-  <div class="output-panel" id="outputPanel">
-    <div class="output-hd">
-      <div class="output-hd-left">
-        <div class="output-hd-icon">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div>
-          <div class="output-hd-title">AI 洞察报告</div>
-          <div class="output-hd-sub" id="outputSub">填写左侧信息后生成</div>
-        </div>
-      </div>
-    </div>
-    <div class="output-body" id="outputBody">
-      <!-- EMPTY PLACEHOLDER -->
-      <div class="empty-state">
-        <div class="empty-title">报告预览将在这里显示</div>
-        <div class="preview-blocks">
-          <div class="preview-section">
-            <div class="preview-block xl"></div>
-          </div>
-          <div class="preview-section">
-            <div class="preview-label"></div>
-            <div class="preview-block lg"></div>
-            <div class="preview-block md" style="margin-top:6px"></div>
-            <div class="preview-block sm" style="margin-top:6px"></div>
-          </div>
-          <div class="preview-section">
-            <div class="preview-label"></div>
-            <div class="preview-block md"></div>
-            <div class="preview-block lg" style="margin-top:6px"></div>
-            <div class="preview-block sm" style="margin-top:6px"></div>
-          </div>
-          <div class="preview-section">
-            <div class="preview-label"></div>
-            <div class="preview-block lg"></div>
-            <div class="preview-block md" style="margin-top:6px"></div>
-            <div class="preview-block md" style="margin-top:6px"></div>
-            <div class="preview-block sm" style="margin-top:6px"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- FOLLOWUP OVERLAY -->
-<div class="followup-mask" id="followupMask">
-  <div class="followup-box">
-    <h3>在生成前，我想了解两件事</h3>
-    <p>更精准的背景信息，能让报告质量提升 50% 以上。也可以直接跳过。</p>
-    <div class="fq">
-      <label>1. 产品目前处于哪个阶段？</label>
-      <input id="fq1" type="text" placeholder="例如：0-1 探索期 / 成长期 / 成熟期">
-    </div>
-    <div class="fq">
-      <label>2. 这份报告主要帮你做什么决策？</label>
-      <input id="fq2" type="text" placeholder="例如：决定是否上线付费功能">
-    </div>
-    <div class="fq-btns">
-      <button class="fq-confirm" onclick="confirmFollowup()">开始生成</button>
-      <button class="fq-skip" onclick="skipFollowup()">跳过</button>
-    </div>
+  <div class="panel-right">
+    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><h2>AI 洞察报告</h2></div>
+    <div id="skeleton" class="skeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
+    <div id="output" class="output-content" style="display:none"></div>
+    <button id="exportBtn" class="btn-export" style="display:none" onclick="exportMarkdown()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出 Markdown</button>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<div class="modal-overlay" id="followupModal">
+  <div class="modal">
+    <h3>补充信息</h3><p>为了让报告更精准，请补充以下信息（选填）</p>
+    <div class="form-group"><label>是否有特定的竞品需要关注？</label><input id="followupCompetitors" placeholder="例如：Figma, Miro"/></div>
+    <div class="form-group"><label>是否有特定的研究方法偏好？</label><input id="followupMethod" placeholder="例如：定量问卷 + 深度访谈"/></div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="skipFollowup()">跳过</button><button class="btn-generate" onclick="submitFollowup()">确认生成</button></div>
+  </div>
+</div>
 <script>
-const KEY=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
-const URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+KEY;
-let selectedIndustry='';
-
-// chips
-document.querySelectorAll('#industryChips .chip').forEach(chip=>{
-  chip.addEventListener('click',()=>{
-    document.querySelectorAll('#industryChips .chip').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active');
-    selectedIndustry=chip.dataset.v;
-  });
-});
-
-function startGen(){
-  const name=document.getElementById('productName').value.trim();
-  const user=document.getElementById('targetUser').value.trim();
-  if(!name){document.getElementById('productName').focus();return;}
-  if(!user){document.getElementById('targetUser').focus();return;}
-  document.getElementById('followupMask').classList.add('show');
+const GK=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
+const GU='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GK;
+let rawMd='';
+document.querySelectorAll('#industryChips .chip').forEach(c=>{c.addEventListener('click',()=>{c.classList.toggle('active')})});
+let pd=null;
+function handleGenerate(){
+  var n=document.getElementById('productName').value.trim();
+  var u=document.getElementById('targetUser').value.trim();
+  var ind=[...document.querySelectorAll('#industryChips .chip.active')].map(c=>c.dataset.v);
+  var p=document.getElementById('researchPurpose').value.trim();
+  if(!n){alert('请填写产品名称');return}
+  if(!u){alert('请填写目标用户');return}
+  if(!ind.length){alert('请至少选择一个行业赛道');return}
+  pd={n,u,ind:ind.join('、'),p};
+  document.getElementById('followupModal').classList.add('show');
 }
-
-function confirmFollowup(){
-  const q1=document.getElementById('fq1').value.trim();
-  const q2=document.getElementById('fq2').value.trim();
-  document.getElementById('followupMask').classList.remove('show');
-  doGenerate(q1,q2);
+function skipFollowup(){document.getElementById('followupModal').classList.remove('show');submitFollowup()}
+function submitFollowup(){
+  document.getElementById('followupModal').classList.remove('show');
+  var fc=document.getElementById('followupCompetitors').value.trim();
+  var fm=document.getElementById('followupMethod').value.trim();
+  var prompt='你是一位资深用户研究员。请为以下产品生成一份专业的用户研究报告。\n\n产品名称：'+pd.n+'\n目标用户：'+pd.u+'\n行业赛道：'+pd.ind+(pd.p?'\n研究目的：'+pd.p:'')+(fc?'\n关注竞品：'+fc:'')+(fm?'\n研究方法偏好：'+fm:'')+'\n\n报告结构要求：\n1. 行业概况与趋势\n2. 目标用户画像（至少3类Persona）\n3. 核心需求与痛点分析\n4. 用户使用场景分析\n5. 竞品用户研究对比\n6. 关键发现与产品建议\n\n请使用 Markdown 格式输出，结构清晰，每个部分要有具体的分析内容。';
+  doGenerate(prompt);
 }
-function skipFollowup(){
-  document.getElementById('followupMask').classList.remove('show');
-  doGenerate('','');
-}
-
-async function doGenerate(q1,q2){
-  const name=document.getElementById('productName').value.trim();
-  const user=document.getElementById('targetUser').value.trim();
-  const goal=document.getElementById('researchGoal').value.trim();
-  const btn=document.getElementById('genBtn');
-  const body=document.getElementById('outputBody');
-  const sub=document.getElementById('outputSub');
-
+async function doGenerate(prompt){
+  var btn=document.getElementById('generateBtn');
   btn.disabled=true;
-  btn.innerHTML='<div class="dots"><span></span><span></span><span></span></div>AI 正在分析...';
-  sub.textContent='正在生成中...';
-
-  body.innerHTML='<div class="thinking"><div class="dots"><span></span><span></span><span></span></div><span>AI 正在研读背景并生成报告，大约 10 秒…</span></div>';
-
-  let extra='';
-  if(q1) extra+=`\n- 产品阶段：${q1}`;
-  if(q2) extra+=`\n- 核心决策诉求：${q2}`;
-
-  const prompt=`你是一位资深用户研究员。请为以下产品生成一份专业的用户研究报告。
-
-产品信息：
-- 产品名称：${name}
-- 目标用户：${user}
-- 行业赛道：${selectedIndustry||'未指定'}${goal?'\n- 研究目的：'+goal:''}${extra}
-
-请按以下结构输出（Markdown 格式，内容要具体、有数据感、可落地，不要泛泛而谈）：
-
-# 用户研究报告：${name}
-
-## 一、研究背景与目的
-
-## 二、目标用户画像
-（年龄分布、职业特征、核心需求、典型行为路径，用具体描述，可包含数据）
-
-## 三、市场规模与趋势
-
-## 四、竞品分析
-（3-4 个主要竞品，核心差异对比）
-
-## 五、用户核心痛点
-（3-5 个，每个附上「用户原声」引用）
-
-## 六、机会点与产品建议
-（基于分析的具体可执行建议，优先级排序）
-
-## 七、总结与下一步行动`;
-
+  document.getElementById('skeleton').style.display='flex';
+  document.getElementById('output').style.display='none';
+  document.getElementById('exportBtn').style.display='none';
   try{
-    const res=await fetch(URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.7}})});
-    const data=await res.json();
-    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'生成失败，请重试';
-    sub.textContent='报告已生成';
-    typeRender(text,body);
+    var resp=await fetch(GU,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:8192}})});
+    var data=await resp.json();
+    rawMd=data.candidates[0].content.parts[0].text;
+    document.getElementById('skeleton').style.display='none';
+    document.getElementById('output').style.display='block';
+    document.getElementById('exportBtn').style.display='inline-flex';
+    typeRender(rawMd);
   }catch(e){
-    body.innerHTML='<div style="padding:40px 0;text-align:center;color:var(--text-soft)">⚠️ 网络请求失败，请检查网络后重试</div>';
-    sub.textContent='生成失败';
+    document.getElementById('skeleton').style.display='none';
+    document.getElementById('output').style.display='block';
+    document.getElementById('output').innerHTML='<p style="color:#e53e3e">生成失败：'+e.message+'</p>';
   }
   btn.disabled=false;
-  btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>重新生成';
 }
-
-function typeRender(text,el){
-  let i=0;
-  const iv=setInterval(()=>{
-    i=Math.min(i+4,text.length);
-    el.innerHTML='<div class="md">'+marked.parse(text.slice(0,i))+'</div>'+(i<text.length?'<span class="cursor">|</span>':'');
-    el.parentElement.scrollTop=el.parentElement.scrollHeight;
-    if(i>=text.length)clearInterval(iv);
-  },16);
+function typeRender(md){
+  var el=document.getElementById('output');
+  el.innerHTML='';
+  var html=mdToHtml(md);
+  var plainText=md.replace(/[#*`_|>\-\[\]()]/g,'').replace(/\n/g,' ');
+  var idx=0;
+  var fullDone=false;
+  function tick(){
+    if(idx<=plainText.length){
+      var partial=plainText.slice(0,idx);
+      var words=partial.split(' ');
+      var partialHtml=mdToHtml(md.substring(0,Math.min(md.length,idx*2)));
+      el.innerHTML=partialHtml;
+      idx+=3;
+      setTimeout(tick,20);
+    }else if(!fullDone){
+      fullDone=true;
+      el.innerHTML=html;
+    }
+  }
+  tick();
+}
+function mdToHtml(md){
+  var lines=md.split('\n');
+  var html='';
+  var inList=false;
+  var inTable=false;
+  var tableRows=[];
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i];
+    if(l.startsWith('|')){
+      if(!inTable){inTable=true;tableRows=[]}
+      tableRows.push(l);
+      continue;
+    }else if(inTable){
+      html+=renderTable(tableRows);
+      inTable=false;tableRows=[];
+    }
+    if(l.startsWith('### ')){html+='<h3>'+esc(l.slice(4))+'</h3>';continue}
+    if(l.startsWith('## ')){html+='<h2>'+esc(l.slice(3))+'</h2>';continue}
+    if(l.startsWith('# ')){html+='<h1>'+esc(l.slice(2))+'</h1>';continue}
+    if(l.startsWith('- ')||l.startsWith('* ')){
+      if(!inList){html+='<ul>';inList=true}
+      html+='<li>'+inline(esc(l.slice(2)))+'</li>';continue;
+    }
+    if(l.match(/^\d+\.\s/)){
+      if(!inList){html+='<ol>';inList=true}
+      html+='<li>'+inline(esc(l.replace(/^\d+\.\s/,'')))+'</li>';continue;
+    }
+    if(inList){html+=inList==='ul'?'<ol>':'<ol>';html+='</ol>';inList=false}
+    if(l.startsWith('> ')){html+='<blockquote>'+inline(esc(l.slice(2)))+'</blockquote>';continue}
+    if(l.trim()===''){continue}
+    html+='<p>'+inline(esc(l))+'</p>';
+  }
+  if(inTable){html+=renderTable(tableRows)}
+  if(inList){html+='</ul>'}
+  return html;
+}
+function renderTable(rows){
+  if(rows.length<2)return'';
+  var h='<table>';
+  var headers=rows[0].split('|').filter(c=>c.trim());
+  h+='<tr>';headers.forEach(function(c){h+='<th>'+esc(c.trim())+'</th>'});h+='</tr>';
+  for(var i=2;i<rows.length;i++){
+    var cells=rows[i].split('|').filter(c=>c.trim());
+    h+='<tr>';cells.forEach(function(c){h+='<td>'+inline(esc(c.trim()))+'</td>'});h+='</tr>';
+  }
+  h+='</table>';return h;
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function inline(s){return s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>')}
+function exportMarkdown(){
+  var blob=new Blob([rawMd],{type:'text/markdown'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ux-research-report.md';
+  a.click();
 }
 </script>
 </body>
