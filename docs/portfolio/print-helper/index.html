@@ -7,7 +7,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#fff;--bg2:#f8f8fc;--blue:#4f46e5;--blue-dark:#3730a3;
+  --bg:#fff;--bg2:#fafafa;--blue:#4f46e5;--blue-dark:#3730a3;
   --blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
   --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
   --bd:rgba(0,0,0,.07);--sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
@@ -57,8 +57,8 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);
 .file-types{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px}
 .ft{padding:3px 9px;border-radius:var(--pill);background:var(--bg2);border:1px solid var(--bd);font-size:11px;color:var(--soft);font-weight:600}
 
-.gbtn{width:100%;margin-top:8px;padding:13px;border-radius:var(--pill);background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(79,70,229,.3);transition:all .2s}
-.gbtn:hover:not(:disabled){background:linear-gradient(135deg,#3730a3,#4f46e5);transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,70,229,.35)}
+.gbtn{width:auto;min-width:180px;margin-top:8px;padding:13px 24px;border-radius:var(--pill);background:#0D0D0D;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:none;transition:all .2s}
+.gbtn:hover:not(:disabled){background:#333;transform:translateY(-1px)}
 .gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .gbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
@@ -175,9 +175,12 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);
       <div><div class="pt">打印建议单</div><div class="ps" id="outSub">上传文件后点击分析</div></div>
     </div>
     <div class="ob" id="ob">
-      <div class="skel">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--bg2);border-radius:12px;padding:16px;margin-bottom:4px">
-          <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
+      <div id="examplePreview" style="font-size:12.5px;line-height:1.8;color:#555;background:#fafafa;border-radius:10px;padding:14px 16px;border:1px solid #eee">
+  <p style="font-size:11px;font-weight:600;color:#999;margin-bottom:10px;text-align:center">— 示例效果 —</p>
+  <p style="font-weight:600;color:#0D0D0D">AI 将在这里生成结构化输出</p>
+  <p>填写左侧表单后点击生成按钮，AI 将给出专业的分析结果，支持复制和导出。</p>
+  <p style="margin-top:8px;font-size:11px;color:#aaa">↑ 每个工具都有针对真实工作场景优化的 Prompt 模板</p>
+</div></div>
           <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
           <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
           <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
