@@ -280,8 +280,11 @@ tbody tr:last-child td{border-bottom:none}
 
     <!-- 实时预估 -->
     <div class="estimate" id="estimate" style="display:none">
-      <div>预计保留 <strong class="keep" id="estKeep">-</strong> / 总 <strong id="estTotal">-</strong> 人</div>
-      <div style="margin-top:4px">将排除 <strong class="exclude" id="estExclude">-</strong>（<span id="estPct">-</span>）</div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
+        <div>保留 <strong class="keep" id="estKeep">-</strong> / <span id="estTotal">-</span> 人</div>
+        <div style="font-size:11px;color:var(--muted)">排除 <strong class="exclude" id="estExclude">-</strong>（<span id="estPct">-</span>）</div>
+      </div>
+      <div id="estBreakdown" style="display:flex;flex-direction:column;gap:5px"></div>
     </div>
   </aside>
 
@@ -544,6 +547,48 @@ tbody tr:last-child td{border-bottom:none}
     estTotal.textContent = allRows.length;
     estExclude.textContent = r.excluded;
     estPct.textContent = (r.excluded / allRows.length * 100).toFixed(1) + '%';
+    // 明细条
+    var bd = document.getElementById('estBreakdown');
+    var rmap = {
+      'CES转化率低': 'CES低活跃',
+      '账号状态异常': '账号异常',
+      '命中负向处置': '负向处置',
+      '商业/广告账号': '商业账号',
+      '垂类排除': '垂类排除',
+      '笔记数不足': '笔记不足',
+      'CES有效笔记为0': '零有效笔记'
+    };
+    var colors = {
+      'CES低活跃': '#ef4444',
+      '账号异常': '#f97316',
+      '负向处置': '#8b5cf6',
+      '商业账号': '#d97706',
+      '垂类排除': '#6b7280',
+      '笔记不足': '#0ea5e9',
+      '零有效笔记': '#10b981'
+    };
+    var html = '';
+    var reasons = r.reasons || {};
+    var keys = Object.keys(rmap);
+    for(var ki=0;ki<keys.length;ki++){
+      var rk = keys[ki];
+      var label = rmap[rk];
+      var cnt = reasons[rk] || 0;
+      if(cnt===0) continue;
+      var pct = (cnt/allRows.length*100).toFixed(0);
+      var barW = Math.max(3, Math.round(cnt/allRows.length*100));
+      var col = colors[label] || '#6b7280';
+      html += '<div style="font-size:11px">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">'
+        +'<span style="color:var(--soft)">'+label+'</span>'
+        +'<span style="font-weight:700;color:'+col+'">-'+cnt+'人 <span style="font-weight:400;color:var(--muted)">'+pct+'%</span></span>'
+        +'</div>'
+        +'<div style="height:3px;background:var(--bd);border-radius:2px;overflow:hidden">'
+        +'<div style="height:100%;width:'+barW+'%;background:'+col+';border-radius:2px;transition:width .3s"></div>'
+        +'</div>'
+        +'</div>';
+    }
+    bd.innerHTML = html || '<div style="font-size:11px;color:var(--muted)">暂无排除项</div>';
     estimate.style.display = 'block';
   }
 
