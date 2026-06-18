@@ -8,117 +8,123 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#fff;--bg2:#f8f8fc;
-  --blue:#4f46e5;--blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
-  --green:#10b981;--green-light:rgba(16,185,129,.08);
+  --blue:#4f46e5;--bl:rgba(79,70,229,.08);--blb:rgba(79,70,229,.18);
+  --green:#10b981;--gl:rgba(16,185,129,.08);
   --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
   --bd:rgba(0,0,0,.07);
   --sh:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
-  --sh-h:0 4px 16px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.07);
-  --r:16px;--pill:999px;
+  --sh-h:0 4px 20px rgba(0,0,0,.09),0 16px 48px rgba(0,0,0,.07);
+  --r:14px;--pill:999px;
   --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
 }
 body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
 a{text-decoration:none;color:inherit}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
-.nw{max-width:1160px;margin:0 auto;padding:0 28px;width:100%;display:flex;align-items:center;gap:20px}
-.logo{font-size:14px;font-weight:800;letter-spacing:-.02em;color:var(--text);flex-shrink:0;display:flex;align-items:center;gap:7px}
-.logo-mark{width:26px;height:26px;background:linear-gradient(135deg,#4f46e5,#6366f1);border-radius:7px;display:flex;align-items:center;justify-content:center}
-.logo-mark svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round}
+/* NAV */
+nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
+.nw{max-width:1100px;margin:0 auto;padding:0 28px;width:100%;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;letter-spacing:-.02em;flex-shrink:0}
+.lm{width:26px;height:26px;background:linear-gradient(135deg,#4f46e5,#6366f1);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.lm svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round}
 .logo em{color:var(--blue);font-style:normal}
-.nav-tabs{display:flex;align-items:center;gap:2px;margin-left:4px}
-.nt{font-size:13px;font-weight:500;color:var(--soft);padding:5px 10px;border-radius:8px;transition:all .15s;cursor:pointer;text-decoration:none}
-.nt:hover,.nt.on{color:var(--text);background:var(--blue-light)}
-.nav-r{margin-left:auto;display:flex;align-items:center;gap:8px}
-.gh{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--soft);padding:5px 11px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;text-decoration:none;transition:all .15s}
-.gh:hover{border-color:var(--blue-border);color:var(--blue)}
+.nav-sep{width:1px;height:18px;background:var(--bd)}
+.nav-cat{display:flex;align-items:center;gap:2px}
+.nc{font-size:12.5px;font-weight:600;color:var(--soft);padding:4px 10px;border-radius:8px;cursor:pointer;transition:all .15s;border:none;background:transparent;font-family:var(--font)}
+.nc:hover{background:var(--bl);color:var(--text)}
+.nc.on{background:var(--bl);color:var(--blue)}
+.nav-r{margin-left:auto}
+.gh{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--soft);padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;text-decoration:none;transition:all .15s}
+.gh:hover{border-color:var(--blb);color:var(--blue)}
 .gh svg{width:13px;height:13px;fill:currentColor}
 
-/* ── HERO ── */
-.hero{max-width:1160px;margin:0 auto;padding:94px 28px 36px;text-align:center}
-.hi-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.03em;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:5px 14px;border-radius:var(--pill);margin-bottom:16px}
-.hi-tag .wave{display:inline-block;animation:wave .8s ease-in-out 0s 1}
-@keyframes wave{0%,100%{transform:rotate(0)}30%{transform:rotate(20deg)}60%{transform:rotate(-10deg)}}
-.hero h1{font-size:clamp(26px,4.5vw,48px);font-weight:800;letter-spacing:-.05em;line-height:1.1;color:var(--text);margin-bottom:12px}
+/* HERO */
+.hero{max-width:1100px;margin:0 auto;padding:86px 28px 32px;display:flex;align-items:flex-start;gap:48px}
+.hero-l{flex:1;min-width:0}
+.hi{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:var(--blue);background:var(--bl);border:1px solid var(--blb);padding:5px 14px;border-radius:var(--pill);margin-bottom:16px}
+.hi-wave{animation:wv .6s ease 0s 1}
+@keyframes wv{0%,100%{transform:rotate(0)}25%{transform:rotate(20deg)}75%{transform:rotate(-8deg)}}
+.hero h1{font-size:clamp(24px,4vw,42px);font-weight:800;letter-spacing:-.05em;line-height:1.1;margin-bottom:10px}
 .hero h1 em{color:var(--blue);font-style:normal}
-.slogan{font-size:clamp(14px,1.8vw,17px);color:var(--soft);font-weight:500;margin-bottom:6px;letter-spacing:-.01em}
-.sub{font-size:13px;color:var(--muted);max-width:400px;margin:0 auto 26px;line-height:1.7}
-.hero-btns{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:36px;flex-wrap:wrap}
-.btn-p{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:var(--pill);background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(79,70,229,.28);transition:all .2s;text-decoration:none}
-.btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,70,229,.35)}
-.btn-p svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
-.btn-g{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:13px;font-weight:600;text-decoration:none;transition:all .2s}
-.btn-g:hover{border-color:var(--blue-border);color:var(--blue)}
-.btn-g svg{width:13px;height:13px;fill:currentColor}
+.slogan{font-size:15px;color:var(--soft);font-weight:500;margin-bottom:6px}
+.sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;max-width:480px}
+.cta{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:var(--pill);background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(79,70,229,.28);transition:all .2s;border:none;cursor:pointer;font-family:var(--font)}
+.cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,70,229,.35)}
+.cta svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+
+/* STATS 右侧 */
+.hero-r{flex-shrink:0;width:220px;display:flex;flex-direction:column;gap:10px;padding-top:8px}
+.stat{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 16px;box-shadow:var(--sh)}
+.stat-n{font-size:26px;font-weight:800;letter-spacing:-.04em;color:var(--text);line-height:1}
+.stat-n em{color:var(--blue);font-style:normal;font-size:14px;font-weight:700;margin-left:2px}
+.stat-l{font-size:11.5px;color:var(--soft);margin-top:3px}
 
 /* TICKER */
-.ticker{max-width:560px;margin:0 auto;background:#fff;border:1px solid var(--bd);border-radius:11px;padding:10px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
-.tk-label{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--blue);white-space:nowrap;flex-shrink:0}
-.tk-dot{width:5px;height:5px;border-radius:50%;background:#22c55e;animation:gpulse 1.4s infinite}
-@keyframes gpulse{0%,100%{opacity:.4;transform:scale(.7)}50%{opacity:1;transform:scale(1.2)}}
-.tk-text{font-size:12px;color:var(--soft);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;transition:opacity .25s}
-.tk-text b{color:var(--text);font-weight:600}
+.ticker{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh);margin-top:20px}
+.tk-label{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--blue);white-space:nowrap;flex-shrink:0}
+.tk-dot{width:5px;height:5px;border-radius:50%;background:#22c55e;animation:gp 1.4s infinite}
+@keyframes gp{0%,100%{opacity:.4;transform:scale(.7)}50%{opacity:1;transform:scale(1.2)}}
+.tk-t{font-size:11.5px;color:var(--soft);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;transition:opacity .25s}
+.tk-t b{color:var(--text);font-weight:600}
 
-/* ── SECTION ── */
-.sec{max-width:1160px;margin:0 auto;padding:0 28px 60px}
+/* TAB 切换区 */
+.tab-wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+.tab-bar{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:5px;box-shadow:var(--sh);margin-bottom:24px;width:fit-content}
+.tab{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;color:var(--soft);cursor:pointer;transition:all .18s;border:none;background:transparent;font-family:var(--font);display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--text)}
+.tab.on{background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.25)}
+.tab.on-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.25)}
+.tab svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.tab-cnt{display:none}
+.tab-cnt.show{display:block}
 
-/* 大类 header */
-.cat-hd{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--bd)}
-.cat-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.cat-ico svg{width:16px;height:16px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cat-label{font-size:18px;font-weight:800;letter-spacing:-.04em}
-.cat-desc{font-size:12.5px;color:var(--soft);margin-left:auto}
-.cat-cnt{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:var(--pill);margin-left:8px;flex-shrink:0}
-
-/* 子类 */
-.sub-block{margin-bottom:32px}
-.sub-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.sub-hd-line{flex:1;height:1px;background:var(--bd)}
-.sub-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;padding:0 6px}
+/* 子分类 */
+.sub-sec{margin-bottom:32px}
+.sub-sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sub-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sub-ico svg{width:13px;height:13px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sub-name{font-size:14px;font-weight:700;letter-spacing:-.02em}
+.sub-cnt{font-size:11px;font-weight:700;padding:2px 8px;border-radius:var(--pill);margin-left:4px}
+.sub-line{flex:1;height:1px;background:var(--bd)}
 
 /* 工具网格 */
-.grid{display:grid;gap:12px}
-.grid-3{grid-template-columns:repeat(3,1fr)}
-.grid-4{grid-template-columns:repeat(4,1fr)}
-.grid-2{grid-template-columns:repeat(2,1fr)}
-@media(max-width:960px){.grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.grid-3,.grid-4,.grid-2{grid-template-columns:1fr}}
+.grid{display:grid;gap:11px;margin-bottom:8px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.g2,.g3,.g4{grid-template-columns:1fr}}
 
 /* 工具卡片 */
-.card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px;cursor:pointer;transition:all .22s;display:flex;flex-direction:column;text-decoration:none;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(135deg,rgba(79,70,229,.04),transparent);opacity:0;transition:opacity .2s}
-.card:hover{border-color:var(--blue-border);box-shadow:var(--sh-h);transform:translateY(-2px)}
-.card:hover::after{opacity:1}
+.card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .22s;display:flex;flex-direction:column;text-decoration:none;position:relative;overflow:hidden;min-height:148px}
+.card:hover{border-color:var(--blb);box-shadow:var(--sh-h);transform:translateY(-2px)}
 .card:hover .ca{opacity:1;transform:translateX(3px)}
 .card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
-.ci{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ci svg{width:16px;height:16px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.cn{font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.05em}
-.ct{font-size:13.5px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:4px}
+.ci{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ci svg{width:15px;height:15px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cn{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+.ct{font-size:13.5px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:4px;line-height:1.3}
 .cd{font-size:11.5px;color:var(--soft);line-height:1.65;flex:1}
-.cf{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:11px;border-top:1px solid var(--bd)}
+.cf{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid var(--bd)}
 .ctag{font-size:9.5px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:var(--pill)}
 .ca{display:flex;align-items:center;opacity:0;transition:all .2s}
-.ca svg{width:12px;height:12px;fill:none;stroke-width:2.2;stroke-linecap:round}
+.ca svg{width:11px;height:11px;fill:none;stroke-width:2.2;stroke-linecap:round}
 
-/* 知识库特殊卡片 */
-.card-kb{background:linear-gradient(135deg,#f8f7ff,#fff);border-color:var(--blue-border)}
-.card-kb .ct{color:var(--blue)}
-.kb-badge{position:absolute;top:14px;right:14px;font-size:9px;font-weight:700;letter-spacing:.05em;background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;padding:3px 8px;border-radius:var(--pill)}
+/* 知识库特殊 */
+.card-kb{background:linear-gradient(140deg,#f5f4ff,#fff);border-color:var(--blb)}
+.kb-new{position:absolute;top:12px;right:12px;font-size:9px;font-weight:700;letter-spacing:.06em;background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;padding:3px 8px;border-radius:var(--pill)}
 
 /* FAQ */
-.faq-w{max-width:680px;margin:0 auto;padding:0 28px 80px}
-.faq-t{font-size:17px;font-weight:800;letter-spacing:-.03em;margin-bottom:16px}
-.fq{background:#fff;border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;overflow:hidden}
-.fq-q{padding:14px 18px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background .15s;user-select:none}
+.faq-w{max-width:640px;margin:40px auto 0;padding:0 28px 80px}
+.faq-t{font-size:15px;font-weight:800;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
+.fq{background:#fff;border:1px solid var(--bd);border-radius:11px;margin-bottom:7px;overflow:hidden}
+.fq-q{padding:13px 16px;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background .15s;user-select:none}
 .fq-q:hover{background:var(--bg2)}
-.fq-q svg{width:14px;height:14px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform .25s}
+.fq-q svg{width:13px;height:13px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform .25s}
 .fq.open .fq-q svg{transform:rotate(45deg)}
-.fq-a{padding:0 18px;max-height:0;overflow:hidden;font-size:12.5px;color:var(--soft);line-height:1.75;transition:max-height .3s,padding .3s}
-.fq.open .fq-a{max-height:200px;padding:0 18px 14px}
+.fq-a{padding:0 16px;max-height:0;overflow:hidden;font-size:12px;color:var(--soft);line-height:1.75;transition:max-height .3s,padding .3s}
+.fq.open .fq-a{max-height:160px;padding:0 16px 14px}
 
-footer{border-top:1px solid var(--bd);padding:20px 28px;text-align:center;font-size:11.5px;color:var(--muted)}
+footer{border-top:1px solid var(--bd);padding:20px 28px;text-align:center;font-size:11px;color:var(--muted)}
 footer a{color:var(--blue)}
 </style>
 </head>
@@ -127,12 +133,13 @@ footer a{color:var(--blue)}
 <nav>
   <div class="nw">
     <div class="logo">
-      <div class="logo-mark"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <div class="lm"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
       <span>08 <em>Studio</em></span>
     </div>
-    <div class="nav-tabs">
-      <a class="nt on" href="#tools">工具</a>
-      <a class="nt" href="#faq">关于</a>
+    <div class="nav-sep"></div>
+    <div class="nav-cat">
+      <button class="nc on" onclick="switchTab(0,this)">AI 产品运营</button>
+      <button class="nc" onclick="switchTab(1,this)">日常提效</button>
     </div>
     <div class="nav-r">
       <a href="https://github.com/qlb708/08" target="_blank" class="gh">
@@ -143,128 +150,156 @@ footer a{color:var(--blue)}
   </div>
 </nav>
 
+<!-- HERO -->
 <div class="hero">
-  <div class="hi-tag">
-    <span class="wave">👋</span>
-    Hi，欢迎来到 08 的 AI 产品运营工具集
-  </div>
-  <h1>产品运营 <em>×</em> AI</h1>
-  <p class="slogan">用 AI 把重复的运营动作，变成可复用的能力</p>
-  <p class="sub">覆盖文档生成、增长分析、竞品追踪、知识库问答全场景，每个工具来自真实工作痛点。</p>
-  <div class="hero-btns">
-    <a class="btn-p" href="#tools">
+  <div class="hero-l">
+    <div class="hi"><span class="hi-wave">👋</span> Hi，欢迎来到 08 的 AI 产品运营工具集</div>
+    <h1>产品运营 <em>×</em> AI</h1>
+    <p class="slogan">用 AI 把重复的运营动作，变成可复用的能力</p>
+    <p class="sub">覆盖文档生成、增长分析、竞品追踪、知识库问答，以及日常提效全场景。每个工具来自真实工作痛点，填信息即生成，无需反复写 Prompt。</p>
+    <button class="cta" onclick="document.getElementById('tab-area').scrollIntoView({behavior:'smooth'})">
       <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       开始体验
-    </a>
-    <a href="https://github.com/qlb708/08" target="_blank" class="btn-g">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
-      查看源码
-    </a>
+    </button>
+    <div class="ticker" style="max-width:480px;margin-top:20px">
+      <div class="tk-label"><span class="tk-dot"></span>实时运行</div>
+      <div class="tk-t" id="ticker">正在初始化…</div>
+    </div>
   </div>
-  <div class="ticker">
-    <div class="tk-label"><span class="tk-dot"></span>实时运行</div>
-    <div class="tk-text" id="ticker">正在初始化…</div>
+  <div class="hero-r">
+    <div class="stat">
+      <div class="stat-n">12<em>个</em></div>
+      <div class="stat-l">AI 工具，全部可体验</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">3<em>重</em></div>
+      <div class="stat-l">AI 降级保障，稳定可用</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">0<em>元</em></div>
+      <div class="stat-l">完全免费使用</div>
+    </div>
   </div>
 </div>
 
-<div class="sec" id="tools">
+<!-- TAB 区 -->
+<div id="tab-area" class="tab-wrap" style="padding-top:8px;padding-bottom:8px">
+  <div class="tab-bar">
+    <button class="tab on" onclick="switchTab(0,this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg>
+      AI 产品运营
+    </button>
+    <button class="tab" onclick="switchTab(1,this)">
+      <svg viewBox="0 0 24 24"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      日常提效
+    </button>
+  </div>
+</div>
 
-  <!-- ══ 大类一：AI 产品运营 ══ -->
-  <div style="margin-bottom:52px">
-    <div class="cat-hd">
-      <div class="cat-ico" style="background:rgba(79,70,229,.1)">
-        <svg viewBox="0 0 24 24" style="stroke:#4f46e5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+<!-- 内容区 -->
+<div class="tab-wrap" style="padding-bottom:0">
+
+  <!-- ── TAB 0: AI 产品运营 ── -->
+  <div class="tab-cnt show" id="tc0">
+
+    <!-- 文档中心 -->
+    <div class="sub-sec">
+      <div class="sub-sec-hd">
+        <div class="sub-ico" style="background:rgba(79,70,229,.1)">
+          <svg viewBox="0 0 24 24" style="stroke:#4f46e5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <span class="sub-name">文档中心</span>
+        <span class="sub-cnt" style="background:rgba(79,70,229,.08);color:#4f46e5">3 个</span>
+        <div class="sub-line"></div>
       </div>
-      <div class="cat-label">AI 产品运营</div>
-      <div class="cat-desc">策略 · 文档 · 分析 · 知识</div>
-      <span class="cat-cnt" style="background:rgba(79,70,229,.08);color:#4f46e5">8 个工具</span>
+      <div class="grid g3" id="g-doc"></div>
     </div>
 
-    <!-- 子类：文档中心 -->
-    <div class="sub-block">
-      <div class="sub-hd">
-        <div class="sub-hd-line"></div>
-        <span class="sub-title">文档中心</span>
-        <div class="sub-hd-line"></div>
+    <!-- 增长实验 -->
+    <div class="sub-sec">
+      <div class="sub-sec-hd">
+        <div class="sub-ico" style="background:rgba(16,185,129,.1)">
+          <svg viewBox="0 0 24 24" style="stroke:#10b981"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <span class="sub-name">增长实验</span>
+        <span class="sub-cnt" style="background:rgba(16,185,129,.08);color:#10b981">3 个</span>
+        <div class="sub-line"></div>
       </div>
-      <div class="grid grid-3" id="g-doc"></div>
+      <div class="grid g3" id="g-growth"></div>
     </div>
 
-    <!-- 子类：增长实验 -->
-    <div class="sub-block">
-      <div class="sub-hd">
-        <div class="sub-hd-line"></div>
-        <span class="sub-title">增长实验</span>
-        <div class="sub-hd-line"></div>
+    <!-- 竞品&用研 -->
+    <div class="sub-sec">
+      <div class="sub-sec-hd">
+        <div class="sub-ico" style="background:rgba(245,158,11,.1)">
+          <svg viewBox="0 0 24 24" style="stroke:#f59e0b"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <span class="sub-name">竞品 &amp; 用研</span>
+        <span class="sub-cnt" style="background:rgba(245,158,11,.08);color:#d97706">2 个</span>
+        <div class="sub-line"></div>
       </div>
-      <div class="grid grid-3" id="g-growth"></div>
+      <div class="grid g2" id="g-research"></div>
     </div>
 
-    <!-- 子类：竞品&用研 -->
-    <div class="sub-block">
-      <div class="sub-hd">
-        <div class="sub-hd-line"></div>
-        <span class="sub-title">竞品 & 用研</span>
-        <div class="sub-hd-line"></div>
+    <!-- 知识库 -->
+    <div class="sub-sec">
+      <div class="sub-sec-hd">
+        <div class="sub-ico" style="background:rgba(139,92,246,.1)">
+          <svg viewBox="0 0 24 24" style="stroke:#8b5cf6"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <span class="sub-name">知识库</span>
+        <span class="sub-cnt" style="background:rgba(139,92,246,.08);color:#8b5cf6">1 个</span>
+        <div class="sub-line"></div>
       </div>
-      <div class="grid grid-2" id="g-research"></div>
+      <div class="grid g2" id="g-kb"></div>
     </div>
-
-    <!-- 子类：知识库 -->
-    <div class="sub-block">
-      <div class="sub-hd">
-        <div class="sub-hd-line"></div>
-        <span class="sub-title">知识库</span>
-        <div class="sub-hd-line"></div>
-      </div>
-      <div class="grid grid-2" id="g-kb"></div>
-    </div>
-
   </div>
 
-  <!-- ══ 大类二：日常提效 ══ -->
-  <div style="margin-bottom:52px">
-    <div class="cat-hd">
-      <div class="cat-ico" style="background:rgba(16,185,129,.1)">
-        <svg viewBox="0 0 24 24" style="stroke:#10b981"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+  <!-- ── TAB 1: 日常提效 ── -->
+  <div class="tab-cnt" id="tc1">
+    <div class="sub-sec">
+      <div class="sub-sec-hd">
+        <div class="sub-ico" style="background:rgba(16,185,129,.1)">
+          <svg viewBox="0 0 24 24" style="stroke:#10b981"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <span class="sub-name">日常提效</span>
+        <span class="sub-cnt" style="background:rgba(16,185,129,.08);color:#10b981">4 个</span>
+        <div class="sub-line"></div>
       </div>
-      <div class="cat-label">日常提效</div>
-      <div class="cat-desc">效率 · 沟通 · 数据</div>
-      <span class="cat-cnt" style="background:rgba(16,185,129,.08);color:#10b981">4 个工具</span>
+      <div class="grid g4" id="g-daily"></div>
     </div>
-    <div class="grid grid-4" id="g-daily"></div>
   </div>
 
 </div>
 
+<!-- FAQ -->
 <div class="faq-w" id="faq">
   <div class="faq-t">关于这个工具集</div>
   <div class="fq">
     <div class="fq-q" onclick="tf(this)">和 ChatGPT / Kimi 相比有什么优势？<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-    <div class="fq-a">通用 AI 需要你自己写 Prompt、组织结构，每次都要重新解释背景。这里的工具把产品运营场景的 Prompt 工程做到了最优，输入框告诉你填什么，输出是行业标准格式，生成即可用。</div>
+    <div class="fq-a">通用 AI 需要自己写 Prompt，每次重新解释背景。这里的工具把产品运营场景的 Prompt 工程做到最优，输出是行业标准格式（PRD/OKR/用研报告），生成即可用。</div>
   </div>
   <div class="fq">
     <div class="fq-q" onclick="tf(this)">这些工具是真实在用的吗？<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-    <div class="fq-a">每个工具来自真实工作场景：需求评审来自 PRD 评审前的漏洞排查；人群筛选来自每周处理后台名单的低效；知识库 AI 问答来自看完竞品文档后不知道问谁的场景。</div>
+    <div class="fq-a">每个工具来自真实工作场景：需求评审来自 PRD 评审前的漏洞排查；人群筛选来自每周处理后台名单；知识库问答来自看完竞品文档后不知道问谁的场景。</div>
   </div>
   <div class="fq">
     <div class="fq-q" onclick="tf(this)">能体现什么产品能力？<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-    <div class="fq-a">三层：(1) 需求挖掘——从真实工作痛点识别高频低效场景；(2) 产品设计——用户路径、信息架构、交互细节独立完成；(3) AI 产品能力——Prompt 工程、多模型降级、AI 输出结构化设计。</div>
+    <div class="fq-a">三层：需求挖掘（从工作痛点识别场景）、产品设计（用户路径、信息架构、交互细节）、AI 产品能力（Prompt 工程、多模型降级、输出结构化设计）。</div>
   </div>
 </div>
 
 <footer>08 Studio · AI 产品运营工具集 · <a href="https://github.com/qlb708/08" target="_blank">GitHub</a></footer>
 
 <script>
-/* ── 数据 ── */
 var DOC=[
-  {n:'01',t:'产品文档速写台',d:'PRD/BRD/MRD/OKR/竞品分析，7种文档一键切换，AI 生成专业文档。',h:'/08/portfolio/doc-writer/',tag:'文档',tb:'rgba(79,70,229,.08)',tc:'#4f46e5',ib:'rgba(79,70,229,.1)',ic:'#4f46e5',icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>'},
-  {n:'02',t:'用户故事地图',d:'描述使用场景，AI 生成旅程分析，含情绪曲线、触点和机会点。',h:'/08/portfolio/journey-map/',tag:'UX',tb:'rgba(139,92,246,.08)',tc:'#8b5cf6',ib:'rgba(139,92,246,.1)',ic:'#8b5cf6',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
-  {n:'03',t:'需求评审检查器',d:'粘贴需求文档，AI 找漏洞缺失，完整度评分+修改建议，上会前必用。',h:'/08/portfolio/req-checker/',tag:'评审',tb:'rgba(239,68,68,.08)',tc:'#ef4444',ib:'rgba(239,68,68,.1)',ic:'#ef4444',icon:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>'}
+  {n:'01',t:'产品文档速写台',d:'PRD / BRD / OKR / 竞品分析，7 种文档一键切换，描述产品信息即生成。',h:'/08/portfolio/doc-writer/',tag:'文档',tb:'rgba(79,70,229,.08)',tc:'#4f46e5',ib:'rgba(79,70,229,.1)',ic:'#4f46e5',icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>'},
+  {n:'02',t:'用户故事地图',d:'描述产品和使用场景，AI 生成旅程分析，含情绪曲线、触点和机会点。',h:'/08/portfolio/journey-map/',tag:'UX',tb:'rgba(139,92,246,.08)',tc:'#8b5cf6',ib:'rgba(139,92,246,.1)',ic:'#8b5cf6',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+  {n:'03',t:'需求评审检查器',d:'粘贴需求文档，AI 找漏洞缺失，完整度评分 + 分级问题清单，上会前必用。',h:'/08/portfolio/req-checker/',tag:'评审',tb:'rgba(239,68,68,.08)',tc:'#ef4444',ib:'rgba(239,68,68,.1)',ic:'#ef4444',icon:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>'}
 ];
 var GROWTH=[
-  {n:'04',t:'增长实验模拟器',d:'描述增长瓶颈，AI 给出 A/B 实验方案，含假设、变量和衡量指标。',h:'/08/portfolio/growth-simulator/',tag:'增长',tb:'rgba(16,185,129,.08)',tc:'#10b981',ib:'rgba(16,185,129,.1)',ic:'#10b981',icon:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'},
-  {n:'05',t:'数据解读助手',d:'粘贴产品数据，AI 给健康评估 + 根因诊断 + 实验方案，支持多维度分析。',h:'/08/portfolio/data-insight/',tag:'数据',tb:'rgba(14,165,233,.08)',tc:'#0ea5e9',ib:'rgba(14,165,233,.1)',ic:'#0ea5e9',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+  {n:'04',t:'增长实验模拟器',d:'描述增长瓶颈，AI 给出 A/B 实验方案，含假设、变量、衡量指标和预期收益。',h:'/08/portfolio/growth-simulator/',tag:'增长',tb:'rgba(16,185,129,.08)',tc:'#10b981',ib:'rgba(16,185,129,.1)',ic:'#10b981',icon:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'},
+  {n:'05',t:'数据解读助手',d:'粘贴产品数据，AI 健康评估（正常/预警/异常）+ 根因诊断 + 实验方案。',h:'/08/portfolio/data-insight/',tag:'数据',tb:'rgba(14,165,233,.08)',tc:'#0ea5e9',ib:'rgba(14,165,233,.1)',ic:'#0ea5e9',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
   {n:'06',t:'用研报告生成器',d:'描述产品和研究目标，AI 生成结构化用研报告，含用户画像与机会点。',h:'/08/portfolio/ux-research/',tag:'研究',tb:'rgba(245,158,11,.08)',tc:'#d97706',ib:'rgba(245,158,11,.1)',ic:'#f59e0b',icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'}
 ];
 var RESEARCH=[
@@ -272,25 +307,24 @@ var RESEARCH=[
   {n:'08',t:'内容选题雷达',d:'描述账号定位，AI 生成一周选题日历，含爆款角度和平台差异化策略。',h:'/08/portfolio/content-radar/',tag:'内容',tb:'rgba(245,158,11,.08)',tc:'#d97706',ib:'rgba(245,158,11,.1)',ic:'#f59e0b',icon:'<path d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5z"/>'}
 ];
 var KB=[
-  {n:'K1',t:'AI 知识库问答',d:'上传文档/粘贴链接，和你的知识库对话。选中文字即可划词提问，AI 立即解答。',h:'/08/portfolio/knowledge-base/',tag:'NEW',tb:'rgba(79,70,229,.12)',tc:'#4f46e5',ib:'rgba(79,70,229,.1)',ic:'#4f46e5',icon:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',kb:true}
+  {n:'K1',t:'AI 知识库问答',d:'上传文档/粘贴内容，和你的知识库对话。选中文字即可划词提问，AI 立即解答。',h:'/08/portfolio/knowledge-base/',tag:'AI',tb:'rgba(139,92,246,.08)',tc:'#8b5cf6',ib:'rgba(139,92,246,.1)',ic:'#8b5cf6',icon:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',kb:true}
 ];
 var DAILY=[
-  {n:'D1',t:'人群质量筛选器',d:'上传后台名单，过滤低活跃、商业号、负向处置，一键导出干净人群。',h:'/08/portfolio/audience-filter/',tag:'筛选',tb:'rgba(79,70,229,.08)',tc:'#4f46e5',ib:'rgba(79,70,229,.1)',ic:'#4f46e5',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'},
-  {n:'D2',t:'智能打印助手',d:'上传 PDF，AI 逐页检测彩色/黑白，输出打印建议单和费用估算，省钱又省事。',h:'/08/portfolio/print-helper/',tag:'打印',tb:'rgba(16,185,129,.08)',tc:'#10b981',ib:'rgba(16,185,129,.1)',ic:'#10b981',icon:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'},
-  {n:'D3',t:'会议纪要拆解器',d:'粘贴会议记录，AI 提取结论、待办、关键决策和风险点，5 象限结构输出。',h:'/08/portfolio/meeting-parser/',tag:'会议',tb:'rgba(14,165,233,.08)',tc:'#0ea5e9',ib:'rgba(14,165,233,.1)',ic:'#0ea5e9',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
-  {n:'D4',t:'邮件/消息润色器',d:'把口语想法变专业表达，4 种语气，自动附备选版本，飞书/邮件均适用。',h:'/08/portfolio/email-polisher/',tag:'润色',tb:'rgba(245,158,11,.08)',tc:'#d97706',ib:'rgba(245,158,11,.1)',ic:'#f59e0b',icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'}
+  {n:'D1',t:'人群质量筛选器',d:'上传后台名单，过滤低活跃、商业号、负向处置账号，导出干净人群 + 排除名单。',h:'/08/portfolio/audience-filter/',tag:'筛选',tb:'rgba(79,70,229,.08)',tc:'#4f46e5',ib:'rgba(79,70,229,.1)',ic:'#4f46e5',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'},
+  {n:'D2',t:'智能打印助手',d:'上传 PDF，逐页检测彩色/黑白，输出打印建议单和费用估算，省钱省事。',h:'/08/portfolio/print-helper/',tag:'打印',tb:'rgba(16,185,129,.08)',tc:'#10b981',ib:'rgba(16,185,129,.1)',ic:'#10b981',icon:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'},
+  {n:'D3',t:'会议纪要拆解器',d:'粘贴会议记录，AI 提取结论、待办、关键决策和风险点，5 象限结构化输出。',h:'/08/portfolio/meeting-parser/',tag:'会议',tb:'rgba(14,165,233,.08)',tc:'#0ea5e9',ib:'rgba(14,165,233,.1)',ic:'#0ea5e9',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
+  {n:'D4',t:'邮件/消息润色器',d:'口语想法变专业表达，4 种语气，自动附备选版本，飞书/邮件均适用。',h:'/08/portfolio/email-polisher/',tag:'润色',tb:'rgba(245,158,11,.08)',tc:'#d97706',ib:'rgba(245,158,11,.1)',ic:'#f59e0b',icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'}
 ];
 
 function card(t){
-  var kbClass=t.kb?' card-kb':'';
-  var kbBadge=t.kb?'<span class="kb-badge">即将上线</span>':'';
-  return '<a href="'+t.h+'" class="card'+kbClass+'">'
-    +kbBadge
-    +'<div class="card-top"><div class="ci" style="background:'+t.ib+'"><svg viewBox="0 0 24 24" style="stroke:'+t.ic+';fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;width:16px;height:16px">'+t.icon+'</svg></div><span class="cn">#'+t.n+'</span></div>'
+  var extra=t.kb?'<span class="kb-new">NEW</span>':'' ;
+  return '<a href="'+t.h+'" class="card'+(t.kb?' card-kb':'')+'">'
+    +extra
+    +'<div class="card-top"><div class="ci" style="background:'+t.ib+'"><svg viewBox="0 0 24 24" style="stroke:'+t.ic+';fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px">'+t.icon+'</svg></div><span class="cn">#'+t.n+'</span></div>'
     +'<div class="ct">'+t.t+'</div>'
     +'<div class="cd">'+t.d+'</div>'
     +'<div class="cf"><span class="ctag" style="background:'+t.tb+';color:'+t.tc+'">'+t.tag+'</span>'
-    +'<span class="ca" style="color:'+t.ic+'"><svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>'
+    +'<span class="ca" style="color:'+t.ic+'"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>'
     +'</a>';
 }
 document.getElementById('g-doc').innerHTML=DOC.map(card).join('');
@@ -299,15 +333,21 @@ document.getElementById('g-research').innerHTML=RESEARCH.map(card).join('');
 document.getElementById('g-kb').innerHTML=KB.map(card).join('');
 document.getElementById('g-daily').innerHTML=DAILY.map(card).join('');
 
-/* Ticker */
+function switchTab(idx,el){
+  document.querySelectorAll('.tab-cnt').forEach(function(x,i){x.classList.toggle('show',i===idx);});
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on','on-green');});
+  el.classList.add(idx===0?'on':'on-green');
+  document.querySelectorAll('.nc').forEach(function(x,i){x.classList.toggle('on',i===idx);});
+}
+
 var tks=[
   '已提取 <b>3 条关键决策</b>，<b>2 个待办</b>，<b>1 个风险点</b>',
   '人群筛选完成 · 1015 人 → <b>保留 467 人</b>，排除低活跃 430 人',
   'PRD 完整度评分 <b>76/100</b> · 发现 <b>4 个边界条件缺失</b>',
+  '知识库已收录 <b>8 份文档</b>，划词提问响应 <b>1.3s</b>',
   '选题日历生成 · 7 天方案 + <b>3 个爆款选题角度</b>',
-  '知识库已收录 <b>12 份文档</b>，划词提问响应 <b>1.2s</b>',
-  '用户留存异常 · 次日留存 <b>18%</b>（行业均值 <b>30%</b>）',
-  '增长实验方案 · <b>3 个 A/B 实验</b>，预期注册率提升 <b>+15%</b>'
+  '留存异常 · 次日留存 <b>18%</b>（行业均值 <b>30%</b>）',
+  '增长实验 · <b>3 个 A/B 方案</b>，预期注册率提升 <b>+15%</b>'
 ];
 var ti=0,tel=document.getElementById('ticker');
 tel.style.transition='opacity .25s';
