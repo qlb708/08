@@ -3,324 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>邮件润色器 · AI × 08</title>
+<title>邮件消息润色器 · 产品运营工具集</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#fff;--bg2:#f5f5f7;--blue:#0066cc;--bs:rgba(0,102,204,.08);--bb:rgba(0,102,204,.2);
-  --text:#1d1d1f;--soft:#6e6e73;--muted:#aeaeb2;
-  --bd:rgba(0,0,0,.08);--sh:0 2px 16px rgba(0,0,0,.06);
-  --r:16px;--pill:999px;
-  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+  --bg:#fff;--bg2:#f8f8fc;--blue:#4f46e5;--blue-dark:#3730a3;
+  --blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
+  --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
+  --bd:rgba(0,0,0,.07);--sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --r:16px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
 }
-body{font-family:var(--font);color:var(--text);background:var(--bg2);-webkit-font-smoothing:antialiased;min-height:100vh}
-a{text-decoration:none;color:var(--blue)}
-
-nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd)}
-.nav-i{max-width:1280px;margin:0 auto;padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
-.logo em{color:var(--blue);font-style:normal}
-.logo a{color:inherit}
-.back{display:flex;align-items:center;gap:5px;font-size:14px;color:var(--soft);transition:color .2s}
-.back:hover{color:var(--text)}
-.back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
-
-.hero{padding:72px 32px 20px;max-width:1280px;margin:0 auto}
-.tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:var(--bs);padding:4px 12px;border-radius:var(--pill);margin-bottom:12px;border:1px solid var(--bb)}
-.hero h1{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
-.hero p{font-size:14px;color:var(--soft)}
-
-.workspace{max-width:1280px;margin:0 auto;padding:0 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:20px;align-items:start}
-
+body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:inherit}
+nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
+.nw{max-width:1200px;margin:0 auto;padding:0 32px;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--text)}.logo em{color:var(--blue);font-style:normal}
+.back{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:var(--soft);transition:color .2s}.back:hover{color:var(--blue)}.nav-tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill)}
+.back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.hero{padding:70px 32px 16px;max-width:1200px;margin:0 auto}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px}.tool-num{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em}.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill);margin-bottom:10px}
+.hero h1{font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
+.hero p{font-size:14px;color:var(--soft);max-width:540px}
+.ws{max-width:1200px;margin:0 auto;padding:8px 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:16px;align-items:start}
 .panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
-.in-panel{position:sticky;top:68px}
+.ip{position:sticky;top:60px}
 .ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
-.pi{width:28px;height:28px;border-radius:8px;background:var(--bs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pi{width:28px;height:28px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .pi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pt{font-size:13px;font-weight:700}
-.ps{font-size:11px;color:var(--soft)}
-.pb{padding:18px}
-
-.field{margin-bottom:14px}
-.field label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text)}
+.pt{font-size:13px;font-weight:700}.ps{font-size:11px;color:var(--soft)}
+.pb{padding:16px}
+.f{margin-bottom:13px}.f label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
 .fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
-.field input,.field textarea,.field select{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
-.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--bs);background:#fff}
-.field textarea{resize:vertical;line-height:1.6}
-
+.f input,.f textarea{width:100%;padding:8px 11px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.f input:focus,.f textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light);background:#fff}
+.f textarea{resize:vertical;line-height:1.6}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font)}
-.chip:hover{border-color:var(--bb);color:var(--blue)}
-.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
-
-.btn{width:100%;margin-top:4px;padding:12px;border-radius:var(--pill);background:var(--blue);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 12px rgba(0,102,204,.22);transition:all .2s}
-.btn:hover:not(:disabled){background:#0055aa;transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,102,204,.3)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-
-.out-panel{min-height:480px;display:flex;flex-direction:column}
-.ob{flex:1;padding:22px}
-
-/* 语气选择卡片 */
-.tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
-.tone-card{padding:10px 12px;border-radius:10px;border:1.5px solid var(--bd);cursor:pointer;transition:all .15s;background:#fff}
-.tone-card:hover{border-color:var(--bb)}
-.tone-card.on{border-color:var(--blue);background:var(--bs)}
-.tone-card .tc-name{font-size:13px;font-weight:700;color:var(--text)}
-.tone-card .tc-desc{font-size:11px;color:var(--soft);margin-top:2px}
-.tone-card.on .tc-name{color:var(--blue)}
-
-.skel{display:flex;flex-direction:column;gap:10px;opacity:.45}
-.sl{height:12px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
-.sb{height:72px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:10px}
+.chip{padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font);user-select:none}
+.chip:hover{border-color:var(--blue-border);color:var(--blue)}.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}.chip.act{background:var(--blue-light);border-color:var(--blue-border);color:var(--blue)}
+.gbtn{width:100%;margin-top:8px;padding:13px;border-radius:var(--pill);background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(79,70,229,.3);transition:all .2s}
+.gbtn:hover:not(:disabled){background:linear-gradient(135deg,#3730a3,#4f46e5);transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,70,229,.35)}.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.gbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.op{min-height:480px;display:flex;flex-direction:column}
+.ob{flex:1;padding:20px;overflow-y:auto;max-height:72vh}
+.skel{display:flex;flex-direction:column;gap:10px;opacity:.4}
+.sl{height:12px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
+.sb{height:72px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:8px}
 @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
 .think{display:flex;align-items:center;gap:10px;padding:28px 0;color:var(--soft);font-size:13px}
-.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin-right:3px}
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
+.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin:0 2px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
 @keyframes bou{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
-
-.md-out{font-size:13px;line-height:1.8;color:var(--text)}
-.md-out h1{font-size:18px;font-weight:800;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
-.md-out h2{font-size:14px;font-weight:700;margin:18px 0 7px}
-.md-out h3{font-size:13px;font-weight:700;margin:14px 0 5px}
-.md-out p{margin-bottom:10px}
-.md-out ul,.md-out ol{margin:6px 0 10px 16px}
-.md-out li{margin-bottom:4px}
-.md-out strong{font-weight:700}
-.md-out blockquote{border-left:3px solid var(--blue);padding:8px 12px;margin:12px 0;background:var(--bs);border-radius:0 8px 8px 0;color:var(--soft);font-size:12px}
-.md-out code{background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:12px}
-@keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
-.cursor2::after{content:'|';animation:bl .6s infinite;color:var(--blue);font-weight:300}
-
-.ebar{padding:12px 18px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
-.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
-.ebtn:hover{border-color:var(--bb);color:var(--blue)}
-.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
-
-/* 复制成功提示 */
-.copy-toast{position:fixed;bottom:24px;right:24px;background:#1d1d1f;color:#fff;padding:10px 18px;border-radius:var(--pill);font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
-.copy-toast.show{opacity:1}
-
-@media(max-width:900px){.workspace{grid-template-columns:1fr}.in-panel{position:static}}
-@media(max-width:600px){.workspace{padding:0 16px 60px}.hero{padding:68px 16px 16px}}
+.md{font-size:13px;line-height:1.8;color:var(--text)}
+.md h1{font-size:17px;font-weight:800;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.md h2{font-size:14px;font-weight:700;margin:16px 0 7px;color:var(--blue)}.md h3{font-size:13px;font-weight:700;margin:13px 0 5px}
+.md p{margin-bottom:10px}.md ul,.md ol{margin:6px 0 10px 16px}.md li{margin-bottom:4px}.md strong{font-weight:700}
+.md blockquote{border-left:3px solid var(--blue);padding:8px 12px;margin:12px 0;background:var(--blue-light);border-radius:0 8px 8px 0;color:var(--soft);font-size:12px}
+.md table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.md th,.md td{padding:7px 10px;border:1px solid var(--bd);text-align:left;vertical-align:top}
+.md th{background:var(--bg2);font-weight:600}.md code{background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:11px}
+.ebar{padding:12px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
+.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.ebtn:hover{border-color:var(--blue-border);color:var(--blue)}.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+#toast{position:fixed;bottom:24px;right:24px;background:#1d1d1f;color:#fff;padding:9px 16px;border-radius:var(--pill);font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+/* tone cards */
+.tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
+.tone-card{padding:10px 12px;border-radius:10px;border:1.5px solid var(--bd);background:#fff;cursor:pointer;transition:all .15s;user-select:none}
+.tone-card:hover{border-color:var(--blue-border);background:var(--blue-light)}
+.tone-card.selected{border:2px solid var(--blue);background:var(--blue-light)}
+.tone-name{font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.tone-name svg{width:13px;height:13px;flex-shrink:0;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tone-desc{font-size:11px;color:var(--soft)}
+@media(max-width:900px){.ws{grid-template-columns:1fr}.ip{position:static}}
+@media(max-width:600px){.ws{padding:8px 16px 60px}.hero{padding:68px 16px 16px}}
 </style>
 </head>
 <body>
-
 <nav>
-  <div class="nav-i">
-    <div class="logo"><a href="/08/portfolio/">AI <em>×</em> 08</a></div>
-    <a class="back" href="/08/portfolio/">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>返回
+  <div class="nw">
+    <a href="/08/portfolio/" class="back">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      产品运营工具集
     </a>
+    <span class="nav-tag">内容运营</span>
   </div>
 </nav>
-
-<div class="hero">
-  <div class="tag">职场效率</div>
-  <h1>邮件 / 消息润色器</h1>
-  <p>把口语化的想法变成专业表达，选语气，一键润色。</p>
-</div>
-
-<div class="workspace">
-  <div class="panel in-panel">
-    <div class="ph">
-      <div class="pi">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <div><div class="pt">输入原始内容</div><div class="ps">口语、零散都没关系</div></div>
-    </div>
+<div class="hero"><span class="tag">职场效率</span><h1>邮件/消息润色器</h1><p>把口语化的想法变成专业表达，一键润色。</p></div>
+<div class="ws">
+  <div class="panel ip">
+    <div class="ph"><div class="pi"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="pt">润色参数</div><div class="ps">填写内容后一键润色</div></div></div>
     <div class="pb">
-      <div class="field">
-        <label>发送场景 <span class="fn">选填</span></label>
-        <input id="scene" type="text" placeholder="例如：向领导汇报项目进展、拒绝跨部门请求">
-      </div>
-      <div class="field">
-        <label>原始内容 <span class="fn">口语化描述即可</span></label>
-        <textarea id="content" rows="5" placeholder="例如：跟老板说一下，上周那个需求我觉得可以砍掉，因为用户根本不用，而且开发成本很高，不如先做另一个"></textarea>
-      </div>
-      <div class="field">
-        <label>消息类型</label>
+      <div class="f"><label>使用场景</label><input type="text" id="scene" placeholder="例：向领导汇报进展"></div>
+      <div class="f"><label>原始内容</label><textarea id="content" rows="5" placeholder="把你想说的话粘贴进来，哪怕很口语化..."></textarea></div>
+      <div class="f"><label>消息类型</label>
         <div class="chips" id="typeChips">
-          <button class="chip on" data-v="飞书/微信消息">飞书消息</button>
-          <button class="chip" data-v="正式邮件">正式邮件</button>
-          <button class="chip" data-v="会议邀约">会议邀约</button>
-          <button class="chip" data-v="需求反馈">需求反馈</button>
+          <span class="chip on" data-v="飞书消息">飞书消息</span>
+          <span class="chip" data-v="正式邮件">正式邮件</span>
+          <span class="chip" data-v="会议邀约">会议邀约</span>
+          <span class="chip" data-v="需求反馈">需求反馈</span>
         </div>
       </div>
-      <div class="field">
-        <label>语气风格</label>
-        <div class="tone-grid" id="toneGrid">
-          <div class="tone-card on" data-v="专业得体">
-            <div class="tc-name">专业得体</div>
-            <div class="tc-desc">正式但不生硬，有礼有节</div>
+      <div class="f"><label>表达语气</label>
+        <div class="tone-grid">
+          <div class="tone-card selected" data-tone="专业得体" onclick="selectTone(this)">
+            <div class="tone-name"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>专业得体</div>
+            <div class="tone-desc">正式、可信赖</div>
           </div>
-          <div class="tone-card" data-v="委婉礼貌">
-            <div class="tc-name">委婉礼貌</div>
-            <div class="tc-desc">软化措辞，减少冲突感</div>
+          <div class="tone-card" data-tone="委婉礼貌" onclick="selectTone(this)">
+            <div class="tone-name"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>委婉礼貌</div>
+            <div class="tone-desc">温和、不强迫</div>
           </div>
-          <div class="tone-card" data-v="简洁直接">
-            <div class="tc-name">简洁直接</div>
-            <div class="tc-desc">去掉废话，一句话说清楚</div>
+          <div class="tone-card" data-tone="简洁直接" onclick="selectTone(this)">
+            <div class="tone-name"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>简洁直接</div>
+            <div class="tone-desc">高效、不废话</div>
           </div>
-          <div class="tone-card" data-v="强调紧迫">
-            <div class="tc-name">强调紧迫</div>
-            <div class="tc-desc">突出优先级，推动决策</div>
+          <div class="tone-card" data-tone="强调紧迫" onclick="selectTone(this)">
+            <div class="tone-name"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>强调紧迫</div>
+            <div class="tone-desc">紧急、需立即行动</div>
           </div>
         </div>
       </div>
-      <button class="btn" id="genBtn" onclick="generate()">
-        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        立即润色
-      </button>
+      <button class="gbtn" id="genBtn" onclick="gen()"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>一键润色</button>
     </div>
   </div>
-
-  <div class="panel out-panel">
-    <div class="ph">
-      <div class="pi" style="background:rgba(52,199,89,.1)">
-        <svg viewBox="0 0 24 24" style="stroke:#34c759"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      </div>
-      <div><div class="pt">润色结果</div><div class="ps" id="outSub">选好语气后点润色</div></div>
-    </div>
-    <div class="ob" id="outBody">
-      <div class="skel">
-        <div class="sb"></div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div class="sl" style="width:70%"></div>
-          <div class="sl" style="width:90%"></div>
-          <div class="sl" style="width:55%"></div>
-        </div>
-        <div class="sb" style="height:52px"></div>
-      </div>
-    </div>
+  <div class="panel op">
+    <div class="ph"><div class="pi"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div><div class="pt">润色结果</div><div class="ps">专业表达版本</div></div></div>
+    <div class="ob" id="ob"><div class="skel"><div class="sl"></div><div class="sl"></div><div class="sl" style="width:80%"></div><div class="sb"></div><div class="sl"></div><div class="sl" style="width:60%"></div><div class="sb"></div></div></div>
+    <div class="ebar"><button class="ebtn" onclick="copyOut()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button><button class="ebtn" onclick="doExport('润色结果')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button></div>
   </div>
 </div>
-
-<div class="copy-toast" id="toast">已复制到剪贴板</div>
-
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<div id="toast">已复制到剪贴板</div>
 <script>
 var PROVIDERS=[
   {name:'智谱',url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P',model:'glm-4-flash',type:'openai'},
   {name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',key:'sk-4f016c9639cb461db37f4f778d2eac4f',model:'deepseek-chat',type:'openai'},
   {name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''),type:'gemini'}
 ];
-async function callAI(prompt){
+async function callAI(prompt,maxTok){
+  maxTok=maxTok||5000;
   for(var i=0;i<PROVIDERS.length;i++){
     var p=PROVIDERS[i];
     try{
       var res,text='';
       if(p.type==='openai'){
-        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:0.7}),signal:AbortSignal.timeout(25000)});
-        if(!res.ok){var e=await res.json();console.warn(p.name,e);continue;}
+        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:maxTok,temperature:0.7}),signal:AbortSignal.timeout(25000)});
+        if(!res.ok){var er=await res.json();console.warn(p.name,er.error&&er.error.message);continue;}
         var d=await res.json();
         text=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
       }else{
-        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:4000,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
+        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:maxTok,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
         if(!res.ok)continue;
         var d2=await res.json();
         text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
       }
-      if(text){console.log('✓',p.name);return text;}
-    }catch(err){console.warn(p.name,err.message);}
+      if(text){console.log('[OK]',p.name);return text;}
+    }catch(err){console.warn('[FAIL]',p.name,err.message);}
   }
-  throw new Error('所有 AI 服务均不可用');
+  throw new Error('所有AI服务均不可用');
 }
-
-var lastResult='';
-function typeRender(text,el,onDone){
-  lastResult=text;
+var _last='';
+function typeOut(text,el,done){
+  _last=text;
   var i=0;
+  el.innerHTML='<div class="md"></div>';
+  var md=el.querySelector('.md');
   var iv=setInterval(function(){
-    i=Math.min(i+6,text.length);
-    el.innerHTML='<div class="md-out">'+marked.parse(text.slice(0,i))+'</div>'+(i<text.length?'<span class="cursor2"></span>':'');
-    if(i>=text.length){
-      clearInterval(iv);
-      el.innerHTML='<div class="md-out">'+marked.parse(text)+'</div>';
-      if(onDone)onDone();
-    }
-  },16);
+    i=Math.min(i+10,text.length);
+    md.innerHTML=marked.parse(text.slice(0,i));
+    if(i>=text.length){clearInterval(iv);if(done)done();}
+  },20);
 }
-
-var selType='飞书/微信消息';
-var selTone='专业得体';
-
-document.querySelectorAll('#typeChips .chip').forEach(function(c){
-  c.addEventListener('click',function(){
-    document.querySelectorAll('#typeChips .chip').forEach(function(x){x.classList.remove('on');});
-    c.classList.add('on');
-    selType=c.dataset.v;
-  });
-});
-document.querySelectorAll('#toneGrid .tone-card').forEach(function(c){
-  c.addEventListener('click',function(){
-    document.querySelectorAll('#toneGrid .tone-card').forEach(function(x){x.classList.remove('on');});
-    c.classList.add('on');
-    selTone=c.dataset.v;
-  });
-});
-
-async function generate(){
-  var content=document.getElementById('content').value.trim();
-  var scene=document.getElementById('scene').value.trim();
-  if(!content){document.getElementById('content').focus();return;}
-  var btn=document.getElementById('genBtn');
-  var body=document.getElementById('outBody');
-  var sub=document.getElementById('outSub');
-  btn.disabled=true;
-  sub.textContent='润色中…';
-  body.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI 正在润色，帮你把话说得更好…</span></div>';
-
-  var prompt='你是一位职场沟通专家，擅长将口语化表达润色为专业得体的职场文字。\n\n'
-    +(scene?'发送场景：'+scene+'\n':'')
-    +'消息类型：'+selType+'\n'
-    +'语气要求：'+selTone+'\n\n'
-    +'原始内容（口语化）：\n'+content+'\n\n'
-    +'请按以下格式输出（Markdown）：\n\n'
-    +'# 润色结果\n\n'
-    +'## 润色后的内容\n'
-    +'（直接输出可用的'+selType+'，格式清晰，语气'+selTone+'）\n\n'
-    +'---\n\n'
-    +'## 润色说明\n'
-    +'（简短说明做了哪些改动，以及为什么这样改，2-3条即可）\n\n'
-    +'## 备选版本\n'
-    +'（提供一个语气略有不同的备选版本，适合不同场景使用）\n\n'
-    +'**注意**：润色后的内容要保留原意，不要改变核心观点，只优化表达方式。';
-
-  try{
-    var text=await callAI(prompt);
-    sub.textContent='润色完成';
-    typeRender(text,body,function(){
-      document.querySelector('.out-panel').insertAdjacentHTML('beforeend',
-        '<div class="ebar">'
-        +'<button class="ebtn" onclick="copyResult()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button>'
-        +'<button class="ebtn" onclick="exportMd()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button>'
-        +'</div>');
-    });
-  }catch(e){
-    body.innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">网络请求失败，请稍后重试</div>';
-    sub.textContent='失败';
-  }
-  btn.disabled=false;
-  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>重新润色';
-}
-
-function copyResult(){
-  if(!lastResult)return;
-  navigator.clipboard.writeText(lastResult).then(function(){
-    var t=document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(function(){t.classList.remove('show');},2000);
-  });
-}
-function exportMd(){
-  if(!lastResult)return;
+function doExport(name){
+  if(!_last)return;
   var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([lastResult],{type:'text/markdown'}));
-  a.download='润色结果.md';a.click();
+  a.href=URL.createObjectURL(new Blob([_last],{type:'text/markdown'}));
+  a.download=(name||'output')+'.md';a.click();
+}
+function copyOut(){
+  if(!_last)return;
+  navigator.clipboard.writeText(_last).then(function(){
+    var t=document.getElementById('toast');
+    if(t){t.style.opacity='1';setTimeout(function(){t.style.opacity='0';},2000);}
+  });
+}
+document.getElementById('typeChips').addEventListener('click',function(e){
+  var c=e.target.closest('.chip');
+  if(!c)return;
+  this.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});
+  c.classList.add('on');
+});
+function selectTone(el){
+  document.querySelectorAll('.tone-card').forEach(function(x){x.classList.remove('selected');});
+  el.classList.add('selected');
+}
+function getChipVal(id){
+  var s=document.getElementById(id).querySelector('.chip.on');
+  return s?s.getAttribute('data-v'):'';
+}
+function getTone(){
+  var s=document.querySelector('.tone-card.selected');
+  return s?s.getAttribute('data-tone'):'专业得体';
+}
+async function gen(){
+  var content=document.getElementById('content').value.trim();
+  if(!content){alert('请输入需要润色的内容');return;}
+  var scene=document.getElementById('scene').value.trim();
+  var msgType=getChipVal('typeChips');
+  var tone=getTone();
+  var prompt='你是一个专业的职场沟通写作专家，擅长把口语化、不规范的表达转化为专业得体的职场文字。\n\n';
+  prompt+='使用场景：'+(scene||'职场沟通')+'\n';
+  prompt+='消息类型：'+(msgType||'飞书消息')+'\n';
+  prompt+='表达语气：'+tone+'\n\n';
+  prompt+='原始内容：\n'+content+'\n\n';
+  prompt+='请按以下格式输出：\n\n';
+  prompt+='## 润色版本\n[直接给出润色后的完整文字，可直接复制使用]\n\n';
+  prompt+='## 备选版本\n[给出另一个风格略有差异的版本]\n\n';
+  prompt+='## 润色说明\n[简要说明做了哪些改进，以及为什么这样表达更好]\n\n';
+  prompt+='### 语气要求说明：\n';
+  if(tone==='专业得体') prompt+='- 用词正式、专业，语气自信\n- 结构清晰，有适当的开场和结尾\n- 避免口语化表达\n';
+  if(tone==='委婉礼貌') prompt+='- 语气温和，多用"建议""可能""希望"等词\n- 为对方留有余地\n- 体现尊重和理解\n';
+  if(tone==='简洁直接') prompt+='- 去除所有冗余表达\n- 直接说重点\n- 短句为主，清晰有力\n';
+  if(tone==='强调紧迫') prompt+='- 开门见山表达紧迫性\n- 明确时间节点和deadline\n- 语气略为急迫但不失礼貌\n';
+  prompt+='\n请确保润色后的内容自然、符合中文职场文化习惯。';
+  var btn=document.getElementById('genBtn');
+  var ob=document.getElementById('ob');
+  btn.disabled=true;
+  btn.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="30" stroke-dashoffset="10"><animate attributeName="stroke-dashoffset" values="30;0" dur="1s" repeatCount="indefinite"/></circle></svg>AI润色中...';
+  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div>AI正在润色文字...</div>';
+  try{
+    var result=await callAI(prompt,3000);
+    typeOut(result,ob);
+  }catch(err){
+    ob.innerHTML='<div class="think">⚠️ '+err.message+'</div>';
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>一键润色';
+  }
 }
 </script>
 </body>
