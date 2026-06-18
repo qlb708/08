@@ -3,315 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>用研报告生成器 - 08 AI Tools</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>08</text></svg>">
+<title>用研报告生成器 - AI Productivity Suite</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-h:#0055aa;--text:#1d1d1f;--text2:#86868b;--card-r:20px;--el-r:12px;--btn-r:999px;--shadow:0 2px 16px rgba(0,0,0,.06);--shadow-h:0 8px 32px rgba(0,0,0,.1)}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:var(--primary);text-decoration:none}
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);height:52px;display:flex;align-items:center;justify-content:center}
-nav .inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
-nav .logo{font-weight:700;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px}
-nav .logo span{color:var(--primary)}
-nav .logo .sep{color:#d2d2d7}
-nav a.back{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:4px}
-nav a.back:hover{color:var(--text)}
-.page-hero{padding:32px 0 16px;text-align:center}
-.page-hero h1{font-size:28px;font-weight:700}
-.page-hero p{font-size:15px;color:var(--text2);margin-top:6px}
-.workspace{display:flex;gap:24px;max-width:1200px;margin:0 auto;padding:0 24px 64px;align-items:flex-start}
-.panel-left{width:420px;flex-shrink:0;position:sticky;top:76px;max-height:calc(100vh - 100px);overflow-y:auto;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:24px}
-.panel-right{flex:1;min-width:0;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:24px;min-height:400px}
-.panel-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0f0f5}
-.panel-header svg{width:20px;height:20px;color:var(--primary)}
-.panel-header h2{font-size:16px;font-weight:600}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
-.form-group input,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid #d2d2d7;border-radius:var(--el-r);font-size:14px;font-family:inherit;transition:border-color .2s;background:var(--bg);color:var(--text)}
-.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary)}
-.form-group textarea{resize:vertical;min-height:60px}
-.chip-group{display:flex;flex-wrap:wrap;gap:8px}
-.chip{padding:6px 14px;border-radius:var(--btn-r);font-size:13px;cursor:pointer;border:1.5px solid #d2d2d7;background:var(--bg);color:var(--text2);transition:all .2s;user-select:none}
-.chip:hover{border-color:var(--primary);color:var(--primary)}
-.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.btn-generate{width:100%;padding:14px;border:none;border-radius:var(--btn-r);background:var(--primary);color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:inherit}
-.btn-generate:hover{background:var(--primary-h);transform:translateY(-1px)}
-.btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-generate svg{width:18px;height:18px}
-.skeleton{display:flex;flex-direction:column;gap:12px;padding:8px 0}
-.skeleton-block{border-radius:var(--el-r);background:linear-gradient(90deg,#f0f0f5 25%,#e8e8ed 50%,#f0f0f5 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-.skeleton-block:nth-child(1){height:24px;width:60%}
-.skeleton-block:nth-child(2){height:16px;width:100%}
-.skeleton-block:nth-child(3){height:16px;width:85%}
-.skeleton-block:nth-child(4){height:16px;width:70%}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.output-content{font-size:15px;line-height:1.8;color:var(--text)}
-.output-content h1{font-size:22px;font-weight:700;margin:24px 0 12px}
-.output-content h2{font-size:18px;font-weight:600;margin:20px 0 10px}
-.output-content h3{font-size:16px;font-weight:600;margin:16px 0 8px}
-.output-content p{margin-bottom:10px;color:var(--text2)}
-.output-content ul,.output-content ol{margin:8px 0 8px 20px;color:var(--text2)}
-.output-content li{margin-bottom:4px}
-.output-content strong{color:var(--text);font-weight:600}
-.output-content code{background:var(--bg-alt);padding:2px 6px;border-radius:4px;font-size:13px}
-.output-content pre{background:var(--bg-alt);padding:16px;border-radius:var(--el-r);overflow-x:auto;margin:12px 0}
-.output-content blockquote{border-left:3px solid var(--primary);padding-left:16px;margin:12px 0;color:var(--text2)}
-.output-content table{width:100%;border-collapse:collapse;margin:12px 0}
-.output-content th,.output-content td{border:1px solid #e8e8ed;padding:8px 12px;text-align:left;font-size:14px}
-.output-content th{background:var(--bg-alt);font-weight:600}
-.btn-export{margin-top:20px;padding:10px 20px;border:1.5px solid #d2d2d7;border-radius:var(--btn-r);background:var(--bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;font-family:inherit}
-.btn-export:hover{border-color:var(--primary);color:var(--primary)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
-.modal-overlay.show{opacity:1;pointer-events:auto}
-.modal{background:var(--bg);border-radius:var(--card-r);padding:32px;max-width:480px;width:90%;box-shadow:var(--shadow-h);transform:translateY(20px);transition:transform .25s}
-.modal-overlay.show .modal{transform:translateY(0)}
-.modal h3{font-size:18px;font-weight:700;margin-bottom:6px}
-.modal p{font-size:14px;color:var(--text2);margin-bottom:20px}
-.modal .form-group{margin-bottom:14px}
-.modal-btns{display:flex;gap:10px;margin-top:20px}
-.modal-btns .btn-generate{flex:1}
-.modal-btns .btn-cancel{flex:1;padding:14px;border:1.5px solid #d2d2d7;border-radius:var(--btn-r);background:var(--bg);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
-.modal-btns .btn-cancel:hover{border-color:var(--text)}
-
-.upload-zone{border:1.5px dashed rgba(0,102,204,.3);border-radius:12px;padding:12px 14px;background:rgba(0,102,204,.03);cursor:pointer;transition:all .2s;text-align:center;margin-bottom:14px}
-.upload-zone:hover{border-color:var(--primary);background:rgba(0,102,204,.06)}
-.upload-zone input{display:none}
-.upload-zone label{cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--primary);font-weight:600}
-.upload-zone label svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
-.upload-zone .fname{font-size:12px;color:var(--text-soft);margin-top:4px}
-.kb-bar{margin-top:20px;border-top:1px solid var(--border);padding-top:16px}
-.kb-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
-.kb-title svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
-.kb-cards{display:flex;flex-direction:column;gap:8px}
-.kb-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer}
-.kb-card-hd{padding:9px 13px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;background:var(--bg-soft);transition:background .2s}
-.kb-card-hd:hover{background:#ebebf0}
-.kb-card-hd .kb-arr{width:13px;height:13px;fill:none;stroke:var(--text-muted);stroke-width:2;transition:transform .25s}
-.kb-card.open .kb-arr{transform:rotate(90deg)}
-.kb-card-body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 13px;font-size:12px;color:var(--text-soft);line-height:1.6}
-.kb-card.open .kb-card-body{max-height:200px;padding:10px 13px}
+:root{--bg:#fff;--bg2:#f5f5f7;--blue:#0066cc;--bs:rgba(0,102,204,.08);--bb:rgba(0,102,204,.2);--text:#1d1d1f;--soft:#6e6e73;--muted:#aeaeb2;--bd:rgba(0,0,0,.08);--sh:0 2px 16px rgba(0,0,0,.06);--r:14px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif}
+body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:inherit}
+nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
+.nw{max-width:1200px;margin:0 auto;padding:0 32px;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--text)}.logo em{color:var(--blue);font-style:normal}
+.back{display:flex;align-items:center;gap:5px;font-size:14px;color:var(--soft);transition:color .2s}.back:hover{color:var(--text)}
+.back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.hero{padding:70px 32px 16px;max-width:1200px;margin:0 auto}
+.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);background:var(--bs);border:1px solid var(--bb);padding:4px 12px;border-radius:var(--pill);margin-bottom:10px}
+.hero h1{font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
+.hero p{font-size:14px;color:var(--soft);max-width:540px}
+.ws{max-width:1200px;margin:0 auto;padding:8px 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:16px;align-items:start}
+.panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.ip{position:sticky;top:60px}
+.ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.pi{width:28px;height:28px;border-radius:8px;background:var(--bs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pt{font-size:13px;font-weight:700}.ps{font-size:11px;color:var(--soft)}
+.pb{padding:16px}
+.f{margin-bottom:13px}.f label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
+.fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
+.f input,.f textarea{width:100%;padding:8px 11px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.f input:focus,.f textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--bs);background:#fff}
+.f textarea{resize:vertical;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font);user-select:none}
+.chip:hover{border-color:var(--bb);color:var(--blue)}.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}.chip.act{background:var(--bs);border-color:var(--bb);color:var(--blue)}
+.gbtn{width:100%;margin-top:6px;padding:12px;border-radius:var(--pill);background:var(--blue);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 12px rgba(0,102,204,.2);transition:all .2s}
+.gbtn:hover:not(:disabled){background:#0055aa;transform:translateY(-1px)}.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.gbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.op{min-height:480px;display:flex;flex-direction:column}
+.ob{flex:1;padding:20px;overflow-y:auto;max-height:72vh}
+.skel{display:flex;flex-direction:column;gap:10px;opacity:.4}
+.sl{height:12px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
+.sb{height:72px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:8px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.think{display:flex;align-items:center;gap:10px;padding:28px 0;color:var(--soft);font-size:13px}
+.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin:0 2px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bou{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+.md{font-size:13px;line-height:1.8;color:var(--text)}
+.md h1{font-size:17px;font-weight:800;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.md h2{font-size:14px;font-weight:700;margin:16px 0 7px}.md h3{font-size:13px;font-weight:700;margin:13px 0 5px}
+.md p{margin-bottom:10px}.md ul,.md ol{margin:6px 0 10px 16px}.md li{margin-bottom:4px}.md strong{font-weight:700}
+.md blockquote{border-left:3px solid var(--blue);padding:8px 12px;margin:12px 0;background:var(--bs);border-radius:0 8px 8px 0;color:var(--soft);font-size:12px}
+.md table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.md th,.md td{padding:7px 10px;border:1px solid var(--bd);text-align:left;vertical-align:top}
+.md th{background:var(--bg2);font-weight:600}.md code{background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:11px}
+.ebar{padding:12px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
+.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.ebtn:hover{border-color:var(--bb);color:var(--blue)}.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+#toast{position:fixed;bottom:24px;right:24px;background:#1d1d1f;color:#fff;padding:9px 16px;border-radius:var(--pill);font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+@media(max-width:900px){.ws{grid-template-columns:1fr}.ip{position:static}}
+@media(max-width:600px){.ws{padding:8px 16px 60px}.hero{padding:68px 16px 16px}}
 </style>
 </head>
 <body>
-<nav><div class="inner">
-  <a class="logo" href="https://qlb708.github.io/08/"><span>08</span><span class="sep">/</span>用研报告生成器</a>
-  <a class="back" href="https://qlb708.github.io/08/">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-    返回首页
-  </a>
-</div></nav>
-<div class="page-hero"><h1>用研报告生成器</h1><p>输入产品信息，AI 自动生成结构化的用户研究报告</p></div>
-<div class="workspace">
-  <div class="panel-left">
-    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h2>填写产品信息</h2></div>
-    <div class="form-group"><label>产品名称</label><input id="productName" placeholder="例如：Notion"/></div>
-    <div class="form-group"><label>目标用户</label><input id="targetUser" placeholder="例如：25-35岁互联网从业者"/></div>
-    <div class="form-group"><label>行业赛道</label><div class="chip-group" id="industryChips"><div class="chip" data-v="电商">电商</div><div class="chip" data-v="社交">社交</div><div class="chip" data-v="SaaS">SaaS</div><div class="chip" data-v="AI/大模型">AI/大模型</div><div class="chip" data-v="教育">教育</div><div class="chip" data-v="健康">健康</div><div class="chip" data-v="金融">金融</div><div class="chip" data-v="内容社区">内容社区</div></div></div>
-    <div class="form-group"><label>研究目的（选填）</label><textarea id="researchPurpose" placeholder="例如：了解目标用户的核心痛点和未被满足的需求"></textarea></div>
-    
-    <div class="upload-zone" id="uploadZone">
-      <input type="file" id="fileInput" accept=".txt,.md,.csv,.json" onchange="handleFile(this)">
-      <label for="fileInput">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        上传参考文件（可选）
-      </label>
-      <div class="fname" id="fileName">支持 .txt .md .csv .json，内容将自动注入 Prompt</div>
-    </div>
-    <div class="kb-bar">
-      <div class="kb-title"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>用研方法知识库</div>
-      <div class="kb-cards">
-        <div class="kb-card" onclick="toggleKb(this)">
-          <div class="kb-card-hd">访谈法（深度访谈）<svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-          <div class="kb-card-body">适用场景：探索用户动机、痛点、决策路径。<br>关键技巧：用「为什么」追问，避免封闭式问题，单次访谈30-60分钟，样本5-8人即可得到饱和信息。<br>输出：用户洞察报告、用户故事。</div>
-        </div>
-        <div class="kb-card" onclick="toggleKb(this)">
-          <div class="kb-card-hd">可用性测试<svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-          <div class="kb-card-body">适用场景：验证设计方案、发现交互问题。<br>方法：让用户在真实环境完成任务，观察而非引导。5个用户能发现85%的可用性问题（Nielsen定律）。<br>输出：问题清单 + 优先级矩阵。</div>
-        </div>
-        <div class="kb-card" onclick="toggleKb(this)">
-          <div class="kb-card-hd">NPS + 问卷调研<svg class="kb-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-          <div class="kb-card-body">适用场景：量化用户满意度、大样本验证假设。<br>NPS基准：60+为优秀，40-60良好，<40需关注。<br>问卷设计原则：单题只问一个维度，选项互斥穷举，总题数≤15道。</div>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-generate" id="generateBtn" onclick="handleGenerate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>生成报告</button>
-  </div>
-  <div class="panel-right">
-    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><h2>AI 洞察报告</h2></div>
-    <div id="skeleton" class="skeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
-    <div id="output" class="output-content" style="display:none"></div>
-    <button id="exportBtn" class="btn-export" style="display:none" onclick="exportMarkdown()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出 Markdown</button>
-  </div>
+<nav><div class="nw"><a href="/" class="logo"><em>AI</em> Suite</a><a class="back" href="/"><svg viewBox="0 0 16 16"><path d="M10 2L4 8l6 6"/></svg>返回</a></div></nav>
+<div class="hero"><span class="tag">用户研究</span><h1>用研报告生成器</h1><p>描述产品和研究目标，AI生成结构化用户洞察报告。</p></div>
+<div class="ws">
+<div class="panel ip">
+<div class="ph"><div class="pi"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="pt">输入参数</div><div class="ps">描述研究目标后生成</div></div></div>
+<div class="pb">
+<div class="f"><label>产品名称</label><input type="text" id="pname" placeholder="例：XX旅行App"></div>
+<div class="f"><label>目标用户</label><input type="text" id="users" placeholder="例：25-35岁一线城市白领"></div>
+<div class="f"><label>所属行业 <span class="fn">多选</span></label><div class="chips" id="industryChips"><span class="chip" data-v="AI旅行">AI旅行</span><span class="chip" data-v="电商">电商</span><span class="chip" data-v="内容社区">内容社区</span><span class="chip" data-v="工具效率">工具效率</span><span class="chip" data-v="金融">金融</span><span class="chip" data-v="教育">教育</span></div></div>
+<div class="f"><label>研究目的</label><textarea id="purpose" rows="3" placeholder="描述你想了解的用户行为、痛点或偏好..."></textarea></div>
+<div class="f"><label>补充信息 <span class="fn">可选</span></label><textarea id="extra" rows="2" placeholder="已有数据、竞品参考或其他背景..."></textarea></div>
+<button class="gbtn" id="genBtn" onclick="gen()"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>生成报告</button>
+</div></div>
+<div class="panel op"><div class="ph"><div class="pi"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="pt">用研报告</div><div class="ps">用户洞察与分析结论</div></div></div><div class="ob" id="ob"><div class="skel"><div class="sl"></div><div class="sl"></div><div class="sl" style="width:80%"></div><div class="sb"></div><div class="sl"></div><div class="sl" style="width:60%"></div><div class="sb"></div></div></div>
+<div class="ebar"><button class="ebtn" onclick="copyOut()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button><button class="ebtn" onclick="doExport('用研报告')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button></div></div>
 </div>
-<div class="modal-overlay" id="followupModal">
-  <div class="modal">
-    <h3>补充信息</h3><p>为了让报告更精准，请补充以下信息（选填）</p>
-    <div class="form-group"><label>是否有特定的竞品需要关注？</label><input id="followupCompetitors" placeholder="例如：Figma, Miro"/></div>
-    <div class="form-group"><label>是否有特定的研究方法偏好？</label><input id="followupMethod" placeholder="例如：定量问卷 + 深度访谈"/></div>
-    <div class="modal-btns"><button class="btn-cancel" onclick="skipFollowup()">跳过</button><button class="btn-generate" onclick="submitFollowup()">确认生成</button></div>
-  </div>
-</div>
+<div id="toast">已复制到剪贴板</div>
 <script>
-const PROVIDERS=[
-  {name:"智谱",url:"https://open.bigmodel.cn/api/paas/v4/chat/completions",key:"3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P",model:"glm-4-flash",type:"openai"},
-  {name:"DeepSeek",url:"https://api.deepseek.com/chat/completions",key:"sk-4f016c9639cb461db37f4f778d2eac4f",model:"deepseek-chat",type:"openai"},
-  {name:"Gemini",url:"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",key:["AQ.Ab8RN6Kwvan","PacRzJIFXe6Yi1Kx35q046","jXDWC8LF0dV3tKJiA"].join(""),type:"gemini"},
+var PROVIDERS=[
+  {name:'智谱',url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P',model:'glm-4-flash',type:'openai'},
+  {name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',key:'sk-4f016c9639cb461db37f4f778d2eac4f',model:'deepseek-chat',type:'openai'},
+  {name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''),type:'gemini'}
 ];
-async function callAI(prompt){
-  for(const p of PROVIDERS){
+async function callAI(prompt,maxTok){
+  maxTok=maxTok||5000;
+  for(var i=0;i<PROVIDERS.length;i++){
+    var p=PROVIDERS[i];
     try{
-      let text="";
-      if(p.type==="openai"){
-        const res=await fetch(p.url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+p.key},body:JSON.stringify({model:p.model,messages:[{role:"user",content:prompt}],max_tokens:8000,temperature:0.7}),signal:AbortSignal.timeout(25000)});
-        if(!res.ok){const e=await res.json();console.warn(p.name,e);continue;}
-        const d=await res.json();text=d.choices?.[0]?.message?.content||"";
-      } else {
-        const res=await fetch(p.url+"?key="+p.key,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
-        if(!res.ok){continue;}
-        const d=await res.json();text=d.candidates?.[0]?.content?.parts?.[0]?.text||"";
+      var res,text='';
+      if(p.type==='openai'){
+        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:maxTok,temperature:0.7}),signal:AbortSignal.timeout(25000)});
+        if(!res.ok){var er=await res.json();console.warn(p.name,er.error&&er.error.message);continue;}
+        var d=await res.json();
+        text=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
+      }else{
+        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:maxTok,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
+        if(!res.ok)continue;
+        var d2=await res.json();
+        text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
       }
-      if(text){console.log("✓ used",p.name);return text;}
-    }catch(e){console.warn(p.name,"failed:",e.message);continue;}
+      if(text){console.log('[OK]',p.name);return text;}
+    }catch(err){console.warn('[FAIL]',p.name,err.message);}
   }
-  throw new Error("所有 AI 服务均不可用，请检查网络");
+  throw new Error('所有AI服务均不可用');
 }
-let rawMd='';
-document.querySelectorAll('#industryChips .chip').forEach(c=>{c.addEventListener('click',()=>{c.classList.toggle('active')})});
-let pd=null;
-function handleGenerate(){
-  var n=document.getElementById('productName').value.trim();
-  var u=document.getElementById('targetUser').value.trim();
-  var ind=[...document.querySelectorAll('#industryChips .chip.active')].map(c=>c.dataset.v);
-  var p=document.getElementById('researchPurpose').value.trim();
-  if(!n){alert('请填写产品名称');return}
-  if(!u){alert('请填写目标用户');return}
-  if(!ind.length){alert('请至少选择一个行业赛道');return}
-  pd={n,u,ind:ind.join('、'),p};
-  document.getElementById('followupModal').classList.add('show');
+var _last='';
+function typeOut(text,el,done){
+  _last=text;
+  var i=0;
+  el.innerHTML='<div class="md"></div>';
+  var md=el.querySelector('.md');
+  var iv=setInterval(function(){
+    i=Math.min(i+10,text.length);
+    md.innerHTML=marked.parse(text.slice(0,i));
+    if(i>=text.length){clearInterval(iv);if(done)done();}
+  },20);
 }
-function skipFollowup(){document.getElementById('followupModal').classList.remove('show');submitFollowup()}
-function submitFollowup(){
-  document.getElementById('followupModal').classList.remove('show');
-  var fc=document.getElementById('followupCompetitors').value.trim();
-  var fm=document.getElementById('followupMethod').value.trim();
-  var prompt='你是一位资深用户研究员。请为以下产品生成一份专业的用户研究报告。\n\n产品名称：'+pd.n+'\n目标用户：'+pd.u+'\n行业赛道：'+pd.ind+(pd.p?'\n研究目的：'+pd.p:'')+(fc?'\n关注竞品：'+fc:'')+(fm?'\n研究方法偏好：'+fm:'')+'\n\n报告结构要求：\n1. 行业概况与趋势\n2. 目标用户画像（至少3类Persona）\n3. 核心需求与痛点分析\n4. 用户使用场景分析\n5. 竞品用户研究对比\n6. 关键发现与产品建议\n\n请使用 Markdown 格式输出，结构清晰，每个部分要有具体的分析内容。';
-  doGenerate(prompt);
-}
-async function doGenerate(prompt){
-  var btn=document.getElementById('generateBtn');
-  btn.disabled=true;
-  document.getElementById('skeleton').style.display='flex';
-  document.getElementById('output').style.display='none';
-  document.getElementById('exportBtn').style.display='none';
-  try{
-    var resp=await fetch(GU,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:8192}})});
-    var data=await resp.json();
-    rawMd=data.candidates[0].content.parts[0].text;
-    document.getElementById('skeleton').style.display='none';
-    document.getElementById('output').style.display='block';
-    document.getElementById('exportBtn').style.display='inline-flex';
-    typeRender(rawMd);
-  }catch(e){
-    document.getElementById('skeleton').style.display='none';
-    document.getElementById('output').style.display='block';
-    document.getElementById('output').innerHTML='<p style="color:#e53e3e">生成失败：'+e.message+'</p>';
-  }
-  btn.disabled=false;
-}
-function typeRender(md){
-  var el=document.getElementById('output');
-  el.innerHTML='';
-  var html=mdToHtml(md);
-  var plainText=md.replace(/[#*`_|>\-\[\]()]/g,'').replace(/\n/g,' ');
-  var idx=0;
-  var fullDone=false;
-  function tick(){
-    if(idx<=plainText.length){
-      var partial=plainText.slice(0,idx);
-      var words=partial.split(' ');
-      var partialHtml=mdToHtml(md.substring(0,Math.min(md.length,idx*2)));
-      el.innerHTML=partialHtml;
-      idx+=3;
-      setTimeout(tick,20);
-    }else if(!fullDone){
-      fullDone=true;
-      el.innerHTML=html;
-    }
-  }
-  tick();
-}
-function mdToHtml(md){
-  var lines=md.split('\n');
-  var html='';
-  var inList=false;
-  var inTable=false;
-  var tableRows=[];
-  for(var i=0;i<lines.length;i++){
-    var l=lines[i];
-    if(l.startsWith('|')){
-      if(!inTable){inTable=true;tableRows=[]}
-      tableRows.push(l);
-      continue;
-    }else if(inTable){
-      html+=renderTable(tableRows);
-      inTable=false;tableRows=[];
-    }
-    if(l.startsWith('### ')){html+='<h3>'+esc(l.slice(4))+'</h3>';continue}
-    if(l.startsWith('## ')){html+='<h2>'+esc(l.slice(3))+'</h2>';continue}
-    if(l.startsWith('# ')){html+='<h1>'+esc(l.slice(2))+'</h1>';continue}
-    if(l.startsWith('- ')||l.startsWith('* ')){
-      if(!inList){html+='<ul>';inList=true}
-      html+='<li>'+inline(esc(l.slice(2)))+'</li>';continue;
-    }
-    if(l.match(/^\d+\.\s/)){
-      if(!inList){html+='<ol>';inList=true}
-      html+='<li>'+inline(esc(l.replace(/^\d+\.\s/,'')))+'</li>';continue;
-    }
-    if(inList){html+=inList==='ul'?'<ol>':'<ol>';html+='</ol>';inList=false}
-    if(l.startsWith('> ')){html+='<blockquote>'+inline(esc(l.slice(2)))+'</blockquote>';continue}
-    if(l.trim()===''){continue}
-    html+='<p>'+inline(esc(l))+'</p>';
-  }
-  if(inTable){html+=renderTable(tableRows)}
-  if(inList){html+='</ul>'}
-  return html;
-}
-function renderTable(rows){
-  if(rows.length<2)return'';
-  var h='<table>';
-  var headers=rows[0].split('|').filter(c=>c.trim());
-  h+='<tr>';headers.forEach(function(c){h+='<th>'+esc(c.trim())+'</th>'});h+='</tr>';
-  for(var i=2;i<rows.length;i++){
-    var cells=rows[i].split('|').filter(c=>c.trim());
-    h+='<tr>';cells.forEach(function(c){h+='<td>'+inline(esc(c.trim()))+'</td>'});h+='</tr>';
-  }
-  h+='</table>';return h;
-}
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function inline(s){return s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>')}
-function exportMarkdown(){
-  var blob=new Blob([rawMd],{type:'text/markdown'});
+function doExport(name){
+  if(!_last)return;
   var a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='ux-research-report.md';
-  a.click();
+  a.href=URL.createObjectURL(new Blob([_last],{type:'text/markdown'}));
+  a.download=(name||'output')+'.md';a.click();
 }
-
-var fileContent = '';
-function handleFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  document.getElementById('fileName').textContent = '已选择：' + file.name;
-  const reader = new FileReader();
-  reader.onload = e => { fileContent = e.target.result.slice(0, 3000); };
-  reader.readAsText(file, 'utf-8');
+function copyOut(){
+  if(!_last)return;
+  navigator.clipboard.writeText(_last).then(function(){
+    var t=document.getElementById('toast');
+    if(t){t.style.opacity='1';setTimeout(function(){t.style.opacity='0';},2000);}
+  });
 }
-function toggleKb(card) {
-  card.classList.toggle('open');
+document.getElementById('industryChips').addEventListener('click',function(e){
+  var c=e.target.closest('.chip');
+  if(!c)return;
+  c.classList.toggle('act');
+});
+function getMultiChip(id){
+  var vals=[];
+  document.getElementById(id).querySelectorAll('.chip.act').forEach(function(x){vals.push(x.getAttribute('data-v'));});
+  return vals;
 }
-
+async function gen(){
+  var pname=document.getElementById('pname').value.trim();
+  if(!pname){alert('请输入产品名称');return;}
+  var users=document.getElementById('users').value.trim();
+  var industries=getMultiChip('industryChips');
+  var purpose=document.getElementById('purpose').value.trim();
+  var extra=document.getElementById('extra').value.trim();
+  var prompt='你是一个资深用户研究员，擅长定量和定性用户研究分析。\n\n';
+  prompt+='产品名称：'+pname+'\n';
+  prompt+='目标用户：'+(users||'未指定')+'\n';
+  prompt+='所属行业：'+(industries.length?industries.join('、'):'未指定')+'\n';
+  prompt+='研究目的：'+(purpose||'了解用户需求和行为特征')+'\n';
+  if(extra) prompt+='补充信息：'+extra+'\n';
+  prompt+='\n请生成一份结构化的用户洞察报告，包含以下部分：\n\n';
+  prompt+='## 研究概述\n简要描述研究背景和目标\n\n';
+  prompt+='## 用户画像\n描述目标用户的核心特征、需求和行为模式\n\n';
+  prompt+='## 关键洞察\n列出3-5个核心用户洞察，每个洞察配具体场景说明\n\n';
+  prompt+='## 用户旅程痛点\n识别用户在使用过程中的关键摩擦点\n\n';
+  prompt+='## 竞品参考\n基于行业经验，对比典型竞品的用户策略\n\n';
+  prompt+='## 产品建议\n基于研究结果给出可落地的产品优化建议\n\n';
+  prompt+='## 后续研究方向\n建议补充的研究方法和优先级\n\n';
+  prompt+='请确保分析专业、有深度，建议具体可执行。';
+  var btn=document.getElementById('genBtn');
+  var ob=document.getElementById('ob');
+  btn.disabled=true;
+  btn.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="30" stroke-dashoffset="10"><animate attributeName="stroke-dashoffset" values="30;0" dur="1s" repeatCount="indefinite"/></circle></svg>AI生成中...';
+  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div>AI正在生成用研报告...</div>';
+  try{
+    var result=await callAI(prompt,5000);
+    typeOut(result,ob);
+  }catch(err){
+    ob.innerHTML='<div class="think">⚠️ '+err.message+'</div>';
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>生成报告';
+  }
+}
 </script>
 </body>
 </html>
