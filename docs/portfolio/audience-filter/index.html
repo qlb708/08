@@ -52,8 +52,15 @@ a{color:var(--blue);text-decoration:none}
 
 /* SLIDER */
 .slider-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.slider-row input[type=range]{flex:1;-webkit-appearance:none;height:6px;background:linear-gradient(90deg,var(--blue) var(--pct,20%),#e5e7eb var(--pct,20%));border-radius:3px;outline:none}
+.slider-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:6px;background:#e5e7eb;border-radius:3px;outline:none;cursor:pointer}
 .slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:#fff;border:2px solid var(--blue);border-radius:50%;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.slider-row input[type=range]::-moz-range-thumb{width:20px;height:20px;background:#fff;border:2px solid var(--blue);border-radius:50%;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.slider-row input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#e5e7eb}
+/* progress bar */
+.upload-progress{margin-top:8px;display:none}
+.upload-progress-bar{height:4px;background:var(--blue-light);border-radius:2px;overflow:hidden}
+.upload-progress-inner{height:100%;background:linear-gradient(90deg,var(--blue),#6366f1);border-radius:2px;width:0;transition:width .3s}
+.upload-progress-text{font-size:11px;color:var(--soft);margin-top:4px;text-align:center}
 .slider-val{font-size:14px;font-weight:600;color:var(--blue);min-width:48px;text-align:right}
 .filter-hint{font-size:12px;color:var(--muted)}
 .filter-hint.warn{color:#ef4444}
@@ -203,6 +210,10 @@ tbody tr:last-child td{border-bottom:none}
         <p>点击或拖拽上传 .xlsx 文件</p>
         <div class="file-name" id="fileName"></div>
         <input type="file" id="fileInput" accept=".xlsx,.xls">
+      </div>
+      <div class="upload-progress" id="uploadProgress">
+        <div class="upload-progress-bar"><div class="upload-progress-inner" id="uploadProgressInner"></div></div>
+        <div class="upload-progress-text" id="uploadProgressText">正在解析文件…</div>
       </div>
     </div>
 
@@ -432,18 +443,38 @@ tbody tr:last-child td{border-bottom:none}
   });
 
   function handleFile(file){
-    fileName.textContent = '📄 ' + file.name;
+    fileName.textContent = file.name;
+    var prog = document.getElementById('uploadProgress');
+    var progInner = document.getElementById('uploadProgressInner');
+    var progText = document.getElementById('uploadProgressText');
+    prog.style.display = 'block';
+    progInner.style.width = '0';
+    progText.textContent = '正在读取文件…';
     var reader = new FileReader();
+    reader.onprogress = function(e){
+      if(e.lengthComputable){
+        var pct = Math.round(e.loaded / e.total * 60);
+        progInner.style.width = pct + '%';
+        progText.textContent = '读取中 ' + pct + '%';
+      }
+    };
     reader.onload = function(e){
-      var data = new Uint8Array(e.target.result);
-      var wb = XLSX.read(data, {type:'array'});
-      var ws = wb.Sheets[wb.SheetNames[0]];
-      var json = XLSX.utils.sheet_to_json(ws, {defval:''});
-      allRows = json;
-      enableSections(true);
-      extractVerticals();
-      filterBtn.disabled = false;
-      updateEstimate();
+      progInner.style.width = '75%';
+      progText.textContent = '解析表格数据…';
+      setTimeout(function(){
+        var data = new Uint8Array(e.target.result);
+        var wb = XLSX.read(data, {type:'array'});
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        var json = XLSX.utils.sheet_to_json(ws, {defval:''});
+        allRows = json;
+        progInner.style.width = '100%';
+        progText.textContent = '解析完成！共 ' + allRows.length + ' 条记录';
+        setTimeout(function(){ prog.style.display = 'none'; }, 2000);
+        enableSections(true);
+        extractVerticals();
+        filterBtn.disabled = false;
+        updateEstimate();
+      }, 50);
     };
     reader.readAsArrayBuffer(file);
   }
@@ -488,7 +519,8 @@ tbody tr:last-child td{border-bottom:none}
   function updateSlider(){
     var v = parseInt(cesSlider.value);
     var pct = v / 10;
-    cesSlider.style.setProperty('--pct', (v / 50 * 100) + '%');
+    var trackPct = (v / 50 * 100);
+    cesSlider.style.background = 'linear-gradient(90deg,var(--blue) '+trackPct+'%,#e5e7eb '+trackPct+'%)';
     cesVal.textContent = pct.toFixed(1) + '%';
   }
   cesSlider.addEventListener('input', function(){
