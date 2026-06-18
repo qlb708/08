@@ -3,226 +3,188 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>内容选题雷达 - 08 AI Tools</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>08</text></svg>">
+<title>内容选题雷达 - AI Productivity Suite</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#fff;--bg-alt:#f5f5f7;--primary:#0066cc;--primary-h:#0055aa;--text:#1d1d1f;--text2:#86868b;--card-r:20px;--el-r:12px;--btn-r:999px;--shadow:0 2px 16px rgba(0,0,0,.06);--shadow-h:0 8px 32px rgba(0,0,0,.1)}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:var(--primary);text-decoration:none}
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);height:52px;display:flex;align-items:center;justify-content:center}
-nav .inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
-nav .logo{font-weight:700;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px}
-nav .logo span{color:var(--primary)}
-nav .logo .sep{color:#d2d2d7}
-nav a.back{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:4px}
-nav a.back:hover{color:var(--text)}
-.page-hero{padding:32px 0 16px;text-align:center}
-.page-hero h1{font-size:28px;font-weight:700}
-.page-hero p{font-size:15px;color:var(--text2);margin-top:6px}
-.workspace{display:flex;gap:24px;max-width:1200px;margin:0 auto;padding:0 24px 64px;align-items:flex-start}
-.panel-left{width:400px;flex-shrink:0;position:sticky;top:76px;max-height:calc(100vh - 100px);overflow-y:auto;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:24px}
-.panel-right{flex:1;min-width:0;background:var(--bg);border:1px solid #e8e8ed;border-radius:var(--card-r);padding:24px;min-height:400px}
-.panel-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0f0f5}
-.panel-header svg{width:20px;height:20px;color:var(--primary)}
-.panel-header h2{font-size:16px;font-weight:600}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
-.form-group input,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid #d2d2d7;border-radius:var(--el-r);font-size:14px;font-family:inherit;transition:border-color .2s;background:var(--bg);color:var(--text)}
-.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary)}
-.form-group textarea{resize:vertical;min-height:60px}
-.chip-group{display:flex;flex-wrap:wrap;gap:8px}
-.chip{padding:6px 14px;border-radius:var(--btn-r);font-size:13px;cursor:pointer;border:1.5px solid #d2d2d7;background:var(--bg);color:var(--text2);transition:all .2s;user-select:none}
-.chip:hover{border-color:var(--primary);color:var(--primary)}
-.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.btn-generate{width:100%;padding:14px;border:none;border-radius:var(--btn-r);background:var(--primary);color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:inherit}
-.btn-generate:hover{background:var(--primary-h);transform:translateY(-1px)}
-.btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-generate svg{width:18px;height:18px}
-.skeleton{display:flex;flex-direction:column;gap:12px;padding:8px 0}
-.skeleton-block{border-radius:var(--el-r);background:linear-gradient(90deg,#f0f0f5 25%,#e8e8ed 50%,#f0f0f5 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-.skeleton-block:nth-child(1){height:24px;width:60%}
-.skeleton-block:nth-child(2){height:16px;width:100%}
-.skeleton-block:nth-child(3){height:16px;width:85%}
-.skeleton-block:nth-child(4){height:16px;width:70%}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.output-content{font-size:15px;line-height:1.8;color:var(--text)}
-.output-content h1{font-size:22px;font-weight:700;margin:24px 0 12px}
-.output-content h2{font-size:18px;font-weight:600;margin:20px 0 10px}
-.output-content h3{font-size:16px;font-weight:600;margin:16px 0 8px}
-.output-content p{margin-bottom:10px;color:var(--text2)}
-.output-content ul,.output-content ol{margin:8px 0 8px 20px;color:var(--text2)}
-.output-content li{margin-bottom:4px}
-.output-content strong{color:var(--text);font-weight:600}
-.output-content code{background:var(--bg-alt);padding:2px 6px;border-radius:4px;font-size:13px}
-.output-content pre{background:var(--bg-alt);padding:16px;border-radius:var(--el-r);overflow-x:auto;margin:12px 0}
-.output-content blockquote{border-left:3px solid var(--primary);padding-left:16px;margin:12px 0;color:var(--text2)}
-.output-content table{width:100%;border-collapse:collapse;margin:12px 0}
-.output-content th,.output-content td{border:1px solid #e8e8ed;padding:8px 12px;text-align:left;font-size:14px}
-.output-content th{background:var(--bg-alt);font-weight:600}
-.btn-export{margin-top:20px;padding:10px 20px;border:1.5px solid #d2d2d7;border-radius:var(--btn-r);background:var(--bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;font-family:inherit}
-.btn-export:hover{border-color:var(--primary);color:var(--primary)}
-.history-bar{margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f5}
-.history-bar h4{font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
-.history-item{padding:8px 12px;border-radius:var(--el-r);background:var(--bg-alt);margin-bottom:6px;font-size:13px;color:var(--text2);cursor:pointer;transition:background .2s;display:flex;justify-content:space-between;align-items:center}
-.history-item:hover{background:#e8e8ed}
-.history-item .del{color:#e53e3e;font-size:12px;cursor:pointer;opacity:0;transition:opacity .2s}
-.history-item:hover .del{opacity:1}
+:root{--bg:#fff;--bg2:#f5f5f7;--blue:#0066cc;--bs:rgba(0,102,204,.08);--bb:rgba(0,102,204,.2);--text:#1d1d1f;--soft:#6e6e73;--muted:#aeaeb2;--bd:rgba(0,0,0,.08);--sh:0 2px 16px rgba(0,0,0,.06);--r:14px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif}
+body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:inherit}
+nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
+.nw{max-width:1200px;margin:0 auto;padding:0 32px;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--text)}.logo em{color:var(--blue);font-style:normal}
+.back{display:flex;align-items:center;gap:5px;font-size:14px;color:var(--soft);transition:color .2s}.back:hover{color:var(--text)}
+.back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.hero{padding:70px 32px 16px;max-width:1200px;margin:0 auto}
+.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);background:var(--bs);border:1px solid var(--bb);padding:4px 12px;border-radius:var(--pill);margin-bottom:10px}
+.hero h1{font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
+.hero p{font-size:14px;color:var(--soft);max-width:540px}
+.ws{max-width:1200px;margin:0 auto;padding:8px 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:16px;align-items:start}
+.panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.ip{position:sticky;top:60px}
+.ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.pi{width:28px;height:28px;border-radius:8px;background:var(--bs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pt{font-size:13px;font-weight:700}.ps{font-size:11px;color:var(--soft)}
+.pb{padding:16px}
+.f{margin-bottom:13px}.f label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
+.fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
+.f input,.f textarea{width:100%;padding:8px 11px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.f input:focus,.f textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--bs);background:#fff}
+.f textarea{resize:vertical;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font);user-select:none}
+.chip:hover{border-color:var(--bb);color:var(--blue)}.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}.chip.act{background:var(--bs);border-color:var(--bb);color:var(--blue)}
+.gbtn{width:100%;margin-top:6px;padding:12px;border-radius:var(--pill);background:var(--blue);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 12px rgba(0,102,204,.2);transition:all .2s}
+.gbtn:hover:not(:disabled){background:#0055aa;transform:translateY(-1px)}.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.gbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.op{min-height:480px;display:flex;flex-direction:column}
+.ob{flex:1;padding:20px;overflow-y:auto;max-height:72vh}
+.skel{display:flex;flex-direction:column;gap:10px;opacity:.4}
+.sl{height:12px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
+.sb{height:72px;background:linear-gradient(90deg,#e8e8ed 25%,#f5f5f7 50%,#e8e8ed 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:8px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.think{display:flex;align-items:center;gap:10px;padding:28px 0;color:var(--soft);font-size:13px}
+.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin:0 2px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bou{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+.md{font-size:13px;line-height:1.8;color:var(--text)}
+.md h1{font-size:17px;font-weight:800;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.md h2{font-size:14px;font-weight:700;margin:16px 0 7px}.md h3{font-size:13px;font-weight:700;margin:13px 0 5px}
+.md p{margin-bottom:10px}.md ul,.md ol{margin:6px 0 10px 16px}.md li{margin-bottom:4px}.md strong{font-weight:700}
+.md blockquote{border-left:3px solid var(--blue);padding:8px 12px;margin:12px 0;background:var(--bs);border-radius:0 8px 8px 0;color:var(--soft);font-size:12px}
+.md table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.md th,.md td{padding:7px 10px;border:1px solid var(--bd);text-align:left;vertical-align:top}
+.md th{background:var(--bg2);font-weight:600}.md code{background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:11px}
+.ebar{padding:12px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
+.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.ebtn:hover{border-color:var(--bb);color:var(--blue)}.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+#toast{position:fixed;bottom:24px;right:24px;background:#1d1d1f;color:#fff;padding:9px 16px;border-radius:var(--pill);font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+@media(max-width:900px){.ws{grid-template-columns:1fr}.ip{position:static}}
+@media(max-width:600px){.ws{padding:8px 16px 60px}.hero{padding:68px 16px 16px}}
 </style>
 </head>
 <body>
-<nav><div class="inner">
-  <a class="logo" href="https://qlb708.github.io/08/"><span>08</span><span class="sep">/</span>内容选题雷达</a>
-  <a class="back" href="https://qlb708.github.io/08/">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-    返回首页
-  </a>
-</div></nav>
-<div class="page-hero"><h1>内容选题雷达</h1><p>基于账号定位和平台特性，AI 推荐高潜力内容选题方向</p></div>
-<div class="workspace">
-  <div class="panel-left">
-    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><h2>账号与偏好设置</h2></div>
-    <div class="form-group"><label>账号定位</label><input id="accountPos" placeholder="例如：科技数码博主"/></div>
-    <div class="form-group"><label>目标受众</label><input id="targetAudience" placeholder="例如：18-28岁大学生和职场新人"/></div>
-    <div class="form-group"><label>发布平台</label><div class="chip-group" id="platformChips"><div class="chip active" data-v="小红书">小红书</div><div class="chip" data-v="微博">微博</div><div class="chip" data-v="抖音">抖音</div><div class="chip" data-v="B站">B站</div><div class="chip" data-v="公众号">公众号</div><div class="chip" data-v="知乎">知乎</div></div></div>
-    <div class="form-group"><label>内容风格偏好</label><div class="chip-group" id="styleChips"><div class="chip" data-v="干货教程">干货教程</div><div class="chip" data-v="轻松娱乐">轻松娱乐</div><div class="chip" data-v="数据测评">数据测评</div><div class="chip" data-v="情感共鸣">情感共鸣</div><div class="chip" data-v="热点蹭流">热点蹭流</div></div></div>
-    <div class="form-group"><label>额外要求（选填）</label><textarea id="extraReq" placeholder="例如：避免硬广风格，注重实用性"></textarea></div>
-    <button class="btn-generate" id="generateBtn" onclick="handleGenerate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>生成选题</button>
-    <div class="history-bar" id="historyBar" style="display:none"><h4>历史记录</h4><div id="historyList"></div></div>
-  </div>
-  <div class="panel-right">
-    <div class="panel-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><h2>选题推荐</h2></div>
-    <div id="skeleton" class="skeleton"><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
-    <div id="output" class="output-content" style="display:none"></div>
-    <button id="exportBtn" class="btn-export" style="display:none" onclick="exportMarkdown()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出 Markdown</button>
-  </div>
+<nav><div class="nw"><a href="/" class="logo"><em>AI</em> Suite</a><a class="back" href="/"><svg viewBox="0 0 16 16"><path d="M10 2L4 8l6 6"/></svg>返回</a></div></nav>
+<div class="hero"><span class="tag">内容运营</span><h1>内容选题雷达</h1><p>描述账号定位，AI生成一周内容选题方案。</p></div>
+<div class="ws">
+<div class="panel ip">
+<div class="ph"><div class="pi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><div><div class="pt">输入参数</div><div class="ps">描述定位后生成选题</div></div></div>
+<div class="pb">
+<div class="f"><label>账号定位</label><input type="text" id="position" placeholder="例：职场干货分享，面向新晋管理者"></div>
+<div class="f"><label>目标受众</label><input type="text" id="audience" placeholder="例：25-35岁职场白领"></div>
+<div class="f"><label>发布平台 <span class="fn">多选</span></label><div class="chips" id="platformChips"><span class="chip act" data-v="小红书">小红书</span><span class="chip" data-v="抖音">抖音</span><span class="chip" data-v="微博">微博</span><span class="chip" data-v="B站">B站</span><span class="chip" data-v="公众号">公众号</span><span class="chip" data-v="知乎">知乎</span></div></div>
+<div class="f"><label>内容风格 <span class="fn">多选</span></label><div class="chips" id="styleChips"><span class="chip" data-v="干货教程">干货教程</span><span class="chip" data-v="轻松娱乐">轻松娱乐</span><span class="chip" data-v="数据测评">数据测评</span><span class="chip" data-v="情感共鸣">情感共鸣</span><span class="chip" data-v="热点蹭流">热点蹭流</span></div></div>
+<div class="f"><label>补充说明 <span class="fn">可选</span></label><textarea id="extra" rows="2" placeholder="近期热点、禁忌话题、已有栏目等..."></textarea></div>
+<button class="gbtn" id="genBtn" onclick="gen()"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>生成选题</button>
+</div></div>
+<div class="panel op"><div class="ph"><div class="pi"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="pt">一周选题方案</div><div class="ps">内容选题与发布建议</div></div></div><div class="ob" id="ob"><div class="skel"><div class="sl"></div><div class="sl"></div><div class="sl" style="width:80%"></div><div class="sb"></div><div class="sl"></div><div class="sl" style="width:60%"></div><div class="sb"></div></div></div>
+<div class="ebar"><button class="ebtn" onclick="copyOut()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button><button class="ebtn" onclick="doExport('内容选题')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button></div></div>
 </div>
+<div id="toast">已复制到剪贴板</div>
 <script>
-const PROVIDERS=[
-  {name:"智谱",url:"https://open.bigmodel.cn/api/paas/v4/chat/completions",key:"3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P",model:"glm-4-flash",type:"openai"},
-  {name:"DeepSeek",url:"https://api.deepseek.com/chat/completions",key:"sk-4f016c9639cb461db37f4f778d2eac4f",model:"deepseek-chat",type:"openai"},
-  {name:"Gemini",url:"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",key:["AQ.Ab8RN6Kwvan","PacRzJIFXe6Yi1Kx35q046","jXDWC8LF0dV3tKJiA"].join(""),type:"gemini"},
+var PROVIDERS=[
+  {name:'智谱',url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P',model:'glm-4-flash',type:'openai'},
+  {name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',key:'sk-4f016c9639cb461db37f4f778d2eac4f',model:'deepseek-chat',type:'openai'},
+  {name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''),type:'gemini'}
 ];
-async function callAI(prompt){
-  for(const p of PROVIDERS){
+async function callAI(prompt,maxTok){
+  maxTok=maxTok||5000;
+  for(var i=0;i<PROVIDERS.length;i++){
+    var p=PROVIDERS[i];
     try{
-      let text="";
-      if(p.type==="openai"){
-        const res=await fetch(p.url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+p.key},body:JSON.stringify({model:p.model,messages:[{role:"user",content:prompt}],max_tokens:8000,temperature:0.7}),signal:AbortSignal.timeout(25000)});
-        if(!res.ok){const e=await res.json();console.warn(p.name,e);continue;}
-        const d=await res.json();text=d.choices?.[0]?.message?.content||"";
-      } else {
-        const res=await fetch(p.url+"?key="+p.key,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8000,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
-        if(!res.ok){continue;}
-        const d=await res.json();text=d.candidates?.[0]?.content?.parts?.[0]?.text||"";
+      var res,text='';
+      if(p.type==='openai'){
+        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:maxTok,temperature:0.7}),signal:AbortSignal.timeout(25000)});
+        if(!res.ok){var er=await res.json();console.warn(p.name,er.error&&er.error.message);continue;}
+        var d=await res.json();
+        text=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
+      }else{
+        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:maxTok,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
+        if(!res.ok)continue;
+        var d2=await res.json();
+        text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
       }
-      if(text){console.log("✓ used",p.name);return text;}
-    }catch(e){console.warn(p.name,"failed:",e.message);continue;}
+      if(text){console.log('[OK]',p.name);return text;}
+    }catch(err){console.warn('[FAIL]',p.name,err.message);}
   }
-  throw new Error("所有 AI 服务均不可用，请检查网络");
+  throw new Error('所有AI服务均不可用');
 }
-var GK=['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join('');
-var GU='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GK;
-var rawMd='';
-document.querySelectorAll('#platformChips .chip').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('active')})});
-document.querySelectorAll('#styleChips .chip').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('active')})});
-loadHistory();
-function handleGenerate(){
-  var pos=document.getElementById('accountPos').value.trim();
-  var aud=document.getElementById('targetAudience').value.trim();
-  var plats=[...document.querySelectorAll('#platformChips .chip.active')].map(function(c){return c.dataset.v});
-  var styles=[...document.querySelectorAll('#styleChips .chip.active')].map(function(c){return c.dataset.v});
-  var extra=document.getElementById('extraReq').value.trim();
-  if(!pos){alert('请填写账号定位');return}
-  if(!aud){alert('请填写目标受众');return}
-  if(!plats.length){alert('请至少选择一个发布平台');return}
-  var prompt='你是一位资深内容策略专家。请为以下账号生成内容选题推荐。\n\n账号定位：'+pos+'\n目标受众：'+aud+'\n发布平台：'+plats.join('、')+(styles.length?'\n内容风格：'+styles.join('、'):'')+(extra?'\n额外要求：'+extra:'')+'\n\n请给出 10 个具体的选题方向，每个选题包含：\n1. 选题标题\n2. 内容角度/切入点\n3. 适合的发布平台\n4. 预期互动指标（点赞/收藏/评论）\n5. 选题理由\n\n使用 Markdown 格式，按优先级排序。';
-  doGenerate(prompt);
-  saveHistory(pos+' | '+plats.join('、'));
+var _last='';
+function typeOut(text,el,done){
+  _last=text;
+  var i=0;
+  el.innerHTML='<div class="md"></div>';
+  var md=el.querySelector('.md');
+  var iv=setInterval(function(){
+    i=Math.min(i+10,text.length);
+    md.innerHTML=marked.parse(text.slice(0,i));
+    if(i>=text.length){clearInterval(iv);if(done)done();}
+  },20);
 }
-async function doGenerate(prompt){
-  var btn=document.getElementById('generateBtn');
-  btn.disabled=true;
-  document.getElementById('skeleton').style.display='flex';
-  document.getElementById('output').style.display='none';
-  document.getElementById('exportBtn').style.display='none';
-  try{
-    var resp=await fetch(GU,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,maxOutputTokens:8192}})});
-    var data=await resp.json();
-    rawMd=data.candidates[0].content.parts[0].text;
-    document.getElementById('skeleton').style.display='none';
-    document.getElementById('output').style.display='block';
-    document.getElementById('exportBtn').style.display='inline-flex';
-    typeRender(rawMd);
-  }catch(e){
-    document.getElementById('skeleton').style.display='none';
-    document.getElementById('output').style.display='block';
-    document.getElementById('output').innerHTML='<p style="color:#e53e3e">生成失败：'+e.message+'</p>';
-  }
-  btn.disabled=false;
+function doExport(name){
+  if(!_last)return;
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([_last],{type:'text/markdown'}));
+  a.download=(name||'output')+'.md';a.click();
 }
-function typeRender(md){
-  var el=document.getElementById('output');
-  var plainText=md.replace(/[#*`_|>\-\[\]()]/g,'').replace(/\n/g,' ');
-  var idx=0;var fullDone=false;var html=mdToHtml(md);
-  function tick(){
-    if(idx<=plainText.length){
-      el.innerHTML=mdToHtml(md.substring(0,Math.min(md.length,idx*2)));
-      idx+=3;setTimeout(tick,20);
-    }else if(!fullDone){fullDone=true;el.innerHTML=html}
-  }
-  tick();
-}
-function mdToHtml(md){
-  var lines=md.split('\n');var html='';var inList=false;var inTable=false;var tableRows=[];
-  for(var i=0;i<lines.length;i++){
-    var l=lines[i];
-    if(l.startsWith('|')){if(!inTable){inTable=true;tableRows=[]}tableRows.push(l);continue}
-    else if(inTable){html+=renderTable(tableRows);inTable=false;tableRows=[]}
-    if(l.startsWith('### ')){html+='<h3>'+esc(l.slice(4))+'</h3>';continue}
-    if(l.startsWith('## ')){html+='<h2>'+esc(l.slice(3))+'</h2>';continue}
-    if(l.startsWith('# ')){html+='<h1>'+esc(l.slice(2))+'</h1>';continue}
-    if(l.startsWith('- ')||l.startsWith('* ')){if(!inList){html+='<ul>';inList=true}html+='<li>'+inline(esc(l.slice(2)))+'</li>';continue}
-    if(l.match(/^\d+\.\s/)){if(!inList){html+='<ol>';inList=true}html+='<li>'+inline(esc(l.replace(/^\d+\.\s/,'')))+'</li>';continue}
-    if(inList){html+='</'+(html.indexOf('<ol')>html.lastIndexOf('</')?'ol':'ul')+'>';inList=false}
-    if(l.startsWith('> ')){html+='<blockquote>'+inline(esc(l.slice(2)))+'</blockquote>';continue}
-    if(l.trim()===''){continue}
-    html+='<p>'+inline(esc(l))+'</p>';
-  }
-  if(inTable)html+=renderTable(tableRows);
-  if(inList)html+='</ul>';
-  return html;
-}
-function renderTable(rows){
-  if(rows.length<2)return'';var h='<table>';
-  var headers=rows[0].split('|').filter(function(c){return c.trim()});
-  h+='<tr>';headers.forEach(function(c){h+='<th>'+esc(c.trim())+'</th>'});h+='</tr>';
-  for(var i=2;i<rows.length;i++){var cells=rows[i].split('|').filter(function(c){return c.trim()});h+='<tr>';cells.forEach(function(c){h+='<td>'+inline(esc(c.trim()))+'</td>'});h+='</tr>'}
-  h+='</table>';return h;
-}
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function inline(s){return s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>')}
-function exportMarkdown(){var b=new Blob([rawMd],{type:'text/markdown'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='content-radar.md';a.click()}
-function saveHistory(label){
-  var h=JSON.parse(localStorage.getItem('cr_history')||'[]');
-  h.unshift({label:label,time:new Date().toLocaleString()});
-  if(h.length>10)h=h.slice(0,10);
-  localStorage.setItem('cr_history',JSON.stringify(h));loadHistory();
-}
-function loadHistory(){
-  var h=JSON.parse(localStorage.getItem('cr_history')||'[]');
-  var bar=document.getElementById('historyBar');var list=document.getElementById('historyList');
-  if(!h.length){bar.style.display='none';return}
-  bar.style.display='block';list.innerHTML='';
-  h.forEach(function(item,idx){
-    var d=document.createElement('div');d.className='history-item';
-    d.innerHTML='<span>'+esc(item.label)+' <small style="color:#aaa">'+item.time+'</small></span><span class="del" onclick="event.stopPropagation();delHistory('+idx+')">删除</span>';
-    list.appendChild(d);
+function copyOut(){
+  if(!_last)return;
+  navigator.clipboard.writeText(_last).then(function(){
+    var t=document.getElementById('toast');
+    if(t){t.style.opacity='1';setTimeout(function(){t.style.opacity='0';},2000);}
   });
 }
-function delHistory(idx){
-  var h=JSON.parse(localStorage.getItem('cr_history')||'[]');h.splice(idx,1);
-  localStorage.setItem('cr_history',JSON.stringify(h));loadHistory();
+document.getElementById('platformChips').addEventListener('click',function(e){
+  var c=e.target.closest('.chip');
+  if(!c)return;
+  c.classList.toggle('act');
+});
+document.getElementById('styleChips').addEventListener('click',function(e){
+  var c=e.target.closest('.chip');
+  if(!c)return;
+  c.classList.toggle('act');
+});
+function getMultiChip(id){
+  var vals=[];
+  document.getElementById(id).querySelectorAll('.chip.act').forEach(function(x){vals.push(x.getAttribute('data-v'));});
+  return vals;
+}
+async function gen(){
+  var position=document.getElementById('position').value.trim();
+  if(!position){alert('请输入账号定位');return;}
+  var platforms=getMultiChip('platformChips');
+  if(platforms.length===0){alert('请至少选择一个平台');return;}
+  var audience=document.getElementById('audience').value.trim();
+  var styles=getMultiChip('styleChips');
+  var extra=document.getElementById('extra').value.trim();
+  var prompt='你是一个资深内容运营专家，擅长内容策划和选题规划。\n\n';
+  prompt+='账号定位：'+position+'\n';
+  prompt+='目标受众：'+(audience||'未指定')+'\n';
+  prompt+='发布平台：'+platforms.join('、')+'\n';
+  prompt+='内容风格：'+(styles.length?styles.join('、'):'未指定')+'\n';
+  if(extra) prompt+='补充说明：'+extra+'\n';
+  prompt+='\n请生成一份一周（7天）内容选题方案：\n\n';
+  prompt+='## 整体策略\n基于定位和受众的一句话内容策略\n\n';
+  prompt+='## 一周选题排期\n用表格列出：\n| 星期 | 选题标题 | 内容风格 | 平台 | 核心亮点/钩子 |\n|------|---------|---------|------|-------------|\n| 周一 | ... | ... | ... | ... |\n\n';
+  prompt+='## 爆款选题 Top3\n从上述选题中标出最可能爆款的3个，说明理由\n\n';
+  prompt+='## 创作Tips\n针对所选平台给出具体的创作建议和注意事项\n\n';
+  prompt+='## 互动引导\n每条内容推荐的互动方式（投票/问答/话题标签等）\n\n';
+  prompt+='选题要具体、有吸引力，避免空泛。标题要有点击欲。';
+  var btn=document.getElementById('genBtn');
+  var ob=document.getElementById('ob');
+  btn.disabled=true;
+  btn.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="30" stroke-dashoffset="10"><animate attributeName="stroke-dashoffset" values="30;0" dur="1s" repeatCount="indefinite"/></circle></svg>AI生成中...';
+  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div>AI正在生成选题方案...</div>';
+  try{
+    var result=await callAI(prompt,5000);
+    typeOut(result,ob);
+  }catch(err){
+    ob.innerHTML='<div class="think">⚠️ '+err.message+'</div>';
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>生成选题';
+  }
 }
 </script>
 </body>
