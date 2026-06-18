@@ -2,925 +2,649 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>人群质量筛选器</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#fff;--bg2:#f8f8fc;--blue:#4f46e5;--blue-dark:#3730a3;
-  --blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
-  --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
-  --bd:rgba(0,0,0,.07);--sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
-  --r:14px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
-}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
-a{color:var(--blue);text-decoration:none}
-
-/* NAV */
-.nav{position:fixed;top:0;left:0;right:0;height:52px;background:var(--bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;backdrop-filter:blur(8px);background:rgba(255,255,255,.85)}
-.nav-left{display:flex;align-items:center;gap:12px}
-.nav-back{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--soft);transition:color .2s}
-.nav-back:hover{color:var(--blue)}
-.nav-back svg{width:18px;height:18px}
-.nav-title{font-size:15px;font-weight:600;color:var(--text)}
-.nav-tag{background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:500;padding:4px 12px;border-radius:var(--pill);border:1px solid var(--blue-border)}
-
-/* HERO */
-.hero{margin-top:52px;background:linear-gradient(135deg,#f0f0ff 0%,#faf5ff 50%,#f0fdf4 100%);padding:40px 24px;text-align:center;border-bottom:1px solid var(--bd)}
-.hero h1{font-size:28px;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,var(--blue),#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero p{color:var(--soft);font-size:15px}
-
-/* MAIN LAYOUT */
-.main{display:flex;gap:0;min-height:calc(100vh - 52px - 140px)}
-.sidebar{width:380px;flex-shrink:0;padding:24px;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;background:var(--bg);border-right:1px solid var(--bd)}
-.content{flex:1;padding:24px;background:var(--bg2);min-height:calc(100vh - 52px - 140px)}
-
-/* SECTIONS */
-.section{margin-bottom:24px}
-.section-title{font-size:13px;font-weight:600;color:var(--soft);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.section-title::before{content:'';display:block;width:3px;height:14px;background:var(--blue);border-radius:2px}
-
-/* FILE UPLOAD */
-.upload-zone{border:2px dashed var(--bd);border-radius:var(--r);padding:32px 16px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2)}
-.upload-zone:hover,.upload-zone.dragover{border-color:var(--blue);background:var(--blue-light)}
-.upload-zone svg{width:40px;height:40px;color:var(--muted);margin-bottom:8px}
-.upload-zone p{font-size:14px;color:var(--soft)}
-.upload-zone .file-name{font-size:13px;color:var(--blue);margin-top:6px;font-weight:500}
-.upload-zone input{display:none}
-
-/* SLIDER */
-.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.slider-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:6px;background:#e5e7eb;border-radius:3px;outline:none;cursor:pointer}
-.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:#fff;border:2px solid var(--blue);border-radius:50%;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
-.slider-row input[type=range]::-moz-range-thumb{width:20px;height:20px;background:#fff;border:2px solid var(--blue);border-radius:50%;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
-.slider-row input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#e5e7eb}
-/* progress bar */
-.upload-progress{margin-top:8px;display:none}
-.upload-progress-bar{height:4px;background:var(--blue-light);border-radius:2px;overflow:hidden}
-.upload-progress-inner{height:100%;background:linear-gradient(90deg,var(--blue),#6366f1);border-radius:2px;width:0;transition:width .3s}
-.upload-progress-text{font-size:11px;color:var(--soft);margin-top:4px;text-align:center}
-.slider-val{font-size:14px;font-weight:600;color:var(--blue);min-width:48px;text-align:right}
-.filter-hint{font-size:12px;color:var(--muted)}
-.filter-hint.warn{color:#ef4444}
-
-/* CHECKBOX */
-.cb-row{display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer}
-.cb-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);cursor:pointer}
-.cb-row label{font-size:14px;cursor:pointer;user-select:none}
-.cb-desc{font-size:12px;color:var(--muted);margin-left:28px;margin-top:-4px}
-
-/* KEYWORD TAGS */
-.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.tag{display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);color:var(--blue);font-size:12px;padding:4px 8px 4px 10px;border-radius:var(--pill);border:1px solid var(--blue-border)}
-.tag .del{cursor:pointer;font-size:14px;line-height:1;margin-left:2px;opacity:.6;transition:opacity .15s}
-.tag .del:hover{opacity:1;color:#ef4444}
-.tag-input-row{display:flex;gap:8px}
-.tag-input-row input{flex:1;border:1px solid var(--bd);border-radius:8px;padding:6px 12px;font-size:13px;outline:none;font-family:var(--font)}
-.tag-input-row input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light)}
-.tag-input-row button{padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--font)}
-.tag-input-row button:hover{background:var(--blue-dark)}
-
-/* VERTICALS */
-.vert-controls{display:flex;gap:8px;margin-bottom:10px}
-.vert-controls button{font-size:12px;padding:3px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);cursor:pointer;font-family:var(--font);color:var(--soft)}
-.vert-controls button:hover{border-color:var(--blue);color:var(--blue)}
-.vert-list{max-height:200px;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.vert-list label{display:flex;align-items:center;gap:6px;padding:4px 6px;font-size:13px;border-radius:6px;cursor:pointer;transition:background .15s}
-.vert-list label:hover{background:var(--blue-light)}
-.vert-list input{accent-color:var(--blue)}
-
-/* CONTENT QUALITY */
-.quality-row{display:flex;align-items:center;gap:10px;padding:6px 0}
-.quality-row input[type=number]{width:70px;border:1px solid var(--bd);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);outline:none}
-.quality-row input[type=number]:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light)}
-.quality-row span{font-size:14px}
-
-/* FILTER BUTTON */
-.filter-btn{width:100%;padding:14px;background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;border:none;border-radius:var(--r);font-size:16px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s;margin-top:8px;box-shadow:0 4px 12px rgba(79,70,229,.3)}
-.filter-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,70,229,.4)}
-.filter-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.filter-btn:active:not(:disabled){transform:translateY(0)}
-
-/* ESTIMATE BAR */
-.estimate{margin-top:12px;padding:10px 14px;background:var(--bg2);border-radius:10px;font-size:13px;color:var(--soft);border:1px solid var(--bd)}
-.estimate strong{color:var(--text)}
-.estimate .keep{color:#10b981}
-.estimate .exclude{color:#ef4444}
-
-/* SKELETON */
-.skeleton{display:flex;flex-direction:column;gap:16px;padding:24px}
-.sk-card{height:100px;background:linear-gradient(90deg,#f0f0f5 25%,#e8e8f0 50%,#f0f0f5 75%);background-size:200% 100%;animation:skAnim 1.5s infinite;border-radius:var(--r)}
-.sk-table{height:300px;background:linear-gradient(90deg,#f0f0f5 25%,#e8e8f0 50%,#f0f0f5 75%);background-size:200% 100%;animation:skAnim 1.5s infinite;border-radius:var(--r)}
-@keyframes skAnim{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* RESULT */
-.result{display:none}
-.result.show{display:block}
-
-/* STAT CARDS */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
-.stat-card{background:var(--bg);border-radius:var(--r);padding:20px;border:1px solid var(--bd);box-shadow:var(--sh)}
-.stat-card .label{font-size:13px;color:var(--soft);margin-bottom:6px}
-.stat-card .value{font-size:28px;font-weight:700;color:var(--text)}
-.stat-card .value.blue{color:var(--blue)}
-.stat-card .value.green{color:#10b981}
-.stat-card .value.red{color:#ef4444}
-
-/* BAR CHART */
-.chart-card{background:var(--bg);border-radius:var(--r);padding:20px;border:1px solid var(--bd);box-shadow:var(--sh);margin-bottom:24px}
-.chart-card h3{font-size:15px;font-weight:600;margin-bottom:16px}
-.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.bar-label{font-size:13px;color:var(--soft);min-width:140px;text-align:right}
-.bar-track{flex:1;height:28px;background:var(--bg2);border-radius:6px;overflow:hidden;position:relative}
-.bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--blue),#818cf8);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transition:width .5s ease}
-.bar-fill span{font-size:12px;color:#fff;font-weight:500;white-space:nowrap}
-.bar-fill.low{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
-.bar-fill.high{background:linear-gradient(90deg,#ef4444,#f87171)}
-
-/* TABLE */
-.table-card{background:var(--bg);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);margin-bottom:24px;overflow:hidden}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead{background:var(--bg2)}
-th{padding:12px 16px;text-align:left;font-weight:600;color:var(--soft);border-bottom:1px solid var(--bd);cursor:pointer;user-select:none;white-space:nowrap;position:relative}
-th:hover{color:var(--blue)}
-th .sort-icon{margin-left:4px;font-size:11px;opacity:.4}
-th.sorted .sort-icon{opacity:1;color:var(--blue)}
-td{padding:10px 16px;border-bottom:1px solid var(--bd)}
-tbody tr{transition:background .15s}
-tbody tr:hover{background:var(--blue-light)}
-tbody tr:last-child td{border-bottom:none}
-
-/* PAGINATION */
-.pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--bd)}
-.pagination .info{font-size:13px;color:var(--soft)}
-.pagination .btns{display:flex;gap:8px}
-.pagination button{padding:6px 14px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);cursor:pointer;font-size:13px;font-family:var(--font);color:var(--soft)}
-.pagination button:hover:not(:disabled){border-color:var(--blue);color:var(--blue)}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#fff;--bg2:#f9f9fb;--blue:#4f46e5;--bl:rgba(79,70,229,.07);--blb:rgba(79,70,229,.18);--text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;--bd:rgba(0,0,0,.08);--sh:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.04);--r:12px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif}
+body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased}
+/* nav */
+.nav{height:48px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 20px;position:sticky;top:0;z-index:100}
+.nav .back{font-size:14px;color:var(--soft);font-weight:600;text-decoration:none;transition:color .15s}
+.nav .back:hover{color:var(--text)}
+.nav .ntag{margin-left:auto;font-size:10px;letter-spacing:.06em;color:var(--blue);background:var(--bl);border:1px solid var(--blb);padding:3px 10px;border-radius:var(--pill)}
+/* hero */
+.hero{padding:72px 32px 20px;max-width:1100px;margin:0 auto}
+.hero-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;margin-bottom:8px}
+.hero h1{font-size:28px;font-weight:800;letter-spacing:-.04em;color:var(--text);margin-bottom:6px}
+.hero p{font-size:14px;color:var(--soft);line-height:1.6}
+/* main */
+.main{max-width:1100px;margin:0 auto;padding:8px 32px 80px;display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start}
+/* left panel */
+.lpanel{background:#fff;border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;position:sticky;top:56px}
+.sec{border-top:1px solid var(--bd)}
+.sec:first-child{border-top:none}
+.sec-hd{padding:11px 16px;display:flex;align-items:center;cursor:pointer;user-select:none}
+.sec-hd:hover{background:var(--bg2)}
+.sec-title{font-size:12px;font-weight:700;color:var(--text)}
+.sec-badge{margin-left:auto;font-size:10px;color:var(--soft)}
+.sec-chevron{margin-left:8px;color:var(--muted);transition:transform .2s}
+.sec.collapsed .sec-chevron{transform:rotate(-90deg)}
+.sec.collapsed .sec-body{display:none}
+.sec-body{padding:0 16px 14px}
+/* dropzone */
+#dz{border:1.5px dashed rgba(0,0,0,.12);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:border-color .15s}
+#dz:hover,#dz.over{border-color:var(--blue)}
+.dz-icon{width:36px;height:36px;background:var(--bl);border-radius:9px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:var(--blue)}
+.dz-text{font-size:13px;color:var(--soft)}
+.dz-text b{color:var(--text)}
+.dz-hint{font-size:11px;color:var(--muted);margin-top:4px}
+#fi{display:none}
+/* progress */
+#pgWrap{display:none;margin-top:12px}
+.pg-label{display:flex;justify-content:space-between;font-size:11px;color:var(--soft);margin-bottom:4px}
+.pg-bar{height:4px;background:var(--bg2);border-radius:2px;overflow:hidden}
+.pg-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .15s}
+/* file info */
+#fileInfo{display:none;background:var(--bl);border:1px solid var(--blb);border-radius:8px;padding:8px 10px;font-size:12px;margin-top:12px;color:var(--text)}
+#fileInfo b{font-weight:600}
+/* range slider */
+.slider-row{display:flex;align-items:center;gap:12px;margin-top:6px}
+.slider-row input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--bg2);border-radius:2px;outline:none}
+.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--blue);border-radius:50%;cursor:pointer;box-shadow:0 1px 4px rgba(79,70,229,.3)}
+#cesVal{font-size:13px;font-weight:700;color:var(--blue);min-width:36px;text-align:right}
+.slider-desc{font-size:11px;color:var(--muted);margin-top:6px}
+/* checkbox */
+.ck{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;color:var(--text);cursor:pointer}
+.ck input{display:none}
+.ck-box{width:16px;height:16px;border:1.5px solid rgba(0,0,0,.15);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.ck input:checked+.ck-box{background:var(--blue);border-color:var(--blue)}
+.ck input:checked+.ck-box svg{opacity:1}
+.ck-box svg{width:10px;height:10px;opacity:0;transition:opacity .15s}
+/* number input */
+.num-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.num-row input[type=number]{width:60px;padding:4px 8px;border:1px solid var(--bd);border-radius:6px;font-size:13px;font-family:var(--font);outline:none;background:var(--bg2)}
+.num-row input[type=number]:focus{border-color:var(--blue)}
+.num-row span{font-size:13px;color:var(--soft)}
+/* kw tags */
+#kwTags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.kw-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--pill);font-size:11px;color:var(--text)}
+.kw-tag .kw-x{cursor:pointer;color:var(--muted);font-size:14px;line-height:1}
+.kw-tag .kw-x:hover{color:var(--text)}
+.kw-add{display:flex;gap:6px}
+.kw-add input{flex:1;padding:6px 10px;border:1px solid var(--bd);border-radius:6px;font-size:12px;font-family:var(--font);outline:none}
+.kw-add input:focus{border-color:var(--blue)}
+.kw-add button{padding:6px 12px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)}
+.kw-add button:hover{opacity:.9}
+/* vertical list */
+.vert-ctrl{display:flex;gap:8px;margin-bottom:8px}
+.vert-ctrl button{padding:3px 10px;border:1px solid var(--bd);border-radius:var(--pill);font-size:11px;background:var(--bg2);cursor:pointer;color:var(--soft);font-family:var(--font)}
+.vert-ctrl button:hover{border-color:var(--blue);color:var(--blue)}
+#vertList{max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+/* est card */
+#estCard{display:none;padding:14px 16px;border-top:1px solid var(--bd)}
+.est-row{display:flex;gap:8px;margin-bottom:10px}
+.est-mini{flex:1;padding:10px;background:var(--bg2);border-radius:8px;text-align:center}
+.est-mini .est-n{font-size:22px;font-weight:800;color:var(--text)}
+.est-mini .est-l{font-size:10px;color:var(--muted);margin-top:2px}
+.est-mini.keep .est-n{color:#10b981}
+.est-mini.drop .est-n{color:#ef4444}
+#estDetail{margin-bottom:12px}
+.est-line{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--soft);padding:2px 0}
+.est-bar{flex:1;height:4px;background:var(--bg2);border-radius:2px;overflow:hidden}
+.est-bar-fill{height:100%;background:var(--blue);border-radius:2px}
+.est-cnt{min-width:24px;text-align:right;font-weight:600}
+#btnFilter{width:100%;padding:10px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);transition:opacity .15s}
+#btnFilter:hover{opacity:.9}
+#btnFilter:disabled{opacity:.4;cursor:not-allowed}
+/* right panel */
+.rpanel{min-height:400px}
+/* skeleton */
+.skel{background:#f0f0f5;border-radius:12px;height:180px}
+.skel+.skel{margin-top:12px}
+.skel+.skel+.skel{margin-top:12px}
+/* result */
+.summary-row{display:flex;gap:10px;margin-bottom:14px}
+.sum-card{flex:1;padding:16px;background:#fff;border:1px solid var(--bd);border-radius:var(--r)}
+.sum-card .sum-n{font-size:26px;font-weight:800;color:var(--text)}
+.sum-card .sum-l{font-size:11px;color:var(--muted);margin-top:2px}
+.sum-card.green .sum-n{color:#10b981}
+.sum-card.red .sum-n{color:#ef4444}
+.analysis-card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.analysis-card h3{font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px}
+.analysis-line{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--soft);padding:3px 0}
+.analysis-bar{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.analysis-bar-fill{height:100%;background:var(--blue);border-radius:3px}
+.analysis-cnt{min-width:28px;text-align:right;font-weight:700;color:var(--text)}
+/* table */
+.tbl-wrap{background:#fff;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:8px 12px;background:var(--bg2);border-bottom:1.5px solid var(--bd);font-size:11px;font-weight:700;color:var(--soft);cursor:pointer;text-align:left;white-space:nowrap;user-select:none}
+.tbl th:hover{color:var(--text)}
+.tbl th .sort-arrow{margin-left:4px;font-size:10px;opacity:.5}
+.tbl th.sorted .sort-arrow{opacity:1;color:var(--blue)}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--bd)}
+.tbl tr:hover td{background:var(--bl)}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:12px;color:var(--soft)}
+.pagination button{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;background:#fff;cursor:pointer;font-family:var(--font);font-size:12px;color:var(--text)}
+.pagination button:hover{border-color:var(--blue);color:var(--blue)}
 .pagination button:disabled{opacity:.3;cursor:not-allowed}
-.pagination button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-
-/* ACTION BAR */
-.action-bar{display:flex;gap:12px;flex-wrap:wrap}
-.action-btn{padding:12px 24px;border-radius:var(--r);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .2s;border:none}
-.action-btn.primary{background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;box-shadow:0 4px 12px rgba(79,70,229,.25)}
-.action-btn.primary:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(79,70,229,.35)}
-.action-btn.secondary{background:var(--bg);color:var(--text);border:1px solid var(--bd);box-shadow:var(--sh)}
-.action-btn.secondary:hover{border-color:var(--blue);color:var(--blue)}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .sidebar{width:100%;position:static;height:auto;border-right:none;border-bottom:1px solid var(--bd)}
-  .main{flex-direction:column}
-  .stats{grid-template-columns:1fr}
-}
+/* export */
+.export-row{display:flex;gap:10px}
+.export-btn{flex:1;padding:10px;background:#fff;border:1px solid var(--bd);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--text);color:var(--text);transition:border-color .15s}
+.export-btn:hover{border-color:var(--blue);color:var(--blue)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state .empty-icon{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:13px}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- nav -->
 <nav class="nav">
-  <div class="nav-left">
-    <a class="nav-back" href="javascript:history.back()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      返回
-    </a>
-    <span class="nav-title">人群质量筛选器</span>
-  </div>
-  <span class="nav-tag">运营工具 v1.0</span>
+  <a href="/08/portfolio/" class="back">← 产品运营工具集</a>
+  <span class="ntag">日常提效</span>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <h1>🎯 人群质量筛选器</h1>
-  <p>上传达人人群 Excel，智能过滤低质量/商业账号，精准锁定高价值创作者</p>
-</section>
+<!-- hero -->
+<div class="hero">
+  <div class="hero-label">日常提效 · 工具 D1</div>
+  <h1>人群质量筛选器</h1>
+  <p>上传后台导出的达人名单，智能过滤低活跃、商业账号、负向处置用户，导出精准人群。</p>
+</div>
 
-<!-- MAIN -->
+<!-- main -->
 <div class="main">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <!-- left panel -->
+  <div class="lpanel" id="lPanel">
+
     <!-- 文件上传 -->
-    <div class="section">
-      <div class="section-title">文件上传</div>
-      <div class="upload-zone" id="uploadZone">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>
-        <p>点击或拖拽上传 .xlsx 文件</p>
-        <div class="file-name" id="fileName"></div>
-        <input type="file" id="fileInput" accept=".xlsx,.xls">
+    <div class="sec" id="secFile">
+      <div class="sec-hd" onclick="toggleSec('secFile')">
+        <span class="sec-title">文件上传</span>
+        <span class="sec-badge" id="secFileBadge"></span>
+        <svg class="sec-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
-      <div class="upload-progress" id="uploadProgress">
-        <div class="upload-progress-bar"><div class="upload-progress-inner" id="uploadProgressInner"></div></div>
-        <div class="upload-progress-text" id="uploadProgressText">正在解析文件…</div>
+      <div class="sec-body">
+        <div id="dz" onclick="fi.click()">
+          <div class="dz-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="dz-text"><b>点击或拖拽上传</b></div>
+          <div class="dz-hint">.xlsx 格式</div>
+        </div>
+        <input type="file" id="fi" accept=".xlsx,.xls" onchange="if(this.files.length)handleFile(this.files[0])">
+        <div id="pgWrap">
+          <div class="pg-label"><span>解析中</span><span id="pgPct">0%</span></div>
+          <div class="pg-bar"><div class="pg-fill" id="pgFill" style="width:0%"></div></div>
+        </div>
+        <div id="fileInfo"></div>
       </div>
     </div>
 
     <!-- 活跃度过滤 -->
-    <div class="section" id="secActivity" style="opacity:.5;pointer-events:none">
-      <div class="section-title">活跃度过滤</div>
-      <div class="slider-row">
-        <input type="range" id="cesSlider" min="0" max="50" value="10" step="1">
-        <span class="slider-val" id="cesVal">1.0%</span>
+    <div class="sec" id="secActivity" style="opacity:.45;pointer-events:none">
+      <div class="sec-hd" onclick="toggleSec('secActivity')">
+        <span class="sec-title">活跃度过滤</span>
+        <span class="sec-badge" id="secActivityBadge"></span>
+        <svg class="sec-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
-      <div class="filter-hint" id="cesHint">「近7天CES转化率」低于此值将排除</div>
-    </div>
-
-    <!-- 账号状态 & 负向 -->
-    <div class="section" id="secAccount" style="opacity:.5;pointer-events:none">
-      <div class="section-title">账号过滤</div>
-      <div class="cb-row">
-        <input type="checkbox" id="cbNormal" checked>
-        <label for="cbNormal">仅保留 NORMAL 状态账号</label>
-      </div>
-      <div class="cb-row">
-        <input type="checkbox" id="cbNeg" checked>
-        <label for="cbNeg">排除命中负向处置用户</label>
+      <div class="sec-body">
+        <div class="slider-row">
+          <input type="range" id="cesSlider" min="0" max="5" step="0.1" value="1.0" oninput="onSlider()">
+          <span id="cesVal">1.0%</span>
+        </div>
+        <div class="slider-desc">「近7天CES转化率」低于此值将排除</div>
       </div>
     </div>
 
-    <!-- 质量过滤 -->
-    <div class="section" id="secQuality" style="opacity:.5;pointer-events:none">
-      <div class="section-title">质量过滤</div>
-      <div class="quality-row">
-        <span>笔记发布总数 ≥</span>
-        <input type="number" id="noteMin" value="5" min="0" step="1">
+    <!-- 账号过滤 -->
+    <div class="sec" id="secAccount" style="opacity:.45;pointer-events:none">
+      <div class="sec-hd" onclick="toggleSec('secAccount')">
+        <span class="sec-title">账号过滤</span>
+        <span class="sec-badge" id="secAccountBadge"></span>
+        <svg class="sec-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
-      <div class="cb-row" style="padding-top:4px">
-        <input type="checkbox" id="cbZeroCes" checked>
-        <label for="cbZeroCes">排除 CES超100有效笔记数 = 0 的用户</label>
+      <div class="sec-body">
+        <label class="ck"><input type="checkbox" id="ckNormal" checked onchange="updateEst()"><span class="ck-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>仅保留NORMAL状态账号</label>
+        <label class="ck"><input type="checkbox" id="ckNeg" checked onchange="updateEst()"><span class="ck-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>排除命中负向处置用户</label>
       </div>
     </div>
 
-    <!-- 关键词过滤 -->
-    <div class="section" id="secKeyword" style="opacity:.5;pointer-events:none">
-      <div class="section-title">商业/广告关键词</div>
-      <div class="tags-wrap" id="tagsWrap"></div>
-      <div class="tag-input-row">
-        <input type="text" id="tagInput" placeholder="输入关键词后按回车或点击添加">
-        <button id="tagAddBtn">添加</button>
+    <!-- 内容质量 -->
+    <div class="sec" id="secQuality" style="opacity:.45;pointer-events:none">
+      <div class="sec-hd" onclick="toggleSec('secQuality')">
+        <span class="sec-title">内容质量</span>
+        <span class="sec-badge" id="secQualityBadge"></span>
+        <svg class="sec-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="sec-body">
+        <div class="num-row">
+          <span>笔记发布总数 ≥</span>
+          <input type="number" id="minNotes" value="5" min="0" onchange="updateEst()">
+        </div>
+        <label class="ck" style="margin-top:8px"><input type="checkbox" id="ckZeroCes" checked onchange="updateEst()"><span class="ck-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>排除CES超100有效笔记数=0的用户</label>
+      </div>
+    </div>
+
+    <!-- 商业关键词 -->
+    <div class="sec" id="secKeyword" style="opacity:.45;pointer-events:none">
+      <div class="sec-hd" onclick="toggleSec('secKeyword')">
+        <span class="sec-title">商业关键词</span>
+        <span class="sec-badge" id="secKeywordBadge"></span>
+        <svg class="sec-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="sec-body">
+        <div id="kwTags"></div>
+        <div class="kw-add">
+          <input type="text" id="kwInput" placeholder="输入关键词…" onkeydown="if(event.key==='Enter')addKw()">
+          <button onclick="addKw()">添加</button>
+        </div>
       </div>
     </div>
 
     <!-- 垂类过滤 -->
-    <div class="section" id="secVertical" style="opacity:.5;pointer-events:none">
-      <div class="section-title">垂类过滤</div>
-      <div class="vert-controls">
-        <button id="vertAll">全选</button>
-        <button id="vertNone">全不选</button>
+    <div class="sec" id="secVertical" style="opacity:.45;pointer-events:none">
+      <div class="sec-hd" onclick="toggleSec('secVertical')">
+        <span class="sec-title">垂类过滤</span>
+        <span class="sec-badge" id="secVerticalBadge"></span>
+        <svg class="sec-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
-      <div class="vert-list" id="vertList">
-        <span style="grid-column:1/-1;color:var(--muted);font-size:13px">上传文件后自动加载垂类</span>
-      </div>
-    </div>
-
-    <!-- 开始筛选 -->
-    <button class="filter-btn" id="filterBtn" disabled>🔍 开始筛选</button>
-
-    <!-- 实时预估 -->
-    <div class="estimate" id="estimate" style="display:none">
-      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
-        <div>保留 <strong class="keep" id="estKeep">-</strong> / <span id="estTotal">-</span> 人</div>
-        <div style="font-size:11px;color:var(--muted)">排除 <strong class="exclude" id="estExclude">-</strong>（<span id="estPct">-</span>）</div>
-      </div>
-      <div id="estBreakdown" style="display:flex;flex-direction:column;gap:5px"></div>
-    </div>
-  </aside>
-
-  <!-- CONTENT -->
-  <main class="content">
-    <!-- 骨架屏 -->
-    <div class="skeleton" id="skeleton">
-      <div class="sk-card" style="height:120px"></div>
-      <div class="sk-card" style="height:160px"></div>
-      <div class="sk-table" style="height:400px"></div>
-    </div>
-
-    <!-- 结果区 -->
-    <div class="result" id="result">
-      <!-- 统计卡片 -->
-      <div class="stats" id="statsCards">
-        <div class="stat-card"><div class="label">原始人群</div><div class="value blue" id="statOrig">-</div></div>
-        <div class="stat-card"><div class="label">保留人群</div><div class="value green" id="statKeep">-</div></div>
-        <div class="stat-card"><div class="label">排除人群</div><div class="value red" id="statExcl">-</div></div>
-      </div>
-
-      <!-- 排除原因分析 -->
-      <div class="chart-card" id="chartCard" style="display:none">
-        <h3>📊 排除原因分析</h3>
-        <div id="chartBars"></div>
-      </div>
-
-      <!-- 预览表格 -->
-      <div class="table-card">
-        <div class="table-wrap">
-          <table id="previewTable">
-            <thead>
-              <tr>
-                <th data-col="昵称">昵称<span class="sort-icon">↕</span></th>
-                <th data-col="作者垂类">垂类<span class="sort-icon">↕</span></th>
-                <th data-col="粉丝数">粉丝数<span class="sort-icon">↕</span></th>
-                <th data-col="近7天CES转化率">CES转化率<span class="sort-icon">↕</span></th>
-                <th data-col="CES超100有效笔记数">CES有效笔记数<span class="sort-icon">↕</span></th>
-              </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-          </table>
+      <div class="sec-body">
+        <div class="vert-ctrl">
+          <button onclick="toggleAllVerts(true)">全选</button>
+          <button onclick="toggleAllVerts(false)">取消</button>
         </div>
-        <div class="pagination">
-          <span class="info" id="pageInfo">-</span>
-          <div class="btns" id="pageBtns"></div>
-        </div>
-      </div>
-
-      <!-- 操作栏 -->
-      <div class="action-bar">
-        <button class="action-btn primary" id="exportKeep">📥 导出筛选结果</button>
-        <button class="action-btn secondary" id="exportExcl">📥 导出排除名单</button>
+        <div id="vertList"></div>
       </div>
     </div>
-  </main>
+
+    <!-- 估算卡片 -->
+    <div id="estCard">
+      <div class="est-row">
+        <div class="est-mini keep"><div class="est-n" id="keepN">0</div><div class="est-l">预计保留</div></div>
+        <div class="est-mini drop"><div class="est-n" id="dropN">0</div><div class="est-l">预计排除</div></div>
+      </div>
+      <div id="estDetail"></div>
+      <button id="btnFilter" onclick="doFilter()" disabled>开始筛选</button>
+    </div>
+  </div>
+
+  <!-- right panel -->
+  <div class="rpanel" id="rPanel">
+    <div class="skel"></div>
+    <div class="skel"></div>
+    <div class="skel"></div>
+  </div>
 </div>
 
 <script>
-(function(){
-  // ========== DATA ==========
-  var allRows = [];
-  var keptRows = [];
-  var exclRows = [];
-  var excludeReasons = {};
-  var currentPage = 1;
-  var pageSize = 20;
-  var sortCol = null;
-  var sortDir = 'asc';
+var ALL_DATA=[];
+var FILTERED=[];
+var EXCLUDED=[];
+var PAGE=1;
+var PAGE_SIZE=20;
+var SORT_COL='';
+var SORT_ASC=true;
+var KW_LIST=['旅行社','旅游社','团购','代购','广告','招商','官方','机构','店铺','商家','企业','品牌','合作','推广','营销','专营','旗舰','批发','直销','景区','门票','定制游'];
+var vertExcluded={};
 
-  // ========== KEYWORDS ==========
-  var keywords = ['旅行社','旅游社','团购','代购','广告','招商','官方','机构','店铺','商家','企业','品牌','合作','推广','营销','专营','旗舰','批发','直销','景区','门票','定制游'];
+function toggleSec(id){
+  document.getElementById(id).classList.toggle('collapsed');
+}
 
-  // ========== ELEMENTS ==========
-  var $ = function(id){ return document.getElementById(id); };
-  var uploadZone = $('uploadZone');
-  var fileInput = $('fileInput');
-  var fileName = $('fileName');
-  var cesSlider = $('cesSlider');
-  var cesVal = $('cesVal');
-  var cesHint = $('cesHint');
-  var cbNormal = $('cbNormal');
-  var cbNeg = $('cbNeg');
-  var noteMin = $('noteMin');
-  var cbZeroCes = $('cbZeroCes');
-  var tagsWrap = $('tagsWrap');
-  var tagInput = $('tagInput');
-  var tagAddBtn = $('tagAddBtn');
-  var vertList = $('vertList');
-  var vertAll = $('vertAll');
-  var vertNone = $('vertNone');
-  var filterBtn = $('filterBtn');
-  var estimate = $('estimate');
-  var estKeep = $('estKeep');
-  var estTotal = $('estTotal');
-  var estExclude = $('estExclude');
-  var estPct = $('estPct');
-  var skeleton = $('skeleton');
-  var result = $('result');
-  var statOrig = $('statOrig');
-  var statKeep = $('statKeep');
-  var statExcl = $('statExcl');
-  var chartCard = $('chartCard');
-  var chartBars = $('chartBars');
-  var tableBody = $('tableBody');
-  var pageInfo = $('pageInfo');
-  var pageBtns = $('pageBtns');
-  var exportKeep = $('exportKeep');
-  var exportExcl = $('exportExcl');
+function onSlider(){
+  document.getElementById('cesVal').textContent=parseFloat(document.getElementById('cesSlider').value).toFixed(1)+'%';
+  updateEst();
+}
 
-  var sections = ['secActivity','secAccount','secQuality','secKeyword','secVertical'];
-
-  // ========== INIT TAGS ==========
-  function renderTags(){
-    tagsWrap.innerHTML = '';
-    for(var i = 0; i < keywords.length; i++){
-      var t = document.createElement('span');
-      t.className = 'tag';
-      t.innerHTML = keywords[i] + '<span class="del" data-idx="' + i + '">&times;</span>';
-      tagsWrap.appendChild(t);
-    }
+function enableAll(){
+  var ids=['secActivity','secAccount','secQuality','secKeyword','secVertical'];
+  for(var i=0;i<ids.length;i++){
+    var el=document.getElementById(ids[i]);
+    el.style.opacity='1';
+    el.style.pointerEvents='auto';
   }
-  renderTags();
+  document.getElementById('btnFilter').disabled=false;
+  document.getElementById('secFileBadge').textContent=ALL_DATA.length+' 条记录';
+}
 
-  tagsWrap.addEventListener('click', function(e){
-    if(e.target.className === 'del'){
-      var idx = parseInt(e.target.getAttribute('data-idx'));
-      keywords.splice(idx, 1);
-      renderTags();
-      updateEstimate();
-    }
-  });
-
-  tagAddBtn.addEventListener('click', addTag);
-  tagInput.addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){ addTag(); }
-  });
-
-  function addTag(){
-    var v = tagInput.value.trim();
-    if(!v) return;
-    keywords.push(v);
-    tagInput.value = '';
-    renderTags();
-    updateEstimate();
+function extractVerticals(){
+  var vertSet={};
+  for(var i=0;i<ALL_DATA.length;i++){
+    var v=ALL_DATA[i]['垂直领域']||ALL_DATA[i]['垂直类']||ALL_DATA[i]['category']||ALL_DATA[i]['vertical']||ALL_DATA[i]['垂类']||'未分类';
+    if(v)vertSet[v]=true;
   }
+  var keys=Object.keys(vertSet).sort();
+  var html='';
+  for(var i=0;i<keys.length;i++){
+    html+='<label class="ck"><input type="checkbox" class="vert-ck" data-v="'+keys[i]+'" checked onchange="updateEst()"><span class="ck-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'+esc(keys[i])+'</label>';
+  }
+  document.getElementById('vertList').innerHTML=html;
+  updateEst();
+}
 
-  // ========== FILE UPLOAD ==========
-  uploadZone.addEventListener('click', function(){ fileInput.click(); });
-  uploadZone.addEventListener('dragover', function(e){ e.preventDefault(); uploadZone.classList.add('dragover'); });
-  uploadZone.addEventListener('dragleave', function(){ uploadZone.classList.remove('dragover'); });
-  uploadZone.addEventListener('drop', function(e){
-    e.preventDefault();
-    uploadZone.classList.remove('dragover');
-    if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-  });
-  fileInput.addEventListener('change', function(){
-    if(fileInput.files.length) handleFile(fileInput.files[0]);
-  });
+function toggleAllVerts(on){
+  var cks=document.querySelectorAll('.vert-ck');
+  for(var i=0;i<cks.length;i++)cks[i].checked=on;
+  updateEst();
+}
 
-  function handleFile(file){
-    fileName.textContent = file.name;
-    var prog = document.getElementById('uploadProgress');
-    var progInner = document.getElementById('uploadProgressInner');
-    var progText = document.getElementById('uploadProgressText');
-    prog.style.display = 'block';
-    progInner.style.width = '0';
-    progText.textContent = '正在读取文件…';
-    var reader = new FileReader();
-    reader.onprogress = function(e){
-      if(e.lengthComputable){
-        var pct = Math.round(e.loaded / e.total * 60);
-        progInner.style.width = pct + '%';
-        progText.textContent = '读取中 ' + pct + '%';
-      }
-    };
-    reader.onload = function(e){
-      progInner.style.width = '75%';
-      progText.textContent = '解析表格数据…';
+function renderKw(){
+  var html='';
+  for(var i=0;i<KW_LIST.length;i++){
+    html+='<span class="kw-tag">'+esc(KW_LIST[i])+'<span class="kw-x" onclick="rmKw('+i+')">&times;</span></span>';
+  }
+  document.getElementById('kwTags').innerHTML=html;
+}
+
+function addKw(){
+  var input=document.getElementById('kwInput');
+  var v=input.value.trim();
+  if(v&&KW_LIST.indexOf(v)===-1){
+    KW_LIST.push(v);
+    input.value='';
+    renderKw();
+    updateEst();
+  }
+}
+
+function rmKw(idx){
+  KW_LIST.splice(idx,1);
+  renderKw();
+  updateEst();
+}
+
+function esc(s){
+  var d=document.createElement('div');
+  d.textContent=s;
+  return d.innerHTML;
+}
+
+function handleFile(file){
+  var pgWrap=document.getElementById('pgWrap');
+  var pgPct=document.getElementById('pgPct');
+  var pgFill=document.getElementById('pgFill');
+  var fileInfo=document.getElementById('fileInfo');
+  pgWrap.style.display='block';
+  fileInfo.style.display='none';
+  var pct=0;
+  var iv=setInterval(function(){
+    pct+=Math.floor(Math.random()*12)+8;
+    if(pct>90)pct=90;
+    pgPct.textContent=pct+'%';
+    pgFill.style.width=pct+'%';
+  },120);
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var wb=XLSX.read(e.target.result,{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      clearInterval(iv);
+      pct=100;
+      pgPct.textContent='100%';
+      pgFill.style.width='100%';
+      ALL_DATA=rows;
       setTimeout(function(){
-        var data = new Uint8Array(e.target.result);
-        var wb = XLSX.read(data, {type:'array'});
-        var ws = wb.Sheets[wb.SheetNames[0]];
-        var json = XLSX.utils.sheet_to_json(ws, {defval:''});
-        allRows = json;
-        progInner.style.width = '100%';
-        progText.textContent = '解析完成！共 ' + allRows.length + ' 条记录';
-        setTimeout(function(){ prog.style.display = 'none'; }, 2000);
-        enableSections(true);
+        pgWrap.style.display='none';
+        fileInfo.style.display='block';
+        fileInfo.innerHTML='<b>文件: '+esc(file.name)+'</b> · 共 '+rows.length+' 条记录';
+        enableAll();
         extractVerticals();
-        filterBtn.disabled = false;
-        updateEstimate();
-      }, 50);
-    };
-    reader.readAsArrayBuffer(file);
-  }
+        updateEst();
+      },300);
+    }catch(err){
+      clearInterval(iv);
+      pgWrap.style.display='none';
+      alert('解析失败: '+err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
 
-  function enableSections(on){
-    for(var i = 0; i < sections.length; i++){
-      var sec = $(sections[i]);
-      sec.style.opacity = on ? '1' : '.5';
-      sec.style.pointerEvents = on ? 'auto' : 'none';
+// drag & drop
+var dz=document.getElementById('dz');
+dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',function(){dz.classList.remove('over')});
+dz.addEventListener('drop',function(e){
+  e.preventDefault();
+  dz.classList.remove('over');
+  if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);
+});
+
+function filterRow(r){
+  var threshold=parseFloat(document.getElementById('cesSlider').value);
+  var isNormalOnly=document.getElementById('ckNormal').checked;
+  var isExcludeNeg=document.getElementById('ckNeg').checked;
+  var minNotes=parseInt(document.getElementById('minNotes').value)||0;
+  var zeroCes=document.getElementById('ckZeroCes').checked;
+  // CES低活跃
+  var ces=parseFloat(r['CES转化率']||r['ces']||r['ces_rate']||0);
+  if(ces<threshold)return 'CES低活跃';
+  // 非NORMAL状态
+  if(isNormalOnly){
+    var status=r['账号状态']||r['status']||r['状态']||'';
+    if(status&&status!=='NORMAL')return '非NORMAL状态';
+  }
+  // 命中负向处置
+  if(isExcludeNeg){
+    var neg=r['命中负向处置']||r['负向处置']||r['neg']||'';
+    if(neg&&String(neg)!=='否'&&String(neg)!=='0')return '命中负向处置';
+  }
+  // 商业关键词
+  var nick=String(r['昵称']||r['nickname']||r['达人昵称']||'');
+  for(var i=0;i<KW_LIST.length;i++){
+    if(nick.indexOf(KW_LIST[i])!==-1)return '商业/广告账号';
+  }
+  // 笔记数
+  var notes=parseInt(r['笔记发布总数']||r['笔记数']||r['notes_count']||0);
+  if(notes<minNotes)return '笔记数不足';
+  // 零有效CES
+  if(zeroCes){
+    var ces100=parseInt(r['CES超100有效笔记数']||r['ces_effective_notes']||r['ces_notes']||0);
+    if(ces100===0)return '零有效CES笔记';
+  }
+  // 垂类过滤
+  var vert=r['垂直领域']||r['垂直类']||r['category']||r['vertical']||r['垂类']||'未分类';
+  if(vertExcluded[vert])return '垂类过滤';
+  return null;
+}
+
+function updateEst(){
+  if(!ALL_DATA.length)return;
+  // rebuild excluded verticals
+  vertExcluded={};
+  var vcks=document.querySelectorAll('.vert-ck');
+  for(var i=0;i<vcks.length;i++){
+    if(!vcks[i].checked){
+      vertExcluded[vcks[i].getAttribute('data-v')]=true;
     }
   }
-
-  // ========== VERTICALS ==========
-  function extractVerticals(){
-    var verts = {};
-    for(var i = 0; i < allRows.length; i++){
-      var v = allRows[i]['作者垂类'] || '';
-      if(v) verts[v] = (verts[v] || 0) + 1;
-    }
-    var sorted = Object.keys(verts).sort(function(a,b){ return (verts[b]||0) - (verts[a]||0); });
-    var html = '';
-    for(var j = 0; j < sorted.length; j++){
-      var name = sorted[j];
-      var checked = (name === '商业财经-房产楼市') ? 'checked' : '';
-      html += '<label><input type="checkbox" class="vert-cb" value="' + name + '" ' + checked + '>' + name + ' <span style="color:var(--muted)">(' + verts[name] + ')</span></label>';
-    }
-    vertList.innerHTML = html;
-
-    vertAll.onclick = function(){
-      var cbs = vertList.querySelectorAll('.vert-cb');
-      for(var k = 0; k < cbs.length; k++) cbs[k].checked = true;
-      updateEstimate();
-    };
-    vertNone.onclick = function(){
-      var cbs = vertList.querySelectorAll('.vert-cb');
-      for(var k = 0; k < cbs.length; k++) cbs[k].checked = false;
-      updateEstimate();
-    };
+  var keep=0,drop=0;
+  var reasons={};
+  for(var i=0;i<ALL_DATA.length;i++){
+    var reason=filterRow(ALL_DATA[i]);
+    if(reason===null){keep++}
+    else{drop++;reasons[reason]=(reasons[reason]||0)+1}
   }
-
-  // ========== SLIDER ==========
-  function updateSlider(){
-    var v = parseInt(cesSlider.value);
-    var pct = v / 10;
-    var trackPct = (v / 50 * 100);
-    cesSlider.style.background = 'linear-gradient(90deg,var(--blue) '+trackPct+'%,#e5e7eb '+trackPct+'%)';
-    cesVal.textContent = pct.toFixed(1) + '%';
+  document.getElementById('keepN').textContent=keep;
+  document.getElementById('dropN').textContent=drop;
+  var detail=document.getElementById('estDetail');
+  var maxV=0;
+  var reasonKeys=Object.keys(reasons);
+  for(var i=0;i<reasonKeys.length;i++){if(reasons[reasonKeys[i]]>maxV)maxV=reasons[reasonKeys[i]]}
+  var dhtml='';
+  for(var i=0;i<reasonKeys.length;i++){
+    var k=reasonKeys[i],v=reasons[k];
+    var pct=maxV>0?Math.round(v/maxV*100):0;
+    dhtml+='<div class="est-line"><span>'+esc(k)+'</span><div class="est-bar"><div class="est-bar-fill" style="width:'+pct+'%"></div></div><span class="est-cnt">'+v+'</span></div>';
   }
-  cesSlider.addEventListener('input', function(){
-    updateSlider();
-    updateEstimate();
+  detail.innerHTML=dhtml;
+  document.getElementById('estCard').style.display='block';
+  // update badges
+  var threshold=parseFloat(document.getElementById('cesSlider').value);
+  document.getElementById('secActivityBadge').textContent=threshold.toFixed(1)+'%';
+  var activeReasons=0;
+  if(document.getElementById('ckNormal').checked)activeReasons++;
+  if(document.getElementById('ckNeg').checked)activeReasons++;
+  document.getElementById('secAccountBadge').textContent=activeReasons+' 项';
+  var minNotes=parseInt(document.getElementById('minNotes').value)||0;
+  var zc=document.getElementById('ckZeroCes').checked;
+  document.getElementById('secQualityBadge').textContent='≥'+minNotes+(zc?', 零CES':'');
+  document.getElementById('secKeywordBadge').textContent=KW_LIST.length+' 词';
+  var exclVerts=0;
+  for(var i=0;i<vcks.length;i++){if(!vcks[i].checked)exclVerts++}
+  document.getElementById('secVerticalBadge').textContent=exclVerts>0?'排除'+exclVerts+' 类':'';
+}
+
+function doFilter(){
+  if(!ALL_DATA.length)return;
+  FILTERED=[];
+  EXCLUDED=[];
+  for(var i=0;i<ALL_DATA.length;i++){
+    var reason=filterRow(ALL_DATA[i]);
+    if(reason===null)FILTERED.push(ALL_DATA[i]);
+    else EXCLUDED.push({row:ALL_DATA[i],reason:reason});
+  }
+  PAGE=1;
+  SORT_COL='';
+  SORT_ASC=true;
+  renderResult();
+}
+
+function renderResult(){
+  var panel=document.getElementById('rPanel');
+  var html='';
+  // summary cards
+  html+='<div class="summary-row">';
+  html+='<div class="sum-card"><div class="sum-n">'+ALL_DATA.length+'</div><div class="sum-l">原始总数</div></div>';
+  html+='<div class="sum-card green"><div class="sum-n">'+FILTERED.length+'</div><div class="sum-l">保留人数</div></div>';
+  html+='<div class="sum-card red"><div class="sum-n">'+EXCLUDED.length+'</div><div class="sum-l">排除人数</div></div>';
+  html+='</div>';
+  // analysis
+  if(EXCLUDED.length){
+    var reasons={};
+    for(var i=0;i<EXCLUDED.length;i++){
+      var r=EXCLUDED[i].reason;
+      reasons[r]=(reasons[r]||0)+1;
+    }
+    var reasonKeys=Object.keys(reasons);
+    var maxV=0;
+    for(var i=0;i<reasonKeys.length;i++){if(reasons[reasonKeys[i]]>maxV)maxV=reasons[reasonKeys[i]]}
+    html+='<div class="analysis-card"><h3>排除原因分析</h3>';
+    for(var i=0;i<reasonKeys.length;i++){
+      var k=reasonKeys[i],v=reasons[k];
+      var pct=maxV>0?Math.round(v/maxV*100):0;
+      html+='<div class="analysis-line"><span>'+esc(k)+'</span><div class="analysis-bar"><div class="analysis-bar-fill" style="width:'+pct+'%"></div></div><span class="analysis-cnt">'+v+'</span></div>';
+    }
+    html+='</div>';
+  }
+  // table
+  var start=(PAGE-1)*PAGE_SIZE;
+  var end=Math.min(start+PAGE_SIZE,FILTERED.length);
+  var pageRows=FILTERED.slice(start,end);
+  html+='<div class="tbl-wrap">';
+  html+='<table class="tbl"><thead><tr>';
+  var cols=[{key:'nickname',label:'昵称'},{key:'vertical',label:'垂类'},{key:'fans',label:'粉丝数'},{key:'ces',label:'CES转化率'},{key:'cesNotes',label:'CES有效笔记'}];
+  for(var i=0;i<cols.length;i++){
+    var sorted=SORT_COL===cols[i].key;
+    var arrow=sorted?(SORT_ASC?'↑':'↓'):'↕';
+    html+='<th class="'+(sorted?'sorted':'')+'" onclick="sortBy(\''+cols[i].key+'\')">'+cols[i].label+'<span class="sort-arrow">'+arrow+'</span></th>';
+  }
+  html+='</tr></thead><tbody>';
+  if(!pageRows.length){
+    html+='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--muted)">暂无数据</td></tr>';
+  }else{
+    for(var i=0;i<pageRows.length;i++){
+      var row=pageRows[i];
+      var nick=esc(String(row['昵称']||row['nickname']||row['达人昵称']||''));
+      var vert=esc(String(row['垂直领域']||row['垂直类']||row['category']||row['vertical']||row['垂类']||''));
+      var fans=esc(String(row['粉丝数']||row['fans']||''));
+      var cesVal=parseFloat(row['CES转化率']||row['ces']||row['ces_rate']||0).toFixed(1)+'%';
+      var cesN=parseInt(row['CES超100有效笔记数']||row['ces_effective_notes']||row['ces_notes']||0);
+      html+='<tr><td>'+nick+'</td><td>'+vert+'</td><td>'+fans+'</td><td>'+cesVal+'</td><td>'+cesN+'</td></tr>';
+    }
+  }
+  html+='</tbody></table>';
+  var totalPages=Math.max(1,Math.ceil(FILTERED.length/PAGE_SIZE));
+  html+='<div class="pagination"><span>第 '+PAGE+'/'+totalPages+' 页，共 '+FILTERED.length+' 条</span><span>';
+  html+='<button onclick="goPage('+(PAGE-1)+')"'+(PAGE<=1?' disabled':'')+'>上一页</button> ';
+  html+='<button onclick="goPage('+(PAGE+1)+')"'+(PAGE>=totalPages?' disabled':'')+'>下一页</button>';
+  html+='</span></div>';
+  html+='</div>';
+  // export
+  html+='<div class="export-row">';
+  html+='<button class="export-btn" onclick="exportFiltered()">导出筛选结果.xlsx</button>';
+  html+='<button class="export-btn" onclick="exportExcluded()">导出排除名单（含原因）</button>';
+  html+='</div>';
+  panel.innerHTML=html;
+}
+
+function sortBy(col){
+  if(SORT_COL===col)SORT_ASC=!SORT_ASC;
+  else{SORT_COL=col;SORT_ASC=true}
+  var keyMap={
+    'nickname':['昵称','nickname','达人昵称'],
+    'vertical':['垂直领域','垂直类','category','vertical','垂类'],
+    'fans':['粉丝数','fans'],
+    'ces':['CES转化率','ces','ces_rate'],
+    'cesNotes':['CES超100有效笔记数','ces_effective_notes','ces_notes']
+  };
+  var keys=keyMap[col]||[col];
+  FILTERED.sort(function(a,b){
+    var va,vb;
+    for(var i=0;i<keys.length;i++){
+      if(a[keys[i]]!==undefined){va=a[keys[i]];break}
+    }
+    for(var i=0;i<keys.length;i++){
+      if(b[keys[i]]!==undefined){vb=b[keys[i]];break}
+    }
+    va=va!==undefined?va:'';
+    vb=vb!==undefined?vb:'';
+    var na=parseFloat(va),nb=parseFloat(vb);
+    if(!isNaN(na)&&!isNaN(nb)){
+      return SORT_ASC?na-nb:nb-na;
+    }
+    va=String(va);vb=String(vb);
+    if(SORT_ASC)return va.localeCompare(vb,'zh');
+    return vb.localeCompare(va,'zh');
   });
-  updateSlider();
+  PAGE=1;
+  renderResult();
+}
 
-  // ========== CHECKBOX & INPUT LISTENERS ==========
-  cbNormal.addEventListener('change', updateEstimate);
-  cbNeg.addEventListener('change', updateEstimate);
-  noteMin.addEventListener('input', updateEstimate);
-  cbZeroCes.addEventListener('change', updateEstimate);
-  vertList.addEventListener('change', updateEstimate);
+function goPage(p){
+  var totalPages=Math.max(1,Math.ceil(FILTERED.length/PAGE_SIZE));
+  if(p<1||p>totalPages)return;
+  PAGE=p;
+  renderResult();
+}
 
-  // ========== ESTIMATE ==========
-  function updateEstimate(){
-    if(!allRows.length) return;
-    var r = runFilter(false);
-    estKeep.textContent = r.kept;
-    estTotal.textContent = allRows.length;
-    estExclude.textContent = r.excluded;
-    estPct.textContent = (r.excluded / allRows.length * 100).toFixed(1) + '%';
-    // 明细条
-    var bd = document.getElementById('estBreakdown');
-    var rmap = {
-      'CES转化率低': 'CES低活跃',
-      '账号状态异常': '账号异常',
-      '命中负向处置': '负向处置',
-      '商业/广告账号': '商业账号',
-      '垂类排除': '垂类排除',
-      '笔记数不足': '笔记不足',
-      'CES有效笔记为0': '零有效笔记'
-    };
-    var colors = {
-      'CES低活跃': '#ef4444',
-      '账号异常': '#f97316',
-      '负向处置': '#8b5cf6',
-      '商业账号': '#d97706',
-      '垂类排除': '#6b7280',
-      '笔记不足': '#0ea5e9',
-      '零有效笔记': '#10b981'
-    };
-    var html = '';
-    var reasons = r.reasons || {};
-    var keys = Object.keys(rmap);
-    for(var ki=0;ki<keys.length;ki++){
-      var rk = keys[ki];
-      var label = rmap[rk];
-      var cnt = reasons[rk] || 0;
-      if(cnt===0) continue;
-      var pct = (cnt/allRows.length*100).toFixed(0);
-      var barW = Math.max(3, Math.round(cnt/allRows.length*100));
-      var col = colors[label] || '#6b7280';
-      html += '<div style="font-size:11px">'
-        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">'
-        +'<span style="color:var(--soft)">'+label+'</span>'
-        +'<span style="font-weight:700;color:'+col+'">-'+cnt+'人 <span style="font-weight:400;color:var(--muted)">'+pct+'%</span></span>'
-        +'</div>'
-        +'<div style="height:3px;background:var(--bd);border-radius:2px;overflow:hidden">'
-        +'<div style="height:100%;width:'+barW+'%;background:'+col+';border-radius:2px;transition:width .3s"></div>'
-        +'</div>'
-        +'</div>';
-    }
-    bd.innerHTML = html || '<div style="font-size:11px;color:var(--muted)">暂无排除项</div>';
-    estimate.style.display = 'block';
-  }
+function exportFiltered(){
+  if(!FILTERED.length)return;
+  var ws=XLSX.utils.json_to_sheet(FILTERED);
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'筛选结果');
+  XLSX.writeFile(wb,'人群筛选结果.xlsx');
+}
 
-  function runFilter(track){
-    var threshold = parseInt(cesSlider.value) / 10;
-    var filterNormal = cbNormal.checked;
-    var filterNeg = cbNeg.checked;
-    var minNotes = parseInt(noteMin.value) || 0;
-    var filterZeroCes = cbZeroCes.checked;
-
-    // Get excluded verticals
-    var excludedVerts = {};
-    var vertCbs = vertList.querySelectorAll('.vert-cb:checked');
-    for(var i = 0; i < vertCbs.length; i++){
-      excludedVerts[vertCbs[i].value] = true;
-    }
-
-    var kept = [];
-    var excluded = [];
-    var reasons = {
-      'CES转化率低': 0,
-      '账号状态异常': 0,
-      '命中负向处置': 0,
-      '商业/广告账号': 0,
-      '垂类排除': 0,
-      '笔记数不足': 0,
-      'CES有效笔记为0': 0
-    };
-
-    for(var j = 0; j < allRows.length; j++){
-      var row = allRows[j];
-      var exclude = false;
-      var reason = '';
-
-      // Rule 1: CES threshold
-      var cesRate = parseFloat(row['近7天CES转化率']);
-      if(isNaN(cesRate)) cesRate = 0;
-      // Handle percentage values like "1.5%" or "1.5"
-      if(typeof row['近7天CES转化率'] === 'string' && row['近7天CES转化率'].indexOf('%') !== -1){
-        cesRate = parseFloat(row['近7天CES转化率']) ;
-      }
-      // If value stored as percentage like 1.5 meaning 1.5%, compare directly
-      // If stored as 0.015 meaning 1.5%, multiply by 100
-      if(cesRate < 0.05 && cesRate > 0){
-        // Could be decimal form 0.015 = 1.5%
-        // We'll treat raw numbers as percentage points if > 1, else multiply
-        // Actually let's be smart: if the raw number is < 1, treat as decimal, multiply by 100
-        if(cesRate < 1 && cesRate > 0){
-          cesRate = cesRate * 100;
-        }
-      }
-      if(cesRate < threshold){
-        exclude = true;
-        reason = 'CES转化率低';
-      }
-
-      // Rule 2: NORMAL
-      if(!exclude && filterNormal){
-        var status = (row['账号状态'] || '').toString().trim();
-        if(status !== 'NORMAL'){
-          exclude = true;
-          reason = '账号状态异常';
-        }
-      }
-
-      // Rule 3: Negative
-      if(!exclude && filterNeg){
-        var neg = (row['命中负向处置'] || '').toString().trim();
-        if(neg === '是' || neg === 'yes' || neg === 'Yes' || neg === 'YES'){
-          exclude = true;
-          reason = '命中负向处置';
-        }
-      }
-
-      // Rule 4: Keywords
-      if(!exclude){
-        var nick = (row['昵称'] || '').toString();
-        for(var k = 0; k < keywords.length; k++){
-          if(nick.indexOf(keywords[k]) !== -1){
-            exclude = true;
-            reason = '商业/广告账号';
-            break;
-          }
-        }
-      }
-
-      // Rule 5: Verticals
-      if(!exclude){
-        var vert = (row['作者垂类'] || '').toString().trim();
-        if(excludedVerts[vert]){
-          exclude = true;
-          reason = '垂类排除';
-        }
-      }
-
-      // Rule 6a: Note count
-      if(!exclude){
-        var noteCount = parseInt(row['笔记发布总数']);
-        if(isNaN(noteCount)) noteCount = 0;
-        if(noteCount < minNotes){
-          exclude = true;
-          reason = '笔记数不足';
-        }
-      }
-
-      // Rule 6b: CES effective notes
-      if(!exclude && filterZeroCes){
-        var cesEff = parseFloat(row['CES超100有效笔记数']);
-        if(isNaN(cesEff)) cesEff = 0;
-        if(cesEff <= 0){
-          exclude = true;
-          reason = 'CES有效笔记为0';
-        }
-      }
-
-      if(exclude){
-        excluded.push(row);
-        if(reasons[reason] !== undefined) reasons[reason]++;
-      } else {
-        kept.push(row);
-      }
-    }
-
-    if(track){
-      keptRows = kept;
-      exclRows = excluded;
-      excludeReasons = reasons;
-    }
-
-    return { kept: kept.length, excluded: excluded.length, keptArr: kept, excludedArr: excluded, reasons: reasons };
-  }
-
-  // ========== FILTER BUTTON ==========
-  filterBtn.addEventListener('click', function(){
-    var r = runFilter(true);
-    showResults(r);
+function exportExcluded(){
+  if(!EXCLUDED.length)return;
+  var rows=EXCLUDED.map(function(e){
+    var obj=Object.assign({},e.row);
+    obj['排除原因']=e.reason;
+    return obj;
   });
+  var ws=XLSX.utils.json_to_sheet(rows);
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'排除名单');
+  XLSX.writeFile(wb,'排除名单.xlsx');
+}
 
-  // ========== SHOW RESULTS ==========
-  function showResults(r){
-    skeleton.style.display = 'none';
-    result.classList.add('show');
-
-    statOrig.textContent = allRows.length.toLocaleString();
-    statKeep.textContent = r.kept.toLocaleString();
-    statExcl.textContent = r.excluded.toLocaleString() + '（' + (r.excluded / allRows.length * 100).toFixed(1) + '%）';
-
-    // Export button labels
-    exportKeep.textContent = '📥 导出筛选结果（' + r.kept.toLocaleString() + '人）';
-    exportExcl.textContent = '📥 导出排除名单（' + r.excluded.toLocaleString() + '人）';
-
-    // Chart
-    renderChart(r.reasons);
-
-    // Reset sort & page
-    sortCol = null;
-    sortDir = 'asc';
-    currentPage = 1;
-    renderTable();
-  }
-
-  function renderChart(reasons){
-    var entries = [];
-    var keys = Object.keys(reasons);
-    var maxVal = 0;
-    for(var i = 0; i < keys.length; i++){
-      if(reasons[keys[i]] > 0){
-        entries.push({name: keys[i], count: reasons[keys[i]]});
-        if(reasons[keys[i]] > maxVal) maxVal = reasons[keys[i]];
-      }
-    }
-    if(!entries.length){
-      chartCard.style.display = 'none';
-      return;
-    }
-    chartCard.style.display = 'block';
-    var html = '';
-    for(var j = 0; j < entries.length; j++){
-      var pct = maxVal > 0 ? (entries[j].count / maxVal * 100) : 0;
-      var cls = '';
-      if(entries[j].count / allRows.length > 0.3) cls = 'high';
-      else if(entries[j].count / allRows.length < 0.05) cls = 'low';
-      html += '<div class="bar-row">';
-      html += '<div class="bar-label">' + entries[j].name + '</div>';
-      html += '<div class="bar-track"><div class="bar-fill ' + cls + '" style="width:' + pct + '%"><span>' + entries[j].count.toLocaleString() + '</span></div></div>';
-      html += '</div>';
-    }
-    chartBars.innerHTML = html;
-  }
-
-  // ========== TABLE ==========
-  function renderTable(){
-    var data = keptRows.slice();
-
-    // Sort
-    if(sortCol){
-      data.sort(function(a, b){
-        var va = a[sortCol];
-        var vb = b[sortCol];
-        var na = parseFloat(va);
-        var nb = parseFloat(vb);
-        if(!isNaN(na) && !isNaN(nb)){
-          return sortDir === 'asc' ? na - nb : nb - na;
-        }
-        va = (va || '').toString();
-        vb = (vb || '').toString();
-        if(sortDir === 'asc') return va.localeCompare(vb, 'zh');
-        return vb.localeCompare(va, 'zh');
-      });
-    }
-
-    // Pagination
-    var total = data.length;
-    var totalPages = Math.ceil(total / pageSize) || 1;
-    if(currentPage > totalPages) currentPage = totalPages;
-    var start = (currentPage - 1) * pageSize;
-    var pageData = data.slice(start, start + pageSize);
-
-    var html = '';
-    for(var i = 0; i < pageData.length; i++){
-      var row = pageData[i];
-      var cesRate = formatCesRate(row['近7天CES转化率']);
-      html += '<tr>';
-      html += '<td>' + esc((row['昵称'] || '').toString()) + '</td>';
-      html += '<td>' + esc((row['作者垂类'] || '').toString()) + '</td>';
-      html += '<td>' + fmtNum(row['粉丝数']) + '</td>';
-      html += '<td>' + cesRate + '</td>';
-      html += '<td>' + fmtNum(row['CES超100有效笔记数']) + '</td>';
-      html += '</tr>';
-    }
-    if(!pageData.length){
-      html = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--muted)">暂无数据</td></tr>';
-    }
-    tableBody.innerHTML = html;
-
-    // Page info
-    var end = Math.min(start + pageSize, total);
-    pageInfo.textContent = '第 ' + (start + 1) + '-' + end + ' 条，共 ' + total + ' 条';
-
-    // Page buttons
-    var btnHtml = '';
-    btnHtml += '<button ' + (currentPage <= 1 ? 'disabled' : '') + ' data-page="prev">‹ 上一页</button>';
-    var pageStart = Math.max(1, currentPage - 2);
-    var pageEnd = Math.min(totalPages, pageStart + 4);
-    if(pageEnd - pageStart < 4) pageStart = Math.max(1, pageEnd - 4);
-    for(var p = pageStart; p <= pageEnd; p++){
-      btnHtml += '<button class="' + (p === currentPage ? 'active' : '') + '" data-page="' + p + '">' + p + '</button>';
-    }
-    btnHtml += '<button ' + (currentPage >= totalPages ? 'disabled' : '') + ' data-page="next">下一页 ›</button>';
-    pageBtns.innerHTML = btnHtml;
-  }
-
-  // Table header sort
-  var ths = document.querySelectorAll('#previewTable th');
-  for(var ti = 0; ti < ths.length; ti++){
-    (function(th){
-      th.addEventListener('click', function(){
-        var col = th.getAttribute('data-col');
-        if(sortCol === col){
-          sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-        } else {
-          sortCol = col;
-          sortDir = 'asc';
-        }
-        // Update sort icons
-        for(var t = 0; t < ths.length; t++){
-          ths[t].classList.remove('sorted');
-          ths[t].querySelector('.sort-icon').textContent = '↕';
-        }
-        th.classList.add('sorted');
-        th.querySelector('.sort-icon').textContent = sortDir === 'asc' ? '↑' : '↓';
-        currentPage = 1;
-        renderTable();
-      });
-    })(ths[ti]);
-  }
-
-  // Pagination click
-  pageBtns.addEventListener('click', function(e){
-    if(!e.target.tagName || e.target.tagName !== 'BUTTON') return;
-    var pg = e.target.getAttribute('data-page');
-    var totalPages = Math.ceil(keptRows.length / pageSize) || 1;
-    if(pg === 'prev' && currentPage > 1) currentPage--;
-    else if(pg === 'next' && currentPage < totalPages) currentPage++;
-    else if(pg !== 'prev' && pg !== 'next'){
-      currentPage = parseInt(pg);
-    }
-    renderTable();
-  });
-
-  // ========== HELPERS ==========
-  function formatCesRate(v){
-    if(v === '' || v === null || v === undefined) return '-';
-    var num = parseFloat(v);
-    if(isNaN(num)) return '-';
-    // Handle percentage string
-    if(typeof v === 'string' && v.indexOf('%') !== -1) return v;
-    // If raw number < 1, treat as decimal (e.g. 0.015 = 1.5%)
-    if(num > 0 && num < 1) return (num * 100).toFixed(1) + '%';
-    return num.toFixed(1) + '%';
-  }
-
-  function fmtNum(v){
-    if(v === '' || v === null || v === undefined) return '-';
-    var num = parseFloat(v);
-    if(isNaN(num)) return v;
-    return num.toLocaleString();
-  }
-
-  function esc(s){
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // ========== EXPORT ==========
-  exportKeep.addEventListener('click', function(){
-    if(!keptRows.length) return;
-    doExport(keptRows, '筛选结果_' + keptRows.length + '人');
-  });
-
-  exportExcl.addEventListener('click', function(){
-    if(!exclRows.length) return;
-    doExport(exclRows, '排除名单_' + exclRows.length + '人');
-  });
-
-  function doExport(rows, name){
-    var ws = XLSX.utils.json_to_sheet(rows);
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, name + '.xlsx');
-  }
-
-})();
+// init
+renderKw();
 </script>
 </body>
 </html>
