@@ -7,7 +7,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#fff;--bg2:#f8f8fc;--blue:#4f46e5;--blue-dark:#3730a3;
+  --bg:#fff;--bg2:#fafafa;--blue:#4f46e5;--blue-dark:#3730a3;
   --blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
   --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
   --bd:rgba(0,0,0,.07);--sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
@@ -31,7 +31,7 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);
 .sb-title{padding:12px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--bd)}
 .sb-item{padding:10px 14px;font-size:13px;font-weight:600;color:var(--soft);cursor:pointer;transition:all .15s;border-left:3px solid transparent;display:flex;align-items:center;gap:8px}
 .sb-item:hover{background:var(--bg2);color:var(--text)}
-.sb-item.active{border-left-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+.sb-item.active{border-left-color:#0D0D0D;color:#0D0D0D;background:#f5f5f5}
 .sb-item svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;flex-shrink:0}
 /* 输入面板 */
 .in-panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;position:sticky;top:60px}
@@ -45,8 +45,8 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);
 .f input,.f textarea{width:100%;padding:8px 10px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
 .f input:focus,.f textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light);background:#fff}
 .f textarea{resize:vertical;line-height:1.6}
-.gbtn{width:100%;margin-top:8px;padding:13px;border-radius:var(--pill);background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(79,70,229,.3);transition:all .2s}
-.gbtn:hover:not(:disabled){background:linear-gradient(135deg,#3730a3,#4f46e5);transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,70,229,.35)}.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.gbtn{width:auto;min-width:180px;margin-top:8px;padding:13px 24px;border-radius:var(--pill);background:#0D0D0D;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:none;transition:all .2s}
+.gbtn:hover:not(:disabled){background:#333;transform:translateY(-1px)}.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .gbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 /* 输出面板 */
 .out-panel{min-height:500px;display:flex;flex-direction:column;background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
@@ -143,16 +143,14 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);
       <div><div class="pt" id="outTitle">文档输出区</div><div class="ps" id="outSub">选好文档类型，填写信息后生成</div></div>
     </div>
     <div class="ob" id="ob">
-      <div class="skel">
-        <div class="sl" style="width:50%"></div>
-        <div class="sb"></div>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-          <div class="sl" style="width:80%"></div>
-          <div class="sl" style="width:65%"></div>
-          <div class="sl" style="width:90%"></div>
-          <div class="sl" style="width:70%"></div>
-        </div>
-        <div class="sb" style="margin-top:8px;height:52px"></div>
+      <div id="examplePreview" style="font-size:12.5px;line-height:1.8;color:#555;background:#fafafa;border-radius:10px;padding:14px 16px;border:1px solid #eee">
+        <p style="font-size:11px;font-weight:600;color:#999;margin-bottom:10px;text-align:center">— 示例效果 —</p>
+        <p style="font-weight:700;color:#0D0D0D;margin-bottom:6px"># PRD：AI 旅行规划 App</p>
+        <p style="font-weight:600;color:#444">## 1. 产品概述</p>
+        <p>面向 25-35 岁独旅白领，解决行程规划耗时长的核心痛点，通过 AI 一键生成个性化旅行方案...</p>
+        <p style="font-weight:600;color:#444;margin-top:10px">## 2. 核心功能清单（P0）</p>
+        <p>· 智能行程生成 · 本地化推荐 · 一键导出 PDF</p>
+        <p style="margin-top:10px;font-size:11px;color:#aaa">↑ 选择文档类型，填入信息，AI 生成完整专业文档</p>
       </div>
     </div>
   </div>
