@@ -7,7 +7,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#fff;--bg2:#f8f8fc;
+  --bg:#fff;--bg2:#fafafa;
   --blue:#4f46e5;--bl:rgba(79,70,229,.08);--blb:rgba(79,70,229,.18);
   --green:#10b981;--gl:rgba(16,185,129,.08);
   --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
@@ -24,14 +24,14 @@ a{text-decoration:none;color:inherit}
 nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
 .nw{max-width:1100px;margin:0 auto;padding:0 28px;width:100%;display:flex;align-items:center;gap:16px}
 .logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;letter-spacing:-.02em;flex-shrink:0}
-.lm{width:26px;height:26px;background:linear-gradient(135deg,#4f46e5,#6366f1);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.lm{width:26px;height:26px;background:#0D0D0D;border-radius:7px;display:flex;align-items:center;justify-content:center}
 .lm svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round}
 .logo em{color:var(--blue);font-style:normal}
 .nav-sep{width:1px;height:18px;background:var(--bd)}
 .nav-cat{display:flex;align-items:center;gap:2px}
 .nc{font-size:12.5px;font-weight:600;color:var(--soft);padding:4px 10px;border-radius:8px;cursor:pointer;transition:all .15s;border:none;background:transparent;font-family:var(--font)}
 .nc:hover{background:var(--bl);color:var(--text)}
-.nc.on{background:var(--bl);color:var(--blue)}
+.nc.on{background:rgba(0,0,0,.06);color:var(--text)}
 .nav-r{margin-left:auto}
 .gh{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--soft);padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;text-decoration:none;transition:all .15s}
 .gh:hover{border-color:var(--blb);color:var(--blue)}
@@ -40,15 +40,15 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.95);
 /* HERO */
 .hero{max-width:1100px;margin:0 auto;padding:86px 28px 32px;display:flex;align-items:flex-start;gap:48px}
 .hero-l{flex:1;min-width:0}
-.hi{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:var(--blue);background:var(--bl);border:1px solid var(--blb);padding:5px 14px;border-radius:var(--pill);margin-bottom:16px}
+.hi{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:#555;background:#f5f5f5;border:1px solid #e8e8e8;padding:5px 14px;border-radius:var(--pill);margin-bottom:16px}
 .hi-wave{animation:wv .6s ease 0s 1}
 @keyframes wv{0%,100%{transform:rotate(0)}25%{transform:rotate(20deg)}75%{transform:rotate(-8deg)}}
-.hero h1{font-size:clamp(24px,4vw,42px);font-weight:800;letter-spacing:-.05em;line-height:1.1;margin-bottom:10px}
-.hero h1 em{color:var(--blue);font-style:normal}
+.hero h1{font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:-.05em;line-height:1.05;margin-bottom:10px}
+.hero h1 em{color:#0D0D0D;font-style:italic;font-weight:900}
 .slogan{font-size:15px;color:var(--soft);font-weight:500;margin-bottom:6px}
 .sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;max-width:480px}
-.cta{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:var(--pill);background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(79,70,229,.28);transition:all .2s;border:none;cursor:pointer;font-family:var(--font)}
-.cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,70,229,.35)}
+.cta{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:12px;background:#0D0D0D;color:#fff;font-size:13px;font-weight:700;box-shadow:none;transition:all .2s;border:none;cursor:pointer;font-family:var(--font)}
+.cta:hover{background:#333;transform:translateY(-1px)}
 .cta svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
 
 /* STATS 右侧（mini badges）*/
@@ -71,8 +71,8 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.95);
 .tab-bar{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:5px;box-shadow:var(--sh);margin-bottom:24px;width:fit-content}
 .tab{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;color:var(--soft);cursor:pointer;transition:all .18s;border:none;background:transparent;font-family:var(--font);display:flex;align-items:center;gap:6px}
 .tab:hover{color:var(--text)}
-.tab.on{background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.25)}
-.tab.on-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.25)}
+.tab.on{background:#0D0D0D;color:#fff;box-shadow:none}
+.tab.on-green{background:#0D0D0D;color:#fff;box-shadow:none}
 .tab svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .tab-cnt{display:none}
 .tab-cnt.show{display:block}
@@ -125,7 +125,7 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.95);
 .fq.open .fq-a{max-height:160px;padding:0 16px 14px}
 
 footer{border-top:1px solid var(--bd);padding:20px 28px;text-align:center;font-size:11px;color:var(--muted)}
-footer a{color:var(--blue)}
+footer a{color:#555}
 </style>
 </head>
 <body>
@@ -156,15 +156,12 @@ footer a{color:var(--blue)}
     <div class="hi"><span class="hi-wave">👋</span> Hi，欢迎来到 08 的 AI 产品运营工具集</div>
     <h1>产品运营 <em>×</em> AI</h1>
     <p class="slogan">用 AI 把重复的运营动作，变成可复用的能力</p>
-    <p class="sub">覆盖文档生成、增长分析、竞品追踪、知识库问答，以及日常提效全场景。每个工具来自真实工作痛点，填信息即生成，无需反复写 Prompt。</p>
+    <p class="sub">覆盖文档、增长、竞品、知识库，填信息即生成。</p>
     <button class="cta" onclick="document.getElementById('tab-area').scrollIntoView({behavior:'smooth'})">
       <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       开始体验
     </button>
-    <div class="ticker" style="max-width:480px;margin-top:20px">
-      <div class="tk-label"><span class="tk-dot"></span>实时运行</div>
-      <div class="tk-t" id="ticker">正在初始化…</div>
-    </div>
+
   </div>
   <div class="hero-r">
     <div class="stat"><div class="stat-n">12<em>个</em></div><div class="stat-l">AI 工具可体验</div></div>
@@ -314,7 +311,7 @@ function card(t){
     +'<div class="card-top"><div class="ci" style="background:'+t.ib+'"><svg viewBox="0 0 24 24" style="stroke:'+t.ic+';fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px">'+t.icon+'</svg></div><span class="cn">#'+t.n+'</span></div>'
     +'<div class="ct">'+t.t+'</div>'
     +'<div class="cd">'+t.d+'</div>'
-    +'<div class="cf"><span class="ctag" style="background:'+t.tb+';color:'+t.tc+'">'+t.tag+'</span>'
+    +'<div class="cf"><span class="ctag" style="background:#f5f5f5;color:#666">'+t.tag+'</span>'
     +'<span class="ca" style="color:'+t.ic+'"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>'
     +'</a>';
 }
