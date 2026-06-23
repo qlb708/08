@@ -45,12 +45,13 @@ body{background:#F0F2F5;color:var(--text);font-family:var(--sans);min-height:100
 .file-rm{font-size:11px;color:#b0bac6;cursor:pointer;margin-left:4px;transition:color .2s}
 .file-rm:hover{color:#ef4444}
 
-/* CES slider inline */
-.ces-inline{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.ces-inline label{font-size:11px;color:#8a96a6;white-space:nowrap}
-.ces-inline input[type=range]{width:80px;-webkit-appearance:none;height:2px;background:var(--line);border-radius:1px;outline:none}
-.ces-inline input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer}
-.ces-val-badge{font-size:11px;font-weight:600;color:var(--accent);min-width:28px}
+/* Sliders group */
+.sliders-group{display:flex;align-items:center;gap:16px;flex-shrink:0;flex-wrap:wrap}
+.sl-item{display:flex;align-items:center;gap:6px}
+.sl-label{font-size:11px;color:#8a96a6;white-space:nowrap;min-width:72px;text-align:right}
+.sl-item input[type=range]{width:72px;-webkit-appearance:none;height:2px;background:var(--line);border-radius:1px;outline:none;cursor:pointer}
+.sl-item input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 1px 4px rgba(26,86,219,.25)}
+.sl-val{font-size:11px;font-weight:600;color:var(--accent);min-width:32px}
 
 /* Quick checkboxes inline */
 .quick-ck{display:flex;align-items:center;gap:14px;flex-shrink:0}
@@ -168,20 +169,35 @@ tbody td{padding:12px 12px;font-size:13px;color:var(--text);vertical-align:middl
       <span class="file-rm" id="fileRemove">✕</span>
     </div>
 
-    <!-- CES slider -->
-    <div class="ces-inline">
-      <label for="cesSlider">CES 转化率 ≥</label>
-      <input type="range" id="cesSlider" min="0" max="5" step="0.1" value="0">
-      <span class="ces-val-badge" id="cesVal">0.0%</span>
+    <!-- Sliders group -->
+    <div class="sliders-group">
+      <div class="sl-item">
+        <span class="sl-label">CES有效笔记 ≥</span>
+        <input type="range" id="cesMinSlider" min="0" max="200" step="5" value="0">
+        <span class="sl-val" id="cesMinVal">0</span>
+      </div>
+      <div class="sl-item">
+        <span class="sl-label">CES转化率 ≥</span>
+        <input type="range" id="cesSlider" min="0" max="5" step="0.1" value="0">
+        <span class="sl-val" id="cesVal">0.0%</span>
+      </div>
+      <div class="sl-item">
+        <span class="sl-label">笔记最少</span>
+        <input type="range" id="notesMinSlider" min="0" max="100" step="5" value="0">
+        <span class="sl-val" id="notesMinVal">0</span>
+      </div>
+      <div class="sl-item">
+        <span class="sl-label">笔记最多</span>
+        <input type="range" id="notesMaxSlider" min="100" max="2000" step="50" value="2000">
+        <span class="sl-val" id="notesMaxVal">不限</span>
+      </div>
     </div>
 
     <!-- Quick checkboxes -->
     <div class="quick-ck">
       <label class="ck-item"><input type="checkbox" id="ruleNeg" checked>排除负向处置</label>
       <label class="ck-item"><input type="checkbox" id="ruleStatus" checked>排除异常账号</label>
-      <label class="ck-item"><input type="checkbox" id="ruleZeroCes" checked>CES有效笔记不能=0</label>
-      <label class="ck-item"><input type="checkbox" id="ruleCes50">笔记数≥50</label>
-      <label class="ck-item"><input type="checkbox" id="ruleNotes">笔记 20–500</label>
+      <label class="ck-item"><input type="checkbox" id="ruleZeroCes" checked>CES不能为0</label>
     </div>
 
     <!-- Buttons -->
@@ -249,6 +265,9 @@ var EXCL_VERT_SET={};EXCL_VERT_SET['商业财经-房产楼市']=true;
 
 function parseCes(v){return parseFloat(String(v||'0').replace('%',''))||0}
 function getCesT(){return parseFloat(document.getElementById('cesSlider').value)||0}
+function getCesMin(){return parseInt(document.getElementById('cesMinSlider').value)||0}
+function getNotesMin(){return parseInt(document.getElementById('notesMinSlider').value)||0}
+function getNotesMax(){return parseInt(document.getElementById('notesMaxSlider').value)||9999}
 function fmtN(n){var v=parseInt(n)||0;return v>=10000?(v/10000).toFixed(1)+'w':v>=1000?(v/1000).toFixed(1)+'k':String(v)}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
@@ -261,29 +280,22 @@ function getKocGrade(r){
 }
 
 function filterRow(r){
-  // 必选：负向处置
   if(document.getElementById('ruleNeg').checked&&r['命中负向处置']==='是')return '负向处置';
-  // 必选：账号状态
   if(document.getElementById('ruleStatus').checked&&r['账号状态']&&r['账号状态']!=='NORMAL')return '账号异常';
-  // 必选：商业机构关键词
   var nick=String(r['昵称']||'').toLowerCase();
   var xhsId=String(r['小红书号']||'').toLowerCase();
   for(var i=0;i<KW_LIST.length;i++){
     if(nick.indexOf(KW_LIST[i])>=0||xhsId.indexOf(KW_LIST[i])>=0)return '商业机构';
   }
-  // 可选：CES有效笔记不能为0
   var cesNum=parseInt(r['CES超100有效笔记数']||0);
   if(document.getElementById('ruleZeroCes').checked&&cesNum===0)return 'CES有效笔记为0';
-  // 可选：CES有效笔记≥ 50
-  if(document.getElementById('ruleCes50').checked&&cesNum<50)return 'CES不足(50)';
-  // 可选：笔记数量范围
-  if(document.getElementById('ruleNotes').checked){
-    var notes=parseInt(r['笔记发布总数']||0);
-    if(notes<20||notes>500)return '笔记数范围外';
-  }
-  // 可选：CES转化率阈値
+  var cesMin=getCesMin();
+  if(cesMin>0&&cesNum<cesMin)return 'CES有效笔记<'+cesMin;
+  var notes=parseInt(r['笔记发布总数']||0);
+  var nMin=getNotesMin(),nMax=getNotesMax();
+  if(nMin>0&&notes<nMin)return '笔记数<'+nMin;
+  if(nMax<2000&&notes>nMax)return '笔记数>'+nMax;
   if(parseCes(r['近7天CES转化率'])<getCesT())return 'CES转化率低';
-  // 可选：垂类
   var vert=String(r['作者垂类']||'').trim();
   if(EXCL_VERT_SET[vert])return '垂类排除';
   return null;
@@ -330,9 +342,18 @@ function handleFile(file){
   reader.readAsArrayBuffer(file);
 }
 
-// CES slider
+// Sliders
 document.getElementById('cesSlider').addEventListener('input',function(){
   document.getElementById('cesVal').textContent=parseFloat(this.value).toFixed(1)+'%';
+});
+document.getElementById('cesMinSlider').addEventListener('input',function(){
+  document.getElementById('cesMinVal').textContent=this.value==0?'0':this.value;
+});
+document.getElementById('notesMinSlider').addEventListener('input',function(){
+  document.getElementById('notesMinVal').textContent=this.value==0?'0':this.value;
+});
+document.getElementById('notesMaxSlider').addEventListener('input',function(){
+  document.getElementById('notesMaxVal').textContent=this.value>=2000?'不限':this.value;
 });
 
 // Keywords
