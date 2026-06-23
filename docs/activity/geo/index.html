@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>GEO 优化 · 旅行内容 AI 可见性分析</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#fff;--bg2:#f8f8f8;
+  --text:#0D0D0D;--soft:#6b7280;--muted:#9ca3af;
+  --bd:rgba(0,0,0,.09);--bd2:rgba(0,0,0,.15);
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+  --green:#00c853;--yellow:#ffd600;--red:#ff3d00;
+  --blue:#2979ff;
+}
+html,body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased}
+
+.shell{max-width:390px;margin:0 auto;min-height:100vh;background:#fff;display:flex;flex-direction:column}
+@media(min-width:440px){.shell{box-shadow:0 0 0 1px rgba(0,0,0,.06),0 20px 60px rgba(0,0,0,.08)}}
+
+/* NAV */
+nav{height:50px;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800}
+.lm{width:24px;height:24px;background:#0D0D0D;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:900}
+.back{margin-left:auto;font-size:12px;color:var(--soft);display:flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);text-decoration:none}
+.back svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* HERO */
+.hero{padding:24px 20px 20px;background:#0D0D0D;color:#fff;position:relative;overflow:hidden}
+.hero::after{content:'GEO';position:absolute;right:-10px;bottom:-20px;font-size:100px;font-weight:900;color:rgba(255,255,255,.04);letter-spacing:-.05em;pointer-events:none;line-height:1}
+.hero-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:3px 10px;margin-bottom:12px}
+.hero h2{font-size:24px;font-weight:900;letter-spacing:-.04em;line-height:1.15;margin-bottom:8px}
+.hero h2 em{font-style:normal;color:#ffd600}
+.hero p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.7}
+
+/* WHAT IS GEO */
+.geo-explain{padding:16px 20px;background:#fff;border-bottom:1px solid var(--bd)}
+.explain-title{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.explain-cards{display:flex;gap:8px}
+.exp-card{flex:1;background:var(--bg2);border-radius:10px;padding:10px;text-align:center}
+.exp-icon{font-size:20px;margin-bottom:4px}
+.exp-label{font-size:10px;font-weight:700;color:var(--text)}
+.exp-sub{font-size:9px;color:var(--soft);margin-top:2px;line-height:1.4}
+.arrow-row{display:flex;align-items:center;justify-content:center;padding:4px 0;color:var(--muted);font-size:14px}
+
+/* INPUT AREA */
+.input-area{padding:16px 20px;flex:1}
+.input-label{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.char-count{font-size:10px;color:var(--muted);font-weight:400;letter-spacing:0}
+.content-input{width:100%;border:1.5px solid var(--bd);border-radius:12px;padding:13px 14px;font-size:13px;font-family:var(--font);color:var(--text);background:#fff;outline:none;resize:none;min-height:160px;line-height:1.7;transition:border-color .15s}
+.content-input:focus{border-color:#0D0D0D}
+.content-input::placeholder{color:var(--muted)}
+
+.scene-label{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-top:14px;margin-bottom:8px}
+.scene-pills{display:flex;flex-wrap:wrap;gap:6px}
+.scene-pill{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--bd);background:#fff;color:var(--soft);cursor:pointer;font-family:var(--font);transition:all .15s}
+.scene-pill.on{background:#0D0D0D;color:#fff;border-color:#0D0D0D}
+
+.analyze-btn{width:100%;margin-top:16px;padding:14px;border-radius:12px;background:#0D0D0D;color:#fff;border:none;font-size:14px;font-weight:800;font-family:var(--font);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;letter-spacing:-.01em}
+.analyze-btn:disabled{opacity:.4;cursor:not-allowed}
+.analyze-btn svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;animation:spin 1s linear infinite;display:none}
+.analyze-btn.loading svg{display:block}
+.analyze-btn.loading .btn-text{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RESULT */
+.result-wrap{display:none;padding:0 0 40px}
+.result-wrap.show{display:block}
+
+/* SCORE HERO */
+.score-hero{padding:24px 20px;background:#0D0D0D;color:#fff;text-align:center}
+.score-label{font-size:10px;letter-spacing:.12em;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:12px}
+.score-ring{width:100px;height:100px;margin:0 auto 12px;position:relative}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-ring-bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:8}
+.score-ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;letter-spacing:-.04em}
+.score-grade{font-size:18px;font-weight:800;margin-bottom:4px}
+.score-desc{font-size:12px;color:rgba(255,255,255,.5);line-height:1.6}
+
+/* DIMENSION CARDS */
+.dim-section{padding:16px 20px 0}
+.sec-title{font-size:10px;font-weight:700;letter-spacing:.09em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.dim-card{background:var(--bg2);border-radius:12px;padding:13px 14px;margin-bottom:8px}
+.dim-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dim-name{font-size:13px;font-weight:700}
+.dim-score{font-size:13px;font-weight:800}
+.dim-score.hi{color:var(--green)}
+.dim-score.mid{color:var(--yellow)}
+.dim-score.lo{color:var(--red)}
+.dim-bar{height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.dim-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.dim-fill.hi{background:var(--green)}
+.dim-fill.mid{background:var(--yellow)}
+.dim-fill.lo{background:var(--red)}
+.dim-tips{display:flex;flex-direction:column;gap:4px}
+.dim-tip{font-size:11px;color:var(--soft);line-height:1.5;display:flex;gap:5px}
+.dim-tip::before{content:'→';flex-shrink:0;color:var(--muted)}
+
+/* ACTION CARDS */
+.action-section{padding:14px 20px 0}
+.action-card{border:1.5px solid var(--bd);border-radius:12px;padding:13px 14px;margin-bottom:8px}
+.ac-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ac-prio{width:22px;height:22px;border-radius:6px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ac-prio.p0{background:#fff0f0;color:#ef4444}
+.ac-prio.p1{background:#fff8e1;color:#f59e0b}
+.ac-prio.p2{background:#f0fdf4;color:#10b981}
+.ac-title{font-size:13px;font-weight:700;flex:1}
+.ac-body{font-size:12px;color:var(--soft);line-height:1.65}
+.ac-example{margin-top:8px;background:var(--bg2);border-radius:8px;padding:9px 11px;font-size:11px;color:var(--text);line-height:1.6;border-left:2px solid #0D0D0D}
+.ac-example-label{font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+
+/* PLATFORM VISIBILITY */
+.platform-section{padding:14px 20px 0}
+.platform-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.platform-row:last-child{border-bottom:none}
+.platform-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.platform-name{font-size:13px;font-weight:600;flex:1}
+.platform-bar{width:80px;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.platform-fill{height:100%;border-radius:3px;background:#0D0D0D;transition:width 1s .3s}
+.platform-val{font-size:11px;font-weight:700;width:30px;text-align:right;flex-shrink:0}
+
+/* REANALYZE */
+.reanalyze-section{padding:16px 20px 0}
+.reanalyze-btn{width:100%;padding:13px;border-radius:12px;border:1.5px solid var(--bd);background:#fff;font-size:13px;font-weight:700;font-family:var(--font);color:var(--text);cursor:pointer}
+
+/* QUICK SAMPLES */
+.samples{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.sample-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.sample-btn{padding:9px 13px;border-radius:9px;border:1px solid var(--bd);background:var(--bg2);font-size:12px;color:var(--soft);cursor:pointer;font-family:var(--font);text-align:left;transition:all .15s;line-height:1.4}
+.sample-btn:active{background:#0D0D0D;color:#fff;border-color:#0D0D0D}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<nav>
+  <div class="logo">
+    <div class="lm">GE</div>
+    <span>GEO 可见性分析</span>
+  </div>
+  <a href="/08/activity/" class="back">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    活动
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">✦ Generative Engine Optimization</div>
+  <h2>你的内容<br>能被 <em>AI 搜索</em>看见吗？</h2>
+  <p style="margin-top:8px">粘贴一段旅行攻略或目的地内容<br>分析在 ChatGPT / Perplexity / AI 小红书中的可见性</p>
+</div>
+
+<!-- WHAT IS GEO -->
+<div class="geo-explain">
+  <div class="explain-title">什么是 GEO</div>
+  <div class="explain-cards">
+    <div class="exp-card">
+      <div class="exp-icon">🔍</div>
+      <div class="exp-label">传统 SEO</div>
+      <div class="exp-sub">让搜索引擎找到你的页面</div>
+    </div>
+    <div style="display:flex;align-items:center;color:#ccc;font-size:18px;flex-shrink:0">→</div>
+    <div class="exp-card">
+      <div class="exp-icon">🤖</div>
+      <div class="exp-label">GEO</div>
+      <div class="exp-sub">让 AI 在回答时引用你的内容</div>
+    </div>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="input-area" id="input-area">
+  <div class="input-label">
+    <span>粘贴你的旅行内容</span>
+    <span class="char-count" id="char-count">0 字</span>
+  </div>
+  <textarea class="content-input" id="content-input" placeholder="例如：「京都赏樱完全攻略：3月底到4月初是最佳时期，岚山竹林清晨6点前几乎没有游客，哲学之道的樱花隧道需要步行约2公里...」" oninput="onInput()"></textarea>
+
+  <div class="scene-label">内容场景</div>
+  <div class="scene-pills">
+    <button class="scene-pill on" onclick="selectScene(this,'目的地攻略')">目的地攻略</button>
+    <button class="scene-pill" onclick="selectScene(this,'行程规划')">行程规划</button>
+    <button class="scene-pill" onclick="selectScene(this,'美食推荐')">美食推荐</button>
+    <button class="scene-pill" onclick="selectScene(this,'住宿评测')">住宿评测</button>
+    <button class="scene-pill" onclick="selectScene(this,'旅行干货')">旅行干货</button>
+  </div>
+
+  <div class="sample-label" style="margin-top:14px;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase">快速体验示例</div>
+  <div class="samples">
+    <button class="sample-btn" onclick="fillSample(0)">🗼 东京三天两夜攻略（浅草/新宿/涩谷）</button>
+    <button class="sample-btn" onclick="fillSample(1)">🌊 巴厘岛乌布隐藏景点推荐</button>
+    <button class="sample-btn" onclick="fillSample(2)">⚽ 欧洲球场朝圣完全攻略</button>
+  </div>
+
+  <button class="analyze-btn" id="analyze-btn" onclick="analyze()" disabled>
+    <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <span class="btn-text">🔍 开始分析</span>
+  </button>
+</div>
+
+<!-- RESULT -->
+<div class="result-wrap" id="result-wrap">
+
+  <div class="score-hero">
+    <div class="score-label">GEO 可见性综合评分</div>
+    <div class="score-ring">
+      <svg viewBox="0 0 100 100">
+        <circle class="score-ring-bg" cx="50" cy="50" r="42"/>
+        <circle class="score-ring-fill" id="score-ring-fill" cx="50" cy="50" r="42"
+          stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+      </svg>
+      <div class="score-num" id="score-num">0</div>
+    </div>
+    <div class="score-grade" id="score-grade"></div>
+    <div class="score-desc" id="score-desc"></div>
+  </div>
+
+  <!-- 维度分析 -->
+  <div class="dim-section">
+    <div class="sec-title">📊 六维度分析</div>
+    <div id="dim-cards"></div>
+  </div>
+
+  <!-- 平台可见性 -->
+  <div class="platform-section">
+    <div class="sec-title" style="margin-bottom:4px">🤖 各平台 AI 推荐可能性</div>
+    <div id="platform-rows"></div>
+  </div>
+
+  <!-- 优化行动 -->
+  <div class="action-section">
+    <div class="sec-title">⚡ 优先优化项</div>
+    <div id="action-cards"></div>
+  </div>
+
+  <div class="reanalyze-section">
+    <button class="reanalyze-btn" onclick="reanalyze()">🔄 重新分析另一段内容</button>
+  </div>
+
+</div>
+
+</div><!-- shell -->
+
+<script>
+var SAMPLES = [
+  `东京三天两夜完全攻略：第一天抵达后直奔浅草寺，雷门是必拍打卡点，推荐傍晚去人少且光线好。中午在仲见世通吃人形烧，100日元一个。下午去押上的晴空塔，建议提前网上购票。晚上去新宿，西口的思い出横丁（回忆横町）是老东京居酒屋聚集地，一排约30家小店，人均300-500日元，氛围绝佳。
+
+第二天：早上赶去筑地外市场（不是拆迁的那个），8点前到最新鲜，中午去银座逛一圈。下午推荐原宿竹下通和表参道，风格截然相反，走路可达。晚上选择涩谷忠犬八公像集合，体验著名十字路口人潮。
+
+第三天：半天留给秋叶原（御宅文化圣地），另半天去上野恩赐公园，樱花季（3月底-4月初）期间是东京最美的赏樱地点之一，公园内有东京国立博物馆。回程建议乘坐成田特快NExT，提前在网上购买更划算。
+
+实用信息：Suica交通卡全程通用，充2000日元够用；住宿推荐新宿或浅草周边，交通便利；随身WiFi建议租用，人均约30元/天。`,
+
+  `巴厘岛乌布隐藏景点完全指南：很多人来巴厘岛只去库塔海滩和金巴兰，但乌布才是这座岛的灵魂所在。
+
+推荐路线：第一站圣泉寺（Tirta Empul），印度教圣水净化仪式，当地人真实的信仰场所，早上8点到最安静。附近有帝普沙里皇宫（Tirta Gangga），水上花园，门票约2万印尼盾。
+
+最被低估的景点：德哥拉朗梯田（Tegallalang Rice Terrace）虽然是网红地，但周边有条隐藏的小径可以走到梯田内部，跟当地农民聊聊就能进去，免费且真实。乌布皇宫对面有个传统市场，早上6点-8点是当地人买菜时间，不是给游客看的，那才是乌布真实的样子。
+
+住宿推荐：乌布中心区走路可达大部分景点，性价比高的选择是Airbnb找带私人泳池的villa，3-4人分摊下来人均约200-300元/晚，比酒店舒适很多。
+
+美食：Locavore是乌布米其林级餐厅，需提前两周预订；预算有限的话推荐Warung Ibu Oka，乳猪饭约4万印尼盾，是巴厘岛最经典的味道之一。`,
+
+  `欧洲球场朝圣完全攻略：写给真正的球迷旅行者。
+
+西班牙路线（推荐7-10天）：马德里圣地亚哥伯纳乌球场刚完成翻新，外立面的视频屏幕在夜间极为震撼。球场参观+博物馆套票约25欧，建议工作日前往避开人群。从马德里乘高铁（AVE）约2.5小时到巴塞罗那，诺坎普目前处于翻新期，预计2026年完工，但博物馆和外围仍可参观，梅西的一切历史都在这里。
+
+英格兰路线（5-7天）：曼彻斯特是首选——老特拉福德球场参观票约23英镑，城市足球场（曼城）紧邻，可一天打两个球场。利物浦安菲尔德的参观体验是欧洲最有情怀的，导游全程讲故事，推荐专程前往。
+
+德国路线：多特蒙德威斯特法伦球场的南看台（黄墙）是欧洲最震撼的球迷区，8万人全站票，比赛日必须体验，但需提前3-6个月购票。慕尼黑安联球场外观照明可变色，夜间拍照极佳。
+
+实用建议：提前在各球场官网购票，旺季溢价严重；部分球场提供中文语音导览；比赛日前后配合当地球迷酒吧体验，是单纯球场参观的10倍价值。`
+];
+
+var selectedScene = '目的地攻略';
+
+function selectScene(el, scene){
+  document.querySelectorAll('.scene-pill').forEach(function(x){x.classList.remove('on');});
+  el.classList.add('on');
+  selectedScene = scene;
+}
+
+function fillSample(idx){
+  document.getElementById('content-input').value = SAMPLES[idx];
+  onInput();
+}
+
+function onInput(){
+  var txt = document.getElementById('content-input').value;
+  var len = txt.length;
+  document.getElementById('char-count').textContent = len + ' 字';
+  document.getElementById('analyze-btn').disabled = len < 30;
+}
+
+// ── 分析逻辑（本地规则引擎，无需API）──────────────────
+function analyze(){
+  var txt = document.getElementById('content-input').value.trim();
+  if(txt.length < 30) return;
+
+  var btn = document.getElementById('analyze-btn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  // 模拟分析延迟（给人AI感）
+  setTimeout(function(){
+    var result = runAnalysis(txt, selectedScene);
+    renderResult(result);
+    btn.classList.remove('loading');
+  }, 1800);
+}
+
+function runAnalysis(text, scene){
+  var len = text.length;
+
+  // 1. 实体词密度
+  var entityWords = ['攻略','推荐','必去','必玩','必吃','景点','地址','地铁','时间','价格','费用','门票','小时','分钟','公里','人均','适合','最佳','注意','技巧','建议','方式','方法','路线','交通','住宿','美食','文化','历史','特色'];
+  var entityCount = entityWords.filter(function(w){ return text.includes(w); }).length;
+  var entityScore = Math.min(100, Math.round(entityCount / entityWords.length * 130));
+
+  // 2. 问答结构
+  var qaWords = ['怎么','如何','为什么','哪里','什么时候','多少钱','需要','值得','适合','推荐','建议'];
+  var qaCount = qaWords.filter(function(w){ return text.includes(w); }).length;
+  var qaScore = Math.min(100, Math.round(qaCount * 12 + 20));
+
+  // 3. 具体数据
+  var dataRegex = /\d+[元日€£$￥分钟小时天公里米米²人]/g;
+  var dataMatches = text.match(dataRegex) || [];
+  var dataScore = Math.min(100, 30 + dataMatches.length * 8);
+
+  // 4. 内容长度与深度
+  var depthScore = Math.min(100, Math.round(len / 12));
+
+  // 5. 结构化程度（段落、列表感）
+  var lines = text.split('\n').filter(function(l){ return l.trim().length > 0; });
+  var structScore = Math.min(100, 30 + lines.length * 8);
+
+  // 6. 权威信号（具体地名、时间、人名）
+  var authWords = ['年','月','日','号','季','据','根据','研究','来自','官方','数据','统计','报告'];
+  var authCount = authWords.filter(function(w){ return text.includes(w); }).length;
+  var authScore = Math.min(100, 25 + authCount * 10);
+
+  var dims = [
+    {name:'实体词密度',score:entityScore,tips:entityScore<60?['增加更多地点、景点、交通、价格等具体实体词','AI搜索引擎更容易引用含有明确信息的内容']:['实体词密度良好，AI搜索容易识别内容主题']},
+    {name:'问答结构',score:qaScore,tips:qaScore<60?['加入「如何/怎么/多少钱/值得吗」等问答式句子','AI倾向引用能直接回答用户问题的内容']:['问答结构较好，适合AI作为搜索答案引用']},
+    {name:'具体数据',score:dataScore,tips:dataScore<60?['加入具体价格、距离、时间等数字数据','「约200元/人」比「价格合理」更容易被AI引用']:['数字信息丰富，增强内容可信度和引用价值']},
+    {name:'内容深度',score:depthScore,tips:depthScore<60?['内容偏短，建议扩充到500字以上','AI搜索偏向引用信息量充足的深度内容']:['内容深度良好，满足AI搜索引用的基本要求']},
+    {name:'结构清晰度',score:structScore,tips:structScore<60?['分段表达，每段聚焦一个主题（交通/住宿/美食等）','清晰的段落结构让AI更容易提取和引用关键信息']:['段落结构清晰，AI容易提取关键信息']},
+    {name:'权威信号',score:authScore,tips:authScore<60?['引用具体时间（「2024年3月实测」）、官方数据或数据来源','加入亲身体验视角（「我去过3次」）增强可信度']:['权威信号较好，内容可信度高']},
+  ];
+
+  var total = Math.round((entityScore+qaScore+dataScore+depthScore+structScore+authScore)/6);
+
+  // 平台可见性（基于综合分推算）
+  var platforms = [
+    {icon:'🤖',name:'ChatGPT / GPT-4o',val:Math.min(100,total+8)},
+    {icon:'🔍',name:'Perplexity AI',val:Math.min(100,total+5)},
+    {icon:'📱',name:'小红书 AI 搜索',val:Math.min(100,Math.round(total*0.9+5))},
+    {icon:'🌐',name:'必应 Copilot',val:Math.min(100,Math.round(total*0.95))},
+    {icon:'🧠',name:'Kimi / 文心',val:Math.min(100,Math.round(total*0.88+8))},
+  ];
+
+  // 优化动作（按优先级，低分维度优先）
+  var sortedDims = dims.slice().sort(function(a,b){return a.score-b.score;});
+  var actions = sortedDims.slice(0,3).map(function(d,i){
+    var prios = ['p0','p1','p2'];
+    var labels = ['P0','P1','P2'];
+    var examples = {
+      '实体词密度': {title:'补充核心实体词', body:'在内容中明确提及目的地全名、交通方式、景点名称、价格区间等，避免用「那里」「这个地方」等模糊表达。', ex:'❌「价格不贵」→ ✅「门票约25欧元，约合人民币190元」'},
+      '问答结构': {title:'改写为问答格式', body:'将部分叙述改为自问自答结构，AI更容易将其作为搜索结果的答案片段使用。', ex:'❌「景色很美」→ ✅「清晨6点前去，为什么？人少且光线最佳，拍照无需等待」'},
+      '具体数据': {title:'加入可量化数据', body:'每个建议配上具体数字，让AI在回答「多少钱/要多久/距离多远」类问题时能直接引用。', ex:'❌「需要一段时间」→ ✅「步行约20分钟，2公里」'},
+      '内容深度': {title:'扩充内容至500字以上', body:'AI搜索引擎偏向引用信息量充足的内容，建议每个主题点（交通/美食/住宿）各写100字以上。', ex:'当前字数：'+text.length+'字 → 建议目标：500字以上'},
+      '结构清晰度': {title:'增加分段和小标题', body:'将内容按「交通→景点→美食→住宿→实用信息」分段，每段聚焦一个主题，AI提取更精准。', ex:'加入「交通：」「推荐景点：」「实用信息：」等小标题'},
+      '权威信号': {title:'加入时间戳和亲历视角', body:'标注内容的时效性（「2025年实测」），加入第一人称经历，提升内容可信度。', ex:'❌「门票可以优惠」→ ✅「2025年3月亲测，凭学生证折扣约8折」'},
+    };
+    var ex = examples[d.name] || {title:'优化'+d.name, body:d.tips[0], ex:''};
+    return {prio:prios[i], prioLabel:labels[i], title:ex.title, body:ex.body, example:ex.ex};
+  });
+
+  var grade, desc;
+  if(total>=85){grade='AI 搜索高可见';desc='内容质量优秀，极可能被 ChatGPT/Perplexity 直接引用。'}
+  else if(total>=70){grade='AI 搜索良好';desc='大部分维度达标，优化2-3处后可见性将显著提升。'}
+  else if(total>=55){grade='AI 搜索中等';desc='有明显提升空间，按优化建议修改后可见性提升约30-50%。'}
+  else{grade='AI 搜索较低';desc='内容需要较多优化才能被 AI 搜索引擎有效引用。'}
+
+  return {total:total, grade:grade, desc:desc, dims:dims, platforms:platforms, actions:actions};
+}
+
+function renderResult(r){
+  document.getElementById('input-area').style.display='none';
+  var rw = document.getElementById('result-wrap');
+  rw.classList.add('show');
+  rw.scrollIntoView({behavior:'smooth',block:'start'});
+
+  // 分数动画
+  var fill = document.getElementById('score-ring-fill');
+  var circumference = 263.9;
+  var color = r.total>=85?'#00c853':r.total>=70?'#ffd600':r.total>=55?'#ff9800':'#ff3d00';
+  fill.style.stroke = color;
+  setTimeout(function(){
+    fill.style.strokeDashoffset = circumference * (1 - r.total/100);
+  }, 100);
+
+  // 数字滚动
+  var numEl = document.getElementById('score-num');
+  numEl.style.color = color;
+  var cur = 0;
+  var timer = setInterval(function(){
+    cur = Math.min(r.total, cur+3);
+    numEl.textContent = cur;
+    if(cur>=r.total) clearInterval(timer);
+  }, 25);
+
+  document.getElementById('score-grade').textContent = r.grade;
+  document.getElementById('score-desc').textContent = r.desc;
+
+  // 维度卡片
+  var dimHTML = '';
+  r.dims.forEach(function(d){
+    var cls = d.score>=80?'hi':d.score>=60?'mid':'lo';
+    dimHTML += '<div class="dim-card">'
+      +'<div class="dim-head"><span class="dim-name">'+d.name+'</span><span class="dim-score '+cls+'">'+d.score+'</span></div>'
+      +'<div class="dim-bar"><div class="dim-fill '+cls+'" style="width:0%" data-w="'+d.score+'%"></div></div>'
+      +'<div class="dim-tips">'+d.tips.map(function(t){return '<div class="dim-tip">'+t+'</div>';}).join('')+'</div>'
+      +'</div>';
+  });
+  document.getElementById('dim-cards').innerHTML = dimHTML;
+  setTimeout(function(){
+    document.querySelectorAll('.dim-fill').forEach(function(el){
+      el.style.width = el.dataset.w;
+    });
+  },300);
+
+  // 平台可见性
+  var platHTML = '';
+  r.platforms.forEach(function(p){
+    var colorVal = p.val>=80?'#00c853':p.val>=65?'#ffd600':'#ff9800';
+    platHTML += '<div class="platform-row">'
+      +'<div class="platform-icon">'+p.icon+'</div>'
+      +'<div class="platform-name">'+p.name+'</div>'
+      +'<div class="platform-bar"><div class="platform-fill" style="width:0%;background:'+colorVal+'" data-w="'+p.val+'%"></div></div>'
+      +'<div class="platform-val" style="color:'+colorVal+'">'+p.val+'%</div>'
+      +'</div>';
+  });
+  document.getElementById('platform-rows').innerHTML = platHTML;
+  setTimeout(function(){
+    document.querySelectorAll('.platform-fill').forEach(function(el){
+      el.style.width = el.dataset.w;
+    });
+  },500);
+
+  // 优化动作
+  var actHTML = '';
+  r.actions.forEach(function(a){
+    actHTML += '<div class="action-card">'
+      +'<div class="ac-head"><div class="ac-prio '+a.prio+'">'+a.prioLabel+'</div><div class="ac-title">'+a.title+'</div></div>'
+      +'<div class="ac-body">'+a.body+'</div>'
+      +(a.example?'<div class="ac-example"><div class="ac-example-label">示例</div>'+a.example+'</div>':'')
+      +'</div>';
+  });
+  document.getElementById('action-cards').innerHTML = actHTML;
+}
+
+function reanalyze(){
+  document.getElementById('result-wrap').classList.remove('show');
+  document.getElementById('input-area').style.display='block';
+  document.getElementById('analyze-btn').disabled = false;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
