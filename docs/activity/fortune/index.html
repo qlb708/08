@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ 命运之地 — 旅行玄学占卜</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#0D0D0D;--card:#1A1A1A;--text:#F5F5F5;--text2:#999;--purple:#7B2D8E;--gold:#D4A843;--gold2:#F0D68A}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+  .page{max-width:390px;margin:0 auto;position:relative;min-height:100vh}
+
+  /* 星星背景 */
+  .stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+  .star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle var(--dur,3s) ease-in-out infinite;opacity:0}
+  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--o,.8);transform:scale(1)}}
+
+  /* 进度条 */
+  .progress-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;height:3px;background:rgba(255,255,255,.08);z-index:100}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--gold));width:0%;transition:width .4s ease;border-radius:0 2px 2px 0}
+
+  /* 页面区块 */
+  section{display:none;padding:60px 24px 80px;position:relative;z-index:1}
+  section.active{display:flex;flex-direction:column;align-items:center;min-height:100vh;justify-content:center}
+
+  /* Hero */
+  .hero-icon{font-size:64px;margin-bottom:24px;animation:float 3s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .hero h1{font-size:36px;font-weight:700;text-align:center;background:linear-gradient(135deg,#fff,var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+  .hero .subtitle{font-size:15px;color:var(--text2);text-align:center;margin-bottom:48px;line-height:1.6}
+  .btn-start{padding:16px 48px;border:none;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--purple),#9B4DCA);color:#fff;transition:all .3s;box-shadow:0 4px 20px rgba(123,45,142,.4)}
+  .btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(123,45,142,.6)}
+
+  /* 题目 */
+  .question{width:100%;text-align:center}
+  .q-step{font-size:13px;color:var(--gold);margin-bottom:16px;letter-spacing:2px;text-transform:uppercase}
+  .q-text{font-size:22px;font-weight:600;margin-bottom:36px;line-height:1.5}
+  .options{display:flex;flex-direction:column;gap:12px;width:100%}
+  .option{padding:16px 20px;background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;font-size:15px;cursor:pointer;transition:all .25s;text-align:left;display:flex;align-items:center;gap:12px}
+  .option:hover{border-color:var(--purple);background:rgba(123,45,142,.1);transform:translateX(4px)}
+  .option:active{transform:scale(.97)}
+  .option .emoji{font-size:20px;flex-shrink:0}
+
+  /* 结果页 */
+  .result{text-align:center;width:100%}
+  .result-city-emoji{font-size:72px;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+  .result-city{font-size:42px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .result-desc{font-size:16px;color:var(--text2);line-height:1.8;margin-bottom:12px;max-width:320px;margin-left:auto;margin-right:auto}
+  .result-guidance{font-size:13px;color:var(--gold);margin-bottom:36px;font-style:italic}
+
+  /* 签语卡片 */
+  .fortunes{display:flex;flex-direction:column;gap:14px;width:100%;margin-bottom:40px}
+  .fortune-card{perspective:800px;height:80px;cursor:pointer}
+  .fortune-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .fortune-card.flipped .fortune-inner{transform:rotateY(180deg)}
+  .fortune-front,.fortune-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:16px}
+  .fortune-front{background:linear-gradient(135deg,rgba(123,45,142,.2),rgba(212,168,67,.15));border:1px solid rgba(212,168,67,.2);font-size:14px;color:var(--gold);flex-direction:column;gap:4px}
+  .fortune-front::before{content:"🔮";font-size:20px}
+  .fortune-back{background:var(--card);border:1px solid rgba(255,255,255,.08);transform:rotateY(180deg);font-size:14px;color:var(--text);line-height:1.6}
+
+  .result-actions{display:flex;flex-direction:column;gap:12px;width:100%}
+  .btn{padding:14px 24px;border-radius:40px;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;text-align:center;border:none}
+  .btn-primary{background:linear-gradient(135deg,var(--purple),#9B4DCA);color:#fff;box-shadow:0 4px 16px rgba(123,45,142,.3)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(123,45,142,.5)}
+  .btn-secondary{background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--text)}
+  .btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+
+  .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--gold);color:#000;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:600;transition:transform .3s ease;z-index:200;white-space:nowrap}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="page">
+  <!-- Hero -->
+  <section class="hero active" id="hero">
+    <div class="hero-icon">🔮</div>
+    <h1>命运之地</h1>
+    <p class="subtitle">你和哪座城市，早就注定了</p>
+    <button class="btn-start" onclick="startQuiz()">开始占卜</button>
+  </section>
+
+  <!-- 题目 -->
+  <section class="question" id="question">
+    <div class="q-step" id="qStep"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="options"></div>
+  </section>
+
+  <!-- 结果 -->
+  <section class="result" id="result">
+    <div class="result-city-emoji" id="rEmoji"></div>
+    <div class="result-city" id="rCity"></div>
+    <p class="result-desc" id="rDesc"></p>
+    <p class="result-guidance" id="rGuidance"></p>
+    <div class="fortunes" id="fortunes"></div>
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="restart()">🔮 再占一次</button>
+      <button class="btn btn-secondary" onclick="copyResult()">📋 复制我的命运之地</button>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// 星星
+(function(){const c=document.getElementById('stars');for(let i=0;i<60;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.setProperty('--dur',(2+Math.random()*4)+'s');s.style.setProperty('--o',(.3+Math.random()*.7));s.style.animationDelay=Math.random()*4+'s';s.style.width=s.style.height=(1+Math.random()*2)+'px';c.appendChild(s)}})();
+
+// 数据
+const questions = [
+  {q:"你今天的心情色彩是？", opts:[
+    {text:"热烈",emoji:"🔴",type:"A"},{text:"宁静",emoji:"🔵",type:"B"},
+    {text:"明亮",emoji:"🟡",type:"C"},{text:"神秘",emoji:"🟣",type:"D"},
+    {text:"沉思",emoji:"⚫",type:"E"}
+  ]},
+  {q:"如果你是一种天气，你是？", opts:[
+    {text:"大晴天",emoji:"☀️",type:"A"},{text:"小雨天",emoji:"🌧️",type:"B"},
+    {text:"雨后彩虹",emoji:"🌈",type:"C"},{text:"薄雾",emoji:"🌫️",type:"D"},
+    {text:"雷阵雨",emoji:"⛈️",type:"E"}
+  ]},
+  {q:"现在最想做的一件事是？", opts:[
+    {text:"静坐发呆",emoji:"🧘",type:"B"},{text:"漫无目的走路",emoji:"🚶",type:"A"},
+    {text:"翻一本书",emoji:"📖",type:"E"},{text:"听首老歌",emoji:"🎵",type:"C"},
+    {text:"吃一碗热汤面",emoji:"🍜",type:"D"}
+  ]},
+  {q:"你相信缘分吗？", opts:[
+    {text:"完全相信，命运早已安排",emoji:"💫",type:"A"},{text:"有点信，但我也要努力",emoji:"🌤️",type:"C"},
+    {text:"不信，全靠自己",emoji:"💪",type:"E"},{text:"说不清楚",emoji:"🌙",type:"D"}
+  ]},
+  {q:"你想从这次旅行中带走什么？", opts:[
+    {text:"一个震撼的景色",emoji:"🌅",type:"A"},{text:"一段意外的相遇",emoji:"🤝",type:"B"},
+    {text:"一种难忘的味道",emoji:"🍜",type:"C"},{text:"一张完美的照片",emoji:"📸",type:"D"},
+    {text:"一段自己和自己的对话",emoji:"💭",type:"E"}
+  ]}
+];
+
+const results = {
+  A:{city:"那不勒斯",emoji:"🌋",desc:"混乱里有秩序，热烈里有温柔。这座城市不需要你准备，它直接把你淹没。",guidance:"你的灵魂底色是火焰——去最喧闹的地方，反而能找到最真的自己。",fortunes:["在小巷深处迷路，那里藏着最好的风景","和陌生人拼桌吃一顿饭，他会成为你的故事","不要在地图上画路线，跟着气味走"]},
+  B:{city:"京 都",emoji:"🦌",desc:"你不是去旅行，你是去跟自己说一次久违的话。",guidance:"你的灵魂底色是水——去安静的地方，听内心最真实的声音。",fortunes:["在清晨的寺庙里坐十分钟，答案会自己浮现","走一条没有名字的小路，它会通向你想去的地方","给十年后的自己写一张明信片"]},
+  C:{city:"里斯本",emoji:"🌅",desc:"站在山顶看日落，你会突然觉得一切都值得。",guidance:"你的灵魂底色是阳光——去最亮的地方，让所有阴霾消散。",fortunes:["在日落之前做一个决定，不要后悔","找到一家有阳台的咖啡馆，坐一个下午","和当地人说一句'你好'，他会还你一个故事"]},
+  D:{city:"布达佩斯",emoji:"🌙",desc:"这座城市的夜晚像一个没写完的故事，你是那最后的句号。",guidance:"你的灵魂底色是迷雾——去最神秘的地方，揭开命运的面纱。",fortunes:["在午夜的多瑙河边站一会儿，风会告诉你答案","走进一家老书店，翻开任意一页，那就是你的暗示","不要计划明天，让明天来找你"]},
+  E:{city:"雷克雅未克",emoji:"🌌",desc:"你需要的不是热闹，你需要的是广阔。",guidance:"你的灵魂底色是深渊——去最远的地方，才能看到最近的自己。",fortunes:["在冰川面前，你会觉得一切烦恼都不值一提","向北走，走到不能再走的地方","在极光下许一个愿，它会以你意想不到的方式实现"]}
+};
+
+let currentQ = 0;
+let answers = [];
+
+function startQuiz(){
+  currentQ = 0;
+  answers = [];
+  showSection('question');
+  renderQuestion();
+}
+
+function showSection(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion(){
+  const q = questions[currentQ];
+  document.getElementById('qStep').textContent = `QUESTION ${currentQ+1} / ${questions.length}`;
+  document.getElementById('qText').textContent = q.q;
+  const container = document.getElementById('options');
+  container.innerHTML = '';
+  q.opts.forEach((o,i)=>{
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<span class="emoji">${o.emoji}</span><span>${o.text}</span>`;
+    div.onclick = ()=>selectOption(o.type);
+    div.style.animation = `fadeSlide .3s ease ${i*0.06}s both`;
+    container.appendChild(div);
+  });
+  // 进度
+  document.getElementById('progressFill').style.width = (currentQ/questions.length*100)+'%';
+}
+
+function selectOption(type){
+  answers.push(type);
+  currentQ++;
+  if(currentQ < questions.length){
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  document.getElementById('progressFill').style.width = '100%';
+  // 计算最多的类型
+  const count = {A:0,B:0,C:0,D:0,E:0};
+  answers.forEach(a=>count[a]++);
+  let max = 'A', maxCount = 0;
+  for(const k in count){if(count[k]>maxCount){maxCount=count[k];max=k}}
+  // 如果平局，优先靠后的（更晚的问题权重更高）
+  let tieMax = maxCount;
+  for(let i=answers.length-1;i>=0;i--){
+    if(count[answers[i]]===tieMax){max=answers[i];break}
+  }
+
+  const r = results[max];
+  document.getElementById('rEmoji').textContent = r.emoji;
+  document.getElementById('rCity').textContent = r.city;
+  document.getElementById('rDesc').textContent = r.desc;
+  document.getElementById('rGuidance').textContent = '✦ '+r.guidance+' ✦';
+
+  const fContainer = document.getElementById('fortunes');
+  fContainer.innerHTML = '';
+  r.fortunes.forEach(f=>{
+    const card = document.createElement('div');
+    card.className = 'fortune-card';
+    card.innerHTML = `<div class="fortune-inner"><div class="fortune-front">点击翻开</div><div class="fortune-back">${f}</div></div>`;
+    card.onclick = ()=>card.classList.toggle('flipped');
+    fContainer.appendChild(card);
+  });
+
+  showSection('result');
+}
+
+function restart(){
+  document.getElementById('progressFill').style.width = '0%';
+  showSection('hero');
+}
+
+function copyResult(){
+  const city = document.getElementById('rCity').textContent;
+  const emoji = document.getElementById('rEmoji').textContent;
+  const desc = document.getElementById('rDesc').textContent;
+  const text = `${emoji} 我的命运之地：${city}\n${desc}\n— 来自「命运之地」旅行玄学占卜`;
+  navigator.clipboard.writeText(text).then(()=>{
+    showToast('已复制到剪贴板 ✨');
+  }).catch(()=>{
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('已复制到剪贴板 ✨');
+  });
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// 动画关键帧
+const style = document.createElement('style');
+style.textContent = '@keyframes fadeSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}';
+document.head.appendChild(style);
+</script>
+</body>
+</html>
