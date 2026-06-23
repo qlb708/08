@@ -179,7 +179,9 @@ tbody td{padding:12px 12px;font-size:13px;color:var(--text);vertical-align:middl
     <div class="quick-ck">
       <label class="ck-item"><input type="checkbox" id="ruleNeg" checked>排除负向处置</label>
       <label class="ck-item"><input type="checkbox" id="ruleStatus" checked>排除异常账号</label>
-      <label class="ck-item"><input type="checkbox" id="ruleNotes" checked>笔记 20–500</label>
+      <label class="ck-item"><input type="checkbox" id="ruleZeroCes" checked>CES有效笔记不能=0</label>
+      <label class="ck-item"><input type="checkbox" id="ruleCes50">笔记数≥50</label>
+      <label class="ck-item"><input type="checkbox" id="ruleNotes">笔记 20–500</label>
     </div>
 
     <!-- Buttons -->
@@ -259,20 +261,29 @@ function getKocGrade(r){
 }
 
 function filterRow(r){
+  // 必选：负向处置
   if(document.getElementById('ruleNeg').checked&&r['命中负向处置']==='是')return '负向处置';
+  // 必选：账号状态
   if(document.getElementById('ruleStatus').checked&&r['账号状态']&&r['账号状态']!=='NORMAL')return '账号异常';
+  // 必选：商业机构关键词
   var nick=String(r['昵称']||'').toLowerCase();
   var xhsId=String(r['小红书号']||'').toLowerCase();
   for(var i=0;i<KW_LIST.length;i++){
     if(nick.indexOf(KW_LIST[i])>=0||xhsId.indexOf(KW_LIST[i])>=0)return '商业机构';
   }
+  // 可选：CES有效笔记不能为0
   var cesNum=parseInt(r['CES超100有效笔记数']||0);
-  if(cesNum<50)return 'CES不足';
+  if(document.getElementById('ruleZeroCes').checked&&cesNum===0)return 'CES有效笔记为0';
+  // 可选：CES有效笔记≥ 50
+  if(document.getElementById('ruleCes50').checked&&cesNum<50)return 'CES不足(50)';
+  // 可选：笔记数量范围
   if(document.getElementById('ruleNotes').checked){
     var notes=parseInt(r['笔记发布总数']||0);
     if(notes<20||notes>500)return '笔记数范围外';
   }
+  // 可选：CES转化率阈値
   if(parseCes(r['近7天CES转化率'])<getCesT())return 'CES转化率低';
+  // 可选：垂类
   var vert=String(r['作者垂类']||'').trim();
   if(EXCL_VERT_SET[vert])return '垂类排除';
   return null;
