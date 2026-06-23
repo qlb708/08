@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROI CALC · 达人投放计算器</title>
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ivory:   #FAFAF8;
+      --navy:    #0A1628;
+      --blue:    #1a56db;
+      --blue-lt: #e8effd;
+      --gray:    #9ca3af;
+      --gray-lt: #f3f4f6;
+      --line:    #e5e7eb;
+      --white:   #ffffff;
+      --red:     #ef4444;
+      --green:   #10b981;
+      --card-colors: #1a56db, #7c3aed, #059669, #d97706, #dc2626, #0891b2;
+      --radius:  14px;
+      --shadow:  0 2px 16px rgba(10,22,40,.07);
+      --trans:   .22s cubic-bezier(.4,0,.2,1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--ivory);
+      color: var(--navy);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, .serif { font-family: Georgia, 'Times New Roman', serif; }
+
+    /* ─── Nav ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(16px, 5vw, 48px);
+      height: 60px;
+      background: rgba(250,250,248,.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-logo {
+      font-family: Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: normal;
+      letter-spacing: .12em;
+      color: var(--navy);
+      text-transform: uppercase;
+    }
+    .nav-logo span { color: var(--blue); }
+    .nav-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .8rem; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--gray);
+      text-decoration: none;
+      transition: color var(--trans);
+    }
+    .nav-back:hover { color: var(--blue); }
+    .nav-back svg { width: 14px; height: 14px; }
+
+    /* ─── Page wrapper ─── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(28px, 6vw, 64px) clamp(16px, 5vw, 48px) 80px;
+    }
+
+    /* ─── Hero title ─── */
+    .hero {
+      margin-bottom: 40px;
+    }
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: normal;
+      color: var(--navy);
+      letter-spacing: -.01em;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      font-size: .9rem;
+      color: var(--gray);
+      letter-spacing: .02em;
+    }
+
+    /* ─── Section label ─── */
+    .section-label {
+      font-size: .7rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* ─── Cards scroll container ─── */
+    .cards-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .cards-scroll::-webkit-scrollbar { height: 4px; }
+    .cards-scroll::-webkit-scrollbar-track { background: transparent; }
+    .cards-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 99px; }
+
+    /* ─── Influencer Card ─── */
+    .influencer-card {
+      flex: 0 0 300px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      scroll-snap-align: start;
+      position: relative;
+      animation: cardIn .3s ease both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px) scale(.97); }
+      to   { opacity: 1; transform: none; }
+    }
+    .card-stripe {
+      height: 4px;
+      background: var(--stripe-color, var(--blue));
+    }
+    .card-body { padding: 18px 18px 22px; }
+    .card-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .card-index {
+      font-size: .68rem; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--gray);
+    }
+    .btn-delete {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray);
+      font-size: .9rem; line-height: 1;
+      transition: all var(--trans);
+      flex-shrink: 0;
+    }
+    .btn-delete:hover { background: #fee2e2; border-color: #fca5a5; color: var(--red); }
+
+    /* ─── Form fields ─── */
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: .72rem; letter-spacing: .06em;
+      color: var(--gray);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+    .field input[type="text"],
+    .field input[type="number"] {
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--ivory);
+      padding: 0 12px;
+      font-size: .9rem;
+      color: var(--navy);
+      transition: border-color var(--trans), box-shadow var(--trans);
+      outline: none;
+    }
+    .field input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(26,86,219,.1);
+      background: var(--white);
+    }
+
+    /* ─── Content type toggle ─── */
+    .toggle-group {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .toggle-opt { display: none; }
+    .toggle-lbl {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: .82rem;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all var(--trans);
+      user-select: none;
+    }
+    .toggle-opt:checked + .toggle-lbl {
+      border-color: var(--blue);
+      background: var(--blue-lt);
+      color: var(--blue);
+      font-weight: 500;
+    }
+
+    /* ─── Slider ─── */
+    .slider-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--line);
+      outline: none;
+      cursor: pointer;
+      accent-color: var(--blue);
+    }
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 1px 4px rgba(26,86,219,.3);
+    }
+    .slider-val {
+      font-size: .85rem; font-weight: 500;
+      color: var(--blue);
+      min-width: 40px; text-align: right;
+    }
+
+    /* ─── Add card button ─── */
+    .btn-add-wrap { margin-top: 8px; }
+    .btn-add {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      height: 56px; width: 200px;
+      border: 1.5px dashed var(--line);
+      border-radius: var(--radius);
+      background: none;
+      color: var(--gray);
+      font-size: .85rem; letter-spacing: .04em;
+      cursor: pointer;
+      transition: all var(--trans);
+      flex-shrink: 0;
+    }
+    .btn-add:hover:not(:disabled) {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-lt);
+    }
+    .btn-add:disabled { opacity: .35; cursor: not-allowed; }
+    .btn-add svg { width: 16px; height: 16px; }
+
+    /* ─── Calculate button ─── */
+    .calc-wrap { margin-top: 32px; }
+    .btn-calc {
+      width: 100%;
+      height: 52px;
+      background: var(--blue);
+      color: var(--white);
+      border: none; border-radius: var(--radius);
+      font-size: .95rem; letter-spacing: .08em; text-transform: uppercase;
+      cursor: pointer;
+      transition: all var(--trans);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-calc::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background var(--trans);
+    }
+    .btn-calc:hover::after { background: rgba(255,255,255,.1); }
+    .btn-calc:active { transform: scale(.99); }
+    .btn-calc.loading { pointer-events: none; opacity: .8; }
+
+    /* ─── Results section ─── */
+    #results { display: none; margin-top: 56px; }
+    #results.visible { display: block; animation: fadeUp .4s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ─── Result table ─── */
+    .result-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 480px;
+    }
+    thead th {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      font-weight: normal;
+    }
+    thead th:first-child { text-align: left; }
+    .th-kpi {
+      font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--gray);
+      font-family: -apple-system, sans-serif;
+    }
+    .th-name {
+      font-family: Georgia, serif;
+      font-size: .95rem;
+      color: var(--navy);
+      padding-bottom: 4px;
+    }
+    .th-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: .65rem; letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .badge-primary { background: var(--blue); color: #fff; }
+    .badge-cpe     { background: #ede9fe; color: #5b21b6; }
+    .badge-cpm     { background: #d1fae5; color: #065f46; }
+    .stripe-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    tbody tr { border-bottom: 1px solid var(--line); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--ivory); }
+    tbody td {
+      padding: 12px 20px;
+      text-align: center;
+      font-size: .9rem;
+      transition: color var(--trans);
+    }
+    tbody td:first-child {
+      text-align: left;
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+    .cell-best  { color: var(--blue); font-weight: 600; }
+    .cell-worst { color: var(--gray); }
+    .cell-num   { font-variant-numeric: tabular-nums; }
+
+    /* ─── Recommendation box ─── */
+    .rec-box {
+      margin-top: 24px;
+      padding: 24px 28px;
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      display: flex; gap: 20px; align-items: flex-start;
+    }
+    .rec-icon {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--blue-lt);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rec-icon svg { width: 20px; height: 20px; color: var(--blue); }
+    .rec-title {
+      font-family: Georgia, serif;
+      font-size: 1rem; font-weight: normal;
+      margin-bottom: 8px;
+    }
+    .rec-text { font-size: .88rem; line-height: 1.7; color: #374151; }
+
+    /* ─── Export button ─── */
+    .export-wrap {
+      margin-top: 20px;
+      display: flex; justify-content: flex-end;
+    }
+    .btn-export {
+      display: flex; align-items: center; gap: 7px;
+      padding: 9px 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      font-size: .82rem; letter-spacing: .04em;
+      color: var(--navy);
+      cursor: pointer;
+      transition: all var(--trans);
+    }
+    .btn-export:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-lt);
+    }
+    .btn-export svg { width: 14px; height: 14px; }
+    .btn-export.copied {
+      border-color: var(--green);
+      color: var(--green);
+      background: #ecfdf5;
+    }
+
+    /* ─── Toast ─── */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--navy);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 99px;
+      font-size: .82rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: all .3s ease;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 600px) {
+      .influencer-card { flex: 0 0 calc(100vw - 64px); }
+      .rec-box { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ─────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">ROI <span>CALC</span></div>
+  <a class="nav-back" href="/08/portfolio/">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+    </svg>
+    返回工具集
+  </a>
+</nav>
+
+<!-- ── Main ─────────────────────────────────────── -->
+<main>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>达人投放计算器</h1>
+    <p>输入 1 – 5 位达人数据，自动计算 CPE / CPM / 预估 ROI，横向对比投放价值</p>
+  </div>
+
+  <!-- Input section -->
+  <div class="section-label">达人数据录入</div>
+
+  <div class="cards-scroll" id="cardsContainer">
+    <!-- cards injected by JS -->
+  </div>
+
+  <div class="btn-add-wrap" style="margin-top:12px;">
+    <button class="btn-add" id="btnAdd">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+      添加达人
+    </button>
+  </div>
+
+  <div class="calc-wrap">
+    <button class="btn-calc" id="btnCalc">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+      </svg>
+      开始计算
+    </button>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="section-label" style="margin-top:0;">对比结果</div>
+
+    <div class="result-table-wrap">
+      <table id="resultTable">
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="rec-box" id="recBox">
+      <div class="rec-icon">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="rec-title">综合投放建议</div>
+        <div class="rec-text" id="recText"></div>
+      </div>
+    </div>
+
+    <div class="export-wrap">
+      <button class="btn-export" id="btnExport">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+        </svg>
+        导出报告
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   Constants & state
+══════════════════════════════════════════════ */
+const STRIPE_COLORS = ['#1a56db','#7c3aed','#059669','#d97706','#dc2626','#0891b2'];
+const MAX_CARDS = 5;
+let cards = [];      // [{id, name, fans, engagements, type, price, cvr, aov}, …]
+let idCounter = 0;
+let lastResults = null;
+
+/* ══════════════════════════════════════════════
+   Card management
+══════════════════════════════════════════════ */
+function addCard() {
+  if (cards.length >= MAX_CARDS) return;
+  const id = ++idCounter;
+  cards.push({ id });
+  renderCards();
+  updateAddBtn();
+}
+
+function removeCard(id) {
+  cards = cards.filter(c => c.id !== id);
+  renderCards();
+  updateAddBtn();
+}
+
+function updateAddBtn() {
+  document.getElementById('btnAdd').disabled = cards.length >= MAX_CARDS;
+}
+
+function renderCards() {
+  const container = document.getElementById('cardsContainer');
+
+  // Preserve scroll position when re-rendering
+  const prevScroll = container.scrollLeft;
+
+  // Collect current values from existing inputs
+  const vals = {};
+  container.querySelectorAll('.influencer-card').forEach(el => {
+    const cid = +el.dataset.id;
+    vals[cid] = {
+      name: el.querySelector('[data-f="name"]').value,
+      fans: el.querySelector('[data-f="fans"]').value,
+      eng:  el.querySelector('[data-f="eng"]').value,
+      type: el.querySelector('[data-f="type"]:checked')?.value || 'image',
+      price: el.querySelector('[data-f="price"]').value,
+      cvr:  el.querySelector('[data-f="cvr"]').value,
+      aov:  el.querySelector('[data-f="aov"]').value,
+    };
+  });
+
+  container.innerHTML = cards.map((c, i) => {
+    const v = vals[c.id] || {};
+    const color = STRIPE_COLORS[i % STRIPE_COLORS.length];
+    const cvrVal = v.cvr !== undefined ? v.cvr : '1.0';
+    return `
+    <div class="influencer-card" data-id="${c.id}">
+      <div class="card-stripe" style="background:${color}"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-index">达人 ${String.fromCharCode(64 + i + 1)}</div>
+          <button class="btn-delete" onclick="removeCard(${c.id})" title="删除">×</button>
+        </div>
+
+        <div class="field">
+          <label>达人昵称</label>
+          <input type="text" data-f="name" placeholder="请输入昵称" value="${v.name || ''}">
+        </div>
+        <div class="field">
+          <label>粉丝数（万）</label>
+          <input type="number" data-f="fans" placeholder="如：50" min="0.1" step="0.1" value="${v.fans || ''}">
+        </div>
+        <div class="field">
+          <label>平均互动量</label>
+          <input type="number" data-f="eng" placeholder="点赞+评论+收藏" min="0" step="1" value="${v.eng || ''}">
+        </div>
+        <div class="field">
+          <label>内容形式</label>
+          <div class="toggle-group">
+            <input class="toggle-opt" type="radio" name="type_${c.id}" id="img_${c.id}" data-f="type" value="image" ${(!v.type || v.type==='image') ? 'checked' : ''}>
+            <label class="toggle-lbl" for="img_${c.id}">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              图文
+            </label>
+            <input class="toggle-opt" type="radio" name="type_${c.id}" id="vid_${c.id}" data-f="type" value="video" ${v.type==='video' ? 'checked' : ''}>
+            <label class="toggle-lbl" for="vid_${c.id}">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              视频
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label>合作报价（元）</label>
+          <input type="number" data-f="price" placeholder="如：5000" min="0" step="100" value="${v.price || ''}">
+        </div>
+        <div class="field">
+          <label>预期转化率 &nbsp;<span class="slider-val" id="cvrLabel_${c.id}">${cvrVal}%</span></label>
+          <div class="slider-row">
+            <input type="range" data-f="cvr" min="0.1" max="5" step="0.1" value="${cvrVal}"
+              oninput="document.getElementById('cvrLabel_${c.id}').textContent=this.value+'%'">
+          </div>
+        </div>
+        <div class="field">
+          <label>客单价（元）</label>
+          <input type="number" data-f="aov" placeholder="如：199" min="0" step="1" value="${v.aov || ''}">
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.scrollLeft = prevScroll;
+}
+
+/* ══════════════════════════════════════════════
+   Calculation
+══════════════════════════════════════════════ */
+function getCardData() {
+  const container = document.getElementById('cardsContainer');
+  return cards.map((c, i) => {
+    const el = container.querySelector(`.influencer-card[data-id="${c.id}"]`);
+    return {
+      index: i,
+      id: c.id,
+      color: STRIPE_COLORS[i % STRIPE_COLORS.length],
+      label: 'ABCDE'[i],
+      name:  el.querySelector('[data-f="name"]').value.trim() || `达人${String.fromCharCode(65+i)}`,
+      fans:  parseFloat(el.querySelector('[data-f="fans"]').value) || 0,
+      eng:   parseFloat(el.querySelector('[data-f="eng"]').value)  || 0,
+      type:  el.querySelector('[data-f="type"]:checked')?.value || 'image',
+      price: parseFloat(el.querySelector('[data-f="price"]').value) || 0,
+      cvr:   parseFloat(el.querySelector('[data-f="cvr"]').value)  || 1.0,
+      aov:   parseFloat(el.querySelector('[data-f="aov"]').value)  || 0,
+    };
+  });
+}
+
+function calcMetrics(d) {
+  const fansTotal = d.fans * 10000;
+  const engRate   = fansTotal > 0 ? d.eng / fansTotal * 100 : 0;         // %
+  const cpe       = d.eng   > 0  ? d.price / d.eng             : 0;
+  const cpm       = fansTotal > 0 ? (d.price / (fansTotal / 1000)) * 0.3 : 0;
+  const reach     = fansTotal * 0.3;
+  const conv      = reach * (d.cvr / 100);
+  const gmv       = conv * d.aov;
+  const roi       = d.price > 0 ? gmv / d.price : 0;
+  return { engRate, cpe, cpm, reach, conv, gmv, roi };
+}
+
+/* ══════════════════════════════════════════════
+   Animated counter
+══════════════════════════════════════════════ */
+function animateNumber(el, target, formatter, duration = 800) {
+  const start = performance.now();
+  function tick(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = formatter(target * ease);
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = formatter(target);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ══════════════════════════════════════════════
+   Render results
+══════════════════════════════════════════════ */
+function fmt(n, digits = 0) {
+  if (!isFinite(n)) return '—';
+  return n.toLocaleString('zh-CN', { maximumFractionDigits: digits, minimumFractionDigits: digits });
+}
+function fmtW(n) {
+  // Show in 万 if ≥ 10000
+  if (n >= 10000) return (n / 10000).toFixed(1) + 'w';
+  return fmt(n, 0);
+}
+function fmtPct(n)  { return fmt(n, 2) + '%'; }
+function fmtMoney(n) { return '¥' + fmt(n, 1); }
+function fmtROI(n)  { return fmt(n, 1) + 'x'; }
+
+function renderResults(data, metrics) {
+  const n = data.length;
+
+  /* ── thead ── */
+  const thead = document.getElementById('thead');
+  const badges = getBadges(metrics);
+
+  thead.innerHTML = `<th class="th-kpi">指标</th>` + data.map((d, i) => {
+    const m = metrics[i];
+    const bs = badges[d.id] || [];
+    return `<th>
+      <div class="th-name">
+        <span class="stripe-dot" style="background:${d.color}"></span>${d.name}
+      </div>
+      ${bs.map(b => `<span class="th-badge ${b.cls}">${b.text}</span>`).join(' ')}
+    </th>`;
+  }).join('');
+
+  /* ── rows config ── */
+  const rows = [
+    { label: '互动率',  key: 'engRate', fmt: fmtPct,   best: 'max', raw: m => m.engRate },
+    { label: 'CPE',    key: 'cpe',     fmt: fmtMoney, best: 'min', raw: m => m.cpe },
+    { label: 'CPM',    key: 'cpm',     fmt: fmtMoney, best: 'min', raw: m => m.cpm },
+    { label: '预估触达', key: 'reach',  fmt: fmtW,     best: 'max', raw: m => m.reach },
+    { label: '预估转化', key: 'conv',   fmt: v => fmt(v, 0), best: 'max', raw: m => m.conv },
+    { label: '预估GMV', key: 'gmv',    fmt: v => '¥' + fmtW(v), best: 'max', raw: m => m.gmv },
+    { label: 'ROI',    key: 'roi',     fmt: fmtROI,   best: 'max', raw: m => m.roi },
+  ];
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = rows.map(row => {
+    const vals = metrics.map(row.raw);
+    const validVals = vals.filter(v => v > 0 && isFinite(v));
+    const bestVal = validVals.length ? (row.best === 'max' ? Math.max(...validVals) : Math.min(...validVals)) : null;
+    const worstVal = validVals.length > 1 ? (row.best === 'max' ? Math.min(...validVals) : Math.max(...validVals)) : null;
+
+    const cells = metrics.map((m, i) => {
+      const v = row.raw(m);
+      let cls = 'cell-num';
+      if (bestVal !== null && v === bestVal) cls += ' cell-best';
+      else if (worstVal !== null && v === worstVal) cls += ' cell-worst';
+      return `<td class="${cls}" data-val="${v}" data-fmt="${row.key}">—</td>`;
+    }).join('');
+
+    return `<tr><td>${row.label}</td>${cells}</tr>`;
+  }).join('');
+
+  /* ── Animate numbers ── */
+  const fmtMap = {
+    engRate: fmtPct, cpe: fmtMoney, cpm: fmtMoney,
+    reach: fmtW, conv: v => fmt(v, 0),
+    gmv: v => '¥' + fmtW(v), roi: fmtROI,
+  };
+  tbody.querySelectorAll('td[data-val]').forEach(td => {
+    const val = parseFloat(td.dataset.val);
+    const fmtKey = td.dataset.fmt;
+    const formatter = fmtMap[fmtKey] || (v => fmt(v));
+    if (val > 0 && isFinite(val)) {
+      animateNumber(td, val, formatter);
+    } else {
+      td.textContent = formatter(val) || '—';
+    }
+  });
+
+  /* ── Recommendation text ── */
+  const bestROI = metrics.reduce((a, b) => b.roi > a.roi ? b : a);
+  const bestCPE = metrics.reduce((a, b) => (b.cpe > 0 && (a.cpe === 0 || b.cpe < a.cpe)) ? b : a);
+  const bestROIData = data[metrics.indexOf(bestROI)];
+  const bestCPEData = data[metrics.indexOf(bestCPE)];
+
+  const engLevel = bestROI.engRate >= 3 ? '高' : bestROI.engRate >= 1 ? '中' : '低';
+  let recText = `基于数据，建议优先与 <strong>${bestROIData.name}</strong> 合作，其 ROI 预估最高（<strong>${fmtROI(bestROI.roi)}</strong>），互动率 ${fmtPct(bestROI.engRate)} 处于<strong>${engLevel}</strong>水平。`;
+
+  if (metrics.length > 1 && bestCPEData.name !== bestROIData.name && bestCPE.cpe > 0) {
+    recText += `若预算有限，<strong>${bestCPEData.name}</strong> 的 CPE 更低（${fmtMoney(bestCPE.cpe)}/次互动），适合以互动为核心 KPI 的投放策略。`;
+  }
+  if (metrics.length === 1) {
+    recText += `当前仅输入一位达人数据，建议添加更多达人进行横向对比，以找到最优投放组合。`;
+  }
+
+  document.getElementById('recText').innerHTML = recText;
+}
+
+function getBadges(metrics) {
+  // Map from data index → badges array  (use card id as key via zip)
+  if (!lastResults) return {};
+  const { data } = lastResults;
+  const result = {};
+
+  const rois = metrics.map(m => m.roi);
+  const cpes = metrics.map(m => m.cpe).filter(v => v > 0);
+  const cpms = metrics.map(m => m.cpm).filter(v => v > 0);
+
+  const maxROI = Math.max(...rois);
+  const minCPE = Math.min(...cpes);
+  const minCPM = Math.min(...cpms);
+
+  metrics.forEach((m, i) => {
+    const id = data[i].id;
+    result[id] = [];
+    if (m.roi === maxROI && m.roi > 0) result[id].push({ text: '首选合作', cls: 'badge-primary' });
+    if (m.cpe === minCPE && m.cpe > 0) result[id].push({ text: '高互动价值', cls: 'badge-cpe' });
+    if (m.cpm === minCPM && m.cpm > 0) result[id].push({ text: '高曝光价值', cls: 'badge-cpm' });
+  });
+  return result;
+}
+
+/* ══════════════════════════════════════════════
+   Calculate handler
+══════════════════════════════════════════════ */
+function calculate() {
+  const data = getCardData();
+
+  // Validate
+  for (const d of data) {
+    if (!d.fans || !d.eng || !d.price) {
+      showToast('请完整填写所有达人的粉丝数、互动量和报价');
+      return;
+    }
+  }
+
+  const metrics = data.map(calcMetrics);
+  lastResults = { data, metrics };
+
+  const btn = document.getElementById('btnCalc');
+  btn.classList.add('loading');
+  btn.innerHTML = `<svg class="spin" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 12a8 8 0 018-8"/></svg> 计算中…`;
+
+  setTimeout(() => {
+    renderResults(data, metrics);
+
+    const results = document.getElementById('results');
+    results.classList.add('visible');
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> 计算完成`;
+    setTimeout(() => {
+      btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg> 开始计算`;
+    }, 2500);
+  }, 600);
+}
+
+/* ══════════════════════════════════════════════
+   Export report
+══════════════════════════════════════════════ */
+function exportReport() {
+  if (!lastResults) return;
+  const { data, metrics } = lastResults;
+  const now = new Date().toLocaleString('zh-CN');
+
+  let report = `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  report += `ROI CALC · 达人投放分析报告\n`;
+  report += `生成时间：${now}\n`;
+  report += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  data.forEach((d, i) => {
+    const m = metrics[i];
+    report += `【达人${d.label}】${d.name}\n`;
+    report += `  粉丝数：${d.fans}万  |  内容形式：${d.type === 'video' ? '视频' : '图文'}\n`;
+    report += `  合作报价：¥${fmt(d.price, 0)}  |  客单价：¥${d.aov}\n`;
+    report += `  互动率：${fmtPct(m.engRate)}  |  CPE：${fmtMoney(m.cpe)}  |  CPM：${fmtMoney(m.cpm)}\n`;
+    report += `  预估触达：${fmtW(m.reach)}  |  预估转化：${fmt(m.conv, 0)}人\n`;
+    report += `  预估GMV：¥${fmtW(m.gmv)}  |  ROI：${fmtROI(m.roi)}\n\n`;
+  });
+
+  const recEl = document.getElementById('recText');
+  report += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  report += `综合建议：\n${recEl.innerText}\n`;
+  report += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  report += `by ROI CALC · cowork.xiaohongshu.com\n`;
+
+  navigator.clipboard.writeText(report).then(() => {
+    const btn = document.getElementById('btnExport');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> 已复制`;
+    showToast('报告已复制到剪贴板 ✓');
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg> 导出报告`;
+    }, 2500);
+  }).catch(() => showToast('复制失败，请手动选取'));
+}
+
+/* ══════════════════════════════════════════════
+   Toast
+══════════════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════════════
+   Spin animation
+══════════════════════════════════════════════ */
+const spinStyle = document.createElement('style');
+spinStyle.textContent = `@keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin .8s linear infinite}`;
+document.head.appendChild(spinStyle);
+
+/* ══════════════════════════════════════════════
+   Init
+══════════════════════════════════════════════ */
+document.getElementById('btnAdd').addEventListener('click', addCard);
+document.getElementById('btnCalc').addEventListener('click', calculate);
+document.getElementById('btnExport').addEventListener('click', exportReport);
+
+// Start with 2 cards
+addCard();
+addCard();
+</script>
+</body>
+</html>
