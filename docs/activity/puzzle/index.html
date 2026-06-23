@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧩 足迹拼图 — 收集你去过的城市</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#0D0D0D;--card:#1A1A1A;--text:#F5F5F5;--text2:#888;--locked:#222;--accent:#2D6FE0;--gold:#D4A843}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+  .page{max-width:390px;margin:0 auto;padding:40px 16px 60px}
+
+  /* 头部 */
+  .header{text-align:center;margin-bottom:24px}
+  .header h1{font-size:24px;font-weight:700;margin-bottom:8px}
+  .header .sub{font-size:13px;color:var(--text2);margin-bottom:20px}
+  .counter{display:inline-flex;align-items:center;gap:8px;background:var(--card);padding:8px 20px;border-radius:20px;font-size:14px}
+  .counter .num{color:var(--gold);font-weight:700;font-size:18px}
+
+  /* 进度条 */
+  .progress-wrap{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin:16px 0 24px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;transition:width .5s ease;width:0%}
+
+  /* 成就 */
+  .achievements{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:28px}
+  .badge{padding:6px 12px;border-radius:16px;font-size:12px;border:1px solid rgba(255,255,255,.08);color:var(--text2);transition:all .3s;opacity:.4}
+  .badge.unlocked{border-color:var(--gold);color:var(--gold);background:rgba(212,168,67,.1);opacity:1;animation:badgePop .4s ease}
+  @keyframes badgePop{0%{transform:scale(.8)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+  /* 区域标签 */
+  .region-label{font-size:13px;color:var(--text2);margin:20px 0 12px;padding-left:4px;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+  .region-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+
+  /* 拼图网格 */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+  .cell{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;font-size:12px;padding:6px 2px}
+  .cell.locked{background:var(--locked);border:1px solid rgba(255,255,255,.04);color:var(--text2)}
+  .cell.locked:hover{border-color:rgba(255,255,255,.12);transform:scale(1.03)}
+  .cell.unlocked{background:var(--card);border:1.5px solid var(--gold);color:var(--text);box-shadow:0 0 12px rgba(212,168,67,.15)}
+  .cell .emoji{font-size:22px;line-height:1}
+  .cell .name{font-size:10px;text-align:center;line-height:1.2;word-break:keep-all}
+  .cell.unlocked::before{content:'✨';position:absolute;top:3px;right:4px;font-size:10px}
+  .cell.unlocked::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04),transparent);pointer-events:none}
+
+  /* 弹窗 */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:flex-end;justify-content:center}
+  .modal-overlay.show{display:flex}
+  .modal{background:var(--card);border-radius:20px 20px 0 0;padding:32px 24px 40px;width:100%;max-width:390px;animation:slideUp .3s ease}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-city{text-align:center;font-size:28px;font-weight:700;margin-bottom:4px}
+  .modal-emoji{text-align:center;font-size:48px;margin-bottom:12px}
+  .modal-q{text-align:center;font-size:15px;color:var(--text2);margin-bottom:24px}
+  .modal-btns{display:flex;gap:12px}
+  .modal-btn{flex:1;padding:14px;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;border:none;transition:all .2s}
+  .modal-btn.yes{background:linear-gradient(135deg,var(--accent),#4A8AF5);color:#fff}
+  .modal-btn.yes:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(45,111,224,.4)}
+  .modal-btn.no{background:rgba(255,255,255,.06);color:var(--text2);border:1px solid rgba(255,255,255,.08)}
+  .modal-btn.no:hover{border-color:rgba(255,255,255,.15)}
+
+  /* 分享按钮 */
+  .share-btn{width:100%;padding:16px;border-radius:16px;font-size:15px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--accent),#4A8AF5);color:#fff;border:none;margin-top:28px;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .share-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(45,111,224,.4)}
+
+  /* Toast */
+  .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--gold);color:#000;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:600;transition:transform .3s ease;z-index:200;white-space:nowrap}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* 成就弹窗 */
+  .achievement-popup{display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(212,168,67,.15),rgba(45,111,224,.15));border:1px solid var(--gold);border-radius:16px;padding:16px 24px;z-index:150;text-align:center;animation:achievePop .5s ease}
+  .achievement-popup.show{display:block}
+  @keyframes achievePop{0%{opacity:0;transform:translateX(-50%) translateY(-20px) scale(.9)}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+  .achievement-popup .a-label{font-size:12px;color:var(--gold);margin-bottom:4px}
+  .achievement-popup .a-name{font-size:16px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <h1>🧩 足迹拼图</h1>
+    <p class="sub">每一座城市，都是你独一无二的一块</p>
+    <div class="counter">已解锁 <span class="num" id="countNum">0</span> / 24 块</div>
+  </div>
+
+  <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="achievements" id="achievements">
+    <div class="badge" data-count="5">🌱 旅行萌新</div>
+    <div class="badge" data-count="10">🌍 地球探索者</div>
+    <div class="badge" data-count="15">✈️ 洲际旅行家</div>
+    <div class="badge" data-count="20">🌎 世界公民</div>
+    <div class="badge" data-count="24">🚀 宇宙漫游者</div>
+  </div>
+
+  <div id="gridContainer"></div>
+
+  <button class="share-btn" onclick="sharePuzzle()">📤 把我的拼图分享给朋友</button>
+</div>
+
+<!-- 弹窗 -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-emoji" id="modalEmoji"></div>
+    <div class="modal-city" id="modalCity"></div>
+    <div class="modal-q">你去过这里吗？</div>
+    <div class="modal-btns">
+      <div class="modal-btn yes" id="modalYes">去过！解锁 ✨</div>
+      <div class="modal-btn no" onclick="closeModal()">还没去过</div>
+    </div>
+  </div>
+</div>
+
+<!-- 成就通知 -->
+<div class="achievement-popup" id="achievePopup">
+  <div class="a-label">🏆 成就解锁！</div>
+  <div class="a-name" id="achieveName"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const cities = [
+  // 欧洲 8
+  {region:"欧 洲",name:"巴黎",emoji:"🗼"},
+  {region:"",name:"罗马",emoji:"🏛️"},
+  {region:"",name:"巴塞罗那",emoji:"⚽"},
+  {region:"",name:"里斯本",emoji:"🐟"},
+  {region:"",name:"阿姆斯特丹",emoji:"🌷"},
+  {region:"",name:"布拉格",emoji:"🏰"},
+  {region:"",name:"维也纳",emoji:"🎻"},
+  {region:"",name:"雅典",emoji:"🏺"},
+  // 亚洲 8
+  {region:"亚 洲",name:"东京",emoji:"🍣"},
+  {region:"",name:"京都",emoji:"🦌"},
+  {region:"",name:"首尔",emoji:"🌸"},
+  {region:"",name:"曼谷",emoji:"🙏"},
+  {region:"",name:"新加坡",emoji:"🦁"},
+  {region:"",name:"香港",emoji:"🏙️"},
+  {region:"",name:"台北",emoji:"🧋"},
+  {region:"",name:"清迈",emoji:"🌿"},
+  // 其他 8
+  {region:"其 他",name:"纽约",emoji:"🗽"},
+  {region:"",name:"巴厘岛",emoji:"🌊"},
+  {region:"",name:"迪拜",emoji:"🏙️"},
+  {region:"",name:"墨西哥城",emoji:"🌮"},
+  {region:"",name:"开普敦",emoji:"🌅"},
+  {region:"",name:"马拉喀什",emoji:"🕌"},
+  {region:"",name:"悉尼",emoji:"🦘"},
+  {region:"",name:"冰岛",emoji:"🌋"}
+];
+
+// localStorage key
+const STORAGE_KEY = 'puzzle_unlocked_v1';
+
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; }
+}
+function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+
+let state = loadState();
+let currentCityIdx = -1;
+
+function render(){
+  const container = document.getElementById('gridContainer');
+  container.innerHTML = '';
+  let lastRegion = '';
+  let unlockedCount = Object.keys(state).filter(k=>state[k]).length;
+
+  cities.forEach((c,i)=>{
+    if(c.region && c.region !== lastRegion){
+      const label = document.createElement('div');
+      label.className = 'region-label';
+      label.textContent = c.region;
+      container.appendChild(label);
+      lastRegion = c.region;
+    }
+    const cell = document.createElement('div');
+    cell.className = 'cell ' + (state[i] ? 'unlocked' : 'locked');
+    cell.innerHTML = state[i]
+      ? `<span class="emoji">${c.emoji}</span><span class="name">${c.name}</span>`
+      : `<span class="name">${c.name}</span>`;
+    cell.onclick = ()=>openModal(i);
+    container.appendChild(cell);
+  });
+
+  // 更新计数 & 进度
+  document.getElementById('countNum').textContent = unlockedCount;
+  document.getElementById('progressFill').style.width = (unlockedCount/24*100)+'%';
+
+  // 成就
+  const badges = document.querySelectorAll('.badge');
+  badges.forEach(b=>{
+    const need = parseInt(b.dataset.count);
+    if(unlockedCount >= need && !b.classList.contains('unlocked')){
+      b.classList.add('unlocked');
+      showAchieve(b.textContent.trim());
+    } else if(unlockedCount >= need){
+      b.classList.add('unlocked');
+    } else {
+      b.classList.remove('unlocked');
+    }
+  });
+}
+
+function openModal(idx){
+  if(state[idx]) return; // 已解锁的不弹
+  currentCityIdx = idx;
+  const c = cities[idx];
+  document.getElementById('modalEmoji').textContent = c.emoji;
+  document.getElementById('modalCity').textContent = c.name;
+  document.getElementById('modalOverlay').classList.add('show');
+  document.getElementById('modalYes').onclick = ()=>unlockCity(idx);
+}
+
+function unlockCity(idx){
+  state[idx] = true;
+  saveState(state);
+  closeModal();
+  render();
+  showToast('✨ 已解锁 ' + cities[idx].emoji + cities[idx].name);
+}
+
+function closeModal(e){
+  if(e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('show');
+  currentCityIdx = -1;
+}
+
+function showAchieve(name){
+  const popup = document.getElementById('achievePopup');
+  document.getElementById('achieveName').textContent = name;
+  popup.classList.add('show');
+  setTimeout(()=>popup.classList.remove('show'),3000);
+}
+
+function sharePuzzle(){
+  const unlocked = [];
+  cities.forEach((c,i)=>{if(state[i]) unlocked.push(c.emoji+c.name)});
+  const count = unlocked.length;
+  const text = `🧩 我的足迹拼图\n已解锁 ${count}/24 座城市！\n${unlocked.length ? '✦ '+unlocked.join('  ') : '快去解锁你的第一座城市吧！'}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    showToast('已复制到剪贴板 📋');
+  }).catch(()=>{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('已复制到剪贴板 📋');
+  });
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+render();
+</script>
+</body>
+</html>
