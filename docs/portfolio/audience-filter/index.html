@@ -8,256 +8,314 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#FAFAF8;--text:#0A1628;--accent:#1a56db;--gold:#C9A84C;
-  --line:rgba(10,22,40,0.1);--line2:rgba(10,22,40,0.06);
+  --bg:#F0F2F5;--white:#fff;--text:#0A1628;--soft:#64748b;--muted:#94a3b8;
+  --accent:#1a56db;--gold:#C9A84C;
+  --line:rgba(10,22,40,0.09);
   --serif:Georgia,"Times New Roman",serif;
   --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  --radius:14px;
 }
-html{-webkit-font-smoothing:antialiased;font-size:14px}
-body{background:#F0F2F5;color:var(--text);font-family:var(--sans);min-height:100vh}
+html{-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;font-size:14px}
 
-/* ── NAV ── */
-.nav{height:50px;background:rgba(255,255,255,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 40px;position:fixed;top:0;left:0;right:0;z-index:200;gap:16px}
-.nav-brand{font-family:var(--serif);font-size:12px;letter-spacing:.18em;color:var(--text)}
-.nav-sep{width:1px;height:14px;background:var(--line)}
-.nav-sub{font-size:11px;color:#8a96a6;letter-spacing:.06em}
-.nav-back{margin-left:auto;font-size:12px;color:var(--accent);letter-spacing:.04em;text-decoration:none;display:flex;align-items:center;gap:4px;transition:opacity .3s}
-.nav-back:hover{opacity:.7}
+/* NAV */
+.nav{height:54px;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 36px;position:fixed;top:0;left:0;right:0;z-index:200;gap:12px}
+.nav-brand{font-family:var(--serif);font-size:13px;letter-spacing:.16em;color:var(--text);font-weight:400}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--muted)}
+.nav-sub{font-size:13px;color:var(--soft)}
+.nav-back{margin-left:auto;font-size:13px;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:4px;opacity:.8;transition:opacity .2s}
+.nav-back:hover{opacity:1}
 
-/* ── CONTROL BAR ── */
-.ctrl{background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-radius:16px;box-shadow:0 2px 16px rgba(10,22,40,.07);position:fixed;top:62px;left:40px;right:40px;z-index:100;padding:0 24px;border:1px solid rgba(255,255,255,.8)}
+/* CTRL CARD */
+.ctrl-card{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 20px rgba(10,22,40,.07);position:fixed;top:70px;left:36px;right:36px;z-index:100;overflow:hidden}
 
-/* Row 1: Upload + Core params + Buttons */
-.ctrl-row1{display:flex;align-items:center;gap:20px;height:60px;flex-wrap:wrap}
+/* ROW 1 */
+.row1{display:flex;align-items:center;gap:0;height:64px;padding:0 24px;border-bottom:1px solid var(--line)}
 
-/* Upload zone */
-.upload-pill{display:flex;align-items:center;gap:10px;padding:8px 14px;border:1px dashed rgba(10,22,40,.18);border-radius:10px;cursor:pointer;transition:all .3s;min-width:220px;flex-shrink:0}
-.upload-pill:hover{border-color:var(--accent);background:rgba(26,86,219,.03)}
-.upload-pill input{display:none}
-.up-icon{font-size:15px;flex-shrink:0}
-.up-text{font-size:12px;color:#8a96a6;line-height:1.3}
-.up-text strong{display:block;font-size:13px;color:var(--text);font-weight:500}
-.file-loaded{display:none;align-items:center;gap:8px;min-width:220px;flex-shrink:0}
-.file-loaded.show{display:flex}
-.file-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
-.file-name-txt{font-size:12px;color:var(--text);font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.file-rows-txt{font-size:11px;color:#8a96a6}
-.file-rm{font-size:11px;color:#b0bac6;cursor:pointer;margin-left:4px;transition:color .2s}
-.file-rm:hover{color:#ef4444}
+.upload-area{display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 16px 8px 0;border-right:1px solid var(--line);margin-right:24px;flex-shrink:0}
+.upload-area input{display:none}
+.up-icon-box{width:36px;height:36px;border-radius:9px;background:#F0F2F5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.up-label strong{display:block;font-size:14px;font-weight:600;color:var(--text)}
+.up-label span{font-size:12px;color:var(--muted)}
+.file-ok{display:none;align-items:center;gap:8px;padding:0 16px 0 0;border-right:1px solid var(--line);margin-right:24px;flex-shrink:0}
+.file-ok.show{display:flex}
+.fdot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0}
+.fname{font-size:13px;font-weight:600;color:var(--text);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frows{font-size:12px;color:var(--muted);margin-left:2px}
+.frm{font-size:13px;color:var(--muted);cursor:pointer;margin-left:6px;line-height:1;transition:color .2s}
+.frm:hover{color:#ef4444}
 
-/* Sliders group */
-.sliders-group{display:flex;align-items:center;gap:16px;flex-shrink:0;flex-wrap:wrap}
-.sl-item{display:flex;align-items:center;gap:6px}
-.sl-label{font-size:11px;color:#8a96a6;white-space:nowrap;min-width:72px;text-align:right}
-.sl-item input[type=range]{width:72px;-webkit-appearance:none;height:2px;background:var(--line);border-radius:1px;outline:none;cursor:pointer}
-.sl-item input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 1px 4px rgba(26,86,219,.25)}
-.sl-val{font-size:11px;font-weight:600;color:var(--accent);min-width:32px}
+/* Sliders */
+.sliders{display:flex;align-items:center;gap:20px;flex:1}
+.sl{display:flex;align-items:center;gap:8px}
+.sl-lbl{font-size:12px;color:var(--soft);white-space:nowrap}
+.sl input[type=range]{width:80px;-webkit-appearance:none;height:3px;background:#e2e8f0;border-radius:2px;outline:none;cursor:pointer}
+.sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 1px 4px rgba(26,86,219,.3);transition:transform .15s}
+.sl input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.sl-val{font-size:13px;font-weight:700;color:var(--accent);min-width:36px}
 
-/* Quick checkboxes inline */
-.quick-ck{display:flex;align-items:center;gap:14px;flex-shrink:0}
-.ck-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text);cursor:pointer;white-space:nowrap}
-.ck-item input[type=checkbox]{appearance:none;width:13px;height:13px;border:1px solid var(--line);border-radius:2px;cursor:pointer;position:relative;flex-shrink:0;background:#fff;transition:all .2s}
-.ck-item input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
-.ck-item input[type=checkbox]:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);color:#fff;font-size:8px}
+/* Checks */
+.checks{display:flex;align-items:center;gap:14px;border-left:1px solid var(--line);padding-left:20px;flex-shrink:0}
+.ck{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text);cursor:pointer;white-space:nowrap}
+.ck input{appearance:none;width:15px;height:15px;border:1.5px solid #cbd5e1;border-radius:4px;cursor:pointer;position:relative;flex-shrink:0;transition:all .2s;background:#fff}
+.ck input:checked{background:var(--accent);border-color:var(--accent)}
+.ck input:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);color:#fff;font-size:9px;font-weight:700}
 
 /* Buttons */
-.ctrl-btns{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
-.btn{font-family:var(--serif);cursor:pointer;transition:all .3s;border-radius:2px;white-space:nowrap}
+.ctrl-btns{display:flex;align-items:center;gap:8px;border-left:1px solid var(--line);padding-left:20px;flex-shrink:0}
+.btn{font-family:var(--sans);cursor:pointer;border-radius:8px;transition:all .2s;font-weight:600;white-space:nowrap;border:none}
 .btn:disabled{opacity:.35;cursor:not-allowed}
-.btn-primary{background:var(--accent);color:#fff;border:none;padding:9px 22px;font-size:12px;letter-spacing:.18em;border-radius:8px!important}
-.btn-primary:hover:not(:disabled){background:#0d3a9e}
-.btn-secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);padding:8px 18px;font-size:12px;border-radius:8px!important}
-.btn-secondary:hover:not(:disabled){background:rgba(26,86,219,.04)}
-.btn-tertiary{background:#fff;color:#8a96a6;border:1px solid var(--line);padding:8px 16px;font-size:12px;border-radius:8px!important}
-.btn-tertiary:hover:not(:disabled){border-color:rgba(10,22,40,.2);color:var(--text)}
+.btn-p{background:var(--accent);color:#fff;padding:9px 20px;font-size:13px;letter-spacing:.06em}
+.btn-p:hover:not(:disabled){background:#1446b8}
+.btn-s{background:#fff;color:var(--accent);border:1.5px solid var(--accent)!important;padding:8px 16px;font-size:13px}
+.btn-s:hover:not(:disabled){background:rgba(26,86,219,.05)}
+.btn-t{background:#fff;color:var(--soft);border:1.5px solid #e2e8f0!important;padding:8px 14px;font-size:13px}
+.btn-t:hover:not(:disabled){border-color:#cbd5e1!important;color:var(--text)}
 
-/* Row 2: Keywords (collapsible) */
-.ctrl-row2{border-top:1px solid var(--line2);padding:8px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.ctrl-row2-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#b0bac6;white-space:nowrap;flex-shrink:0}
-.kw-container{display:flex;flex-wrap:wrap;gap:5px;flex:1}
-.kw-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 8px;border:1px solid var(--line);border-radius:20px;background:#F5F7FA;color:var(--text)}
-.kw-del{cursor:pointer;color:#b0bac6;font-size:11px;margin-left:1px;transition:color .2s}
+/* ROW 2: keyword groups */
+.row2{display:flex;align-items:flex-start;gap:10px;padding:12px 24px;flex-wrap:wrap;min-height:48px}
+.row2-label{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;align-self:center;flex-shrink:0;width:56px}
+
+.kw-group{position:relative;flex-shrink:0}
+.kw-group-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;transition:all .2s;white-space:nowrap}
+.kw-group-btn:hover{border-color:var(--accent);color:var(--accent)}
+.kw-group-btn.active{border-color:var(--accent);background:rgba(26,86,219,.05);color:var(--accent)}
+.kw-group-count{font-size:11px;background:var(--accent);color:#fff;border-radius:10px;padding:0 5px;min-width:18px;text-align:center;line-height:18px;font-weight:700}
+.kw-group-arrow{font-size:10px;color:var(--muted);transition:transform .2s}
+.kw-group-btn.active .kw-group-arrow{transform:rotate(180deg)}
+
+.kw-dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(10,22,40,.12);padding:12px;z-index:300;min-width:240px;max-width:320px}
+.kw-dropdown.show{display:block}
+.kw-drop-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.kw-tag{display:inline-flex;align-items:center;gap:3px;font-size:12px;padding:3px 10px;border:1px solid var(--line);border-radius:20px;background:#F8FAFC;color:var(--text);transition:all .15s}
+.kw-tag:hover{border-color:#fca5a5;background:#fef2f2}
+.kw-del{cursor:pointer;color:var(--muted);font-size:12px;transition:color .15s}
 .kw-del:hover{color:#ef4444}
-.kw-add-inline{display:flex;gap:6px;flex-shrink:0}
-.kw-input-s{border:1px solid var(--line);border-radius:2px;padding:3px 8px;font-size:11px;font-family:var(--sans);outline:none;width:120px;transition:border-color .2s}
-.kw-input-s:focus{border-color:var(--accent)}
-.kw-add-btn{background:#fff;border:1px solid var(--line);border-radius:2px;padding:3px 10px;font-size:11px;cursor:pointer;color:var(--text);transition:all .2s;font-family:var(--sans)}
-.kw-add-btn:hover{border-color:var(--accent);color:var(--accent)}
+.kw-add-row{display:flex;gap:6px}
+.kw-inp{flex:1;border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:13px;font-family:var(--sans);outline:none;transition:border-color .2s}
+.kw-inp:focus{border-color:var(--accent)}
+.kw-add-ok{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--sans);white-space:nowrap}
 
-/* ── MAIN ── */
-.main{padding:16px 40px 60px}
-#resultArea,#emptyState{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(10,22,40,.06);padding:28px 32px;border:1px solid rgba(255,255,255,.9)}
+.kw-custom-area{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
+.kw-custom-inp{border:1.5px solid var(--line);border-radius:20px;padding:5px 14px;font-size:13px;font-family:var(--sans);outline:none;width:140px;transition:border-color .2s;color:var(--text)}
+.kw-custom-inp:focus{border-color:var(--accent)}
+.kw-custom-btn{background:transparent;border:1.5px solid var(--line);border-radius:20px;padding:5px 14px;font-size:13px;cursor:pointer;color:var(--text);font-family:var(--sans);transition:all .2s}
+.kw-custom-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-/* Empty state */
-.empty{padding-top:80px;text-align:center}
-.empty-line{font-family:var(--serif);font-size:28px;color:#d0d7e0;margin-bottom:16px;letter-spacing:.1em}
-.empty-main{font-family:var(--serif);font-size:18px;color:#8a96a6;margin-bottom:8px}
-.empty-sub{font-size:12px;color:#b0bac6}
+.cat-toggle-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--line);background:#fff;font-size:13px;color:var(--soft);cursor:pointer;transition:all .2s;white-space:nowrap}
+.cat-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.cat-panel{display:none;padding:10px 24px 14px;border-top:1px solid var(--line);flex-wrap:wrap;gap:8px}
+.cat-panel.open{display:flex}
+.cat-item{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text);cursor:pointer}
+.cat-item input{appearance:none;width:14px;height:14px;border:1.5px solid #cbd5e1;border-radius:4px;cursor:pointer;position:relative;flex-shrink:0;transition:all .2s;background:#fff}
+.cat-item input:checked{background:var(--accent);border-color:var(--accent)}
+.cat-item input:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);color:#fff;font-size:8px;font-weight:700}
+
+/* MAIN */
+.main{padding-top:160px;padding-left:36px;padding-right:36px;padding-bottom:60px;min-height:100vh}
+.result-card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 16px rgba(10,22,40,.06);padding:28px 32px}
+
+/* Empty */
+.empty{padding:80px 0;text-align:center}
+.empty-dash{font-family:var(--serif);font-size:32px;color:#e2e8f0;margin-bottom:16px}
+.empty-main{font-family:var(--serif);font-size:20px;color:var(--soft);margin-bottom:8px;font-weight:400}
+.empty-sub{font-size:13px;color:var(--muted)}
 
 /* Stats */
-.stats{display:flex;align-items:center;gap:0;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:0;flex-wrap:wrap;gap:8px}
-.stat-total{font-family:var(--serif);font-size:20px;color:var(--text);margin-right:8px}
-.stat-divider{width:1px;height:20px;background:var(--line);flex-shrink:0}
-.stat-item{display:flex;align-items:center;gap:6px;padding:0 14px}
-.stat-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8a96a6}
-.stat-num{font-family:var(--serif);font-size:18px}
+.stats{display:flex;align-items:center;gap:0;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.stat-total{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--text);padding-right:20px}
+.stat-div{width:1px;height:24px;background:var(--line)}
+.stat-item{display:flex;align-items:baseline;gap:6px;padding:0 20px}
+.stat-lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stat-num{font-family:var(--serif);font-size:20px;font-weight:400}
 .stat-s .stat-num{color:var(--gold)}
 .stat-a .stat-num{color:var(--accent)}
-.stat-b .stat-num{color:#8a96a6}
+.stat-b .stat-num{color:var(--muted)}
 
 /* Table */
-.table-wrap{overflow-x:auto;margin-top:0}
-table{width:100%;border-collapse:collapse}
-thead th{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8a96a6;padding:14px 12px;text-align:left;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--sans);font-weight:600;transition:color .2s}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:4px}
+thead th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none;font-weight:600;transition:color .2s}
 thead th:hover{color:var(--text)}
 thead th.sorted{color:var(--accent)}
 thead th.sorted.asc::after{content:' ↑'}
 thead th.sorted.desc::after{content:' ↓'}
-tbody tr{border-bottom:1px solid var(--line2);transition:background .2s}
+tbody tr{border-bottom:1px solid rgba(10,22,40,.04);transition:background .15s}
 tbody tr:hover{background:rgba(26,86,219,.025)}
-tbody td{padding:12px 12px;font-size:13px;color:var(--text);vertical-align:middle}
-.fans,.notes,.ces{color:#8a96a6;font-size:12px}
-.rate{font-size:12px;color:#8a96a6}
-.rate.high{color:var(--accent);font-weight:600}
-.grade-cell{text-align:left}
-.badge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:20px;font-size:10px;font-weight:700;border-radius:2px;letter-spacing:.04em}
-.badge-s{border:1px solid var(--gold);color:var(--gold)}
-.badge-a{border:1px solid var(--accent);color:var(--accent)}
-.badge-b{border:1px solid #c8d0da;color:#8a96a6}
+tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middle}
+.td-fans,.td-notes,.td-ces{font-size:13px;color:var(--soft)}
+.td-rate{font-size:13px;color:var(--soft)}
+.td-rate.hi{color:var(--accent);font-weight:700}
+.badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:20px;font-size:11px;font-weight:700;border-radius:4px;letter-spacing:.04em}
+.badge-s{border:1.5px solid var(--gold);color:var(--gold)}
+.badge-a{border:1.5px solid var(--accent);color:var(--accent)}
+.badge-b{border:1.5px solid #cbd5e1;color:var(--muted)}
 
 /* Pagination */
-.pagination{display:flex;align-items:center;justify-content:flex-end;gap:16px;padding:20px 0;font-size:12px;color:#8a96a6}
-.page-btn{cursor:pointer;transition:color .2s;user-select:none}
-.page-btn:hover:not(.disabled){color:var(--accent)}
-.page-btn.disabled{opacity:.3;cursor:default}
-.page-info{font-family:var(--serif);font-size:13px;color:var(--text)}
-
-/* category section (hidden toggle) */
-.cat-toggle{font-size:10px;color:var(--accent);cursor:pointer;text-decoration:underline;white-space:nowrap;flex-shrink:0}
-.cat-panel{display:none;background:#F8F9FB;border-top:1px solid var(--line2);padding:10px 0;flex-wrap:wrap;gap:8px;border-radius:0 0 16px 16px}
-.cat-panel.open{display:flex}
-.cat-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text);cursor:pointer;white-space:nowrap}
-.cat-item input[type=checkbox]{appearance:none;width:12px;height:12px;border:1px solid var(--line);border-radius:2px;cursor:pointer;position:relative;background:#fff;transition:all .2s;flex-shrink:0}
-.cat-item input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
-.cat-item input[type=checkbox]:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);color:#fff;font-size:7px}
+.pag{display:flex;align-items:center;justify-content:flex-end;gap:16px;padding-top:20px;font-size:13px;color:var(--soft)}
+.pag-btn{cursor:pointer;transition:color .2s;user-select:none;font-weight:500}
+.pag-btn:hover:not(.dis){color:var(--accent)}
+.pag-btn.dis{opacity:.3;cursor:default}
+.pag-info{font-family:var(--serif);font-size:14px;color:var(--text)}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
   <span class="nav-brand">AUDIENCE · FILTER</span>
-  <span class="nav-sep"></span>
+  <span class="nav-dot"></span>
   <span class="nav-sub">人群质量筛选</span>
   <a href="/08/portfolio/" class="nav-back">← 返回工具集</a>
 </nav>
 
-<!-- CONTROL BAR -->
-<div class="ctrl">
+<div class="ctrl-card">
 
-  <!-- Row 1: Upload + Sliders + Buttons -->
-  <div class="ctrl-row1">
+  <!-- Row 1: Upload + Sliders + Checks + Buttons -->
+  <div class="row1">
     <!-- Upload -->
-    <label class="upload-pill" id="dropZone" style="flex-shrink:0">
+    <label class="upload-area" id="dropZone">
       <input type="file" id="fileInput" accept=".xlsx,.xls">
-      <span class="up-icon">📂</span>
-      <span class="up-text"><strong>上传达人名单</strong>.xlsx</span>
+      <div class="up-icon-box">📂</div>
+      <div class="up-label"><strong>上传达人名单</strong><span>.xlsx 格式</span></div>
     </label>
-    <div class="file-loaded" id="fileInfo">
-      <span class="file-dot"></span>
-      <span class="file-name-txt" id="fileName"></span>
-      <span class="file-rows-txt" id="fileRows"></span>
-      <span class="file-rm" id="fileRemove">✕</span>
+    <div class="file-ok" id="fileInfo">
+      <span class="fdot"></span>
+      <span class="fname" id="fileName"></span>
+      <span class="frows" id="fileRows"></span>
+      <span class="frm" id="fileRemove">✕</span>
     </div>
-    <!-- divider -->
-    <div style="width:1px;height:28px;background:var(--line);flex-shrink:0"></div>
+
     <!-- Sliders -->
-    <div class="sliders-group">
-      <div class="sl-item"><span class="sl-label">CES有效 ≥</span><input type="range" id="cesMinSlider" min="0" max="200" step="5" value="0"><span class="sl-val" id="cesMinVal">0</span></div>
-      <div class="sl-item"><span class="sl-label">转化率 ≥</span><input type="range" id="cesSlider" min="0" max="5" step="0.1" value="0"><span class="sl-val" id="cesVal">0%</span></div>
-      <div class="sl-item"><span class="sl-label">笔记最少</span><input type="range" id="notesMinSlider" min="0" max="200" step="5" value="0"><span class="sl-val" id="notesMinVal">0</span></div>
-      <div class="sl-item"><span class="sl-label">笔记最多</span><input type="range" id="notesMaxSlider" min="100" max="2000" step="50" value="2000"><span class="sl-val" id="notesMaxVal">不限</span></div>
+    <div class="sliders">
+      <div class="sl"><span class="sl-lbl">CES有效 ≥</span><input type="range" id="cesMinSlider" min="0" max="200" step="5" value="0"><span class="sl-val" id="cesMinVal">0</span></div>
+      <div class="sl"><span class="sl-lbl">转化率 ≥</span><input type="range" id="cesSlider" min="0" max="5" step="0.1" value="0"><span class="sl-val" id="cesVal">0%</span></div>
+      <div class="sl"><span class="sl-lbl">笔记最少</span><input type="range" id="notesMinSlider" min="0" max="200" step="5" value="0"><span class="sl-val" id="notesMinVal">0</span></div>
+      <div class="sl"><span class="sl-lbl">笔记最多</span><input type="range" id="notesMaxSlider" min="100" max="2000" step="50" value="2000"><span class="sl-val" id="notesMaxVal">不限</span></div>
     </div>
-    <!-- divider -->
-    <div style="width:1px;height:28px;background:var(--line);flex-shrink:0"></div>
-    <!-- Checkboxes -->
-    <div class="quick-ck" style="flex-shrink:0">
-      <label class="ck-item"><input type="checkbox" id="ruleNeg" checked>负向处置</label>
-      <label class="ck-item"><input type="checkbox" id="ruleStatus" checked>异常账号</label>
-      <label class="ck-item"><input type="checkbox" id="ruleZeroCes" checked>CES不为0</label>
+
+    <!-- Checks -->
+    <div class="checks">
+      <label class="ck"><input type="checkbox" id="ruleNeg" checked>负向处置</label>
+      <label class="ck"><input type="checkbox" id="ruleStatus" checked>异常账号</label>
+      <label class="ck"><input type="checkbox" id="ruleZeroCes" checked>CES≠0</label>
     </div>
+
     <!-- Buttons -->
     <div class="ctrl-btns">
-      <button class="btn btn-primary" id="btnFilter" disabled>开 始 筛 选</button>
-      <button class="btn btn-secondary" id="btnExport" disabled>导出</button>
-      <button class="btn btn-tertiary" id="btnExclude" disabled>排除名单</button>
+      <button class="btn btn-p" id="btnFilter" disabled>开始筛选</button>
+      <button class="btn btn-s" id="btnExport" disabled>导出结果</button>
+      <button class="btn btn-t" id="btnExclude" disabled>排除名单</button>
     </div>
   </div>
 
-  <!-- Row 2: Keywords -->
-  <div class="ctrl-row2">
-    <span class="ctrl-row2-label">商业关键词</span>
-    <div class="kw-container" id="kwContainer"></div>
-    <div class="kw-add-inline" style="flex-shrink:0">
-      <input class="kw-input-s" id="kwInput" placeholder="添加关键词…" maxlength="20">
-      <button class="kw-add-btn" id="kwAddBtn">添加</button>
-      <span class="cat-toggle" id="catToggle">垂类 ▾</span>
+  <!-- Row 2: Keyword groups -->
+  <div class="row2">
+    <span class="row2-label">商业词</span>
+
+    <!-- Group 1: 旅行社/地接 -->
+    <div class="kw-group" id="grp0">
+      <div class="kw-group-btn" onclick="toggleGroup(0)">
+        旅行社/地接 <span class="kw-group-count" id="gc0">0</span><span class="kw-group-arrow">▾</span>
+      </div>
+      <div class="kw-dropdown" id="gd0"></div>
+    </div>
+
+    <!-- Group 2: 住宿 -->
+    <div class="kw-group" id="grp1">
+      <div class="kw-group-btn" onclick="toggleGroup(1)">
+        住宿类 <span class="kw-group-count" id="gc1">0</span><span class="kw-group-arrow">▾</span>
+      </div>
+      <div class="kw-dropdown" id="gd1"></div>
+    </div>
+
+    <!-- Group 3: 票务/平台 -->
+    <div class="kw-group" id="grp2">
+      <div class="kw-group-btn" onclick="toggleGroup(2)">
+        票务/平台 <span class="kw-group-count" id="gc2">0</span><span class="kw-group-arrow">▾</span>
+      </div>
+      <div class="kw-dropdown" id="gd2"></div>
+    </div>
+
+    <!-- Group 4: 商业通用 -->
+    <div class="kw-group" id="grp3">
+      <div class="kw-group-btn" onclick="toggleGroup(3)">
+        商业通用 <span class="kw-group-count" id="gc3">0</span><span class="kw-group-arrow">▾</span>
+      </div>
+      <div class="kw-dropdown" id="gd3"></div>
+    </div>
+
+    <!-- Group 5: 英文 -->
+    <div class="kw-group" id="grp4">
+      <div class="kw-group-btn" onclick="toggleGroup(4)">
+        英文 <span class="kw-group-count" id="gc4">0</span><span class="kw-group-arrow">▾</span>
+      </div>
+      <div class="kw-dropdown" id="gd4"></div>
+    </div>
+
+    <!-- Custom add + category -->
+    <div class="kw-custom-area">
+      <input class="kw-custom-inp" id="kwInput" placeholder="自定义关键词…" maxlength="20">
+      <button class="kw-custom-btn" id="kwAddBtn">添加</button>
+      <button class="cat-toggle-btn" id="catToggle">垂类 ▾</button>
     </div>
   </div>
 
-  <!-- Row 3: Category -->
+  <!-- Row 3: Category (collapsible) -->
   <div class="cat-panel" id="catPanel">
-    <div class="cat-list" id="catList"></div>
+    <div id="catList" style="display:flex;flex-wrap:wrap;gap:12px"></div>
   </div>
 
 </div>
 
 <!-- MAIN -->
 <main class="main" id="mainArea">
-  <div class="empty" id="emptyState">
-    <div class="empty-line">—</div>
-    <div class="empty-main">上传文件以开始筛选</div>
-    <div class="empty-sub">支持小红书后台导出的达人名单 .xlsx 格式</div>
-  </div>
-  <div id="resultArea" style="display:none">
-    <div class="stats" id="statsBar"></div>
-    <div class="table-wrap">
-      <table>
-        <thead id="tblHead"></thead>
-        <tbody id="tblBody"></tbody>
-      </table>
+  <div class="result-card">
+    <div class="empty" id="emptyState">
+      <div class="empty-dash">—</div>
+      <div class="empty-main">上传文件以开始筛选</div>
+      <div class="empty-sub">支持小红书后台导出的达人名单 .xlsx 格式</div>
     </div>
-    <div class="pagination" id="pagination"></div>
+    <div id="resultArea" style="display:none">
+      <div class="stats" id="statsBar"></div>
+      <div class="tbl-wrap">
+        <table><thead id="tblHead"></thead><tbody id="tblBody"></tbody></table>
+      </div>
+      <div class="pag" id="pagination"></div>
+    </div>
   </div>
 </main>
 
 <script>
+/* ── DATA ── */
 var ALL_DATA=[],FILTERED=[],EXCLUDED=[];
 var PAGE=1,PAGE_SIZE=20,SORT_COL='',SORT_ASC=false;
 
-var KW_LIST=[
-  '旅行社','旅游社','旅游局','地接','地接社','定制游','精品定制','旅策','旅程服务','旅游服务','旅游服务中心','服务中心',
-  '包车','包车游','包车服务','拼车','司导','跃行','车轮上',
-  '民宿','客栈','酒店','公寓','度假村','包栋','别墅','寓','inn','hostel','hotel','resort',
-  '游轮','票务','票务代理','代理','代购','团购',
-  'ota','携程','途牛','飞猪','去哪儿','途途','开荒',
-  '官方','官号','官博','机构','店铺','商家','企业','品牌','招商','广告','推广','营销','专营','旗舰','批发','直销',
-  '旅遊','旅館','包棟',
-  '景区','门票','观光',
-  'travel agency','tour','tours','guide'
+/* ── KEYWORD GROUPS ── */
+var KW_GROUPS=[
+  {name:'旅行社/地接', words:['旅行社','旅游社','旅游局','地接','地接社','定制游','精品定制','旅策','旅游服务','服务中心','包车','包车游','包车服务','拼车','司导','跃行','车轮上','包团']},
+  {name:'住宿类', words:['民宿','客栈','酒店','公寓','度假村','包栋','别墅','寓','旅馆','旅館']},
+  {name:'票务/平台', words:['游轮','票务','票务代理','代理','代购','团购','ota','携程','途牛','飞猪','去哪儿','途途','开荒','景区','门票','观光']},
+  {name:'商业通用', words:['官方','官号','官博','机构','店铺','商家','企业','品牌','招商','广告','推广','营销','专营','旗舰','批发','直销','旅游']},
+  {name:'英文', words:['inn','hostel','hotel','resort','travel agency','tour','tours','guide']}
 ];
-var EXCL_VERTS=['商业财经-房产楼市'];
-var VERTICALS=['旅游-旅游攻略','旅游-旅游记录','旅游-境外旅游','生活-美食','时尚-穿搭','商业财经-房产楼市'];
-var EXCL_VERT_SET={};EXCL_VERT_SET['商业财经-房产楼市']=true;
 
+function allKw(){
+  var arr=[];
+  KW_GROUPS.forEach(function(g){g.words.forEach(function(w){arr.push(w);});});
+  return arr;
+}
+
+/* ── UTILS ── */
 function parseCes(v){return parseFloat(String(v||'0').replace('%',''))||0}
 function getCesT(){return parseFloat(document.getElementById('cesSlider').value)||0}
 function getCesMin(){return parseInt(document.getElementById('cesMinSlider').value)||0}
 function getNotesMin(){return parseInt(document.getElementById('notesMinSlider').value)||0}
-function getNotesMax(){return parseInt(document.getElementById('notesMaxSlider').value)||9999}
+function getNotesMax(){var v=parseInt(document.getElementById('notesMaxSlider').value);return v>=2000?999999:v}
 function fmtN(n){var v=parseInt(n)||0;return v>=10000?(v/10000).toFixed(1)+'w':v>=1000?(v/1000).toFixed(1)+'k':String(v)}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
+/* ── KOC GRADE ── */
 function getKocGrade(r){
   var ces=parseInt(r['CES超100有效笔记数']||0);
   var notes=parseInt(r['笔记发布总数']||0);
@@ -266,49 +324,47 @@ function getKocGrade(r){
   return 'B';
 }
 
+/* ── FILTER ── */
 function filterRow(r){
   if(document.getElementById('ruleNeg').checked&&r['命中负向处置']==='是')return '负向处置';
   if(document.getElementById('ruleStatus').checked&&r['账号状态']&&r['账号状态']!=='NORMAL')return '账号异常';
   var nick=String(r['昵称']||'').toLowerCase();
   var xhsId=String(r['小红书号']||'').toLowerCase();
-  for(var i=0;i<KW_LIST.length;i++){
-    if(nick.indexOf(KW_LIST[i])>=0||xhsId.indexOf(KW_LIST[i])>=0)return '商业机构';
+  var kws=allKw();
+  for(var i=0;i<kws.length;i++){
+    if(nick.indexOf(kws[i])>=0||xhsId.indexOf(kws[i])>=0)return '商业机构';
   }
   var cesNum=parseInt(r['CES超100有效笔记数']||0);
-  if(document.getElementById('ruleZeroCes').checked&&cesNum===0)return 'CES有效笔记为0';
+  if(document.getElementById('ruleZeroCes').checked&&cesNum===0)return 'CES为0';
   var cesMin=getCesMin();
-  if(cesMin>0&&cesNum<cesMin)return 'CES有效笔记<'+cesMin;
+  if(cesMin>0&&cesNum<cesMin)return 'CES<'+cesMin;
   var notes=parseInt(r['笔记发布总数']||0);
   var nMin=getNotesMin(),nMax=getNotesMax();
-  if(nMin>0&&notes<nMin)return '笔记数<'+nMin;
-  if(nMax<2000&&notes>nMax)return '笔记数>'+nMax;
-  if(parseCes(r['近7天CES转化率'])<getCesT())return 'CES转化率低';
+  if(nMin>0&&notes<nMin)return '笔记<'+nMin;
+  if(nMax<999999&&notes>nMax)return '笔记>'+nMax;
+  if(parseCes(r['近7天CES转化率'])<getCesT())return '转化率低';
   var vert=String(r['作者垂类']||'').trim();
   if(EXCL_VERT_SET[vert])return '垂类排除';
   return null;
 }
 
-// Upload
+/* ── UPLOAD ── */
 var dropZone=document.getElementById('dropZone');
 var fileInput=document.getElementById('fileInput');
-var fileInfo=document.getElementById('fileInfo');
-
 dropZone.addEventListener('dragover',function(e){e.preventDefault()});
-dropZone.addEventListener('drop',function(e){
-  e.preventDefault();
-  if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);
-});
-fileInput.addEventListener('change',function(){if(fileInput.files.length)handleFile(fileInput.files[0])});
+dropZone.addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);});
+fileInput.addEventListener('change',function(){if(fileInput.files.length)handleFile(fileInput.files[0]);});
 document.getElementById('fileRemove').addEventListener('click',function(e){
   e.preventDefault();
   ALL_DATA=[];FILTERED=[];EXCLUDED=[];PAGE=1;
-  dropZone.style.display='';fileInfo.classList.remove('show');
+  dropZone.style.display='';document.getElementById('fileInfo').classList.remove('show');
   document.getElementById('btnFilter').disabled=true;
   document.getElementById('btnExport').disabled=true;
   document.getElementById('btnExclude').disabled=true;
   document.getElementById('emptyState').style.display='';
   document.getElementById('resultArea').style.display='none';
   fileInput.value='';
+  document.getElementById('emptyState').querySelector('.empty-main').textContent='上传文件以开始筛选';
 });
 
 function handleFile(file){
@@ -321,83 +377,121 @@ function handleFile(file){
       document.getElementById('fileName').textContent=file.name;
       document.getElementById('fileRows').textContent=ALL_DATA.length+' 行';
       dropZone.style.display='none';
-      fileInfo.classList.add('show');
+      document.getElementById('fileInfo').classList.add('show');
       document.getElementById('btnFilter').disabled=false;
       document.getElementById('emptyState').querySelector('.empty-main').textContent='已加载 '+ALL_DATA.length+' 条，点击「开始筛选」';
-    }catch(err){alert('解析失败: '+err.message)}
+    }catch(err){alert('解析失败: '+err.message);}
   };
   reader.readAsArrayBuffer(file);
 }
 
-// Sliders
-document.getElementById('cesSlider').addEventListener('input',function(){
-  document.getElementById('cesVal').textContent=parseFloat(this.value).toFixed(1)+'%';
-});
-document.getElementById('cesMinSlider').addEventListener('input',function(){
-  document.getElementById('cesMinVal').textContent=this.value==0?'0':this.value;
-});
-document.getElementById('notesMinSlider').addEventListener('input',function(){
-  document.getElementById('notesMinVal').textContent=this.value==0?'0':this.value;
-});
-document.getElementById('notesMaxSlider').addEventListener('input',function(){
-  document.getElementById('notesMaxVal').textContent=this.value>=2000?'不限':this.value;
+/* ── SLIDERS ── */
+document.getElementById('cesSlider').addEventListener('input',function(){document.getElementById('cesVal').textContent=parseFloat(this.value).toFixed(1)+'%';});
+document.getElementById('cesMinSlider').addEventListener('input',function(){document.getElementById('cesMinVal').textContent=this.value;});
+document.getElementById('notesMinSlider').addEventListener('input',function(){document.getElementById('notesMinVal').textContent=this.value;});
+document.getElementById('notesMaxSlider').addEventListener('input',function(){document.getElementById('notesMaxVal').textContent=parseInt(this.value)>=2000?'不限':this.value;});
+
+/* ── KEYWORD GROUPS UI ── */
+var openGroup=-1;
+function toggleGroup(idx){
+  if(openGroup===idx){closeAllGroups();return;}
+  closeAllGroups();
+  openGroup=idx;
+  document.getElementById('gd'+idx).classList.add('show');
+  document.querySelector('#grp'+idx+' .kw-group-btn').classList.add('active');
+}
+function closeAllGroups(){
+  for(var i=0;i<KW_GROUPS.length;i++){
+    document.getElementById('gd'+i).classList.remove('show');
+    document.querySelector('#grp'+i+' .kw-group-btn').classList.remove('active');
+  }
+  openGroup=-1;
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.kw-group'))closeAllGroups();
 });
 
-// Keywords
-function renderKw(){
-  var c=document.getElementById('kwContainer');c.innerHTML='';
-  for(var i=0;i<KW_LIST.length;i++){
-    var t=document.createElement('span');t.className='kw-tag';
-    t.innerHTML=escHtml(KW_LIST[i])+'<span class="kw-del" data-idx="'+i+'">×</span>';
-    c.appendChild(t);
-  }
-  c.querySelectorAll('.kw-del').forEach(function(btn){
-    btn.addEventListener('click',function(){KW_LIST.splice(parseInt(this.dataset.idx),1);renderKw();});
+function renderGroups(){
+  KW_GROUPS.forEach(function(g,idx){
+    document.getElementById('gc'+idx).textContent=g.words.length;
+    var dd=document.getElementById('gd'+idx);
+    var tags=g.words.map(function(w,wi){
+      return '<span class="kw-tag">'+escHtml(w)+'<span class="kw-del" data-gi="'+idx+'" data-wi="'+wi+'">×</span></span>';
+    }).join('');
+    dd.innerHTML='<div class="kw-drop-tags">'+tags+'</div><div class="kw-add-row"><input class="kw-inp" placeholder="添加到此分类…" maxlength="20" data-gi="'+idx+'"><button class="kw-add-ok" data-gi="'+idx+'">添加</button></div>';
+    dd.querySelectorAll('.kw-del').forEach(function(el){
+      el.addEventListener('click',function(){
+        var gi=parseInt(this.dataset.gi),wi=parseInt(this.dataset.wi);
+        KW_GROUPS[gi].words.splice(wi,1);renderGroups();
+      });
+    });
+    dd.querySelectorAll('.kw-add-ok').forEach(function(el){
+      el.addEventListener('click',function(){
+        var gi=parseInt(this.dataset.gi);
+        var inp=dd.querySelector('.kw-inp');
+        var v=inp.value.trim();
+        if(v&&KW_GROUPS[gi].words.indexOf(v)<0){KW_GROUPS[gi].words.push(v);renderGroups();inp.value='';}
+      });
+    });
+    dd.querySelectorAll('.kw-inp').forEach(function(inp){
+      inp.addEventListener('keydown',function(e){
+        if(e.key==='Enter'){dd.querySelector('.kw-add-ok').click();}
+      });
+    });
   });
 }
+
+// Custom add (goes to group 3 商业通用)
 document.getElementById('kwAddBtn').addEventListener('click',function(){
   var v=document.getElementById('kwInput').value.trim();
-  if(v&&KW_LIST.indexOf(v)<0){KW_LIST.push(v);renderKw();document.getElementById('kwInput').value='';}
+  if(v){
+    var found=false;
+    KW_GROUPS.forEach(function(g){if(g.words.indexOf(v)>=0)found=true;});
+    if(!found){KW_GROUPS[3].words.push(v);renderGroups();}
+    document.getElementById('kwInput').value='';
+  }
 });
 document.getElementById('kwInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('kwAddBtn').click();});
 
-// Category toggle
+/* ── CATEGORY ── */
+var EXCL_VERTS=['商业财经-房产楼市'];
+var EXCL_VERT_SET={'商业财经-房产楼市':true};
+var VERTICALS=['旅游-旅游攻略','旅游-旅游记录','旅游-境外旅游','生活-美食','时尚-穿搭','商业财经-房产楼市'];
 document.getElementById('catToggle').addEventListener('click',function(){
-  var p=document.getElementById('catPanel');
-  p.classList.toggle('open');
-  this.textContent=p.classList.contains('open')?'垂类筛选 ▴':'垂类筛选 ▾';
+  var p=document.getElementById('catPanel');p.classList.toggle('open');
+  this.textContent=p.classList.contains('open')?'垂类 ▴':'垂类 ▾';
 });
-
 function renderCat(){
   var c=document.getElementById('catList');c.innerHTML='';
-  for(var i=0;i<VERTICALS.length;i++){
-    var d=document.createElement('label');d.className='cat-item';
-    var cb=document.createElement('input');cb.type='checkbox';cb.checked=EXCL_VERTS.indexOf(VERTICALS[i])<0;cb.dataset.vert=VERTICALS[i];
-    d.appendChild(cb);d.appendChild(document.createTextNode(VERTICALS[i]));c.appendChild(d);
-  }
+  VERTICALS.forEach(function(v,i){
+    var lbl=document.createElement('label');lbl.className='cat-item';
+    var cb=document.createElement('input');cb.type='checkbox';cb.checked=EXCL_VERTS.indexOf(v)<0;cb.dataset.vert=v;
+    lbl.appendChild(cb);lbl.appendChild(document.createTextNode(v));c.appendChild(lbl);
+  });
 }
 function getActiveCats(){
   EXCL_VERTS=[];EXCL_VERT_SET={};
-  document.querySelectorAll('#catList input[type=checkbox]').forEach(function(cb){
+  document.querySelectorAll('#catList input').forEach(function(cb){
     if(!cb.checked){EXCL_VERTS.push(cb.dataset.vert);EXCL_VERT_SET[cb.dataset.vert]=true;}
   });
 }
 
-// Filter
+/* ── FILTER ACTION ── */
 document.getElementById('btnFilter').addEventListener('click',function(){
   if(!ALL_DATA.length)return;
   getActiveCats();FILTERED=[];EXCLUDED=[];
-  for(var i=0;i<ALL_DATA.length;i++){
-    var reason=filterRow(ALL_DATA[i]);
-    if(reason){ALL_DATA[i]._exclReason=reason;EXCLUDED.push(ALL_DATA[i]);}
-    else FILTERED.push(ALL_DATA[i]);
-  }
+  ALL_DATA.forEach(function(r){
+    var reason=filterRow(r);
+    if(reason){r._exclReason=reason;EXCLUDED.push(r);}
+    else FILTERED.push(r);
+  });
   PAGE=1;SORT_COL='';SORT_ASC=false;
   document.getElementById('emptyState').style.display='none';
   document.getElementById('resultArea').style.display='block';
   renderResult();
 });
 
+/* ── RENDER ── */
 var COLS=[
   {key:'昵称',label:'NICKNAME',sort:true},
   {key:'粉丝数',label:'FANS',sort:true},
@@ -406,30 +500,25 @@ var COLS=[
   {key:'近7天CES转化率',label:'RATE',sort:true},
   {key:'_grade',label:'GRADE',sort:true}
 ];
-
 function renderResult(){
-  var sCount=0,aCount=0,bCount=0;
-  for(var i=0;i<FILTERED.length;i++){
-    var g=getKocGrade(FILTERED[i]);FILTERED[i]._grade=g;
-    if(g==='S')sCount++;else if(g==='A')aCount++;else bCount++;
-  }
+  var s=0,a=0,b=0;
+  FILTERED.forEach(function(r){var g=getKocGrade(r);r._grade=g;if(g==='S')s++;else if(g==='A')a++;else b++;});
   document.getElementById('statsBar').innerHTML=
     '<span class="stat-total">共 '+FILTERED.length+' 人</span>'+
-    '<span class="stat-divider"></span>'+
-    '<span class="stat-item stat-s"><span class="stat-label">S 优质</span><span class="stat-num">'+sCount+'</span></span>'+
-    '<span class="stat-divider"></span>'+
-    '<span class="stat-item stat-a"><span class="stat-label">A 推荐</span><span class="stat-num">'+aCount+'</span></span>'+
-    '<span class="stat-divider"></span>'+
-    '<span class="stat-item stat-b"><span class="stat-label">B 备选</span><span class="stat-num">'+bCount+'</span></span>';
+    '<span class="stat-div"></span>'+
+    '<span class="stat-item stat-s"><span class="stat-lbl">S 优质</span><span class="stat-num">'+s+'</span></span>'+
+    '<span class="stat-div"></span>'+
+    '<span class="stat-item stat-a"><span class="stat-lbl">A 推荐</span><span class="stat-num">'+a+'</span></span>'+
+    '<span class="stat-div"></span>'+
+    '<span class="stat-item stat-b"><span class="stat-lbl">B 备选</span><span class="stat-num">'+b+'</span></span>';
 
-  var head=document.getElementById('tblHead');
   var hrow='<tr>';
-  for(var c=0;c<COLS.length;c++){
-    var cls=SORT_COL===COLS[c].key?('sorted '+(SORT_ASC?'asc':'desc')):'';
-    hrow+='<th data-col="'+COLS[c].key+'" class="'+cls+'">'+COLS[c].label+'</th>';
-  }
-  head.innerHTML=hrow+'</tr>';
-  head.querySelectorAll('th').forEach(function(th){
+  COLS.forEach(function(c){
+    var cls=SORT_COL===c.key?('sorted '+(SORT_ASC?'asc':'desc')):'';
+    hrow+='<th data-col="'+c.key+'" class="'+cls+'">'+c.label+'</th>';
+  });
+  document.getElementById('tblHead').innerHTML=hrow+'</tr>';
+  document.getElementById('tblHead').querySelectorAll('th').forEach(function(th){
     th.addEventListener('click',function(){
       var col=this.dataset.col;
       if(SORT_COL===col)SORT_ASC=!SORT_ASC;else{SORT_COL=col;SORT_ASC=true;}
@@ -448,68 +537,63 @@ function renderResult(){
     });
   }
 
-  var start=(PAGE-1)*PAGE_SIZE,pageData=sorted.slice(start,start+PAGE_SIZE);
+  var start=(PAGE-1)*PAGE_SIZE,pd=sorted.slice(start,start+PAGE_SIZE);
   var html='';
-  for(var j=0;j<pageData.length;j++){
-    var r=pageData[j];
+  pd.forEach(function(r){
     var grade=getKocGrade(r);
     var rate=parseCes(r['近7天CES转化率']);
     html+='<tr>'+
       '<td>'+escHtml(r['昵称']||'')+'</td>'+
-      '<td class="fans">'+fmtN(r['粉丝数'])+'</td>'+
-      '<td class="notes">'+escHtml(r['笔记发布总数'])+'</td>'+
-      '<td class="ces">'+escHtml(r['CES超100有效笔记数'])+'</td>'+
-      '<td class="'+(rate>2?'rate high':'rate')+'">'+(rate?rate.toFixed(1)+'%':'—')+'</td>'+
-      '<td class="grade-cell"><span class="badge badge-'+(grade.toLowerCase())+'">'+grade+'</span></td>'+
+      '<td class="td-fans">'+fmtN(r['粉丝数'])+'</td>'+
+      '<td class="td-notes">'+escHtml(r['笔记发布总数'])+'</td>'+
+      '<td class="td-ces">'+escHtml(r['CES超100有效笔记数'])+'</td>'+
+      '<td class="td-rate'+(rate>2?' hi':'')+'">'+( rate?rate.toFixed(1)+'%':'—')+'</td>'+
+      '<td><span class="badge badge-'+grade.toLowerCase()+'">'+grade+'</span></td>'+
     '</tr>';
-  }
+  });
   document.getElementById('tblBody').innerHTML=html;
 
   var totalPages=Math.ceil(sorted.length/PAGE_SIZE)||1;
   document.getElementById('pagination').innerHTML=
-    '<span class="page-btn'+(PAGE<=1?' disabled':'')+'" id="pgPrev">← 上一页</span>'+
-    '<span class="page-info">'+PAGE+' / '+totalPages+'</span>'+
-    '<span class="page-btn'+(PAGE>=totalPages?' disabled':'')+'" id="pgNext">下一页 →</span>';
+    '<span class="pag-btn'+(PAGE<=1?' dis':'')+'" id="pgPrev">← 上一页</span>'+
+    '<span class="pag-info">'+PAGE+' / '+totalPages+'</span>'+
+    '<span class="pag-btn'+(PAGE>=totalPages?' dis':'')+'" id="pgNext">下一页 →</span>';
   document.getElementById('pgPrev').onclick=function(){if(PAGE>1){PAGE--;renderResult();}};
   document.getElementById('pgNext').onclick=function(){if(PAGE<totalPages){PAGE++;renderResult();}};
-
   document.getElementById('btnExport').disabled=!FILTERED.length;
   document.getElementById('btnExclude').disabled=!EXCLUDED.length;
 }
 
-// Export
+/* ── EXPORT ── */
 function doExp(excl){
   var data=excl?EXCLUDED:FILTERED;if(!data.length)return;
   var rows=data.map(function(r){
     var obj={};
     Object.keys(r).forEach(function(k){if(k!=='_grade'&&k!=='_exclReason')obj[k]=r[k];});
-    if(!excl)obj['KOC评级']=getKocGrade(r)+'级';
+    obj['KOC评级']=getKocGrade(r)+'级';
     return obj;
   });
   if(!excl){var go={'S级':0,'A级':1,'B级':2};rows.sort(function(a,b){return(go[a['KOC评级']]||9)-(go[b['KOC评级']]||9);});}
   var ws=XLSX.utils.json_to_sheet(rows);
-  var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,excl?'排除名单':'KOC筛选结果');
-  XLSX.writeFile(wb,(excl?'排除名单_':'KOC筛选结果_')+new Date().toISOString().slice(0,10)+'.xlsx');
+  var wb2=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb2,ws,excl?'排除名单':'KOC筛选结果');
+  XLSX.writeFile(wb2,(excl?'排除名单_':'KOC筛选结果_')+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 document.getElementById('btnExport').addEventListener('click',function(){doExp(false);});
 document.getElementById('btnExclude').addEventListener('click',function(){doExp(true);});
 
-renderKw();
+/* ── INIT ── */
+renderGroups();
 renderCat();
-// 动态计算控制栏高度，避免结果区被遥挤
+
+// 动态调整 main padding-top
 function adjustMain(){
-  var ctrl=document.querySelector('.ctrl');
-  var main=document.querySelector('.main');
-  if(ctrl&&main){
-    var h=ctrl.getBoundingClientRect().bottom;
-    main.style.paddingTop=(h+16)+'px';
-  }
+  var ctrl=document.querySelector('.ctrl-card');
+  if(ctrl)document.querySelector('.main').style.paddingTop=(ctrl.getBoundingClientRect().bottom+16)+'px';
 }
 adjustMain();
 window.addEventListener('resize',adjustMain);
-var kwObs=new MutationObserver(adjustMain);
-if(document.querySelector('.ctrl'))kwObs.observe(document.querySelector('.ctrl'),{childList:true,subtree:true,attributes:false});
+new MutationObserver(adjustMain).observe(document.querySelector('.ctrl-card'),{childList:true,subtree:true,attributes:true});
 </script>
 </body>
 </html>
