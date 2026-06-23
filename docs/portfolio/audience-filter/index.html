@@ -154,13 +154,14 @@ tbody td{padding:12px 12px;font-size:13px;color:var(--text);vertical-align:middl
 
 <!-- CONTROL BAR -->
 <div class="ctrl">
-  <!-- Row 1 -->
+
+  <!-- Row 1: Upload + Sliders + Buttons -->
   <div class="ctrl-row1">
     <!-- Upload -->
-    <label class="upload-pill" id="dropZone">
+    <label class="upload-pill" id="dropZone" style="flex-shrink:0">
       <input type="file" id="fileInput" accept=".xlsx,.xls">
       <span class="up-icon">📂</span>
-      <span class="up-text"><strong>上传达人名单</strong>.xlsx 格式</span>
+      <span class="up-text"><strong>上传达人名单</strong>.xlsx</span>
     </label>
     <div class="file-loaded" id="fileInfo">
       <span class="file-dot"></span>
@@ -168,43 +169,28 @@ tbody td{padding:12px 12px;font-size:13px;color:var(--text);vertical-align:middl
       <span class="file-rows-txt" id="fileRows"></span>
       <span class="file-rm" id="fileRemove">✕</span>
     </div>
-
-    <!-- Sliders group -->
+    <!-- divider -->
+    <div style="width:1px;height:28px;background:var(--line);flex-shrink:0"></div>
+    <!-- Sliders -->
     <div class="sliders-group">
-      <div class="sl-item">
-        <span class="sl-label">CES有效笔记 ≥</span>
-        <input type="range" id="cesMinSlider" min="0" max="200" step="5" value="0">
-        <span class="sl-val" id="cesMinVal">0</span>
-      </div>
-      <div class="sl-item">
-        <span class="sl-label">CES转化率 ≥</span>
-        <input type="range" id="cesSlider" min="0" max="5" step="0.1" value="0">
-        <span class="sl-val" id="cesVal">0.0%</span>
-      </div>
-      <div class="sl-item">
-        <span class="sl-label">笔记最少</span>
-        <input type="range" id="notesMinSlider" min="0" max="100" step="5" value="0">
-        <span class="sl-val" id="notesMinVal">0</span>
-      </div>
-      <div class="sl-item">
-        <span class="sl-label">笔记最多</span>
-        <input type="range" id="notesMaxSlider" min="100" max="2000" step="50" value="2000">
-        <span class="sl-val" id="notesMaxVal">不限</span>
-      </div>
+      <div class="sl-item"><span class="sl-label">CES有效 ≥</span><input type="range" id="cesMinSlider" min="0" max="200" step="5" value="0"><span class="sl-val" id="cesMinVal">0</span></div>
+      <div class="sl-item"><span class="sl-label">转化率 ≥</span><input type="range" id="cesSlider" min="0" max="5" step="0.1" value="0"><span class="sl-val" id="cesVal">0%</span></div>
+      <div class="sl-item"><span class="sl-label">笔记最少</span><input type="range" id="notesMinSlider" min="0" max="200" step="5" value="0"><span class="sl-val" id="notesMinVal">0</span></div>
+      <div class="sl-item"><span class="sl-label">笔记最多</span><input type="range" id="notesMaxSlider" min="100" max="2000" step="50" value="2000"><span class="sl-val" id="notesMaxVal">不限</span></div>
     </div>
-
-    <!-- Quick checkboxes -->
-    <div class="quick-ck">
-      <label class="ck-item"><input type="checkbox" id="ruleNeg" checked>排除负向处置</label>
-      <label class="ck-item"><input type="checkbox" id="ruleStatus" checked>排除异常账号</label>
-      <label class="ck-item"><input type="checkbox" id="ruleZeroCes" checked>CES不能为0</label>
+    <!-- divider -->
+    <div style="width:1px;height:28px;background:var(--line);flex-shrink:0"></div>
+    <!-- Checkboxes -->
+    <div class="quick-ck" style="flex-shrink:0">
+      <label class="ck-item"><input type="checkbox" id="ruleNeg" checked>负向处置</label>
+      <label class="ck-item"><input type="checkbox" id="ruleStatus" checked>异常账号</label>
+      <label class="ck-item"><input type="checkbox" id="ruleZeroCes" checked>CES不为0</label>
     </div>
-
     <!-- Buttons -->
     <div class="ctrl-btns">
       <button class="btn btn-primary" id="btnFilter" disabled>开 始 筛 选</button>
-      <button class="btn btn-secondary" id="btnExport" disabled>导出结果</button>
-      <button class="btn btn-tertiary" id="btnExclude" disabled>导出排除</button>
+      <button class="btn btn-secondary" id="btnExport" disabled>导出</button>
+      <button class="btn btn-tertiary" id="btnExclude" disabled>排除名单</button>
     </div>
   </div>
 
@@ -212,17 +198,18 @@ tbody td{padding:12px 12px;font-size:13px;color:var(--text);vertical-align:middl
   <div class="ctrl-row2">
     <span class="ctrl-row2-label">商业关键词</span>
     <div class="kw-container" id="kwContainer"></div>
-    <div class="kw-add-inline">
+    <div class="kw-add-inline" style="flex-shrink:0">
       <input class="kw-input-s" id="kwInput" placeholder="添加关键词…" maxlength="20">
       <button class="kw-add-btn" id="kwAddBtn">添加</button>
-      <span class="cat-toggle" id="catToggle">垂类筛选 ▾</span>
+      <span class="cat-toggle" id="catToggle">垂类 ▾</span>
     </div>
   </div>
 
-  <!-- Row 3: Category (collapsible) -->
+  <!-- Row 3: Category -->
   <div class="cat-panel" id="catPanel">
     <div class="cat-list" id="catList"></div>
   </div>
+
 </div>
 
 <!-- MAIN -->
