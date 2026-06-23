@@ -140,6 +140,7 @@ footer a{color:#555}
     <div class="nav-cat">
       <button class="nc on" onclick="switchTab(0,this)">AI 产品运营</button>
       <button class="nc" onclick="switchTab(1,this)">日常提效</button>
+      <button class="nc" onclick="switchTab(2,this)">活动 Demo</button>
     </div>
     <div class="nav-r">
       <a href="https://github.com/qlb708/08" target="_blank" class="gh">
@@ -164,7 +165,7 @@ footer a{color:#555}
 
   </div>
   <div class="hero-r">
-    <div class="stat"><div class="stat-n">12<em>个</em></div><div class="stat-l">AI 工具可体验</div></div>
+    <div class="stat"><div class="stat-n">14<em>个</em></div><div class="stat-l">可体验作品</div></div>
     <div class="stat"><div class="stat-n">3<em>重</em></div><div class="stat-l">AI 降级保障</div></div>
     <div class="stat"><div class="stat-n">0<em>元</em></div><div class="stat-l">完全免费</div></div>
   </div>
@@ -180,6 +181,10 @@ footer a{color:#555}
     <button class="tab" onclick="switchTab(1,this)">
       <svg viewBox="0 0 24 24"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       日常提效
+    </button>
+    <button class="tab" onclick="switchTab(2,this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/></svg>
+      活动 Demo
     </button>
   </div>
 </div>
@@ -244,17 +249,32 @@ footer a{color:#555}
   </div>
 
   <!-- ── TAB 1: 日常提效 ── -->
-  <div class="tab-cnt" id="tc1">
+  <div class="tab-cnt" id="tc1"><!-- 内容由JS渲染，球星匹配已移至活动Tab -->
     <div class="sub-sec">
       <div class="sub-sec-hd">
         <div class="sub-ico" style="background:rgba(16,185,129,.1)">
           <svg viewBox="0 0 24 24" style="stroke:#10b981"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         </div>
         <span class="sub-name">日常提效</span>
-        <span class="sub-cnt" style="background:rgba(16,185,129,.08);color:#10b981">6 个</span>
+        <span class="sub-cnt" style="background:rgba(16,185,129,.08);color:#10b981">5 个</span>
         <div class="sub-line"></div>
       </div>
       <div class="grid g4" id="g-daily"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB 2: 活动 Demo ── -->
+  <div class="tab-cnt" id="tc2">
+    <div class="sub-sec">
+      <div class="sub-sec-hd">
+        <div class="sub-ico" style="background:rgba(239,68,68,.1)">
+          <svg viewBox="0 0 24 24" style="stroke:#ef4444"><circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/></svg>
+        </div>
+        <span class="sub-name">活动 Demo</span>
+        <span class="sub-cnt" style="background:rgba(239,68,68,.08);color:#ef4444">1 个</span>
+        <div class="sub-line"></div>
+      </div>
+      <div class="grid g3" id="g-activity"></div>
     </div>
   </div>
 
@@ -297,13 +317,16 @@ var RESEARCH=[
 var KB=[
   {n:'K1',t:'AI 知识库问答',d:'上传文档/粘贴内容，和你的知识库对话。选中文字即可划词提问，AI 立即解答。',h:'/08/portfolio/knowledge-base/',tag:'AI',tb:'rgba(139,92,246,.08)',tc:'#8b5cf6',ib:'rgba(139,92,246,.1)',ic:'#8b5cf6',icon:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',kb:true}
 ];
+var ACTIVITY=[
+  {n:'A1',t:'球星人格匹配',d:'世界杯特别活动 · 6题自动匹配你最像的球星，梅西/C罗/姆巴佩/贝克汉姆/马拉多纳，解锁专属欧洲朝圣路线。',h:'/08/activity/',tag:'世界杯',tb:'rgba(239,68,68,.08)',tc:'#ef4444',ib:'rgba(239,68,68,.1)',ic:'#ef4444',icon:'<circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/>',isNew:true}
+];
 var DAILY=[
   {n:'D1',t:'人群质量筛选器',d:'上传后台名单，过滤低活跃、商业号、负向处置账号，导出干净人群 + 排除名单。',h:'/08/portfolio/audience-filter/',tag:'筛选',tb:'rgba(79,70,229,.08)',tc:'#4f46e5',ib:'rgba(79,70,229,.1)',ic:'#4f46e5',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'},
   {n:'D2',t:'智能打印助手',d:'上传 PDF，逐页检测彩色/黑白，输出打印建议单和费用估算，省钱省事。',h:'/08/portfolio/print-helper/',tag:'打印',tb:'rgba(16,185,129,.08)',tc:'#10b981',ib:'rgba(16,185,129,.1)',ic:'#10b981',icon:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'},
   {n:'D3',t:'会议纪要拆解器',d:'粘贴会议记录，AI 提取结论、待办、关键决策和风险点，5 象限结构化输出。',h:'/08/portfolio/meeting-parser/',tag:'会议',tb:'rgba(14,165,233,.08)',tc:'#0ea5e9',ib:'rgba(14,165,233,.1)',ic:'#0ea5e9',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
   {n:'D4',t:'邮件/消息润色器',d:'口语想法变专业表达，4 种语气，自动附备选版本，飞书/邮件均适用。',h:'/08/portfolio/email-polisher/',tag:'润色',tb:'rgba(245,158,11,.08)',tc:'#d97706',ib:'rgba(245,158,11,.1)',ic:'#f59e0b',icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'}
   ,{n:'D5',t:'今日 Todo',d:'固定任务每天自动出现，新增任务秒入库，未完成智能顺延重排，进度一目了然。',h:'/08/todo/',tag:'效率',tb:'rgba(16,185,129,.08)',tc:'#10b981',ib:'rgba(16,185,129,.1)',ic:'#10b981',icon:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>'}
-  ,{n:'D6',t:'球星人格匹配',d:'世界杯特别活动 · 6题测出你最像哪位球星，梅西/C罗/姆巴佩，解锁专属欧洲朝圣路线。',h:'/08/activity/',tag:'活动',tb:'rgba(239,68,68,.08)',tc:'#ef4444',ib:'rgba(239,68,68,.1)',ic:'#ef4444',icon:'<circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/>',isNew:true}
+
 ];
 
 function card(t){
@@ -322,11 +345,13 @@ document.getElementById('g-growth').innerHTML=GROWTH.map(card).join('');
 document.getElementById('g-research').innerHTML=RESEARCH.map(card).join('');
 document.getElementById('g-kb').innerHTML=KB.map(card).join('');
 document.getElementById('g-daily').innerHTML=DAILY.map(card).join('');
+document.getElementById('g-activity').innerHTML=ACTIVITY.map(card).join('');
 
 function switchTab(idx,el){
   document.querySelectorAll('.tab-cnt').forEach(function(x,i){x.classList.toggle('show',i===idx);});
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on','on-green');});
-  el.classList.add(idx===0?'on':'on-green');
+  el.classList.add('on-green');
+  if(idx===0) el.classList.replace('on-green','on');
   document.querySelectorAll('.nc').forEach(function(x,i){x.classList.toggle('on',i===idx);});
 }
 
