@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>08 · 今日 Todo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fff;--bg2:#fafafa;
+  --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
+  --bd:rgba(0,0,0,.07);--bd2:rgba(0,0,0,.12);
+  --sh:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+  --r:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+  --p0:#ef4444;--p1:#f97316;--p2:#eab308;--p3:#9ca3af;
+  --p0bg:#fff1f1;--p1bg:#fff7ed;--p2bg:#fefce8;--p3bg:#f9fafb;
+}
+body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
+.nw{max-width:900px;margin:0 auto;padding:0 28px;width:100%;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;letter-spacing:-.02em}
+.lm{width:26px;height:26px;background:#0D0D0D;border-radius:7px;display:flex;align-items:center;justify-content:center}
+.lm svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round}
+.back{margin-left:auto;font-size:12px;color:var(--soft);display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:var(--pill);border:1px solid var(--bd);transition:all .15s}
+.back:hover{border-color:var(--bd2);color:var(--text)}
+.back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* MAIN */
+main{max-width:900px;margin:0 auto;padding:80px 28px 60px}
+
+/* HEADER */
+.header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px;gap:16px;flex-wrap:wrap}
+.header-left h1{font-size:28px;font-weight:800;letter-spacing:-.04em;margin-bottom:4px}
+.header-left .date{font-size:13px;color:var(--soft)}
+.header-right{display:flex;gap:8px;flex-wrap:wrap}
+.hbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:var(--font);transition:all .15s}
+.hbtn-primary{background:#0D0D0D;color:#fff}
+.hbtn-primary:hover{background:#333}
+.hbtn-ghost{background:var(--bg2);color:var(--soft);border:1px solid var(--bd)}
+.hbtn-ghost:hover{border-color:var(--bd2);color:var(--text)}
+.hbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* STATS */
+.stats{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+.stat{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px 18px;display:flex;flex-direction:column;gap:2px;flex:1;min-width:100px}
+.stat-num{font-size:22px;font-weight:800;letter-spacing:-.04em}
+.stat-label{font-size:11px;color:var(--muted);font-weight:500}
+.stat-num.red{color:var(--p0)}
+.stat-num.orange{color:var(--p1)}
+.stat-num.green{color:#10b981}
+
+/* SECTIONS */
+.section{margin-bottom:24px}
+.section-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.section-count{font-size:11px;color:var(--muted);background:var(--bg2);border:1px solid var(--bd);border-radius:var(--pill);padding:1px 8px}
+
+/* TASK CARD */
+.task{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;transition:all .2s;cursor:pointer;position:relative;margin-bottom:8px}
+.task:hover{border-color:var(--bd2);box-shadow:var(--sh)}
+.task.done{opacity:.45}
+.task.done .task-title{text-decoration:line-through}
+
+.check{width:20px;height:20px;border-radius:6px;border:2px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s;cursor:pointer}
+.check:hover{border-color:#0D0D0D}
+.check.checked{background:#0D0D0D;border-color:#0D0D0D}
+.check svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;display:none}
+.check.checked svg{display:block}
+
+.task-body{flex:1;min-width:0}
+.task-title{font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.4}
+.task-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.prio{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:var(--pill)}
+.prio-0{background:var(--p0bg);color:var(--p0)}
+.prio-1{background:var(--p1bg);color:var(--p1)}
+.prio-2{background:var(--p2bg);color:#a16207}
+.prio-3{background:var(--p3bg);color:var(--muted)}
+.tag{font-size:10.5px;color:var(--soft);background:var(--bg2);border:1px solid var(--bd);border-radius:var(--pill);padding:1px 7px}
+.deadline{font-size:10.5px;color:var(--p0);font-weight:600;display:flex;align-items:center;gap:3px}
+.deadline.soon{color:var(--p1)}
+.deadline.ok{color:var(--soft)}
+.deadline svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2}
+.rollover{font-size:10.5px;color:var(--muted)}
+.notes{font-size:12px;color:var(--soft);margin-top:5px;line-height:1.5}
+
+.task-actions{display:flex;gap:4px;flex-shrink:0;opacity:0;transition:opacity .15s}
+.task:hover .task-actions{opacity:1}
+.act-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--bd);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--muted)}
+.act-btn:hover{border-color:var(--bd2);color:var(--text);background:var(--bg2)}
+.act-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* RECURRING badge */
+.recurring-badge{font-size:9.5px;color:var(--muted);background:var(--bg2);border:1px solid var(--bd);border-radius:var(--pill);padding:1px 6px;letter-spacing:.03em}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 0;color:var(--muted)}
+.empty .em-icon{font-size:32px;margin-bottom:8px}
+.empty p{font-size:13px}
+
+/* ADD MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.show{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:18px;padding:24px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);transform:translateY(8px);transition:transform .2s}
+.overlay.show .modal{transform:translateY(0)}
+.modal h3{font-size:16px;font-weight:800;margin-bottom:18px;letter-spacing:-.03em}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--soft);letter-spacing:.06em;margin-bottom:5px;text-transform:uppercase}
+.form-group input,.form-group textarea,.form-group select{width:100%;border:1px solid var(--bd);border-radius:9px;padding:9px 12px;font-size:13px;font-family:var(--font);color:var(--text);background:#fff;outline:none;transition:border-color .15s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#0D0D0D}
+.form-group textarea{resize:vertical;min-height:60px}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+
+/* PROGRESS BAR */
+.progress-wrap{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.progress-bar{flex:1;height:6px;background:var(--bg2);border-radius:var(--pill);overflow:hidden}
+.progress-fill{height:100%;background:#0D0D0D;border-radius:var(--pill);transition:width .4s ease}
+.progress-text{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap}
+
+/* SYNC INFO */
+.sync-note{font-size:11px;color:var(--muted);text-align:center;margin-top:32px;line-height:1.7}
+.sync-note code{background:var(--bg2);border:1px solid var(--bd);border-radius:5px;padding:1px 6px;font-size:10.5px;color:var(--soft)}
+
+@media(max-width:600px){
+  main{padding:68px 16px 40px}
+  .header{margin-bottom:20px}
+  .header-left h1{font-size:22px}
+  .stats .stat{min-width:calc(50% - 6px)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nw">
+    <div class="logo">
+      <div class="lm"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+      <span>今日 Todo</span>
+    </div>
+    <a href="/08/portfolio/" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      工具集
+    </a>
+  </div>
+</nav>
+
+<main>
+  <div class="header">
+    <div class="header-left">
+      <h1 id="dayGreeting">今天</h1>
+      <div class="date" id="dateStr"></div>
+    </div>
+    <div class="header-right">
+      <button class="hbtn hbtn-ghost" onclick="toggleDone()">
+        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span id="toggleLabel">显示已完成</span>
+      </button>
+      <button class="hbtn hbtn-primary" onclick="openAdd()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        添加任务
+      </button>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progressText">0 / 0</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><div class="stat-num red" id="s0">0</div><div class="stat-label">🔴 紧急</div></div>
+    <div class="stat"><div class="stat-num orange" id="s1">0</div><div class="stat-label">🟠 高优</div></div>
+    <div class="stat"><div class="stat-num" id="s2">0</div><div class="stat-label">🟡 中优</div></div>
+    <div class="stat"><div class="stat-num green" id="sDone">0</div><div class="stat-label">✅ 今日完成</div></div>
+  </div>
+
+  <!-- Task list -->
+  <div id="taskList"></div>
+
+  <div class="sync-note">
+    任务数据存储在本地 <code>~/.openclaw/workspace/todo/tasks.json</code><br>
+    在 AI 对话中说「今天做什么」「加个任务：xxx」即可操作 · 页面自动同步
+  </div>
+</main>
+
+<!-- Add Modal -->
+<div class="overlay" id="overlay" onclick="closeAdd(event)">
+  <div class="modal">
+    <h3>✏️ 添加任务</h3>
+    <div class="form-group">
+      <label>任务名称</label>
+      <input type="text" id="inp-title" placeholder="例如：整理达人合作方案" autofocus />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>优先级</label>
+        <select id="inp-prio">
+          <option value="P0">🔴 P0 紧急</option>
+          <option value="P1" selected>🟠 P1 高优</option>
+          <option value="P2">🟡 P2 中优</option>
+          <option value="P3">⚪ P3 低优</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>时间跨度</label>
+        <select id="inp-horizon">
+          <option value="daily" selected>今天</option>
+          <option value="weekly">本周</option>
+          <option value="monthly">本月</option>
+          <option value="someday">以后</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>截止日期（选填）</label>
+        <input type="date" id="inp-deadline" />
+      </div>
+      <div class="form-group">
+        <label>标签（逗号分隔）</label>
+        <input type="text" id="inp-tags" placeholder="达人运营,数据" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>备注（选填）</label>
+      <textarea id="inp-notes" placeholder="补充说明..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="hbtn hbtn-ghost" onclick="closeAdd()">取消</button>
+      <button class="hbtn hbtn-primary" onclick="addTask()">添加</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 数据管理 ──────────────────────────────────────────────
+const STORAGE_KEY = 'smart_todo_tasks';
+const RECURRING_KEY = 'smart_todo_recurring';
+const TODAY = new Date().toISOString().split('T')[0];
+
+const DEFAULT_RECURRING = [
+  {id:'r001',title:'查看内容数据（完播率/互动率）',priority:'P1',tags:['数据'],horizon:'daily',notes:'关注完播率>15%的帖子'},
+  {id:'r002',title:'处理达人私信/合作咨询',priority:'P1',tags:['达人运营'],horizon:'daily',notes:''},
+  {id:'r003',title:'检查待发内容排期',priority:'P1',tags:['内容运营'],horizon:'daily',notes:'5:4:1 内容配比'},
+  {id:'r004',title:'同步竞品动态（小旅星/Gooh旅记）',priority:'P2',tags:['竞品'],horizon:'daily',notes:''},
+];
+
+function loadData(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null') || {tasks:[],lastPlanned:null}; }
+  catch(e){ return {tasks:[],lastPlanned:null}; }
+}
+function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+
+function loadRecurring(){
+  try{ return JSON.parse(localStorage.getItem(RECURRING_KEY)||'null') || DEFAULT_RECURRING; }
+  catch(e){ return DEFAULT_RECURRING; }
+}
+
+function uid(){ return Math.random().toString(36).slice(2,10); }
+
+function daysUntil(dl){
+  if(!dl) return 9999;
+  return Math.ceil((new Date(dl) - new Date(TODAY)) / 86400000);
+}
+
+function sortKey(t){
+  const PRIO = {P0:0,P1:1,P2:2,P3:3};
+  let p = PRIO[t.priority]||2;
+  if((t.rolloverCount||0) >= 3 && p > 0) p--;
+  const HORIZ = {daily:0,weekly:1,monthly:2,someday:3};
+  return [Math.min(daysUntil(t.deadline),30), p, HORIZ[t.horizon]||3];
+}
+
+function cmpSort(a,b){
+  const ka = sortKey(a), kb = sortKey(b);
+  for(let i=0;i<ka.length;i++) if(ka[i]!==kb[i]) return ka[i]-kb[i];
+  return 0;
+}
+
+// ── 初始化（顺延 + 注入固定任务）──────────────────────────
+function initPlan(d){
+  // 顺延未完成
+  let rolled = 0;
+  d.tasks.forEach(t => {
+    if(t.status==='todo' && t.scheduled && t.scheduled < TODAY){
+      t.scheduled = TODAY;
+      t.rolloverCount = (t.rolloverCount||0)+1;
+      rolled++;
+    }
+  });
+
+  // 注入固定任务（每天只注入一次）
+  if(d.lastPlanned !== TODAY){
+    const recurring = loadRecurring();
+    const existIds = new Set(d.tasks.map(t=>t.recurringId).filter(Boolean));
+    // 重置昨天的固定任务状态（让今天重新出现）
+    d.tasks = d.tasks.filter(t => !t.recurringId || t.status==='todo');
+    // 已经在 todo 里的 recurringId 重新收集
+    const stillTodo = new Set(d.tasks.map(t=>t.recurringId).filter(Boolean));
+    recurring.forEach(tmpl => {
+      if(!stillTodo.has(tmpl.id)){
+        d.tasks.push({
+          id: uid(), title: tmpl.title, type:'recurring',
+          priority: tmpl.priority||'P1', horizon: tmpl.horizon||'daily',
+          deadline: null, created: TODAY, scheduled: TODAY,
+          status:'todo', doneAt:null, tags: tmpl.tags||[], notes: tmpl.notes||'',
+          rolloverCount:0, recurringId: tmpl.id
+        });
+      }
+    });
+    d.lastPlanned = TODAY;
+    saveData(d);
+  }
+  return d;
+}
+
+// ── 渲染 ─────────────────────────────────────────────────
+let showDone = false;
+
+function render(){
+  let d = loadData();
+  d = initPlan(d);
+
+  const todayTasks = d.tasks.filter(t => t.scheduled === TODAY);
+  const todo = todayTasks.filter(t=>t.status==='todo').sort(cmpSort);
+  const done = todayTasks.filter(t=>t.status==='done');
+  const all = showDone ? [...todo,...done] : todo;
+
+  // Stats
+  document.getElementById('s0').textContent = todo.filter(t=>t.priority==='P0').length;
+  document.getElementById('s1').textContent = todo.filter(t=>t.priority==='P1').length;
+  document.getElementById('s2').textContent = todo.filter(t=>t.priority==='P2'||t.priority==='P3').length;
+  document.getElementById('sDone').textContent = done.length;
+
+  // Progress
+  const total = todo.length + done.length;
+  const pct = total ? Math.round(done.length/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = `${done.length} / ${total} · ${pct}%`;
+
+  // Group by priority
+  const groups = [
+    {label:'P0 · 紧急必做', items: all.filter(t=>t.priority==='P0')},
+    {label:'P1 · 今日高优', items: all.filter(t=>t.priority==='P1')},
+    {label:'P2 · 中优待办', items: all.filter(t=>t.priority==='P2')},
+    {label:'P3 · 有空再做', items: all.filter(t=>t.priority==='P3')},
+  ].filter(g=>g.items.length);
+
+  const PRIO_LABELS = {P0:'P0 紧急',P1:'P1 高优',P2:'P2 中优',P3:'P3 低优'};
+  const PRIO_CLASS = {P0:'prio-0',P1:'prio-1',P2:'prio-2',P3:'prio-3'};
+
+  let html = '';
+  if(!all.length){
+    html = `<div class="empty"><div class="em-icon">✨</div><p>今天没有待办任务，休息一下！</p></div>`;
+  } else {
+    groups.forEach(g => {
+      html += `<div class="section">
+        <div class="section-header">
+          <span class="section-title">${g.label}</span>
+          <span class="section-count">${g.items.length}</span>
+        </div>`;
+      g.items.forEach(t => {
+        const isDone = t.status==='done';
+        const dl = t.deadline ? daysUntil(t.deadline) : null;
+        const dlClass = dl !== null ? (dl<=0?'deadline':(dl<=2?'deadline soon':'deadline ok')) : '';
+        const dlText = dl !== null ? (dl<=0?'⏰ 今天截止':`⏰ ${t.deadline}`) : '';
+        html += `<div class="task${isDone?' done':''}" data-id="${t.id}">
+          <div class="check${isDone?' checked':''}" onclick="toggleTask('${t.id}',event)">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 12 4 10"/></svg>
+          </div>
+          <div class="task-body">
+            <div class="task-title">${t.title}</div>
+            <div class="task-meta">
+              <span class="prio ${PRIO_CLASS[t.priority]||'prio-3'}">${PRIO_LABELS[t.priority]||t.priority}</span>
+              ${t.recurringId?'<span class="recurring-badge">固定</span>':''}
+              ${dlText?`<span class="${dlClass}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${dlText}</span>`:''}
+              ${(t.rolloverCount||0)>0?`<span class="rollover">↩ 顺延${t.rolloverCount}次</span>`:''}
+              ${(t.tags||[]).map(tag=>`<span class="tag">${tag}</span>`).join('')}
+            </div>
+            ${t.notes?`<div class="notes">💬 ${t.notes}</div>`:''}
+          </div>
+          <div class="task-actions">
+            <button class="act-btn" onclick="deleteTask('${t.id}',event)" title="删除">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            </button>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+    });
+  }
+  document.getElementById('taskList').innerHTML = html;
+}
+
+// ── 操作 ─────────────────────────────────────────────────
+function toggleTask(id, e){
+  e.stopPropagation();
+  const d = loadData();
+  const t = d.tasks.find(x=>x.id===id);
+  if(!t) return;
+  if(t.status==='todo'){ t.status='done'; t.doneAt=new Date().toISOString(); }
+  else { t.status='todo'; t.doneAt=null; }
+  saveData(d);
+  render();
+}
+
+function deleteTask(id, e){
+  e.stopPropagation();
+  if(!confirm('删除这个任务？')) return;
+  const d = loadData();
+  d.tasks = d.tasks.filter(x=>x.id!==id);
+  saveData(d);
+  render();
+}
+
+function toggleDone(){
+  showDone = !showDone;
+  document.getElementById('toggleLabel').textContent = showDone ? '隐藏已完成' : '显示已完成';
+  render();
+}
+
+// ── Add Modal ─────────────────────────────────────────────
+function openAdd(){
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('inp-title').focus();
+}
+function closeAdd(e){
+  if(e && e.target !== document.getElementById('overlay')) return;
+  document.getElementById('overlay').classList.remove('show');
+}
+document.querySelector('.modal-actions .hbtn-ghost').addEventListener('click',()=>{
+  document.getElementById('overlay').classList.remove('show');
+});
+
+function addTask(){
+  const title = document.getElementById('inp-title').value.trim();
+  if(!title){ document.getElementById('inp-title').focus(); return; }
+  const d = loadData();
+  const tags = document.getElementById('inp-tags').value.trim();
+  d.tasks.push({
+    id: uid(), title, type:'oneoff',
+    priority: document.getElementById('inp-prio').value,
+    horizon: document.getElementById('inp-horizon').value,
+    deadline: document.getElementById('inp-deadline').value || null,
+    created: TODAY, scheduled: TODAY,
+    status:'todo', doneAt:null,
+    tags: tags ? tags.split(',').map(s=>s.trim()).filter(Boolean) : [],
+    notes: document.getElementById('inp-notes').value.trim(),
+    rolloverCount:0
+  });
+  saveData(d);
+  document.getElementById('overlay').classList.remove('show');
+  // reset form
+  ['inp-title','inp-deadline','inp-tags','inp-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('inp-prio').value='P1';
+  document.getElementById('inp-horizon').value='daily';
+  render();
+}
+
+// Enter to submit
+document.getElementById('inp-title').addEventListener('keydown', e => {
+  if(e.key==='Enter') addTask();
+});
+
+// ── Header date ───────────────────────────────────────────
+(function(){
+  const now = new Date();
+  const h = now.getHours();
+  const greeting = h<12 ? '早上好 ☀️' : h<18 ? '下午好 🌤' : '晚上好 🌙';
+  document.getElementById('dayGreeting').textContent = greeting;
+  const days = ['日','一','二','三','四','五','六'];
+  document.getElementById('dateStr').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · 星期${days[now.getDay()]}`;
+})();
+
+// ── Init ──────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
