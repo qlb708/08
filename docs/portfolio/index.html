@@ -135,6 +135,99 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);
 .card-kb{background:linear-gradient(135deg,var(--blue-light),#fff);border-color:var(--blue)}
 .card-new-badge{position:absolute;top:12px;left:12px;font-size:9px;font-weight:900;letter-spacing:.08em;background:var(--blue);color:#fff;border:1.5px solid var(--blue);padding:2px 7px;border-radius:3px;z-index:2}
 
+/* ── Activity cards (phone-preview style) ── */
+.g-activity-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  padding:0 4px;
+}
+@media(max-width:480px){.g-activity-grid{grid-template-columns:1fr}}
+.acard{
+  display:flex;
+  flex-direction:column;
+  text-decoration:none;
+  background:#fff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.05);
+  transition:transform .2s,box-shadow .2s;
+  position:relative;
+}
+.acard:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(0,0,0,.12),0 2px 6px rgba(0,0,0,.06);
+}
+.acard-cover{
+  height:130px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:44px;
+  position:relative;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.acard-cover-bg{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:110px;opacity:.07;
+  pointer-events:none;
+}
+.acard-body{
+  padding:14px 14px 16px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+.acard-tag{
+  display:inline-block;
+  font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  padding:2px 8px;border-radius:20px;
+  margin-bottom:7px;width:fit-content;
+}
+.acard-title{
+  font-size:14px;font-weight:900;letter-spacing:-.02em;
+  color:var(--black);margin-bottom:5px;line-height:1.25;
+}
+.acard-desc{
+  font-size:11px;color:var(--soft);line-height:1.6;flex:1;
+}
+.acard-footer{
+  margin-top:12px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.acard-cta{
+  font-size:11px;font-weight:700;color:var(--black);
+}
+.acard-arrow{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--black);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .15s;
+}
+.acard:hover .acard-arrow{transform:scale(1.1)}
+.acard-arrow svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}
+.acard-new{
+  position:absolute;top:10px;right:10px;
+  background:#fff;color:var(--black);
+  font-size:9px;font-weight:900;letter-spacing:.06em;
+  padding:2px 8px;border-radius:20px;
+  text-transform:uppercase;
+  box-shadow:0 1px 4px rgba(0,0,0,.15);
+}
+/* activity cover gradients */
+.ac-star .acard-cover{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e)}
+.ac-fortune .acard-cover{background:linear-gradient(135deg,#1a0533,#3d1166)}
+.ac-puzzle .acard-cover{background:linear-gradient(135deg,#0a2342,#1a4a8a)}
+.ac-geo .acard-cover{background:linear-gradient(135deg,#064e3b,#065f46)}
+.ac-mystic .acard-cover{background:linear-gradient(135deg,#1e1b4b,#312e81)}
+.ac-star .acard-tag{background:rgba(239,68,68,.08);color:#dc2626}
+.ac-fortune .acard-tag{background:rgba(139,92,246,.08);color:#7c3aed}
+.ac-puzzle .acard-tag{background:rgba(14,165,233,.08);color:#0369a1}
+.ac-geo .acard-tag{background:rgba(16,185,129,.08);color:#047857}
+.ac-mystic .acard-tag{background:rgba(99,102,241,.08);color:#4338ca}
+
 /* ── FAQ ── */
 .faq-w{max-width:640px;margin:0 auto;padding:0 24px 60px}
 .faq-title{font-size:18px;font-weight:900;letter-spacing:-.03em;margin-bottom:16px;color:var(--black)}
@@ -269,7 +362,7 @@ footer a{color:var(--black);text-decoration:underline;text-underline-offset:2px}
         <span class="sub-name">活动 Demo</span><span class="sub-cnt">5 个</span>
         <div class="sub-line"></div>
       </div>
-      <div class="grid g3" id="g-activity"></div>
+      <div class="g-activity-grid" id="g-activity"></div>
     </div>
   </div>
 </div>
@@ -320,11 +413,11 @@ var DAILY=[
   {n:'D5',t:'今日 Todo',d:'固定任务每天自动出现，新增任务秒入库，未完成智能顺延重排，进度一目了然。',h:'/08/todo/',tag:'效率',ic:'#10b981',icon:'<polyline points="9 11 12 14 22 4"/>'}
 ];
 var ACTIVITY=[
-  {n:'A1',t:'球星人格匹配',d:'6题自动匹配你最像的球星，梅西/C罗/姆巴佩，解锁专属欧洲朝圣路线。',h:'/08/activity/star/',tag:'世界杯',ic:'#ef4444',icon:'<circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/>'},
-  {n:'A2',t:'命运之地',d:'5道玄学题，测出你和哪座城市早就注定，获得专属命运签语。',h:'/08/activity/fortune/',tag:'玄学',ic:'#8b5cf6',icon:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>'},
-  {n:'A3',t:'城市足迹拼图',d:'标记你去过的24座城市，收集碎片解锁旅行家成就，分享你的足迹。',h:'/08/activity/puzzle/',tag:'足迹',ic:'#0ea5e9',icon:'<rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/>',isNew:true},
-  {n:'A4',t:'GEO 可见性分析',d:'粘贴旅行攻略，分析在 ChatGPT/Perplexity 中的 AI 搜索可见性评分与优化建议。',h:'/08/activity/geo/',tag:'GEO',ic:'#10b981',icon:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>'},
-  {n:'A5',t:'问天机',d:'水晶球摇一摇·符纸缓慢显字·地图火焰燃烧，三种玄学仪式测出你的命定目的地。',h:'/08/activity/mystic/',tag:'玄学',ic:'#8b5cf6',icon:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>',isNew:true}
+  {cls:'ac-star', em:'⚽🏆', bg:'⚽', t:'球星人格匹配', d:'6题自动匹配你最像的球星，梅西/C罗/姆巴佩，解锁专属欧洲朝圣路线。', h:'/08/activity/star/', tag:'世界杯', cta:'开始匹配'},
+  {cls:'ac-fortune', em:'🔮✨', bg:'🔮', t:'命运之地', d:'5道玄学题，测出你和哪座城市早就注定，获得专属命运签语。', h:'/08/activity/fortune/', tag:'玄学占卜', cta:'开始占卜'},
+  {cls:'ac-puzzle', em:'🧩🌍', bg:'🧩', t:'城市足迹拼图', d:'标记你去过的24座城市，收集碎片解锁旅行家成就，分享你的足迹。', h:'/08/activity/puzzle/', tag:'足迹收集', cta:'开始打卡', isNew:true},
+  {cls:'ac-geo', em:'🤖🔍', bg:'🤖', t:'GEO 可见性分析', d:'粘贴旅行攻略，分析在 ChatGPT/Perplexity 中的 AI 搜索可见性与优化建议。', h:'/08/activity/geo/', tag:'GEO', cta:'开始分析'},
+  {cls:'ac-mystic', em:'🔮📜🗺️', bg:'✨', t:'问天机', d:'水晶球摇一摇·符纸显字·地图推进，三种玄学仪式测出你的命定目的地。', h:'/08/activity/mystic/', tag:'玄学仪式', cta:'问天机', isNew:true}
 ];
 
 /* ── Card renderer ── */
@@ -351,7 +444,14 @@ document.getElementById('g-growth').innerHTML=GROWTH.map(card).join('');
 document.getElementById('g-research').innerHTML=RESEARCH.map(card).join('');
 document.getElementById('g-kb').innerHTML=KB.map(card).join('');
 document.getElementById('g-daily').innerHTML=DAILY.map(card).join('');
-document.getElementById('g-activity').innerHTML=ACTIVITY.map(card).join('');
+function actCard(t){
+  return '<a href="'+t.h+'" class="acard '+t.cls+'">'+(t.isNew?'<span class="acard-new">NEW</span>':'')
+    +'<div class="acard-cover"><div class="acard-cover-bg">'+t.bg+'</div>'+t.em+'</div>'
+    +'<div class="acard-body"><span class="acard-tag">'+t.tag+'</span><div class="acard-title">'+t.t+'</div><div class="acard-desc">'+t.d+'</div>'
+    +'<div class="acard-footer"><span class="acard-cta">'+t.cta+'</span><span class="acard-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>'
+    +'</div></a>';
+}
+document.getElementById('g-activity').innerHTML=ACTIVITY.map(actCard).join('');
 
 /* ── Tab switching with underline ── */
 function switchTab(idx,el){
