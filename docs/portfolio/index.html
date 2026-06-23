@@ -260,7 +260,8 @@ footer a{color:var(--black);text-decoration:underline;text-underline-offset:2px}
     <div class="nav-cat">
       <button class="nc on" data-idx="0" onclick="switchTab(0,this)">AI 产品运营</button>
       <button class="nc" data-idx="1" onclick="switchTab(1,this)">日常提效</button>
-      <button class="nc" data-idx="2" onclick="switchTab(2,this)">活动 Demo</button>
+      <button class="nc" data-idx="2" onclick="switchTab(2,this)">数据洞察</button>
+      <button class="nc" data-idx="3" onclick="switchTab(3,this)">活动 Demo</button>
     </div>
     <div class="nav-r">
       <a href="https://github.com/qlb708/08" target="_blank" class="gh">
@@ -306,7 +307,8 @@ footer a{color:var(--black);text-decoration:underline;text-underline-offset:2px}
   <div class="tab-bar" id="tabBar">
     <button class="tab-btn on" onclick="switchTab(0,this)">AI 产品运营</button>
     <button class="tab-btn" onclick="switchTab(1,this)">日常提效</button>
-    <button class="tab-btn" onclick="switchTab(2,this)">活动 Demo</button>
+    <button class="tab-btn" onclick="switchTab(2,this)">数据洞察</button>
+    <button class="tab-btn" onclick="switchTab(3,this)">活动 Demo</button>
     <div class="tab-indicator" id="tabInd"></div>
   </div>
 </div>
@@ -361,8 +363,20 @@ footer a{color:var(--black);text-decoration:underline;text-underline-offset:2px}
     </div>
   </div>
 
-  <!-- ══ TAB 2: 活动 Demo ══ -->
+  <!-- ══ TAB 2: 数据洞察 ══ -->
   <div class="tab-cnt" id="tc2">
+    <div class="sub-sec">
+      <div class="sub-hd">
+        <div class="sub-ico"><svg viewBox="0 0 24 24" style="stroke:#1a56db"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <span class="sub-name">数据洞察</span><span class="sub-cnt">5 个</span>
+        <div class="sub-line"></div>
+      </div>
+      <div class="grid g3" id="g-data"></div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 3: 活动 Demo ══ -->
+  <div class="tab-cnt" id="tc3">
     <div class="sub-sec">
       <div class="sub-hd">
         <div class="sub-ico"><svg viewBox="0 0 24 24" style="stroke:#ef4444"><circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/></svg></div>
@@ -463,6 +477,14 @@ function actCard(t){
     +'<div class="acard-footer"><span class="acard-cta">'+t.cta+'</span><span class="acard-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>'
     +'</div>'+close;
 }
+var DATA_TOOLS=[
+  {n:'DV1',t:'数据可视化',d:'上传 Excel/CSV 自动识别字段，生成折线/柱状/饼图/散点图，一键导出 PNG。',h:'/08/portfolio/data-viz/',tag:'图表',ic:'#1a56db',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+  {n:'DV2',t:'爆款选题预测器',d:'输入内容方向和平台，得出爆款概率评分、标题优化建议、最佳发布时间和内容要素清单。',h:'/08/portfolio/topic-radar/',tag:'选题',ic:'#f59e0b',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'},
+  {n:'DV3',t:'达人 ROI 计算器',d:'输入粉丝/互动/报价，自动计算 CPE/CPM/ROI，横向对比多个达人投放性价比。',h:'/08/portfolio/roi-calc/',tag:'ROI',ic:'#10b981',icon:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'},
+  {n:'DV4',t:'数据解读助手',d:'粘贴产品数据，AI 健康评估 + 根因诊断 + 实验方案，帮你看懂数字背后的信号。',h:'/08/portfolio/data-insight/',tag:'数据',ic:'#0ea5e9',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+  {n:'DV5',t:'周报生成器',d:'描述本周核心数据和达成情况，AI 生成结构化周报，含亮点、问题和下周计划。',h:'/08/portfolio/weekly-report/',tag:'周报',ic:'#8b5cf6',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'}
+];
+document.getElementById('g-data').innerHTML=DATA_TOOLS.map(card).join('');
 document.getElementById('g-activity').innerHTML=ACTIVITY.map(actCard).join('');
 
 /* ── Tab switching with underline ── */
