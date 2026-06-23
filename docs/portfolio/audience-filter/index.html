@@ -575,7 +575,7 @@ var PAGE=1;
 var PAGE_SIZE=20;
 var SORT_COL='';
 var SORT_ASC=true;
-var KW_LIST=['旅行社','旅游社','团购','代购','广告','招商','官方','机构','店铺','商家','企业','品牌','合作','推广','营销','专营','旗舰','批发','直销','景区','门票','定制游'];
+var KW_LIST=['旅行社','旅游社','旅游局','地接','地接社','包车','包团','民宿','客栈','酒店','公寓','度假村','resort','hotel','hostel','inn','景区','门票','定制游','团购','代购','广告','招商','官方','官号','官博','机构','店铺','商家','企业','品牌','合作','推广','营销','专营','旗舰','批发','直销','ota','携程','途牛','飞猪','去哪儿','途途'];
 var EXCL_VERTS=['商业财经-房产楼市'];
 
 function toggleS(id){
@@ -689,15 +689,34 @@ function onSlider(){
   updateEst();
 }
 
+function getKocGrade(r){
+  var ces=parseInt(r['CES超100有效笔记数']||0);
+  var notes=parseInt(r['笔记发布总数']||0);
+  if(ces>=150&&notes>=30&&notes<=300)return 'S 优质';
+  if(ces>=80)return 'A 推荐';
+  return 'B 备选';
+}
 function filterRow(r){
-  if(parseCes(r['近7天CES转化率'])<getCesT())return 'CES低活跃';
-  if(document.getElementById('ckNormal').checked&&r['账号状态']!=='NORMAL')return '非NORMAL账号';
+  // 1.负向处置
   if(document.getElementById('ckNeg').checked&&r['命中负向处置']==='是')return '命中负向处置';
-  var nick=String(r['昵称']||'');
-  for(var i=0;i<KW_LIST.length;i++)if(nick.indexOf(KW_LIST[i])>=0)return '商业/广告账号';
-  var mn=parseInt(document.getElementById('minNotes').value)||0;
-  if(mn>0&&parseInt(r['笔记发布总数']||0)<mn)return '笔记数不足';
-  if(document.getElementById('ckZeroCes').checked&&parseInt(r['CES超100有效笔记数']||0)===0)return '零有效CES笔记';
+  // 2.账号状态
+  if(document.getElementById('ckNormal').checked&&r['账号状态']!=='NORMAL')return '非NORMAL账号';
+  // 3.商业/机构关键词（昵称 + 小红书号）
+  var nick=String(r['昵称']||'').toLowerCase();
+  var xhsId=String(r['小红书号']||'').toLowerCase();
+  for(var i=0;i<KW_LIST.length;i++){if(nick.indexOf(KW_LIST[i])>=0||xhsId.indexOf(KW_LIST[i])>=0)return '商业/机构账号';}
+  // 4.CES有效笔记数 ≥ 50
+  var cesNum=parseInt(r['CES超100有效笔记数']||0);
+  if(document.getElementById('ckZeroCes').checked&&cesNum===0)return '零有效CES笔记';
+  if(cesNum<50)return 'CES有效笔记不足(需≥50)';
+  // 5.笔记数量 20-500
+  var notes=parseInt(r['笔记发布总数']||0);
+  var mn=parseInt(document.getElementById('minNotes').value)||20;
+  if(notes<mn)return '笔记数不足(<20)';
+  if(notes>500)return '笔记数过多(>500)';
+  // 6.CES转化率
+  if(parseCes(r['近7天CES转化率'])<getCesT())return 'CES转化率低';
+  // 7.垂类过滤
   var vert=String(r['作者垂类']||'').trim();
   if(EXCL_VERTS.indexOf(vert)>=0)return '垂类过滤';
   return null;
@@ -845,11 +864,20 @@ function gPage(p){PAGE=p;renderResult();}
 function fmtN(n){var v=parseInt(n)||0;return v>=10000?(v/10000).toFixed(1)+'w':String(v);}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function doExp(excl){
-  var data=excl?EXCLUDED:FILTERED;
+  var raw=excl?EXCLUDED:FILTERED;
+  var data=excl?raw:raw.map(function(r){
+    var obj=Object.assign({},r);
+    obj['KOC评级']=getKocGrade(r);
+    return obj;
+  });
+  if(!excl){
+    var order={'S 优质':0,'A 推荐':1,'B 备选':2};
+    data.sort(function(a,b){return(order[a['KOC评级']]||9)-(order[b['KOC评级']]||9);});
+  }
   var ws=XLSX.utils.json_to_sheet(data);
   var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,excl?'排除名单':'筛选结果');
-  XLSX.writeFile(wb,(excl?'排除名单':'筛选结果')+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  XLSX.utils.book_append_sheet(wb,ws,excl?'排除名单':'KOC筛选结果');
+  XLSX.writeFile(wb,(excl?'排除名单_':'KOC筛选结果_')+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 </script>
 </body>
