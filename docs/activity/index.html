@@ -2,530 +2,692 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>你最像哪位球星？⚽</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>⚽ 球迷旅行 · 活动 Demo</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#fff;--bg2:#f8f8f8;
   --text:#0D0D0D;--soft:#6b7280;--muted:#9ca3af;
-  --bd:rgba(0,0,0,.08);
+  --bd:rgba(0,0,0,.08);--bd2:rgba(0,0,0,.14);
   --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
-  --gold:#d4a017;--green:#1a6b3a;--red:#c0392b;
+  --gold:#c8920a;--goldbg:#fffbeb;
 }
-html{font-size:16px}
-body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+html,body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-/* ── 手机宽度容器 ── */
-.phone-wrap{max-width:390px;margin:0 auto;min-height:100vh;background:#fff;position:relative;overflow:hidden}
+/* ── 手机容器 ── */
+.shell{max-width:390px;margin:0 auto;min-height:100vh;background:#fff;position:relative;display:flex;flex-direction:column}
+@media(min-width:440px){.shell{box-shadow:0 0 0 1px rgba(0,0,0,.06),0 20px 60px rgba(0,0,0,.08);min-height:100vh}}
 
 /* ── NAV ── */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);height:50px;display:flex;align-items:center;padding:0 18px;gap:10px}
+nav{height:50px;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;position:sticky;top:0;z-index:200}
 .logo{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;letter-spacing:-.02em}
-.lm{width:24px;height:24px;background:#0D0D0D;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
-.back{margin-left:auto;font-size:12px;color:var(--soft);display:flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;border:1px solid var(--bd)}
+.lm{width:24px;height:24px;background:#0D0D0D;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1}
+.back{margin-left:auto;font-size:12px;color:var(--soft);display:flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);text-decoration:none}
 .back svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
-/* ── PROGRESS BAR ── */
-.prog-bar{height:3px;background:var(--bg2);position:sticky;top:50px;z-index:99}
-.prog-fill{height:100%;background:#0D0D0D;transition:width .4s cubic-bezier(.4,0,.2,1);width:0%}
+/* ── MODULE TABS ── */
+.mod-tabs{display:flex;padding:12px 16px 0;gap:0;border-bottom:1px solid var(--bd);flex-shrink:0;background:#fff}
+.mtab{flex:1;text-align:center;padding:8px 0 10px;font-size:13px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;position:relative}
+.mtab.on{color:var(--text);border-bottom-color:#0D0D0D}
+.mtab .badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#ef4444;color:#fff;border-radius:50%;font-size:9px;font-weight:800;margin-left:4px;vertical-align:middle}
 
-/* ── HERO ── */
-.hero{padding:36px 24px 28px;text-align:center;position:relative;overflow:hidden}
-.hero::before{
-  content:'⚽';position:absolute;font-size:180px;opacity:.04;
-  top:-30px;right:-40px;transform:rotate(15deg);pointer-events:none;
-}
-.hero::after{
-  content:'🏆';position:absolute;font-size:120px;opacity:.04;
-  bottom:-20px;left:-20px;transform:rotate(-10deg);pointer-events:none;
-}
-.hero-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);border:1px solid var(--bd);border-radius:20px;padding:4px 12px;margin-bottom:20px}
-.hero h1{font-size:32px;font-weight:900;letter-spacing:-.05em;line-height:1.1;margin-bottom:10px}
-.hero h1 em{font-style:normal;color:var(--gold)}
-.hero p{font-size:14px;color:var(--soft);line-height:1.6;margin-bottom:24px}
-.hero-cta{display:inline-flex;align-items:center;gap:7px;background:#0D0D0D;color:#fff;border:none;border-radius:14px;padding:13px 26px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 20px rgba(0,0,0,.2)}
-.hero-cta:active{transform:scale(.97)}
-.hero-cta svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}
+/* ── PAGE PANELS ── */
+.panel{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.panel.show{display:block}
 
-/* ── STARS PREVIEW ── */
-.stars-preview{display:flex;justify-content:center;gap:-8px;margin-top:24px;position:relative;z-index:1}
-.star-avatar{width:48px;height:48px;border-radius:50%;border:2.5px solid #fff;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:22px;margin-left:-8px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.star-avatar:first-child{margin-left:0}
-.stars-label{text-align:center;font-size:11px;color:var(--muted);margin-top:8px}
+/* ════════════════════════════════════════════
+   MODULE A：球星匹配
+═══════════════════════════════════════════ */
+/* HERO */
+.qa-hero{padding:28px 20px 20px;text-align:center;background:#0D0D0D;color:#fff;position:relative;overflow:hidden}
+.qa-hero::before{content:'⚽';position:absolute;font-size:160px;opacity:.05;right:-30px;top:-20px;transform:rotate(20deg);pointer-events:none}
+.qa-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;margin-bottom:12px}
+.qa-hero h2{font-size:26px;font-weight:900;letter-spacing:-.05em;line-height:1.1;margin-bottom:8px}
+.qa-hero h2 em{font-style:normal;color:var(--gold)}
+.qa-hero p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.6}
 
-/* ── QUIZ SECTION ── */
-#quiz-section{padding:0 0 40px;display:none}
-.q-card{padding:20px 20px 0}
-.q-num{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
-.q-text{font-size:17px;font-weight:800;letter-spacing:-.03em;line-height:1.4;margin-bottom:18px}
-.options{display:flex;flex-direction:column;gap:9px;padding:0 20px 20px}
-.opt{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:13px;border:1.5px solid var(--bd);cursor:pointer;transition:all .18s;background:#fff;font-family:var(--font);text-align:left;width:100%}
-.opt:active{transform:scale(.98)}
-.opt.selected{border-color:#0D0D0D;background:#0D0D0D}
-.opt.selected .opt-text{color:#fff}
-.opt.selected .opt-em{color:rgba(255,255,255,.6)}
-.opt-icon{font-size:20px;flex-shrink:0;width:32px;text-align:center}
-.opt-body{flex:1}
-.opt-text{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
-.opt-em{font-size:12px;color:var(--muted);margin-top:2px}
-.opt-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--bd);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s}
-.opt.selected .opt-check{background:#fff;border-color:#fff}
-.opt.selected .opt-check::after{content:'';width:8px;height:8px;background:#0D0D0D;border-radius:50%}
+/* PROGRESS */
+.qa-prog{padding:12px 20px;border-bottom:1px solid var(--bd);background:#fff;display:flex;align-items:center;gap:10px}
+.qa-prog-track{flex:1;height:4px;background:var(--bg2);border-radius:2px;overflow:hidden}
+.qa-prog-fill{height:100%;background:#0D0D0D;border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.qa-prog-label{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
 
-/* ── RESULT ── */
-#result-section{display:none;padding:0 0 50px;animation:fadeUp .5s ease forwards}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.result-hero{padding:28px 24px 20px;text-align:center;background:linear-gradient(160deg,#0D0D0D 0%,#1a1a1a 100%);color:#fff;margin-bottom:0}
-.res-match{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px}
-.res-avatar{font-size:64px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 20px rgba(0,0,0,.4))}
-.res-name{font-size:24px;font-weight:900;letter-spacing:-.04em;margin-bottom:4px}
-.res-sub{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:14px}
-.res-desc{font-size:14px;line-height:1.7;color:rgba(255,255,255,.85);padding:0 4px}
-.res-tags{display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-.res-tag{font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.8)}
+/* QUESTION */
+.qa-qwrap{padding:20px}
+.qa-qnum{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.qa-qtext{font-size:17px;font-weight:800;letter-spacing:-.03em;line-height:1.4;margin-bottom:16px}
+.qa-opts{display:flex;flex-direction:column;gap:8px}
+.qa-opt{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:13px;border:1.5px solid var(--bd);cursor:pointer;background:#fff;font-family:var(--font);text-align:left;width:100%;transition:all .15s}
+.qa-opt:active{transform:scale(.98)}
+.qa-opt.sel{border-color:#0D0D0D;background:#0D0D0D}
+.qa-opt.sel .qa-opt-text{color:#fff}
+.qa-opt.sel .qa-opt-sub{color:rgba(255,255,255,.5)}
+.qa-opt-em{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.qa-opt-body{flex:1}
+.qa-opt-text{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
+.qa-opt-sub{font-size:11px;color:var(--muted);margin-top:2px}
 
-.result-body{padding:20px}
-.res-section{margin-bottom:18px}
-.res-section-title{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
-.route-card{background:var(--bg2);border-radius:14px;padding:14px 16px}
-.route-city{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
-.route-city:last-child{border-bottom:none;padding-bottom:0}
-.route-city:first-child{padding-top:0}
-.city-dot{width:8px;height:8px;border-radius:50%;background:#0D0D0D;flex-shrink:0}
-.city-name{font-size:14px;font-weight:700;flex:1}
-.city-note{font-size:12px;color:var(--soft)}
-.city-arrow{font-size:10px;color:var(--muted)}
+/* RESULT */
+.qa-result{display:none;animation:fadeUp .4s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-.luck-card{background:linear-gradient(135deg,#fff8e8,#fff);border:1px solid rgba(212,160,23,.3);border-radius:14px;padding:14px 16px}
-.luck-text{font-size:14px;line-height:1.7;color:#7a5800}
+.res-top{background:#0D0D0D;color:#fff;padding:28px 20px 20px;text-align:center}
+.res-star-avatar{font-size:56px;margin-bottom:10px;display:block;animation:pop .4s cubic-bezier(.34,1.56,.64,1) .1s both}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.res-match-label{font-size:10px;letter-spacing:.12em;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:4px}
+.res-star-name{font-size:28px;font-weight:900;letter-spacing:-.05em;margin-bottom:3px}
+.res-star-en{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:12px}
+.res-desc{font-size:13px;line-height:1.75;color:rgba(255,255,255,.75);padding:0 4px}
+.res-tags{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.res-tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}
 
-.star-link{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg2);border-radius:14px;text-decoration:none;color:var(--text)}
-.star-link-icon{width:40px;height:40px;background:#0D0D0D;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.star-link-body{flex:1}
-.star-link-title{font-size:14px;font-weight:700}
-.star-link-sub{font-size:12px;color:var(--soft);margin-top:2px}
-.star-link-arr{color:var(--muted)}
-.star-link-arr svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.res-body{padding:16px}
+.res-sec{margin-bottom:16px}
+.res-sec-title{font-size:10px;font-weight:700;letter-spacing:.09em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
 
-.share-area{display:flex;flex-direction:column;gap:9px;margin-top:0}
-.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:13px;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;border:none;transition:all .15s}
-.share-btn:active{transform:scale(.97)}
-.btn-copy{background:#0D0D0D;color:#fff}
-.btn-retry{background:var(--bg2);color:var(--text);border:1px solid var(--bd)}
-.btn-retry svg,.btn-copy svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-.copied-tip{text-align:center;font-size:12px;color:#10b981;height:16px;transition:opacity .3s;opacity:0}
-.copied-tip.show{opacity:1}
+/* 路线卡 */
+.route-strip{background:var(--bg2);border-radius:13px;padding:14px;display:flex;flex-direction:column;gap:0}
+.rc-city{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--bd)}
+.rc-city:last-child{border-bottom:none;padding-bottom:0}
+.rc-city:first-child{padding-top:0}
+.rc-dot{width:8px;height:8px;border-radius:50%;background:#0D0D0D;flex-shrink:0}
+.rc-info{flex:1}
+.rc-name{font-size:14px;font-weight:700}
+.rc-note{font-size:11px;color:var(--soft);margin-top:1px}
+.rc-go{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--bd);border-radius:20px;padding:3px 9px;white-space:nowrap;cursor:pointer;transition:all .15s}
+.rc-go:active{background:#0D0D0D;color:#fff;border-color:#0D0D0D}
 
-/* 维度条 */
-.trait-bars{display:flex;flex-direction:column;gap:8px}
-.trait-row{display:flex;align-items:center;gap:10px}
-.trait-label{font-size:12px;font-weight:600;width:52px;flex-shrink:0;color:var(--soft)}
-.trait-track{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
-.trait-fill{height:100%;border-radius:3px;background:#0D0D0D;transition:width .8s cubic-bezier(.4,0,.2,1)}
-.trait-val{font-size:11px;font-weight:700;width:28px;text-align:right;flex-shrink:0}
+/* 玄学卡 */
+.luck-card{background:var(--goldbg);border:1px solid rgba(200,146,10,.2);border-radius:13px;padding:14px;font-size:13px;line-height:1.75;color:#7a5800}
 
-@media(min-width:440px){
-  .phone-wrap{border-left:1px solid var(--bd);border-right:1px solid var(--bd);box-shadow:0 0 40px rgba(0,0,0,.06)}
-}
+/* 特质条 */
+.trait-list{display:flex;flex-direction:column;gap:8px}
+.trait-row{display:flex;align-items:center;gap:8px}
+.trait-lbl{font-size:11px;font-weight:600;color:var(--soft);width:48px;flex-shrink:0}
+.trait-track{flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.trait-bar{height:100%;background:#0D0D0D;border-radius:3px;width:0;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.trait-val{font-size:10px;font-weight:700;width:26px;text-align:right;flex-shrink:0}
+
+/* 去朝圣 */
+.go-pilgrimage{display:flex;align-items:center;gap:12px;background:#0D0D0D;border-radius:13px;padding:14px;cursor:pointer;border:none;font-family:var(--font);width:100%}
+.go-pilgrimage-icon{font-size:22px;width:36px;text-align:center;flex-shrink:0}
+.go-pilgrimage-body{flex:1;text-align:left}
+.go-pilgrimage-title{font-size:14px;font-weight:700;color:#fff}
+.go-pilgrimage-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+.go-pilgrimage-arr{color:rgba(255,255,255,.4);font-size:16px}
+
+.retry-btn{width:100%;margin-top:8px;padding:13px;border-radius:13px;border:1.5px solid var(--bd);background:#fff;font-size:14px;font-weight:700;font-family:var(--font);color:var(--text);cursor:pointer}
+.retry-btn:active{background:var(--bg2)}
+
+/* ════════════════════════════════════════════
+   MODULE B：打卡路线
+═══════════════════════════════════════════ */
+.pb-top{padding:20px 20px 12px;background:#fff;border-bottom:1px solid var(--bd)}
+.pb-top h3{font-size:20px;font-weight:900;letter-spacing:-.04em;margin-bottom:4px}
+.pb-top p{font-size:12px;color:var(--soft);line-height:1.5}
+
+.route-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#fff;border-bottom:1px solid var(--bd)}
+.route-tabs::-webkit-scrollbar{display:none}
+.rtab{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-family:var(--font)}
+.rtab.on{background:#0D0D0D;color:#fff;border-color:#0D0D0D}
+
+.route-cards{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.rcard{background:#fff;border:1.5px solid var(--bd);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s}
+.rcard.expanded{border-color:#0D0D0D}
+.rcard-head{display:flex;align-items:center;gap:12px;padding:14px}
+.rcard-num{width:32px;height:32px;border-radius:9px;background:#0D0D0D;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.rcard-info{flex:1}
+.rcard-name{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.rcard-meta{font-size:11px;color:var(--soft);margin-top:2px}
+.rcard-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.rcard-check.done{background:#0D0D0D;border-color:#0D0D0D}
+.rcard-check.done::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+.rcard-body{padding:0 14px 14px;display:none;border-top:1px solid var(--bd);margin-top:-1px}
+.rcard.expanded .rcard-body{display:block;animation:fadeUp .25s ease forwards}
+.rcard-spots{display:flex;flex-direction:column;gap:0;margin-bottom:12px}
+.spot{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)}
+.spot:last-child{border-bottom:none}
+.spot-icon{font-size:18px;width:28px;text-align:center;flex-shrink:0;margin-top:1px}
+.spot-body{flex:1}
+.spot-name{font-size:13px;font-weight:700}
+.spot-desc{font-size:11px;color:var(--soft);margin-top:2px;line-height:1.5}
+.spot-tip{display:inline-block;font-size:10px;background:var(--goldbg);color:var(--gold);font-weight:700;padding:2px 7px;border-radius:20px;margin-top:4px}
+.punch-btn{width:100%;padding:11px;border-radius:10px;background:#0D0D0D;color:#fff;border:none;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .2s}
+.punch-btn.punched{background:#f0fdf4;color:#16a34a;border:1.5px solid #bbf7d0}
+.punch-btn:active{opacity:.85}
+
+/* 成就栏 */
+.achieve-bar{padding:12px 16px;background:var(--goldbg);border-bottom:1px solid rgba(200,146,10,.15);display:flex;align-items:center;gap:10px}
+.achieve-icon{font-size:22px}
+.achieve-body{flex:1}
+.achieve-title{font-size:12px;font-weight:700;color:#7a5800}
+.achieve-sub{font-size:10px;color:var(--gold);margin-top:1px}
+.achieve-count{font-size:22px;font-weight:900;color:#0D0D0D}
+
+/* 滚到结果时的浮层提示 */
+.float-tip{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0D0D0D;color:#fff;border-radius:20px;padding:10px 20px;font-size:13px;font-weight:600;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s}
+.float-tip.show{opacity:1}
+
+/* copy toast */
+.copy-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#0D0D0D;color:#fff;border-radius:20px;padding:8px 18px;font-size:12px;font-weight:600;z-index:400;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap}
+.copy-toast.show{opacity:1}
 </style>
 </head>
 <body>
-<div class="phone-wrap">
+<div class="shell">
 
+<!-- NAV -->
 <nav>
   <div class="logo">
     <div class="lm">⚽</div>
-    <span>球星匹配</span>
+    <span>球迷旅行 Demo</span>
   </div>
   <a href="/08/portfolio/" class="back">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    工具集
+    返回
   </a>
 </nav>
 
-<div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
-
-<!-- HERO -->
-<div id="hero-section">
-  <div class="hero">
-    <div class="hero-tag">⚽ 世界杯 × 欧洲朝圣 2026</div>
-    <h1>你最像<br>哪位<em>球星</em>？</h1>
-    <p>6道题自动匹配你的专属球星<br>解锁定制欧洲朝圣路线</p>
-    <button class="hero-cta" onclick="startQuiz()">
-      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      开始匹配
-    </button>
-    <div class="stars-preview">
-      <div class="star-avatar">🦁</div>
-      <div class="star-avatar">🌙</div>
-      <div class="star-avatar">⚡</div>
-      <div class="star-avatar">🎩</div>
-      <div class="star-avatar">🔥</div>
-    </div>
-    <div class="stars-label">梅西 · C罗 · 姆巴佩 · 贝克汉姆 · 马拉多纳</div>
-  </div>
+<!-- MODULE TABS -->
+<div class="mod-tabs">
+  <div class="mtab on" onclick="switchMod(0,this)">⚡ 我像哪个球星</div>
+  <div class="mtab" onclick="switchMod(1,this)">🗺️ 朝圣路线打卡</div>
 </div>
 
-<!-- QUIZ -->
-<div id="quiz-section">
-  <div id="questions-wrap"></div>
-</div>
+<!-- ════ PANEL A: 球星匹配 ════ -->
+<div class="panel show" id="panelA">
 
-<!-- RESULT -->
-<div id="result-section">
-  <div class="result-hero" id="res-hero">
-    <div class="res-match">⚡ 你的球星匹配结果</div>
-    <div class="res-avatar" id="res-avatar"></div>
-    <div class="res-name" id="res-name"></div>
-    <div class="res-sub" id="res-sub"></div>
-    <div class="res-desc" id="res-desc"></div>
-    <div class="res-tags" id="res-tags"></div>
+  <div class="qa-hero">
+    <div class="qa-badge">⚽ 2026 世界杯特别版</div>
+    <h2>你最像哪位<em>球星</em>？</h2>
+    <p>6 道题 · 自动匹配你的旅行人格<br>解锁专属朝圣路线</p>
   </div>
-  <div class="result-body">
 
-    <div class="res-section">
-      <div class="res-section-title">🗺️ 专属朝圣路线</div>
-      <div class="route-card" id="res-route"></div>
-    </div>
-
-    <div class="res-section">
-      <div class="res-section-title">🔮 玄学开运指引</div>
-      <div class="luck-card"><div class="luck-text" id="res-luck"></div></div>
-    </div>
-
-    <div class="res-section">
-      <div class="res-section-title">📊 你的球场气质</div>
-      <div class="trait-bars" id="res-traits"></div>
-    </div>
-
-    <div class="res-section">
-      <div class="res-section-title">🏔️ 用圆周旅迹规划朝圣之旅</div>
-      <a class="star-link" href="https://yuanzhou.app" target="_blank" id="res-link">
-        <div class="star-link-icon">🗺️</div>
-        <div class="star-link-body">
-          <div class="star-link-title" id="res-link-title">生成我的专属行程</div>
-          <div class="star-link-sub">圆周旅迹 · 欧洲朝圣路线定制</div>
-        </div>
-        <div class="star-link-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </a>
-    </div>
-
-    <div class="res-section">
-      <div class="share-area">
-        <button class="share-btn btn-copy" onclick="copyResult()">
-          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          复制我的球星结果
-        </button>
-        <div class="copied-tip" id="copied-tip">✅ 已复制，去分享吧！</div>
-        <button class="share-btn btn-retry" onclick="retryQuiz()">
-          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-          重新测一次
-        </button>
-      </div>
-    </div>
-
+  <div class="qa-prog" id="qa-prog" style="display:none">
+    <div class="qa-prog-track"><div class="qa-prog-fill" id="qa-fill"></div></div>
+    <div class="qa-prog-label" id="qa-label">0 / 6</div>
   </div>
-</div>
 
-</div><!-- phone-wrap -->
+  <!-- 题目容器 -->
+  <div id="qa-qwrap" style="display:none" class="qa-qwrap">
+    <div class="qa-qnum" id="qa-qnum"></div>
+    <div class="qa-qtext" id="qa-qtext"></div>
+    <div class="qa-opts" id="qa-opts"></div>
+  </div>
+
+  <!-- 开始按钮 -->
+  <div id="qa-start" style="padding:28px 20px;text-align:center">
+    <div style="font-size:52px;margin-bottom:16px">🐐⚡💪🎩🔥</div>
+    <div style="font-size:14px;color:var(--soft);line-height:1.7;margin-bottom:24px">梅西的沉默·C罗的极致<br>姆巴佩的速度·贝克汉姆的精准·马拉多纳的传奇<br><br><b style="color:var(--text)">你的旅行风格，藏着你是谁。</b></div>
+    <button onclick="startQA()" style="width:100%;padding:15px;border-radius:13px;background:#0D0D0D;color:#fff;border:none;font-size:15px;font-weight:800;font-family:var(--font);cursor:pointer;letter-spacing:-.01em">⚡ 开始匹配</button>
+  </div>
+
+  <!-- 结果 -->
+  <div id="qa-result" class="qa-result"></div>
+
+</div><!-- /panelA -->
+
+<!-- ════ PANEL B: 打卡路线 ════ -->
+<div class="panel" id="panelB">
+
+  <div class="pb-top">
+    <h3>⚽ 经典朝圣路线</h3>
+    <p>选一条路线 · 打卡你去过的地方 · 解锁专属球迷成就</p>
+  </div>
+
+  <div class="achieve-bar">
+    <div class="achieve-icon">🏆</div>
+    <div class="achieve-body">
+      <div class="achieve-title">朝圣成就</div>
+      <div class="achieve-sub">已打卡城市数</div>
+    </div>
+    <div class="achieve-count" id="ach-count">0</div>
+  </div>
+
+  <div class="route-tabs">
+    <button class="rtab on" onclick="switchRoute(0,this)">⚽ 欧洲经典</button>
+    <button class="rtab" onclick="switchRoute(1,this)">🏆 世界杯之旅</button>
+    <button class="rtab" onclick="switchRoute(2,this)">🌟 球星足迹</button>
+  </div>
+
+  <div class="route-cards" id="route-cards"></div>
+
+</div><!-- /panelB -->
+
+</div><!-- /shell -->
+
+<div class="copy-toast" id="copy-toast">✅ 已复制</div>
 
 <script>
-// ── 题目 ──────────────────────────────────────────────────
-var QUESTIONS = [
+// ══════════════════════════════════════════
+// MODULE A: 球星匹配
+// ══════════════════════════════════════════
+var QS = [
   {
-    q: '你决定看球旅行，第一反应是...',
-    opts: [
-      {icon:'🏟️', text:'查哪里有传奇球场', em:'圣地打卡，一个都不能少', k:'A'},
-      {icon:'⚡', text:'看赛程找最激烈的那场', em:'要现场，要炸场', k:'B'},
-      {icon:'🎨', text:'想象在绿茵场上的自己', em:'我要是球员会怎么踢', k:'C'},
-      {icon:'🧠', text:'研究两队数据再决定', em:'胜率高的才值得去', k:'D'},
-      {icon:'🎲', text:'随便，跟着感觉走', em:'目的地？随缘定', k:'E'},
+    q:'旅行前，你的第一个冲动是...',
+    opts:[
+      {k:'A', em:'🗺️', t:'找那些鲜为人知的小街巷', s:'越隐秘越有味道'},
+      {k:'B', em:'📸', t:'先看哪里最出片、最能拍大片', s:'每个地方都要留下完美画面'},
+      {k:'C', em:'🚀', t:'订最快的交通，多城市连刷', s:'我想在最短时间去最多地方'},
+      {k:'D', em:'📋', t:'做详细攻略，逐小时安排', s:'没有计划就没有完美旅途'},
+      {k:'E', em:'🎲', t:'随便，到了再说', s:'最好的惊喜都是计划外的'},
     ]
   },
   {
-    q: '你在球场最享受的时刻是...',
-    opts: [
-      {icon:'🥇', text:'举起冠军奖杯那一刻', em:'荣耀，只要荣耀', k:'A'},
-      {icon:'🔥', text:'全场最沸腾的进球瞬间', em:'就要这种肾上腺素', k:'B'},
-      {icon:'✨', text:'一个漂亮过人把人晃懵', em:'技术美感高于一切', k:'C'},
-      {icon:'📊', text:'战术执行完美，赢得漂亮', em:'每个跑位都对了', k:'D'},
-      {icon:'🤝', text:'队友之间的神级默契配合', em:'这才是足球的灵魂', k:'E'},
+    q:'在旅途中，你最享受的瞬间是...',
+    opts:[
+      {k:'A', em:'🔍', t:'发现一家只有当地人去的小馆子', s:'这才叫真正融入'},
+      {k:'B', em:'✨', t:'每个景点都拍出了满意的照片', s:'回头看行程，张张都值得发'},
+      {k:'C', em:'⚡', t:'24小时内跨越两个城市', s:'效率感让我兴奋'},
+      {k:'D', em:'📌', t:'行程完全按计划推进，没有意外', s:'掌控感就是安全感'},
+      {k:'E', em:'🌊', t:'在街头碰到意外的精彩', s:'剧本之外才是旅行本质'},
     ]
   },
   {
-    q: '朋友说你在旅行中...',
-    opts: [
-      {icon:'💪', text:'永不放弃，坚持到最后', em:'三步过三人再射门那种', k:'A'},
-      {icon:'😎', text:'永远是最惹眼的那个', em:'走到哪都是主角', k:'B'},
-      {icon:'🦊', text:'随机应变，没有计划', em:'堵车了？正好探店', k:'C'},
-      {icon:'📋', text:'计划周全，从不出错', em:'行程表精确到小时', k:'D'},
-      {icon:'🌊', text:'带动全场情绪', em:'你在哪哪里就开心', k:'E'},
+    q:'旅途碰到麻烦（堵车/景点关门），你会...',
+    opts:[
+      {k:'A', em:'🧘', t:'沉住气，慢慢找替代方案', s:'急有什么用，先观察再出手'},
+      {k:'B', em:'🔄', t:'立刻找下一个同类打卡点', s:'不能浪费任何时间'},
+      {k:'C', em:'💨', t:'立刻出发去下一个城市', s:'错过了就跳过，前方更精彩'},
+      {k:'D', em:'📲', t:'对照备用计划B，调整时间表', s:'麻烦早在我的预案里'},
+      {k:'E', em:'😂', t:'当成好玩的故事，随遇而安', s:'最难忘的经历往往来自意外'},
     ]
   },
   {
-    q: '你的进球庆祝方式会是...',
-    opts: [
-      {icon:'🙏', text:'单膝跪地，感谢上天', em:'梅西式，每球必拜', k:'A'},
-      {icon:'👕', text:'脱衣狂奔，冲向球迷', em:'C罗式，荷尔蒙拉满', k:'B'},
-      {icon:'🕺', text:'即兴一段舞，风格独特', em:'姆巴佩式，自创动作', k:'C'},
-      {icon:'🤜', text:'和队友击拳，低调庆祝', em:'专业感，不炫耀', k:'D'},
-      {icon:'😜', text:'对镜头比心，全场互动', em:'贝克汉姆式，偶像力', k:'E'},
+    q:'如果只能去一类地方，你会选...',
+    opts:[
+      {k:'A', em:'🏘️', t:'老城区、本地菜市场、历史小巷', s:'文化从来藏在细节里'},
+      {k:'B', em:'🌅', t:'有绝美风景的网红地标', s:'视觉冲击才是旅行的意义'},
+      {k:'C', em:'🌍', t:'跨越多个城市的连轴转路线', s:'数量带来的满足感无可替代'},
+      {k:'D', em:'🎯', t:'提前做好功课的必去清单', s:'有准备才不会后悔'},
+      {k:'E', em:'🎪', t:'路边随机碰到什么就去什么', s:'目的地是用来打破的'},
     ]
   },
   {
-    q: '比赛到第89分钟，落后一球...',
-    opts: [
-      {icon:'🦁', text:'越压抑越爆发，这种场面专门为我设计', em:'关键时刻就要站出来', k:'A'},
-      {icon:'💥', text:'冲！我要成为英雄', em:'带球硬闯，机不可失', k:'B'},
-      {icon:'🧩', text:'换个战术，出其不意', em:'对方没想到我会这样踢', k:'C'},
-      {icon:'🔬', text:'分析漏洞，精准出击', em:'哪里有空间我就去哪', k:'D'},
-      {icon:'📣', text:'先稳住队友情绪再说', em:'气氛不能乱，人心不能散', k:'E'},
+    q:'结束旅行，你会怎么记录？',
+    opts:[
+      {k:'A', em:'📓', t:'写一篇深度游记，记下每个细节', s:'那些小发现值得被记住'},
+      {k:'B', em:'🖼️', t:'精修一组照片发社交媒体', s:'要让别人羡慕'},
+      {k:'C', em:'✅', t:'把打卡地列个完成清单', s:'成就感来自数量'},
+      {k:'D', em:'📊', t:'整理旅行总结，优化下次行程', s:'每次旅行都是数据积累'},
+      {k:'E', em:'🤳', t:'发一条朋友圈，然后忘了', s:'活在当下，不留遗憾'},
     ]
   },
   {
-    q: '旅行结束，你会...',
-    opts: [
-      {icon:'🏆', text:'默默整理战利品，等下次机会', em:'沉默但一直在准备', k:'A'},
-      {icon:'📸', text:'把最燃的视频剪成一条', em:'发出去，让人羡慕', k:'B'},
-      {icon:'🎭', text:'讲故事，把每个意外都变成段子', em:'旅行就是素材库', k:'C'},
-      {icon:'📑', text:'写一份完整的旅行总结', em:'下次要在这几个点优化', k:'D'},
-      {icon:'☎️', text:'拉群，约下次一起出发', em:'一个人浪不如一起浪', k:'E'},
+    q:'选队伍支持你会怎么选？',
+    opts:[
+      {k:'A', em:'🏰', t:'传统豪门，历史厚度最重要', s:'荣耀需要时间积累'},
+      {k:'B', em:'💎', t:'阵容最华丽、最有颜值的球队', s:'好看就是生产力'},
+      {k:'C', em:'🚄', t:'打法最快、进球最多的球队', s:'效率才是现代足球的核心'},
+      {k:'D', em:'📐', t:'战术最成熟、赢球最有逻辑的', s:'统治力来自体系'},
+      {k:'E', em:'🎭', t:'最有戏剧感、最会翻盘的', s:'没有冷门的比赛不好看'},
     ]
   }
 ];
 
-// ── 球星结果 ──────────────────────────────────────────────
 var STARS = {
-  A: {
-    avatar:'🐐',
-    name:'梅西',
-    sub:'The GOAT · FC Barcelona & PSG',
-    desc:'你天生就有大心脏。越是决定性的时刻，你越冷静，然后爆发。你不需要证明自己，结果会说话。每一次伟大，都是长期蛰伏后的必然。',
-    tags:['大局观','关键先生','越挫越勇','话少事多'],
+  A:{
+    avatar:'🐐', name:'梅西', en:'Lionel Messi · El Pibe de Oro',
+    desc:'你不需要大张旗鼓，却总能在关键时刻爆发。你喜欢把旅行做深，而不是做宽——找到一个城市的灵魂，比走完十个城市的表面更让你满足。',
+    tags:['深度感','文化猎人','话少事多','爆发于细节'],
     route:[
-      {city:'巴塞罗那',note:'诺坎普——梅西的主场圣地'},
-      {city:'布宜诺斯艾利斯',note:'他出发的地方，足球圣殿'},
-      {city:'巴黎',note:'PSG主场，见证另一段传奇'},
-      {city:'卡塔尔多哈',note:'2022世界杯加冕之地'},
+      {city:'布宜诺斯艾利斯', note:'博卡青年主场 La Bombonera · 探索他出发的地方'},
+      {city:'巴塞罗那', note:'哥特区老城 · 诺坎普球场 · 他最辉煌的20年'},
+      {city:'里斯本', note:'阿尔法玛历史街区 · 只有当地人知道的好去处'},
+      {city:'那不勒斯', note:'老城巷弄 · 世界最好的披萨 · 足球文化圣地'},
     ],
-    luck:'🔮 出发前穿蓝白条纹，抵达球场后走右边入口，冠军运气自动触发。今日幸运数字：10',
-    traits:[
-      {name:'抗压力',val:95},{name:'技术感',val:90},{name:'爆发力',val:85},{name:'社交力',val:60},{name:'随机性',val:40}
-    ],
-    link:'规划"梅西足迹"欧洲朝圣行程'
+    luck:'🔮 出发前默想一个目标，不说出口。在最普通的街角驻足三分钟——传奇从来藏在最不起眼的地方。幸运数字：10',
+    traits:[{n:'深度感',v:98},{n:'爆发力',v:92},{n:'内敛度',v:85},{n:'文化力',v:96},{n:'规划性',v:55}],
+    tip:'沿梅西足迹深游：布宜诺斯艾利斯 → 巴塞罗那老城 → 那不勒斯'
   },
-  B: {
-    avatar:'💪',
-    name:'C罗',
-    sub:'CR7 · Real Madrid & Man United',
-    desc:'你要最显眼的位置、最惊艳的时刻、最高的分贝。你相信努力可以碾压一切天赋，你的字典里没有"差不多"。荣耀必须是亮光闪闪那种。',
-    tags:['荣耀上瘾','颜值即正义','自律狂魔','进攻型人格'],
+  B:{
+    avatar:'💪', name:'C罗', en:'Cristiano Ronaldo · CR7',
+    desc:'你的旅行必须留下证据。每个地方都要出片，每个景点都要打卡，每一天都要高效运转。你相信准备充分+极致执行才能拿到最好的结果——旅行和足球都一样。',
+    tags:['打卡王者','视觉美学','极致效率','颜值即正义'],
     route:[
-      {city:'马德里',note:'圣地亚哥伯纳乌——CR7的高光舞台'},
-      {city:'曼彻斯特',note:'老特拉福德，他的英国起点'},
-      {city:'里斯本',note:'葡萄牙荣光，他永远的主场'},
-      {city:'都灵',note:'尤文图斯时代，另一段荣耀'},
+      {city:'里斯本', note:'贝伦塔·杰罗尼莫修道院·葡萄牙荣光·他的故乡'},
+      {city:'马德里', note:'圣地亚哥伯纳乌·皇家宫殿·每个角落都值得拍'},
+      {city:'曼彻斯特', note:'老特拉福德·英式酒吧文化·他的欧洲起点'},
+      {city:'都灵', note:'青年宫球场·莫莱安东内利亚博物馆·意式精致'},
     ],
-    luck:'🔮 比赛日穿红色，入场时先迈右脚，中场休息拍三下手掌，C罗运气附体。幸运数字：7',
-    traits:[
-      {name:'爆发力',val:98},{name:'荣耀感',val:97},{name:'颜值力',val:95},{name:'技术感',val:88},{name:'随机性',val:30}
-    ],
-    link:'规划"C罗荣耀"欧洲朝圣行程'
+    luck:'🔮 每到一处先找最高点俯瞰全城——那就是你的\"C罗庆祝姿势\"。出发前看一次他的任意球集锦，精准度附体。幸运数字：7',
+    traits:[{n:'效率感',v:97},{n:'颜值力',v:99},{n:'计划性',v:88},{n:'爆发力',v:96},{n:'深度感',v:62}],
+    tip:'高效精品游：里斯本2天 → 马德里2天 → 曼彻斯特1天，每站必出大片'
   },
-  C: {
-    avatar:'⚡',
-    name:'姆巴佩',
-    sub:'Kylian Mbappé · Real Madrid & PSG',
-    desc:'你快、灵、有想象力。别人看到的是直线，你看到的是穿越全场的路径。你享受即兴，喜欢出其不意，并且每次都能把意外变成亮点。',
-    tags:['闪电速度','即兴高手','未来感','创意爆棚'],
+  C:{
+    avatar:'⚡', name:'姆巴佩', en:'Kylian Mbappé · La Fusée',
+    desc:'你是旅行里的闪电——永远在移动，永远比别人快一步。你享受的不是一个地方有多深，而是在最短时间内感受到最多的惊喜。行程表对你来说是起点，不是终点。',
+    tags:['闪现能力','多城连刷','速度优先','出其不意'],
     route:[
-      {city:'巴黎',note:'PSG主场，他的成名之地'},
-      {city:'马德里',note:'伯纳乌——新的征程，新的速度'},
-      {city:'摩纳哥',note:'他职业生涯的起点'},
-      {city:'卡塔尔多哈',note:'2022世界杯最璀璨的身影'},
+      {city:'巴黎', note:'蒙马特高地·卢浮宫快闪·他成名的地方，24小时足够'},
+      {city:'阿姆斯特丹', note:'运河骑行·梵高博物馆·下午到，晚上就爱上了'},
+      {city:'布鲁塞尔', note:'大广场·比利时华夫饼·最适合路过停留'},
+      {city:'马德里', note:'伯纳乌·格兰大道·他的新主场，速度与激情'},
     ],
-    luck:'🔮 出发当天听一首法语说唱，到球场后找最空旷的通道走，速度能量自动充满。幸运数字：7',
-    traits:[
-      {name:'速度感',val:99},{name:'创意力',val:92},{name:'随机性',val:85},{name:'爆发力',val:90},{name:'抗压力',val:80}
-    ],
-    link:'规划"姆巴佩速度"欧洲朝圣行程'
+    luck:'🔮 在每个城市只做一件事：找到当地最普通的街头小吃，站着吃完。移动中才能感受到真正的城市脉搏。幸运数字：7',
+    traits:[{n:'速度感',v:99},{n:'即兴力',v:94},{n:'覆盖面',v:98},{n:'爆发力',v:93},{n:'规划性',v:40}],
+    tip:'快闪朝圣：巴黎24h → 阿姆斯特丹24h → 布鲁塞尔半天 → 马德里落地'
   },
-  D: {
-    avatar:'🎩',
-    name:'贝克汉姆',
-    sub:'David Beckham · Man United & Real Madrid',
-    desc:'你把每件事都做到精准漂亮。自由球的弧度、行程的时间表、着装的配色，都不会差分毫。你的存在本身就是一种美学宣言。',
-    tags:['精致完美主义','计划党天花板','品位上线','魅力型选手'],
+  D:{
+    avatar:'🎩', name:'贝克汉姆', en:'David Beckham · Golden Balls',
+    desc:'你的旅行和你的行程表一样漂亮。你去的每个地方都经过研究，每个餐厅都有评分，每家酒店都有故事。你的旅行照片不像游客——因为你根本不是游客，你是鉴赏家。',
+    tags:['精致主义','完美计划','品味先行','细节控'],
     route:[
-      {city:'曼彻斯特',note:'老特拉福德——他职业的原点'},
-      {city:'马德里',note:'伯纳乌的银河战舰时代'},
-      {city:'米兰',note:'时尚与足球的完美交汇'},
-      {city:'迈阿密',note:'他打造传奇的下一站'},
+      {city:'米兰', note:'时尚区·斯卡拉歌剧院·米兰大教堂·美食餐厅已预订'},
+      {city:'巴塞罗那', note:'圣家堂·格拉西亚大道·必须住设计师酒店'},
+      {city:'曼彻斯特', note:'老特拉福德·北角咖啡区·他的球员生涯精华地'},
+      {city:'伦敦', note:'梅菲尔区·泰特现代美术馆·精品百货·他的家'},
     ],
-    luck:'🔮 出发前熨好衣服，入场时脚步要稳，坐位要找左边三排以内——场边视角才够精准。幸运数字：23',
-    traits:[
-      {name:'精准度',val:97},{name:'颜值力',val:98},{name:'计划性',val:92},{name:'技术感',val:85},{name:'随机性',val:35}
-    ],
-    link:'规划"贝克汉姆美学"欧洲朝圣行程'
+    luck:'🔮 出发前熨好一件衬衫，在出发当天找一个能俯瞰城市的地方喝一杯咖啡。精准的开始，带来精准的结果。幸运数字：23',
+    traits:[{n:'精致度',v:99},{n:'计划性',v:97},{n:'品味力',v:98},{n:'颜值力',v:95},{n:'即兴力',v:38}],
+    tip:'精品鉴赏：米兰2天（住设计师酒店）→ 巴塞罗那2天 → 伦敦梅菲尔区'
   },
-  E: {
-    avatar:'🔥',
-    name:'马拉多纳',
-    sub:'Diego Maradona · Napoli & Argentina',
-    desc:'你是传说本身。你不需要计划，因为你就是那个让所有计划失效的变量。你的一场旅行能让别人讲十年，你永远是房间里最有故事的人。',
-    tags:['天才型选手','自带传说感','情绪感染力','活在当下'],
+  E:{
+    avatar:'🔥', name:'马拉多纳', en:'Diego Maradona · El Dios',
+    desc:'你的旅行是传奇的原材料。没有脚本，没有攻略，就是跟着感觉走——然后总能发生只属于你的故事。你的旅行不能复制，因为它是你和那个城市之间独一无二的化学反应。',
+    tags:['传奇体质','随性天才','当下主义','活成故事'],
     route:[
-      {city:'那不勒斯',note:'圣保罗球场——他神话最浓处'},
-      {city:'布宜诺斯艾利斯',note:'博卡青年，他的根'},
-      {city:'墨西哥城',note:'1986世界杯"上帝之手"现场'},
-      {city:'巴塞罗那',note:'他欧洲传奇的起点'},
+      {city:'那不勒斯', note:'圣保罗球场·老城区·他的神话发生地·随便走都有惊喜'},
+      {city:'布宜诺斯艾利斯', note:'博卡区·探戈酒吧·他最真实的根'},
+      {city:'墨西哥城', note:'1986年\"上帝之手\"发生地·阿兹特克球场朝圣'},
+      {city:'巴塞罗那', note:'他欧洲冒险的起点·哥特区夜晚随机漫游'},
     ],
-    luck:'🔮 出发前看一遍1986年世界杯集锦，把手伸向天空感受一秒，上帝自然会帮你。幸运数字：10',
-    traits:[
-      {name:'传奇感',val:100},{name:'随机性',val:97},{name:'感染力',val:98},{name:'技术感',val:96},{name:'计划性',val:20}
-    ],
-    link:'规划"马拉多纳传奇"欧洲朝圣行程'
+    luck:'🔮 闭上眼睛在地图上随机点一个地方——如果你有哪怕一点点好奇，就去。传奇从来不是计划出来的。幸运数字：10',
+    traits:[{n:'传奇感',v:100},{n:'即兴力',v:99},{n:'随机性',v:98},{n:'感染力',v:97},{n:'计划性',v:15}],
+    tip:'随性朝圣：那不勒斯（无计划散步）→ 布宜诺斯艾利斯（跟着感觉走）'
   }
 };
 
-// ── 状态 ──────────────────────────────────────────────────
-var answers = {};
-var currentQ = 0;
-var resultKey = '';
+var answers={}, curQ=0, inQA=false, resultStar=null;
 
-function startQuiz(){
-  document.getElementById('hero-section').style.display = 'none';
-  document.getElementById('quiz-section').style.display = 'block';
-  renderQuestion(0);
-  updateProgress(0);
+function startQA(){
+  document.getElementById('qa-start').style.display='none';
+  document.getElementById('qa-prog').style.display='flex';
+  document.getElementById('qa-qwrap').style.display='block';
+  inQA=true;
+  renderQ(0);
 }
 
-function renderQuestion(idx){
-  var q = QUESTIONS[idx];
-  var html = '<div class="q-card"><div class="q-num">第 '+(idx+1)+' / '+QUESTIONS.length+' 题</div>'
-    + '<div class="q-text">'+q.q+'</div></div>'
-    + '<div class="options">';
+function renderQ(i){
+  var q=QS[i];
+  document.getElementById('qa-qnum').textContent='Q'+(i+1)+' / '+QS.length;
+  document.getElementById('qa-qtext').textContent=q.q;
+  var html='';
   q.opts.forEach(function(o){
-    html += '<button class="opt" onclick="selectOpt('+idx+',\''+o.k+'\')" data-k="'+o.k+'">'
-      + '<div class="opt-icon">'+o.icon+'</div>'
-      + '<div class="opt-body"><div class="opt-text">'+o.text+'</div><div class="opt-em">'+o.em+'</div></div>'
-      + '<div class="opt-check"></div>'
-      + '</button>';
+    html+='<button class="qa-opt" data-k="'+o.k+'" onclick="pickOpt('+i+',\''+o.k+'\')">'
+      +'<div class="qa-opt-em">'+o.em+'</div>'
+      +'<div class="qa-opt-body"><div class="qa-opt-text">'+o.t+'</div><div class="qa-opt-sub">'+o.s+'</div></div>'
+      +'</button>';
   });
-  html += '</div>';
-  document.getElementById('questions-wrap').innerHTML = html;
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('qa-opts').innerHTML=html;
+  var pct=Math.round(i/QS.length*100);
+  document.getElementById('qa-fill').style.width=pct+'%';
+  document.getElementById('qa-label').textContent=i+' / '+QS.length;
+  document.getElementById('qa-qwrap').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function selectOpt(qIdx, key){
-  answers[qIdx] = key;
-  // 高亮选中
-  document.querySelectorAll('.opt').forEach(function(el){
-    el.classList.toggle('selected', el.dataset.k === key);
+function pickOpt(qi, key){
+  answers[qi]=key;
+  document.querySelectorAll('.qa-opt').forEach(function(el){
+    el.classList.toggle('sel', el.dataset.k===key);
   });
-  updateProgress(qIdx+1);
-  // 延迟后进入下一题或显示结果
+  document.getElementById('qa-fill').style.width=Math.round((qi+1)/QS.length*100)+'%';
+  document.getElementById('qa-label').textContent=(qi+1)+' / '+QS.length;
   setTimeout(function(){
-    if(qIdx + 1 < QUESTIONS.length){
-      renderQuestion(qIdx + 1);
-    } else {
-      showResult();
-    }
-  }, 480);
-}
-
-function updateProgress(done){
-  var pct = Math.round(done / QUESTIONS.length * 100);
-  document.getElementById('progFill').style.width = pct + '%';
+    if(qi+1<QS.length){ renderQ(qi+1); }
+    else { showResult(); }
+  },500);
 }
 
 function showResult(){
-  // 统计
-  var count = {A:0,B:0,C:0,D:0,E:0};
-  Object.values(answers).forEach(function(k){ count[k] = (count[k]||0)+1; });
-  var best = Object.keys(count).reduce(function(a,b){ return count[a]>=count[b]?a:b; });
-  resultKey = best;
-  var star = STARS[best];
+  var cnt={A:0,B:0,C:0,D:0,E:0};
+  Object.values(answers).forEach(function(k){ cnt[k]=(cnt[k]||0)+1; });
+  var best=Object.keys(cnt).reduce(function(a,b){ return cnt[a]>=cnt[b]?a:b; });
+  resultStar=best;
+  var s=STARS[best];
 
-  document.getElementById('quiz-section').style.display = 'none';
-  var resEl = document.getElementById('result-section');
-  resEl.style.display = 'block';
-  updateProgress(QUESTIONS.length);
+  document.getElementById('qa-prog').style.display='none';
+  document.getElementById('qa-qwrap').style.display='none';
 
-  document.getElementById('res-avatar').textContent = star.avatar;
-  document.getElementById('res-name').textContent = star.name;
-  document.getElementById('res-sub').textContent = star.sub;
-  document.getElementById('res-desc').textContent = star.desc;
-  document.getElementById('res-tags').innerHTML = star.tags.map(function(t){
-    return '<span class="res-tag">'+t+'</span>';
-  }).join('');
-
-  // 路线
-  document.getElementById('res-route').innerHTML = star.route.map(function(r,i){
-    return '<div class="route-city">'
-      +'<div class="city-dot"></div>'
-      +'<div class="city-name">'+r.city+'</div>'
-      +'<div class="city-note">'+r.note+'</div>'
+  var routeHTML=s.route.map(function(r,i){
+    return '<div class="rc-city">'
+      +'<div class="rc-dot"></div>'
+      +'<div class="rc-info"><div class="rc-name">'+r.city+'</div><div class="rc-note">'+r.note+'</div></div>'
+      +'<div class="rc-go" onclick="goRoute(\''+r.city+'\')">打卡</div>'
       +'</div>';
   }).join('');
 
-  document.getElementById('res-luck').textContent = star.luck;
-
-  // 特质条
-  document.getElementById('res-traits').innerHTML = star.traits.map(function(t){
+  var traitHTML=s.traits.map(function(t){
     return '<div class="trait-row">'
-      +'<div class="trait-label">'+t.name+'</div>'
-      +'<div class="trait-track"><div class="trait-fill" style="width:0%" data-val="'+t.val+'"></div></div>'
-      +'<div class="trait-val">'+t.val+'</div>'
+      +'<div class="trait-lbl">'+t.n+'</div>'
+      +'<div class="trait-track"><div class="trait-bar" data-v="'+t.v+'"></div></div>'
+      +'<div class="trait-val">'+t.v+'</div>'
       +'</div>';
   }).join('');
 
-  document.getElementById('res-link-title').textContent = star.link;
+  var tagsHTML=s.tags.map(function(t){ return '<span class="res-tag">'+t+'</span>'; }).join('');
 
-  window.scrollTo({top:0,behavior:'smooth'});
+  var html='<div class="res-top">'
+    +'<span class="res-star-avatar">'+s.avatar+'</span>'
+    +'<div class="res-match-label">⚡ 你最像</div>'
+    +'<div class="res-star-name">'+s.name+'</div>'
+    +'<div class="res-star-en">'+s.en+'</div>'
+    +'<div class="res-desc">'+s.desc+'</div>'
+    +'<div class="res-tags">'+tagsHTML+'</div>'
+    +'</div>'
+    +'<div class="res-body">'
+    +'<div class="res-sec"><div class="res-sec-title">🗺️ 你的专属朝圣路线</div>'
+    +'<div class="route-strip">'+routeHTML+'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:8px;padding:0 2px">💡 '+s.tip+'</div>'
+    +'</div>'
+    +'<div class="res-sec"><div class="res-sec-title">🔮 玄学开运指引</div>'
+    +'<div class="luck-card">'+s.luck+'</div>'
+    +'</div>'
+    +'<div class="res-sec"><div class="res-sec-title">📊 你的旅行气质</div>'
+    +'<div class="trait-list">'+traitHTML+'</div>'
+    +'</div>'
+    +'<div class="res-sec">'
+    +'<button class="go-pilgrimage" onclick="switchMod(1,document.querySelectorAll(\'.mtab\')[1])">'
+    +'<div class="go-pilgrimage-icon">🗺️</div>'
+    +'<div class="go-pilgrimage-body"><div class="go-pilgrimage-title">去打卡这条路线</div><div class="go-pilgrimage-sub">跳转到朝圣路线 · 开始打卡</div></div>'
+    +'<div class="go-pilgrimage-arr">→</div>'
+    +'</button>'
+    +'<button class="retry-btn" onclick="retryQA()" style="margin-top:8px">🔄 重新测一次</button>'
+    +'<div style="text-align:center;margin-top:12px">'
+    +'<span onclick="copyResult()" style="font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline">复制我的球星结果 📋</span>'
+    +'</div>'
+    +'</div>'
+    +'</div>';
 
-  // 动画触发特质条
+  var res=document.getElementById('qa-result');
+  res.innerHTML=html;
+  res.style.display='block';
+  res.scrollIntoView({behavior:'smooth',block:'start'});
+
   setTimeout(function(){
-    document.querySelectorAll('.trait-fill').forEach(function(el){
-      el.style.width = el.dataset.val + '%';
+    document.querySelectorAll('.trait-bar').forEach(function(el){
+      el.style.width=el.dataset.v+'%';
     });
-  }, 300);
+  },400);
 }
 
 function copyResult(){
-  var star = STARS[resultKey];
-  var text = '⚽ 我的球星匹配结果\n\n'
-    + star.avatar + ' 我最像：' + star.name + '\n'
-    + star.desc + '\n\n'
-    + '🗺️ 专属路线：' + star.route.map(function(r){return r.city;}).join(' → ') + '\n\n'
-    + star.luck + '\n\n'
-    + '— 世界杯 × 欧洲朝圣 · 用圆周旅迹规划我的朝圣行程';
-
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text);
-  } else {
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
+  if(!resultStar) return;
+  var s=STARS[resultStar];
+  var text='⚽ 我的球星人格匹配\n\n'+s.avatar+' 我最像：'+s.name+'\n\n'+s.desc+'\n\n'
+    +'🗺️ 专属朝圣路线：'+s.route.map(function(r){return r.city;}).join(' → ')+'\n\n'+s.luck;
+  try{ navigator.clipboard.writeText(text); } catch(e){
+    var ta=document.createElement('textarea');ta.value=text;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
   }
-  var tip = document.getElementById('copied-tip');
-  tip.classList.add('show');
-  setTimeout(function(){ tip.classList.remove('show'); }, 2500);
+  showToast('✅ 已复制结果');
 }
 
-function retryQuiz(){
-  answers = {};
-  currentQ = 0;
-  resultKey = '';
-  document.getElementById('result-section').style.display = 'none';
-  document.getElementById('hero-section').style.display = 'block';
-  updateProgress(0);
-  window.scrollTo({top:0,behavior:'smooth'});
+function goRoute(city){
+  switchMod(1,document.querySelectorAll('.mtab')[1]);
+  setTimeout(function(){ showToast('🗺️ 在打卡路线中找 '+city); },400);
 }
+
+function retryQA(){
+  answers={}; curQ=0; resultStar=null;
+  document.getElementById('qa-result').style.display='none';
+  document.getElementById('qa-result').innerHTML='';
+  document.getElementById('qa-start').style.display='block';
+  document.getElementById('qa-prog').style.display='none';
+  document.getElementById('qa-qwrap').style.display='none';
+  document.getElementById('panelA').scrollTop=0;
+}
+
+// ══════════════════════════════════════════
+// MODULE B: 打卡路线
+// ══════════════════════════════════════════
+var ROUTES = [
+  // 欧洲经典
+  [
+    {name:'诺坎普·巴塞罗那',meta:'西班牙 · 加泰罗尼亚',spots:[
+      {em:'🏟️',name:'诺坎普球场',desc:'梅西20年的主场，全球最大足球场之一。可参加球场参观体验项目。',tip:'提前在官网买参观票更便宜'},
+      {em:'🌆',name:'哥特区·老城漫步',desc:'中世纪街巷，梅西常去的咖啡馆区域，感受最原始的巴塞罗那。',tip:'傍晚最美'},
+      {em:'🎨',name:'圣家堂',desc:'高迪建筑杰作，视觉冲击无与伦比。',tip:'提前3天买票！'},
+    ]},
+    {name:'伯纳乌·马德里',meta:'西班牙 · 卡斯蒂利亚',spots:[
+      {em:'🏟️',name:'圣地亚哥伯纳乌',desc:'C罗的高光舞台，刚完成翻新，现代感拉满。',tip:'博物馆+参观套票性价比高'},
+      {em:'🏛️',name:'普拉多博物馆',desc:'欧洲顶级艺术博物馆，不看球的时间可以在这度过。',tip:'周一免费开放'},
+      {em:'🌃',name:'格兰大道夜生活',desc:'马德里最繁华的街道，10点后才开始热闹。',tip:'西班牙人11点才吃晚饭'},
+    ]},
+    {name:'老特拉福德·曼彻斯特',meta:'英国 · 大曼彻斯特郡',spots:[
+      {em:'🏟️',name:'老特拉福德',desc:'曼联主场，\"剧院\"之称。贝克汉姆、C罗都在这里起步。',tip:'比赛日门票很难买，参观日更推荐'},
+      {em:'🍺',name:'英式球迷酒吧文化',desc:'比赛日的酒吧体验比球场更纯正。跟本地球迷一起看球。',tip:'提前找到附近球迷酒吧'},
+      {em:'🎵',name:'北角音乐街区',desc:'曼彻斯特的朋克摇滚圣地，晚上必逛。',tip:'凌晨2点还有人演出'},
+    ]},
+    {name:'安菲尔德·利物浦',meta:'英国 · 默西赛德郡',spots:[
+      {em:'🏟️',name:'安菲尔德球场',desc:'\"You\'ll Never Walk Alone\"——全球最有情怀的球场之一。',tip:'周边的凯尔特人酒吧值得去'},
+      {em:'🎸',name:'披头士圣地',desc:'利物浦最著名的文化遗产，洞穴俱乐部、约翰·列侬纪念馆。',tip:'步行可达，半天足够'},
+    ]},
+  ],
+  // 世界杯之旅
+  [
+    {name:'阿兹特克球场·墨西哥城',meta:'墨西哥 · 联邦区',spots:[
+      {em:'🏟️',name:'阿兹特克球场',desc:'1986年世界杯圣地，马拉多纳\"上帝之手\"发生的地方。',tip:'目前已翻新改造中，可查最新开放情况'},
+      {em:'🌮',name:'街头市集&塔科文化',desc:'墨西哥城最真实的饮食体验，边走边吃。',tip:'Mercado Roma是最佳起点'},
+      {em:'🏛️',name:'特奥蒂瓦坎金字塔',desc:'世界遗产，日出时分爬上太阳金字塔，俯瞰古城。',tip:'凌晨5点出发抢占制高点'},
+    ]},
+    {name:'卢萨尔体育场·多哈',meta:'卡塔尔 · 大多哈地区',spots:[
+      {em:'🏟️',name:'卢萨尔球场',desc:'2022年世界杯决赛场地，梅西加冕之地。',tip:'现作为多功能体育场继续使用'},
+      {em:'🛕',name:'苏克瓦基夫传统市集',desc:'卡塔尔最古老的市场，香料、织物、本地文化。',tip:'傍晚后才开始热闹'},
+      {em:'🏜️',name:'沙漠越野体验',desc:'在卡塔尔不去沙漠等于没来过，日落时分最美。',tip:'提前在酒店预定越野团'},
+    ]},
+    {name:'马拉卡纳·里约',meta:'巴西 · 里约热内卢州',spots:[
+      {em:'🏟️',name:'马拉卡纳球场',desc:'巴西足球圣殿，举办过无数传奇比赛。',tip:'可参加球场参观+博物馆套票'},
+      {em:'⛰️',name:'基督山+糖面包山',desc:'里约最经典的两个制高点，各有不同的壮阔视野。',tip:'下午去糖面包山看日落最佳'},
+      {em:'🎵',name:'科帕卡瓦纳海滩桑巴',desc:'傍晚的海边有自发的桑巴表演，免费，真实，难忘。',tip:'周五晚上人最多最热闹'},
+    ]},
+  ],
+  // 球星足迹
+  [
+    {name:'那不勒斯·马拉多纳圣地',meta:'意大利 · 坎帕尼亚大区',spots:[
+      {em:'🏟️',name:'迭戈·阿马多·马拉多纳球场',desc:'原名圣保罗，以他名字重命名。朝圣必来，城市人民对他的爱从未消退。',tip:'球场外有自发的壁画朝圣点'},
+      {em:'🍕',name:'老城区&世界第一披萨',desc:'那不勒斯是披萨发源地，马拉多纳最爱的馆子就在老城。',tip:'Sorbillo家族的pizzeria，需排队'},
+      {em:'🎨',name:'老城马拉多纳壁画群',desc:'走进街巷就能找到各种民间壁画，这是他留给这座城市的印记。',tip:'自己走，不用导游'},
+    ]},
+    {name:'里斯本·C罗故乡+贝菲卡',meta:'葡萄牙 · 里斯本大区',spots:[
+      {em:'🏟️',name:'贝菲卡球场-光明球场',desc:'葡萄牙豪门，C罗葡萄牙队的精神象征地。',tip:'非比赛日可参观'},
+      {em:'🚃',name:'阿尔法玛区·电车28路',desc:'里斯本最古老的街区，搭28路感受整座城市的历史质感。',tip:'高峰期人很多，早上8点去'},
+      {em:'🍷',name:'贝伦区+葡式蛋挞原版',desc:'葡式蛋挞的发源地，贝伦修道院旁边的Pastéis de Belém。',tip:'排队40分钟是常态，值得'},
+    ]},
+    {name:'多特蒙德·黄墙传奇',meta:'德国 · 北莱茵-威斯特法伦',spots:[
+      {em:'🏟️',name:'威斯特法伦球场·南看台',desc:'\"黄墙\"——全球最震撼的球迷看台，站票区8万人的黑黄海洋。',tip:'比赛日的站票体验是人生必须'},
+      {em:'🍺',name:'德式啤酒馆文化',desc:'比赛前后，球迷聚集的啤酒馆才是真正的文化现场。',tip:'Hövels Hausbrauerei是老球迷最爱'},
+      {em:'🏭',name:'鲁尔工业区遗址公园',desc:'从煤矿到文化园，独特的工业遗址体验，拍照绝佳。',tip:'Landschaftspark Duisburg-Nord'},
+    ]},
+  ]
+];
+
+var punched = JSON.parse(localStorage.getItem('pilgrimage_punched')||'{}');
+var curRouteGroup = 0;
+
+function savePunched(){ localStorage.setItem('pilgrimage_punched', JSON.stringify(punched)); }
+
+function updateAchieve(){
+  var cnt = Object.values(punched).filter(Boolean).length;
+  document.getElementById('ach-count').textContent = cnt;
+}
+
+function switchRoute(idx, el){
+  curRouteGroup = idx;
+  document.querySelectorAll('.rtab').forEach(function(x){x.classList.remove('on');});
+  el.classList.add('on');
+  renderRoutes();
+}
+
+function renderRoutes(){
+  var group = ROUTES[curRouteGroup];
+  var html = '';
+  group.forEach(function(route, ri){
+    var punchKey = curRouteGroup+'_'+ri;
+    var isPunched = punched[punchKey];
+    html += '<div class="rcard'+(isPunched?' expanded':'')+'" id="rc_'+curRouteGroup+'_'+ri+'">';
+    html += '<div class="rcard-head" onclick="toggleCard('+curRouteGroup+','+ri+')">';
+    html += '<div class="rcard-num">'+(ri+1)+'</div>';
+    html += '<div class="rcard-info"><div class="rcard-name">'+route.name+'</div><div class="rcard-meta">'+route.meta+'</div></div>';
+    html += '<div class="rcard-check'+(isPunched?' done':'')+'"></div>';
+    html += '</div>';
+    html += '<div class="rcard-body">';
+    html += '<div class="rcard-spots">';
+    route.spots.forEach(function(s){
+      html += '<div class="spot">'
+        +'<div class="spot-icon">'+s.em+'</div>'
+        +'<div class="spot-body">'
+        +'<div class="spot-name">'+s.name+'</div>'
+        +'<div class="spot-desc">'+s.desc+'</div>'
+        +(s.tip?'<div class="spot-tip">💡 '+s.tip+'</div>':'')
+        +'</div></div>';
+    });
+    html += '</div>';
+    html += '<button class="punch-btn'+(isPunched?' punched':'')+'" onclick="punchRoute('+curRouteGroup+','+ri+',event)">'
+      +(isPunched?'✅ 已打卡！':'📍 标记我去过这里')
+      +'</button>';
+    html += '</div></div>';
+  });
+  document.getElementById('route-cards').innerHTML = html;
+  updateAchieve();
+}
+
+function toggleCard(g, ri){
+  var el = document.getElementById('rc_'+g+'_'+ri);
+  el.classList.toggle('expanded');
+}
+
+function punchRoute(g, ri, e){
+  e.stopPropagation();
+  var key = g+'_'+ri;
+  punched[key] = !punched[key];
+  savePunched();
+  renderRoutes();
+  if(punched[key]) showToast('🎉 打卡成功！');
+}
+
+// ══════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════
+function switchMod(idx, el){
+  document.querySelectorAll('.mtab').forEach(function(x){x.classList.remove('on');});
+  el.classList.add('on');
+  document.getElementById('panelA').classList.toggle('show', idx===0);
+  document.getElementById('panelB').classList.toggle('show', idx===1);
+  if(idx===1) renderRoutes();
+}
+
+// TOAST
+function showToast(msg){
+  var el=document.getElementById('copy-toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(function(){ el.classList.remove('show'); }, 2000);
+}
+
+// INIT
+renderRoutes();
+updateAchieve();
 </script>
 </body>
 </html>
