@@ -84,7 +84,7 @@ body{background:#F0F2F5;color:var(--text);font-family:var(--sans);min-height:100
 .kw-add-btn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* ── MAIN ── */
-.main{margin-top:148px;padding:16px 40px 60px;min-height:calc(100vh - 148px)}
+.main{padding:16px 40px 60px}
 #resultArea,#emptyState{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(10,22,40,.06);padding:28px 32px;border:1px solid rgba(255,255,255,.9)}
 
 /* Empty state */
@@ -478,6 +478,19 @@ document.getElementById('btnExclude').addEventListener('click',function(){doExp(
 
 renderKw();
 renderCat();
+// 动态计算控制栏高度，避免结果区被遥挤
+function adjustMain(){
+  var ctrl=document.querySelector('.ctrl');
+  var main=document.querySelector('.main');
+  if(ctrl&&main){
+    var h=ctrl.getBoundingClientRect().bottom;
+    main.style.paddingTop=(h+16)+'px';
+  }
+}
+adjustMain();
+window.addEventListener('resize',adjustMain);
+var kwObs=new MutationObserver(adjustMain);
+if(document.querySelector('.ctrl'))kwObs.observe(document.querySelector('.ctrl'),{childList:true,subtree:true,attributes:false});
 </script>
 </body>
 </html>
