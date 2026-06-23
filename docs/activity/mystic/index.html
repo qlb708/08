@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>问天机 — 命定之地</title>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 100%; min-height: 100vh; overflow-x: hidden;
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ===== PHONE FRAME ===== */
+.phone {
+  width: 100%; max-width: 390px; min-height: 100vh; position: relative;
+  overflow: hidden;
+}
+/* desktop shadow / phone shell effect */
+@media (min-width: 420px) {
+  body { background: #000; }
+  .phone {
+    border-radius: 32px;
+    box-shadow:
+      0 0 0 2px #1a1a1a,
+      0 0 0 6px #111,
+      0 0 60px rgba(0,0,0,0.8),
+      0 0 120px rgba(80,60,120,0.15);
+    margin: 20px auto;
+    min-height: calc(100vh - 40px);
+  }
+}
+
+/* ===== NAV ===== */
+.top-nav {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 390px; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.85) 60%, transparent);
+}
+.top-nav .brand {
+  font-size: 16px; color: #fff; font-weight: 700; letter-spacing: 0.1em;
+}
+.top-nav .back-link {
+  font-size: 14px; color: rgba(255,255,255,0.6); text-decoration: none;
+  transition: color 0.3s;
+}
+.top-nav .back-link:hover { color: #fff; }
+
+/* ===== SWITCHER (between rituals) ===== */
+.ritual-switcher {
+  position: fixed; top: 48px; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 390px; z-index: 99;
+  display: flex; justify-content: center; gap: 8px; padding: 4px 16px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.85) 60%, transparent);
+}
+.ritual-switcher .sw-btn {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px; padding: 4px 12px; font-size: 12px; color: rgba(255,255,255,0.5);
+  cursor: pointer; transition: all 0.3s;
+}
+.ritual-switcher .sw-btn:hover,
+.ritual-switcher .sw-btn.active {
+  background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9);
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  display: none; width: 100%; min-height: 100vh; padding: 70px 20px 30px;
+  position: relative;
+}
+.screen.active { display: flex; flex-direction: column; align-items: center; }
+
+/* ===== SELECTION SCREEN ===== */
+#screen-select {
+  justify-content: center; gap: 16px; padding-top: 80px;
+  background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+}
+.select-title {
+  font-size: 22px; color: #fff; font-weight: 900; letter-spacing: 0.2em;
+  margin-bottom: 4px; text-align: center;
+}
+.select-subtitle {
+  font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 0.1em;
+  margin-bottom: 20px; text-align: center;
+}
+.ritual-card {
+  width: 100%; border-radius: 16px; padding: 28px 24px;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.ritual-card:active { transform: scale(0.97); }
+.ritual-card .card-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+.ritual-card .card-title {
+  font-size: 18px; color: #fff; font-weight: 700; letter-spacing: 0.15em;
+  margin-bottom: 6px;
+}
+.ritual-card .card-desc {
+  font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; line-height: 1.6;
+}
+/* glossy overlay on cards */
+.ritual-card::after {
+  content: ''; position: absolute; top: -40%; left: -20%;
+  width: 60%; height: 80%; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.08), transparent 70%);
+  transform: rotate(-15deg); pointer-events: none;
+}
+/* Card themes */
+.card-crystal {
+  background: linear-gradient(145deg, #0d0d2a, #1a0a30, #0d0d2a);
+  border: 1px solid rgba(120,60,255,0.2);
+  box-shadow: 0 0 30px rgba(80,20,200,0.15), inset 0 0 30px rgba(80,20,200,0.05);
+}
+.card-talisman {
+  background: linear-gradient(145deg, #1a0f05, #2a1a08, #1a0f05);
+  border: 1px solid rgba(200,150,50,0.2);
+  box-shadow: 0 0 30px rgba(180,120,20,0.1), inset 0 0 30px rgba(180,120,20,0.03);
+}
+.card-map {
+  background: linear-gradient(145deg, #0d1a1a, #0a1520, #0d1a1a);
+  border: 1px solid rgba(255,100,50,0.15);
+  box-shadow: 0 0 30px rgba(200,60,20,0.1), inset 0 0 30px rgba(200,60,20,0.03);
+}
+
+/* ===== RITUAL 1: CRYSTAL BALL ===== */
+#screen-crystal {
+  background: #0a0a1a;
+  justify-content: center;
+  padding-top: 70px;
+}
+.crystal-scene {
+  display: flex; flex-direction: column; align-items: center;
+  position: relative;
+}
+.crystal-ball {
+  width: 240px; height: 240px; border-radius: 50%; position: relative;
+  background: radial-gradient(circle at 35% 35%, rgba(200,180,255,0.9), rgba(80,40,180,0.7) 40%, rgba(20,0,60,0.95) 80%);
+  box-shadow:
+    0 0 60px rgba(120,60,255,0.4),
+    0 0 120px rgba(80,20,200,0.2),
+    inset 0 0 40px rgba(0,0,0,0.5);
+  /* entrance */
+  opacity: 0; transform: scale(0.8);
+  transition: opacity 1.5s ease, transform 1.5s ease;
+  cursor: pointer;
+}
+.crystal-ball.visible { opacity: 1; transform: scale(1); }
+/* highlight */
+.crystal-ball::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.6), transparent 50%);
+  pointer-events: none;
+}
+/* fog layer 1 */
+.crystal-ball::after {
+  content: ''; position: absolute;
+  top: 15%; left: 10%; width: 80%; height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(150,100,255,0.3), transparent 70%);
+  animation: fog-rotate 8s linear infinite;
+  filter: blur(8px);
+  pointer-events: none;
+}
+.crystal-ball .fog-layer2 {
+  position: absolute;
+  top: 25%; left: 20%; width: 60%; height: 50%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(100,50,200,0.25), transparent 60%);
+  animation: fog-rotate 12s linear infinite reverse;
+  filter: blur(10px);
+  pointer-events: none;
+}
+.crystal-ball.shaking {
+  animation: shake 0.5s ease-in-out;
+}
+.crystal-ball.shaking .fog-layer2,
+.crystal-ball.shaking::after {
+  animation-duration: 0.5s;
+  background: radial-gradient(ellipse, rgba(220,200,255,0.6), transparent 70%);
+}
+
+/* crystal result text inside ball */
+.crystal-result {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
+  text-align: center; width: 80%; opacity: 0;
+  transition: opacity 1.2s ease 0.3s, transform 1.2s ease 0.3s;
+  pointer-events: none; z-index: 2;
+}
+.crystal-result.visible {
+  opacity: 1; transform: translate(-50%, -50%) scale(1);
+}
+.crystal-result .city-name {
+  font-size: 28px; color: #fff; font-weight: 700; letter-spacing: 0.1em;
+  text-shadow: 0 0 20px rgba(180,140,255,0.8);
+}
+.crystal-result .city-desc {
+  font-size: 13px; color: rgba(200,180,255,0.85); margin-top: 8px; line-height: 1.6;
+}
+
+.crystal-label {
+  font-size: 14px; color: rgba(180,140,255,0.8); letter-spacing: 0.2em;
+  margin-top: 24px; text-align: center;
+  opacity: 0; transition: opacity 1s ease 0.5s;
+}
+.crystal-label.visible { opacity: 1; }
+
+.crystal-hint {
+  font-size: 13px; color: rgba(180,140,255,0.6); letter-spacing: 0.1em;
+  margin-top: 16px; text-align: center;
+  animation: hint-pulse 2s ease-in-out infinite;
+  transition: opacity 0.5s;
+}
+.crystal-hint.hidden { opacity: 0; }
+
+.crystal-actions {
+  display: none; flex-direction: column; gap: 10px; margin-top: 20px; width: 100%;
+}
+.crystal-actions.visible { display: flex; }
+
+.btn-mystic {
+  padding: 12px 24px; border-radius: 24px; font-size: 14px; letter-spacing: 0.1em;
+  cursor: pointer; text-align: center; text-decoration: none;
+  transition: all 0.3s; border: none; outline: none; display: block;
+}
+.btn-primary {
+  background: linear-gradient(135deg, rgba(120,60,255,0.6), rgba(80,20,200,0.6));
+  color: #fff; border: 1px solid rgba(160,100,255,0.3);
+}
+.btn-primary:hover { background: linear-gradient(135deg, rgba(140,80,255,0.8), rgba(100,30,220,0.8)); }
+.btn-secondary {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* ===== RITUAL 2: TALISMAN ===== */
+#screen-talisman {
+  background: #1a0f05;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(100,70,30,0.03) 2px,
+    rgba(100,70,30,0.03) 4px
+  );
+  justify-content: center;
+  padding-top: 70px;
+}
+.talisman-scene {
+  display: flex; flex-direction: column; align-items: center; position: relative;
+}
+.talisman-title {
+  font-size: 22px; color: rgba(255,200,80,0.9); font-weight: 900;
+  letter-spacing: 0.3em; margin-bottom: 20px;
+}
+.talisman-paper {
+  width: 200px; height: 320px; position: relative;
+  background: #0d0800;
+  border: 2px solid rgba(200,150,50,0.4);
+  border-radius: 4px;
+  box-shadow: 0 0 40px rgba(180,120,20,0.15), inset 0 0 30px rgba(0,0,0,0.6);
+  overflow: hidden; cursor: pointer;
+  transition: transform 0.1s;
+}
+.talisman-paper:active { transform: scale(0.98); }
+.talisman-paper.shaking { animation: paper-shake 0.3s ease-in-out; }
+
+/* talisman patterns (decorative strokes) */
+.talisman-paper .talisman-patterns {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  opacity: 0.15; transition: opacity 1s;
+}
+.talisman-paper .talisman-patterns.fading { opacity: 0; }
+
+/* city name reveal */
+.talisman-city {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  writing-mode: vertical-rl;
+  font-size: 40px; color: rgba(200,150,50,0);
+  font-weight: 700; letter-spacing: 0.3em;
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 2.5s ease, filter 2.5s ease, color 2.5s ease;
+  pointer-events: none; white-space: nowrap;
+}
+.talisman-city.visible {
+  opacity: 1; filter: blur(0); color: rgba(255,200,80,1);
+}
+
+/* talisman fortune text */
+.talisman-fortune {
+  position: absolute; top: 62%; left: 50%;
+  transform: translate(-50%, 0);
+  writing-mode: vertical-rl;
+  font-size: 14px; color: rgba(200,150,50,0);
+  letter-spacing: 0.2em;
+  opacity: 0;
+  transition: opacity 2s ease 1.5s;
+  pointer-events: none; white-space: nowrap;
+}
+.talisman-fortune.visible {
+  opacity: 0.7; color: rgba(255,200,80,0.7);
+}
+
+/* candle glow overlay */
+.talisman-candle {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 40%, rgba(255,150,50,0.06), transparent 70%);
+  opacity: 0;
+  animation: candle-flicker 3s ease-in-out infinite;
+}
+.talisman-candle.active { opacity: 1; }
+
+/* particle container */
+.talisman-particles {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: visible;
+}
+.talisman-particle {
+  position: absolute; width: 3px; height: 3px; border-radius: 50%;
+  background: rgba(255,200,80,0.8);
+  animation: particle-float 2s ease-out forwards;
+}
+
+.talisman-hint {
+  font-size: 13px; color: rgba(200,150,50,0.5); letter-spacing: 0.15em;
+  margin-top: 20px; text-align: center;
+  animation: hint-pulse-gold 2.5s ease-in-out infinite;
+  transition: opacity 0.5s;
+}
+.talisman-hint.hidden { opacity: 0; }
+
+.talisman-actions {
+  display: none; flex-direction: column; gap: 10px; margin-top: 24px; width: 100%;
+}
+.talisman-actions.visible { display: flex; }
+
+.talisman-btn {
+  padding: 12px 24px; border-radius: 24px; font-size: 14px; letter-spacing: 0.1em;
+  cursor: pointer; text-align: center; text-decoration: none;
+  transition: all 0.3s; border: none; outline: none; display: block;
+}
+.talisman-btn-primary {
+  background: linear-gradient(135deg, rgba(180,120,20,0.5), rgba(140,80,10,0.5));
+  color: rgba(255,200,80,0.9); border: 1px solid rgba(200,150,50,0.3);
+}
+.talisman-btn-primary:hover { background: linear-gradient(135deg, rgba(200,140,30,0.7), rgba(160,100,20,0.7)); }
+.talisman-btn-secondary {
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,200,80,0.5); border: 1px solid rgba(200,150,50,0.15);
+}
+.talisman-btn-secondary:hover { background: rgba(255,255,255,0.08); color: rgba(255,200,80,0.8); }
+
+/* ===== RITUAL 3: MAP BURNING ===== */
+#screen-map {
+  background: #0d0d0d;
+  justify-content: center;
+  padding-top: 70px;
+}
+.map-scene {
+  display: flex; flex-direction: column; align-items: center; position: relative;
+  width: 100%;
+}
+.map-title {
+  font-size: 16px; color: rgba(255,255,255,0.5); letter-spacing: 0.2em;
+  margin-bottom: 20px; text-align: center;
+}
+.map-container {
+  width: 320px; height: 180px; position: relative;
+  opacity: 0; transition: opacity 1.5s ease;
+}
+.map-container.visible { opacity: 1; }
+.map-container svg { width: 100%; height: 100%; }
+.map-container svg path {
+  fill: none; stroke: rgba(255,255,255,0.5); stroke-width: 1;
+  stroke-linecap: round; stroke-linejoin: round;
+  transition: stroke 0.5s, opacity 0.5s;
+}
+.map-container svg path.burning {
+  stroke: #ff6622;
+  filter: drop-shadow(0 0 6px #ff4400);
+}
+.map-container svg path.burnt {
+  stroke: #331100;
+  opacity: 0.1;
+}
+
+/* city dot */
+.city-dot {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: #ff4422;
+  box-shadow: 0 0 12px #ff4422, 0 0 24px rgba(255,68,34,0.5);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.8s ease, opacity 0.5s ease;
+}
+.city-dot.visible {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  animation: dot-pulse 1.5s ease-in-out infinite;
+}
+
+/* city label on map */
+.map-city-label {
+  position: absolute; white-space: nowrap;
+  font-size: 20px; color: #fff; font-weight: 700;
+  opacity: 0; transition: opacity 1s ease 0.5s;
+  pointer-events: none;
+  text-shadow: 0 0 10px rgba(255,100,50,0.5);
+}
+.map-city-label.visible { opacity: 1; }
+
+.map-city-desc {
+  font-size: 13px; color: rgba(255,200,150,0.7); margin-top: 12px;
+  text-align: center; line-height: 1.6;
+  opacity: 0; transition: opacity 1s ease 0.8s;
+}
+.map-city-desc.visible { opacity: 1; }
+
+.map-status {
+  font-size: 14px; color: rgba(255,100,50,0.8); letter-spacing: 0.2em;
+  margin-top: 8px;
+  opacity: 0; transition: opacity 1s ease 0.3s;
+}
+.map-status.visible { opacity: 1; }
+
+.map-burn-btn {
+  margin-top: 24px; padding: 14px 32px; border-radius: 24px;
+  font-size: 15px; letter-spacing: 0.1em; cursor: pointer;
+  background: linear-gradient(135deg, rgba(200,60,20,0.6), rgba(160,30,10,0.6));
+  color: #ffcc88; border: 1px solid rgba(255,100,50,0.3);
+  transition: all 0.3s; outline: none;
+}
+.map-burn-btn:hover { background: linear-gradient(135deg, rgba(220,80,30,0.8), rgba(180,40,20,0.8)); }
+
+.map-actions {
+  display: none; flex-direction: column; gap: 10px; margin-top: 20px; width: 100%;
+}
+.map-actions.visible { display: flex; }
+
+.map-btn {
+  padding: 12px 24px; border-radius: 24px; font-size: 14px; letter-spacing: 0.1em;
+  cursor: pointer; text-align: center; text-decoration: none;
+  transition: all 0.3s; border: none; outline: none; display: block;
+}
+.map-btn-primary {
+  background: linear-gradient(135deg, rgba(200,60,20,0.5), rgba(160,30,10,0.5));
+  color: #ffcc88; border: 1px solid rgba(255,100,50,0.3);
+}
+.map-btn-primary:hover { background: linear-gradient(135deg, rgba(220,80,30,0.7), rgba(180,40,20,0.7)); }
+.map-btn-secondary {
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1);
+}
+.map-btn-secondary:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+/* ===== KEYFRAMES ===== */
+@keyframes fog-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  10% { transform: translateX(-8px) rotate(-2deg); }
+  20% { transform: translateX(8px) rotate(2deg); }
+  30% { transform: translateX(-6px) rotate(-1deg); }
+  40% { transform: translateX(6px) rotate(1deg); }
+  50% { transform: translateX(-4px) rotate(-1deg); }
+  60% { transform: translateX(4px) rotate(1deg); }
+  70% { transform: translateX(-2px) rotate(0); }
+  80% { transform: translateX(2px) rotate(0); }
+  90% { transform: translateX(-1px) rotate(0); }
+}
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+@keyframes hint-pulse-gold {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+@keyframes paper-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+}
+@keyframes particle-float {
+  0% { transform: translateY(0) translateX(0); opacity: 1; }
+  100% { transform: translateY(-60px) translateX(var(--px, 10px)); opacity: 0; }
+}
+@keyframes candle-flicker {
+  0%, 100% { opacity: 0.6; }
+  20% { opacity: 0.3; }
+  40% { opacity: 0.8; }
+  60% { opacity: 0.4; }
+  80% { opacity: 0.7; }
+}
+@keyframes dot-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #ff4422, 0 0 24px rgba(255,68,34,0.5); }
+  50% { transform: translate(-50%, -50%) scale(1.3); box-shadow: 0 0 20px #ff6644, 0 0 40px rgba(255,68,34,0.6); }
+}
+@keyframes map-burn-1 {
+  0% { stroke: rgba(255,255,255,0.5); filter: none; }
+  30% { stroke: #ffaa33; filter: drop-shadow(0 0 4px #ff8800); }
+  60% { stroke: #ff5500; filter: drop-shadow(0 0 8px #ff4400); }
+  100% { stroke: #220800; opacity: 0.05; filter: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <span class="brand">🔮 问天机</span>
+    <a class="back-link" href="/08/activity/">← 活动</a>
+  </nav>
+
+  <!-- Ritual Switcher (hidden on select screen) -->
+  <div class="ritual-switcher" id="ritual-switcher" style="display:none;">
+    <button class="sw-btn" data-target="crystal" onclick="switchRitual('crystal')">🔮 水晶球</button>
+    <button class="sw-btn" data-target="talisman" onclick="switchRitual('talisman')">📜 符纸</button>
+    <button class="sw-btn" data-target="map" onclick="switchRitual('map')">🗺️ 地图</button>
+  </div>
+
+  <!-- ===== SCREEN: SELECTION ===== -->
+  <div class="screen active" id="screen-select">
+    <div class="select-title">选择仪式</div>
+    <div class="select-subtitle">三种仪式，同一天机</div>
+
+    <div class="ritual-card card-crystal" onclick="switchRitual('crystal')">
+      <span class="card-icon">🔮</span>
+      <div class="card-title">水晶球</div>
+      <div class="card-desc">摇一摇问天机</div>
+    </div>
+
+    <div class="ritual-card card-talisman" onclick="switchRitual('talisman')">
+      <span class="card-icon">📜</span>
+      <div class="card-title">符纸显字</div>
+      <div class="card-desc">焚香请符，天机自现</div>
+    </div>
+
+    <div class="ritual-card card-map" onclick="switchRitual('map')">
+      <span class="card-icon">🗺️</span>
+      <div class="card-title">地图烧蚀</div>
+      <div class="card-desc">火焰指引你的方向</div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: CRYSTAL BALL ===== -->
+  <div class="screen" id="screen-crystal">
+    <div class="crystal-scene">
+      <div class="crystal-ball" id="crystal-ball">
+        <div class="fog-layer2"></div>
+        <div class="crystal-result" id="crystal-result">
+          <div class="city-name" id="crystal-city"></div>
+          <div class="city-desc" id="crystal-desc"></div>
+        </div>
+      </div>
+      <div class="crystal-label" id="crystal-label">你的命定之地</div>
+      <div class="crystal-hint" id="crystal-hint">摇动手机 或 点击水晶球</div>
+      <div class="crystal-actions" id="crystal-actions">
+        <button class="btn-mystic btn-primary" onclick="resetCrystal()">此次指引已定，再问天机</button>
+        <a class="btn-mystic btn-secondary" href="/08/activity/">查看朝圣路线</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: TALISMAN ===== -->
+  <div class="screen" id="screen-talisman">
+    <div class="talisman-scene">
+      <div class="talisman-title">请符</div>
+      <div class="talisman-paper" id="talisman-paper">
+        <div class="talisman-candle" id="talisman-candle"></div>
+        <svg class="talisman-patterns" id="talisman-patterns" viewBox="0 0 200 320">
+          <!-- Stylized talisman strokes -->
+          <path d="M100 10 L100 60 M70 30 L130 30 M80 50 L120 50" stroke="rgba(200,150,50,0.8)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M60 80 Q100 70 140 80 Q130 100 100 95 Q70 100 60 80" stroke="rgba(200,150,50,0.6)" stroke-width="1.5" fill="none"/>
+          <circle cx="100" cy="115" r="12" stroke="rgba(200,150,50,0.5)" stroke-width="1" fill="none"/>
+          <circle cx="100" cy="115" r="6" stroke="rgba(200,150,50,0.4)" stroke-width="1" fill="none"/>
+          <path d="M75 140 L100 130 L125 140 L120 160 L80 160 Z" stroke="rgba(200,150,50,0.5)" stroke-width="1.5" fill="none"/>
+          <path d="M85 175 L115 175 M90 185 L110 185 M95 195 L105 195" stroke="rgba(200,150,50,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M60 220 Q80 210 100 225 Q120 210 140 220" stroke="rgba(200,150,50,0.5)" stroke-width="1.5" fill="none"/>
+          <path d="M70 240 L130 240 M80 250 L120 250 M90 260 L110 260 M95 270 L105 270" stroke="rgba(200,150,50,0.3)" stroke-width="1" stroke-linecap="round"/>
+          <circle cx="100" cy="295" r="8" stroke="rgba(200,150,50,0.3)" stroke-width="1" fill="none"/>
+        </svg>
+        <div class="talisman-particles" id="talisman-particles"></div>
+        <div class="talisman-city" id="talisman-city"></div>
+        <div class="talisman-fortune" id="talisman-fortune">此地与君有缘，天机已现</div>
+      </div>
+      <div class="talisman-hint" id="talisman-hint">轻触符纸，静心请符</div>
+      <div class="talisman-actions" id="talisman-actions">
+        <button class="talisman-btn talisman-btn-primary" onclick="resetTalisman()">再请一符</button>
+        <button class="talisman-btn talisman-btn-secondary" onclick="switchRitual('select')">返回选择</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: MAP BURNING ===== -->
+  <div class="screen" id="screen-map">
+    <div class="map-scene">
+      <div class="map-title">火焰将指引你的方向</div>
+      <div class="map-container" id="map-container">
+        <svg viewBox="0 0 360 200" id="map-svg">
+          <!-- Simplified world map continents -->
+          <!-- North America -->
+          <path d="M30 45 L50 30 L80 25 L100 30 L110 45 L115 65 L105 80 L95 90 L80 95 L65 90 L50 80 L40 70 L30 60 Z" id="map-na"/>
+          <!-- South America -->
+          <path d="M70 100 L85 95 L100 105 L105 120 L100 140 L90 155 L75 165 L65 155 L60 140 L62 125 L65 110 Z" id="map-sa"/>
+          <!-- Europe -->
+          <path d="M150 35 L170 28 L190 30 L200 40 L195 55 L180 60 L165 58 L150 50 L145 42 Z" id="map-eu"/>
+          <!-- Africa -->
+          <path d="M155 65 L175 60 L195 70 L200 90 L195 115 L185 135 L170 145 L155 140 L145 120 L140 100 L145 80 Z" id="map-af"/>
+          <!-- Asia -->
+          <path d="M200 30 L240 20 L280 25 L310 35 L320 50 L315 70 L300 80 L280 85 L260 80 L240 75 L220 70 L205 60 L195 45 Z" id="map-as"/>
+          <!-- Australia -->
+          <path d="M280 120 L305 115 L320 125 L318 140 L305 148 L285 145 L275 135 Z" id="map-au"/>
+          <!-- Japan (small accent) -->
+          <path d="M315 40 L320 35 L325 42 L322 50 L315 48 Z" id="map-jp"/>
+          <!-- Iceland (small accent) -->
+          <path d="M125 22 L135 18 L142 22 L138 28 L128 27 Z" id="map-ic"/>
+        </svg>
+        <!-- City dot -->
+        <div class="city-dot" id="city-dot"></div>
+        <!-- City label -->
+        <div class="map-city-label" id="map-city-label"></div>
+      </div>
+      <div class="map-status" id="map-status"></div>
+      <div class="map-city-desc" id="map-city-desc"></div>
+      <button class="map-burn-btn" id="map-burn-btn" onclick="startBurn()">🔥 点燃</button>
+      <div class="map-actions" id="map-actions">
+        <button class="map-btn map-btn-primary" onclick="resetMap()">再次燃烧</button>
+        <button class="map-btn map-btn-secondary" onclick="switchRitual('select')">返回</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const destinations = [
+  { name: '京都', desc: '古寺钟声会在某个傍晚击中你，那一刻你会明白自己来这里的原因。', short: '古寺钟声会在某个傍晚击中你。' },
+  { name: '里斯本', desc: '法多音乐在小巷回响，你将在那里遇见一个版本的自己。', short: '法多音乐在小巷回响，你将遇见另一个自己。' },
+  { name: '那不勒斯', desc: '混乱即秩序，在这座城市你将学会放手。', short: '混乱即秩序，在这里你将学会放手。' },
+  { name: '布达佩斯', desc: '多瑙河的夜晚会给你一个答案，你已经等待很久了。', short: '多瑙河的夜晚会给你一个久违的答案。' },
+  { name: '雷克雅未克', desc: '极光之下，所有困扰都变得渺小。你需要的是广阔。', short: '极光之下，所有困扰都变得渺小。' },
+  { name: '巴塞罗那', desc: '高迪的建筑告诉你：美从不走直线，你的人生也是。', short: '美从不走直线，你的人生也是。' },
+  { name: '东京', desc: '在这座城市迷路，是找到自己的开始。', short: '在这座城市迷路，是找到自己的开始。' },
+  { name: '伊斯坦布尔', desc: '欧亚交界处，你将在此找到属于你的那条路。', short: '在欧亚交界处，找到属于你的路。' }
+];
+
+const cityCoords = {
+  '京都':      { x: 83, y: 38 },
+  '里斯本':    { x: 28, y: 42 },
+  '那不勒斯':  { x: 44, y: 40 },
+  '布达佩斯':  { x: 46, y: 36 },
+  '雷克雅未克':{ x: 30, y: 22 },
+  '巴塞罗那':  { x: 36, y: 42 },
+  '东京':      { x: 83, y: 37 },
+  '伊斯坦布尔':{ x: 51, y: 40 }
+};
+
+let currentRitual = 'select';
+
+// ===== NAVIGATION =====
+function switchRitual(target) {
+  // Hide all screens
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+  // Show target
+  if (target === 'select') {
+    document.getElementById('screen-select').classList.add('active');
+    document.getElementById('ritual-switcher').style.display = 'none';
+    currentRitual = 'select';
+  } else {
+    const screenId = 'screen-' + target;
+    document.getElementById(screenId).classList.add('active');
+    document.getElementById('ritual-switcher').style.display = 'flex';
+    currentRitual = target;
+
+    // Update switcher active state
+    document.querySelectorAll('.sw-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.target === target);
+    });
+
+    // Init ritual-specific logic
+    if (target === 'crystal') initCrystal();
+    if (target === 'talisman') initTalisman();
+    if (target === 'map') initMap();
+  }
+
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
+
+// ===== RANDOM PICK =====
+function pickDestination() {
+  return destinations[Math.floor(Math.random() * destinations.length)];
+}
+
+// ===== RITUAL 1: CRYSTAL BALL =====
+let crystalTriggered = false;
+let motionHandler = null;
+
+function initCrystal() {
+  const ball = document.getElementById('crystal-ball');
+  const label = document.getElementById('crystal-label');
+  const hint = document.getElementById('crystal-hint');
+  const result = document.getElementById('crystal-result');
+  const actions = document.getElementById('crystal-actions');
+
+  // Reset
+  crystalTriggered = false;
+  ball.classList.remove('visible', 'shaking');
+  label.classList.remove('visible');
+  hint.classList.remove('hidden');
+  result.classList.remove('visible');
+  actions.classList.remove('visible');
+
+  // Animate in
+  requestAnimationFrame(() => {
+    ball.classList.add('visible');
+  });
+
+  // Click handler
+  ball.onclick = triggerCrystal;
+
+  // Device motion handler
+  setupMotionDetection();
+}
+
+function setupMotionDetection() {
+  if (motionHandler) return; // already set up
+
+  // Try to request permission for iOS 13+
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission().then(state => {
+      if (state === 'granted') {
+        motionHandler = onDeviceMotion;
+        window.addEventListener('devicemotion', motionHandler);
+      }
+    }).catch(() => {});
+  } else if (typeof DeviceMotionEvent !== 'undefined') {
+    motionHandler = onDeviceMotion;
+    window.addEventListener('devicemotion', motionHandler);
+  }
+}
+
+function onDeviceMotion(event) {
+  if (crystalTriggered || currentRitual !== 'crystal') return;
+  const acc = event.accelerationIncludingGravity;
+  if (!acc) return;
+  const magnitude = Math.sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
+  if (magnitude > 18) { // threshold for shake
+    triggerCrystal();
+  }
+}
+
+function triggerCrystal() {
+  if (crystalTriggered) return;
+  crystalTriggered = true;
+
+  const ball = document.getElementById('crystal-ball');
+  const hint = document.getElementById('crystal-hint');
+  const label = document.getElementById('crystal-label');
+  const result = document.getElementById('crystal-result');
+  const actions = document.getElementById('crystal-actions');
+
+  // Hide hint
+  hint.classList.add('hidden');
+
+  // Shake animation
+  ball.classList.add('shaking');
+
+  // After shake, reveal result
+  setTimeout(() => {
+    ball.classList.remove('shaking');
+
+    const dest = pickDestination();
+    document.getElementById('crystal-city').textContent = dest.name;
+    document.getElementById('crystal-desc').textContent = dest.desc;
+
+    // Show label and result
+    label.classList.add('visible');
+    result.classList.add('visible');
+
+    // Show actions
+    setTimeout(() => {
+      actions.classList.add('visible');
+    }, 800);
+  }, 800);
+}
+
+function resetCrystal() {
+  crystalTriggered = false;
+  initCrystal();
+}
+
+// ===== RITUAL 2: TALISMAN =====
+let talismanTriggered = false;
+
+function initTalisman() {
+  const paper = document.getElementById('talisman-paper');
+  const hint = document.getElementById('talisman-hint');
+  const patterns = document.getElementById('talisman-patterns');
+  const city = document.getElementById('talisman-city');
+  const fortune = document.getElementById('talisman-fortune');
+  const candle = document.getElementById('talisman-candle');
+  const particles = document.getElementById('talisman-particles');
+  const actions = document.getElementById('talisman-actions');
+
+  // Reset
+  talismanTriggered = false;
+  paper.classList.remove('shaking');
+  hint.classList.remove('hidden');
+  patterns.classList.remove('fading');
+  city.classList.remove('visible');
+  fortune.classList.remove('visible');
+  candle.classList.remove('active');
+  particles.innerHTML = '';
+  actions.classList.remove('visible');
+
+  // Click handler
+  paper.onclick = triggerTalisman;
+}
+
+function createParticles(container) {
+  const count = 12 + Math.floor(Math.random() * 5);
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'talisman-particle';
+    const startX = 10 + Math.random() * 180;
+    const startY = 280 + Math.random() * 40;
+    const px = (Math.random() - 0.5) * 30;
+    p.style.left = startX + 'px';
+    p.style.top = startY + 'px';
+    p.style.setProperty('--px', px + 'px');
+    p.style.animationDelay = (Math.random() * 1) + 's';
+    p.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+    p.style.width = (2 + Math.random() * 3) + 'px';
+    p.style.height = p.style.width;
+    p.style.opacity = 0.4 + Math.random() * 0.6;
+    container.appendChild(p);
+  }
+}
+
+function triggerTalisman() {
+  if (talismanTriggered) return;
+  talismanTriggered = true;
+
+  const paper = document.getElementById('talisman-paper');
+  const hint = document.getElementById('talisman-hint');
+  const patterns = document.getElementById('talisman-patterns');
+  const city = document.getElementById('talisman-city');
+  const fortune = document.getElementById('talisman-fortune');
+  const candle = document.getElementById('talisman-candle');
+  const particles = document.getElementById('talisman-particles');
+  const actions = document.getElementById('talisman-actions');
+
+  // Hide hint
+  hint.classList.add('hidden');
+
+  // Paper shake
+  paper.classList.add('shaking');
+
+  // Create incense particles
+  createParticles(particles);
+
+  // Activate candle glow
+  candle.classList.add('active');
+
+  // Fade patterns
+  setTimeout(() => {
+    patterns.classList.add('fading');
+  }, 500);
+
+  // Reveal city name with blur+opacity transition
+  setTimeout(() => {
+    const dest = pickDestination();
+    city.textContent = dest.name;
+    city.classList.add('visible');
+
+    // Show fortune text (already has delay via CSS)
+    fortune.classList.add('visible');
+
+    // Show actions
+    setTimeout(() => {
+      actions.classList.add('visible');
+    }, 3000);
+  }, 1500);
+}
+
+function resetTalisman() {
+  initTalisman();
+}
+
+// ===== RITUAL 3: MAP BURNING =====
+let mapTriggered = false;
+
+function initMap() {
+  const container = document.getElementById('map-container');
+  const burnBtn = document.getElementById('map-burn-btn');
+  const cityDot = document.getElementById('city-dot');
+  const cityLabel = document.getElementById('map-city-label');
+  const cityDesc = document.getElementById('map-city-desc');
+  const status = document.getElementById('map-status');
+  const actions = document.getElementById('map-actions');
+
+  // Reset
+  mapTriggered = false;
+  container.classList.remove('visible');
+  burnBtn.style.display = '';
+  cityDot.classList.remove('visible');
+  cityDot.style.left = '';
+  cityDot.style.top = '';
+  cityLabel.classList.remove('visible');
+  cityLabel.style.left = '';
+  cityLabel.style.top = '';
+  cityLabel.textContent = '';
+  cityDesc.classList.remove('visible');
+  cityDesc.textContent = '';
+  status.classList.remove('visible');
+  status.textContent = '';
+  actions.classList.remove('visible');
+
+  // Reset all SVG paths
+  document.querySelectorAll('#map-svg path').forEach(p => {
+    p.classList.remove('burning', 'burnt');
+    p.style.animation = '';
+    p.style.stroke = '';
+    p.style.opacity = '';
+    p.style.filter = '';
+  });
+
+  // Fade in map
+  requestAnimationFrame(() => {
+    container.classList.add('visible');
+  });
+}
+
+function startBurn() {
+  if (mapTriggered) return;
+  mapTriggered = true;
+
+  const container = document.getElementById('map-container');
+  const burnBtn = document.getElementById('map-burn-btn');
+  const cityDot = document.getElementById('city-dot');
+  const cityLabel = document.getElementById('map-city-label');
+  const cityDesc = document.getElementById('map-city-desc');
+  const status = document.getElementById('map-status');
+  const actions = document.getElementById('map-actions');
+
+  // Hide burn button
+  burnBtn.style.display = 'none';
+
+  // Phase 1: Map starts burning (0-3s)
+  const paths = document.querySelectorAll('#map-svg path');
+  paths.forEach((p, i) => {
+    // Stagger the burning
+    setTimeout(() => {
+      p.classList.add('burning');
+      // Simulate burning with CSS animation
+      p.style.animation = `map-burn-1 ${2 + Math.random() * 1.5}s ease-in forwards`;
+      p.style.animationDelay = `${i * 0.2}s`;
+    }, i * 200);
+  });
+
+  // Phase 2: Map fully burnt, reveal city (3s)
+  setTimeout(() => {
+    paths.forEach(p => {
+      p.classList.add('burnt');
+    });
+
+    // Pick destination
+    const dest = pickDestination();
+    const coords = cityCoords[dest.name];
+
+    // Position city dot
+    cityDot.style.left = coords.x + '%';
+    cityDot.style.top = coords.y + '%';
+
+    // Position city label (slightly offset from dot)
+    cityLabel.style.left = (coords.x + 3) + '%';
+    cityLabel.style.top = coords.y + '%';
+    cityLabel.textContent = dest.name;
+
+    // Show status
+    status.textContent = '命运已定';
+    status.classList.add('visible');
+
+    // Reveal dot
+    setTimeout(() => {
+      cityDot.classList.add('visible');
+
+      // Reveal city label
+      setTimeout(() => {
+        cityLabel.classList.add('visible');
+        cityDesc.textContent = dest.short;
+        cityDesc.classList.add('visible');
+
+        // Show actions
+        setTimeout(() => {
+          actions.classList.add('visible');
+        }, 1500);
+      }, 600);
+    }, 500);
+  }, 3200);
+}
+
+function resetMap() {
+  initMap();
+}
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', () => {
+  // Default: show selection screen
+  switchRitual('select');
+});
+
+// Cleanup motion listener on page hide
+window.addEventListener('pagehide', () => {
+  if (motionHandler) {
+    window.removeEventListener('devicemotion', motionHandler);
+    motionHandler = null;
+  }
+});
+</script>
+
+</body>
+</html>
