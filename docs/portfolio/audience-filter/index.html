@@ -183,11 +183,11 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
   <!-- Row 1: Upload + Sliders + Checks + Buttons -->
   <div class="row1">
     <!-- Upload -->
-    <label class="upload-area" id="dropZone">
-      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
+    <div class="upload-area" id="dropZone" style="cursor:pointer">
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
       <div class="up-icon-box">📂</div>
       <div class="up-label"><strong>上传达人名单</strong><span>拖入或点击选择</span></div>
-    </label>
+    </div>
     <!-- Full-page drag overlay -->
     <div class="drag-overlay" id="dragOverlay">
       <div class="drag-overlay-icon">📂</div>
@@ -387,11 +387,13 @@ document.addEventListener('drop',function(e){
   if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);
 });
 
-// 点击上传区也触发文件选择
-dropZone.addEventListener('click',function(e){
-  if(e.target!==fileInput)fileInput.click();
+// 点击上传区触发文件选择
+dropZone.addEventListener('click',function(){
+  fileInput.click();
 });
-fileInput.addEventListener('change',function(){if(fileInput.files.length)handleFile(fileInput.files[0]);});
+fileInput.addEventListener('change',function(){
+  if(this.files&&this.files.length)handleFile(this.files[0]);
+});
 document.getElementById('fileRemove').addEventListener('click',function(e){
   e.preventDefault();
   ALL_DATA=[];FILTERED=[];EXCLUDED=[];PAGE=1;
