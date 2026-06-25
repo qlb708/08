@@ -236,6 +236,10 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);
 .ac-coming .acard-cta{opacity:0}
 .ac-coming{opacity:.7;cursor:default}
 .ac-coming:hover{transform:none!important;box-shadow:none!important}
+.ac-footprint .acard-cover{background:linear-gradient(135deg,#FFF8E1,#FFECB3)}
+.ac-footprint .acard-tag{background:rgba(245,158,11,.1);color:#b45309}
+.ac-monopoly .acard-cover{background:linear-gradient(135deg,#FCE4EC,#F8BBD0)}
+.ac-monopoly .acard-tag{background:rgba(236,72,153,.1);color:#be185d}
 
 /* ── FAQ ── */
 .faq-w{max-width:640px;margin:0 auto;padding:0 24px 60px}
@@ -382,7 +386,7 @@ footer a{color:var(--black);text-decoration:underline;text-underline-offset:2px}
     <div class="sub-sec">
       <div class="sub-hd">
         <div class="sub-ico"><svg viewBox="0 0 24 24" style="stroke:#ef4444"><circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/></svg></div>
-        <span class="sub-name">活动 Demo</span><span class="sub-cnt">5 个</span>
+        <span class="sub-name">活动 Demo</span><span class="sub-cnt">7 个</span>
         <div class="sub-line"></div>
       </div>
       <div class="g-activity-grid" id="g-activity"></div>
@@ -439,10 +443,11 @@ var ACTIVITY=[
   {cls:'ac-star', em:'⚽🏆', bg:'⚽', t:'球星人格匹配', d:'6题自动匹配你最像的球星，梅西/C罗/姆巴佩，解锁专属欧洲朝圣路线。', h:'/08/activity/star/', tag:'世界杯', cta:'开始匹配'},
   {cls:'ac-fortune', em:'🔮✨', bg:'🔮', t:'命运之地', d:'5道玄学题，测出你和哪座城市早就注定，获得专属命运签语。', h:'/08/activity/fortune/', tag:'玄学占卜', cta:'开始占卜'},
   {cls:'ac-puzzle', em:'🧩🌍', bg:'🧩', t:'风景拼图', d:'6张世界风景大片，3D立体感拼图，点击交换拼完为止。', h:'/08/activity/puzzle/', tag:'益智游戏', cta:'开始拼图'},
-  {cls:'ac-traveler', em:'🎒🗺️', bg:'🎒', t:'旅行达人鉴定', d:'最多4人参与，测出旅行角色（旅行老大/随时待命/金钱管家），揭晓团队默契。', h:'/08/activity/traveler/', tag:'角色鉴定', cta:'开始鉴定', isNew:true},
-  {cls:'ac-mystic', em:'🔮📜🗺️', bg:'✨', t:'问天机', d:'水晶球摇一摇·符纸显字·地图推进，三种玄学仪式测出你的命定目的地。', h:'/08/activity/mystic/', tag:'玄学仪式', cta:'问天机'},
-  {cls:'ac-coming', em:'✦', bg:'✦', t:'更多互动', d:'新的活动 Demo 正在制作中…', h:'#', tag:'即将上线', cta:'', isComing:true},
-  {cls:'ac-coming', em:'✦', bg:'＋', t:'更多即将到来', d:'城市拼图 2.0、数据可视化 Dashboard、达人提案生成器……持续更新中。', h:'#', tag:'敬请期待', cta:'', isComing:true}
+  {cls:'ac-mystic', em:'📜🕯️', bg:'✨', t:'问天机', d:'水晶球摇一摇·符纸显字·地图推进，三种玄学仪式测出你的命定目的地。', h:'/08/activity/mystic/', tag:'玄学仪式', cta:'问天机'},
+  {cls:'ac-traveler', em:'🎒🗺️', bg:'🎒', t:'旅行达人鉴定', d:'最多4人参与，测出旅行角色（旅行老大/随时待命/金钱管家），揭晓团队默契。', h:'/08/activity/traveler/', tag:'角色鉴定', cta:'开始鉴定'},
+  {cls:'ac-footprint', em:'🌍✈️', bg:'🌍', t:'我的旅行足迹', d:'标记去过的城市，写下感想，生成专属旅行卡片，一键分享小红书。', h:'/08/activity/footprint/', tag:'UGC · 足迹', cta:'开始打卡'},
+  {cls:'ac-monopoly', em:'🎲🏆', bg:'🎲', t:'旅行大富翁', d:'掷骰子探索城市，触发圆周旅迹品牌事件，解锁旅行段位。', h:'/08/activity/monopoly/', tag:'小游戏', cta:'开始游戏'},
+  {cls:'ac-coming', em:'✦', bg:'＋', t:'更多即将到来', d:'新的互动 Demo 正在制作中，持续更新……', h:'#', tag:'敬请期待', cta:'', isComing:true}
 ];
 
 /* ── Card renderer ── */
