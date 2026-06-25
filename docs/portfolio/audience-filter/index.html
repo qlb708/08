@@ -158,6 +158,15 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
 .pag-btn:hover:not(.dis){color:var(--accent)}
 .pag-btn.dis{opacity:.3;cursor:default}
 .pag-info{font-family:var(--serif);font-size:14px;color:var(--text)}
+/* DRAG OVERLAY */
+.drag-overlay{position:fixed;inset:0;background:rgba(26,86,219,.12);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;border:3px dashed var(--accent);border-radius:0;transition:all .2s;pointer-events:none}
+.drag-overlay.show{display:flex}
+.drag-overlay-icon{font-size:48px;animation:bounce .6s ease infinite alternate}
+.drag-overlay-text{font-family:var(--serif);font-size:22px;color:var(--accent);font-weight:600;letter-spacing:.04em}
+.drag-overlay-sub{font-size:13px;color:var(--accent);opacity:.7}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+/* Upload area hover state */
+.upload-area:hover .up-icon-box{background:rgba(26,86,219,.1)}
 </style>
 </head>
 <body>
@@ -175,10 +184,16 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
   <div class="row1">
     <!-- Upload -->
     <label class="upload-area" id="dropZone">
-      <input type="file" id="fileInput" accept=".xlsx,.xls">
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
       <div class="up-icon-box">📂</div>
-      <div class="up-label"><strong>上传达人名单</strong><span>.xlsx 格式</span></div>
+      <div class="up-label"><strong>上传达人名单</strong><span>拖入或点击选择</span></div>
     </label>
+    <!-- Full-page drag overlay -->
+    <div class="drag-overlay" id="dragOverlay">
+      <div class="drag-overlay-icon">📂</div>
+      <div class="drag-overlay-text">松手即可上传</div>
+      <div class="drag-overlay-sub">支持 .xlsx .xls .csv 格式</div>
+    </div>
     <div class="file-ok" id="fileInfo">
       <span class="fdot"></span>
       <span class="fname" id="fileName"></span>
@@ -351,8 +366,31 @@ function filterRow(r){
 /* ── UPLOAD ── */
 var dropZone=document.getElementById('dropZone');
 var fileInput=document.getElementById('fileInput');
-dropZone.addEventListener('dragover',function(e){e.preventDefault()});
-dropZone.addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);});
+var dragOverlay=document.getElementById('dragOverlay');
+var dragCounter=0;
+
+// 全页面拖放
+document.addEventListener('dragenter',function(e){
+  e.preventDefault();
+  dragCounter++;
+  dragOverlay.classList.add('show');
+});
+document.addEventListener('dragleave',function(e){
+  dragCounter--;
+  if(dragCounter<=0){dragCounter=0;dragOverlay.classList.remove('show');}
+});
+document.addEventListener('dragover',function(e){e.preventDefault();});
+document.addEventListener('drop',function(e){
+  e.preventDefault();
+  dragCounter=0;
+  dragOverlay.classList.remove('show');
+  if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);
+});
+
+// 点击上传区也触发文件选择
+dropZone.addEventListener('click',function(e){
+  if(e.target!==fileInput)fileInput.click();
+});
 fileInput.addEventListener('change',function(){if(fileInput.files.length)handleFile(fileInput.files[0]);});
 document.getElementById('fileRemove').addEventListener('click',function(e){
   e.preventDefault();
