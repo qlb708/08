@@ -2,1203 +2,522 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🔮 问天机</title>
-<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>问天机</title>
 <style>
-/* ===== RESET & BASE ===== */
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{overflow-x:hidden;}
-body{
-  background:#f0ede8;
-  color:#1a1a1a;
-  font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  overflow-x:hidden;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#FAF8F5;--card:#fff;--purple:#2D1B69;--gold:#C9A840;
+  --deep-red:#8B1A1A;--deep-brown:#3D2B1F;--land:#E8DDD0;
+  --shadow:0 8px 40px rgba(45,27,105,.08);
+  --radius:16px;
 }
-
-/* ===== PHONE FRAME ===== */
-.phone-frame{
-  width:100%;
-  max-width:390px;
-  min-height:100vh;
+html{font-size:16px}
+body{
+  font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--purple);min-height:100vh;
+  display:flex;justify-content:center;align-items:flex-start;padding:20px 0;
+  -webkit-font-smoothing:antialiased;
+}
+.phone{
+  width:100%;max-width:390px;min-height:100vh;background:var(--card);
+  box-shadow:var(--shadow);border-radius:var(--radius);overflow:hidden;
   position:relative;
-  background:#faf8f5;
-  overflow-x:hidden;
 }
 @media(min-width:420px){
-  .phone-frame{
-    box-shadow:
-      -20px 0 60px rgba(0,0,0,.8),
-       20px 0 60px rgba(0,0,0,.8),
-       0 0 80px rgba(80,40,120,.15);
-    border-left:1px solid rgba(255,255,255,.04);
-    border-right:1px solid rgba(255,255,255,.04);
-  }
+  .phone{margin-top:40px;min-height:auto;border-radius:24px}
+  body{padding:40px 0}
 }
-
-/* ===== HEADER ===== */
 .header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:16px 20px 12px;
-  position:sticky;top:0;z-index:100;
-  background:rgba(250,248,245,.96);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(0,0,0,.06);
+  text-align:center;padding:36px 20px 20px;
+  background:linear-gradient(180deg,rgba(45,27,105,.04) 0%,transparent 100%);
 }
-.header-title{
-  font-size:20px;
-  letter-spacing:2px;
-  color:#1a1a1a;
-  font-weight:700;
+.header h1{
+  font-size:28px;font-weight:700;letter-spacing:6px;
+  background:linear-gradient(135deg,var(--purple) 30%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
 }
-.header-back{
-  color:#888;
-  text-decoration:none;
-  font-size:14px;
-  transition:color .3s;
+.header p{font-size:12px;color:#998;margin-top:6px;letter-spacing:2px}
+.divider{
+  width:40px;height:1px;margin:12px auto 0;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
 }
-.header-back:hover{color:#333;}
-
-/* ===== TABS ===== */
 .tabs{
-  display:flex;
-  justify-content:center;
-  gap:6px;
-  padding:8px 20px 16px;
-  position:sticky;top:54px;z-index:99;
-  background:rgba(250,248,245,.95);
+  display:flex;justify-content:center;gap:6px;padding:16px 12px;
+  border-bottom:1px solid rgba(45,27,105,.06);
 }
 .tab-btn{
-  flex:1;
-  padding:10px 0;
-  border:none;
-  border-radius:12px;
-  background:rgba(0,0,0,.06);
-  color:#888;
-  font-size:14px;
-  cursor:pointer;
-  transition:all .35s;
+  flex:1;max-width:120px;padding:8px 0;border:none;border-radius:20px;
+  background:transparent;font-size:13px;color:#998;cursor:pointer;
+  transition:all .3s;font-family:inherit;
 }
 .tab-btn.active{
-  background:#1a1a1a;
-  color:#fff;
-  box-shadow:0 2px 8px rgba(0,0,0,.15);
+  background:var(--purple);color:#fff;font-weight:600;
 }
-
-/* ===== PANELS ===== */
-.panel{display:none;position:relative;min-height:calc(100vh - 120px);overflow:hidden;}
-.panel.active{display:flex;flex-direction:column;align-items:center;}
-
-/* =========================== */
-/*  RITUAL 1: CRYSTAL BALL    */
-/* =========================== */
-#panel-ball{
-  background:#f0edf8;
-  padding-top:30px;
+.tab-btn:hover:not(.active){color:var(--purple)}
+.panels{position:relative}
+.panel{display:none;padding:20px 16px 40px;min-height:420px}
+.panel.active{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.crystal-ball{
+  width:140px;height:140px;margin:0 auto 20px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(201,168,64,.15),rgba(45,27,105,.08) 70%);
+  border:2px solid rgba(201,168,64,.3);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 30px rgba(201,168,64,.15),inset 0 0 20px rgba(201,168,64,.08);
 }
-
-/* Nebulae */
-.nebula{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(80px);
-  opacity:.18;
-  pointer-events:none;
+.crystal-ball .inner{font-size:36px}
+.slot-machine{
+  display:flex;justify-content:center;gap:12px;margin-bottom:24px;
 }
-.nebula-1{
-  width:260px;height:200px;
-  background:radial-gradient(ellipse,#7b2fbe,transparent 70%);
-  top:10%;left:-20%;
-  animation:nebDrift1 20s ease-in-out infinite alternate;
+.reel{
+  width:80px;height:120px;background:linear-gradient(180deg,#f8f6f3,#fff);
+  border:1.5px solid rgba(45,27,105,.1);border-radius:12px;
+  overflow:hidden;position:relative;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.04);
 }
-.nebula-2{
-  width:220px;height:180px;
-  background:radial-gradient(ellipse,#1e50a0,transparent 70%);
-  top:50%;right:-15%;
-  animation:nebDrift2 18s ease-in-out infinite alternate;
+.reel::before,.reel::after{
+  content:'';position:absolute;left:0;right:0;height:24px;z-index:2;pointer-events:none;
 }
-@keyframes nebDrift1{0%{transform:translate(0,0)}100%{transform:translate(40px,30px)}}
-@keyframes nebDrift2{0%{transform:translate(0,0)}100%{transform:translate(-35px,-25px)}}
-
-/* Stars */
-.star{
-  position:absolute;
-  width:2px;height:2px;
-  background:#fff;
-  border-radius:50%;
-  pointer-events:none;
+.reel::before{top:0;background:linear-gradient(180deg,#f8f6f3,transparent)}
+.reel::after{bottom:0;background:linear-gradient(0deg,#f8f6f3,transparent)}
+.reel-track{
+  display:flex;flex-direction:column;align-items:center;
+  transition:transform .1s linear;will-change:transform;
 }
-
-/* Crystal ball */
-.ball-wrapper{
-  position:relative;
-  margin-top:30px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+.reel-track .emoji{
+  height:40px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;width:100%;
 }
-
-/* Orbit ring */
-.orbit-ring{
-  position:absolute;
-  width:200px;height:200px;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
+.reel.highlight{border-color:var(--gold);box-shadow:0 0 12px rgba(201,168,64,.3)}
+.spin-btn{
+  display:block;margin:0 auto 24px;padding:12px 40px;border:none;border-radius:24px;
+  background:linear-gradient(135deg,var(--purple),#4a3090);color:#fff;
+  font-size:15px;font-weight:600;letter-spacing:3px;cursor:pointer;
+  font-family:inherit;transition:all .3s;
+  box-shadow:0 4px 16px rgba(45,27,105,.25);
 }
-.orbit-dot{
-  position:absolute;
-  width:4px;height:4px;
-  background:rgba(200,160,255,.7);
-  border-radius:50%;
-  animation:orbitSpin var(--dur) linear infinite;
-  transform-origin:100px 100px;
+.spin-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(45,27,105,.35)}
+.spin-btn:active{transform:translateY(0)}
+.spin-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.result-card{
+  background:linear-gradient(135deg,rgba(45,27,105,.03),rgba(201,168,64,.06));
+  border:1px solid rgba(201,168,64,.2);border-radius:16px;
+  padding:24px 20px;text-align:center;
+  animation:fadeUp .5s ease;
 }
-@keyframes orbitSpin{from{transform:rotate(var(--start)) translateX(96px)}to{transform:rotate(calc(var(--start) + 360deg)) translateX(96px)}}
-
-.ball-display{
-  width:160px;height:160px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  position:relative;
-  background:radial-gradient(circle at 40% 35%,rgba(140,80,220,.25),rgba(10,10,26,.9));
-  border:2px solid rgba(160,100,255,.25);
-  box-shadow:
-    0 0 30px rgba(130,70,200,.3),
-    inset 0 0 30px rgba(100,50,180,.15);
-  transition:border-color .5s,box-shadow .5s;
-  overflow:hidden;
+.result-card .city{
+  font-size:26px;font-weight:700;color:var(--purple);margin-bottom:10px;letter-spacing:2px;
 }
-.ball-display.golden{
-  border-color:rgba(255,210,100,.5);
-  box-shadow:
-    0 0 40px rgba(255,200,60,.35),
-    inset 0 0 30px rgba(255,200,60,.1);
-  animation:goldenPulse 1.5s ease-in-out infinite;
+.result-card .fortune{
+  font-size:14px;color:#665;line-height:1.8;
 }
-@keyframes goldenPulse{
-  0%,100%{box-shadow:0 0 30px rgba(255,200,60,.25),inset 0 0 25px rgba(255,200,60,.08)}
-  50%{box-shadow:0 0 50px rgba(255,200,60,.45),inset 0 0 35px rgba(255,200,60,.18)}
+.result-card .fortune::before,.result-card .fortune::after{content:'✦';margin:0 6px;color:var(--gold);font-size:10px}
+.talisman-wrap{
+  display:flex;flex-direction:column;align-items:center;padding:10px 0;
 }
-
-.ball-emoji{
-  font-size:48px;
-  line-height:1;
-  transition:filter .1s;
-}
-.ball-emoji.rolling{filter:blur(1.2px);}
-
-.ball-city-label{
-  font-size:12px;
-  color:rgba(255,255,255,.5);
-  margin-top:4px;
-  transition:opacity .1s;
-}
-
-/* Result display */
-.ball-result{
-  text-align:center;
-  margin-top:24px;
-  opacity:0;
-  transform:scale(.7);
-  transition:all .6s cubic-bezier(.34,1.56,.64,1);
-  pointer-events:none;
-}
-.ball-result.visible{
-  opacity:1;
-  transform:scale(1);
-  pointer-events:auto;
-}
-
-.result-city-name{
-  font-size:40px;
-  font-family:'Georgia',serif;
-  color:#fff;
-  letter-spacing:4px;
-  text-shadow:0 0 20px rgba(255,255,255,.2);
-}
-.result-desc{
-  font-size:14px;
-  color:rgba(255,255,255,.6);
-  margin-top:10px;
-  line-height:1.7;
-  opacity:0;
-  transition:opacity .8s .3s;
-  padding:0 30px;
-}
-.ball-result.visible .result-desc{opacity:1;}
-
-.result-link{
-  display:inline-block;
-  margin-top:16px;
-  color:rgba(200,160,255,.8);
-  font-size:13px;
-  cursor:pointer;
-  text-decoration:underline;
-  text-underline-offset:3px;
-  opacity:0;
-  transition:opacity .8s .6s;
-}
-.ball-result.visible .result-link{opacity:1;}
-
-.btn-again{
-  margin-top:24px;
-  padding:12px 32px;
-  border:1px solid rgba(160,100,255,.4);
-  border-radius:30px;
-  background:rgba(130,70,200,.15);
-  color:rgba(255,255,255,.8);
-  font-size:15px;
-  cursor:pointer;
-  transition:all .3s;
-  opacity:0;
-  transition:opacity .8s .8s,background .3s,border-color .3s;
-}
-.ball-result.visible ~ .btn-again{opacity:1;}
-.btn-again:hover{
-  background:rgba(130,70,200,.3);
-  border-color:rgba(160,100,255,.7);
-}
-
-.btn-ask{
-  margin-top:40px;
-  padding:14px 40px;
-  border:none;
-  border-radius:30px;
-  background:linear-gradient(135deg,rgba(130,70,200,.45),rgba(70,120,220,.45));
-  color:#fff;
-  font-size:18px;
-  letter-spacing:2px;
-  cursor:pointer;
-  transition:all .3s;
-  box-shadow:0 0 30px rgba(130,70,200,.3);
-}
-.btn-ask:hover{
-  transform:scale(1.04);
-  box-shadow:0 0 40px rgba(130,70,200,.45);
-}
-
-/* Gold particles */
-.gold-particle{
-  position:absolute;
-  width:4px;height:4px;
-  background:radial-gradient(circle,#ffd700,transparent);
-  border-radius:50%;
-  pointer-events:none;
-  animation:goldBurst .8s ease-out forwards;
-}
-@keyframes goldBurst{
-  0%{transform:translate(0,0) scale(1);opacity:1}
-  100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}
-}
-
-/* Shake hint */
-.shake-hint{
-  position:absolute;
-  bottom:80px;
-  width:100%;
-  text-align:center;
-  color:rgba(255,255,255,.3);
-  font-size:12px;
-}
-.shake-hint a{color:rgba(200,160,255,.6);cursor:pointer;text-decoration:underline;}
-
-/* =========================== */
-/*  RITUAL 2: FU PAPER        */
-/* =========================== */
-#panel-talisman{
-  background:#f5f0e8;
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 28px,
-      rgba(180,150,100,.08) 28px,
-      rgba(180,150,100,.08) 29px
-    );
-  padding-top:40px;
-  align-items:center;
-}
-
-.fu-paper{
-  width:220px;
-  height:374px;
-  background:linear-gradient(160deg,#f5e6c8,#e8d5a8);
-  border-radius:6px;
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  box-shadow:
-    inset 0 0 30px rgba(0,0,0,.12),
-    inset 0 0 60px rgba(0,0,0,.05),
-    0 4px 20px rgba(0,0,0,.5);
-  cursor:pointer;
-  transition:box-shadow .3s;
-  margin-top:20px;
-  overflow:hidden;
-}
-.fu-paper:hover{
-  box-shadow:
-    inset 0 0 30px rgba(0,0,0,.12),
-    inset 0 0 60px rgba(0,0,0,.05),
-    0 4px 30px rgba(200,170,100,.15);
-}
-
-/* Gold rune pattern */
-.fu-runes{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:opacity .6s;
-}
-.fu-runes.hidden{opacity:0;pointer-events:none;}
-
-.rune-svg{
-  width:120px;
-  opacity:.35;
-}
-
-/* City name reveal */
-.fu-city-name{
-  font-family:'Ma Shan Zheng',cursive;
-  font-size:56px;
-  color:#1a0a00;
-  opacity:0;
-  filter:blur(10px);
-  transition:opacity 2s,filter 2s;
-  position:relative;
-  z-index:2;
-  white-space:nowrap;
-  letter-spacing:-2px;
-}
-.fu-city-name.revealed{
-  opacity:1;
-  filter:blur(0);
-}
-
-.fu-subtitle{
-  font-size:13px;
-  color:#b8942e;
-  margin-top:8px;
-  opacity:0;
-  transition:opacity 1s 1.5s;
-  letter-spacing:3px;
-}
-.fu-subtitle.revealed{opacity:1;}
-
-.fu-desc{
-  font-size:12px;
-  color:rgba(80,50,20,.6);
-  margin-top:10px;
-  opacity:0;
-  transition:opacity 1s 2s;
-  padding:0 20px;
-  text-align:center;
-  line-height:1.6;
-}
-.fu-desc.revealed{opacity:1;}
-
-/* Red seal */
-.fu-seal{
-  position:absolute;
-  bottom:20px;right:18px;
-  width:36px;height:36px;
-  border:2px solid #c0392b;
+.talisman{
+  width:200px;height:320px;position:relative;
+  background:linear-gradient(180deg,#f5f0e6 0%,#f0e9d8 50%,#ede6d5 100%);
   border-radius:4px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:'Ma Shan Zheng',cursive;
-  font-size:14px;
-  color:#c0392b;
-  opacity:0;
-  transition:opacity .8s 1.5s;
-  line-height:1;
-  padding:2px;
+  box-shadow:2px 4px 16px rgba(0,0,0,.1),0 0 0 1px rgba(139,26,26,.08);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;padding:30px 20px;
 }
-.fu-seal.revealed{opacity:1;}
-
-/* Fu buttons */
-.fu-buttons{
-  display:flex;
-  gap:12px;
-  margin-top:30px;
+.talisman::before{
+  content:'';position:absolute;top:6px;left:6px;right:6px;bottom:6px;
+  border:1.5px dashed rgba(139,26,26,.2);border-radius:2px;
+  pointer-events:none;
 }
-.fu-btn{
-  padding:10px 24px;
-  border:1px solid rgba(200,170,100,.3);
-  border-radius:20px;
-  background:rgba(200,170,100,.08);
-  color:rgba(255,255,255,.7);
-  font-size:14px;
-  cursor:pointer;
-  transition:all .3s;
+.talisman::after{
+  content:'';position:absolute;top:12px;left:12px;right:12px;bottom:12px;
+  border:1px solid rgba(139,26,26,.1);border-radius:2px;
+  pointer-events:none;
 }
-.fu-btn:hover{
-  background:rgba(200,170,100,.18);
-  border-color:rgba(200,170,100,.6);
+.talisman .corner{
+  position:absolute;width:20px;height:20px;border-color:rgba(139,26,26,.25);border-style:solid;
 }
-
-/* =========================== */
-/*  RITUAL 3: MAP             */
-/* =========================== */
-#panel-map{
-  background:#eef2f8;
-  padding-top:20px;
-  overflow:hidden;
+.talisman .corner.tl{top:14px;left:14px;border-width:2px 0 0 2px}
+.talisman .corner.tr{top:14px;right:14px;border-width:2px 2px 0 0}
+.talisman .corner.bl{bottom:14px;left:14px;border-width:0 0 2px 2px}
+.talisman .corner.br{bottom:14px;right:14px;border-width:0 2px 2px 0}
+.talisman .symbol{
+  font-size:20px;color:var(--deep-red);opacity:.3;margin-bottom:10px;
+  font-family:"STKaiti","KaiTi",serif;
 }
-
+.talisman .city-display{transition:filter 1.5s ease;text-align:center}
+.talisman .city-display.blur{filter:blur(20px)}
+.talisman .city-display.clear{filter:blur(0)}
+.talisman .city-display.cn{
+  writing-mode:vertical-rl;
+  font-family:"STKaiti","KaiTi","PingFang SC",serif;
+  color:var(--deep-red);font-size:30px;letter-spacing:8px;line-height:1.6;
+}
+.talisman .city-display.en{
+  font-family:Georgia,"Times New Roman",serif;
+  color:var(--deep-brown);font-size:22px;font-weight:700;letter-spacing:4px;
+}
+.talisman .bottom-line{
+  margin-top:16px;width:30px;height:1px;background:rgba(139,26,26,.2);
+}
+.qi-btn{
+  margin-top:24px;padding:12px 36px;border:1.5px solid var(--deep-red);
+  border-radius:24px;background:transparent;color:var(--deep-red);
+  font-size:14px;font-weight:600;letter-spacing:4px;cursor:pointer;
+  font-family:inherit;transition:all .3s;
+}
+.qi-btn:hover{background:var(--deep-red);color:#fff}
+.qi-btn:active{transform:scale(.97)}
+.qi-btn:disabled{opacity:.4;cursor:not-allowed}
 .map-container{
-  width:100%;
-  aspect-ratio:2/1;
-  position:relative;
-  overflow:hidden;
-  border-radius:8px;
-  margin:10px 0;
+  width:100%;aspect-ratio:2/1;background:#f5f2ed;
+  border-radius:12px;border:1px solid rgba(45,27,105,.08);
+  overflow:hidden;position:relative;margin-bottom:20px;
 }
-
-.map-svg{
-  width:100%;height:100%;
-  transition:transform 2.5s cubic-bezier(.2,0,.1,1);
-  transform-origin:center center;
+.map-container canvas{width:100%;height:100%;display:block}
+.burn-btn{
+  display:block;margin:0 auto 24px;padding:12px 40px;border:none;border-radius:24px;
+  background:linear-gradient(135deg,#c2590a,#e87820);color:#fff;
+  font-size:15px;font-weight:600;letter-spacing:3px;cursor:pointer;
+  font-family:inherit;transition:all .3s;
+  box-shadow:0 4px 16px rgba(194,89,10,.25);
 }
-.map-svg.zoomed{
-  /* transform set via JS */
-}
-
-/* Continent fill */
-.continent{
-  fill:#1a1a2e;
-  stroke:rgba(255,255,255,.18);
-  stroke-width:1.5;
-  stroke-linejoin:round;
-}
-
-/* City dots */
-.city-dot{
-  position:absolute;
-  width:8px;height:8px;
-  border-radius:50%;
-  background:rgba(200,160,255,.8);
-  box-shadow:0 0 8px rgba(200,160,255,.4);
-  transform:translate(-50%,-50%);
-  transition:opacity .5s;
-  cursor:pointer;
-}
-.city-dot.hidden{opacity:0;pointer-events:none;}
-
-.city-dot-label{
-  position:absolute;
-  font-size:8px;
-  color:rgba(255,255,255,.4);
-  white-space:nowrap;
-  transform:translate(-50%,10px);
-  pointer-events:none;
-  transition:opacity .5s;
-}
-.city-dot.hidden + .city-dot-label,
-.city-dot-label.hidden{opacity:0;}
-
-/* Pulse dot after zoom */
-.pulse-dot{
-  position:absolute;
-  width:14px;height:14px;
-  border-radius:50%;
-  background:rgba(255,200,60,.8);
-  transform:translate(-50%,-50%);
-  opacity:0;
+.burn-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(194,89,10,.35)}
+.burn-btn:active{transform:translateY(0)}
+.burn-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.map-result{
+  position:absolute;bottom:8px;left:8px;right:8px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+  border-radius:12px;padding:14px 16px;
+  border:1px solid rgba(201,168,64,.25);
+  opacity:0;transform:translateY(10px);transition:all .5s ease;
   pointer-events:none;
 }
-.pulse-dot.visible{
-  opacity:1;
-  animation:pulseRing 1.5s ease-out infinite;
+.map-result.show{opacity:1;transform:none;pointer-events:auto}
+.map-result .city{font-size:18px;font-weight:700;color:var(--purple);margin-bottom:6px}
+.map-result .fortune{font-size:12px;color:#665;line-height:1.7}
+.footer{
+  text-align:center;padding:16px 0 24px;font-size:10px;color:#bbb;letter-spacing:1px;
 }
-@keyframes pulseRing{
-  0%{box-shadow:0 0 0 0 rgba(255,200,60,.6)}
-  100%{box-shadow:0 0 0 20px rgba(255,200,60,0)}
-}
-
-/* Map result name */
-.map-result-name{
-  position:absolute;
-  font-size:32px;
-  font-family:'Georgia',serif;
-  color:#fff;
-  letter-spacing:3px;
-  opacity:0;
-  transform:translateY(20px);
-  transition:opacity .8s .5s,transform .8s .5s cubic-bezier(.34,1.56,.64,1);
-  pointer-events:none;
-  text-shadow:0 0 20px rgba(255,255,255,.15);
-  z-index:5;
-  white-space:nowrap;
-}
-.map-result-name.visible{
-  opacity:1;
-  transform:translateY(0);
-  pointer-events:auto;
-  cursor:pointer;
-}
-
-.map-result-desc{
-  position:absolute;
-  font-size:12px;
-  color:rgba(255,255,255,.5);
-  opacity:0;
-  transition:opacity .8s 1s;
-  text-align:center;
-  padding:0 20px;
-  line-height:1.6;
-  z-index:5;
-  white-space:nowrap;
-}
-.map-result-desc.visible{opacity:1;}
-
-.btn-map-fire{
-  padding:14px 36px;
-  border:none;
-  border-radius:30px;
-  background:linear-gradient(135deg,rgba(200,80,40,.4),rgba(255,160,40,.3));
-  color:#fff;
-  font-size:17px;
-  letter-spacing:2px;
-  cursor:pointer;
-  margin-top:20px;
-  transition:all .3s;
-  box-shadow:0 0 25px rgba(200,80,40,.25);
-}
-.btn-map-fire:hover{
-  transform:scale(1.04);
-  box-shadow:0 0 35px rgba(200,80,40,.4);
-}
-
-.map-hint{
-  color:rgba(255,255,255,.3);
-  font-size:12px;
-  margin-top:12px;
-}
-
-/* =========================== */
-/*  DETAIL MODAL (all rituals) */
-/* =========================== */
-.modal-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  z-index:500;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .3s;
-}
-.modal-overlay.open{opacity:1;pointer-events:auto;}
-
-.modal-sheet{
-  position:fixed;
-  bottom:0;left:50%;
-  transform:translateX(-50%) translateY(100%);
-  width:100%;
-  max-width:390px;
-  background:linear-gradient(180deg,#fff,#f8f8f8);
-  border-radius:20px 20px 0 0;
-  padding:30px 24px 40px;
-  z-index:501;
-  transition:transform .4s cubic-bezier(.22,1,.36,1);
-  max-height:85vh;
-  overflow-y:auto;
-}
-.modal-sheet.open{transform:translateX(-50%) translateY(0);}
-
-.modal-emoji{font-size:48px;text-align:center;}
-.modal-city{
-  text-align:center;
-  font-size:26px;
-  font-family:'Georgia',serif;
-  margin-top:6px;
-  letter-spacing:2px;
-  color:#1a1a1a;
-}
-.modal-desc{
-  text-align:center;
-  font-size:14px;
-  color:#555;
-  margin-top:12px;
-  line-height:1.8;
-}
-.modal-season{
-  text-align:center;
-  font-size:13px;
-  color:#6b5ecf;
-  margin-top:14px;
-}
-.modal-season span{
-  display:inline-block;
-  background:rgba(107,94,207,.08);
-  padding:4px 12px;
-  border-radius:10px;
-  border:1px solid rgba(107,94,207,.2);
-}
-.modal-tags{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:8px;
-  margin-top:16px;
-}
-.modal-tag{
-  font-size:12px;
-  padding:5px 14px;
-  border-radius:20px;
-  background:#f4f0ff;
-  border:1px solid rgba(107,94,207,.15);
-  color:#6b5ecf;
-}
-.modal-close{
-  display:block;
-  margin:24px auto 0;
-  padding:10px 36px;
-  border:1px solid rgba(0,0,0,.15);
-  border-radius:20px;
-  background:transparent;
-  color:#555;
-  font-size:14px;
-  cursor:pointer;
-  transition:all .3s;
-}
-.modal-close:hover{
-  border-color:#333;
-  color:#111;
-}
-
-/* ===== LOADING / EMPTY ===== */
-.ritual-empty{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  flex:1;
-  color:rgba(255,255,255,.3);
-  font-size:14px;
-  gap:12px;
-}
-.ritual-empty .big{font-size:40px;}
-
 </style>
 </head>
 <body>
-<div class="phone-frame">
-
-  <!-- HEADER -->
-  <header class="header">
-    <span class="header-title">🔮 问天机</span>
-    <a href="/08/activity/" class="header-back">← 活动</a>
-  </header>
-
-  <!-- TABS -->
-  <nav class="tabs">
-    <button class="tab-btn active" data-tab="ball">🔮 水晶球</button>
-    <button class="tab-btn" data-tab="talisman">📜 符纸</button>
-    <button class="tab-btn" data-tab="map">🗺️ 地图</button>
-  </nav>
-
-  <!-- ============================ -->
-  <!-- PANEL 1: CRYSTAL BALL        -->
-  <!-- ============================ -->
-  <div id="panel-ball" class="panel active">
-    <div class="nebula nebula-1"></div>
-    <div class="nebula nebula-2"></div>
-    <div id="stars-container"></div>
-
-    <div class="ball-wrapper">
-      <div class="orbit-ring" id="orbit-ring"></div>
-      <div class="ball-display" id="ball-display">
-        <span class="ball-emoji" id="ball-emoji">🔮</span>
-        <span class="ball-city-label" id="ball-city-label">· · ·</span>
+<div class="phone">
+  <div class="header">
+    <h1>问 天 机</h1>
+    <p>你的下一站，天意说了算</p>
+    <div class="divider"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="0">🔮 水晶球</button>
+    <button class="tab-btn" data-tab="1">📜 符纸显字</button>
+    <button class="tab-btn" data-tab="2">🗺️ 地图烧蚀</button>
+  </div>
+  <div class="panels">
+    <div class="panel active" id="panel-0">
+      <div class="crystal-ball"><span class="inner">🔮</span></div>
+      <div class="slot-machine">
+        <div class="reel" id="reel-0"><div class="reel-track"></div></div>
+        <div class="reel" id="reel-1"><div class="reel-track"></div></div>
+        <div class="reel" id="reel-2"><div class="reel-track"></div></div>
+      </div>
+      <button class="spin-btn" id="spinBtn">摇 一 摇</button>
+      <div id="slotResult" class="result-card hidden" style="display:none">
+        <div class="city" id="slotCity"></div>
+        <div class="fortune" id="slotFortune"></div>
       </div>
     </div>
-
-    <div class="ball-result" id="ball-result">
-      <div class="result-city-name" id="result-city-name"></div>
-      <div class="result-desc" id="result-desc"></div>
-      <span class="result-link" id="result-link">点击查看城市详情 →</span>
-    </div>
-
-    <button class="btn-again" id="btn-again" style="display:none">再问一次 🎲</button>
-    <button class="btn-ask" id="btn-ask">✨ 问天机</button>
-
-    <div class="shake-hint" id="shake-hint">
-      摇一摇手机，或点击上方按钮<br>
-      <a id="shake-permission">📱 允许摇动</a>
-    </div>
-  </div>
-
-  <!-- ============================ -->
-  <!-- PANEL 2: TALISMAN            -->
-  <!-- ============================ -->
-  <div id="panel-talisman" class="panel">
-    <div class="fu-paper" id="fu-paper">
-      <!-- Gold runes -->
-      <div class="fu-runes" id="fu-runes">
-        <svg class="rune-svg" viewBox="0 0 120 120" fill="none" stroke="rgba(184,148,46,.5)" stroke-width="1.2">
-          <circle cx="60" cy="60" r="45"/>
-          <circle cx="60" cy="60" r="25"/>
-          <line x1="60" y1="10" x2="60" y2="110"/>
-          <line x1="15" y1="60" x2="105" y2="60"/>
-          <line x1="28" y1="28" x2="92" y2="92"/>
-          <line x1="92" y1="28" x2="28" y2="92"/>
-          <polygon points="60,15 105,82 15,82"/>
-          <polygon points="60,105 15,38 105,38"/>
-        </svg>
+    <div class="panel" id="panel-1">
+      <div class="talisman-wrap">
+        <div class="talisman">
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+          <div class="symbol">天 机 符</div>
+          <div class="city-display blur" id="talismanCity"></div>
+          <div class="bottom-line"></div>
+        </div>
+        <button class="qi-btn" id="qiBtn">请 气</button>
+        <div id="talismanResult" class="result-card hidden" style="margin-top:20px;display:none">
+          <div class="city" id="talismanCityName"></div>
+          <div class="fortune" id="talismanFortune"></div>
+        </div>
       </div>
-
-      <!-- City name (hidden initially) -->
-      <div class="fu-city-name" id="fu-city-name"></div>
-      <div class="fu-subtitle" id="fu-subtitle">✦ 此地与君有缘 ✦</div>
-      <div class="fu-desc" id="fu-desc"></div>
-
-      <!-- Seal -->
-      <div class="fu-seal" id="fu-seal">天机</div>
     </div>
-
-    <div class="fu-buttons">
-      <button class="fu-btn" id="btn-fu-redo">重新请符</button>
-      <button class="fu-btn" id="btn-fu-detail">城市详情</button>
+    <div class="panel" id="panel-2">
+      <div class="map-container">
+        <canvas id="mapCanvas"></canvas>
+        <div class="map-result" id="mapResult">
+          <div class="city" id="mapCity"></div>
+          <div class="fortune" id="mapFortune"></div>
+        </div>
+      </div>
+      <button class="burn-btn" id="burnBtn">燃 烧 指 引</button>
     </div>
   </div>
-
-  <!-- ============================ -->
-  <!-- PANEL 3: MAP                 -->
-  <!-- ============================ -->
-  <div id="panel-map" class="panel">
-    <div class="map-container" id="map-container">
-      <svg class="map-svg" id="map-svg" viewBox="0 0 1000 500">
-        <!-- Continents -->
-        <polygon class="continent" points="290,140 350,130 380,150 360,180 310,190 280,170"/>
-        <polygon class="continent" points="330,200 380,195 400,280 370,350 320,340 300,270"/>
-        <polygon class="continent" points="420,100 600,90 650,150 620,200 550,220 480,200 430,160"/>
-        <polygon class="continent" points="100,100 200,90 220,160 180,220 120,200 80,150"/>
-        <polygon class="continent" points="160,230 220,220 240,310 200,380 150,360 130,280"/>
-        <polygon class="continent" points="620,280 700,270 720,330 670,350 620,330"/>
-        <!-- Ocean dots for ambiance -->
-      </svg>
-      <!-- City dots will be positioned absolutely in JS -->
-      <div id="map-dots"></div>
-      <div class="pulse-dot" id="pulse-dot"></div>
-      <div class="map-result-name" id="map-result-name"></div>
-      <div class="map-result-desc" id="map-result-desc"></div>
-    </div>
-
-    <button class="btn-map-fire" id="btn-map-fire">🔥 燃烧指引</button>
-    <div class="map-hint" id="map-hint">点击火焰，让地图为你指明方向</div>
-  </div>
-
-</div><!-- /phone-frame -->
-
-<!-- DETAIL MODAL -->
-<div class="modal-overlay" id="modal-overlay"></div>
-<div class="modal-sheet" id="modal-sheet">
-  <div class="modal-emoji" id="modal-emoji"></div>
-  <div class="modal-city" id="modal-city"></div>
-  <div class="modal-desc" id="modal-desc"></div>
-  <div class="modal-season" id="modal-season"></div>
-  <div class="modal-tags" id="modal-tags"></div>
-  <button class="modal-close" id="modal-close">关闭</button>
+  <div class="footer">— 问天机 · 天命之旅 —</div>
 </div>
-
 <script>
-// ===== CITIES DATA =====
-const CITIES = [
-  { name:'京都', emoji:'⛩️', desc:'古寺钟声会在某个傍晚击中你，那一刻你会明白自己来这里的原因。', season:'3-4月（樱花）/ 11月（红叶）', tags:['岚山竹林','伏见稻荷','祇园艺伎','清水寺'] },
-  { name:'里斯本', emoji:'🚃', desc:'法多音乐在小巷回响，你将在那里遇见一个版本的自己。', season:'5-6月 / 9-10月', tags:['阿尔法玛老城','贝伦塔','电车28路','葡式蛋挞'] },
-  { name:'那不勒斯', emoji:'🍕', desc:'混乱即秩序，在这座城市你将学会放手。', season:'4-6月 / 9-10月', tags:['马拉多纳球场','世界第一披萨','古城巷弄','卡普里岛'] },
-  { name:'布达佩斯', emoji:'🏰', desc:'多瑙河的夜晚会给你一个答案，你已经等待很久了。', season:'4-6月 / 9-10月', tags:['渔夫堡夜景','温泉浴场','国会大厦','废墟酒吧'] },
-  { name:'雷克雅未克', emoji:'🌌', desc:'极光之下，所有困扰都变得渺小。你需要的是广阔。', season:'9-3月（极光）/ 6-8月（极昼）', tags:['北极光追逐','黄金圈一日游','冰川徒步','地热温泉'] },
-  { name:'巴塞罗那', emoji:'🏖️', desc:'高迪的建筑告诉你：美从不走直线，你的人生也是。', season:'5-6月 / 9-10月', tags:['圣家堂','诺坎普球场','兰布拉大道','海滩'] },
-  { name:'东京', emoji:'🗼', desc:'在这座城市迷路，是找到自己的开始。', season:'3-4月（樱花）/ 11-12月（冬季彩灯）', tags:['浅草寺','涩谷十字路口','筑地市场','富士山'] },
-  { name:'伊斯坦布尔', emoji:'🕌', desc:'欧亚交界处，你将在此找到属于你的那条路。', season:'4-6月 / 9-11月', tags:['蓝色清真寺','大巴扎','博斯普鲁斯游船','土耳其浴场'] }
-];
+(function(){
+  'use strict';
 
-const CITY_COORDS = {
-  '京都':      {cx:82, cy:37},
-  '里斯本':    {cx:27, cy:43},
-  '那不勒斯':  {cx:44, cy:41},
-  '布达佩斯':  {cx:46, cy:37},
-  '雷克雅未克': {cx:29, cy:22},
-  '巴塞罗那':  {cx:36, cy:43},
-  '东京':      {cx:83, cy:36},
-  '伊斯坦布尔': {cx:52, cy:40}
-};
+  var CITIES=[
+    {name:'京都',fortune:'枯山水会告诉你答案，去之前先学会沉默',cn:true,lat:35.0,lon:135.7},
+    {name:'那不勒斯',fortune:'最混乱的地方，藏着最真实的自己',cn:true,lat:40.85,lon:14.25},
+    {name:'PARIS',fortune:'你不需要理由去巴黎，巴黎本身就是理由',cn:false,lat:48.85,lon:2.35},
+    {name:'布达佩斯',fortune:'多瑙河的倒影里，藏着你还没想清楚的那件事',cn:true,lat:47.5,lon:19.0},
+    {name:'里斯本',fortune:'站在山顶看日落，你会突然觉得一切都值得',cn:true,lat:38.7,lon:-9.15},
+    {name:'首尔',fortune:'快节奏里有慢时光，找到属于你的那条胡同',cn:true,lat:37.56,lon:127.0},
+    {name:'圣托里尼',fortune:'蓝色和白色之间，是你需要的那种平静',cn:true,lat:36.4,lon:25.4},
+    {name:'REYKJAVIK',fortune:'去最远的地方，才能看到最近的自己',cn:false,lat:64.15,lon:-21.9},
+    {name:'TOKYO',fortune:'秩序里有自由，你会在这里找到那个平衡点',cn:false,lat:35.68,lon:139.69},
+    {name:'ROME',fortune:'每块石头都有故事，慢下来，听一听',cn:false,lat:41.9,lon:12.5}
+  ];
 
-let currentCity = null;
-
-// ===== TAB SWITCHING =====
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  /* ---- Tabs ---- */
+  var tabs=document.querySelectorAll('.tab-btn');
+  var panels=document.querySelectorAll('.panel');
+  tabs.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      tabs.forEach(function(t){t.classList.remove('active')});
+      panels.forEach(function(p){p.classList.remove('active')});
+      btn.classList.add('active');
+      document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+      if(btn.dataset.tab==='2') setTimeout(drawMap,50);
+    });
   });
-});
 
-// ===== MODAL =====
-function openModal(city) {
-  currentCity = city;
-  document.getElementById('modal-emoji').textContent = city.emoji;
-  document.getElementById('modal-city').textContent = city.name;
-  document.getElementById('modal-desc').textContent = city.desc;
-  document.getElementById('modal-season').innerHTML = '<span>🕐 ' + city.season + '</span>';
-  const tagsEl = document.getElementById('modal-tags');
-  tagsEl.innerHTML = city.tags.map(t => '<span class="modal-tag">' + t + '</span>').join('');
-  document.getElementById('modal-overlay').classList.add('open');
-  document.getElementById('modal-sheet').classList.add('open');
-}
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-  document.getElementById('modal-sheet').classList.remove('open');
-}
-document.getElementById('modal-overlay').addEventListener('click', closeModal);
-document.getElementById('modal-close').addEventListener('click', closeModal);
+  /* ---- Ritual 1: Slot Machine ---- */
+  var EMOJIS=['✈️','🗺️','🏔️','🌊','🏯'];
+  var REEL_DURATIONS=[800,1000,1200];
+  var EMOJI_H=40;
+  function comboToCity(a,b,c){return CITIES[(a*25+b*5+c)%CITIES.length]}
 
-// ===== STARS =====
-(function createStars() {
-  const c = document.getElementById('stars-container');
-  for (let i = 0; i < 50; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.left = Math.random()*100 + '%';
-    s.style.top = Math.random()*100 + '%';
-    s.style.animationDuration = (2 + Math.random()*3) + 's';
-    s.style.animationDelay = Math.random()*3 + 's';
-    s.style.animation = 'starTwinkle ' + (2 + Math.random()*3) + 's ' + Math.random()*3 + 's ease-in-out infinite';
-    c.appendChild(s);
+  var reelTracks=[
+    document.querySelector('#reel-0 .reel-track'),
+    document.querySelector('#reel-1 .reel-track'),
+    document.querySelector('#reel-2 .reel-track')
+  ];
+  var reelContainers=[
+    document.getElementById('reel-0'),
+    document.getElementById('reel-1'),
+    document.getElementById('reel-2')
+  ];
+
+  function buildReels(){
+    reelTracks.forEach(function(track){
+      track.innerHTML='';
+      for(var r=0;r<30;r++){
+        EMOJIS.forEach(function(e){
+          var d=document.createElement('div');
+          d.className='emoji';d.textContent=e;
+          track.appendChild(d);
+        });
+      }
+    });
   }
-  const style = document.createElement('style');
-  style.textContent = '@keyframes starTwinkle{0%,100%{opacity:.2}50%{opacity:.9}}';
-  document.head.appendChild(style);
-})();
+  buildReels();
 
-// ===== ORBIT RING =====
-(function createOrbits() {
-  const ring = document.getElementById('orbit-ring');
-  for (let i = 0; i < 8; i++) {
-    const d = document.createElement('div');
-    d.className = 'orbit-dot';
-    d.style.setProperty('--start', (i * 45) + 'deg');
-    d.style.setProperty('--dur', (4 + Math.random()*2) + 's');
-    ring.appendChild(d);
+  var spinning=false;
+  var spinBtn=document.getElementById('spinBtn');
+  var _finalIndices=[0,0,0];
+
+  spinBtn.addEventListener('click',function(){
+    if(spinning)return;
+    spinning=true;spinBtn.disabled=true;
+    document.getElementById('slotResult').style.display='none';
+    reelContainers.forEach(function(r){r.classList.remove('highlight')});
+    _finalIndices=[
+      Math.floor(Math.random()*5),
+      Math.floor(Math.random()*5),
+      Math.floor(Math.random()*5)
+    ];
+    reelTracks.forEach(function(track,i){
+      var totalRows=EMOJIS.length*30;
+      var targetRow=20+_finalIndices[i];
+      var targetY=-(targetRow*EMOJI_H);
+      var startTime=performance.now();
+      var duration=REEL_DURATIONS[i];
+      function animate(now){
+        var elapsed=now-startTime;
+        var progress=Math.min(elapsed/duration,1);
+        var eased=1-Math.pow(1-progress,3);
+        var currentY=eased*targetY;
+        currentY=Math.max(currentY,-(totalRows-5)*EMOJI_H);
+        track.style.transform='translateY('+currentY+'px)';
+        if(progress<1){requestAnimationFrame(animate)}
+        else{
+          track.style.transform='translateY('+targetY+'px)';
+          reelContainers[i].classList.add('highlight');
+          if(i===2) setTimeout(showSlotResult,300);
+        }
+      }
+      requestAnimationFrame(animate);
+    });
+  });
+
+  function showSlotResult(){
+    var city=comboToCity(_finalIndices[0],_finalIndices[1],_finalIndices[2]);
+    document.getElementById('slotCity').textContent=city.name;
+    document.getElementById('slotFortune').textContent=city.fortune;
+    var el=document.getElementById('slotResult');
+    el.style.display='';el.classList.remove('hidden');
+    spinning=false;spinBtn.disabled=false;
   }
-})();
 
-// ===== RITUAL 1: CRYSTAL BALL =====
-let ballRolling = false;
-const ballEmoji = document.getElementById('ball-emoji');
-const ballLabel = document.getElementById('ball-city-label');
-const ballDisplay = document.getElementById('ball-display');
-const ballResult = document.getElementById('ball-result');
-const resultName = document.getElementById('result-city-name');
-const resultDesc = document.getElementById('result-desc');
-const resultLink = document.getElementById('result-link');
-const btnAgain = document.getElementById('btn-again');
-const btnAsk = document.getElementById('btn-ask');
+  /* ---- Ritual 2: Talisman ---- */
+  var qiBtn=document.getElementById('qiBtn');
+  var talismanCity=document.getElementById('talismanCity');
+  var talismanResultEl=document.getElementById('talismanResult');
+  var talismanCityName=document.getElementById('talismanCityName');
+  var talismanFortune=document.getElementById('talismanFortune');
+  var qiSpinning=false;
 
-function rollBall() {
-  if (ballRolling) return;
-  ballRolling = true;
-
-  // Reset
-  ballDisplay.classList.remove('golden');
-  ballResult.classList.remove('visible');
-  btnAgain.style.display = 'none';
-  btnAsk.style.display = 'none';
-
-  // Create gold particles burst (for result later)
-  const phase = {step:0, idx:0};
-  const totalSteps = 40 + Math.floor(Math.random()*8);
-
-  function nextStep() {
-    const ci = Math.floor(Math.random() * CITIES.length);
-    const city = CITIES[ci];
-    ballEmoji.textContent = city.emoji;
-    ballLabel.textContent = city.name;
-    ballEmoji.classList.add('rolling');
-    phase.idx++;
-
-    if (phase.idx < 40) {
-      setTimeout(nextStep, 50);
-    } else if (phase.idx < 46) {
-      setTimeout(nextStep, 200);
-    } else if (phase.idx < 50) {
-      setTimeout(nextStep, 500);
-    } else {
-      // Final city
-      const finalIdx = Math.floor(Math.random() * CITIES.length);
-      const finalCity = CITIES[finalIdx];
-      ballEmoji.textContent = finalCity.emoji;
-      ballLabel.textContent = finalCity.name;
-      ballEmoji.classList.remove('rolling');
-
-      // Golden glow
-      ballDisplay.classList.add('golden');
-
-      // Gold particles
-      spawnGoldParticles();
-
-      // Show result
-      setTimeout(() => {
-        resultName.textContent = finalCity.emoji + ' ' + finalCity.name;
-        resultDesc.textContent = finalCity.desc;
-        ballResult.classList.add('visible');
-        btnAgain.style.display = 'block';
-        btnAsk.style.display = 'none';
-
-        resultLink.onclick = () => openModal(finalCity);
-        resultName.onclick = () => openModal(finalCity);
-
-        ballRolling = false;
-      }, 400);
+  qiBtn.addEventListener('click',function(){
+    if(qiSpinning)return;
+    qiSpinning=true;qiBtn.disabled=true;
+    talismanResultEl.style.display='none';talismanResultEl.classList.add('hidden');
+    var city=CITIES[Math.floor(Math.random()*CITIES.length)];
+    talismanCity.classList.remove('clear');
+    talismanCity.classList.add('blur');
+    if(city.cn){
+      talismanCity.className='city-display blur cn';
+      talismanCity.textContent=city.name;
+    }else{
+      talismanCity.className='city-display blur en';
+      talismanCity.textContent=city.name;
     }
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        talismanCity.classList.remove('blur');
+        talismanCity.classList.add('clear');
+      });
+    });
+    setTimeout(function(){
+      talismanCityName.textContent=city.name;
+      talismanFortune.textContent=city.fortune;
+      var el=talismanResultEl;
+      el.style.display='';el.classList.remove('hidden');
+      qiSpinning=false;qiBtn.disabled=false;
+    },1800);
+  });
+
+  /* ---- Ritual 3: Map ---- */
+  var canvas=document.getElementById('mapCanvas');
+  var ctx=canvas.getContext('2d');
+  var mapResultEl=document.getElementById('mapResult');
+  var mapCityEl=document.getElementById('mapCity');
+  var mapFortuneEl=document.getElementById('mapFortune');
+  var burnBtn=document.getElementById('burnBtn');
+  var burnSpinning=false;
+
+  var continents=[
+    [[0.12,0.18],[0.08,0.25],[0.06,0.35],[0.10,0.42],[0.15,0.45],[0.20,0.42],[0.25,0.38],[0.28,0.32],[0.26,0.25],[0.22,0.20],[0.18,0.18],[0.12,0.18]],
+    [[0.22,0.52],[0.20,0.58],[0.22,0.68],[0.25,0.78],[0.28,0.82],[0.30,0.78],[0.32,0.68],[0.30,0.58],[0.28,0.52],[0.22,0.52]],
+    [[0.45,0.20],[0.42,0.25],[0.44,0.32],[0.48,0.35],[0.52,0.32],[0.55,0.28],[0.54,0.22],[0.50,0.18],[0.45,0.20]],
+    [[0.44,0.38],[0.42,0.45],[0.44,0.55],[0.48,0.65],[0.52,0.70],[0.55,0.62],[0.56,0.52],[0.54,0.42],[0.50,0.38],[0.44,0.38]],
+    [[0.55,0.15],[0.52,0.22],[0.55,0.30],[0.60,0.35],[0.68,0.38],[0.75,0.35],[0.80,0.30],[0.82,0.25],[0.78,0.18],[0.72,0.15],[0.65,0.14],[0.55,0.15]],
+    [[0.78,0.58],[0.75,0.65],[0.78,0.72],[0.84,0.74],[0.88,0.70],[0.88,0.62],[0.84,0.58],[0.78,0.58]]
+  ];
+
+  function lonLatToXY(lon,lat,w,h){
+    return[((lon+180)/360)*w,((90-lat)/180)*h];
   }
-  nextStep();
-}
 
-function spawnGoldParticles() {
-  const wrapper = document.querySelector('.ball-wrapper');
-  const rect = ballDisplay.getBoundingClientRect();
-  const wr = wrapper.getBoundingClientRect();
-  const cx = rect.left - wr.left + rect.width/2;
-  const cy = rect.top - wr.top + rect.height/2;
-
-  for (let i = 0; i < 14; i++) {
-    const p = document.createElement('div');
-    p.className = 'gold-particle';
-    const angle = (Math.PI*2/14)*i;
-    const dist = 60 + Math.random()*80;
-    p.style.left = cx + 'px';
-    p.style.top = cy + 'px';
-    p.style.setProperty('--tx', Math.cos(angle)*dist + 'px');
-    p.style.setProperty('--ty', Math.sin(angle)*dist + 'px');
-    wrapper.appendChild(p);
-    setTimeout(() => p.remove(), 900);
+  function drawMap(){
+    var parent=canvas.parentElement;
+    var rect=parent.getBoundingClientRect();
+    var dpr=window.devicePixelRatio||1;
+    canvas.width=rect.width*dpr;
+    canvas.height=rect.height*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    var w=rect.width,h=rect.height;
+    ctx.fillStyle='#f5f2ed';
+    ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='rgba(45,27,105,.04)';
+    ctx.lineWidth=0.5;
+    for(var i=0;i<=12;i++){
+      var gx=(w/12)*i;
+      ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,h);ctx.stroke();
+    }
+    for(var j=0;j<=6;j++){
+      var gy=(h/6)*j;
+      ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(w,gy);ctx.stroke();
+    }
+    ctx.fillStyle='#E8DDD0';
+    continents.forEach(function(pts){
+      ctx.beginPath();
+      pts.forEach(function(p,pi){
+        var x=p[0]*w,y=p[1]*h;
+        if(pi===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      });
+      ctx.closePath();ctx.fill();
+    });
   }
-}
+  setTimeout(drawMap,100);
+  window.addEventListener('resize',drawMap);
 
-btnAsk.addEventListener('click', rollBall);
-btnAgain.addEventListener('click', () => {
-  btnAgain.style.display = 'none';
-  rollBall();
-});
+  burnBtn.addEventListener('click',function(){
+    if(burnSpinning)return;
+    burnSpinning=true;burnBtn.disabled=true;
+    mapResultEl.classList.remove('show');
+    var city=CITIES[Math.floor(Math.random()*CITIES.length)];
+    var parent=canvas.parentElement;
+    var rect=parent.getBoundingClientRect();
+    var w=rect.width,h=rect.height;
+    var pos=lonLatToXY(city.lon,city.lat,w,h);
+    drawMap();
 
-// Shake detection
-let shakePermGranted = false;
-document.getElementById('shake-permission').addEventListener('click', async () => {
-  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    try {
-      const perm = await DeviceMotionEvent.requestPermission();
-      if (perm === 'granted') {
-        shakePermGranted = true;
-        document.getElementById('shake-hint').innerHTML = '📱 已启用摇一摇，开始问天机吧！';
+    var t0=performance.now();
+    function animateBurn(now){
+      var elapsed=now-t0;
+      if(elapsed<500){
+        ctx.save();
+        ctx.beginPath();ctx.arc(pos[0],pos[1],6,0,Math.PI*2);
+        ctx.fillStyle='#4285f4';ctx.fill();
+        ctx.restore();
+        requestAnimationFrame(animateBurn);
         return;
       }
-    } catch(e) {}
-  }
-  shakePermGranted = true; // fallback for non-iOS
-  document.getElementById('shake-hint').innerHTML = '📱 已启用摇一摇';
-});
-
-let lastShake = 0;
-window.addEventListener('devicemotion', (e) => {
-  if (!shakePermGranted) return;
-  const acc = e.accelerationIncludingGravity;
-  if (!acc) return;
-  const mag = Math.sqrt(acc.x**2 + acc.y**2 + acc.z**2);
-  if (mag > 12) {
-    const now = Date.now();
-    if (now - lastShake > 4000) {
-      lastShake = now;
-      if (!ballRolling) rollBall();
+      if(elapsed<2000){
+        var progress=(elapsed-500)/1500;
+        var maxR=80*progress;
+        ctx.save();
+        ctx.beginPath();ctx.arc(pos[0],pos[1],6,0,Math.PI*2);
+        ctx.fillStyle='#4285f4';ctx.fill();
+        for(var r=maxR;r>0;r-=2){
+          var alpha=(1-r/maxR)*0.3*(1-progress*0.5);
+          ctx.beginPath();ctx.arc(pos[0],pos[1],r,0,Math.PI*2);
+          ctx.strokeStyle='rgba(232,120,32,'+alpha+')';
+          ctx.lineWidth=2;ctx.stroke();
+        }
+        var gradient=ctx.createRadialGradient(pos[0],pos[1],0,pos[0],pos[1],maxR);
+        gradient.addColorStop(0,'rgba(232,120,32,0.15)');
+        gradient.addColorStop(1,'rgba(232,120,32,0)');
+        ctx.fillStyle=gradient;
+        ctx.beginPath();ctx.arc(pos[0],pos[1],maxR,0,Math.PI*2);ctx.fill();
+        ctx.restore();
+        if(progress>0.5){
+          ctx.save();
+          ctx.font='600 11px -apple-system,"PingFang SC",sans-serif';
+          ctx.fillStyle='#2D1B69';ctx.textAlign='center';
+          ctx.fillText(city.name,pos[0],pos[1]-14);
+          ctx.restore();
+        }
+        requestAnimationFrame(animateBurn);
+        return;
+      }
+      mapCityEl.textContent=city.name;
+      mapFortuneEl.textContent=city.fortune;
+      mapResultEl.classList.add('show');
+      burnSpinning=false;burnBtn.disabled=false;
     }
-  }
-});
-
-// ===== RITUAL 2: TALISMAN =====
-const fuPaper = document.getElementById('fu-paper');
-const fuRunes = document.getElementById('fu-runes');
-const fuCityName = document.getElementById('fu-city-name');
-const fuSubtitle = document.getElementById('fu-subtitle');
-const fuDesc = document.getElementById('fu-desc');
-const fuSeal = document.getElementById('fu-seal');
-let fuRevealed = false;
-
-function resetFu() {
-  fuRevealed = false;
-  fuRunes.classList.remove('hidden');
-  fuCityName.classList.remove('revealed');
-  fuCityName.textContent = '';
-  fuSubtitle.classList.remove('revealed');
-  fuDesc.classList.remove('revealed');
-  fuDesc.textContent = '';
-  fuSeal.classList.remove('revealed');
-}
-
-function revealFu() {
-  if (fuRevealed) return;
-  fuRevealed = true;
-
-  const city = CITIES[Math.floor(Math.random()*CITIES.length)];
-  fuRunes.classList.add('hidden');
-
-  setTimeout(() => {
-    fuCityName.textContent = city.emoji + ' ' + city.name;
-    // 动态字号：根据城市名长度缩小，确保一行显示
-    const nameLen = city.name.length;
-    fuCityName.style.fontSize = nameLen <= 2 ? '64px' : nameLen <= 3 ? '52px' : nameLen <= 4 ? '44px' : '36px';
-    fuCityName.classList.add('revealed');
-    fuSubtitle.classList.add('revealed');
-    fuDesc.textContent = city.desc;
-    fuDesc.classList.add('revealed');
-    fuSeal.classList.add('revealed');
-
-    // Store for detail button
-    fuCityName.dataset.cityIdx = CITIES.indexOf(city);
-    fuCityName._city = city;
-  }, 600);
-}
-
-fuPaper.addEventListener('click', () => {
-  if (!fuRevealed) revealFu();
-});
-
-document.getElementById('btn-fu-redo').addEventListener('click', () => {
-  resetFu();
-  setTimeout(revealFu, 300);
-});
-
-document.getElementById('btn-fu-detail').addEventListener('click', () => {
-  if (fuCityName._city) openModal(fuCityName._city);
-});
-
-// ===== RITUAL 3: MAP =====
-const mapContainer = document.getElementById('map-container');
-const mapSvg = document.getElementById('map-svg');
-const mapDotsEl = document.getElementById('map-dots');
-const pulseDot = document.getElementById('pulse-dot');
-const mapResultName = document.getElementById('map-result-name');
-const mapResultDesc = document.getElementById('map-result-desc');
-const btnMapFire = document.getElementById('btn-map-fire');
-const mapHint = document.getElementById('map-hint');
-let mapZoomed = false;
-
-// Create city dots
-CITIES.forEach(city => {
-  const coord = CITY_COORDS[city.name];
-  const dot = document.createElement('div');
-  dot.className = 'city-dot';
-  dot.style.left = coord.cx + '%';
-  dot.style.top = coord.cy + '%';
-  dot.dataset.name = city.name;
-
-  const label = document.createElement('div');
-  label.className = 'city-dot-label';
-  label.textContent = city.name;
-  label.style.left = coord.cx + '%';
-  label.style.top = coord.cy + '%';
-
-  mapDotsEl.appendChild(dot);
-  mapDotsEl.appendChild(label);
-
-  // Click dot to see detail
-  dot.addEventListener('click', (e) => {
-    e.stopPropagation();
-    openModal(city);
+    requestAnimationFrame(animateBurn);
   });
-  label.addEventListener('click', (e) => {
-    e.stopPropagation();
-    openModal(city);
-  });
-});
 
-btnMapFire.addEventListener('click', () => {
-  if (mapZoomed) {
-    // Reset
-    mapSvg.style.transform = 'scale(1) translate(0,0)';
-    mapZoomed = false;
-    document.querySelectorAll('.city-dot').forEach(d => d.classList.remove('hidden'));
-    document.querySelectorAll('.city-dot-label').forEach(l => l.classList.remove('hidden'));
-    pulseDot.classList.remove('visible');
-    mapResultName.classList.remove('visible');
-    mapResultDesc.classList.remove('visible');
-    btnMapFire.textContent = '🔥 燃烧指引';
-    mapHint.textContent = '点击火焰，让地图为你指明方向';
-    return;
-  }
-
-  mapZoomed = true;
-  btnMapFire.textContent = '↩ 重置地图';
-  mapHint.textContent = '';
-
-  // Hide all dots
-  document.querySelectorAll('.city-dot').forEach(d => d.classList.add('hidden'));
-  document.querySelectorAll('.city-dot-label').forEach(l => l.classList.add('hidden'));
-
-  // Pick random city
-  const city = CITIES[Math.floor(Math.random()*CITIES.length)];
-  const coord = CITY_COORDS[city.name];
-
-  // Calculate transform to center this point
-  // SVG viewBox: 1000x500, container fills width
-  const svgW = mapContainer.offsetWidth;
-  const svgH = mapContainer.offsetWidth * 0.5;
-  const targetX = coord.cx / 100 * svgW;
-  const targetY = coord.cy / 100 * svgH;
-  const scale = 4;
-  const tx = -(targetX * scale - svgW/2);
-  const ty = -(targetY * scale - svgH/2);
-
-  setTimeout(() => {
-    mapSvg.style.transform = 'scale(' + scale + ') translate(' + (tx/scale) + 'px, ' + (ty/scale) + 'px)';
-  }, 100);
-
-  // After zoom completes, show pulse and name
-  setTimeout(() => {
-    pulseDot.style.left = coord.cx + '%';
-    pulseDot.style.top = coord.cy + '%';
-    pulseDot.classList.add('visible');
-
-    mapResultName.textContent = city.emoji + ' ' + city.name;
-    mapResultName.style.left = '50%';
-    mapResultName.style.top = '55%';
-    mapResultName.style.transform = 'translate(-50%, -50%)';
-    mapResultName.classList.add('visible');
-    mapResultName.onclick = () => openModal(city);
-
-    mapResultDesc.textContent = city.desc;
-    mapResultDesc.style.left = '50%';
-    mapResultDesc.style.top = 'calc(55% + 36px)';
-    mapResultDesc.style.transform = 'translateX(-50%)';
-    mapResultDesc.classList.add('visible');
-  }, 2700);
-});
-
-// Click map result name for detail
-mapResultName.addEventListener('click', () => {
-  // find city from text
-  const text = mapResultName.textContent;
-  const city = CITIES.find(c => text.includes(c.name));
-  if (city) openModal(city);
-});
-
+})();
 </script>
 </body>
 </html>
