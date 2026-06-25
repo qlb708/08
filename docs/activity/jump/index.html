@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>旅行跳一跳</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: #FAFAF8;
+    font-family: -apple-system, "PingFang SC", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+  .phone-frame {
+    width: 100%;
+    max-width: 390px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+    position: relative;
+  }
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+    z-index: 10;
+  }
+  .nav-back {
+    color: #999;
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav-back:hover { color: #333; }
+  .nav-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .nav-score {
+    font-size: 14px;
+    color: #FF6B6B;
+    font-weight: 600;
+  }
+  .game-container {
+    position: relative;
+    width: 360px;
+    height: 500px;
+    margin: 0 auto;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #gameCanvas {
+    display: block;
+    width: 360px;
+    height: 500px;
+  }
+  .overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    transition: opacity 0.3s;
+  }
+  .overlay.hidden { display: none; }
+  .hint-overlay {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(4px);
+  }
+  .hint-text {
+    font-size: 18px;
+    color: #555;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.6;
+  }
+  .hint-sub {
+    font-size: 13px;
+    color: #aaa;
+    margin-top: 8px;
+  }
+  .gameover-overlay {
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(2px);
+  }
+  .gameover-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px 24px;
+    width: 280px;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  }
+  .gameover-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .gameover-sub {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 18px;
+  }
+  .gameover-score {
+    font-size: 40px;
+    font-weight: 800;
+    color: #FF6B6B;
+    margin-bottom: 4px;
+  }
+  .gameover-label {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 16px;
+  }
+  .city-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .city-tag {
+    background: #FFF3E0;
+    color: #E67E22;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+  .restart-btn {
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 40px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .restart-btn:active { transform: scale(0.96); }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="top-nav">
+    <a class="nav-back" href="/08/activity/">← 返回</a>
+    <span class="nav-title">旅行跳一跳</span>
+    <span class="nav-score" id="navScore">0 分</span>
+  </div>
+  <div class="game-container" id="gameContainer">
+    <canvas id="gameCanvas" width="360" height="500"></canvas>
+
+    <!-- 操作提示 -->
+    <div class="overlay hint-overlay" id="hintOverlay">
+      <div class="hint-text">🧳 按住屏幕蓄力，松手起跳</div>
+      <div class="hint-sub">点击任意位置开始游戏</div>
+    </div>
+
+    <!-- 游戏结束 -->
+    <div class="overlay gameover-overlay hidden" id="gameoverOverlay">
+      <div class="gameover-card">
+        <div class="gameover-title">旅途结束</div>
+        <div class="gameover-sub">这次探索了多少座城市？</div>
+        <div class="gameover-score" id="finalScore">0</div>
+        <div class="gameover-label">座城市</div>
+        <div class="city-list" id="cityList"></div>
+        <button class="restart-btn" id="restartBtn">再出发 🚀</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ========== 配置 ==========
+  const CITIES = [
+    { name: '东京', emoji: '🗼' },
+    { name: '巴黎', emoji: '🗽' },
+    { name: '伦敦', emoji: '🎡' },
+    { name: '罗马', emoji: '🏛️' },
+    { name: '京都', emoji: '🏯' },
+    { name: '纽约', emoji: '🗺️' },
+    { name: '曼谷', emoji: '🌺' },
+    { name: '巴厘岛', emoji: '🌴' },
+    { name: '迪拜', emoji: '🏙️' },
+    { name: '悉尼', emoji: '🦘' },
+    { name: '首尔', emoji: '🎋' },
+    { name: '布拉格', emoji: '🏰' },
+    { name: '圣托里尼', emoji: '⛵' },
+    { name: '马尔代夫', emoji: '🐚' },
+    { name: '冰岛', emoji: '🌋' },
+    { name: '摩洛哥', emoji: '🕌' },
+  ];
+  const PLATFORM_COLORS = ['#FFB347','#87CEEB','#98D8C8','#DDA0DD','#F0E68C'];
+  const CANVAS_W = 360, CANVAS_H = 500;
+  const PLATFORM_H = 80;
+  const CHAR_H = 30;  // 角色总高度（脚到头顶）
+  const JUMP_DURATION = 600; // ms
+  const PERFECT_THRESHOLD = 15;
+
+  // ========== DOM ==========
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const gameContainer = document.getElementById('gameContainer');
+  const hintOverlay = document.getElementById('hintOverlay');
+  const gameoverOverlay = document.getElementById('gameoverOverlay');
+  const finalScoreEl = document.getElementById('finalScore');
+  const cityListEl = document.getElementById('cityList');
+  const navScoreEl = document.getElementById('navScore');
+  const restartBtn = document.getElementById('restartBtn');
+
+  // ========== 游戏状态 ==========
+  let gameState = 'idle';  // idle | charging | jumping | falling | gameover
+  let platforms = [];
+  let charX = 0, charY = 0;  // charY = 角色脚的Y坐标
+  let jumpStartX, jumpStartY, jumpEndX;
+  let jumpStartTime = 0;
+  let holdStartTime = 0;
+  let score = 0;
+  let visitedCities = [];
+  let floatingTexts = [];
+  let usedCityIndices = [];
+  let animId = null;
+
+  // ========== 工具函数 ==========
+  function rand(a, b) { return Math.random() * (b - a) + a; }
+  function randInt(a, b) { return Math.floor(rand(a, b + 1)); }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3) / 2; }
+
+  function pickCity() {
+    let idx;
+    if (usedCityIndices.length >= CITIES.length) usedCityIndices = [];
+    do { idx = randInt(0, CITIES.length - 1); } while (usedCityIndices.includes(idx));
+    usedCityIndices.push(idx);
+    return { ...CITIES[idx] };
+  }
+
+  function pickColor() { return PLATFORM_COLORS[randInt(0, PLATFORM_COLORS.length - 1)]; }
+
+  // ========== 平台管理 ==========
+  function createPlatform(x, prevY) {
+    const w = rand(60, 100);
+    const minY = CANVAS_H * 0.6;
+    const maxY = CANVAS_H * 0.8 - PLATFORM_H;
+    let y;
+    if (prevY !== undefined) {
+      y = clamp(prevY + rand(-40, 40), minY, maxY);
+    } else {
+      y = rand(minY, maxY);
+    }
+    return { x, y, w, h: PLATFORM_H, color: pickColor(), city: pickCity() };
+  }
+
+  function initPlatforms() {
+    platforms = [];
+    const firstX = 30;
+    const firstY = CANVAS_H * 0.7 - PLATFORM_H;
+    platforms.push(createPlatform(firstX, undefined));
+    platforms[0].y = firstY;
+    for (let i = 1; i < 3; i++) {
+      const prev = platforms[i - 1];
+      const gap = rand(80, 160);
+      platforms.push(createPlatform(prev.x + prev.w + gap, prev.y));
+    }
+  }
+
+  // ========== 角色绘制 ==========
+  function drawCharacter(cx, footY) {
+    const headY = footY - CHAR_H + 7;
+    // 头
+    ctx.fillStyle = '#FFDAB9';
+    ctx.beginPath();
+    ctx.arc(cx, headY, 7, 0, Math.PI * 2);
+    ctx.fill();
+    // 身体
+    ctx.fillStyle = '#FF6B6B';
+    roundRect(cx - 5, headY + 6, 10, 12, 2);
+    // 腿
+    ctx.fillStyle = '#555';
+    ctx.fillRect(cx - 5, footY - 7, 4, 7);
+    ctx.fillRect(cx + 1, footY - 7, 4, 7);
+    // 行李箱
+    ctx.fillStyle = '#8B4513';
+    roundRect(cx + 8, footY - 14, 8, 10, 2);
+    ctx.fillStyle = '#6B3410';
+    ctx.fillRect(cx + 9, footY - 17, 6, 3);
+    // 眼睛
+    ctx.fillStyle = '#333';
+    ctx.beginPath();
+    ctx.arc(cx - 2, headY - 1, 1.2, 0, Math.PI * 2);
+    ctx.arc(cx + 2, headY - 1, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // ========== 蓄力条绘制 ==========
+  function drawChargeBar(cx, footY, power) {
+    const radius = 20;
+    const cy = footY + radius + 8;
+    const lw = 4;
+
+    // 背景
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 进度
+    const angle = power * Math.PI * 2;
+    const hue = (1 - power) * 120; // 绿→黄→红
+    ctx.strokeStyle = `hsl(${hue}, 80%, 50%)`;
+    ctx.lineWidth = lw;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, -Math.PI / 2, -Math.PI / 2 + angle);
+    ctx.stroke();
+
+    // 百分比
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 9px -apple-system, "PingFang SC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(Math.round(power * 100) + '%', cx, cy);
+  }
+
+  // ========== 平台绘制 ==========
+  function drawPlatform(p) {
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.07)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 3;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.roundRect(p.x, p.y, p.w, p.h, 12);
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+
+    // 城市 emoji + 名字
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px -apple-system, "PingFang SC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0,0,0,0.15)';
+    ctx.shadowBlur = 2;
+    ctx.fillText(p.city.name, p.x + p.w / 2, p.y + p.h / 2 + 8);
+    ctx.font = '24px sans-serif';
+    ctx.fillText(p.city.emoji, p.x + p.w / 2, p.y + p.h / 2 - 12);
+    ctx.restore();
+  }
+
+  // ========== 背景绘制 ==========
+  function drawBackground() {
+    const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+    grad.addColorStop(0, '#E8F4FD');
+    grad.addColorStop(1, '#FAFAF8');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+    // 远山（更淡）
+    ctx.fillStyle = 'rgba(200,210,220,0.15)';
+    ctx.beginPath();
+    ctx.moveTo(0, 350);
+    ctx.lineTo(60, 310); ctx.lineTo(120, 340); ctx.lineTo(180, 300);
+    ctx.lineTo(250, 330); ctx.lineTo(320, 310); ctx.lineTo(360, 340);
+    ctx.lineTo(360, 500); ctx.lineTo(0, 500);
+    ctx.closePath(); ctx.fill();
+
+    // 近山
+    ctx.fillStyle = 'rgba(200,210,220,0.25)';
+    ctx.beginPath();
+    ctx.moveTo(0, 380);
+    ctx.lineTo(40, 320); ctx.lineTo(90, 340); ctx.lineTo(150, 290);
+    ctx.lineTo(200, 330); ctx.lineTo(260, 280); ctx.lineTo(310, 320);
+    ctx.lineTo(360, 300); ctx.lineTo(360, 500); ctx.lineTo(0, 500);
+    ctx.closePath(); ctx.fill();
+
+    // 云朵
+    drawCloud(30, 45, 0.55);
+    drawCloud(210, 75, 0.4);
+    drawCloud(310, 35, 0.45);
+  }
+
+  function drawCloud(x, y, s) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.65)';
+    ctx.translate(x, y);
+    ctx.scale(s, s);
+    ctx.beginPath();
+    ctx.arc(0, 0, 20, 0, Math.PI * 2);
+    ctx.arc(20, -5, 25, 0, Math.PI * 2);
+    ctx.arc(45, 0, 20, 0, Math.PI * 2);
+    ctx.arc(20, 5, 18, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // ========== 浮动文字 ==========
+  function addFloatingText(text, x, y, color) {
+    floatingTexts.push({ text, x, y, color, life: 1.0 });
+  }
+
+  function updateFloatingTexts(dt) {
+    for (let i = floatingTexts.length - 1; i >= 0; i--) {
+      floatingTexts[i].life -= dt / 800;
+      floatingTexts[i].y -= 0.6;
+      if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1);
+    }
+  }
+
+  function drawFloatingTexts() {
+    for (const ft of floatingTexts) {
+      ctx.globalAlpha = clamp(ft.life, 0, 1);
+      ctx.fillStyle = ft.color;
+      ctx.font = 'bold 16px -apple-system, "PingFang SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(ft.text, ft.x, ft.y);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // ========== 得分UI ==========
+  function updateScoreUI() {
+    navScoreEl.textContent = score + ' 分';
+  }
+
+  // ========== 游戏逻辑 ==========
+  function getCharFootY() {
+    return platforms[0].y;
+  }
+
+  function getCharFootX() {
+    return platforms[0].x + platforms[0].w / 2;
+  }
+
+  function startGame() {
+    gameState = 'idle';
+    score = 0;
+    visitedCities = [];
+    usedCityIndices = [];
+    floatingTexts = [];
+    initPlatforms();
+    charX = getCharFootX();
+    charY = getCharFootY();
+    updateScoreUI();
+    hintOverlay.classList.remove('hidden');
+    gameoverOverlay.classList.add('hidden');
+    if (animId) cancelAnimationFrame(animId);
+    animId = requestAnimationFrame(gameLoop);
+  }
+
+  function beginCharge() {
+    if (gameState !== 'idle') return;
+    gameState = 'charging';
+    holdStartTime = performance.now();
+    hintOverlay.classList.add('hidden');
+  }
+
+  function releaseCharge() {
+    if (gameState !== 'charging') return;
+    const holdTime = performance.now() - holdStartTime;
+
+    // 蓄力溢出逻辑：超过 2s 后 power 快速衰减
+    let power;
+    if (holdTime <= 2000) {
+      power = clamp(holdTime / 2000, 0.15, 1.0);
+    } else {
+      const overflow = (holdTime - 2000) / 500;
+      power = Math.max(0.15, 1.0 - overflow * 0.6);
+    }
+
+    // 跳跃距离：80~280px
+    const jumpDistance = 80 + power * 200;
+    jumpStartX = charX;
+    jumpStartY = charY;
+    jumpEndX = charX + jumpDistance;
+
+    gameState = 'jumping';
+    jumpStartTime = performance.now();
+  }
+
+  function findLandingPlatform(lx) {
+    for (let i = 0; i < platforms.length; i++) {
+      const p = platforms[i];
+      if (lx >= p.x + 4 && lx <= p.x + p.w - 4) {
+        return { platform: p, index: i };
+      }
+    }
+    return null;
+  }
+
+  function checkLanding() {
+    const result = findLandingPlatform(charX);
+
+    if (result) {
+      const { platform: p } = result;
+      const center = p.x + p.w / 2;
+      const perfect = Math.abs(charX - center) <= PERFECT_THRESHOLD;
+
+      charY = p.y;
+
+      if (perfect) {
+        score += 2;
+        addFloatingText('✨ 完美！+2', charX, charY - 35, '#FFD700');
+      } else {
+        score += 1;
+        addFloatingText('+1', charX, charY - 35, '#FF6B6B');
+      }
+      updateScoreUI();
+
+      // 记录城市
+      visitedCities.push(p.city.emoji + p.city.name);
+
+      // 平移平台
+      const shift = platforms[0].x + platforms[0].w / 2 - 50;
+      for (const pl of platforms) pl.x -= shift;
+      platforms.shift();
+
+      // 生成新平台
+      const last = platforms[platforms.length - 1];
+      const gap = rand(80, 160);
+      platforms.push(createPlatform(last.x + last.w + gap, last.y));
+
+      charX = getCharFootX();
+      charY = getCharFootY();
+      gameState = 'idle';
+    } else {
+      // 没落在任何平台上 → 开始下落
+      gameState = 'falling';
+    }
+  }
+
+  function showGameOver() {
+    finalScoreEl.textContent = score;
+    cityListEl.innerHTML = '';
+    const shown = visitedCities.slice(-6);
+    if (shown.length === 0) {
+      cityListEl.innerHTML = '<span style="color:#ccc;font-size:13px;">还没有探索城市哦~</span>';
+    } else {
+      for (const city of shown) {
+        const tag = document.createElement('span');
+        tag.className = 'city-tag';
+        tag.textContent = city;
+        cityListEl.appendChild(tag);
+      }
+    }
+    setTimeout(() => gameoverOverlay.classList.remove('hidden'), 400);
+  }
+
+  // ========== 游戏循环 ==========
+  function gameLoop(timestamp) {
+    // 清除
+    ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+    drawBackground();
+
+    // 绘制平台
+    for (const p of platforms) drawPlatform(p);
+
+    // ---- 状态机 ----
+    if (gameState === 'idle' || gameState === 'gameover') {
+      drawCharacter(charX, charY);
+    }
+
+    if (gameState === 'charging') {
+      const holdTime = performance.now() - holdStartTime;
+      let power;
+      if (holdTime <= 2000) {
+        power = clamp(holdTime / 2000, 0, 1.0);
+      } else {
+        const overflow = (holdTime - 2000) / 500;
+        power = Math.max(0, 1.0 - overflow * 0.6);
+      }
+      drawCharacter(charX, charY);
+      drawChargeBar(charX, charY, power);
+    }
+
+    if (gameState === 'jumping') {
+      const elapsed = performance.now() - jumpStartTime;
+      const t = Math.min(elapsed / JUMP_DURATION, 1.0);
+      const eased = easeInOutCubic(t);
+
+      charX = lerp(jumpStartX, jumpEndX, eased);
+      // 抛物线跳跃
+      const arcHeight = 50 + Math.abs(jumpEndX - jumpStartX) * 0.18;
+      charY = lerp(jumpStartY, jumpStartY, t) - Math.sin(t * Math.PI) * arcHeight;
+
+      drawCharacter(charX, charY);
+
+      if (t >= 1.0) {
+        checkLanding();
+      }
+    }
+
+    if (gameState === 'falling') {
+      charY += 8;
+      drawCharacter(charX, charY);
+      if (charY > CANVAS_H + 50) {
+        gameState = 'gameover';
+        showGameOver();
+      }
+    }
+
+    // 浮动文字
+    drawFloatingTexts();
+
+    // 游戏结束变暗
+    if (gameState === 'gameover') {
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    }
+
+    updateFloatingTexts(16);
+    animId = requestAnimationFrame(gameLoop);
+  }
+
+  // ========== 事件绑定 ==========
+  function onPointerDown(e) {
+    e.preventDefault();
+    if (gameState === 'gameover') return;
+    if (gameState === 'idle') beginCharge();
+  }
+
+  function onPointerUp(e) {
+    e.preventDefault();
+    if (gameState === 'charging') releaseCharge();
+  }
+
+  gameContainer.addEventListener('mousedown', onPointerDown);
+  gameContainer.addEventListener('mouseup', onPointerUp);
+  gameContainer.addEventListener('touchstart', onPointerDown, { passive: false });
+  gameContainer.addEventListener('touchend', onPointerUp, { passive: false });
+  gameContainer.addEventListener('touchcancel', onPointerUp, { passive: false });
+
+  restartBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    startGame();
+  });
+
+  hintOverlay.addEventListener('click', () => {
+    if (gameState === 'idle') beginCharge();
+  });
+
+  // ========== 启动 ==========
+  startGame();
+})();
+</script>
+</body>
+</html>
