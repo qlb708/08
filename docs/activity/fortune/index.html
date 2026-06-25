@@ -2,261 +2,324 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>✨ 命运之地 — 旅行玄学占卜</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  :root{--bg:#0D0D0D;--card:#1A1A1A;--text:#F5F5F5;--text2:#999;--purple:#7B2D8E;--gold:#D4A843;--gold2:#F0D68A}
-  html{scroll-behavior:smooth}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#1a1a2e;color:var(--text);min-height:100vh;overflow-x:hidden;display:flex;justify-content:center}
-  .page{max-width:390px;width:100%;position:relative;min-height:100vh;background:var(--bg);box-shadow:0 0 60px rgba(0,0,0,.5)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F5F0F8;--card:#fff;--text:#1a1228;--soft:#6b5e7a;--muted:#a094b0;
+  --purple:#7B2D8E;--gold:#C9A840;--gold2:#E8C96A;
+  --line:rgba(123,45,142,.12);
+  --font:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:#e0dae8;min-height:100vh;display:flex;justify-content:center}
+.shell{width:100%;max-width:390px;min-height:100vh;background:var(--bg);box-shadow:0 0 40px rgba(0,0,0,.15);position:relative;overflow:hidden}
 
-  /* 星星背景 */
-  .stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
-  .star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle var(--dur,3s) ease-in-out infinite;opacity:0}
-  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--o,.8);transform:scale(1)}}
+/* 浮动光晕装饰 */
+.glow{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0}
+.glow-1{width:200px;height:200px;background:rgba(123,45,142,.1);top:-60px;right:-40px}
+.glow-2{width:160px;height:160px;background:rgba(201,168,64,.08);bottom:100px;left:-40px}
 
-  /* 进度条 */
-  .progress-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;height:3px;background:rgba(255,255,255,.08);z-index:100}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--gold));width:0%;transition:width .4s ease;border-radius:0 2px 2px 0}
+/* 星星 */
+.stars{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:var(--purple);animation:twinkle var(--dur,3s) ease-in-out infinite;opacity:0}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--o,.3);transform:scale(1)}}
 
-  /* 页面区块 */
-  section{display:none;padding:60px 24px 80px;position:relative;z-index:1}
-  section.active{display:flex;flex-direction:column;align-items:center;min-height:100vh;justify-content:center}
+/* 进度条 */
+.prog-bar{position:sticky;top:0;z-index:100;height:3px;background:rgba(123,45,142,.1)}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--gold));width:0%;transition:width .4s ease}
 
-  /* Hero */
-  .hero-icon{font-size:64px;margin-bottom:24px;animation:float 3s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-  .hero h1{font-size:36px;font-weight:700;text-align:center;background:linear-gradient(135deg,#fff,var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
-  .hero .subtitle{font-size:15px;color:var(--text2);text-align:center;margin-bottom:48px;line-height:1.6}
-  .btn-start{padding:16px 48px;border:none;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--purple),#9B4DCA);color:#fff;transition:all .3s;box-shadow:0 4px 20px rgba(123,45,142,.4)}
-  .btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(123,45,142,.6)}
+/* 导航 */
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;
+  position:sticky;top:3px;z-index:99;background:rgba(245,240,248,.9);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line)}
+.nav-back{color:var(--purple);text-decoration:none;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:4px}
+.nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.04em}
+.nav-r{width:60px}
 
-  /* 题目 */
-  .question{width:100%;text-align:center}
-  .q-step{font-size:13px;color:var(--gold);margin-bottom:16px;letter-spacing:2px;text-transform:uppercase}
-  .q-text{font-size:22px;font-weight:600;margin-bottom:36px;line-height:1.5}
-  .options{display:flex;flex-direction:column;gap:12px;width:100%}
-  .option{padding:16px 20px;background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;font-size:15px;cursor:pointer;transition:all .25s;text-align:left;display:flex;align-items:center;gap:12px}
-  .option:hover{border-color:var(--purple);background:rgba(123,45,142,.1);transform:translateX(4px)}
-  .option:active{transform:scale(.97)}
-  .option .emoji{font-size:20px;flex-shrink:0}
+/* section 切换 */
+section{display:none;padding:0;position:relative;z-index:1;min-height:calc(100vh - 52px);
+  flex-direction:column;align-items:center;justify-content:center}
+section.active{display:flex}
 
-  /* 结果页 */
-  .result{text-align:center;width:100%}
-  .result-city-emoji{font-size:72px;margin-bottom:12px;animation:float 3s ease-in-out infinite}
-  .result-city{font-size:42px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .result-desc{font-size:16px;color:var(--text2);line-height:1.8;margin-bottom:12px;max-width:320px;margin-left:auto;margin-right:auto}
-  .result-guidance{font-size:13px;color:var(--gold);margin-bottom:36px;font-style:italic}
+/* Hero */
+.hero{padding:48px 24px 56px;text-align:center}
+.hero-icon{font-size:72px;margin-bottom:20px;display:block;
+  animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{font-size:32px;font-weight:800;color:var(--text);margin-bottom:8px;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--purple)}
+.hero-sub{font-size:14px;color:var(--soft);line-height:1.7;margin-bottom:36px}
+.hero-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
+.hero-tag{font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;
+  border:1px solid rgba(123,45,142,.2);color:var(--purple);background:rgba(123,45,142,.06)}
+.btn-start{padding:15px 48px;border:none;border-radius:40px;font-size:16px;font-weight:700;
+  cursor:pointer;background:linear-gradient(135deg,var(--purple),#9B4DCA);color:#fff;
+  box-shadow:0 6px 24px rgba(123,45,142,.3);transition:all .25s;font-family:var(--font)}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(123,45,142,.45)}
+.btn-start:active{transform:scale(.96)}
 
-  /* 签语卡片 */
-  .fortunes{display:flex;flex-direction:column;gap:14px;width:100%;margin-bottom:40px}
-  .fortune-card{perspective:800px;height:80px;cursor:pointer}
-  .fortune-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
-  .fortune-card.flipped .fortune-inner{transform:rotateY(180deg)}
-  .fortune-front,.fortune-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:16px}
-  .fortune-front{background:linear-gradient(135deg,rgba(123,45,142,.2),rgba(212,168,67,.15));border:1px solid rgba(212,168,67,.2);font-size:14px;color:var(--gold);flex-direction:column;gap:4px}
-  .fortune-front::before{content:"🔮";font-size:20px}
-  .fortune-back{background:var(--card);border:1px solid rgba(255,255,255,.08);transform:rotateY(180deg);font-size:14px;color:var(--text);line-height:1.6}
+/* 题目区 */
+.q-wrap{width:100%;padding:28px 22px;display:flex;flex-direction:column;gap:0}
+.q-step{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:12px}
+.q-text{font-size:20px;font-weight:800;color:var(--text);line-height:1.4;margin-bottom:24px;
+  letter-spacing:-.02em}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{padding:14px 16px;background:var(--card);border:1.5px solid var(--line);
+  border-radius:14px;font-size:14px;cursor:pointer;transition:all .2s;
+  text-align:left;display:flex;align-items:center;gap:12px;
+  font-family:var(--font);color:var(--text);font-weight:500}
+.opt:hover{border-color:var(--purple);background:rgba(123,45,142,.04)}
+.opt:active{transform:scale(.98)}
+.opt.sel{border-color:var(--purple);background:rgba(123,45,142,.08)}
+.opt-em{font-size:22px;flex-shrink:0;width:32px;text-align:center}
 
-  .result-actions{display:flex;flex-direction:column;gap:12px;width:100%}
-  .btn{padding:14px 24px;border-radius:40px;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;text-align:center;border:none}
-  .btn-primary{background:linear-gradient(135deg,var(--purple),#9B4DCA);color:#fff;box-shadow:0 4px 16px rgba(123,45,142,.3)}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(123,45,142,.5)}
-  .btn-secondary{background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--text)}
-  .btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+/* 结果 */
+.result-wrap{width:100%;padding:32px 22px 48px;display:flex;flex-direction:column;align-items:center}
+.result-glow{
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(123,45,142,.15),transparent);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;
+  animation:glowPulse 2s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(123,45,142,.15)}50%{box-shadow:0 0 0 20px rgba(123,45,142,0)}}
+.result-city-emoji{font-size:64px;animation:float 3s ease-in-out infinite}
+.result-city{font-size:36px;font-weight:900;color:var(--text);letter-spacing:-.03em;margin-bottom:8px}
+.result-subtitle{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--purple);margin-bottom:14px}
+.result-card{background:var(--card);border-radius:18px;padding:18px 18px 16px;
+  border:1px solid var(--line);width:100%;margin-bottom:16px;
+  box-shadow:0 4px 20px rgba(123,45,142,.06)}
+.result-desc{font-size:14px;color:var(--soft);line-height:1.8;margin-bottom:10px}
+.result-guidance{font-size:13px;color:var(--purple);font-style:italic;font-weight:500;
+  border-top:1px solid var(--line);padding-top:10px}
 
-  .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--gold);color:#000;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:600;transition:transform .3s ease;z-index:200;white-space:nowrap}
-  .toast.show{transform:translateX(-50%) translateY(0)}
+/* 签语翻牌 */
+.fortunes-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;align-self:flex-start}
+.fortunes{display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:20px}
+.fortune-card{perspective:800px;height:72px;cursor:pointer}
+.fortune-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.fortune-card.flipped .fortune-inner{transform:rotateY(180deg)}
+.fortune-front,.fortune-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;
+  border-radius:12px;display:flex;align-items:center;justify-content:center;padding:14px}
+.fortune-front{background:linear-gradient(135deg,rgba(123,45,142,.08),rgba(201,168,64,.06));
+  border:1px solid rgba(123,45,142,.15);font-size:13px;color:var(--purple);font-weight:600;gap:6px}
+.fortune-back{background:var(--card);border:1px solid var(--line);transform:rotateY(180deg);
+  font-size:13px;color:var(--text);line-height:1.6;text-align:center}
+
+.result-btns{display:flex;flex-direction:column;gap:10px;width:100%}
+.btn{padding:14px 24px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;
+  transition:all .2s;border:none;font-family:var(--font)}
+.btn-primary{background:linear-gradient(135deg,var(--purple),#9B4DCA);color:#fff;
+  box-shadow:0 4px 16px rgba(123,45,142,.25)}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{background:var(--card);color:var(--purple);border:1.5px solid rgba(123,45,142,.25)!important}
+.btn-secondary:active{transform:scale(.97)}
+
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:var(--purple);color:#fff;padding:10px 20px;border-radius:30px;
+  font-size:13px;font-weight:600;z-index:300;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
+<div class="shell">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="stars" id="stars"></div>
 
-<div class="stars" id="stars"></div>
-<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+  <nav>
+    <a href="/08/activity/" class="nav-back">← 返回</a>
+    <span class="nav-title">🔮 命运之地</span>
+    <div class="nav-r"></div>
+  </nav>
 
-<div class="page">
   <!-- Hero -->
-  <section class="hero active" id="hero">
-    <div class="hero-icon">🔮</div>
-    <h1>命运之地</h1>
-    <p class="subtitle">你和哪座城市，早就注定了</p>
-    <button class="btn-start" onclick="startQuiz()">开始占卜</button>
+  <section class="active" id="secHero">
+    <div class="hero">
+      <span class="hero-icon">🔮</span>
+      <h1>命运<em>之地</em></h1>
+      <div class="hero-sub">你和哪座城市，早就注定了<br>5 道题 · 揭开你的旅行命运</div>
+      <div class="hero-tags">
+        <span class="hero-tag">✦ 玄学占卜</span>
+        <span class="hero-tag">5道题</span>
+        <span class="hero-tag">专属签语</span>
+      </div>
+      <button class="btn-start" onclick="startQuiz()">✨ 开始占卜</button>
+    </div>
   </section>
 
   <!-- 题目 -->
-  <section class="question" id="question">
-    <div class="q-step" id="qStep"></div>
-    <div class="q-text" id="qText"></div>
-    <div class="options" id="options"></div>
+  <section id="secQ">
+    <div class="q-wrap">
+      <div class="q-step" id="qStep">QUESTION 1 / 5</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="opts"></div>
+    </div>
   </section>
 
   <!-- 结果 -->
-  <section class="result" id="result">
-    <div class="result-city-emoji" id="rEmoji"></div>
-    <div class="result-city" id="rCity"></div>
-    <p class="result-desc" id="rDesc"></p>
-    <p class="result-guidance" id="rGuidance"></p>
-    <div class="fortunes" id="fortunes"></div>
-    <div class="result-actions">
-      <button class="btn btn-primary" onclick="restart()">🔮 再占一次</button>
-      <button class="btn btn-secondary" onclick="copyResult()">📋 复制我的命运之地</button>
+  <section id="secResult">
+    <div class="result-wrap">
+      <div class="result-glow"><div class="result-city-emoji" id="rEmoji">🌋</div></div>
+      <div class="result-city" id="rCity">那不勒斯</div>
+      <div class="result-subtitle">✦ 你的命运之地 ✦</div>
+      <div class="result-card">
+        <div class="result-desc" id="rDesc"></div>
+        <div class="result-guidance" id="rGuidance"></div>
+      </div>
+      <div class="fortunes-label">🔮 翻开你的三张签语</div>
+      <div class="fortunes" id="fortunes"></div>
+      <div class="result-btns">
+        <button class="btn btn-primary" onclick="restart()">🔮 再占一次</button>
+        <button class="btn btn-secondary" onclick="copyResult()">📋 复制我的命运之地</button>
+      </div>
     </div>
   </section>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
 // 星星
-(function(){const c=document.getElementById('stars');for(let i=0;i<60;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.setProperty('--dur',(2+Math.random()*4)+'s');s.style.setProperty('--o',(.3+Math.random()*.7));s.style.animationDelay=Math.random()*4+'s';s.style.width=s.style.height=(1+Math.random()*2)+'px';c.appendChild(s)}})();
+(function(){
+  var c=document.getElementById('stars');
+  for(var i=0;i<40;i++){
+    var s=document.createElement('div');s.className='star';
+    s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
+    s.style.setProperty('--dur',(2+Math.random()*4)+'s');
+    s.style.setProperty('--o',(.2+Math.random()*.3));
+    s.style.animationDelay=Math.random()*4+'s';
+    var sz=(1+Math.random()*2)+'px';s.style.width=sz;s.style.height=sz;
+    c.appendChild(s);
+  }
+})();
 
-// 数据
-const questions = [
-  {q:"你今天的心情色彩是？", opts:[
-    {text:"热烈",emoji:"🔴",type:"A"},{text:"宁静",emoji:"🔵",type:"B"},
-    {text:"明亮",emoji:"🟡",type:"C"},{text:"神秘",emoji:"🟣",type:"D"},
-    {text:"沉思",emoji:"⚫",type:"E"}
+var QS=[
+  {q:'你今天的心情色彩是？',opts:[
+    {em:'🔴',t:'热烈',tp:'A'},{em:'🔵',t:'宁静',tp:'B'},
+    {em:'🟡',t:'明亮',tp:'C'},{em:'🟣',t:'神秘',tp:'D'},{em:'⚫',t:'沉思',tp:'E'}
   ]},
-  {q:"如果你是一种天气，你是？", opts:[
-    {text:"大晴天",emoji:"☀️",type:"A"},{text:"小雨天",emoji:"🌧️",type:"B"},
-    {text:"雨后彩虹",emoji:"🌈",type:"C"},{text:"薄雾",emoji:"🌫️",type:"D"},
-    {text:"雷阵雨",emoji:"⛈️",type:"E"}
+  {q:'如果你是一种天气，你是？',opts:[
+    {em:'☀️',t:'大晴天',tp:'A'},{em:'🌧️',t:'小雨天',tp:'B'},
+    {em:'🌈',t:'雨后彩虹',tp:'C'},{em:'🌫️',t:'薄雾',tp:'D'},{em:'⛈️',t:'雷阵雨',tp:'E'}
   ]},
-  {q:"现在最想做的一件事是？", opts:[
-    {text:"静坐发呆",emoji:"🧘",type:"B"},{text:"漫无目的走路",emoji:"🚶",type:"A"},
-    {text:"翻一本书",emoji:"📖",type:"E"},{text:"听首老歌",emoji:"🎵",type:"C"},
-    {text:"吃一碗热汤面",emoji:"🍜",type:"D"}
+  {q:'现在最想做的一件事是？',opts:[
+    {em:'🧘',t:'静坐发呆',tp:'B'},{em:'🚶',t:'漫无目的走路',tp:'A'},
+    {em:'📖',t:'翻一本书',tp:'E'},{em:'🎵',t:'听首老歌',tp:'C'},{em:'🍜',t:'吃一碗热汤面',tp:'D'}
   ]},
-  {q:"你相信缘分吗？", opts:[
-    {text:"完全相信，命运早已安排",emoji:"💫",type:"A"},{text:"有点信，但我也要努力",emoji:"🌤️",type:"C"},
-    {text:"不信，全靠自己",emoji:"💪",type:"E"},{text:"说不清楚",emoji:"🌙",type:"D"}
+  {q:'你相信缘分吗？',opts:[
+    {em:'💫',t:'完全相信，命运早已安排',tp:'A'},{em:'🌤️',t:'有点信，但我也要努力',tp:'C'},
+    {em:'💪',t:'不信，全靠自己',tp:'E'},{em:'🌙',t:'说不清楚',tp:'D'}
   ]},
-  {q:"你想从这次旅行中带走什么？", opts:[
-    {text:"一个震撼的景色",emoji:"🌅",type:"A"},{text:"一段意外的相遇",emoji:"🤝",type:"B"},
-    {text:"一种难忘的味道",emoji:"🍜",type:"C"},{text:"一张完美的照片",emoji:"📸",type:"D"},
-    {text:"一段自己和自己的对话",emoji:"💭",type:"E"}
+  {q:'你想从这次旅行中带走什么？',opts:[
+    {em:'🌅',t:'一个震撼的景色',tp:'A'},{em:'🤝',t:'一段意外的相遇',tp:'B'},
+    {em:'🍜',t:'一种难忘的味道',tp:'C'},{em:'📸',t:'一张完美的照片',tp:'D'},
+    {em:'💭',t:'一段自己和自己的对话',tp:'E'}
   ]}
 ];
 
-const results = {
-  A:{city:"那不勒斯",emoji:"🌋",desc:"混乱里有秩序，热烈里有温柔。这座城市不需要你准备，它直接把你淹没。",guidance:"你的灵魂底色是火焰——去最喧闹的地方，反而能找到最真的自己。",fortunes:["在小巷深处迷路，那里藏着最好的风景","和陌生人拼桌吃一顿饭，他会成为你的故事","不要在地图上画路线，跟着气味走"]},
-  B:{city:"京 都",emoji:"🦌",desc:"你不是去旅行，你是去跟自己说一次久违的话。",guidance:"你的灵魂底色是水——去安静的地方，听内心最真实的声音。",fortunes:["在清晨的寺庙里坐十分钟，答案会自己浮现","走一条没有名字的小路，它会通向你想去的地方","给十年后的自己写一张明信片"]},
-  C:{city:"里斯本",emoji:"🌅",desc:"站在山顶看日落，你会突然觉得一切都值得。",guidance:"你的灵魂底色是阳光——去最亮的地方，让所有阴霾消散。",fortunes:["在日落之前做一个决定，不要后悔","找到一家有阳台的咖啡馆，坐一个下午","和当地人说一句'你好'，他会还你一个故事"]},
-  D:{city:"布达佩斯",emoji:"🌙",desc:"这座城市的夜晚像一个没写完的故事，你是那最后的句号。",guidance:"你的灵魂底色是迷雾——去最神秘的地方，揭开命运的面纱。",fortunes:["在午夜的多瑙河边站一会儿，风会告诉你答案","走进一家老书店，翻开任意一页，那就是你的暗示","不要计划明天，让明天来找你"]},
-  E:{city:"雷克雅未克",emoji:"🌌",desc:"你需要的不是热闹，你需要的是广阔。",guidance:"你的灵魂底色是深渊——去最远的地方，才能看到最近的自己。",fortunes:["在冰川面前，你会觉得一切烦恼都不值一提","向北走，走到不能再走的地方","在极光下许一个愿，它会以你意想不到的方式实现"]}
+var RESULTS={
+  A:{city:'那不勒斯',emoji:'🌋',desc:'混乱里有秩序，热烈里有温柔。这座城市不需要你准备，它直接把你淹没。',guidance:'你的灵魂底色是火焰——去最喧闹的地方，反而能找到最真的自己。',fortunes:['在小巷深处迷路，那里藏着最好的风景','和陌生人拼桌吃一顿饭，他会成为你的故事','不要在地图上画路线，跟着气味走']},
+  B:{city:'京　都',emoji:'🦌',desc:'你不是去旅行，你是去跟自己说一次久违的话。在枯山水前坐下，什么都不用想。',guidance:'你的灵魂底色是水——去安静的地方，听内心最真实的声音。',fortunes:['在清晨的寺庙里坐十分钟，答案会自己浮现','走一条没有名字的小路，它会通向你想去的地方','给十年后的自己写一张明信片']},
+  C:{city:'里斯本',emoji:'🌅',desc:'站在山顶看日落，你会突然觉得一切都值得。这座城市的橙色黄昏是全世界最温柔的。',guidance:'你的灵魂底色是阳光——去最亮的地方，让所有阴霾消散。',fortunes:['在日落之前做一个决定，不要后悔','找到一家有阳台的咖啡馆，坐一个下午','和当地人说一句「你好」，他会还你一个故事']},
+  D:{city:'布达佩斯',emoji:'🌙',desc:'这座城市的夜晚像一个没写完的故事，你是那最后的句号。多瑙河的倒影里藏着你想要的答案。',guidance:'你的灵魂底色是迷雾——去最神秘的地方，揭开命运的面纱。',fortunes:['在午夜的多瑙河边站一会儿，风会告诉你答案','走进一家老书店，翻开任意一页，那就是你的暗示','不要计划明天，让明天来找你']},
+  E:{city:'雷克雅未克',emoji:'🌌',desc:'你需要的不是热闹，你需要的是广阔。在极光下，所有困扰都会变得微不足道。',guidance:'你的灵魂底色是深渊——去最远的地方，才能看到最近的自己。',fortunes:['在冰川面前，你会觉得一切烦恼都不值一提','向北走，走到不能再走的地方','在极光下许一个愿，它会以你意想不到的方式实现']}
 };
 
-let currentQ = 0;
-let answers = [];
+var currentQ=0,answers=[];
+
+function showSec(id){
+  document.querySelectorAll('section').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  document.querySelector('.shell').scrollTop=0;
+}
 
 function startQuiz(){
-  currentQ = 0;
-  answers = [];
-  showSection('question');
-  renderQuestion();
+  currentQ=0;answers=[];
+  document.getElementById('progFill').style.width='0%';
+  showSec('secQ');renderQ();
 }
 
-function showSection(id){
-  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function renderQuestion(){
-  const q = questions[currentQ];
-  document.getElementById('qStep').textContent = `QUESTION ${currentQ+1} / ${questions.length}`;
-  document.getElementById('qText').textContent = q.q;
-  const container = document.getElementById('options');
-  container.innerHTML = '';
-  q.opts.forEach((o,i)=>{
-    const div = document.createElement('div');
-    div.className = 'option';
-    div.innerHTML = `<span class="emoji">${o.emoji}</span><span>${o.text}</span>`;
-    div.onclick = ()=>selectOption(o.type);
-    div.style.animation = `fadeSlide .3s ease ${i*0.06}s both`;
-    container.appendChild(div);
+function renderQ(){
+  var q=QS[currentQ];
+  document.getElementById('qStep').textContent='QUESTION '+(currentQ+1)+' / '+QS.length;
+  document.getElementById('qText').textContent=q.q;
+  var html='';
+  q.opts.forEach(function(o,i){
+    html+='<button class="opt" onclick="pick(\''+o.tp+'\')" style="animation:fadeUp .3s ease '+(i*0.06)+'s both">'+
+      '<span class="opt-em">'+o.em+'</span><span>'+o.t+'</span></button>';
   });
-  // 进度
-  document.getElementById('progressFill').style.width = (currentQ/questions.length*100)+'%';
+  document.getElementById('opts').innerHTML=html;
+  document.getElementById('progFill').style.width=Math.round(currentQ/QS.length*100)+'%';
 }
 
-function selectOption(type){
-  answers.push(type);
+function pick(tp){
+  answers.push(tp);
   currentQ++;
-  if(currentQ < questions.length){
-    renderQuestion();
+  if(currentQ<QS.length){
+    setTimeout(renderQ,200);
   } else {
     showResult();
   }
 }
 
 function showResult(){
-  document.getElementById('progressFill').style.width = '100%';
-  // 计算最多的类型
-  const count = {A:0,B:0,C:0,D:0,E:0};
-  answers.forEach(a=>count[a]++);
-  let max = 'A', maxCount = 0;
-  for(const k in count){if(count[k]>maxCount){maxCount=count[k];max=k}}
-  // 如果平局，优先靠后的（更晚的问题权重更高）
-  let tieMax = maxCount;
-  for(let i=answers.length-1;i>=0;i--){
-    if(count[answers[i]]===tieMax){max=answers[i];break}
-  }
-
-  const r = results[max];
-  document.getElementById('rEmoji').textContent = r.emoji;
-  document.getElementById('rCity').textContent = r.city;
-  document.getElementById('rDesc').textContent = r.desc;
-  document.getElementById('rGuidance').textContent = '✦ '+r.guidance+' ✦';
-
-  const fContainer = document.getElementById('fortunes');
-  fContainer.innerHTML = '';
-  r.fortunes.forEach(f=>{
-    const card = document.createElement('div');
-    card.className = 'fortune-card';
-    card.innerHTML = `<div class="fortune-inner"><div class="fortune-front">点击翻开</div><div class="fortune-back">${f}</div></div>`;
-    card.onclick = ()=>card.classList.toggle('flipped');
-    fContainer.appendChild(card);
+  document.getElementById('progFill').style.width='100%';
+  var cnt={A:0,B:0,C:0,D:0,E:0};
+  answers.forEach(function(a){cnt[a]=(cnt[a]||0)+1;});
+  var best='A',max=0;
+  Object.keys(cnt).forEach(function(k){if(cnt[k]>max){max=cnt[k];best=k;}});
+  // 平局：优先取最后选的
+  var tmax=max;
+  for(var i=answers.length-1;i>=0;i--){if(cnt[answers[i]]===tmax){best=answers[i];break;}}
+  var r=RESULTS[best];
+  document.getElementById('rEmoji').textContent=r.emoji;
+  document.getElementById('rCity').textContent=r.city;
+  document.getElementById('rDesc').textContent=r.desc;
+  document.getElementById('rGuidance').textContent='✦ '+r.guidance+' ✦';
+  var fhtml='';
+  r.fortunes.forEach(function(f){
+    fhtml+='<div class="fortune-card" onclick="this.classList.toggle(\'flipped\')">'+
+      '<div class="fortune-inner">'+
+      '<div class="fortune-front">🔮 点击翻开签语</div>'+
+      '<div class="fortune-back">'+f+'</div>'+
+      '</div></div>';
   });
-
-  showSection('result');
+  document.getElementById('fortunes').innerHTML=fhtml;
+  showSec('secResult');
 }
 
 function restart(){
-  document.getElementById('progressFill').style.width = '0%';
-  showSection('hero');
+  document.getElementById('progFill').style.width='0%';
+  showSec('secHero');
 }
 
 function copyResult(){
-  const city = document.getElementById('rCity').textContent;
-  const emoji = document.getElementById('rEmoji').textContent;
-  const desc = document.getElementById('rDesc').textContent;
-  const text = `${emoji} 我的命运之地：${city}\n${desc}\n— 来自「命运之地」旅行玄学占卜`;
-  navigator.clipboard.writeText(text).then(()=>{
-    showToast('已复制到剪贴板 ✨');
-  }).catch(()=>{
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('已复制到剪贴板 ✨');
-  });
+  var city=document.getElementById('rCity').textContent;
+  var emoji=document.getElementById('rEmoji').textContent;
+  var desc=document.getElementById('rDesc').textContent;
+  var text=emoji+' 我的命运之地：'+city+'\n\n'+desc+'\n\n— 来自「命运之地」旅行玄学占卜';
+  try{navigator.clipboard.writeText(text);}catch(e){
+    var ta=document.createElement('textarea');ta.value=text;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  }
+  showToast('已复制到剪贴板 ✨');
 }
 
 function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2000);
+  var t=document.getElementById('toast');t.textContent=msg;
+  t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2000);
 }
 
-// 动画关键帧
-const style = document.createElement('style');
-style.textContent = '@keyframes fadeSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}';
-document.head.appendChild(style);
+var style2=document.createElement('style');
+style2.textContent='@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}';
+document.head.appendChild(style2);
 </script>
 </body>
 </html>
