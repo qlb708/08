@@ -33,7 +33,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .row1{display:flex;align-items:center;gap:0;height:64px;padding:0 24px;border-bottom:1px solid var(--line)}
 
 .upload-area{display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 16px 8px 0;border-right:1px solid var(--line);margin-right:24px;flex-shrink:0}
-.upload-area input{display:none}
+.upload-area input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 .up-icon-box{width:36px;height:36px;border-radius:9px;background:#F0F2F5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .up-label strong{display:block;font-size:14px;font-weight:600;color:var(--text)}
 .up-label span{font-size:12px;color:var(--muted)}
@@ -183,11 +183,11 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
   <!-- Row 1: Upload + Sliders + Checks + Buttons -->
   <div class="row1">
     <!-- Upload -->
-    <div class="upload-area" id="dropZone" style="cursor:pointer">
-      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
+    <label class="upload-area" id="dropZone" for="fileInput" style="cursor:pointer">
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
       <div class="up-icon-box">📂</div>
-      <div class="up-label"><strong>上传达人名单</strong><span>拖入或点击选择</span></div>
-    </div>
+      <div class="up-label"><strong>上传达人名单</strong><span>拖入或点击</span></div>
+    </label>
     <div class="file-ok" id="fileInfo">
       <span class="fdot"></span>
       <span class="fname" id="fileName"></span>
@@ -389,9 +389,7 @@ document.addEventListener('drop',function(e){
 });
 
 // 点击上传区触发文件选择
-dropZone.addEventListener('click',function(){
-  fileInput.click();
-});
+// label[for] 原生绑定，无需 JS click
 fileInput.addEventListener('change',function(){
   if(this.files&&this.files.length)handleFile(this.files[0]);
 });
