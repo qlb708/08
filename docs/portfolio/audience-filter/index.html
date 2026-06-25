@@ -305,7 +305,7 @@ var KW_GROUPS=[
   {name:'旅行社/地接',words:['旅行社','旅游社','旅游局','地接','地接社','定制游','精品定制','旅策','旅游服务','服务中心','包车','包车游','包车服务','拼车','司导','跃行','车轮上','包团']},
   {name:'住宿类',words:['民宿','客栈','酒店','公寓','度假村','包栋','别墅','寓','旅馆','旅館']},
   {name:'票务/平台',words:['游轮','票务','票务代理','代理','代购','团购','ota','携程','途牛','飞猪','去哪儿','途途','开荒','景区','门票','观光']},
-  {name:'商业通用',words:['官方','官号','官博','机构','店铺','商家','企业','品牌','招商','广告','推广','营销','专营','旗舰','批发','直销','旅游']},
+  {name:'商业通用',words:['官方','官号','官博','机构','店铺','商家','企业','品牌','招商','广告','推广','营销','专营','旗舰','批发','直销','旅游','国旅','旅居','贩卖机','代购','海淘','购物','优惠','折扣','返利','攻略号','探店']},
   {name:'英文',words:['inn','hostel','hotel','resort','travel agency','tour','tours','guide']}
 ];
 function allKw(){var a=[];KW_GROUPS.forEach(function(g){g.words.forEach(function(w){a.push(w);});});return a;}
@@ -339,14 +339,7 @@ function filterRow(r){
   return null;
 }
 
-function runFilter(){
-  FILTERED=[];EXCLUDED=[];
-  ALL_DATA.forEach(function(r){
-    var reason=filterRow(r);
-    if(reason){r._exclReason=reason;EXCLUDED.push(r);}else FILTERED.push(r);
-  });
-  PAGE=1;SORT_COL='';SORT_ASC=false;
-
+function renderSummary(){
   var s=0,a=0,b=0;
   FILTERED.forEach(function(r){var g=getGrade(r);r._grade=g;if(g==='S')s++;else if(g==='A')a++;else b++;});
   document.getElementById('numPass').textContent=FILTERED.length;
@@ -355,7 +348,16 @@ function runFilter(){
   document.getElementById('numA').textContent=a;
   document.getElementById('numB').textContent=b;
   document.getElementById('numRate').textContent=ALL_DATA.length>0?Math.round(FILTERED.length/ALL_DATA.length*100)+'%':'—';
+}
 
+function runFilter(){
+  FILTERED=[];EXCLUDED=[];
+  ALL_DATA.forEach(function(r){
+    var reason=filterRow(r);
+    if(reason){r._exclReason=reason;EXCLUDED.push(r);}else FILTERED.push(r);
+  });
+  PAGE=1;SORT_COL='';SORT_ASC=false;
+  renderSummary();
   document.getElementById('dropZone').style.display='none';
   document.getElementById('resultArea').style.display='block';
   document.getElementById('actionBar').classList.add('show');
@@ -448,7 +450,7 @@ document.getElementById('kwAddBtn').addEventListener('click',function(){var v=do
 document.getElementById('kwInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('kwAddBtn').click();});
 
 /* ── TABLE ── */
-var COLS=[{key:'昵称',label:'NICKNAME'},{key:'粉丝数',label:'FANS'},{key:'笔记发布总数',label:'NOTES'},{key:'CES超100有效笔记数',label:'CES'},{key:'近7天CES转化率',label:'RATE'},{key:'_grade',label:'GRADE'}];
+var COLS=[{key:'昵称',label:'NICKNAME'},{key:'粉丝数',label:'FANS'},{key:'笔记发布总数',label:'NOTES'},{key:'CES超100有效笔记数',label:'CES'},{key:'近7天CES转化率',label:'RATE'},{key:'_grade',label:'GRADE'},{key:'_action',label:'操作',noSort:true}];
 function renderTable(){
   var hrow='<tr>';
   COLS.forEach(function(c){var cls=SORT_COL===c.key?('sorted '+(SORT_ASC?'asc':'desc')):'';hrow+='<th data-col="'+c.key+'" class="'+cls+'">'+c.label+'</th>';});
@@ -458,11 +460,23 @@ function renderTable(){
   if(SORT_COL){sorted.sort(function(a,b){var va=SORT_COL==='_grade'?getGrade(a):a[SORT_COL];var vb=SORT_COL==='_grade'?getGrade(b):b[SORT_COL];var na=parseFloat(String(va).replace('%',''))||0,nb=parseFloat(String(vb).replace('%',''))||0;if(!isNaN(na)&&!isNaN(nb))return SORT_ASC?na-nb:nb-na;return SORT_ASC?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));});}
   var start=(PAGE-1)*PAGE_SIZE,pd=sorted.slice(start,start+PAGE_SIZE);
   var html='';
-  pd.forEach(function(r){var g=getGrade(r),rate=parseCes(r['近7天CES转化率']);html+='<tr><td>'+escHtml(r['昵称']||'')+'</td><td class="td-soft">'+fmtN(r['粉丝数'])+'</td><td class="td-soft">'+escHtml(r['笔记发布总数'])+'</td><td class="td-soft">'+escHtml(r['CES超100有效笔记数'])+'</td><td class="td-soft'+(rate>2?' td-hi':'')+'">'+( rate?rate.toFixed(1)+'%':'—')+'</td><td><span class="badge badge-'+g.toLowerCase()+'">'+g+'</span></td></tr>';});
+  pd.forEach(function(r,ri){var g=getGrade(r),rate=parseCes(r['近7天CES转化率']);var nick=encodeURIComponent(r['昵称']||'');var searchUrl='https://www.xiaohongshu.com/search_result?keyword='+nick+'&source=web_explore_feed';var nickRaw=escHtml(r['昵称']||'');html+='<tr><td>'+nickRaw+'</td><td class="td-soft">'+fmtN(r['粉丝数'])+'</td><td class="td-soft">'+escHtml(r['笔记发布总数'])+'</td><td class="td-soft">'+escHtml(r['CES超100有效笔记数'])+'</td><td class="td-soft'+(rate>2?' td-hi':'')+'">'+( rate?rate.toFixed(1)+'%':'—')+'</td><td><span class="badge badge-'+g.toLowerCase()+'">'+g+'</span></td><td style="white-space:nowrap"><a href="'+searchUrl+'" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none;margin-right:10px">🔍查看</a><span class="manual-excl" data-nick="'+nickRaw+'" style="font-size:12px;color:#dc2626;cursor:pointer">✕排除</span></td></tr>';});
   document.getElementById('tblBody').innerHTML=html;
   var totalPages=Math.ceil(sorted.length/PAGE_SIZE)||1;
   document.getElementById('pagination').innerHTML='<span class="pag-btn'+(PAGE<=1?' dis':'')+'" id="pgPrev">← 上一页</span><span class="pag-info">'+PAGE+' / '+totalPages+'</span><span class="pag-btn'+(PAGE>=totalPages?' dis':'')+'" id="pgNext">下一页 →</span>';
   document.getElementById('pgPrev').onclick=function(){if(PAGE>1){PAGE--;renderTable();}};
+  document.querySelectorAll('.manual-excl').forEach(function(el){
+    el.addEventListener('click',function(){
+      var nick=this.dataset.nick;
+      var idx=-1;
+      for(var i=0;i<FILTERED.length;i++){if(escHtml(FILTERED[i]['昵称']||'')===nick){idx=i;break;}}
+      if(idx<0)return;
+      var r=FILTERED.splice(idx,1)[0];
+      r._exclReason='手动排除';
+      EXCLUDED.push(r);
+      renderSummary();renderTable();
+    });
+  });
   document.getElementById('pgNext').onclick=function(){if(PAGE<totalPages){PAGE++;renderTable();}};
 }
 
