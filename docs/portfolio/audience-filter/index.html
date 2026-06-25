@@ -27,16 +27,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .nav-back:hover{opacity:1}
 
 /* CTRL CARD */
-.ctrl-card{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 20px rgba(10,22,40,.07);position:fixed;top:70px;left:36px;right:36px;z-index:100;overflow:hidden}
+.ctrl-card{background:var(--white);border-radius:var(--radius);box-shadow:0 2px 20px rgba(10,22,40,.07);position:fixed;top:70px;left:36px;right:36px;z-index:100;overflow:visible}
 
 /* ROW 1 */
 .row1{display:flex;align-items:center;gap:0;height:64px;padding:0 24px;border-bottom:1px solid var(--line)}
 
-.upload-area{display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 16px 8px 0;border-right:1px solid var(--line);margin-right:24px;flex-shrink:0}
-.upload-area input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
-.up-icon-box{width:36px;height:36px;border-radius:9px;background:#F0F2F5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+/* Upload label — native binding, no JS click */
+.upload-label{display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 16px 8px 0;border-right:1px solid var(--line);margin-right:24px;flex-shrink:0}
+.upload-label input[type=file]{position:absolute;left:-9999px;opacity:0;width:1px;height:1px}
+.up-icon-box{width:36px;height:36px;border-radius:9px;background:#F0F2F5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:background .2s}
+.upload-label:hover .up-icon-box{background:rgba(26,86,219,.1)}
 .up-label strong{display:block;font-size:14px;font-weight:600;color:var(--text)}
 .up-label span{font-size:12px;color:var(--muted)}
+
 .file-ok{display:none;align-items:center;gap:8px;padding:0 16px 0 0;border-right:1px solid var(--line);margin-right:24px;flex-shrink:0}
 .file-ok.show{display:flex}
 .fdot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0}
@@ -73,7 +76,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .btn-t:hover:not(:disabled){border-color:#cbd5e1!important;color:var(--text)}
 
 /* ROW 2: keyword groups */
-.row2{display:flex;align-items:flex-start;gap:10px;padding:12px 24px;flex-wrap:wrap;min-height:48px}
+.row2{display:flex;align-items:flex-start;gap:10px;padding:12px 24px;flex-wrap:wrap;min-height:48px;overflow:visible;position:relative;z-index:200}
 .row2-label{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;align-self:center;flex-shrink:0;width:56px}
 
 .kw-group{position:relative;flex-shrink:0}
@@ -84,11 +87,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .kw-group-arrow{font-size:10px;color:var(--muted);transition:transform .2s}
 .kw-group-btn.active .kw-group-arrow{transform:rotate(180deg)}
 
-.kw-dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(10,22,40,.12);padding:12px;z-index:300;min-width:240px;max-width:320px}
+.kw-dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(10,22,40,.12);padding:12px;z-index:500;min-width:240px;max-width:320px}
 .kw-dropdown.show{display:block}
 .kw-drop-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .kw-tag{display:inline-flex;align-items:center;gap:3px;font-size:12px;padding:3px 10px;border:1px solid var(--line);border-radius:20px;background:#F8FAFC;color:var(--text);transition:all .15s}
-.kw-tag:hover{border-color:#fca5a5;background:#fef2f2}
 .kw-del{cursor:pointer;color:var(--muted);font-size:12px;transition:color .15s}
 .kw-del:hover{color:#ef4444}
 .kw-add-row{display:flex;gap:6px}
@@ -113,17 +115,31 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .cat-item input:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);color:#fff;font-size:8px;font-weight:700}
 
 /* MAIN */
-.main{padding-top:160px;padding-left:36px;padding-right:36px;padding-bottom:60px;min-height:100vh}
-.result-card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 16px rgba(10,22,40,.06);padding:28px 32px}
+.main{padding-left:36px;padding-right:36px;padding-bottom:60px;min-height:100vh}
+.result-card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 16px rgba(10,22,40,.06);overflow:hidden}
 
-/* Empty */
-.empty{padding:80px 0;text-align:center}
-.empty-dash{font-family:var(--serif);font-size:32px;color:#e2e8f0;margin-bottom:16px}
-.empty-main{font-family:var(--serif);font-size:20px;color:var(--soft);margin-bottom:8px;font-weight:400}
-.empty-sub{font-size:13px;color:var(--muted)}
+/* DROP ZONE */
+.drop-zone{
+  padding:100px 40px;text-align:center;
+  border:2px dashed #d1d9e6;
+  border-radius:var(--radius);
+  background:#fff;
+  transition:border-color .25s,background .25s;
+  cursor:default;
+  user-select:none;
+}
+.drop-zone.drag-over{
+  border-color:var(--accent);
+  background:rgba(26,86,219,.04);
+}
+.dz-icon{font-size:52px;display:block;margin-bottom:20px;transition:transform .3s}
+.drop-zone.drag-over .dz-icon{transform:scale(1.2) translateY(-4px)}
+.dz-main{font-family:var(--serif);font-size:22px;color:var(--soft);margin-bottom:10px;font-weight:400;transition:color .25s}
+.drop-zone.drag-over .dz-main{color:var(--accent)}
+.dz-sub{font-size:13px;color:var(--muted)}
 
 /* Stats */
-.stats{display:flex;align-items:center;gap:0;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.stats{display:flex;align-items:center;gap:0;padding:20px 32px;border-bottom:1px solid var(--line)}
 .stat-total{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--text);padding-right:20px}
 .stat-div{width:1px;height:24px;background:var(--line)}
 .stat-item{display:flex;align-items:baseline;gap:6px;padding:0 20px}
@@ -134,7 +150,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .stat-b .stat-num{color:var(--muted)}
 
 /* Table */
-.tbl-wrap{overflow-x:auto}
+.tbl-wrap{overflow-x:auto;padding:0 32px 28px}
 table{width:100%;border-collapse:collapse;margin-top:4px}
 thead th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none;font-weight:600;transition:color .2s}
 thead th:hover{color:var(--text)}
@@ -153,20 +169,11 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
 .badge-b{border:1.5px solid #cbd5e1;color:var(--muted)}
 
 /* Pagination */
-.pag{display:flex;align-items:center;justify-content:flex-end;gap:16px;padding-top:20px;font-size:13px;color:var(--soft)}
+.pag{display:flex;align-items:center;justify-content:flex-end;gap:16px;padding:16px 32px;font-size:13px;color:var(--soft);border-top:1px solid var(--line)}
 .pag-btn{cursor:pointer;transition:color .2s;user-select:none;font-weight:500}
 .pag-btn:hover:not(.dis){color:var(--accent)}
 .pag-btn.dis{opacity:.3;cursor:default}
 .pag-info{font-family:var(--serif);font-size:14px;color:var(--text)}
-/* DRAG OVERLAY */
-.drag-overlay{position:fixed;inset:0;background:rgba(26,86,219,.12);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;border:3px dashed var(--accent);border-radius:0;transition:all .2s;pointer-events:none}
-.drag-overlay.show{display:flex}
-.drag-overlay-icon{font-size:48px;animation:bounce .6s ease infinite alternate}
-.drag-overlay-text{font-family:var(--serif);font-size:22px;color:var(--accent);font-weight:600;letter-spacing:.04em}
-.drag-overlay-sub{font-size:13px;color:var(--accent);opacity:.7}
-@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
-/* Upload area hover state */
-.upload-area:hover .up-icon-box{background:rgba(26,86,219,.1)}
 </style>
 </head>
 <body>
@@ -178,21 +185,21 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
   <a href="/08/portfolio/" class="nav-back">← 返回工具集</a>
 </nav>
 
-<div class="ctrl-card">
+<div class="ctrl-card" id="ctrlCard">
 
-  <!-- Row 1: Upload + Sliders + Checks + Buttons -->
+  <!-- Row 1 -->
   <div class="row1">
-    <!-- Upload -->
-    <label class="upload-area" id="dropZone" for="fileInput" style="cursor:pointer">
+    <!-- Upload: pure native label, no JS click at all -->
+    <label class="upload-label" id="uploadLabel">
       <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
       <div class="up-icon-box">📂</div>
-      <div class="up-label"><strong>上传达人名单</strong><span>拖入或点击</span></div>
+      <div class="up-label"><strong>上传达人名单</strong><span>点击选择文件</span></div>
     </label>
     <div class="file-ok" id="fileInfo">
       <span class="fdot"></span>
       <span class="fname" id="fileName"></span>
       <span class="frows" id="fileRows"></span>
-      <span class="frm" id="fileRemove">✕</span>
+      <span class="frm" id="fileRemove" title="重新上传">✕</span>
     </div>
 
     <!-- Sliders -->
@@ -212,7 +219,7 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
 
     <!-- Buttons -->
     <div class="ctrl-btns">
-      <button class="btn btn-p" id="btnFilter" disabled>开始筛选</button>
+      <button class="btn btn-p" id="btnFilter" disabled>重新筛选</button>
       <button class="btn btn-s" id="btnExport" disabled>导出结果</button>
       <button class="btn btn-t" id="btnExclude" disabled>排除名单</button>
     </div>
@@ -221,48 +228,11 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
   <!-- Row 2: Keyword groups -->
   <div class="row2">
     <span class="row2-label">商业词</span>
-
-    <!-- Group 1: 旅行社/地接 -->
-    <div class="kw-group" id="grp0">
-      <div class="kw-group-btn" onclick="toggleGroup(0)">
-        旅行社/地接 <span class="kw-group-count" id="gc0">0</span><span class="kw-group-arrow">▾</span>
-      </div>
-      <div class="kw-dropdown" id="gd0"></div>
-    </div>
-
-    <!-- Group 2: 住宿 -->
-    <div class="kw-group" id="grp1">
-      <div class="kw-group-btn" onclick="toggleGroup(1)">
-        住宿类 <span class="kw-group-count" id="gc1">0</span><span class="kw-group-arrow">▾</span>
-      </div>
-      <div class="kw-dropdown" id="gd1"></div>
-    </div>
-
-    <!-- Group 3: 票务/平台 -->
-    <div class="kw-group" id="grp2">
-      <div class="kw-group-btn" onclick="toggleGroup(2)">
-        票务/平台 <span class="kw-group-count" id="gc2">0</span><span class="kw-group-arrow">▾</span>
-      </div>
-      <div class="kw-dropdown" id="gd2"></div>
-    </div>
-
-    <!-- Group 4: 商业通用 -->
-    <div class="kw-group" id="grp3">
-      <div class="kw-group-btn" onclick="toggleGroup(3)">
-        商业通用 <span class="kw-group-count" id="gc3">0</span><span class="kw-group-arrow">▾</span>
-      </div>
-      <div class="kw-dropdown" id="gd3"></div>
-    </div>
-
-    <!-- Group 5: 英文 -->
-    <div class="kw-group" id="grp4">
-      <div class="kw-group-btn" onclick="toggleGroup(4)">
-        英文 <span class="kw-group-count" id="gc4">0</span><span class="kw-group-arrow">▾</span>
-      </div>
-      <div class="kw-dropdown" id="gd4"></div>
-    </div>
-
-    <!-- Custom add + category -->
+    <div class="kw-group" id="grp0"><div class="kw-group-btn" onclick="toggleGroup(0)">旅行社/地接 <span class="kw-group-count" id="gc0">0</span><span class="kw-group-arrow">▾</span></div><div class="kw-dropdown" id="gd0"></div></div>
+    <div class="kw-group" id="grp1"><div class="kw-group-btn" onclick="toggleGroup(1)">住宿类 <span class="kw-group-count" id="gc1">0</span><span class="kw-group-arrow">▾</span></div><div class="kw-dropdown" id="gd1"></div></div>
+    <div class="kw-group" id="grp2"><div class="kw-group-btn" onclick="toggleGroup(2)">票务/平台 <span class="kw-group-count" id="gc2">0</span><span class="kw-group-arrow">▾</span></div><div class="kw-dropdown" id="gd2"></div></div>
+    <div class="kw-group" id="grp3"><div class="kw-group-btn" onclick="toggleGroup(3)">商业通用 <span class="kw-group-count" id="gc3">0</span><span class="kw-group-arrow">▾</span></div><div class="kw-dropdown" id="gd3"></div></div>
+    <div class="kw-group" id="grp4"><div class="kw-group-btn" onclick="toggleGroup(4)">英文 <span class="kw-group-count" id="gc4">0</span><span class="kw-group-arrow">▾</span></div><div class="kw-dropdown" id="gd4"></div></div>
     <div class="kw-custom-area">
       <input class="kw-custom-inp" id="kwInput" placeholder="自定义关键词…" maxlength="20">
       <button class="kw-custom-btn" id="kwAddBtn">添加</button>
@@ -270,28 +240,24 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
     </div>
   </div>
 
-  <!-- Row 3: Category (collapsible) -->
+  <!-- Row 3: Category -->
   <div class="cat-panel" id="catPanel">
     <div id="catList" style="display:flex;flex-wrap:wrap;gap:12px"></div>
   </div>
-
 </div>
 
 <!-- MAIN -->
-<!-- Full-page drag overlay -->
-<div class="drag-overlay" id="dragOverlay">
-  <div class="drag-overlay-icon">📂</div>
-  <div class="drag-overlay-text">松手即可上传</div>
-  <div class="drag-overlay-sub">支持 .xlsx .xls .csv 格式</div>
-</div>
-
 <main class="main" id="mainArea">
-  <div class="result-card">
-    <div class="empty" id="emptyState">
-      <div class="empty-dash">—</div>
-      <div class="empty-main">上传文件以开始筛选</div>
-      <div class="empty-sub">支持小红书后台导出的达人名单 .xlsx 格式</div>
+  <div class="result-card" id="resultCard">
+
+    <!-- Drop Zone — drag file here, auto upload + filter -->
+    <div class="drop-zone" id="dropZone">
+      <span class="dz-icon">📂</span>
+      <div class="dz-main">将达人名单拖入此处</div>
+      <div class="dz-sub">自动解析并开始筛选 · 支持 .xlsx .xls .csv</div>
     </div>
+
+    <!-- Results (hidden until data loaded) -->
     <div id="resultArea" style="display:none">
       <div class="stats" id="statsBar"></div>
       <div class="tbl-wrap">
@@ -299,30 +265,26 @@ tbody td{padding:13px 14px;font-size:14px;color:var(--text);vertical-align:middl
       </div>
       <div class="pag" id="pagination"></div>
     </div>
+
   </div>
 </main>
 
 <script>
-/* ── DATA ── */
-var ALL_DATA=[],FILTERED=[],EXCLUDED=[];
-var PAGE=1,PAGE_SIZE=20,SORT_COL='',SORT_ASC=false;
+/* ─── STATE ─── */
+var ALL_DATA=[], FILTERED=[], EXCLUDED=[];
+var PAGE=1, PAGE_SIZE=20, SORT_COL='', SORT_ASC=false;
 
-/* ── KEYWORD GROUPS ── */
+/* ─── KEYWORD GROUPS ─── */
 var KW_GROUPS=[
-  {name:'旅行社/地接', words:['旅行社','旅游社','旅游局','地接','地接社','定制游','精品定制','旅策','旅游服务','服务中心','包车','包车游','包车服务','拼车','司导','跃行','车轮上','包团']},
-  {name:'住宿类', words:['民宿','客栈','酒店','公寓','度假村','包栋','别墅','寓','旅馆','旅館']},
-  {name:'票务/平台', words:['游轮','票务','票务代理','代理','代购','团购','ota','携程','途牛','飞猪','去哪儿','途途','开荒','景区','门票','观光']},
-  {name:'商业通用', words:['官方','官号','官博','机构','店铺','商家','企业','品牌','招商','广告','推广','营销','专营','旗舰','批发','直销','旅游']},
-  {name:'英文', words:['inn','hostel','hotel','resort','travel agency','tour','tours','guide']}
+  {name:'旅行社/地接',words:['旅行社','旅游社','旅游局','地接','地接社','定制游','精品定制','旅策','旅游服务','服务中心','包车','包车游','包车服务','拼车','司导','跃行','车轮上','包团']},
+  {name:'住宿类',words:['民宿','客栈','酒店','公寓','度假村','包栋','别墅','寓','旅馆','旅館']},
+  {name:'票务/平台',words:['游轮','票务','票务代理','代理','代购','团购','ota','携程','途牛','飞猪','去哪儿','途途','开荒','景区','门票','观光']},
+  {name:'商业通用',words:['官方','官号','官博','机构','店铺','商家','企业','品牌','招商','广告','推广','营销','专营','旗舰','批发','直销','旅游']},
+  {name:'英文',words:['inn','hostel','hotel','resort','travel agency','tour','tours','guide']}
 ];
+function allKw(){var a=[];KW_GROUPS.forEach(function(g){g.words.forEach(function(w){a.push(w);});});return a;}
 
-function allKw(){
-  var arr=[];
-  KW_GROUPS.forEach(function(g){g.words.forEach(function(w){arr.push(w);});});
-  return arr;
-}
-
-/* ── UTILS ── */
+/* ─── HELPERS ─── */
 function parseCes(v){return parseFloat(String(v||'0').replace('%',''))||0}
 function getCesT(){return parseFloat(document.getElementById('cesSlider').value)||0}
 function getCesMin(){return parseInt(document.getElementById('cesMinSlider').value)||0}
@@ -330,112 +292,140 @@ function getNotesMin(){return parseInt(document.getElementById('notesMinSlider')
 function getNotesMax(){var v=parseInt(document.getElementById('notesMaxSlider').value);return v>=2000?999999:v}
 function fmtN(n){var v=parseInt(n)||0;return v>=10000?(v/10000).toFixed(1)+'w':v>=1000?(v/1000).toFixed(1)+'k':String(v)}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-
-/* ── KOC GRADE ── */
 function getKocGrade(r){
-  var ces=parseInt(r['CES超100有效笔记数']||0);
-  var notes=parseInt(r['笔记发布总数']||0);
+  var ces=parseInt(r['CES超100有效笔记数']||0),notes=parseInt(r['笔记发布总数']||0);
   if(ces>=150&&notes>=30&&notes<=300)return 'S';
   if(ces>=80)return 'A';
   return 'B';
 }
 
-/* ── FILTER ── */
+/* ─── FILTER LOGIC ─── */
+var EXCL_VERT_SET={'商业财经-房产楼市':true};
 function filterRow(r){
   if(document.getElementById('ruleNeg').checked&&r['命中负向处置']==='是')return '负向处置';
   if(document.getElementById('ruleStatus').checked&&r['账号状态']&&r['账号状态']!=='NORMAL')return '账号异常';
-  var nick=String(r['昵称']||'').toLowerCase();
-  var xhsId=String(r['小红书号']||'').toLowerCase();
+  var nick=String(r['昵称']||'').toLowerCase(), xid=String(r['小红书号']||'').toLowerCase();
   var kws=allKw();
-  for(var i=0;i<kws.length;i++){
-    if(nick.indexOf(kws[i])>=0||xhsId.indexOf(kws[i])>=0)return '商业机构';
-  }
+  for(var i=0;i<kws.length;i++){if(nick.indexOf(kws[i])>=0||xid.indexOf(kws[i])>=0)return '商业机构';}
   var cesNum=parseInt(r['CES超100有效笔记数']||0);
   if(document.getElementById('ruleZeroCes').checked&&cesNum===0)return 'CES为0';
-  var cesMin=getCesMin();
-  if(cesMin>0&&cesNum<cesMin)return 'CES<'+cesMin;
-  var notes=parseInt(r['笔记发布总数']||0);
-  var nMin=getNotesMin(),nMax=getNotesMax();
+  var cesMin=getCesMin();if(cesMin>0&&cesNum<cesMin)return 'CES<'+cesMin;
+  var notes=parseInt(r['笔记发布总数']||0),nMin=getNotesMin(),nMax=getNotesMax();
   if(nMin>0&&notes<nMin)return '笔记<'+nMin;
   if(nMax<999999&&notes>nMax)return '笔记>'+nMax;
   if(parseCes(r['近7天CES转化率'])<getCesT())return '转化率低';
-  var vert=String(r['作者垂类']||'').trim();
-  if(EXCL_VERT_SET[vert])return '垂类排除';
+  if(EXCL_VERT_SET[String(r['作者垂类']||'').trim()])return '垂类排除';
   return null;
 }
 
-/* ── UPLOAD ── */
-var dropZone=document.getElementById('dropZone');
-var fileInput=document.getElementById('fileInput');
-var dragOverlay=document.getElementById('dragOverlay');
-var dragCounter=0;
+function runFilter(){
+  getActiveCats(); FILTERED=[]; EXCLUDED=[];
+  ALL_DATA.forEach(function(r){
+    var reason=filterRow(r);
+    if(reason){r._exclReason=reason;EXCLUDED.push(r);}else FILTERED.push(r);
+  });
+  PAGE=1; SORT_COL=''; SORT_ASC=false;
+  document.getElementById('dropZone').style.display='none';
+  document.getElementById('resultArea').style.display='block';
+  renderResult();
+}
 
-// 全页面拖放
-document.addEventListener('dragenter',function(e){
-  e.preventDefault();
-  dragCounter++;
-  dragOverlay.classList.add('show');
-});
-document.addEventListener('dragleave',function(e){
-  dragCounter--;
-  if(dragCounter<=0){dragCounter=0;dragOverlay.classList.remove('show');}
-});
-document.addEventListener('dragover',function(e){e.preventDefault();});
-document.addEventListener('drop',function(e){
-  e.preventDefault();
-  dragCounter=0;
-  dragOverlay.classList.remove('show');
-  if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);
-});
-
-// 点击上传区触发文件选择
-// label[for] 原生绑定，无需 JS click
-fileInput.addEventListener('change',function(){
-  if(this.files&&this.files.length)handleFile(this.files[0]);
-});
-document.getElementById('fileRemove').addEventListener('click',function(e){
-  e.preventDefault();
-  ALL_DATA=[];FILTERED=[];EXCLUDED=[];PAGE=1;
-  dropZone.style.display='';document.getElementById('fileInfo').classList.remove('show');
-  document.getElementById('btnFilter').disabled=true;
-  document.getElementById('btnExport').disabled=true;
-  document.getElementById('btnExclude').disabled=true;
-  document.getElementById('emptyState').style.display='';
-  document.getElementById('resultArea').style.display='none';
-  fileInput.value='';
-  document.getElementById('emptyState').querySelector('.empty-main').textContent='上传文件以开始筛选';
-});
-
+/* ─── FILE PARSE ─── */
 function handleFile(file){
+  if(!file)return;
+  var ext=(file.name||'').split('.').pop().toLowerCase();
+  if(['xlsx','xls','csv'].indexOf(ext)<0){alert('请上传 .xlsx .xls 或 .csv 文件');return;}
   var reader=new FileReader();
   reader.onload=function(e){
     try{
       var wb=XLSX.read(e.target.result,{type:'array'});
       var ws=wb.Sheets[wb.SheetNames[0]];
       ALL_DATA=XLSX.utils.sheet_to_json(ws,{defval:''});
+      // show file info in header
+      document.getElementById('uploadLabel').style.display='none';
       document.getElementById('fileName').textContent=file.name;
       document.getElementById('fileRows').textContent=ALL_DATA.length+' 行';
-      dropZone.style.display='none';
       document.getElementById('fileInfo').classList.add('show');
       document.getElementById('btnFilter').disabled=false;
-      document.getElementById('emptyState').querySelector('.empty-main').textContent='已加载 '+ALL_DATA.length+' 条，点击「开始筛选」';
-    }catch(err){alert('解析失败: '+err.message);}
+      // AUTO run filter immediately
+      runFilter();
+    }catch(err){alert('解析失败，请确认文件格式正确。错误：'+err.message);}
   };
   reader.readAsArrayBuffer(file);
 }
 
-/* ── SLIDERS ── */
+/* ─── DROP ZONE drag events ─── */
+var dz=document.getElementById('dropZone');
+
+// dragover on the drop zone itself
+dz.addEventListener('dragover',function(e){
+  e.preventDefault();e.stopPropagation();
+  dz.classList.add('drag-over');
+});
+dz.addEventListener('dragleave',function(e){
+  e.stopPropagation();
+  dz.classList.remove('drag-over');
+});
+dz.addEventListener('drop',function(e){
+  e.preventDefault();e.stopPropagation();
+  dz.classList.remove('drag-over');
+  var files=e.dataTransfer.files;
+  if(files&&files.length>0)handleFile(files[0]);
+});
+
+// Also catch drops anywhere on the page (body-level fallback)
+var bodyDragN=0;
+document.body.addEventListener('dragenter',function(e){
+  e.preventDefault();
+  bodyDragN++;
+  // only show drop-zone highlight if we haven't loaded data yet
+  if(ALL_DATA.length===0)dz.classList.add('drag-over');
+});
+document.body.addEventListener('dragleave',function(){
+  bodyDragN--;
+  if(bodyDragN<=0){bodyDragN=0;dz.classList.remove('drag-over');}
+});
+document.body.addEventListener('dragover',function(e){e.preventDefault();});
+document.body.addEventListener('drop',function(e){
+  e.preventDefault();
+  bodyDragN=0;
+  dz.classList.remove('drag-over');
+  var files=e.dataTransfer.files;
+  if(files&&files.length>0)handleFile(files[0]);
+});
+
+/* ─── FILE INPUT (click upload) ─── */
+document.getElementById('fileInput').addEventListener('change',function(){
+  if(this.files&&this.files.length>0){
+    handleFile(this.files[0]);
+    this.value=''; // reset so same file can be re-picked
+  }
+});
+
+/* ─── REMOVE FILE ─── */
+document.getElementById('fileRemove').addEventListener('click',function(){
+  ALL_DATA=[];FILTERED=[];EXCLUDED=[];PAGE=1;
+  document.getElementById('uploadLabel').style.display='';
+  document.getElementById('fileInfo').classList.remove('show');
+  document.getElementById('btnFilter').disabled=true;
+  document.getElementById('btnExport').disabled=true;
+  document.getElementById('btnExclude').disabled=true;
+  document.getElementById('dropZone').style.display='';
+  document.getElementById('resultArea').style.display='none';
+  adjustMain();
+});
+
+/* ─── SLIDERS ─── */
 document.getElementById('cesSlider').addEventListener('input',function(){document.getElementById('cesVal').textContent=parseFloat(this.value).toFixed(1)+'%';});
 document.getElementById('cesMinSlider').addEventListener('input',function(){document.getElementById('cesMinVal').textContent=this.value;});
 document.getElementById('notesMinSlider').addEventListener('input',function(){document.getElementById('notesMinVal').textContent=this.value;});
 document.getElementById('notesMaxSlider').addEventListener('input',function(){document.getElementById('notesMaxVal').textContent=parseInt(this.value)>=2000?'不限':this.value;});
 
-/* ── KEYWORD GROUPS UI ── */
+/* ─── KEYWORD GROUPS ─── */
 var openGroup=-1;
 function toggleGroup(idx){
   if(openGroup===idx){closeAllGroups();return;}
-  closeAllGroups();
-  openGroup=idx;
+  closeAllGroups();openGroup=idx;
   document.getElementById('gd'+idx).classList.add('show');
   document.querySelector('#grp'+idx+' .kw-group-btn').classList.add('active');
 }
@@ -446,9 +436,7 @@ function closeAllGroups(){
   }
   openGroup=-1;
 }
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.kw-group'))closeAllGroups();
-});
+document.addEventListener('click',function(e){if(!e.target.closest('.kw-group'))closeAllGroups();});
 
 function renderGroups(){
   KW_GROUPS.forEach(function(g,idx){
@@ -460,27 +448,21 @@ function renderGroups(){
     dd.innerHTML='<div class="kw-drop-tags">'+tags+'</div><div class="kw-add-row"><input class="kw-inp" placeholder="添加到此分类…" maxlength="20" data-gi="'+idx+'"><button class="kw-add-ok" data-gi="'+idx+'">添加</button></div>';
     dd.querySelectorAll('.kw-del').forEach(function(el){
       el.addEventListener('click',function(){
-        var gi=parseInt(this.dataset.gi),wi=parseInt(this.dataset.wi);
-        KW_GROUPS[gi].words.splice(wi,1);renderGroups();
+        KW_GROUPS[parseInt(this.dataset.gi)].words.splice(parseInt(this.dataset.wi),1);
+        renderGroups();
       });
     });
     dd.querySelectorAll('.kw-add-ok').forEach(function(el){
       el.addEventListener('click',function(){
-        var gi=parseInt(this.dataset.gi);
-        var inp=dd.querySelector('.kw-inp');
-        var v=inp.value.trim();
+        var gi=parseInt(this.dataset.gi),inp=dd.querySelector('.kw-inp'),v=inp.value.trim();
         if(v&&KW_GROUPS[gi].words.indexOf(v)<0){KW_GROUPS[gi].words.push(v);renderGroups();inp.value='';}
       });
     });
     dd.querySelectorAll('.kw-inp').forEach(function(inp){
-      inp.addEventListener('keydown',function(e){
-        if(e.key==='Enter'){dd.querySelector('.kw-add-ok').click();}
-      });
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter')dd.querySelector('.kw-add-ok').click();});
     });
   });
 }
-
-// Custom add (goes to group 3 商业通用)
 document.getElementById('kwAddBtn').addEventListener('click',function(){
   var v=document.getElementById('kwInput').value.trim();
   if(v){
@@ -492,20 +474,22 @@ document.getElementById('kwAddBtn').addEventListener('click',function(){
 });
 document.getElementById('kwInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('kwAddBtn').click();});
 
-/* ── CATEGORY ── */
+/* ─── CATEGORY ─── */
 var EXCL_VERTS=['商业财经-房产楼市'];
-var EXCL_VERT_SET={'商业财经-房产楼市':true};
 var VERTICALS=['旅游-旅游攻略','旅游-旅游记录','旅游-境外旅游','生活-美食','时尚-穿搭','商业财经-房产楼市'];
 document.getElementById('catToggle').addEventListener('click',function(){
   var p=document.getElementById('catPanel');p.classList.toggle('open');
   this.textContent=p.classList.contains('open')?'垂类 ▴':'垂类 ▾';
+  adjustMain();
 });
 function renderCat(){
   var c=document.getElementById('catList');c.innerHTML='';
-  VERTICALS.forEach(function(v,i){
+  VERTICALS.forEach(function(v){
     var lbl=document.createElement('label');lbl.className='cat-item';
-    var cb=document.createElement('input');cb.type='checkbox';cb.checked=EXCL_VERTS.indexOf(v)<0;cb.dataset.vert=v;
-    lbl.appendChild(cb);lbl.appendChild(document.createTextNode(v));c.appendChild(lbl);
+    var cb=document.createElement('input');cb.type='checkbox';
+    cb.checked=EXCL_VERTS.indexOf(v)<0;cb.dataset.vert=v;
+    lbl.appendChild(cb);lbl.appendChild(document.createTextNode(v));
+    c.appendChild(lbl);
   });
 }
 function getActiveCats(){
@@ -515,40 +499,22 @@ function getActiveCats(){
   });
 }
 
-/* ── FILTER ACTION ── */
-document.getElementById('btnFilter').addEventListener('click',function(){
-  if(!ALL_DATA.length)return;
-  getActiveCats();FILTERED=[];EXCLUDED=[];
-  ALL_DATA.forEach(function(r){
-    var reason=filterRow(r);
-    if(reason){r._exclReason=reason;EXCLUDED.push(r);}
-    else FILTERED.push(r);
-  });
-  PAGE=1;SORT_COL='';SORT_ASC=false;
-  document.getElementById('emptyState').style.display='none';
-  document.getElementById('resultArea').style.display='block';
-  renderResult();
-});
+/* ─── REFILTER BUTTON ─── */
+document.getElementById('btnFilter').addEventListener('click',function(){if(ALL_DATA.length)runFilter();});
 
-/* ── RENDER ── */
+/* ─── RENDER TABLE ─── */
 var COLS=[
-  {key:'昵称',label:'NICKNAME',sort:true},
-  {key:'粉丝数',label:'FANS',sort:true},
-  {key:'笔记发布总数',label:'NOTES',sort:true},
-  {key:'CES超100有效笔记数',label:'CES',sort:true},
-  {key:'近7天CES转化率',label:'RATE',sort:true},
-  {key:'_grade',label:'GRADE',sort:true}
+  {key:'昵称',label:'NICKNAME'},{key:'粉丝数',label:'FANS'},
+  {key:'笔记发布总数',label:'NOTES'},{key:'CES超100有效笔记数',label:'CES'},
+  {key:'近7天CES转化率',label:'RATE'},{key:'_grade',label:'GRADE'}
 ];
 function renderResult(){
   var s=0,a=0,b=0;
   FILTERED.forEach(function(r){var g=getKocGrade(r);r._grade=g;if(g==='S')s++;else if(g==='A')a++;else b++;});
   document.getElementById('statsBar').innerHTML=
-    '<span class="stat-total">共 '+FILTERED.length+' 人</span>'+
-    '<span class="stat-div"></span>'+
-    '<span class="stat-item stat-s"><span class="stat-lbl">S 优质</span><span class="stat-num">'+s+'</span></span>'+
-    '<span class="stat-div"></span>'+
-    '<span class="stat-item stat-a"><span class="stat-lbl">A 推荐</span><span class="stat-num">'+a+'</span></span>'+
-    '<span class="stat-div"></span>'+
+    '<span class="stat-total">共 '+FILTERED.length+' 人</span><span class="stat-div"></span>'+
+    '<span class="stat-item stat-s"><span class="stat-lbl">S 优质</span><span class="stat-num">'+s+'</span></span><span class="stat-div"></span>'+
+    '<span class="stat-item stat-a"><span class="stat-lbl">A 推荐</span><span class="stat-num">'+a+'</span></span><span class="stat-div"></span>'+
     '<span class="stat-item stat-b"><span class="stat-lbl">B 备选</span><span class="stat-num">'+b+'</span></span>';
 
   var hrow='<tr>';
@@ -575,12 +541,10 @@ function renderResult(){
       return SORT_ASC?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
     });
   }
-
-  var start=(PAGE-1)*PAGE_SIZE,pd=sorted.slice(start,start+PAGE_SIZE);
+  var start=(PAGE-1)*PAGE_SIZE, pd=sorted.slice(start,start+PAGE_SIZE);
   var html='';
   pd.forEach(function(r){
-    var grade=getKocGrade(r);
-    var rate=parseCes(r['近7天CES转化率']);
+    var grade=getKocGrade(r),rate=parseCes(r['近7天CES转化率']);
     html+='<tr>'+
       '<td>'+escHtml(r['昵称']||'')+'</td>'+
       '<td class="td-fans">'+fmtN(r['粉丝数'])+'</td>'+
@@ -601,38 +565,40 @@ function renderResult(){
   document.getElementById('pgNext').onclick=function(){if(PAGE<totalPages){PAGE++;renderResult();}};
   document.getElementById('btnExport').disabled=!FILTERED.length;
   document.getElementById('btnExclude').disabled=!EXCLUDED.length;
+  adjustMain();
 }
 
-/* ── EXPORT ── */
+/* ─── EXPORT ─── */
 function doExp(excl){
   var data=excl?EXCLUDED:FILTERED;if(!data.length)return;
   var rows=data.map(function(r){
-    var obj={};
-    Object.keys(r).forEach(function(k){if(k!=='_grade'&&k!=='_exclReason')obj[k]=r[k];});
-    obj['KOC评级']=getKocGrade(r)+'级';
-    return obj;
+    var obj={};Object.keys(r).forEach(function(k){if(k!=='_grade'&&k!=='_exclReason')obj[k]=r[k];});
+    obj['KOC评级']=getKocGrade(r)+'级';return obj;
   });
   if(!excl){var go={'S级':0,'A级':1,'B级':2};rows.sort(function(a,b){return(go[a['KOC评级']]||9)-(go[b['KOC评级']]||9);});}
-  var ws=XLSX.utils.json_to_sheet(rows);
-  var wb2=XLSX.utils.book_new();
+  var ws=XLSX.utils.json_to_sheet(rows),wb2=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb2,ws,excl?'排除名单':'KOC筛选结果');
   XLSX.writeFile(wb2,(excl?'排除名单_':'KOC筛选结果_')+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 document.getElementById('btnExport').addEventListener('click',function(){doExp(false);});
 document.getElementById('btnExclude').addEventListener('click',function(){doExp(true);});
 
-/* ── INIT ── */
-renderGroups();
-renderCat();
-
-// 动态调整 main padding-top
+/* ─── LAYOUT ─── */
 function adjustMain(){
-  var ctrl=document.querySelector('.ctrl-card');
-  if(ctrl)document.querySelector('.main').style.paddingTop=(ctrl.getBoundingClientRect().bottom+16)+'px';
+  var ctrl=document.getElementById('ctrlCard');
+  if(ctrl){
+    document.getElementById('mainArea').style.paddingTop=(ctrl.getBoundingClientRect().bottom+16)+'px';
+  }
 }
 adjustMain();
 window.addEventListener('resize',adjustMain);
-new MutationObserver(adjustMain).observe(document.querySelector('.ctrl-card'),{childList:true,subtree:true,attributes:true});
+new MutationObserver(adjustMain).observe(
+  document.getElementById('ctrlCard'),{childList:true,subtree:true,attributes:true}
+);
+
+/* ─── INIT ─── */
+renderGroups();
+renderCat();
 </script>
 </body>
 </html>
