@@ -218,16 +218,18 @@ nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);
   box-shadow:0 1px 4px rgba(0,0,0,.15);
 }
 /* activity cover gradients */
-.ac-star .acard-cover{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e)}
-.ac-fortune .acard-cover{background:linear-gradient(135deg,#1a0533,#3d1166)}
-.ac-puzzle .acard-cover{background:linear-gradient(135deg,#0a2342,#1a4a8a)}
-.ac-geo .acard-cover{background:linear-gradient(135deg,#064e3b,#065f46)}
-.ac-mystic .acard-cover{background:linear-gradient(135deg,#1e1b4b,#312e81)}
-.ac-star .acard-tag{background:rgba(239,68,68,.08);color:#dc2626}
-.ac-fortune .acard-tag{background:rgba(139,92,246,.08);color:#7c3aed}
-.ac-puzzle .acard-tag{background:rgba(14,165,233,.08);color:#0369a1}
-.ac-geo .acard-tag{background:rgba(16,185,129,.08);color:#047857}
-.ac-mystic .acard-tag{background:rgba(99,102,241,.08);color:#4338ca}
+.ac-star .acard-cover{background:linear-gradient(135deg,#FFF3E0,#FFE0B2)}
+.ac-fortune .acard-cover{background:linear-gradient(135deg,#F3E5F5,#E1BEE7)}
+.ac-puzzle .acard-cover{background:linear-gradient(135deg,#E3F2FD,#BBDEFB)}
+.ac-traveler .acard-cover{background:linear-gradient(135deg,#E8F5E9,#C8E6C9)}
+.ac-mystic .acard-cover{background:linear-gradient(135deg,#EDE7F6,#D1C4E9)}
+.ac-star .acard-tag{background:rgba(255,152,0,.1);color:#e65100}
+.ac-fortune .acard-tag{background:rgba(156,39,176,.1);color:#7b1fa2}
+.ac-puzzle .acard-tag{background:rgba(14,165,233,.1);color:#0369a1}
+.ac-traveler .acard-tag{background:rgba(22,163,74,.1);color:#15803d}
+.ac-mystic .acard-tag{background:rgba(99,102,241,.1);color:#4338ca}
+.ac-coming .acard-cover{background:#f5f5f5;opacity:.5}
+.ac-coming .acard-tag{background:#f0f0f0;color:#aaa}
 .ac-coming .acard-cover{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:2px dashed #e2e8f0}
 .ac-coming .acard-cover-em{opacity:.3}
 .ac-coming .acard-tag{background:rgba(100,116,139,.08);color:#94a3b8}
@@ -436,9 +438,10 @@ var DAILY=[
 var ACTIVITY=[
   {cls:'ac-star', em:'⚽🏆', bg:'⚽', t:'球星人格匹配', d:'6题自动匹配你最像的球星，梅西/C罗/姆巴佩，解锁专属欧洲朝圣路线。', h:'/08/activity/star/', tag:'世界杯', cta:'开始匹配'},
   {cls:'ac-fortune', em:'🔮✨', bg:'🔮', t:'命运之地', d:'5道玄学题，测出你和哪座城市早就注定，获得专属命运签语。', h:'/08/activity/fortune/', tag:'玄学占卜', cta:'开始占卜'},
-  {cls:'ac-puzzle', em:'🧩🌍', bg:'🧩', t:'城市足迹拼图', d:'标记你去过的24座城市，收集碎片解锁旅行家成就，分享你的足迹。', h:'/08/activity/puzzle/', tag:'足迹收集', cta:'开始打卡', isNew:true},
-  {cls:'ac-geo', em:'🤖🔍', bg:'🤖', t:'GEO 可见性分析', d:'粘贴旅行攻略，分析在 ChatGPT/Perplexity 中的 AI 搜索可见性与优化建议。', h:'/08/activity/geo/', tag:'GEO', cta:'开始分析'},
-  {cls:'ac-mystic', em:'🔮📜🗺️', bg:'✨', t:'问天机', d:'水晶球摇一摇·符纸显字·地图推进，三种玄学仪式测出你的命定目的地。', h:'/08/activity/mystic/', tag:'玄学仪式', cta:'问天机', isNew:true},
+  {cls:'ac-puzzle', em:'🧩🌍', bg:'🧩', t:'风景拼图', d:'6张世界风景大片，3D立体感拼图，点击交换拼完为止。', h:'/08/activity/puzzle/', tag:'益智游戏', cta:'开始拼图'},
+  {cls:'ac-traveler', em:'🎒🗺️', bg:'🎒', t:'旅行达人鉴定', d:'最多4人参与，测出旅行角色（旅行老大/随时待命/金钱管家），揭晓团队默契。', h:'/08/activity/traveler/', tag:'角色鉴定', cta:'开始鉴定', isNew:true},
+  {cls:'ac-mystic', em:'🔮📜🗺️', bg:'✨', t:'问天机', d:'水晶球摇一摇·符纸显字·地图推进，三种玄学仪式测出你的命定目的地。', h:'/08/activity/mystic/', tag:'玄学仪式', cta:'问天机'},
+  {cls:'ac-coming', em:'✦', bg:'✦', t:'更多互动', d:'新的活动 Demo 正在制作中…', h:'#', tag:'即将上线', cta:'', isComing:true},
   {cls:'ac-coming', em:'✦', bg:'＋', t:'更多即将到来', d:'城市拼图 2.0、数据可视化 Dashboard、达人提案生成器……持续更新中。', h:'#', tag:'敬请期待', cta:'', isComing:true}
 ];
 
