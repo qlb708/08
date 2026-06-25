@@ -239,8 +239,8 @@ tbody td{padding:12px 20px;font-size:14px;color:var(--text);vertical-align:middl
     <button class="kw-custom-btn" id="kwAddBtn">添加</button>
   </div>
   <div class="fp-apply">
-    <button class="btn btn-primary" id="btnRefilter">重新筛选</button>
-    <span style="font-size:12px;color:var(--muted)">修改参数后点击重新筛选</span>
+    <button class="btn btn-primary" id="btnRefilter">立即刷新</button>
+    <span style="font-size:12px;color:var(--muted)">滑块/勾选框调整后自动实时更新</span>
   </div>
 </div>
 
@@ -412,17 +412,20 @@ document.getElementById('btnFilterToggle').addEventListener('click',function(){
   this.classList.toggle('open',filterOpen);
   adjustMain();
 });
-document.getElementById('btnRefilter').addEventListener('click',function(){runFilter();closeFilterPanel();});
+document.getElementById('btnRefilter').addEventListener('click',function(){runFilter();});
 document.addEventListener('click',function(e){
   if(filterOpen&&!e.target.closest('#filterPanel')&&!e.target.closest('#btnFilterToggle')&&!e.target.closest('.kw-drop'))
     closeFilterPanel();
 });
 
-/* ── SLIDERS ── */
-document.getElementById('cesSlider').addEventListener('input',function(){document.getElementById('cesVal').textContent=parseFloat(this.value).toFixed(1)+'%';});
-document.getElementById('cesMinSlider').addEventListener('input',function(){document.getElementById('cesMinVal').textContent=this.value;});
-document.getElementById('notesMinSlider').addEventListener('input',function(){document.getElementById('notesMinVal').textContent=this.value;});
-document.getElementById('notesMaxSlider').addEventListener('input',function(){document.getElementById('notesMaxVal').textContent=parseInt(this.value)>=2000?'不限':this.value;});
+/* ── SLIDERS (实时筛选) ── */
+var refilterTimer=null;
+function scheduleRefilter(){if(!ALL_DATA.length)return;clearTimeout(refilterTimer);refilterTimer=setTimeout(function(){runFilter();},300);}
+document.getElementById('cesSlider').addEventListener('input',function(){document.getElementById('cesVal').textContent=parseFloat(this.value).toFixed(1)+'%';scheduleRefilter();});
+document.getElementById('cesMinSlider').addEventListener('input',function(){document.getElementById('cesMinVal').textContent=this.value;scheduleRefilter();});
+document.getElementById('notesMinSlider').addEventListener('input',function(){document.getElementById('notesMinVal').textContent=this.value;scheduleRefilter();});
+document.getElementById('notesMaxSlider').addEventListener('input',function(){document.getElementById('notesMaxVal').textContent=parseInt(this.value)>=2000?'不限':this.value;scheduleRefilter();});
+['ruleNeg','ruleStatus','ruleZeroCes'].forEach(function(id){document.getElementById(id).addEventListener('change',function(){scheduleRefilter();});});
 
 /* ── KEYWORD GROUPS ── */
 var openGroup=-1;
