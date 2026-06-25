@@ -2,673 +2,383 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🧩 城市拼图 — 交换碎片，拼出世界</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🧩 旅行拼图</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#F5F0E8;
-  --card:#FFFFFF;
-  --text:#2C2C2C;
-  --text2:#999;
-  --accent:#5B7FF6;
-  --gold:#D4A843;
-  --radius:16px;
-  --radius-sm:8px;
-  --shadow-card:0 2px 12px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
-  --shadow-phone:0 8px 40px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06);
-}
-html{font-size:16px}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  padding:20px 0 40px;
-}
-
-/* 手机壳模拟 */
-.phone{
-  width:100%;
-  max-width:390px;
-  background:var(--card);
-  border-radius:28px;
-  box-shadow:var(--shadow-phone);
-  overflow:hidden;
-  position:relative;
-}
-
-/* 顶部导航 */
-.nav{
-  display:flex;
-  align-items:center;
-  padding:16px 20px 12px;
-  gap:12px;
-  border-bottom:1px solid rgba(0,0,0,.05);
-  background:var(--card);
-  position:sticky;top:0;z-index:50;
-}
-.nav-back{
-  display:flex;align-items:center;gap:4px;
-  text-decoration:none;color:var(--text2);font-size:13px;
-  padding:6px 10px;border-radius:10px;
-  background:rgba(0,0,0,.04);transition:all .2s;
-  white-space:nowrap;
-}
-.nav-back:hover{background:rgba(0,0,0,.08);color:var(--text)}
-.nav-title{
-  flex:1;text-align:center;
-  font-size:18px;font-weight:700;letter-spacing:.5px;
-}
-.nav-portfolio{
-  font-size:12px;color:var(--accent);text-decoration:none;
-  padding:6px 10px;border-radius:10px;
-  background:rgba(91,127,246,.08);transition:all .2s;
-  white-space:nowrap;
-}
-.nav-portfolio:hover{background:rgba(91,127,246,.16)}
-
-/* 内容区 */
-.content{padding:20px 16px 32px}
-
-/* 图片选择区 */
-.section-label{
-  font-size:13px;color:var(--text2);margin-bottom:12px;
-  display:flex;align-items:center;gap:6px;
-}
-.section-label::after{content:'';flex:1;height:1px;background:rgba(0,0,0,.06)}
-
-.image-selector{
-  display:flex;gap:10px;
-  overflow-x:auto;padding:4px 0 16px;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-}
-.image-selector::-webkit-scrollbar{display:none}
-.image-option{
-  flex:0 0 auto;
-  width:90px;height:72px;
-  border-radius:12px;overflow:hidden;
-  cursor:pointer;position:relative;
-  scroll-snap-align:center;
-  border:2.5px solid transparent;
-  transition:all .25s;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-.image-option:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.12)}
-.image-option.active{
-  border-color:var(--accent);
-  box-shadow:0 0 0 2px rgba(91,127,246,.25),0 4px 16px rgba(91,127,246,.2);
-  transform:translateY(-2px);
-}
-.image-option img{
-  width:100%;height:100%;object-fit:cover;display:block;
-}
-.image-option .img-label{
-  position:absolute;bottom:0;left:0;right:0;
-  padding:3px 6px;font-size:10px;font-weight:600;
-  background:linear-gradient(transparent,rgba(0,0,0,.55));
-  color:#fff;text-align:center;
-  letter-spacing:.5px;
-}
-
-/* 预览图 */
-.preview-wrap{
-  width:100%;max-width:280px;margin:0 auto 20px;
-  border-radius:12px;overflow:hidden;
-  box-shadow:var(--shadow-card);
-  position:relative;
-}
-.preview-wrap img{
-  width:100%;display:block;aspect-ratio:1/1;object-fit:cover;
-}
-.preview-label{
-  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
-  font-size:12px;font-weight:600;color:#fff;
-  background:rgba(0,0,0,.5);padding:4px 14px;border-radius:20px;
-  white-space:nowrap;letter-spacing:.5px;
-}
-
-/* 拼图网格 */
-.puzzle-area{
-  margin-bottom:24px;
-}
-.puzzle-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:4px;
-  padding:8px;
-  background:rgba(0,0,0,.03);
-  border-radius:16px;
-  position:relative;
-}
-
-/* 3D 拼图格子 */
-.tile{
-  aspect-ratio:1;
-  border-radius:4px;
-  background-size:400% 400%;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  box-shadow:
-    3px 3px 8px rgba(0,0,0,.22),
-    inset 0 1px 0 rgba(255,255,255,.4),
-    inset -1px -1px 0 rgba(0,0,0,.12);
-  transition:transform .18s cubic-bezier(.4,0,.2,1),
-             box-shadow .18s cubic-bezier(.4,0,.2,1),
-             opacity .3s;
-  -webkit-user-select:none;user-select:none;
-}
-.tile:hover{
-  transform:scale(1.06);
-  box-shadow:
-    5px 5px 14px rgba(0,0,0,.3),
-    inset 0 1px 0 rgba(255,255,255,.5);
-  z-index:10;
-}
-.tile:active{transform:scale(.96)}
-.tile.selected{
-  box-shadow:
-    0 0 0 3px var(--gold),
-    6px 6px 16px rgba(0,0,0,.28),
-    inset 0 1px 0 rgba(255,255,255,.5);
-  transform:scale(1.07);
-  z-index:10;
-}
-.tile.correct{
-  /* subtle green tint hint */
-}
-.tile.swapping{
-  transition:transform .3s cubic-bezier(.4,0,.2,1),
-             box-shadow .3s cubic-bezier(.4,0,.2,1);
-}
-
-/* 完成状态 */
-.puzzle-grid.completed{
-  gap:0;
-  background:transparent;
-  padding:0;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 4px 20px rgba(0,0,0,.1);
-  animation:completeMerge .6s ease forwards;
-}
-@keyframes completeMerge{
-  0%{transform:scale(1)}
-  30%{transform:scale(.97)}
-  100%{transform:scale(1.02)}
-}
-.puzzle-grid.completed .tile{
-  border-radius:0;
-  box-shadow:none;
-  cursor:default;
-}
-.puzzle-grid.completed .tile:hover{
-  transform:none;
-  box-shadow:none;
-}
-
-/* 底部控制区 */
-.controls{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin-bottom:16px;
-}
-.steps-display{
-  display:flex;align-items:center;gap:6px;
-  font-size:14px;color:var(--text2);
-  background:rgba(0,0,0,.04);
-  padding:8px 16px;border-radius:12px;
-}
-.steps-display .num{
-  font-weight:700;color:var(--text);font-size:18px;
-  min-width:28px;text-align:center;
-}
-.btn-reset{
-  padding:10px 20px;border-radius:12px;
-  font-size:13px;font-weight:600;
-  cursor:pointer;border:none;
-  background:var(--accent);color:#fff;
-  transition:all .2s;
-  box-shadow:0 2px 8px rgba(91,127,246,.25);
-}
-.btn-reset:hover{
-  transform:translateY(-1px);
-  box-shadow:0 4px 16px rgba(91,127,246,.35);
-}
-.btn-reset:active{transform:translateY(0)}
-
-/* 进度条 */
-.progress-wrap{
-  width:100%;height:8px;
-  background:rgba(0,0,0,.06);
-  border-radius:4px;overflow:hidden;
-}
-.progress-fill{
-  height:100%;
-  background:linear-gradient(90deg,var(--accent),var(--gold));
-  border-radius:4px;
-  transition:width .4s ease;
-  width:0%;
-}
-.progress-text{
-  text-align:center;font-size:12px;color:var(--text2);
-  margin-top:6px;
-}
-
-/* 完成弹窗 */
-.complete-overlay{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,.45);z-index:200;
-  align-items:center;justify-content:center;
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-}
-.complete-overlay.show{display:flex}
-.complete-modal{
-  background:var(--card);
-  border-radius:24px;padding:40px 28px 32px;
-  width:calc(100% - 48px);max-width:320px;
-  text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.15);
-  animation:modalIn .4s cubic-bezier(.4,0,.2,1);
-}
-@keyframes modalIn{
-  0%{opacity:0;transform:scale(.85) translateY(20px)}
-  100%{opacity:1;transform:scale(1) translateY(0)}
-}
-.complete-emoji{font-size:56px;margin-bottom:12px}
-.complete-title{font-size:22px;font-weight:700;margin-bottom:6px}
-.complete-steps{font-size:14px;color:var(--text2);margin-bottom:24px}
-.complete-btn{
-  display:inline-block;padding:14px 32px;
-  border-radius:14px;font-size:15px;font-weight:600;
-  cursor:pointer;border:none;
-  background:linear-gradient(135deg,var(--accent),#7B9BF8);
-  color:#fff;
-  transition:all .2s;
-  box-shadow:0 4px 16px rgba(91,127,246,.3);
-}
-.complete-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 6px 24px rgba(91,127,246,.4);
-}
-
-/* 彩带粒子 */
-.confetti{
-  position:fixed;pointer-events:none;z-index:210;
-}
-.confetti-piece{
-  position:absolute;
-  width:8px;height:8px;
-  border-radius:2px;
-  animation:confettiFall 1.5s ease-out forwards;
-}
-@keyframes confettiFall{
-  0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}
-  100%{opacity:0;transform:translateY(400px) rotate(720deg) scale(.3)}
-}
-
-/* 返回链接区域 */
-.back-links{
-  display:flex;gap:12px;margin-top:20px;justify-content:center;
-}
-.back-link{
-  font-size:12px;color:var(--text2);text-decoration:none;
-  padding:8px 16px;border-radius:10px;
-  background:rgba(0,0,0,.04);transition:all .2s;
-}
-.back-link:hover{background:rgba(0,0,0,.08);color:var(--text)}
-
-/* 引导提示 */
-.hint{
-  text-align:center;font-size:12px;color:var(--text2);
-  margin-bottom:16px;padding:10px;
-  background:rgba(91,127,246,.06);
-  border-radius:10px;line-height:1.6;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;background:#F5F0E8;color:#333;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+/* ── nav ── */
+.nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;height:56px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.06)}
+.nav a.back{position:absolute;left:16px;font-size:15px;color:#666;text-decoration:none;display:flex;align-items:center;gap:4px}
+.nav a.back:hover{color:#c9953c}
+.nav .title{font-size:17px;font-weight:600}
+/* ── shell ── */
+.shell{max-width:390px;margin:0 auto;padding:16px;min-height:calc(100vh - 56px)}
+/* ── screens ── */
+.screen{display:none;flex-direction:column;align-items:center;gap:20px}
+.screen.active{display:flex}
+/* ── upload ── */
+.dropzone{width:100%;aspect-ratio:4/3;border:2.5px dashed #c9a96e;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:background .2s,border-color .2s;background:#fff}
+.dropzone:hover,.dropzone.dragover{background:#fdf8ee;border-color:#b8860b}
+.dropzone svg{width:48px;height:48px;color:#c9a96e}
+.dropzone .label{font-size:16px;font-weight:600;color:#555}
+.dropzone .hint{font-size:13px;color:#999}
+.example-label{font-size:13px;color:#999;margin-top:8px}
+.examples{display:flex;gap:12px;width:100%}
+.examples img{flex:1;aspect-ratio:1;border-radius:14px;object-fit:cover;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.examples img:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,0,0,.14)}
+/* ── modal overlay ── */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;animation:fadeIn .2s}
+.overlay.active{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal{background:#fff;border-radius:24px;padding:32px 24px;width:90%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:20px;animation:slideUp .3s}
+.modal h3{font-size:18px;font-weight:700}
+.modal .diff-btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s,transform .12s;background:#f5f0e8;color:#555}
+.modal .diff-btn:hover{background:#e8dfc8;transform:scale(1.02)}
+.modal .diff-btn:active{transform:scale(.97)}
+.modal .cancel{font-size:14px;color:#999;cursor:pointer;background:none;border:none;margin-top:4px}
+/* ── game header ── */
+.game-header{width:100%;display:flex;flex-direction:column;gap:10px}
+.ref-row{display:flex;align-items:center;gap:12px}
+.ref-img{width:60px;height:60px;border-radius:12px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.ref-info{flex:1}
+.ref-info .steps{font-size:15px;font-weight:600;color:#555}
+.ref-info .progress-bar{width:100%;height:6px;background:#e8e0d0;border-radius:3px;margin-top:6px;overflow:hidden}
+.ref-info .progress-bar .fill{height:100%;background:linear-gradient(90deg,#c9a96e,#e8c547);border-radius:3px;transition:width .3s}
+/* ── grid ── */
+.grid-wrap{width:100%;display:flex;justify-content:center}
+.grid{display:grid;gap:4px;background:#e0d8c8;padding:4px;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.tile{background-color:#fff;background-repeat:no-repeat;cursor:pointer;border-radius:6px;transition:transform .2s,box-shadow .2s,border-color .15s;user-select:none;-webkit-user-select:none;box-shadow:3px 3px 8px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.4);position:relative}
+.tile:hover{transform:scale(1.03) translateY(-2px);box-shadow:4px 6px 12px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.4)}
+.tile.selected{border:3px solid #e8c547;box-shadow:0 0 12px rgba(232,197,71,.5),3px 3px 8px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.4)}
+.tile.correct{border:2px solid rgba(180,200,140,.5)}
+/* completed state */
+.grid.done{gap:0}
+.grid.done .tile{border-radius:0;box-shadow:none;border:none}
+/* ── buttons row ── */
+.btn-row{display:flex;gap:12px;width:100%}
+.btn{flex:1;padding:13px;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .12s}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:linear-gradient(135deg,#c9a96e,#e8c547);color:#fff}
+.btn-secondary{background:#f0ebe3;color:#666}
+/* ── celebration modal ── */
+.celebration{text-align:center}
+.celebration .emoji{font-size:56px;margin-bottom:8px}
+.celebration h3{font-size:22px;margin-bottom:6px}
+.celebration .sub{font-size:14px;color:#888;margin-bottom:20px}
+/* ── util ── */
+.hidden{display:none!important}
 </style>
 </head>
 <body>
 
-<div class="phone">
-  <!-- 导航 -->
-  <div class="nav">
-    <a class="nav-back" href="/08/activity/">← 返回</a>
-    <div class="nav-title">🧩 城市拼图</div>
-    <a class="nav-portfolio" href="/08/portfolio/">作品集</a>
-  </div>
+<!-- nav -->
+<header class="nav">
+  <a class="back" href="/08/activity/">← 返回</a>
+  <span class="title">🧩 旅行拼图</span>
+</header>
 
-  <div class="content">
-    <!-- 提示 -->
-    <div class="hint">
-      选择一张城市风景图，将打乱的 16 块碎片拼回原位<br>
-      <b>点击两块碎片即可交换位置</b>
+<main class="shell">
+
+  <!-- ===== SCREEN: Upload ===== -->
+  <section id="screen-upload" class="screen active">
+    <div class="dropzone" id="dropzone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span class="label">上传你的旅行照片</span>
+      <span class="hint">点击选择 或 拖拽到这里</span>
+      <input type="file" id="fileInput" accept="image/*" hidden>
     </div>
-
-    <!-- 图片选择 -->
-    <div class="section-label">选择图片</div>
-    <div class="image-selector" id="imageSelector"></div>
-
-    <!-- 预览 -->
-    <div class="preview-wrap" id="previewWrap">
-      <img id="previewImg" src="" alt="preview">
-      <div class="preview-label" id="previewLabel"></div>
+    <p class="example-label">或选择示例图片</p>
+    <div class="examples">
+      <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400&q=80" alt="海滩" data-src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400&q=80">
+      <img src="https://images.unsplash.com/photo-1527824404775-dce343118ebc?w=400&q=80" alt="京都" data-src="https://images.unsplash.com/photo-1527824404775-dce343118ebc?w=400&q=80">
+      <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400&q=80" alt="巴黎" data-src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400&q=80">
     </div>
+  </section>
 
-    <!-- 拼图区 -->
-    <div class="puzzle-area">
-      <div class="puzzle-grid" id="puzzleGrid"></div>
-    </div>
-
-    <!-- 控制区 -->
-    <div class="controls">
-      <div class="steps-display">
-        <span>步数</span>
-        <span class="num" id="stepCount">0</span>
+  <!-- ===== SCREEN: Game ===== -->
+  <section id="screen-game" class="screen">
+    <div class="game-header">
+      <div class="ref-row">
+        <img class="ref-img" id="refImg" src="" alt="参考图">
+        <div class="ref-info">
+          <div class="steps" id="stepsLabel">步数：0</div>
+          <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
+        </div>
       </div>
-      <button class="btn-reset" id="btnReset">🔄 重新打乱</button>
     </div>
-
-    <!-- 进度条 -->
-    <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-text" id="progressText">正确率 0%</div>
-
-    <!-- 返回链接 -->
-    <div class="back-links">
-      <a class="back-link" href="/08/activity/">← 活动首页</a>
-      <a class="back-link" href="/08/portfolio/">作品集 →</a>
+    <div class="grid-wrap">
+      <div class="grid" id="grid"></div>
     </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="btnRestart">🔄 重新开始</button>
+      <button class="btn btn-primary" id="btnNewPhoto">📷 换张照片</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== MODAL: Difficulty ===== -->
+<div class="overlay" id="modalDiff">
+  <div class="modal">
+    <h3>选择难度</h3>
+    <button class="diff-btn" data-grid="3">😊 简单 · 3×3</button>
+    <button class="diff-btn" data-grid="4">😐 普通 · 4×4</button>
+    <button class="diff-btn" data-grid="5">😈 困难 · 5×5</button>
+    <button class="cancel" id="cancelDiff">取消</button>
   </div>
 </div>
 
-<!-- 完成弹窗 -->
-<div class="complete-overlay" id="completeOverlay">
-  <div class="complete-modal">
-    <div class="complete-emoji">🎉</div>
-    <div class="complete-title">拼图完成！</div>
-    <div class="complete-steps" id="completeSteps"></div>
-    <button class="complete-btn" id="btnPlayAgain">🔄 再玩一次</button>
+<!-- ===== MODAL: Celebration ===== -->
+<div class="overlay" id="modalCelebrate">
+  <div class="modal celebration">
+    <div class="emoji">🎉</div>
+    <h3>拼图完成！</h3>
+    <p class="sub" id="celebrateMsg">共用 0 步</p>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="btnRetry">🔄 再来一张</button>
+      <button class="btn btn-primary" id="btnChangeDiff">🎚️ 换难度</button>
+    </div>
   </div>
 </div>
 
 <script>
-// === 图片数据 ===
-const images = [
-  { url: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400&q=80', label: '海滩', full: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80' },
-  { url: 'https://images.unsplash.com/photo-1527824404775-dce343118ebc?w=400&q=80', label: '京都', full: 'https://images.unsplash.com/photo-1527824404775-dce343118ebc?w=800&q=80' },
-  { url: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400&q=80', label: '巴黎', full: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80' },
-  { url: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=80', label: '伦敦', full: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80' },
-  { url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&q=80', label: '罗马', full: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80' },
-  { url: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80', label: '东京', full: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80' }
-];
+(function(){
+  /* ── state ── */
+  let imageDataUrl = null;   // current photo dataURL
+  let gridSize = 3;          // 3 / 4 / 5
+  let tiles = [];            // array of tile objects {id, pos}
+  let selectedTile = null;   // currently selected tile element
+  let moves = 0;
+  let totalTiles = 0;
+  let correctTiles = 0;
 
-// === 状态 ===
-let currentImageIdx = 0;
-let tiles = [];        // tiles[i] = { correctRow, correctCol, currentRow, currentCol }
-let selectedIdx = -1;
-let steps = 0;
-let isCompleted = false;
-const GRID = 4;
-const TOTAL = GRID * GRID;
+  /* ── DOM refs ── */
+  const screenUpload = document.getElementById('screen-upload');
+  const screenGame   = document.getElementById('screen-game');
+  const dropzone     = document.getElementById('dropzone');
+  const fileInput    = document.getElementById('fileInput');
+  const examples     = document.querySelectorAll('.examples img');
+  const grid         = document.getElementById('grid');
+  const refImg       = document.getElementById('refImg');
+  const stepsLabel   = document.getElementById('stepsLabel');
+  const progressFill = document.getElementById('progressFill');
+  const modalDiff    = document.getElementById('modalDiff');
+  const modalCelebrate = document.getElementById('modalCelebrate');
+  const celebrateMsg = document.getElementById('celebrateMsg');
 
-// === DOM ===
-const $selector = document.getElementById('imageSelector');
-const $previewImg = document.getElementById('previewImg');
-const $previewLabel = document.getElementById('previewLabel');
-const $grid = document.getElementById('puzzleGrid');
-const $stepCount = document.getElementById('stepCount');
-const $progressFill = document.getElementById('progressFill');
-const $progressText = document.getElementById('progressText');
-const $completeOverlay = document.getElementById('completeOverlay');
-const $completeSteps = document.getElementById('completeSteps');
-const $btnPlayAgain = document.getElementById('btnPlayAgain');
-const $btnReset = document.getElementById('btnReset');
+  /* ── screen switch ── */
+  function showScreen(s){
+    screenUpload.classList.toggle('active', s==='upload');
+    screenGame.classList.toggle('active', s==='game');
+  }
 
-// === 初始化图片选择器 ===
-function initSelector() {
-  $selector.innerHTML = '';
-  images.forEach((img, i) => {
-    const opt = document.createElement('div');
-    opt.className = 'image-option' + (i === 0 ? ' active' : '');
-    opt.innerHTML = `<img src="${img.url}" alt="${img.label}" loading="lazy"><div class="img-label">${img.label}</div>`;
-    opt.onclick = () => selectImage(i);
-    $selector.appendChild(opt);
+  /* ── upload handling ── */
+  dropzone.addEventListener('click', ()=> fileInput.click());
+  fileInput.addEventListener('change', e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    readFile(f);
   });
-}
-
-// === 选择图片 ===
-function selectImage(idx) {
-  currentImageIdx = idx;
-  document.querySelectorAll('.image-option').forEach((el, i) => {
-    el.classList.toggle('active', i === idx);
+  dropzone.addEventListener('dragover', e=>{ e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', ()=> dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', e=>{
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if(f && f.type.startsWith('image/')) readFile(f);
   });
-  updatePreview();
-  startPuzzle();
-}
-
-// === 更新预览 ===
-function updatePreview() {
-  const img = images[currentImageIdx];
-  $previewImg.src = img.full;
-  $previewLabel.textContent = '📍 ' + img.label;
-}
-
-// === 开始拼图 ===
-function startPuzzle() {
-  tiles = [];
-  steps = 0;
-  selectedIdx = -1;
-  isCompleted = false;
-  $stepCount.textContent = '0';
-  $completeOverlay.classList.remove('show');
-  $grid.classList.remove('completed');
-  updateProgress();
-
-  // 创建正确位置的 tile 数组
-  for (let r = 0; r < GRID; r++) {
-    for (let c = 0; c < GRID; c++) {
-      tiles.push({ correctRow: r, correctCol: c, currentRow: r, currentCol: c });
-    }
-  }
-
-  shuffleTiles();
-  renderGrid();
-}
-
-// === 打乱 (Fisher-Yates on positions) ===
-function shuffleTiles() {
-  // 收集所有 positions
-  let positions = [];
-  for (let r = 0; r < GRID; r++)
-    for (let c = 0; c < GRID; c++)
-      positions.push({ r, c });
-
-  // Fisher-Yates shuffle
-  for (let i = positions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [positions[i], positions[j]] = [positions[j], positions[i]];
-  }
-
-  // 确保不是已经完成的状态
-  let isAlreadySolved = true;
-  for (let i = 0; i < TOTAL; i++) {
-    if (tiles[i].correctRow !== positions[i].r || tiles[i].correctCol !== positions[i].c) {
-      isAlreadySolved = false;
-      break;
-    }
-  }
-  if (isAlreadySolved) {
-    // 简单交换前两个确保打乱
-    [positions[0], positions[1]] = [positions[1], positions[0]];
-  }
-
-  // 重新分配 currentRow/currentCol
-  for (let i = 0; i < TOTAL; i++) {
-    tiles[i].currentRow = positions[i].r;
-    tiles[i].currentCol = positions[i].c;
-  }
-}
-
-// === 渲染网格 ===
-function renderGrid() {
-  $grid.innerHTML = '';
-  const img = images[currentImageIdx];
-
-  for (let r = 0; r < GRID; r++) {
-    for (let c = 0; c < GRID; c++) {
-      // 找到位于这个位置的 tile
-      const tile = tiles.find(t => t.currentRow === r && t.currentCol === c);
-      const tileIdx = tiles.indexOf(tile);
-
-      const el = document.createElement('div');
-      el.className = 'tile';
-      el.dataset.tileIdx = tileIdx;
-
-      // 背景图片：使用正确的 correctRow/correctCol 来定位背景区域
-      const bgX = (tile.correctCol / (GRID - 1)) * 100;
-      const bgY = (tile.correctRow / (GRID - 1)) * 100;
-      el.style.backgroundImage = `url(${img.url})`;
-      el.style.backgroundPosition = `${bgX}% ${bgY}%`;
-      el.style.backgroundSize = '400% 400%';
-
-      el.onclick = () => onTileClick(tileIdx);
-      $grid.appendChild(el);
-    }
-  }
-}
-
-// === 点击格子 ===
-function onTileClick(tileIdx) {
-  if (isCompleted) return;
-
-  if (selectedIdx === -1) {
-    // 第一次选择
-    selectedIdx = tileIdx;
-    updateTileSelection();
-  } else if (selectedIdx === tileIdx) {
-    // 取消选择
-    selectedIdx = -1;
-    updateTileSelection();
-  } else {
-    // 交换
-    swapTiles(selectedIdx, tileIdx);
-    selectedIdx = -1;
-    steps++;
-    $stepCount.textContent = steps;
-    updateProgress();
-    checkComplete();
-  }
-}
-
-// === 更新选中状态 ===
-function updateTileSelection() {
-  document.querySelectorAll('.tile').forEach(el => {
-    const idx = parseInt(el.dataset.tileIdx);
-    el.classList.toggle('selected', idx === selectedIdx);
+  examples.forEach(img=>{
+    img.addEventListener('click', ()=>{
+      loadImageFromUrl(img.dataset.src);
+    });
   });
-}
 
-// === 交换两个 tile 的位置 ===
-function swapTiles(idx1, idx2) {
-  const t1 = tiles[idx1];
-  const t2 = tiles[idx2];
+  function readFile(file){
+    const reader = new FileReader();
+    reader.onload = e => imageDataUrl = e.target.result;
+    reader.readAsDataURL(file);
+    openDiffModal();
+  }
+  function loadImageFromUrl(url){
+    // For unsplash images, load as dataURL via canvas to avoid CORS issues with background-image
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = ()=>{
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      c.getContext('2d').drawImage(img,0,0);
+      imageDataUrl = c.toDataURL('image/jpeg',0.9);
+      openDiffModal();
+    };
+    img.onerror = ()=>{
+      // fallback: use URL directly (may have CORS issues)
+      imageDataUrl = url;
+      openDiffModal();
+    };
+    img.src = url;
+  }
 
-  // 交换 currentRow/currentCol
-  [t1.currentRow, t2.currentRow] = [t2.currentRow, t1.currentRow];
-  [t1.currentCol, t2.currentCol] = [t2.currentCol, t1.currentCol];
+  /* ── difficulty modal ── */
+  function openDiffModal(){ modalDiff.classList.add('active'); }
+  function closeDiffModal(){ modalDiff.classList.remove('active'); }
+  document.getElementById('cancelDiff').addEventListener('click', closeDiffModal);
+  modalDiff.querySelectorAll('.diff-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      gridSize = parseInt(btn.dataset.grid);
+      closeDiffModal();
+      startGame();
+    });
+  });
 
-  // 重新渲染带交换动画
-  const tileEls = document.querySelectorAll('.tile');
-  const el1 = tileEls[idx1];
-  const el2 = tileEls[idx2];
+  /* ── game logic ── */
+  function startGame(){
+    showScreen('game');
+    moves = 0;
+    correctTiles = 0;
+    selectedTile = null;
+    totalTiles = gridSize * gridSize;
+    updateHUD();
+    buildGrid();
+  }
 
-  // 添加动画类
-  el1.classList.add('swapping');
-  el2.classList.add('swapping');
+  function buildGrid(){
+    grid.innerHTML = '';
+    grid.classList.remove('done');
+    grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
 
-  setTimeout(() => {
-    renderGrid();
-    updateTileSelection();
-  }, 200);
-}
+    // responsive tile size
+    const containerW = Math.min(358, window.innerWidth - 64);
+    const tileSize = Math.floor((containerW - 8 - 4*(gridSize-1)) / gridSize);
+    grid.style.width = (tileSize*gridSize + 8) + 'px';
 
-// === 更新正确率 ===
-function updateProgress() {
-  let correct = 0;
-  for (let i = 0; i < TOTAL; i++) {
-    if (tiles[i].currentRow === tiles[i].correctRow &&
-        tiles[i].currentCol === tiles[i].correctCol) {
-      correct++;
+    // create tiles
+    const ids = [];
+    for(let i=0;i<totalTiles;i++) ids.push(i);
+    shuffle(ids);
+
+    const bgSize = tileSize * gridSize;
+
+    for(let i=0;i<totalTiles;i++){
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.style.width = tileSize + 'px';
+      tile.style.height = tileSize + 'px';
+      tile.style.backgroundImage = `url(${imageDataUrl})`;
+      tile.style.backgroundSize = `${bgSize}px ${bgSize}px`;
+
+      // this tile holds image piece of id `ids[i]`
+      tile.dataset.id = ids[i];
+      tile.dataset.pos = i; // current position
+
+      const origRow = Math.floor(ids[i] / gridSize);
+      const origCol = ids[i] % gridSize;
+      tile.style.backgroundPosition = `${-origCol*tileSize}px ${-origRow*tileSize}px`;
+
+      if(ids[i] === i) correctTiles++;
+      tile.addEventListener('click', ()=> onTileClick(tile));
+      grid.appendChild(tile);
+    }
+
+    refImg.src = imageDataUrl;
+  }
+
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    // ensure not solved
+    if(arr.every((v,idx)=>v===idx)){
+      [arr[0],arr[1]] = [arr[1],arr[0]];
     }
   }
-  const pct = Math.round(correct / TOTAL * 100);
-  $progressFill.style.width = pct + '%';
-  $progressText.textContent = `正确率 ${pct}%（${correct}/${TOTAL} 块已归位）`;
-}
 
-// === 检测完成 ===
-function checkComplete() {
-  const allCorrect = tiles.every(t =>
-    t.currentRow === t.correctRow && t.currentCol === t.correctCol
-  );
-
-  if (allCorrect) {
-    isCompleted = true;
-    $progressFill.style.width = '100%';
-    $progressText.textContent = '🎉 全部归位！';
-
-    // 延迟显示完成动画
-    setTimeout(() => {
-      $grid.classList.add('completed');
-      spawnConfetti();
-      showCompleteModal();
-    }, 300);
-  }
-}
-
-// === 完成弹窗 ===
-function showCompleteModal() {
-  $completeSteps.textContent = `共用 ${steps} 步完成拼图`;
-  $completeOverlay.classList.add('show');
-}
-
-// === 彩带效果 ===
-function spawnConfetti() {
-  const colors = ['#FFD700', '#FF6B6B', '#5B7FF6', '#4ECB71', '#FF9F43', '#A55EEA', '#FF6348'];
-  const container = document.createElement('div');
-  container.className = 'confetti';
-  container.style.left = '50%';
-  container.style.top = '30%';
-  container.style.transform = 'translateX(-50%)';
-  document.body.appendChild(container);
-
-  for (let i = 0; i < 40; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-    piece.style.left = (Math.random() - 0.5) * 200 + 'px';
-    piece.style.top = (Math.random() - 0.5) * 100 + 'px';
-    piece.style.animationDuration = (1 + Math.random() * 1.5) + 's';
-    piece.style.animationDelay = (Math.random() * 0.3) + 's';
-    piece.style.width = (6 + Math.random() * 6) + 'px';
-    piece.style.height = (6 + Math.random() * 6) + 'px';
-    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    container.appendChild(piece);
+  function onTileClick(tile){
+    if(grid.classList.contains('done')) return;
+    if(!selectedTile){
+      selectedTile = tile;
+      tile.classList.add('selected');
+    } else if(selectedTile === tile){
+      selectedTile.classList.remove('selected');
+      selectedTile = null;
+    } else {
+      // swap
+      swapTiles(selectedTile, tile);
+      selectedTile.classList.remove('selected');
+      selectedTile = null;
+      moves++;
+      updateHUD();
+      checkWin();
+    }
   }
 
-  setTimeout(() => container.remove(), 3000);
-}
+  function swapTiles(a,b){
+    // swap dataset.id (image piece identity)
+    const tmpId = a.dataset.id;
+    a.dataset.id = b.dataset.id;
+    b.dataset.id = tmpId;
 
-// === 按钮事件 ===
-$btnReset.onclick = () => startPuzzle();
-$btnPlayAgain.onclick = () => startPuzzle();
+    // swap background-position based on new id
+    const tileSize = parseInt(a.style.width);
+    const bgSize = tileSize * gridSize;
 
-// === 启动 ===
-initSelector();
-updatePreview();
-startPuzzle();
+    [a,b].forEach(t=>{
+      const id = parseInt(t.dataset.id);
+      const r = Math.floor(id/gridSize);
+      const c = id % gridSize;
+      t.style.backgroundPosition = `${-c*tileSize}px ${-r*tileSize}px`;
+    });
+  }
+
+  function checkWin(){
+    const allTiles = grid.querySelectorAll('.tile');
+    let allCorrect = true;
+    correctTiles = 0;
+    allTiles.forEach((t,i)=>{
+      const isCorrect = parseInt(t.dataset.id) === i;
+      t.classList.toggle('correct', isCorrect);
+      if(isCorrect) correctTiles++; else allCorrect = false;
+    });
+
+    if(allCorrect){
+      grid.classList.add('done');
+      celebrateMsg.textContent = `共用 ${moves} 步`;
+      setTimeout(()=> modalCelebrate.classList.add('active'), 400);
+    }
+  }
+
+  function updateHUD(){
+    stepsLabel.textContent = `步数：${moves}`;
+    const pct = totalTiles ? Math.round(correctTiles/totalTiles*100) : 0;
+    progressFill.style.width = pct + '%';
+  }
+
+  /* ── buttons ── */
+  document.getElementById('btnRestart').addEventListener('click', startGame);
+  document.getElementById('btnNewPhoto').addEventListener('click', ()=>{
+    closeModals();
+    showScreen('upload');
+    imageDataUrl = null;
+    fileInput.value = '';
+  });
+  document.getElementById('btnRetry').addEventListener('click', ()=>{
+    closeModals();
+    showScreen('upload');
+    imageDataUrl = null;
+    fileInput.value = '';
+  });
+  document.getElementById('btnChangeDiff').addEventListener('click', ()=>{
+    closeModals();
+    openDiffModal();
+  });
+
+  function closeModals(){
+    modalDiff.classList.remove('active');
+    modalCelebrate.classList.remove('active');
+  }
+})();
 </script>
 </body>
 </html>
