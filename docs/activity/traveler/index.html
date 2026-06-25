@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🧳 旅行达人鉴定</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #E8E4DF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+  .app {
+    width: 100%;
+    max-width: 390px;
+    min-height: 680px;
+    background: #FFF8F0;
+    border-radius: 36px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+    overflow: hidden;
+    position: relative;
+  }
+  .screen { display: none; padding: 32px 24px 40px; min-height: 100%; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  /* ===== 首页 ===== */
+  .home-header { text-align: center; padding: 36px 0 8px; }
+  .home-header .logo { font-size: 64px; margin-bottom: 8px; animation: bounce 2s ease infinite; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .home-header h1 { font-size: 26px; font-weight: 800; color: #2D2D2D; letter-spacing: -0.5px; }
+  .home-header p { font-size: 14px; color: #999; margin-top: 6px; }
+  .home-desc {
+    background: linear-gradient(135deg, #FFF0E0 0%, #FFE8F0 100%);
+    border-radius: 16px; padding: 16px 18px; margin: 20px 0 24px;
+    font-size: 13px; color: #666; line-height: 1.7; text-align: center;
+  }
+  .section-label { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 14px; text-align: center; }
+  .player-btns { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+  .player-btn {
+    border: 2px solid #EEE; border-radius: 16px; padding: 16px;
+    background: #FFF; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 14px;
+    font-family: inherit; font-size: 15px; color: #333; font-weight: 600;
+    position: relative; overflow: hidden;
+  }
+  .player-btn .emoji { font-size: 28px; }
+  .player-btn .info { flex: 1; }
+  .player-btn .info small { font-size: 12px; color: #999; font-weight: 400; display: block; margin-top: 2px; }
+  .player-btn .arrow { font-size: 18px; color: #CCC; transition: transform 0.2s; }
+  .player-btn:hover { border-color: #FF8C42; background: #FFF8F0; transform: scale(1.01); }
+  .player-btn:hover .arrow { transform: translateX(4px); color: #FF8C42; }
+  .player-btn:active { transform: scale(0.98); }
+  .player-btn::after {
+    content: ''; position: absolute; inset: 0; background: #FF8C42;
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+  }
+  .player-btn.selected::after { opacity: 0.08; }
+  .player-btn.selected { border-color: #FF8C42; }
+  .player-btn.selected .arrow { color: #FF8C42; transform: translateX(4px); }
+
+  /* ===== 进度条 ===== */
+  .progress-bar {
+    position: sticky; top: 0; z-index: 10;
+    background: #FFF8F0; padding: 16px 24px 12px;
+    margin: -32px -24px 20px;
+  }
+  .progress-info {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: 600; color: #888; margin-bottom: 8px;
+  }
+  .progress-info .highlight { color: #333; }
+  .progress-track { height: 4px; background: #F0ECE6; border-radius: 4px; overflow: hidden; }
+  .progress-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+  }
+
+  /* ===== 题目 ===== */
+  .question-container { flex: 1; position: relative; }
+  .question-card {
+    animation: slideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .question-card.slide-left { animation: slideLeft 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+  .question-card.slide-right { animation: slideRight 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes slideLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes slideRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+  .player-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #F5F0EA; border-radius: 20px; padding: 6px 14px;
+    font-size: 12px; font-weight: 600; color: #888; margin-bottom: 16px;
+  }
+  .player-badge .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block;
+  }
+  .q-number { font-size: 12px; color: #BBB; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; }
+  .q-title { font-size: 20px; font-weight: 800; color: #2D2D2D; line-height: 1.4; margin-bottom: 22px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    border: 2px solid #EDE8E0; border-radius: 14px; padding: 14px 16px;
+    background: #FFF; cursor: pointer; transition: all 0.2s;
+    text-align: left; font-family: inherit; font-size: 14px; color: #444;
+    line-height: 1.5; position: relative; overflow: hidden;
+  }
+  .option-btn .opt-label {
+    display: inline-block; width: 22px; height: 22px; line-height: 22px;
+    text-align: center; border-radius: 7px; background: #F5F0EA;
+    font-size: 12px; font-weight: 700; color: #999; margin-right: 10px;
+    vertical-align: middle; flex-shrink: 0;
+  }
+  .option-btn .opt-text { vertical-align: middle; }
+  .option-btn:hover { border-color: #DDD; background: #FAFAF5; }
+  .option-btn:active { transform: scale(0.98); }
+  .option-btn.picked {
+    border-color: var(--pick-color, #FF8C42);
+    background: var(--pick-bg, #FFF3E8);
+    animation: popPick 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .option-btn.picked .opt-label {
+    background: var(--pick-color, #FF8C42);
+    color: #FFF;
+  }
+  @keyframes popPick { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+  /* ===== 过渡页 ===== */
+  .transition-screen {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 40px 24px;
+  }
+  .transition-emoji { font-size: 72px; margin-bottom: 16px; animation: bounce 1.5s ease infinite; }
+  .transition-title { font-size: 22px; font-weight: 800; color: #2D2D2D; margin-bottom: 8px; }
+  .transition-sub { font-size: 14px; color: #999; margin-bottom: 28px; }
+  .next-btn {
+    border: none; border-radius: 16px; padding: 16px 40px;
+    background: linear-gradient(135deg, #FF8C42, #FF6B6B);
+    color: #FFF; font-family: inherit; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 24px rgba(255,107,107,0.3);
+  }
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,107,107,0.35); }
+  .next-btn:active { transform: scale(0.97); }
+
+  /* ===== 结果页 ===== */
+  .result-screen { align-items: center; padding: 32px 24px 40px; }
+  .result-header { text-align: center; margin-bottom: 24px; }
+  .result-header h2 { font-size: 22px; font-weight: 800; color: #2D2D2D; }
+  .result-header p { font-size: 13px; color: #999; margin-top: 4px; }
+
+  .role-card {
+    border-radius: 20px; padding: 28px 22px; text-align: center;
+    color: #FFF; position: relative; overflow: hidden;
+    width: 100%; margin-bottom: 16px;
+    animation: popUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .role-card.stagger-1 { animation-delay: 0ms; }
+  .role-card.stagger-2 { animation-delay: 200ms; }
+  .role-card.stagger-3 { animation-delay: 400ms; }
+  .role-card.stagger-4 { animation-delay: 600ms; }
+  @keyframes popUp { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  .role-card .role-emoji { font-size: 56px; display: block; margin-bottom: 8px; }
+  .role-card .role-name { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+  .role-card .role-alias { font-size: 14px; opacity: 0.85; margin-bottom: 16px; font-weight: 500; }
+  .role-card .role-player-label { font-size: 12px; opacity: 0.7; margin-bottom: 12px; font-weight: 600; letter-spacing: 1px; }
+  .role-card .role-details {
+    background: rgba(255,255,255,0.18); border-radius: 14px;
+    padding: 14px 16px; text-align: left; margin-top: 8px;
+  }
+  .role-card .role-details .detail-item {
+    font-size: 13px; line-height: 1.6; margin-bottom: 6px;
+  }
+  .role-card .role-details .detail-item:last-child { margin-bottom: 0; }
+  .role-card .role-details .detail-label { font-weight: 700; opacity: 0.9; }
+  .role-card .role-quote {
+    margin-top: 14px; font-size: 16px; font-weight: 700;
+    font-style: italic; opacity: 0.95;
+  }
+
+  /* Mini role cards for team */
+  .mini-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-bottom: 20px; }
+  .mini-card {
+    border-radius: 16px; padding: 18px 14px; text-align: center; color: #FFF;
+    animation: popUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .mini-card .role-emoji { font-size: 36px; display: block; margin-bottom: 4px; }
+  .mini-card .role-name { font-size: 16px; font-weight: 800; }
+  .mini-card .role-player-label { font-size: 11px; opacity: 0.75; margin-top: 4px; font-weight: 600; }
+
+  .team-analysis {
+    background: #FFF; border-radius: 18px; padding: 20px; width: 100%;
+    border: 1px solid #F0ECE6; margin-bottom: 20px;
+    animation: popUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .team-analysis h3 { font-size: 16px; font-weight: 800; color: #2D2D2D; margin-bottom: 12px; text-align: center; }
+  .team-analysis .team-verdict {
+    font-size: 15px; color: #555; line-height: 1.7; text-align: center;
+    padding: 12px; background: #FFF8F0; border-radius: 12px; margin-bottom: 12px;
+  }
+  .team-analysis .team-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .team-analysis .team-tag {
+    background: #F5F0EA; border-radius: 20px; padding: 5px 12px;
+    font-size: 12px; color: #888; font-weight: 600;
+  }
+
+  .action-btns { display: flex; gap: 10px; width: 100%; }
+  .action-btn {
+    flex: 1; border: 2px solid #EEE; border-radius: 14px; padding: 14px;
+    background: #FFF; cursor: pointer; transition: all 0.2s;
+    font-family: inherit; font-size: 14px; font-weight: 600; color: #666;
+    text-align: center;
+  }
+  .action-btn:hover { border-color: #FF8C42; color: #FF8C42; }
+  .action-btn:active { transform: scale(0.97); }
+  .action-btn.primary {
+    background: linear-gradient(135deg, #FF8C42, #FF6B6B);
+    border: none; color: #FFF; box-shadow: 0 6px 20px rgba(255,107,107,0.25);
+  }
+  .action-btn.primary:hover { transform: translateY(-1px); }
+
+  .toast {
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #333; color: #FFF; padding: 12px 24px; border-radius: 12px;
+    font-size: 14px; font-weight: 600; opacity: 0; transition: all 0.3s;
+    pointer-events: none; z-index: 100; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* 多人结果大卡片 */
+  .full-card {
+    border-radius: 20px; padding: 24px 20px; text-align: center; color: #FFF;
+    width: 100%; margin-bottom: 14px; position: relative; overflow: hidden;
+  }
+
+  /* 滚动优化 */
+  .screen.scrollable { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  /* 分数条 */
+  .score-bars { margin-top: 12px; }
+  .score-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .score-bar-label { font-size: 12px; color: #FFF; min-width: 50px; text-align: left; font-weight: 600; }
+  .score-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.25); border-radius: 3px; overflow: hidden; }
+  .score-bar-val { height: 100%; border-radius: 3px; background: #FFF; opacity: 0.7; transition: width 0.6s cubic-bezier(0.4,0,0.2,1) 0.3s; width: 0; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- 首页 -->
+  <div class="screen active" id="screen-home">
+    <div class="home-header">
+      <div class="logo">🧳</div>
+      <h1>旅行达人鉴定</h1>
+      <p>测测你是哪种旅行角色？</p>
+    </div>
+    <div class="home-desc">
+      回答 6 道趣味题，鉴定你的旅行人格 🌍<br>
+      支持 1-4 人一起测，看看你们的组合有多默契！
+    </div>
+    <div class="section-label">👥 选择参与人数</div>
+    <div class="player-btns">
+      <button class="player-btn" onclick="selectPlayers(1)">
+        <span class="emoji">🧑</span>
+        <span class="info">1 人<small>独自出发，测测自己</small></span>
+        <span class="arrow">›</span>
+      </button>
+      <button class="player-btn" onclick="selectPlayers(2)">
+        <span class="emoji">👫</span>
+        <span class="info">2 人<small>搭伴出行，看看配不配</small></span>
+        <span class="arrow">›</span>
+      </button>
+      <button class="player-btn" onclick="selectPlayers(3)">
+        <span class="emoji">👨‍👩‍👧</span>
+        <span class="info">3 人<small>铁三角，团队大考验</small></span>
+        <span class="arrow">›</span>
+      </button>
+      <button class="player-btn" onclick="selectPlayers(4)">
+        <span class="emoji">👨‍👩‍👧‍👦</span>
+        <span class="info">4 人<small>全员出动，谁是老大？</small></span>
+        <span class="arrow">›</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 过渡：轮到下一人 -->
+  <div class="screen" id="screen-transition">
+    <div class="transition-screen">
+      <div class="transition-emoji" id="transition-emoji">🎯</div>
+      <div class="transition-title" id="transition-title">轮到你了！</div>
+      <div class="transition-sub" id="transition-sub">准备好开始测试了吗？</div>
+      <button class="next-btn" id="transition-btn" onclick="startQuiz()">开始测试 ✨</button>
+    </div>
+  </div>
+
+  <!-- 答题页 -->
+  <div class="screen scrollable" id="screen-quiz">
+    <div class="progress-bar">
+      <div class="progress-info">
+        <span id="progress-player">第1人</span>
+        <span id="progress-q">1/6</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width: 16.6%"></div>
+      </div>
+    </div>
+    <div class="question-container" id="question-container"></div>
+  </div>
+
+  <!-- 结果页 -->
+  <div class="screen scrollable" id="screen-result"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== 数据 =====
+const QUESTIONS = [
+  {
+    title: "出发前你在做什么？",
+    options: [
+      { text: "整理好3份备用攻略，已背熟所有景点开放时间", emoji: "📋" },
+      { text: "随手扔几件衣服进包，准备出发", emoji: "🎒" },
+      { text: "买好所有景点票，制定分钟级行程", emoji: "🗺️" },
+      { text: "确认好消费预算，记好每项花销", emoji: "💰" }
+    ],
+    scores: [
+      { 规划: 2 },
+      { 随性: 2 },
+      { 规划: 1, 统筹: 1 },
+      { 财务: 2 }
+    ]
+  },
+  {
+    title: "订酒店时你的标准是？",
+    options: [
+      { text: "性价比最高，省下钱多玩几个地方", emoji: "💰" },
+      { text: "离景区最近，方便随时出发", emoji: "🏃" },
+      { text: "评分最高的，体验最重要", emoji: "⭐" },
+      { text: "随便，有地睡就行", emoji: "😴" }
+    ],
+    scores: [
+      { 财务: 2 },
+      { 随性: 2 },
+      { 随性: 1 },
+      { 随性: 2 }
+    ]
+  },
+  {
+    title: "行程中遇到突发情况（如景点关门了），你会？",
+    options: [
+      { text: "立刻查备用方案，早就预想到了", emoji: "📱" },
+      { text: "无所谓，去旁边逛逛", emoji: "😎" },
+      { text: "赶紧算算时间，重新排期", emoji: "⏱️" },
+      { text: "问问大家的意见再决定", emoji: "🤔" }
+    ],
+    scores: [
+      { 规划: 2 },
+      { 随性: 2 },
+      { 统筹: 2 },
+      { 随性: 1 }
+    ]
+  },
+  {
+    title: "到了目的地，你最先做的是？",
+    options: [
+      { text: "换好装备/衣服，开始拍照打卡", emoji: "📸" },
+      { text: "找当地最火的餐厅，先吃饱", emoji: "🍜" },
+      { text: "对照攻略，确认今天的路线", emoji: "📍" },
+      { text: "记账，今天预算还剩多少", emoji: "💳" }
+    ],
+    scores: [
+      { 随性: 1 },
+      { 随性: 2 },
+      { 规划: 2 },
+      { 财务: 2 }
+    ]
+  },
+  {
+    title: "旅途中遇到超出预算的体验，你会？",
+    options: [
+      { text: "果断放弃，守住预算", emoji: "💪" },
+      { text: "咬咬牙去，值得！", emoji: "✨" },
+      { text: "看情况，和大家商量", emoji: "🙋" },
+      { text: "去！反正计划本来就不重要", emoji: "😄" }
+    ],
+    scores: [
+      { 财务: 2 },
+      { 随性: 2 },
+      { 统筹: 2 },
+      { 随性: 1 }
+    ]
+  },
+  {
+    title: "旅行结束，你第一件事是？",
+    options: [
+      { text: "整理照片，写游记", emoji: "📝" },
+      { text: "算算这次共花了多少钱", emoji: "🧾" },
+      { text: "已经在查下一个目的地了", emoji: "🌍" },
+      { text: "倒头就睡，体力耗尽", emoji: "💤" }
+    ],
+    scores: [
+      { 规划: 2 },
+      { 财务: 2 },
+      { 规划: 1 },
+      { 随性: 2 }
+    ]
+  }
+];
+
+const ROLES = {
+  规划: {
+    emoji: "🗺️",
+    name: "旅行老大",
+    alias: "行程总指挥",
+    trait: "出发前攻略已背熟，预案比正案还多",
+    skill: "任何突发情况都难不倒，永远知道下一步去哪",
+    weakness: "有时太死板，错过路边的惊喜",
+    quote: "按计划来！",
+    color: "#FF8C42",
+    gradient: "linear-gradient(135deg, #FF8C42, #FF6B6B)"
+  },
+  随性: {
+    emoji: "🎒",
+    name: "随缘旅行家",
+    alias: "随时待命的",
+    trait: "收拾包5分钟，随时可以出发",
+    skill: "适应力超强，哪里都能玩嗨",
+    weakness: "容易迷路，全靠队友兜底",
+    quote: "去哪儿都行！",
+    color: "#4ECDC4",
+    gradient: "linear-gradient(135deg, #4ECDC4, #44B0D6)"
+  },
+  统筹: {
+    emoji: "🤝",
+    name: "团队润滑剂",
+    alias: "走哪儿跟哪儿的",
+    trait: "永远在协调，让所有人都满意",
+    skill: "化解分歧，把不同需求都安排进去",
+    weakness: "有时自己的愿望被忽略了",
+    quote: "大家开心最重要！",
+    color: "#A78BFA",
+    gradient: "linear-gradient(135deg, #A78BFA, #C084FC)"
+  },
+  财务: {
+    emoji: "💰",
+    name: "金钱管家",
+    alias: "首席财务官",
+    trait: "记账比拍照还勤快",
+    skill: "让团队在预算内玩得最爽",
+    weakness: "有时过于节省错过好体验",
+    quote: "超预算了！",
+    color: "#10B981",
+    gradient: "linear-gradient(135deg, #10B981, #059669)"
+  }
+};
+
+const ROLE_KEYS = ['规划', '随性', '统筹', '财务'];
+
+const TEAM_VERDICTS = [
+  { roles: ['规划','随性'], text: "完美搭档！🎉 互补型旅行组合，老大兜底，随性探索，这组合走哪都稳！" },
+  { roles: ['规划','财务'], text: "精打细算组 🧮 老大出路线，管家算预算，这趟旅行性价比拉满！" },
+  { roles: ['规划','统筹'], text: "黄金搭档 👑 一个指方向，一个做协调，团队效率 200%！" },
+  { roles: ['随性','财务'], text: "快乐与克制 💫 一个想花钱，一个管着花，相爱相杀但快乐无边！" },
+  { roles: ['随性','统筹'], text: "佛系组合 🍃 随缘出发+协调各方，走到哪玩到哪，但总有人兜底！" },
+  { roles: ['统筹','财务'], text: "后勤双保障 🛡️ 一个管人一个管钱，团队最稳的后方！" },
+  { roles: ['规划','规划'], text: "两个老大？😅 建议提前分工，不然攻略要打架了！" },
+  { roles: ['随性','随性'], text: "创意型团队 🎨 但请提前预订酒店！不然可能睡大街 😂" },
+  { roles: ['财务','财务'], text: "省钱二人组 💸 这个团队绝对不会超预算，但可能错过很多好吃的！" },
+  { roles: ['统筹','统筹'], text: "和平使者联盟 ☮️ 互相谦让的一天，谁来拍板呢？" },
+  { roles: ['规划','随性','财务'], text: "铁三角！⚡ 规划带队、随性活跃气氛、财务守住钱包，完美旅行团！" },
+  { roles: ['规划','随性','统筹'], text: "全能战队 🚀 有方向有灵活有协调，只差个管钱的了！" },
+  { roles: ['随性','统筹','财务'], text: "欢乐管家团 🎪 虽然没老大指路，但氛围感和后勤保障满分！" },
+  { roles: ['规划','统筹','财务'], text: "精英管理团队 💼 攻略+协调+预算，这配置堪比旅行社！" },
+  { roles: ['规划','随性','统筹','财务'], text: "全明星阵容 🌟 四种角色齐了！这趟旅行堪称教科书级别的完美！" },
+  { roles: ['随性','随性','随性'], text: "放飞自我三人组 🕊️ 快乐是快乐，但谁来看导航？谁来订酒店？！😂" },
+  { roles: ['财务','财务','财务'], text: "三个财神爷 💰 预算控制能力 Max，但可能为了省5块钱走3公里！" },
+  { roles: ['规划','规划','规划'], text: "三个诸葛亮 📋 攻略会写三遍，行程精确到秒，就是不知道听谁的…" },
+];
+
+const DEFAULT_VERDICTS = [
+  "这组合有点意思！🤔 旅行中一定会有很多故事！",
+  "多元组合 🌈 每种角色都有，旅途一定精彩！",
+  "独特阵容 ✨ 你们的旅行风格自成一家！"
+];
+
+// ===== 状态 =====
+let playerCount = 1;
+let currentPlayer = 0;   // 0-based
+let currentQ = 0;
+let allScores = [];      // per player: { 规划:0, 随性:0, 统筹:0, 财务:0 }
+let slideDir = 'right';
+
+// ===== 页面切换 =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function selectPlayers(n) {
+  playerCount = n;
+  allScores = Array.from({length: n}, () => ({ 规划:0, 随性:0, 统筹:0, 财务:0 }));
+  currentPlayer = 0;
+  currentQ = 0;
+  showTransition();
+}
+
+function showTransition() {
+  const emoji = ['🎯','🌟','🔥','⚡'][currentPlayer % 4];
+  const label = playerCount === 1 ? '准备好了吗？' : `轮到第 ${currentPlayer + 1} 位`;
+  document.getElementById('transition-emoji').textContent = emoji;
+  document.getElementById('transition-title').textContent = label;
+  document.getElementById('transition-sub').textContent = playerCount === 1 ? '6道题测出你的旅行人格' : '6道题，看看你是哪种旅行角色';
+  document.getElementById('transition-btn').textContent = playerCount === 1 ? '开始测试 ✨' : '开始答题 ✨';
+  showScreen('screen-transition');
+}
+
+function startQuiz() {
+  currentQ = 0;
+  renderQuestion();
+  showScreen('screen-quiz');
+}
+
+// ===== 题目渲染 =====
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const container = document.getElementById('question-container');
+  const playerNames = playerCount === 1 ? ['你'] : Array.from({length: playerCount}, (_, i) => `第 ${i+1} 位`);
+  const playerName = playerNames[currentPlayer];
+  const playerIdx = currentPlayer + 1;
+
+  // Update progress
+  const totalQ = playerCount * 6;
+  const done = currentPlayer * 6 + currentQ;
+  const pct = ((done + 1) / totalQ * 100);
+  const roleColor = getPredictedColor(currentPlayer);
+  document.getElementById('progress-player').innerHTML = `第<span class="highlight">${playerIdx}</span>人`;
+  document.getElementById('progress-q').textContent = `${currentQ + 1}/6`;
+  const fill = document.getElementById('progress-fill');
+  fill.style.width = pct + '%';
+  fill.style.background = roleColor;
+
+  const labels = ['A','B','C','D'];
+  let html = `<div class="question-card ${slideDir === 'left' ? 'slide-left' : 'slide-right'}">`;
+  html += `<div class="player-badge"><span class="dot" style="background:${roleColor}"></span>${playerName} 的回合</div>`;
+  html += `<div class="q-number">QUESTION ${currentQ + 1} / 6</div>`;
+  html += `<div class="q-title">${q.title}</div>`;
+  html += `<div class="options">`;
+  q.options.forEach((opt, i) => {
+    html += `<button class="option-btn" onclick="pickOption(${i})" style="--pick-color:${roleColor};--pick-bg:${roleColor}15">
+      <span class="opt-label">${labels[i]}</span>
+      <span class="opt-text">${opt.emoji} ${opt.text}</span>
+    </button>`;
+  });
+  html += `</div></div>`;
+  container.innerHTML = html;
+}
+
+function getPredictedColor(pi) {
+  // Cycle through role colors for each player
+  return ROLES[ROLE_KEYS[pi % 4]].color;
+}
+
+function pickOption(idx) {
+  // Visual feedback
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.classList.remove('picked'));
+  btns[idx].classList.add('picked');
+
+  // Score
+  const q = QUESTIONS[currentQ];
+  const scoreMap = q.scores[idx];
+  for (const [role, pts] of Object.entries(scoreMap)) {
+    allScores[currentPlayer][role] += pts;
+  }
+
+  // Auto-advance after short delay
+  setTimeout(() => {
+    if (currentQ < 5) {
+      currentQ++;
+      slideDir = 'left';
+      renderQuestion();
+    } else if (currentPlayer < playerCount - 1) {
+      currentPlayer++;
+      currentQ = 0;
+      slideDir = 'right';
+      showTransition();
+    } else {
+      showResults();
+    }
+  }, 350);
+}
+
+// ===== 结果计算 =====
+function getRole(scores) {
+  let maxRole = ROLE_KEYS[0];
+  let maxScore = -1;
+  for (const r of ROLE_KEYS) {
+    if (scores[r] > maxScore) { maxScore = scores[r]; maxRole = r; }
+  }
+  return { role: maxRole, scores, ...ROLES[maxRole] };
+}
+
+function getTeamVerdict(results) {
+  if (results.length === 1) return null;
+  const roleSet = results.map(r => r.role);
+
+  // Exact match search
+  for (const v of TEAM_VERDICTS) {
+    if (v.roles.length === roleSet.length && v.roles.every(r => roleSet.includes(r)) && roleSet.every(r => v.roles.includes(r))) {
+      // For multi-player with same counts
+      const sortedA = [...v.roles].sort().join(',');
+      const sortedB = [...roleSet].sort().join(',');
+      if (sortedA === sortedB) return v.text;
+    }
+  }
+
+  // Partial / heuristic match
+  const uniqueRoles = [...new Set(roleSet)].sort().join(',');
+  for (const v of TEAM_VERDICTS) {
+    const sortedV = [...v.roles].sort().join(',');
+    if (sortedV === uniqueRoles) return v.text;
+  }
+
+  // Fallback
+  return DEFAULT_VERDICTS[Math.floor(Math.random() * DEFAULT_VERDICTS.length)];
+}
+
+// ===== 结果展示 =====
+function showResults() {
+  const results = allScores.map((s, i) => getRole(s));
+  const container = document.getElementById('screen-result');
+
+  let html = `<div class="result-header">`;
+  html += `<div style="font-size:40px;margin-bottom:8px;">🏆</div>`;
+  html += `<h2>鉴定结果揭晓！</h2>`;
+  html += `<p>${playerCount === 1 ? '你的旅行人格是…' : `${playerCount} 位旅行达人的角色出炉`}</p>`;
+  html += `</div>`;
+
+  if (playerCount === 1) {
+    // Single player: full card
+    const r = results[0];
+    html += `<div class="role-card stagger-1" style="background:${r.gradient}">`;
+    html += `<span class="role-emoji">${r.emoji}</span>`;
+    html += `<div class="role-name">${r.name}</div>`;
+    html += `<div class="role-alias">「${r.alias}」</div>`;
+    html += `<div class="role-details">`;
+    html += `<div class="detail-item"><span class="detail-label">🎯 特征：</span>${r.trait}</div>`;
+    html += `<div class="detail-item"><span class="detail-label">⚡ 技能：</span>${r.skill}</div>`;
+    html += `<div class="detail-item"><span class="detail-label">😅 弱点：</span>${r.weakness}</div>`;
+    html += `</div>`;
+    html += `<div class="role-quote">"${r.quote}"</div>`;
+    html += `<div class="score-bars">`;
+    for (const rk of ROLE_KEYS) {
+      const maxPossible = 8; // approximate max
+      const pct = Math.min(100, (results[0].scores[rk] / maxPossible) * 100);
+      html += `<div class="score-bar-row"><span class="score-bar-label">${ROLES[rk].emoji} ${ROLES[rk].name.replace('旅行老大','规划').replace('随缘旅行家','随性').replace('团队润滑剂','统筹').replace('金钱管家','财务')}</span><div class="score-bar-track"><div class="score-bar-val" style="width:${pct}%;transition-delay:0.5s"></div></div></div>`;
+    }
+    html += `</div></div>`;
+  } else {
+    // Multi player: mini cards
+    html += `<div class="mini-cards">`;
+    results.forEach((r, i) => {
+      const stagger = `stagger-${i + 1}`;
+      html += `<div class="mini-card ${stagger}" style="background:${r.gradient}">`;
+      html += `<span class="role-emoji">${r.emoji}</span>`;
+      html += `<div class="role-name">${r.name}</div>`;
+      html += `<div class="role-player-label">第 ${i+1} 位 · 「${r.alias}」</div>`;
+      html += `</div>`;
+    });
+    html += `</div>`;
+
+    // Team analysis
+    const verdict = getTeamVerdict(results);
+    html += `<div class="team-analysis" style="animation-delay: ${results.length * 200}ms">`;
+    html += `<h3>🔍 团队分析</h3>`;
+    if (verdict) {
+      html += `<div class="team-verdict">${verdict}</div>`;
+    }
+    // Additional tags
+    const tags = [];
+    const hasRole = (r) => results.some(x => x.role === r);
+    if (hasRole('财务')) tags.push('💰 绝不超预算');
+    if (hasRole('规划') && hasRole('随性')) tags.push('⚡ 互补搭档');
+    if (results.filter(x => x.role === '随性').length >= 2) tags.push('🎨 放飞自我');
+    if (results.filter(x => x.role === '规划').length >= 2) tags.push('📋 攻略狂魔');
+    if (hasRole('统筹')) tags.push('🤝 团队润滑');
+    if (results.every(x => x.role === results[0].role)) tags.push('🎭 灵魂一致');
+    tags.forEach(t => { html += `<span class="team-tag">${t}</span>`; });
+    html += `</div>`;
+  }
+
+  // Buttons
+  html += `<div class="action-btns">`;
+  html += `<button class="action-btn" onclick="shareResult()">📤 分享结果</button>`;
+  html += `<button class="action-btn primary" onclick="resetGame()">🔄 再测一次</button>`;
+  html += `</div>`;
+
+  container.innerHTML = html;
+  showScreen('screen-result');
+}
+
+function shareResult() {
+  const results = allScores.map((s, i) => getRole(s));
+  let text = '🧳 旅行达人鉴定结果\n\n';
+  results.forEach((r, i) => {
+    const label = playerCount > 1 ? `第${i+1}位` : '我';
+    text += `${r.emoji} ${label}：${r.name}「${r.alias}」\n`;
+  });
+  if (playerCount > 1) {
+    text += '\n' + getTeamVerdict(results) + '\n';
+  }
+  text += '\n来测测你的旅行人格吧！🌍';
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('✅ 已复制到剪贴板'));
+  } else {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✅ 已复制到剪贴板');
+  }
+}
+
+function resetGame() {
+  currentPlayer = 0;
+  currentQ = 0;
+  allScores = Array.from({length: playerCount}, () => ({ 规划:0, 随性:0, 统筹:0, 财务:0 }));
+  slideDir = 'right';
+  showScreen('screen-home');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>
