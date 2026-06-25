@@ -59,20 +59,21 @@ body{display:flex;justify-content:center;align-items:flex-start}
   width:100%;height:100%;border-radius:50%;
   background:radial-gradient(circle,rgba(74,108,247,.04) 0%,rgba(74,108,247,.01) 70%);
   position:absolute;top:0;left:0;
+  border:1px solid rgba(74,108,247,.1);
 }
 
 /* Cells */
 .cell{
-  position:absolute;width:36px;height:36px;border-radius:8px;
+  position:absolute;width:42px;height:42px;border-radius:10px;
   display:flex;align-items:center;justify-content:center;
-  font-size:18px;cursor:default;
+  font-size:20px;cursor:default;
   box-shadow:0 1px 3px rgba(0,0,0,.08);
   transition:transform .15s,box-shadow .15s;
   transform:translate(-50%,-50%);
   z-index:2;
 }
 .cell.active{
-  box-shadow:0 0 0 3px var(--gold),0 2px 8px rgba(245,158,11,.35);
+  box-shadow:0 0 0 3px #FFD700,0 0 12px rgba(255,215,0,.6);
   animation:cellPulse 1.2s ease-in-out infinite;z-index:5;
 }
 @keyframes cellPulse{
@@ -153,6 +154,13 @@ body{display:flex;justify-content:center;align-items:flex-start}
 }
 .modal-overlay.show .event-card{transform:translateY(0)}
 .event-emoji{font-size:48px;text-align:center;margin-bottom:8px}
+.event-type-label{
+  text-align:center;margin-bottom:6px;
+}
+.type-label{
+  display:inline-block;padding:3px 12px;border-radius:12px;
+  font-size:12px;font-weight:600;
+}
 .event-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:6px}
 .event-desc{font-size:14px;color:var(--text-light);text-align:center;line-height:1.6;margin-bottom:16px}
 .event-score{
@@ -190,6 +198,9 @@ body{display:flex;justify-content:center;align-items:flex-start}
   background:linear-gradient(135deg,#FEF3C7,#FDE68A);
   border-radius:12px;padding:12px 16px;margin:16px 0 24px;
   font-size:13px;color:#92400E;
+}
+.results-accident{
+  font-size:13px;color:var(--text-light);margin-bottom:16px;
 }
 .results-buttons{display:flex;flex-direction:column;gap:10px}
 .results-btn{
@@ -260,13 +271,13 @@ body{display:flex;justify-content:center;align-items:flex-start}
       <!-- Player piece -->
       <div class="player" id="player">🧳</div>
     </div>
-    <div class="lap-info" id="lapInfo">第 1 / 3 圈</div>
+    <div class="lap-info" id="lapInfo">已完成 0 / 2 圈</div>
   </div>
 
   <!-- Dice Area -->
   <div class="dice-area" id="diceArea">
     <div class="dice-display" id="diceDisplay">🎲</div>
-    <button class="roll-btn" id="rollBtn" disabled>掷骰子</button>
+    <button class="roll-btn" id="rollBtn" disabled>🎲 掷骰子</button>
     <div class="dice-info">
       <span>🎯 本次 <strong id="diceResult">-</strong> 点</span>
       <span>👟 已走 <strong id="stepCount">0</strong> 步</span>
@@ -278,6 +289,7 @@ body{display:flex;justify-content:center;align-items:flex-start}
 <div class="modal-overlay" id="modalOverlay">
   <div class="event-card">
     <div class="event-emoji" id="eventEmoji">📸</div>
+    <div class="event-type-label"><span class="type-label" id="eventTypeLabel">📸 打卡格</span></div>
     <div class="event-title" id="eventTitle">京都·打卡</div>
     <div class="event-desc" id="eventDesc">发现绝美枫叶！</div>
     <div class="event-score" id="eventScore">+15</div>
@@ -293,6 +305,7 @@ body{display:flex;justify-content:center;align-items:flex-start}
     <div class="results-title" id="resultsTitle">传奇旅行家</div>
     <div class="results-stats" id="resultsStats"></div>
     <div class="results-highlight" id="resultsHighlight"></div>
+    <div class="results-accident" id="resultsAccident"></div>
     <div class="results-buttons">
       <button class="results-btn primary" id="restartBtn">🔄 再来一局</button>
       <button class="results-btn secondary" id="shareBtn">📋 分享结果</button>
@@ -328,13 +341,27 @@ body{display:flex;justify-content:center;align-items:flex-start}
     { id:20, emoji:'🎊', name:'终点',        type:'end',     desc:'完成一次圆周旅迹！',    score:50 },
   ];
 
+  // ===== CELL TYPE LABELS =====
+  const TYPE_LABELS = {
+    start:    { emoji: '🚀', text: '起点格',   bg: '#1a56db', color: '#fff' },
+    checkin:  { emoji: '📸', text: '打卡格',   bg: '#FFB347', color: '#fff' },
+    accident: { emoji: '😅', text: '意外格',   bg: '#CBD5E1', color: '#333' },
+    expert:   { emoji: '🎯', text: '达人格',   bg: '#98D8C8', color: '#fff' },
+    explore:  { emoji: '🗺️', text: '探索格',   bg: '#87CEEB', color: '#fff' },
+    treasure: { emoji: '💎', text: '宝藏格',   bg: '#DDA0DD', color: '#fff' },
+    event:    { emoji: '🎫', text: '活动格',   bg: '#F9A8D4', color: '#fff' },
+    cert:     { emoji: '🏆', text: '认证格',   bg: '#1a56db', color: '#fff' },
+    transfer: { emoji: '🚀', text: '中转格',   bg: '#1a56db', color: '#fff' },
+    star:     { emoji: '🏆', text: '之星格',   bg: '#1a56db', color: '#fff' },
+    end:      { emoji: '🎊', text: '终点格',   bg: '#6366F1', color: '#fff' },
+  };
+
   // ===== BOARD LAYOUT (20 cells in a circle) =====
   const BOARD_SIZE = 320;
   const CENTER = BOARD_SIZE / 2;
-  const RADIUS = 135;
+  const RADIUS = 130;
   const TOTAL_CELLS = 20;
   const ANGLE_STEP = (2 * Math.PI) / TOTAL_CELLS;
-  // Start from top (12 o'clock), go clockwise
   const START_ANGLE = -Math.PI / 2;
 
   function getCellPosition(index) {
@@ -347,16 +374,17 @@ body{display:flex;justify-content:center;align-items:flex-start}
 
   // ===== GAME STATE =====
   let score = 0;
-  let currentCell = 0; // 0-indexed
-  let lap = 1;
+  let currentCell = 0;
+  let lapsCompleted = 0;
   let totalSteps = 0;
   let gameStarted = false;
   let isRolling = false;
   let isEventShowing = false;
-  let cellScores = {}; // track score gained per cell
+  let cellScores = {};
   let highestScoreCell = null;
   let highestScore = 0;
   let citiesVisited = new Set();
+  let accidentCount = 0;
 
   // ===== DOM REFS =====
   const boardWrap = document.getElementById('boardWrap');
@@ -364,13 +392,14 @@ body{display:flex;justify-content:center;align-items:flex-start}
   const navScore = document.getElementById('navScore');
   const rollBtn = document.getElementById('rollBtn');
   const diceDisplay = document.getElementById('diceDisplay');
-  const diceResult = document.getElementById('diceResult');
+  const diceResultEl = document.getElementById('diceResult');
   const stepCount = document.getElementById('stepCount');
   const modalOverlay = document.getElementById('modalOverlay');
   const eventEmoji = document.getElementById('eventEmoji');
   const eventTitle = document.getElementById('eventTitle');
   const eventDesc = document.getElementById('eventDesc');
   const eventScore = document.getElementById('eventScore');
+  const eventTypeLabel = document.getElementById('eventTypeLabel');
   const continueBtn = document.getElementById('continueBtn');
   const startOverlay = document.getElementById('startOverlay');
   const startBtn = document.getElementById('startBtn');
@@ -379,6 +408,7 @@ body{display:flex;justify-content:center;align-items:flex-start}
   const resultsTitle = document.getElementById('resultsTitle');
   const resultsStats = document.getElementById('resultsStats');
   const resultsHighlight = document.getElementById('resultsHighlight');
+  const resultsAccident = document.getElementById('resultsAccident');
   const restartBtn = document.getElementById('restartBtn');
   const shareBtn = document.getElementById('shareBtn');
   const lapInfo = document.getElementById('lapInfo');
@@ -398,7 +428,6 @@ body{display:flex;justify-content:center;align-items:flex-start}
     cellElements.push(el);
   });
 
-  // Position player at start
   function updatePlayerPosition(index, animate) {
     const pos = getCellPosition(index);
     if (animate === false) {
@@ -411,7 +440,6 @@ body{display:flex;justify-content:center;align-items:flex-start}
   }
   updatePlayerPosition(0, false);
 
-  // ===== ACTIVE CELL HIGHLIGHT =====
   function highlightCell(index) {
     cellElements.forEach((el, i) => {
       el.classList.toggle('active', i === index);
@@ -424,12 +452,10 @@ body{display:flex;justify-content:center;align-items:flex-start}
     gameStarted = true;
     startOverlay.classList.add('hidden');
     rollBtn.disabled = false;
-    updateScore(0, false);
   });
 
   // ===== SCORE UPDATE =====
   function updateScore(delta, animate) {
-    const oldScore = score;
     score = Math.max(0, score + delta);
     navScore.textContent = score + '分';
     if (animate && delta !== 0) {
@@ -452,6 +478,7 @@ body{display:flex;justify-content:center;align-items:flex-start}
   function rollDice() {
     isRolling = true;
     rollBtn.disabled = true;
+    rollBtn.textContent = '等待中…';
 
     const result = Math.floor(Math.random() * 6) + 1;
     let shakeCount = 0;
@@ -460,14 +487,13 @@ body{display:flex;justify-content:center;align-items:flex-start}
     diceDisplay.classList.add('rolling');
 
     const shakeInterval = setInterval(() => {
-      const randomEmoji = DICE_EMOJIS[Math.floor(Math.random() * 6)];
-      diceDisplay.textContent = randomEmoji;
+      diceDisplay.textContent = DICE_EMOJIS[Math.floor(Math.random() * 6)];
       shakeCount++;
       if (shakeCount >= maxShakes) {
         clearInterval(shakeInterval);
         diceDisplay.classList.remove('rolling');
         diceDisplay.textContent = DICE_EMOJIS[result - 1];
-        diceResult.textContent = result;
+        diceResultEl.textContent = result;
 
         setTimeout(() => {
           movePiece(result);
@@ -479,14 +505,9 @@ body{display:flex;justify-content:center;align-items:flex-start}
   // ===== MOVE PIECE =====
   function movePiece(steps) {
     let stepsLeft = steps;
-    let movedOnce = false;
 
     function moveStep() {
       if (stepsLeft <= 0) {
-        // Landed — process event
-        if (movedOnce && totalSteps > 0) {
-          // Check lap bonus
-        }
         processLanding();
         return;
       }
@@ -496,21 +517,18 @@ body{display:flex;justify-content:center;align-items:flex-start}
       stepsLeft--;
       totalSteps++;
       stepCount.textContent = totalSteps;
-      movedOnce = true;
 
-      // Lap detection: passed through cell 0 (index 0)
-      if (prevCell > currentCell && currentCell !== 0) {
-        // wrapped around
-        lap++;
-        lapInfo.textContent = `第 ${lap} / 3 圈`;
-        updateScore(10, true); // lap bonus
+      // Lap detection: crossed the boundary (19→0)
+      if (prevCell === TOTAL_CELLS - 1 && currentCell === 0) {
+        lapsCompleted++;
+        lapInfo.textContent = `已完成 ${lapsCompleted} / 2 圈`;
+        updateScore(10, true);
         citiesVisited.add('环球');
       }
 
       highlightCell(currentCell);
       updatePlayerPosition(currentCell);
 
-      // Track cities
       const city = extractCity(CELLS[currentCell].name);
       if (city) citiesVisited.add(city);
 
@@ -531,9 +549,6 @@ body{display:flex;justify-content:center;align-items:flex-start}
   // ===== PROCESS LANDING =====
   function processLanding() {
     const cell = CELLS[currentCell];
-    let scoreDelta = 0;
-    let scoreLabel = '';
-    let specialEffect = false;
 
     // Track per-cell score
     if (cell.score) {
@@ -544,11 +559,12 @@ body{display:flex;justify-content:center;align-items:flex-start}
       }
     }
 
+    // Effect: back1 — move back 1, then show event card
     if (cell.effect === 'back1') {
-      scoreDelta = cell.score || 0;
+      const scoreDelta = cell.score || 0;
       updateScore(scoreDelta, true);
-      scoreLabel = (scoreDelta >= 0 ? '+' : '') + scoreDelta;
-      // Move back 1
+      const scoreLabel = (scoreDelta >= 0 ? '+' : '') + scoreDelta;
+      accidentCount++;
       setTimeout(() => {
         currentCell = (currentCell - 1 + TOTAL_CELLS) % TOTAL_CELLS;
         highlightCell(currentCell);
@@ -558,72 +574,80 @@ body{display:flex;justify-content:center;align-items:flex-start}
       return;
     }
 
+    // Effect: goto1 — teleport to start, show event card
     if (cell.effect === 'goto1') {
-      updateScore(0, false);
-      scoreLabel = '退回起点';
+      accidentCount++;
       setTimeout(() => {
         currentCell = 0;
         highlightCell(currentCell);
         updatePlayerPosition(currentCell);
-        showEventCard(cell, scoreLabel, 0);
+        showEventCard(cell, '退回起点', 0);
       }, 400);
       return;
     }
 
+    // Effect: multiply1.5
     if (cell.effect === 'multiply1.5') {
       const before = score;
       score = Math.round(score * 1.5);
-      scoreDelta = score - before;
+      const scoreDelta = score - before;
       updateScore(scoreDelta, true);
-      scoreLabel = '×1.5 → +' + scoreDelta;
-      showEventCard(cell, scoreLabel, scoreDelta, 'multiply');
+      showEventCard(cell, '×1.5 → +' + scoreDelta, scoreDelta, 'multiply');
       return;
     }
 
+    // Effect: random10to40
     if (cell.effect === 'random10to40') {
-      scoreDelta = Math.floor(Math.random() * 31) + 10;
+      const scoreDelta = Math.floor(Math.random() * 31) + 10;
       updateScore(scoreDelta, true);
-      scoreLabel = '+' + scoreDelta;
       if (scoreDelta > highestScore) {
         highestScore = scoreDelta;
         highestScoreCell = { ...cell, score: scoreDelta };
       }
-      showEventCard(cell, scoreLabel, scoreDelta);
+      showEventCard(cell, '+' + scoreDelta, scoreDelta);
       return;
     }
 
+    // Effect: jump — jump 3-6 cells forward
     if (cell.effect === 'jump') {
-      const jumpSteps = Math.floor(Math.random() * 4) + 3; // 3-6
-      const oldCell = currentCell;
+      const jumpSteps = Math.floor(Math.random() * 4) + 3;
       currentCell = (currentCell + jumpSteps) % TOTAL_CELLS;
       totalSteps += jumpSteps;
       stepCount.textContent = totalSteps;
       highlightCell(currentCell);
       updatePlayerPosition(currentCell);
-      scoreLabel = `🚀 跳跃 ${jumpSteps} 格`;
-      showEventCard(cell, scoreLabel, 0);
+      showEventCard(cell, '🚀 跳跃 ' + jumpSteps + ' 格', 0);
       return;
     }
 
+    // Effect: lap_bonus — start cell (id=1, index=0)
+    // After the first move: landed on start, give +10, no card, continue
     if (cell.effect === 'lap_bonus') {
-      scoreLabel = '+10 (经过起点)';
       updateScore(10, true);
-      showEventCard(cell, scoreLabel, 10);
+      // Check end condition: completed 2 laps
+      if (lapsCompleted >= 2) {
+        setTimeout(() => endGame(), 500);
+      } else {
+        // No card, just enable rolling again
+        rollBtn.disabled = false;
+        rollBtn.textContent = '🎲 掷骰子';
+        isRolling = false;
+      }
       return;
     }
 
-    // Normal score cell
-    scoreDelta = cell.score || 0;
-    updateScore(scoreDelta, true);
-    scoreLabel = (scoreDelta >= 0 ? '+' : '') + scoreDelta;
-    showEventCard(cell, scoreLabel, scoreDelta);
-
-    // Check game end: cell 20 (index 19) or lap >= 3
-    if (cell.id === 20) {
-      setTimeout(() => endGame(), 500);
-    } else if (lap >= 3 && cell.id <= 10) {
-      setTimeout(() => endGame(), 500);
+    // Effect: end cell (id=20)
+    if (cell.type === 'end') {
+      const scoreDelta = cell.score || 0;
+      updateScore(scoreDelta, true);
+      showEventCard(cell, '+' + scoreDelta, scoreDelta);
+      return;
     }
+
+    // Normal cell — show event card
+    const scoreDelta = cell.score || 0;
+    updateScore(scoreDelta, true);
+    showEventCard(cell, (scoreDelta >= 0 ? '+' : '') + scoreDelta, scoreDelta);
   }
 
   // ===== SHOW EVENT CARD =====
@@ -636,6 +660,16 @@ body{display:flex;justify-content:center;align-items:flex-start}
     eventDesc.textContent = cell.desc;
     eventScore.textContent = scoreLabel;
     eventScore.className = 'event-score';
+
+    // Type label
+    const typeInfo = TYPE_LABELS[cell.type];
+    if (typeInfo) {
+      eventTypeLabel.textContent = typeInfo.emoji + ' ' + typeInfo.text;
+      eventTypeLabel.style.background = typeInfo.bg;
+      eventTypeLabel.style.color = typeInfo.color;
+    }
+    eventTypeLabel.style.display = 'inline-block';
+
     if (type === 'multiply') {
       eventScore.classList.add('multiply');
     } else if (scoreDelta >= 0) {
@@ -647,28 +681,31 @@ body{display:flex;justify-content:center;align-items:flex-start}
     modalOverlay.classList.add('show');
   }
 
+  // ===== CONTINUE BUTTON =====
   continueBtn.addEventListener('click', () => {
     modalOverlay.classList.remove('show');
     isEventShowing = false;
-
-    // Check if game should end
-    const cell = CELLS[currentCell];
-    if (cell.id === 20) {
-      setTimeout(() => endGame(), 300);
-      return;
-    }
-    if (lap >= 3) {
-      setTimeout(() => endGame(), 300);
-      return;
-    }
-
     rollBtn.disabled = false;
+    rollBtn.textContent = '🎲 掷骰子';
     isRolling = false;
+
+    const cell = CELLS[currentCell];
+
+    // Check game end: reached final cell
+    if (cell.type === 'end') {
+      setTimeout(() => endGame(), 300);
+      return;
+    }
+
+    // Check game end: completed 2 laps
+    if (lapsCompleted >= 2) {
+      setTimeout(() => endGame(), 300);
+      return;
+    }
   });
 
   // ===== END GAME =====
   function endGame() {
-    // Determine rank
     let rank, title, color;
     if (score >= 300) {
       rank = '🏆'; title = '圆周旅迹·传奇旅行家'; color = '#F59E0B';
@@ -684,17 +721,19 @@ body{display:flex;justify-content:center;align-items:flex-start}
     resultsTitle.textContent = title;
     resultsTitle.style.color = color;
     resultsStats.innerHTML =
-      `你共积累了 <strong>${score} 分</strong><br>` +
-      `探索了 <strong>${citiesVisited.size} 个</strong> 城市<br>` +
-      `共走了 <strong>${totalSteps} 步</strong>`;
+      '你共积累了 <strong>' + score + ' 分</strong><br>' +
+      '探索了 <strong>' + citiesVisited.size + ' 个</strong> 城市<br>' +
+      '共走了 <strong>' + totalSteps + ' 步</strong>';
 
     if (highestScoreCell) {
       resultsHighlight.textContent =
-        `✨ 本次旅行亮点：${highestScoreCell.emoji} ${highestScoreCell.name}` +
-        (highestScoreCell.score ? `（${highestScoreCell.score >= 0 ? '+' : ''}${highestScoreCell.score}分）` : '');
+        '✨ 本次旅行亮点：' + highestScoreCell.emoji + ' ' + highestScoreCell.name +
+        (highestScoreCell.score ? '（' + (highestScoreCell.score >= 0 ? '+' : '') + highestScoreCell.score + '分）' : '');
     } else {
       resultsHighlight.textContent = '✨ 每一格都是美好的回忆！';
     }
+
+    resultsAccident.textContent = '😅 遇到了 ' + accidentCount + ' 次意外，但你依然完成了旅行！';
 
     resultsScreen.classList.add('show');
     launchConfetti();
@@ -707,29 +746,26 @@ body{display:flex;justify-content:center;align-items:flex-start}
     for (let i = 0; i < 60; i++) {
       const c = document.createElement('div');
       const size = Math.random() * 8 + 4;
-      c.style.cssText = `
-        position:absolute;
-        width:${size}px;height:${size * (0.4 + Math.random() * 0.6)}px;
-        background:${colors[Math.floor(Math.random() * colors.length)]};
-        left:${Math.random() * 100}%;
-        top:-20px;
-        border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
-        animation:confettiFall ${2 + Math.random() * 3}s ease-in forwards;
-        animation-delay:${Math.random() * 1.5}s;
-        opacity:0.9;
-      `;
+      c.style.cssText =
+        'position:absolute;' +
+        'width:' + size + 'px;height:' + (size * (0.4 + Math.random() * 0.6)) + 'px;' +
+        'background:' + colors[Math.floor(Math.random() * colors.length)] + ';' +
+        'left:' + (Math.random() * 100) + '%;' +
+        'top:-20px;' +
+        'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';' +
+        'animation:confettiFall ' + (2 + Math.random() * 3) + 's ease-in forwards;' +
+        'animation-delay:' + (Math.random() * 1.5) + 's;' +
+        'opacity:0.9;';
       confettiContainer.appendChild(c);
     }
-    // Add confetti keyframes if not exists
     if (!document.getElementById('confettiStyle')) {
       const style = document.createElement('style');
       style.id = 'confettiStyle';
-      style.textContent = `
-        @keyframes confettiFall {
-          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(100vh) rotate(${360 + Math.random() * 360}deg); opacity: 0; }
-        }
-      `;
+      style.textContent =
+        '@keyframes confettiFall {' +
+        '  0% { transform: translateY(0) rotate(0deg); opacity: 1; }' +
+        '  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }' +
+        '}';
       document.head.appendChild(style);
     }
   }
@@ -743,10 +779,11 @@ body{display:flex;justify-content:center;align-items:flex-start}
   function resetGame() {
     score = 0;
     currentCell = 0;
-    lap = 1;
+    lapsCompleted = 0;
     totalSteps = 0;
     isRolling = false;
     isEventShowing = false;
+    accidentCount = 0;
     cellScores = {};
     highestScoreCell = null;
     highestScore = 0;
@@ -754,17 +791,17 @@ body{display:flex;justify-content:center;align-items:flex-start}
 
     navScore.textContent = '0分';
     diceDisplay.textContent = '🎲';
-    diceResult.textContent = '-';
+    diceResultEl.textContent = '-';
     stepCount.textContent = '0';
-    lapInfo.textContent = '第 1 / 3 圈';
+    lapInfo.textContent = '已完成 0 / 2 圈';
 
     updatePlayerPosition(0, false);
     highlightCell(0);
-    cellElements.forEach(el => el.classList.remove('cell-visited'));
 
     gameStarted = false;
     startOverlay.classList.remove('hidden');
     rollBtn.disabled = true;
+    rollBtn.textContent = '🎲 掷骰子';
     modalOverlay.classList.remove('show');
     resultsScreen.classList.remove('show');
     confettiContainer.innerHTML = '';
@@ -779,13 +816,14 @@ body{display:flex;justify-content:center;align-items:flex-start}
     else rankText = '🌱 旅行新星';
 
     const shareText =
-      `🌍 圆周旅迹 · 旅行大富翁\n` +
-      `${rankText}\n` +
-      `🎯 积分：${score}分\n` +
-      `🗺️ 探索城市：${citiesVisited.size}个\n` +
-      `👟 总步数：${totalSteps}步\n` +
-      `${highestScoreCell ? '✨ 亮点：' + highestScoreCell.emoji + highestScoreCell.name : ''}\n` +
-      `快来试试你的旅行段位吧！`;
+      '🌍 圆周旅迹 · 旅行大富翁\n' +
+      rankText + '\n' +
+      '🎯 积分：' + score + '分\n' +
+      '🗺️ 探索城市：' + citiesVisited.size + '个\n' +
+      '👟 总步数：' + totalSteps + '步\n' +
+      '😅 意外次数：' + accidentCount + '次\n' +
+      (highestScoreCell ? '✨ 亮点：' + highestScoreCell.emoji + highestScoreCell.name : '') + '\n' +
+      '快来试试你的旅行段位吧！';
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText).then(() => {
