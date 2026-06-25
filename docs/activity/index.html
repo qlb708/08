@@ -3,190 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>活动 Demo · 08 Studio</title>
+<title>活动 Demo · 圆周旅迹</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#fff;--bg2:#f8f8f8;
-  --text:#0D0D0D;--soft:#6b7280;--muted:#9ca3af;
-  --bd:rgba(0,0,0,.09);
-  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+  --bg:#FAFAF8;--card:#fff;--text:#1a1a2e;--soft:#5a6480;--muted:#9ba3b8;
+  --line:#e8eaef;--accent:#1a56db;
+  --font:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 }
-html,body{font-family:var(--font);background:#0D0D0D;-webkit-font-smoothing:antialiased;min-height:100vh}
-
-.shell{max-width:680px;margin:0 auto;min-height:100vh;background:#0D0D0D}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:#e8e8e8;min-height:100vh;display:flex;justify-content:center}
+.shell{width:100%;max-width:390px;min-height:100vh;background:var(--bg);box-shadow:0 0 40px rgba(0,0,0,.15)}
 
 /* NAV */
-nav{height:52px;background:rgba(13,13,13,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:100}
-.logo{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:#fff}
-.lm{width:24px;height:24px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px}
-.back{margin-left:auto;font-size:12px;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:3px;padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.12);text-decoration:none;transition:all .15s}
-.back:hover{color:#fff;border-color:rgba(255,255,255,.3)}
-.back svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+nav{height:52px;background:rgba(250,250,248,.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;
+  padding:0 20px;gap:10px;position:sticky;top:0;z-index:100}
+.logo{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.back{margin-left:auto;font-size:12px;color:var(--accent);text-decoration:none;
+  padding:5px 12px;border-radius:16px;border:1px solid rgba(26,86,219,.2);transition:all .15s}
+.back:hover{background:rgba(26,86,219,.05)}
 
 /* HERO */
-.hero{padding:40px 24px 32px;text-align:center}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:4px 12px;margin-bottom:20px}
-.hero h1{font-size:clamp(32px,8vw,52px);font-weight:900;letter-spacing:-.05em;line-height:1.05;color:#fff;margin-bottom:10px}
-.hero h1 em{font-style:normal;color:#FFD700}
-.hero p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.7;max-width:400px;margin:0 auto}
+.hero{padding:32px 20px 24px;text-align:center}
+.hero-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--soft);
+  background:#f0f2f5;border-radius:20px;padding:4px 12px;margin-bottom:16px}
+.hero h1{font-size:28px;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:8px;line-height:1.15}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{font-size:13px;color:var(--soft);line-height:1.7}
 
-/* CARDS GRID */
-.cards{padding:0 16px 60px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:400px){.cards{grid-template-columns:1fr}}
+/* CARDS */
+.cards{padding:0 14px 48px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-.demo-card{background:#fff;border-radius:16px;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s;position:relative}
-.demo-card:hover{transform:translate(-3px,-3px);box-shadow:3px 3px 0 rgba(255,255,255,.15)}
+.demo-card{background:var(--card);border-radius:14px;overflow:hidden;text-decoration:none;
+  display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;
+  border:1px solid var(--line)}
+.demo-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
 .demo-card:active{transform:scale(.97)}
 
-.card-cover{height:140px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;overflow:hidden;flex-shrink:0}
-.card-cover-bg{position:absolute;inset:0;opacity:.06;font-size:120px;display:flex;align-items:center;justify-content:center;pointer-events:none}
-
-.card-body{padding:14px 14px 16px;flex:1;display:flex;flex-direction:column}
-.card-tag{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-bottom:8px;width:fit-content}
-.card-title{font-size:15px;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:5px;line-height:1.25}
+.card-cover{height:100px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden}
+.card-body{padding:12px 12px 14px;flex:1;display:flex;flex-direction:column}
+.card-tag{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 7px;border-radius:10px;margin-bottom:6px;width:fit-content;color:var(--accent);background:rgba(26,86,219,.08)}
+.card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.25}
 .card-desc{font-size:11px;color:var(--soft);line-height:1.6;flex:1}
-.card-arrow{margin-top:12px;display:flex;align-items:center;justify-content:space-between}
-.card-arrow-text{font-size:11px;font-weight:700;color:var(--text)}
-.card-arrow svg{width:16px;height:16px;stroke:var(--text);fill:none;stroke-width:2.5;stroke-linecap:round;transition:transform .15s}
-.demo-card:hover .card-arrow svg{transform:translateX(3px)}
+.card-arrow{margin-top:10px;display:flex;align-items:center;justify-content:space-between}
+.card-arrow-text{font-size:11px;font-weight:600;color:var(--accent)}
+.card-arrow-icon{font-size:12px;color:var(--accent)}
 
-/* NEW badge */
-.new-badge{position:absolute;top:10px;right:10px;background:#FFD700;color:#0D0D0D;font-size:9px;font-weight:900;letter-spacing:.06em;padding:2px 8px;border-radius:20px;text-transform:uppercase}
+/* 卡片封面色 */
+.c-star .card-cover{background:linear-gradient(135deg,#FFF3E0,#FFE0B2)}
+.c-fortune .card-cover{background:linear-gradient(135deg,#F3E5F5,#E1BEE7)}
+.c-puzzle .card-cover{background:linear-gradient(135deg,#E3F2FD,#BBDEFB)}
+.c-mystic .card-cover{background:linear-gradient(135deg,#EDE7F6,#D1C4E9)}
+.c-traveler .card-cover{background:linear-gradient(135deg,#E8F5E9,#C8E6C9)}
+.c-coming .card-cover{background:#f5f5f5}
 
-/* 各卡片主题色 */
-.card-football .card-cover{background:linear-gradient(135deg,#0D0D0D,#1a1a2e)}
-.card-football .card-tag{background:rgba(239,68,68,.1);color:#ef4444}
+/* 更多即将到来 */
+.card-coming{opacity:.5;pointer-events:none}
+.card-coming .card-cover{font-size:28px}
 
-.card-fortune .card-cover{background:linear-gradient(135deg,#1a0a2e,#2d1b4e)}
-.card-fortune .card-tag{background:rgba(139,92,246,.1);color:#8b5cf6}
-
-.card-puzzle .card-cover{background:linear-gradient(135deg,#0a1628,#0d2137)}
-.card-puzzle .card-tag{background:rgba(14,165,233,.1);color:#0ea5e9}
-
-.card-geo .card-cover{background:linear-gradient(135deg,#0a1f0a,#0d2e0d)}
-.card-geo .card-tag{background:rgba(16,185,129,.1);color:#10b981}
-.card-mystic .card-cover{background:linear-gradient(135deg,#1a0a2e,#0d0a1f)}
-.card-mystic .card-tag{background:rgba(139,92,246,.1);color:#a78bfa}
-
-/* BOTTOM LABEL */
-.bottom-label{text-align:center;padding:0 24px 20px;font-size:11px;color:rgba(255,255,255,.2);line-height:1.7}
+.bottom-note{text-align:center;padding:0 20px 24px;font-size:11px;color:var(--muted);line-height:1.7}
 </style>
 </head>
 <body>
 <div class="shell">
 
 <nav>
-  <div class="logo">
-    <div class="lm">🎯</div>
-    <span>活动 Demo</span>
-  </div>
-  <a href="/08/portfolio/" class="back">
-    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    工具集
-  </a>
+  <div class="logo">🎯 活动 Demo</div>
+  <a href="/08/portfolio/" class="back">← 工具集</a>
 </nav>
 
 <div class="hero">
-  <div class="hero-eyebrow">✦ Interactive Demo Collection</div>
-  <h1>互动<em>体验</em><br>演示集</h1>
-  <p>产品运营视角下的活动设计与用户体验探索<br>每个 Demo 都是一个完整的交互产品</p>
+  <div class="hero-tag">✦ Interactive Demo</div>
+  <h1>互动<em>体验</em>演示</h1>
+  <p>产品运营视角下的活动设计<br>每个 Demo 都是完整的交互原型</p>
 </div>
 
 <div class="cards">
 
-  <!-- 球星匹配 -->
-  <a class="demo-card card-football" href="/08/activity/star/">
-    <div class="card-cover">
-      <div class="card-cover-bg">⚽</div>
-      ⚽🏆
-    </div>
+  <a class="demo-card c-star" href="/08/activity/star/">
+    <div class="card-cover">⚽🏆</div>
     <div class="card-body">
       <div class="card-tag">世界杯</div>
       <div class="card-title">球星人格匹配</div>
-      <div class="card-desc">6题测出你最像梅西/C罗/姆巴佩，解锁专属欧洲朝圣路线 + 打卡地图</div>
-      <div class="card-arrow">
-        <span class="card-arrow-text">开始匹配</span>
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </div>
+      <div class="card-desc">6题测出你最像梅西/C罗/姆巴佩</div>
+      <div class="card-arrow"><span class="card-arrow-text">开始匹配</span><span class="card-arrow-icon">→</span></div>
     </div>
   </a>
 
-  <!-- 旅行玄学 -->
-  <a class="demo-card card-fortune" href="/08/activity/fortune/">
-    <div class="card-cover">
-      <div class="card-cover-bg">✨</div>
-      🔮✨
-    </div>
+  <a class="demo-card c-fortune" href="/08/activity/fortune/">
+    <div class="card-cover">🔮✨</div>
     <div class="card-body">
       <div class="card-tag">玄学占卜</div>
       <div class="card-title">命运之地</div>
-      <div class="card-desc">5道玄学题，测出你和哪座城市早就注定，获得专属命运签语</div>
-      <div class="card-arrow">
-        <span class="card-arrow-text">开始占卜</span>
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </div>
+      <div class="card-desc">5道题测出你和哪座城市注定相遇</div>
+      <div class="card-arrow"><span class="card-arrow-text">开始占卜</span><span class="card-arrow-icon">→</span></div>
     </div>
   </a>
 
-  <!-- 城市拼图 -->
-  <a class="demo-card card-puzzle" href="/08/activity/puzzle/">
-    <div class="card-cover">
-      <div class="card-cover-bg">🧩</div>
-      🧩🌍
-    </div>
+  <a class="demo-card c-puzzle" href="/08/activity/puzzle/">
+    <div class="card-cover">🧩🌍</div>
     <div class="card-body">
-      <div class="card-tag">足迹收集</div>
-      <div class="card-title">城市足迹拼图</div>
-      <div class="card-desc">标记你去过的24座城市，收集碎片解锁旅行家成就，分享你的足迹地图</div>
-      <div class="card-arrow">
-        <span class="card-arrow-text">开始打卡</span>
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </div>
+      <div class="card-tag">益智游戏</div>
+      <div class="card-title">风景拼图</div>
+      <div class="card-desc">3D立体拼图，拼出世界风景大片</div>
+      <div class="card-arrow"><span class="card-arrow-text">开始拼图</span><span class="card-arrow-icon">→</span></div>
     </div>
   </a>
 
-  <!-- 问天机 -->
-  <a class="demo-card card-mystic" href="/08/activity/mystic/">
-    <div class="card-cover">
-      <div class="card-cover-bg">🔮</div>
-      🔮📜🗺️
-    </div>
+  <a class="demo-card c-mystic" href="/08/activity/mystic/">
+    <div class="card-cover">🔮📜</div>
     <div class="card-body">
-      <div class="card-tag">玄学占卜</div>
+      <div class="card-tag">玄学仪式</div>
       <div class="card-title">问天机</div>
-      <div class="card-desc">水晶球摇一摇·符纸缓慢显字·地图火焰燃烧，三种仪式测出你的命定目的地</div>
-      <div class="card-arrow">
-        <span class="card-arrow-text">开始问卜</span>
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </div>
+      <div class="card-desc">三种仪式测出你的命定目的地</div>
+      <div class="card-arrow"><span class="card-arrow-text">开始问卜</span><span class="card-arrow-icon">→</span></div>
     </div>
   </a>
 
-  <!-- GEO -->
-  <a class="demo-card card-geo" href="/08/activity/geo/">
-    <div class="new-badge">NEW</div>
-    <div class="card-cover">
-      <div class="card-cover-bg">🤖</div>
-      🤖🔍
-    </div>
+  <a class="demo-card c-traveler" href="/08/activity/traveler/">
+    <div class="card-cover">🎒🗺️</div>
     <div class="card-body">
-      <div class="card-tag">GEO 优化</div>
-      <div class="card-title">AI 搜索可见性</div>
-      <div class="card-desc">粘贴旅行攻略，分析在 ChatGPT/Perplexity 中的可见性，获取优化建议</div>
-      <div class="card-arrow">
-        <span class="card-arrow-text">开始分析</span>
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </div>
+      <div class="card-tag">角色鉴定</div>
+      <div class="card-title">旅行达人鉴定</div>
+      <div class="card-desc">最多4人，测出你的旅行角色与团队默契</div>
+      <div class="card-arrow"><span class="card-arrow-text">开始鉴定</span><span class="card-arrow-icon">→</span></div>
     </div>
   </a>
 
+  <div class="demo-card c-coming card-coming">
+    <div class="card-cover">✦</div>
+    <div class="card-body">
+      <div class="card-tag">即将上线</div>
+      <div class="card-title">更多互动</div>
+      <div class="card-desc">新的活动 Demo 正在制作中</div>
+    </div>
+  </div>
+
 </div>
 
-<div class="bottom-label">
-  圆周旅迹 · 产品运营 × AI 能力展示<br>
-  每个 Demo 均为可交互的完整产品原型
-</div>
+<div class="bottom-note">圆周旅迹 · 产品运营 × 互动体验</div>
 
 </div>
 </body>
