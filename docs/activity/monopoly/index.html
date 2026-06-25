@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>圆周旅迹 · 旅行大富翁</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#FAFAF8;--card:#fff;--primary:#4A6CF7;--primary-dark:#1a56db;
+  --orange:#FFB347;--blue:#87CEEB;--green:#98D8C8;--purple:#DDA0DD;
+  --pink:#F9A8D4;--gray:#CBD5E1;--special:#1a56db;
+  --gold:#F59E0B;--red:#EF4444;--text:#1E293B;--text-light:#64748B;
+}
+html,body{height:100%;background:var(--bg);font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;color:var(--text);overflow:hidden}
+body{display:flex;justify-content:center;align-items:flex-start}
+
+/* Phone frame */
+.phone{
+  width:100%;max-width:390px;min-height:100vh;min-height:100dvh;
+  background:var(--bg);position:relative;overflow-y:auto;overflow-x:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.06),0 8px 32px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06);
+}
+
+/* Top Nav */
+.nav{
+  position:sticky;top:0;z-index:100;display:flex;align-items:center;
+  justify-content:space-between;padding:12px 16px;
+  background:rgba(250,250,248,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.nav-back{color:var(--primary);text-decoration:none;font-size:15px;font-weight:500}
+.nav-title{font-size:16px;font-weight:700}
+.nav-score{
+  background:linear-gradient(135deg,#FFD700,#FFA500);color:#fff;
+  padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;
+  min-width:56px;text-align:center;position:relative;
+}
+.score-float{
+  position:absolute;top:-4px;right:-8px;font-size:18px;font-weight:800;
+  pointer-events:none;animation:scoreUp .9s ease forwards;
+}
+.score-float.negative{color:var(--red)}
+.score-float.positive{color:#22C55E}
+@keyframes scoreUp{
+  0%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-36px)}
+}
+
+/* Board Area */
+.board-area{
+  display:flex;flex-direction:column;align-items:center;
+  padding:20px 0 10px;
+}
+.board-wrap{
+  width:320px;height:320px;position:relative;
+}
+.board-bg{
+  width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle,rgba(74,108,247,.04) 0%,rgba(74,108,247,.01) 70%);
+  position:absolute;top:0;left:0;
+}
+
+/* Cells */
+.cell{
+  position:absolute;width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;cursor:default;
+  box-shadow:0 1px 3px rgba(0,0,0,.08);
+  transition:transform .15s,box-shadow .15s;
+  transform:translate(-50%,-50%);
+  z-index:2;
+}
+.cell.active{
+  box-shadow:0 0 0 3px var(--gold),0 2px 8px rgba(245,158,11,.35);
+  animation:cellPulse 1.2s ease-in-out infinite;z-index:5;
+}
+@keyframes cellPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(1.12)}
+}
+.cell-visited{opacity:.7}
+
+/* Cell types */
+.cell-start{background:var(--special);color:#fff}
+.cell-checkin{background:var(--orange)}
+.cell-accident{background:var(--gray)}
+.cell-expert{background:var(--green)}
+.cell-explore{background:var(--blue)}
+.cell-treasure{background:var(--purple)}
+.cell-event{background:var(--pink)}
+.cell-cert{background:var(--special);color:#fff}
+.cell-transfer{background:var(--special);color:#fff}
+.cell-star{background:var(--special);color:#fff}
+.cell-end{background:linear-gradient(135deg,var(--special),#6366F1);color:#fff}
+
+/* Center Logo */
+.center-logo{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;z-index:1;pointer-events:none;
+}
+.center-logo .logo-text{font-size:15px;font-weight:800;color:var(--primary-dark);white-space:nowrap}
+.center-logo .logo-sub{font-size:10px;color:var(--text-light);margin-top:2px}
+
+/* Player piece */
+.player{
+  position:absolute;z-index:10;font-size:22px;
+  transform:translate(-50%,-50%);
+  transition:left .15s ease,top .15s ease;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.25));
+  pointer-events:none;
+}
+
+/* Dice Area */
+.dice-area{
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 20px 20px;gap:8px;
+}
+.dice-display{
+  font-size:60px;line-height:1;transition:transform .1s;
+}
+.dice-display.rolling{animation:diceShake .15s ease infinite}
+@keyframes diceShake{
+  0%{transform:rotate(0) scale(1)}
+  25%{transform:rotate(-15deg) scale(1.1)}
+  50%{transform:rotate(10deg) scale(.95)}
+  75%{transform:rotate(-8deg) scale(1.05)}
+  100%{transform:rotate(0) scale(1)}
+}
+.roll-btn{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;border:none;border-radius:16px;padding:14px 48px;
+  font-size:17px;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 16px rgba(74,108,247,.35);
+  transition:all .2s;
+}
+.roll-btn:active:not(:disabled){transform:scale(.95)}
+.roll-btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.dice-info{display:flex;gap:24px;font-size:13px;color:var(--text-light);font-weight:500}
+.dice-info span{display:flex;align-items:center;gap:4px}
+
+/* Event Card Modal */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.event-card{
+  background:var(--card);border-radius:24px 24px 0 0;
+  padding:32px 24px 40px;width:100%;max-width:390px;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.modal-overlay.show .event-card{transform:translateY(0)}
+.event-emoji{font-size:48px;text-align:center;margin-bottom:8px}
+.event-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:6px}
+.event-desc{font-size:14px;color:var(--text-light);text-align:center;line-height:1.6;margin-bottom:16px}
+.event-score{
+  text-align:center;font-size:28px;font-weight:900;margin-bottom:24px;
+}
+.event-score.positive{color:#22C55E}
+.event-score.negative{color:var(--red)}
+.event-score.multiply{color:var(--purple)}
+.continue-btn{
+  display:block;width:100%;padding:14px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+}
+.continue-btn:active{transform:scale(.97)}
+
+/* Results Screen */
+.results-screen{
+  position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;
+  background:rgba(250,250,248,.97);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .4s;
+}
+.results-screen.show{opacity:1;pointer-events:auto}
+.results-card{
+  background:var(--card);border-radius:24px;padding:32px 24px;
+  max-width:340px;width:90%;text-align:center;
+  box-shadow:0 12px 48px rgba(0,0,0,.12);
+  transform:scale(.9);transition:transform .4s cubic-bezier(.22,1,.36,1);
+}
+.results-screen.show .results-card{transform:scale(1)}
+.results-rank{font-size:42px;margin-bottom:4px}
+.results-title{font-size:22px;font-weight:900;margin-bottom:16px}
+.results-stats{font-size:14px;color:var(--text-light);line-height:2;margin-bottom:8px}
+.results-stats strong{color:var(--text);font-size:16px}
+.results-highlight{
+  background:linear-gradient(135deg,#FEF3C7,#FDE68A);
+  border-radius:12px;padding:12px 16px;margin:16px 0 24px;
+  font-size:13px;color:#92400E;
+}
+.results-buttons{display:flex;flex-direction:column;gap:10px}
+.results-btn{
+  padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;
+}
+.results-btn.primary{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;
+  box-shadow:0 4px 12px rgba(74,108,247,.3);
+}
+.results-btn.secondary{background:var(--card);color:var(--primary);border:2px solid var(--primary)}
+.results-btn:active{transform:scale(.97)}
+.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:310}
+
+/* Start overlay */
+.start-overlay{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:50;
+  background:rgba(250,250,248,.85);backdrop-filter:blur(4px);
+  transition:opacity .4s;
+}
+.start-overlay.hidden{opacity:0;pointer-events:none}
+.start-text{font-size:16px;color:var(--text-light);margin-bottom:12px;font-weight:500}
+.start-btn{
+  background:linear-gradient(135deg,#F59E0B,#EF4444);
+  color:#fff;border:none;border-radius:16px;padding:14px 40px;
+  font-size:18px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 16px rgba(245,158,11,.35);
+  animation:btnGlow 2s ease-in-out infinite;
+}
+@keyframes btnGlow{
+  0%,100%{box-shadow:0 4px 16px rgba(245,158,11,.35)}
+  50%{box-shadow:0 4px 24px rgba(245,158,11,.55)}
+}
+.start-btn:active{transform:scale(.95)}
+
+/* Lap indicator */
+.lap-info{
+  text-align:center;font-size:12px;color:var(--text-light);
+  padding:0 0 8px;font-weight:500;
+}
+
+/* Scrollbar */
+.phone::-webkit-scrollbar{width:0}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <!-- Top Nav -->
+  <div class="nav">
+    <a href="/08/activity/" class="nav-back">← 返回</a>
+    <span class="nav-title">🎲 旅行大富翁</span>
+    <div class="nav-score" id="navScore">0分</div>
+  </div>
+
+  <!-- Board -->
+  <div class="board-area">
+    <div class="board-wrap" id="boardWrap">
+      <div class="board-bg"></div>
+      <div class="center-logo">
+        <div class="logo-text">🌍 圆周旅迹</div>
+        <div class="logo-sub">掷骰子，开始旅行冒险！</div>
+      </div>
+      <!-- Start overlay -->
+      <div class="start-overlay" id="startOverlay">
+        <div class="start-text">准备好开启旅程了吗？</div>
+        <button class="start-btn" id="startBtn">🧳 开始旅行</button>
+      </div>
+      <!-- Player piece -->
+      <div class="player" id="player">🧳</div>
+    </div>
+    <div class="lap-info" id="lapInfo">第 1 / 3 圈</div>
+  </div>
+
+  <!-- Dice Area -->
+  <div class="dice-area" id="diceArea">
+    <div class="dice-display" id="diceDisplay">🎲</div>
+    <button class="roll-btn" id="rollBtn" disabled>掷骰子</button>
+    <div class="dice-info">
+      <span>🎯 本次 <strong id="diceResult">-</strong> 点</span>
+      <span>👟 已走 <strong id="stepCount">0</strong> 步</span>
+    </div>
+  </div>
+</div>
+
+<!-- Event Card Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="event-card">
+    <div class="event-emoji" id="eventEmoji">📸</div>
+    <div class="event-title" id="eventTitle">京都·打卡</div>
+    <div class="event-desc" id="eventDesc">发现绝美枫叶！</div>
+    <div class="event-score" id="eventScore">+15</div>
+    <button class="continue-btn" id="continueBtn">继续旅行 ✈️</button>
+  </div>
+</div>
+
+<!-- Results Screen -->
+<div class="results-screen" id="resultsScreen">
+  <div class="confetti" id="confetti"></div>
+  <div class="results-card">
+    <div class="results-rank" id="resultsRank">🏆</div>
+    <div class="results-title" id="resultsTitle">传奇旅行家</div>
+    <div class="results-stats" id="resultsStats"></div>
+    <div class="results-highlight" id="resultsHighlight"></div>
+    <div class="results-buttons">
+      <button class="results-btn primary" id="restartBtn">🔄 再来一局</button>
+      <button class="results-btn secondary" id="shareBtn">📋 分享结果</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ===== CELL DATA =====
+  const CELLS = [
+    { id:1,  emoji:'🚀', name:'出发',       type:'start',   desc:'旅途的起点！',          score:0,   effect:'lap_bonus' },
+    { id:2,  emoji:'📸', name:'京都·打卡',   type:'checkin', desc:'发现绝美枫叶，笔记获1200赞！', score:15 },
+    { id:3,  emoji:'😅', name:'意外',        type:'accident',desc:'手机没电，错过日落',    score:-5,  effect:'back1' },
+    { id:4,  emoji:'🎯', name:'达人推荐',    type:'expert',  desc:'遇到美食达人强烈推荐，种草成功！', score:20 },
+    { id:5,  emoji:'🗺️', name:'曼谷·探索',   type:'explore', desc:'解锁圆周旅迹隐藏路线',  score:15 },
+    { id:6,  emoji:'💎', name:'宝藏',        type:'treasure',desc:'发现圆周旅迹限定活动，积分×1.5！', effect:'multiply1.5' },
+    { id:7,  emoji:'🎫', name:'活动节',      type:'event',   desc:'圆周旅迹旅行节！',      score:25 },
+    { id:8,  emoji:'😅', name:'意外',        type:'accident',desc:'遇到暴雨，行程取消',    score:-10 },
+    { id:9,  emoji:'📸', name:'巴黎·打卡',   type:'checkin', desc:'埃菲尔铁塔前，获得100个新粉丝', score:15 },
+    { id:10, emoji:'🏆', name:'认证',        type:'cert',    desc:'获得圆周旅迹·旅行达人认证！', score:30 },
+    { id:11, emoji:'🚀', name:'中转站',      type:'transfer',desc:'免费快进到任意格子！',   effect:'jump' },
+    { id:12, emoji:'🎯', name:'达人合作',    type:'expert',  desc:'与头部达人联动，曝光量翻倍', score:20 },
+    { id:13, emoji:'😅', name:'意外',        type:'accident',desc:'护照丢了！',             effect:'goto1' },
+    { id:14, emoji:'🗺️', name:'东京·探索',   type:'explore', desc:'挖到冷门居酒屋，圆周社区爆料+30赞', score:15 },
+    { id:15, emoji:'💎', name:'彩蛋',        type:'treasure',desc:'圆周旅迹彩蛋格！随机奖励', effect:'random10to40' },
+    { id:16, emoji:'📸', name:'圣托里尼·打卡',type:'checkin',desc:'蓝顶教堂，刷爆小红书',  score:15 },
+    { id:17, emoji:'🎫', name:'种草成功',    type:'event',   desc:'你的攻略帮助了500人',   score:20 },
+    { id:18, emoji:'😅', name:'意外',        type:'accident',desc:'行李超重罚款',          score:-8 },
+    { id:19, emoji:'🏆', name:'圆周之星',    type:'star',    desc:'被评为本月圆周之星！',  score:35 },
+    { id:20, emoji:'🎊', name:'终点',        type:'end',     desc:'完成一次圆周旅迹！',    score:50 },
+  ];
+
+  // ===== BOARD LAYOUT (20 cells in a circle) =====
+  const BOARD_SIZE = 320;
+  const CENTER = BOARD_SIZE / 2;
+  const RADIUS = 135;
+  const TOTAL_CELLS = 20;
+  const ANGLE_STEP = (2 * Math.PI) / TOTAL_CELLS;
+  // Start from top (12 o'clock), go clockwise
+  const START_ANGLE = -Math.PI / 2;
+
+  function getCellPosition(index) {
+    const angle = START_ANGLE + index * ANGLE_STEP;
+    return {
+      x: CENTER + RADIUS * Math.cos(angle),
+      y: CENTER + RADIUS * Math.sin(angle)
+    };
+  }
+
+  // ===== GAME STATE =====
+  let score = 0;
+  let currentCell = 0; // 0-indexed
+  let lap = 1;
+  let totalSteps = 0;
+  let gameStarted = false;
+  let isRolling = false;
+  let isEventShowing = false;
+  let cellScores = {}; // track score gained per cell
+  let highestScoreCell = null;
+  let highestScore = 0;
+  let citiesVisited = new Set();
+
+  // ===== DOM REFS =====
+  const boardWrap = document.getElementById('boardWrap');
+  const player = document.getElementById('player');
+  const navScore = document.getElementById('navScore');
+  const rollBtn = document.getElementById('rollBtn');
+  const diceDisplay = document.getElementById('diceDisplay');
+  const diceResult = document.getElementById('diceResult');
+  const stepCount = document.getElementById('stepCount');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const eventEmoji = document.getElementById('eventEmoji');
+  const eventTitle = document.getElementById('eventTitle');
+  const eventDesc = document.getElementById('eventDesc');
+  const eventScore = document.getElementById('eventScore');
+  const continueBtn = document.getElementById('continueBtn');
+  const startOverlay = document.getElementById('startOverlay');
+  const startBtn = document.getElementById('startBtn');
+  const resultsScreen = document.getElementById('resultsScreen');
+  const resultsRank = document.getElementById('resultsRank');
+  const resultsTitle = document.getElementById('resultsTitle');
+  const resultsStats = document.getElementById('resultsStats');
+  const resultsHighlight = document.getElementById('resultsHighlight');
+  const restartBtn = document.getElementById('restartBtn');
+  const shareBtn = document.getElementById('shareBtn');
+  const lapInfo = document.getElementById('lapInfo');
+  const confettiContainer = document.getElementById('confetti');
+
+  // ===== INIT BOARD =====
+  const cellElements = [];
+  CELLS.forEach((cell, i) => {
+    const pos = getCellPosition(i);
+    const el = document.createElement('div');
+    el.className = `cell cell-${cell.type}`;
+    el.textContent = cell.emoji;
+    el.style.left = pos.x + 'px';
+    el.style.top = pos.y + 'px';
+    el.dataset.index = i;
+    boardWrap.appendChild(el);
+    cellElements.push(el);
+  });
+
+  // Position player at start
+  function updatePlayerPosition(index, animate) {
+    const pos = getCellPosition(index);
+    if (animate === false) {
+      player.style.transition = 'none';
+    } else {
+      player.style.transition = 'left .15s ease, top .15s ease';
+    }
+    player.style.left = pos.x + 'px';
+    player.style.top = pos.y + 'px';
+  }
+  updatePlayerPosition(0, false);
+
+  // ===== ACTIVE CELL HIGHLIGHT =====
+  function highlightCell(index) {
+    cellElements.forEach((el, i) => {
+      el.classList.toggle('active', i === index);
+    });
+  }
+  highlightCell(0);
+
+  // ===== START GAME =====
+  startBtn.addEventListener('click', () => {
+    gameStarted = true;
+    startOverlay.classList.add('hidden');
+    rollBtn.disabled = false;
+    updateScore(0, false);
+  });
+
+  // ===== SCORE UPDATE =====
+  function updateScore(delta, animate) {
+    const oldScore = score;
+    score = Math.max(0, score + delta);
+    navScore.textContent = score + '分';
+    if (animate && delta !== 0) {
+      const floater = document.createElement('div');
+      floater.className = 'score-float ' + (delta > 0 ? 'positive' : 'negative');
+      floater.textContent = (delta > 0 ? '+' : '') + delta;
+      navScore.appendChild(floater);
+      setTimeout(() => floater.remove(), 900);
+    }
+  }
+
+  // ===== DICE ROLLING =====
+  const DICE_EMOJIS = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+
+  rollBtn.addEventListener('click', () => {
+    if (isRolling || isEventShowing || !gameStarted) return;
+    rollDice();
+  });
+
+  function rollDice() {
+    isRolling = true;
+    rollBtn.disabled = true;
+
+    const result = Math.floor(Math.random() * 6) + 1;
+    let shakeCount = 0;
+    const maxShakes = 6 + Math.floor(Math.random() * 4);
+
+    diceDisplay.classList.add('rolling');
+
+    const shakeInterval = setInterval(() => {
+      const randomEmoji = DICE_EMOJIS[Math.floor(Math.random() * 6)];
+      diceDisplay.textContent = randomEmoji;
+      shakeCount++;
+      if (shakeCount >= maxShakes) {
+        clearInterval(shakeInterval);
+        diceDisplay.classList.remove('rolling');
+        diceDisplay.textContent = DICE_EMOJIS[result - 1];
+        diceResult.textContent = result;
+
+        setTimeout(() => {
+          movePiece(result);
+        }, 300);
+      }
+    }, 80);
+  }
+
+  // ===== MOVE PIECE =====
+  function movePiece(steps) {
+    let stepsLeft = steps;
+    let movedOnce = false;
+
+    function moveStep() {
+      if (stepsLeft <= 0) {
+        // Landed — process event
+        if (movedOnce && totalSteps > 0) {
+          // Check lap bonus
+        }
+        processLanding();
+        return;
+      }
+
+      const prevCell = currentCell;
+      currentCell = (currentCell + 1) % TOTAL_CELLS;
+      stepsLeft--;
+      totalSteps++;
+      stepCount.textContent = totalSteps;
+      movedOnce = true;
+
+      // Lap detection: passed through cell 0 (index 0)
+      if (prevCell > currentCell && currentCell !== 0) {
+        // wrapped around
+        lap++;
+        lapInfo.textContent = `第 ${lap} / 3 圈`;
+        updateScore(10, true); // lap bonus
+        citiesVisited.add('环球');
+      }
+
+      highlightCell(currentCell);
+      updatePlayerPosition(currentCell);
+
+      // Track cities
+      const city = extractCity(CELLS[currentCell].name);
+      if (city) citiesVisited.add(city);
+
+      setTimeout(moveStep, 150);
+    }
+
+    moveStep();
+  }
+
+  function extractCity(name) {
+    const cities = ['京都','曼谷','巴黎','东京','圣托里尼'];
+    for (const c of cities) {
+      if (name.includes(c)) return c;
+    }
+    return null;
+  }
+
+  // ===== PROCESS LANDING =====
+  function processLanding() {
+    const cell = CELLS[currentCell];
+    let scoreDelta = 0;
+    let scoreLabel = '';
+    let specialEffect = false;
+
+    // Track per-cell score
+    if (cell.score) {
+      cellScores[cell.id] = (cellScores[cell.id] || 0) + cell.score;
+      if (Math.abs(cell.score) > highestScore) {
+        highestScore = Math.abs(cell.score);
+        highestScoreCell = cell;
+      }
+    }
+
+    if (cell.effect === 'back1') {
+      scoreDelta = cell.score || 0;
+      updateScore(scoreDelta, true);
+      scoreLabel = (scoreDelta >= 0 ? '+' : '') + scoreDelta;
+      // Move back 1
+      setTimeout(() => {
+        currentCell = (currentCell - 1 + TOTAL_CELLS) % TOTAL_CELLS;
+        highlightCell(currentCell);
+        updatePlayerPosition(currentCell);
+        showEventCard(cell, scoreLabel, scoreDelta);
+      }, 400);
+      return;
+    }
+
+    if (cell.effect === 'goto1') {
+      updateScore(0, false);
+      scoreLabel = '退回起点';
+      setTimeout(() => {
+        currentCell = 0;
+        highlightCell(currentCell);
+        updatePlayerPosition(currentCell);
+        showEventCard(cell, scoreLabel, 0);
+      }, 400);
+      return;
+    }
+
+    if (cell.effect === 'multiply1.5') {
+      const before = score;
+      score = Math.round(score * 1.5);
+      scoreDelta = score - before;
+      updateScore(scoreDelta, true);
+      scoreLabel = '×1.5 → +' + scoreDelta;
+      showEventCard(cell, scoreLabel, scoreDelta, 'multiply');
+      return;
+    }
+
+    if (cell.effect === 'random10to40') {
+      scoreDelta = Math.floor(Math.random() * 31) + 10;
+      updateScore(scoreDelta, true);
+      scoreLabel = '+' + scoreDelta;
+      if (scoreDelta > highestScore) {
+        highestScore = scoreDelta;
+        highestScoreCell = { ...cell, score: scoreDelta };
+      }
+      showEventCard(cell, scoreLabel, scoreDelta);
+      return;
+    }
+
+    if (cell.effect === 'jump') {
+      const jumpSteps = Math.floor(Math.random() * 4) + 3; // 3-6
+      const oldCell = currentCell;
+      currentCell = (currentCell + jumpSteps) % TOTAL_CELLS;
+      totalSteps += jumpSteps;
+      stepCount.textContent = totalSteps;
+      highlightCell(currentCell);
+      updatePlayerPosition(currentCell);
+      scoreLabel = `🚀 跳跃 ${jumpSteps} 格`;
+      showEventCard(cell, scoreLabel, 0);
+      return;
+    }
+
+    if (cell.effect === 'lap_bonus') {
+      scoreLabel = '+10 (经过起点)';
+      updateScore(10, true);
+      showEventCard(cell, scoreLabel, 10);
+      return;
+    }
+
+    // Normal score cell
+    scoreDelta = cell.score || 0;
+    updateScore(scoreDelta, true);
+    scoreLabel = (scoreDelta >= 0 ? '+' : '') + scoreDelta;
+    showEventCard(cell, scoreLabel, scoreDelta);
+
+    // Check game end: cell 20 (index 19) or lap >= 3
+    if (cell.id === 20) {
+      setTimeout(() => endGame(), 500);
+    } else if (lap >= 3 && cell.id <= 10) {
+      setTimeout(() => endGame(), 500);
+    }
+  }
+
+  // ===== SHOW EVENT CARD =====
+  function showEventCard(cell, scoreLabel, scoreDelta, type) {
+    isEventShowing = true;
+    rollBtn.disabled = true;
+
+    eventEmoji.textContent = cell.emoji;
+    eventTitle.textContent = cell.name;
+    eventDesc.textContent = cell.desc;
+    eventScore.textContent = scoreLabel;
+    eventScore.className = 'event-score';
+    if (type === 'multiply') {
+      eventScore.classList.add('multiply');
+    } else if (scoreDelta >= 0) {
+      eventScore.classList.add('positive');
+    } else {
+      eventScore.classList.add('negative');
+    }
+
+    modalOverlay.classList.add('show');
+  }
+
+  continueBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('show');
+    isEventShowing = false;
+
+    // Check if game should end
+    const cell = CELLS[currentCell];
+    if (cell.id === 20) {
+      setTimeout(() => endGame(), 300);
+      return;
+    }
+    if (lap >= 3) {
+      setTimeout(() => endGame(), 300);
+      return;
+    }
+
+    rollBtn.disabled = false;
+    isRolling = false;
+  });
+
+  // ===== END GAME =====
+  function endGame() {
+    // Determine rank
+    let rank, title, color;
+    if (score >= 300) {
+      rank = '🏆'; title = '圆周旅迹·传奇旅行家'; color = '#F59E0B';
+    } else if (score >= 200) {
+      rank = '⭐'; title = '圆周旅迹·资深探索者'; color = '#6366F1';
+    } else if (score >= 100) {
+      rank = '🎒'; title = '圆周旅迹·进阶旅行者'; color = '#3B82F6';
+    } else {
+      rank = '🌱'; title = '圆周旅迹·旅行新星'; color = '#22C55E';
+    }
+
+    resultsRank.textContent = rank;
+    resultsTitle.textContent = title;
+    resultsTitle.style.color = color;
+    resultsStats.innerHTML =
+      `你共积累了 <strong>${score} 分</strong><br>` +
+      `探索了 <strong>${citiesVisited.size} 个</strong> 城市<br>` +
+      `共走了 <strong>${totalSteps} 步</strong>`;
+
+    if (highestScoreCell) {
+      resultsHighlight.textContent =
+        `✨ 本次旅行亮点：${highestScoreCell.emoji} ${highestScoreCell.name}` +
+        (highestScoreCell.score ? `（${highestScoreCell.score >= 0 ? '+' : ''}${highestScoreCell.score}分）` : '');
+    } else {
+      resultsHighlight.textContent = '✨ 每一格都是美好的回忆！';
+    }
+
+    resultsScreen.classList.add('show');
+    launchConfetti();
+  }
+
+  // ===== CONFETTI =====
+  function launchConfetti() {
+    confettiContainer.innerHTML = '';
+    const colors = ['#FFB347','#87CEEB','#98D8C8','#DDA0DD','#F9A8D4','#F59E0B','#EF4444','#6366F1'];
+    for (let i = 0; i < 60; i++) {
+      const c = document.createElement('div');
+      const size = Math.random() * 8 + 4;
+      c.style.cssText = `
+        position:absolute;
+        width:${size}px;height:${size * (0.4 + Math.random() * 0.6)}px;
+        background:${colors[Math.floor(Math.random() * colors.length)]};
+        left:${Math.random() * 100}%;
+        top:-20px;
+        border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+        animation:confettiFall ${2 + Math.random() * 3}s ease-in forwards;
+        animation-delay:${Math.random() * 1.5}s;
+        opacity:0.9;
+      `;
+      confettiContainer.appendChild(c);
+    }
+    // Add confetti keyframes if not exists
+    if (!document.getElementById('confettiStyle')) {
+      const style = document.createElement('style');
+      style.id = 'confettiStyle';
+      style.textContent = `
+        @keyframes confettiFall {
+          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(100vh) rotate(${360 + Math.random() * 360}deg); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
+  // ===== RESTART =====
+  restartBtn.addEventListener('click', () => {
+    resultsScreen.classList.remove('show');
+    resetGame();
+  });
+
+  function resetGame() {
+    score = 0;
+    currentCell = 0;
+    lap = 1;
+    totalSteps = 0;
+    isRolling = false;
+    isEventShowing = false;
+    cellScores = {};
+    highestScoreCell = null;
+    highestScore = 0;
+    citiesVisited = new Set();
+
+    navScore.textContent = '0分';
+    diceDisplay.textContent = '🎲';
+    diceResult.textContent = '-';
+    stepCount.textContent = '0';
+    lapInfo.textContent = '第 1 / 3 圈';
+
+    updatePlayerPosition(0, false);
+    highlightCell(0);
+    cellElements.forEach(el => el.classList.remove('cell-visited'));
+
+    gameStarted = false;
+    startOverlay.classList.remove('hidden');
+    rollBtn.disabled = true;
+    modalOverlay.classList.remove('show');
+    resultsScreen.classList.remove('show');
+    confettiContainer.innerHTML = '';
+  }
+
+  // ===== SHARE =====
+  shareBtn.addEventListener('click', () => {
+    let rankText;
+    if (score >= 300) rankText = '🏆 传奇旅行家';
+    else if (score >= 200) rankText = '⭐ 资深探索者';
+    else if (score >= 100) rankText = '🎒 进阶旅行者';
+    else rankText = '🌱 旅行新星';
+
+    const shareText =
+      `🌍 圆周旅迹 · 旅行大富翁\n` +
+      `${rankText}\n` +
+      `🎯 积分：${score}分\n` +
+      `🗺️ 探索城市：${citiesVisited.size}个\n` +
+      `👟 总步数：${totalSteps}步\n` +
+      `${highestScoreCell ? '✨ 亮点：' + highestScoreCell.emoji + highestScoreCell.name : ''}\n` +
+      `快来试试你的旅行段位吧！`;
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(() => {
+        shareBtn.textContent = '✅ 已复制到剪贴板';
+        setTimeout(() => { shareBtn.textContent = '📋 分享结果'; }, 2000);
+      });
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = shareText;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      shareBtn.textContent = '✅ 已复制到剪贴板';
+      setTimeout(() => { shareBtn.textContent = '📋 分享结果'; }, 2000);
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
