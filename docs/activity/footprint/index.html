@@ -5,527 +5,135 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>我的旅行足迹</title>
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#F2F0EC;--card:#FFFFFF;--text:#1D1D1F;--text-sec:#888;--border:#e2e8f0;--primary:#1a56db;--primary-light:#e8efff;--radius:16px;--radius-sm:12px;--shadow:0 2px 16px rgba(0,0,0,0.07);--shadow-lg:0 8px 30px rgba(0,0,0,0.12)}
+html{font-size:16px}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#E8E6E2;color:var(--text);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:20px 0}
+.phone{width:100%;max-width:390px;min-height:100vh;background:var(--bg);position:relative;box-shadow:0 0 60px rgba(0,0,0,0.15);border-radius:0;overflow:hidden}
+@media(min-width:480px){body{padding:20px;align-items:center}.phone{min-height:calc(100vh - 40px);border-radius:32px;max-height:844px;overflow-y:auto;overflow-x:hidden}.phone::-webkit-scrollbar{width:0}}
 
-:root {
-  --bg: #FAFAF8;
-  --card: #FFFFFF;
-  --text: #1D1D1F;
-  --text-secondary: #8E8E93;
-  --border: #E8E8E8;
-  --primary: #007AFF;
-  --primary-light: #E8F2FF;
-  --radius: 16px;
-  --radius-sm: 12px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.06);
-  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-}
+/* ===== Nav ===== */
+.nav{position:sticky;top:0;z-index:100;height:52px;background:rgba(250,250,248,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid rgba(0,0,0,0.07)}
+.nav-back{color:#555;text-decoration:none;font-size:15px;font-weight:500}
+.nav-back:hover{color:#333}
+.nav-title{font-size:16px;font-weight:600;color:#333}
+.nav-spacer{width:60px}
 
-html { font-size: 16px; }
-
-body {
-  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
-  background: #E5E5EA;
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px 0;
-}
-
-/* ===== Phone Shell ===== */
-.phone {
-  width: 100%;
-  max-width: 390px;
-  min-height: 100vh;
-  background: var(--bg);
-  position: relative;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.04), var(--shadow-lg), 0 0 60px rgba(0,0,0,0.08);
-  border-radius: 0;
-  overflow: hidden;
-}
-@media (min-width: 480px) {
-  body { padding: 20px; align-items: center; }
-  .phone { min-height: calc(100vh - 40px); border-radius: 32px; max-height: 844px; overflow-y: auto; overflow-x: hidden; }
-  .phone::-webkit-scrollbar { width: 0; }
-}
-
-/* ===== Top Nav ===== */
-.top-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(250,250,248,0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.top-nav .back {
-  color: var(--primary);
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.top-nav .title {
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-}
-.top-nav .badge {
-  background: var(--primary);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  min-width: 44px;
-  text-align: center;
-}
-
-/* ===== Tab Content ===== */
-.tab-content {
-  display: none;
-  padding-bottom: 80px;
-  animation: fadeIn 0.25s ease;
-}
-.tab-content.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+/* ===== Tabs ===== */
+.tab-content{display:none;padding-bottom:72px;animation:fadeIn 0.25s ease}
+.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ===== Bottom Tab Bar ===== */
-.tab-bar {
-  position: sticky;
-  bottom: 0;
-  z-index: 100;
-  background: rgba(255,255,255,0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  display: flex;
-  border-top: 1px solid var(--border);
-  padding-bottom: var(--safe-bottom);
-}
-.tab-bar .tab-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 0 6px;
-  border: none;
-  background: none;
-  font-size: 10px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: color 0.2s;
-  gap: 2px;
-}
-.tab-bar .tab-btn .tab-icon { font-size: 22px; line-height: 1; }
-.tab-bar .tab-btn.active { color: var(--primary); }
+.tab-bar{position:fixed;bottom:0;z-index:100;background:rgba(250,250,248,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;border-top:1px solid rgba(0,0,0,0.07);width:100%;max-width:390px;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(min-width:480px){.tab-bar{position:sticky;bottom:0;border-radius:0 0 32px 32px}}
+.tab-bar .tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0 10px;border:none;background:none;font-size:10px;color:var(--text-sec);cursor:pointer;transition:color 0.2s;gap:3px;font-family:inherit}
+.tab-bar .tab-btn .tab-icon{font-size:22px;line-height:1}
+.tab-bar .tab-btn.active{color:var(--primary)}
 
-/* ===== Map Tab ===== */
-.map-header {
-  text-align: center;
-  padding: 20px 20px 8px;
-}
-.map-header h2 {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.map-header p {
-  font-size: 13px;
-  color: var(--text-secondary);
-}
+/* ===== Tab: Map ===== */
+.map-header{text-align:center;padding:20px 20px 4px}
+.map-header h2{font-size:20px;font-weight:700;margin-bottom:4px}
+.map-header p{font-size:13px;color:var(--text-sec)}
+.map-deco{text-align:center;font-size:48px;padding:12px 0;opacity:0.12;letter-spacing:16px}
 
-.continent-group {
-  padding: 8px 16px;
-}
-.continent-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.continent-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
+.continent-group{padding:8px 20px 4px}
+.continent-label{font-size:12px;font-weight:600;color:var(--text-sec);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.continent-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-.city-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-}
+.city-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding-bottom:12px}
 
-.city-bubble {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 8px 14px;
-  border-radius: 24px;
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  user-select: none;
-  position: relative;
-  white-space: nowrap;
-}
-.city-bubble:active { transform: scale(0.93); }
-.city-bubble .emoji { font-size: 16px; }
+/* City bubbles - unvisited */
+.city-card{display:flex;flex-direction:column;align-items:center;gap:2px;width:72px;padding:12px 6px 10px;border-radius:12px;background:#fff;border:1.5px solid #e8e8e8;font-size:11px;font-weight:500;color:#555;cursor:pointer;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);user-select:none;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.city-card:active{transform:scale(0.93)}
+.city-card .emoji{font-size:24px}
 
-.city-bubble.visited {
-  color: #fff;
-  border-color: transparent;
-  font-weight: 600;
-}
-.city-bubble.visited .check {
-  display: inline;
-  margin-left: 2px;
-  font-size: 12px;
-}
-.city-bubble .check { display: none; }
+/* City cards - visited */
+.city-card.visited{background:linear-gradient(135deg,#1a56db,#4f87f0);color:#fff;border-color:transparent;position:relative;box-shadow:0 4px 12px rgba(26,86,219,0.25)}
+.city-card.visited::after{content:'✓';position:absolute;top:4px;right:6px;font-size:10px;color:#4ade80;font-weight:700}
 
-/* City theme colors */
-.city-bubble.visited[data-theme="tokyo"] { background: linear-gradient(135deg, #FF6B9D, #FF8E8E); }
-.city-bubble.visited[data-theme="seoul"] { background: linear-gradient(135deg, #667eea, #764ba2); }
-.city-bubble.visited[data-theme="bangkok"] { background: linear-gradient(135deg, #f093fb, #f5576c); }
-.city-bubble.visited[data-theme="kyoto"] { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-.city-bubble.visited[data-theme="bali"] { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-.city-bubble.visited[data-theme="shanghai"] { background: linear-gradient(135deg, #fa709a, #fee140); }
-.city-bubble.visited[data-theme="hongkong"] { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
-.city-bubble.visited[data-theme="singapore"] { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
-.city-bubble.visited[data-theme="dubai"] { background: linear-gradient(135deg, #fbc2eb, #a6c1ee); }
-.city-bubble.visited[data-theme="paris"] { background: linear-gradient(135deg, #667eea, #764ba2); }
-.city-bubble.visited[data-theme="london"] { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
-.city-bubble.visited[data-theme="rome"] { background: linear-gradient(135deg, #fddb92, #d1fdff); color: #5a4e3c; }
-.city-bubble.visited[data-theme="barcelona"] { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
-.city-bubble.visited[data-theme="prague"] { background: linear-gradient(135deg, #d4fc79, #96e6a1); color: #3a5a40; }
-.city-bubble.visited[data-theme="santorini"] { background: linear-gradient(135deg, #667eea, #764ba2); }
-.city-bubble.visited[data-theme="amsterdam"] { background: linear-gradient(135deg, #f6d365, #fda085); }
-.city-bubble.visited[data-theme="vienna"] { background: linear-gradient(135deg, #ffecd2, #fcb69f); color: #6b4c3b; }
-.city-bubble.visited[data-theme="newyork"] { background: linear-gradient(135deg, #a8edea, #fed6e3); color: #4a6b6b; }
-.city-bubble.visited[data-theme="la"] { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
-.city-bubble.visited[data-theme="sydney"] { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
-.city-bubble.visited[data-theme="auckland"] { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #2d6a4f; }
-.city-bubble.visited[data-theme="rio"] { background: linear-gradient(135deg, #f093fb, #f5576c); }
-.city-bubble.visited[data-theme="marrakech"] { background: linear-gradient(135deg, #f6d365, #fda085); }
-.city-bubble.visited[data-theme="cairo"] { background: linear-gradient(135deg, #ffecd2, #fcb69f); color: #6b4c3b; }
-.city-bubble.visited[data-theme="morocco"] { background: linear-gradient(135deg, #fbc2eb, #a6c1ee); }
+/* City cards - wishlist */
+.city-card.wishlist{border:1.5px dashed #a5c4f8;background:#f0f5ff}
 
-.map-deco {
-  text-align: center;
-  font-size: 60px;
-  padding: 16px 0;
-  opacity: 0.15;
-  letter-spacing: 20px;
-}
+/* ===== Modal ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-card{background:var(--card);width:100%;max-width:390px;border-radius:20px 20px 0 0;padding:16px 20px 28px;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);max-height:80vh;overflow-y:auto;position:relative}
+.modal-overlay.show .modal-card{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:#D1D1D6;border-radius:2px;margin:0 auto 14px}
+.modal-city-header{text-align:center;margin-bottom:18px}
+.modal-city-emoji{font-size:40px;display:block;margin-bottom:4px}
+.modal-city-name{font-size:22px;font-weight:700}
 
-/* ===== City Modal ===== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  z-index: 200;
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-}
-.modal-overlay.show { display: flex; }
+.modal-toggle{display:flex;background:#F2F0EC;border-radius:100px;padding:3px;margin-bottom:18px}
+.modal-toggle button{flex:1;padding:10px 8px;border:none;border-radius:100px;font-size:13px;font-weight:600;background:transparent;color:var(--text-sec);cursor:pointer;transition:all 0.2s;font-family:inherit}
+.modal-toggle button.active{background:#fff;color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,0.08)}
 
-.modal-card {
-  background: var(--card);
-  width: 100%;
-  max-width: 390px;
-  border-radius: 24px 24px 0 0;
-  padding: 20px 20px 30px;
-  transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-  max-height: 80vh;
-  overflow-y: auto;
-}
-.modal-overlay.show .modal-card { transform: translateY(0); }
+.modal-section{display:none}
+.modal-section.active{display:block}
 
-.modal-handle {
-  width: 36px;
-  height: 4px;
-  background: #D1D1D6;
-  border-radius: 2px;
-  margin: 0 auto 16px;
-}
+.modal-input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:inherit;background:#F8F6F3;outline:none;transition:border-color 0.2s;margin-bottom:16px}
+.modal-input:focus{border-color:var(--primary)}
 
-.modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #F2F2F7;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-}
+.mood-label{font-size:13px;color:var(--text-sec);margin-bottom:10px;font-weight:500}
+.mood-row{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.mood-btn{width:44px;height:44px;border-radius:50%;border:2px solid var(--border);background:#fff;font-size:22px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+.mood-btn:active{transform:scale(0.9)}
+.mood-btn.selected{border-color:var(--primary);background:var(--primary-light);transform:scale(1.1)}
 
-.modal-city-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.modal-city-emoji { font-size: 40px; display: block; margin-bottom: 6px; }
-.modal-city-name { font-size: 24px; font-weight: 700; }
+.btn-primary{width:100%;padding:14px;border:none;border-radius:100px;background:var(--primary);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit}
+.btn-primary:active{opacity:0.85;transform:scale(0.98)}
+.btn-primary:hover{background:#1547b8}
 
-.modal-toggle {
-  display: flex;
-  background: #F2F2F7;
-  border-radius: 12px;
-  padding: 3px;
-  margin-bottom: 20px;
-}
-.modal-toggle button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.modal-toggle button.active {
-  background: var(--card);
-  color: var(--text);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
+.btn-wishlist{width:100%;padding:14px;border:1.5px solid var(--border);border-radius:100px;background:#fff;color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:10px;font-family:inherit}
+.btn-wishlist:active{background:#F8F6F3}
 
-.modal-section { display: none; }
-.modal-section.active { display: block; }
+/* ===== Tab: Footprints ===== */
+.fp-header{text-align:center;padding:28px 20px 16px}
+.fp-header h2{font-size:20px;font-weight:700;margin-bottom:12px}
+.stats-row{display:flex;justify-content:center;gap:32px;margin-bottom:4px}
+.stat-item{text-align:center}
+.stat-num{font-size:48px;font-weight:700;color:var(--primary);line-height:1}
+.stat-label{font-size:13px;color:var(--text-sec);margin-top:4px}
 
-.modal-input {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 15px;
-  font-family: inherit;
-  background: var(--bg);
-  outline: none;
-  transition: border-color 0.2s;
-  margin-bottom: 16px;
-}
-.modal-input:focus { border-color: var(--primary); }
+.fp-section-title{font-size:14px;font-weight:600;padding:20px 20px 8px;color:var(--text-sec)}
 
-.mood-label {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 10px;
-  font-weight: 500;
-}
-.mood-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-.mood-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  background: var(--card);
-  font-size: 22px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.mood-btn:active { transform: scale(0.9); }
-.mood-btn.selected {
-  border-color: var(--primary);
-  background: var(--primary-light);
-  transform: scale(1.1);
-}
+.fp-card{margin:0 20px 10px;padding:14px 16px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;align-items:flex-start;gap:12px}
+.fp-card .fp-emoji{font-size:32px;flex-shrink:0}
+.fp-card .fp-info{flex:1;min-width:0}
+.fp-card .fp-name{font-size:15px;font-weight:600;margin-bottom:3px}
+.fp-card .fp-note{font-size:13px;color:var(--text-sec);line-height:1.4}
+.fp-card .fp-date{font-size:11px;color:#c7c7cc;margin-top:4px}
+.fp-card .fp-mood{font-size:20px;flex-shrink:0;margin-top:2px}
+.fp-card::before{content:'';display:block;width:4px;height:100%;min-height:32px;border-radius:2px;background:var(--primary);position:absolute;left:0;top:0}
+.fp-card{position:relative;overflow:hidden;padding-left:20px}
 
-.btn-primary {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--primary);
-  color: #fff;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-.btn-primary:active { opacity: 0.8; }
+.wishlist-card{margin:0 20px 10px;padding:14px 16px;background:#fff;border-radius:var(--radius);border:1.5px dashed #d1d1d6;display:flex;align-items:center;gap:10px;opacity:0.7}
+.wishlist-card .fp-emoji{font-size:24px}
+.wishlist-card .fp-name{font-size:14px;font-weight:500;color:var(--text-sec)}
 
-.btn-wishlist {
-  width: 100%;
-  padding: 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--card);
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-bottom: 10px;
-}
-.btn-wishlist:active { background: var(--bg); }
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-sec)}
+.empty-state .empty-icon{font-size:56px;margin-bottom:12px}
+.empty-state p{font-size:14px;line-height:1.6}
 
-/* ===== Footprints Tab ===== */
-.footprints-header {
-  text-align: center;
-  padding: 24px 20px 16px;
-}
-.footprints-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-
-.stats-bar {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 8px;
-}
-.stat-item { text-align: center; }
-.stat-num {
-  font-size: 28px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.stat-label {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-
-.footprint-section-title {
-  font-size: 14px;
-  font-weight: 600;
-  padding: 16px 20px 8px;
-  color: var(--text-secondary);
-}
-
-.footprint-card {
-  margin: 0 16px 10px;
-  padding: 14px 16px;
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-.footprint-card .fp-emoji { font-size: 32px; flex-shrink: 0; }
-.footprint-card .fp-info { flex: 1; min-width: 0; }
-.footprint-card .fp-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
-.footprint-card .fp-note { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
-.footprint-card .fp-mood { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
-.footprint-card .fp-date { font-size: 11px; color: #C7C7CC; margin-top: 4px; }
-
-.wishlist-card {
-  margin: 0 16px 10px;
-  padding: 14px 16px;
-  background: var(--card);
-  border-radius: var(--radius);
-  border: 1.5px dashed #D1D1D6;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  opacity: 0.7;
-}
-.wishlist-card .fp-emoji { font-size: 24px; }
-.wishlist-card .fp-name { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
-
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-secondary);
-}
-.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
-.empty-state p { font-size: 14px; line-height: 1.6; }
-
-/* ===== Card Generator Tab ===== */
-.card-gen-header {
-  text-align: center;
-  padding: 24px 20px 16px;
-}
-.card-gen-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-.card-gen-header p { font-size: 13px; color: var(--text-secondary); }
-
-.canvas-wrapper {
-  display: flex;
-  justify-content: center;
-  padding: 16px;
-}
-.canvas-wrapper canvas {
-  width: 100%;
-  max-width: 360px;
-  border-radius: 16px;
-  box-shadow: var(--shadow-lg);
-}
-
-.btn-download {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin: 12px 20px;
-  padding: 14px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: #fff;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  width: calc(100% - 40px);
-}
-.btn-download:active { opacity: 0.85; }
-
-/* ===== Scrollbar ===== */
-.phone::-webkit-scrollbar { width: 0; }
-
-/* ===== Misc ===== */
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+/* ===== Tab: Card ===== */
+.card-header{text-align:center;padding:28px 20px 16px}
+.card-header h2{font-size:20px;font-weight:700;margin-bottom:4px}
+.card-header p{font-size:13px;color:var(--text-sec)}
+.canvas-wrapper{display:flex;justify-content:center;padding:16px}
+.canvas-wrapper canvas{width:100%;max-width:360px;border-radius:var(--radius);box-shadow:var(--shadow-lg)}
+.btn-download{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px 20px;padding:14px;border:none;border-radius:100px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:calc(100% - 40px);transition:all 0.2s;font-family:inherit}
+.btn-download:active{opacity:0.85;transform:scale(0.98)}
 </style>
 </head>
 <body>
 
 <div class="phone" id="app">
-  <!-- Top Nav -->
-  <nav class="top-nav">
-    <a href="/08/activity/" class="back">← 返回</a>
-    <span class="title">🌍 旅行足迹</span>
-    <span class="badge" id="cityBadge">0座</span>
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="/08/activity/" class="nav-back">← 返回</a>
+    <span class="nav-title">🌍 旅行足迹</span>
+    <span class="nav-spacer"></span>
   </nav>
 
   <!-- Tab: Map -->
@@ -540,16 +148,16 @@ body {
 
   <!-- Tab: Footprints -->
   <div class="tab-content" id="tabFootprints">
-    <div class="footprints-header">
+    <div class="fp-header">
       <h2>我的足迹</h2>
-      <div class="stats-bar">
+      <div class="stats-row">
         <div class="stat-item">
           <div class="stat-num" id="statCities">0</div>
-          <div class="stat-label">已探索城市</div>
+          <div class="stat-label">座城市</div>
         </div>
         <div class="stat-item">
           <div class="stat-num" id="statContinents">0</div>
-          <div class="stat-label">遍布大洲</div>
+          <div class="stat-label">个大洲</div>
         </div>
       </div>
     </div>
@@ -558,30 +166,21 @@ body {
 
   <!-- Tab: Card -->
   <div class="tab-content" id="tabCard">
-    <div class="card-gen-header">
+    <div class="card-header">
       <h2>生成旅行卡片 🎴</h2>
       <p>一键生成你的专属旅行足迹</p>
     </div>
     <div class="canvas-wrapper">
       <canvas id="shareCanvas" width="360" height="480"></canvas>
     </div>
-    <button class="btn-download" id="btnDownload" onclick="downloadCard()">⬇ 保存图片</button>
+    <button class="btn-download" onclick="downloadCard()">⬇ 保存图片</button>
   </div>
 
   <!-- Bottom Tab Bar -->
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="tabMap">
-      <span class="tab-icon">🗺️</span>
-      <span>足迹地图</span>
-    </button>
-    <button class="tab-btn" data-tab="tabFootprints">
-      <span class="tab-icon">✈️</span>
-      <span>我的足迹</span>
-    </button>
-    <button class="tab-btn" data-tab="tabCard">
-      <span class="tab-icon">🎴</span>
-      <span>生成卡片</span>
-    </button>
+    <button class="tab-btn active" data-tab="tabMap"><span class="tab-icon">🗺️</span><span>足迹地图</span></button>
+    <button class="tab-btn" data-tab="tabFootprints"><span class="tab-icon">✈️</span><span>我的足迹</span></button>
+    <button class="tab-btn" data-tab="tabCard"><span class="tab-icon">🎴</span><span>生成卡片</span></button>
   </div>
 </div>
 
@@ -589,16 +188,14 @@ body {
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-card" id="modalCard">
     <div class="modal-handle"></div>
-    <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-city-header">
       <span class="modal-city-emoji" id="modalEmoji"></span>
       <span class="modal-city-name" id="modalCityName"></span>
     </div>
     <div class="modal-toggle">
-      <button class="active" id="btnVisited" onclick="setModalMode(true)">已去过 ✓</button>
-      <button id="btnNotVisited" onclick="setModalMode(false)">还没去</button>
+      <button class="active" id="btnVisited" onclick="setModalMode(true)">去过了 ✓</button>
+      <button id="btnNotVisited" onclick="setModalMode(false)">加心愿单 💫</button>
     </div>
-    <!-- Visited section -->
     <div class="modal-section active" id="secVisited">
       <input class="modal-input" id="noteInput" type="text" placeholder="用一句话描述这座城市…" maxlength="50">
       <div class="mood-label">此刻心情</div>
@@ -611,10 +208,9 @@ body {
       </div>
       <button class="btn-primary" onclick="saveCity()">保存</button>
     </div>
-    <!-- Not visited section -->
     <div class="modal-section" id="secNotVisited">
       <button class="btn-wishlist" onclick="addToWishlist()">加入心愿单 💫</button>
-      <button class="btn-primary" style="background:#F2F2F7;color:var(--text)" onclick="closeModal()">关闭</button>
+      <button class="btn-primary" style="background:#F2F0EC;color:var(--text)" onclick="closeModal()">关闭</button>
     </div>
   </div>
 </div>
@@ -622,103 +218,80 @@ body {
 <script>
 // ===== City Data =====
 const CITIES = [
-  { continent: '亚洲', continentIcon: '🌏', cities: [
-    { name: '东京', emoji: '🗼', theme: 'tokyo' },
-    { name: '首尔', emoji: '🎋', theme: 'seoul' },
-    { name: '曼谷', emoji: '🌺', theme: 'bangkok' },
-    { name: '京都', emoji: '🏯', theme: 'kyoto' },
-    { name: '巴厘岛', emoji: '🌴', theme: 'bali' },
-    { name: '上海', emoji: '🏙️', theme: 'shanghai' },
-    { name: '香港', emoji: '🌆', theme: 'hongkong' },
-    { name: '新加坡', emoji: '🦁', theme: 'singapore' },
-    { name: '迪拜', emoji: '🏙️', theme: 'dubai' },
+  { continent:'亚洲', continentIcon:'🌏', cities:[
+    { name:'东京', emoji:'🗼', theme:'tokyo' },
+    { name:'首尔', emoji:'🎋', theme:'seoul' },
+    { name:'曼谷', emoji:'🌺', theme:'bangkok' },
+    { name:'京都', emoji:'🏯', theme:'kyoto' },
+    { name:'巴厘岛', emoji:'🌴', theme:'bali' },
+    { name:'上海', emoji:'🏙️', theme:'shanghai' },
+    { name:'香港', emoji:'🌆', theme:'hongkong' },
+    { name:'新加坡', emoji:'🦁', theme:'singapore' },
+    { name:'迪拜', emoji:'🏙️', theme:'dubai' },
   ]},
-  { continent: '欧洲', continentIcon: '🌍', cities: [
-    { name: '巴黎', emoji: '🗼', theme: 'paris' },
-    { name: '伦敦', emoji: '🎡', theme: 'london' },
-    { name: '罗马', emoji: '🏛️', theme: 'rome' },
-    { name: '巴塞罗那', emoji: '🌊', theme: 'barcelona' },
-    { name: '布拉格', emoji: '🏰', theme: 'prague' },
-    { name: '圣托里尼', emoji: '⛵', theme: 'santorini' },
-    { name: '阿姆斯特丹', emoji: '🌷', theme: 'amsterdam' },
-    { name: '维也纳', emoji: '🎻', theme: 'vienna' },
+  { continent:'欧洲', continentIcon:'🌍', cities:[
+    { name:'巴黎', emoji:'🗼', theme:'paris' },
+    { name:'伦敦', emoji:'🎡', theme:'london' },
+    { name:'罗马', emoji:'🏛️', theme:'rome' },
+    { name:'巴塞罗那', emoji:'🌊', theme:'barcelona' },
+    { name:'布拉格', emoji:'🏰', theme:'prague' },
+    { name:'圣托里尼', emoji:'⛵', theme:'santorini' },
+    { name:'阿姆斯特丹', emoji:'🌷', theme:'amsterdam' },
+    { name:'维也纳', emoji:'🎻', theme:'vienna' },
   ]},
-  { continent: '美洲 / 大洋洲', continentIcon: '🌎', cities: [
-    { name: '纽约', emoji: '🗽', theme: 'newyork' },
-    { name: '洛杉矶', emoji: '🎬', theme: 'la' },
-    { name: '悉尼', emoji: '🦘', theme: 'sydney' },
-    { name: '奥克兰', emoji: '🌿', theme: 'auckland' },
-    { name: '里约', emoji: '🎉', theme: 'rio' },
+  { continent:'美洲 / 大洋洲', continentIcon:'🌎', cities:[
+    { name:'纽约', emoji:'🗽', theme:'newyork' },
+    { name:'洛杉矶', emoji:'🎬', theme:'la' },
+    { name:'悉尼', emoji:'🦘', theme:'sydney' },
+    { name:'奥克兰', emoji:'🌿', theme:'auckland' },
+    { name:'里约', emoji:'🎉', theme:'rio' },
   ]},
-  { continent: '非洲 / 中东', continentIcon: '🏜️', cities: [
-    { name: '马拉喀什', emoji: '🕌', theme: 'marrakech' },
-    { name: '开罗', emoji: '🐪', theme: 'cairo' },
-    { name: '摩洛哥', emoji: '🌅', theme: 'morocco' },
+  { continent:'非洲 / 中东', continentIcon:'🏜️', cities:[
+    { name:'马拉喀什', emoji:'🕌', theme:'marrakech' },
+    { name:'开罗', emoji:'🐪', theme:'cairo' },
+    { name:'摩洛哥', emoji:'🌅', theme:'morocco' },
   ]},
 ];
 
 // ===== Data Layer =====
-const STORAGE_KEY = 'travel_footprint_data';
-
-function loadData() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-  } catch { return {}; }
-}
-
-function saveData(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
+const STORAGE_KEY = 'travel_footprint_data_v2';
+function loadData() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
+function saveData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
 
 // ===== Render City Grid =====
 function renderCityGrids() {
   const container = document.getElementById('cityGrids');
   const data = loadData();
   let html = '';
-
   CITIES.forEach(group => {
-    html += `<div class="continent-group">`;
-    html += `<div class="continent-label">${group.continentIcon} ${group.continent}</div>`;
-    html += `<div class="city-grid">`;
+    html += `<div class="continent-group"><div class="continent-label">${group.continentIcon} ${group.continent}</div><div class="city-grid">`;
     group.cities.forEach(city => {
       const info = data[city.name];
-      const visited = info && info.visited;
-      const cls = visited ? 'visited' : '';
-      const theme = city.theme;
-      html += `<div class="city-bubble ${cls}" data-theme="${theme}" data-city="${city.name}" onclick="openModal('${city.name}')">
-        <span class="emoji">${city.emoji}</span>
-        <span>${city.name}</span>
-        <span class="check">✓</span>
-      </div>`;
+      let cls = '';
+      if (info && info.visited) cls = 'visited';
+      else if (info && info.wishlist) cls = 'wishlist';
+      html += `<div class="city-card ${cls}" data-city="${city.name}" onclick="openModal('${city.name}')"><span class="emoji">${city.emoji}</span><span>${city.name}</span></div>`;
     });
     html += `</div></div>`;
   });
-
   container.innerHTML = html;
 }
 
 // ===== Modal =====
 let currentCity = null;
 let currentMood = '🥰';
-let modalMode = true; // true = visited, false = not visited
+let modalMode = true;
 
 function openModal(cityName) {
   currentCity = cityName;
   const data = loadData();
   const info = data[cityName];
-
-  // Find city emoji
   let cityData = null;
-  for (const g of CITIES) {
-    for (const c of g.cities) {
-      if (c.name === cityName) { cityData = c; break; }
-    }
-  }
+  for (const g of CITIES) for (const c of g.cities) if (c.name === cityName) { cityData = c; break; }
 
   document.getElementById('modalEmoji').textContent = cityData.emoji;
   document.getElementById('modalCityName').textContent = cityName;
 
-  // Reset state
   currentMood = '🥰';
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
   document.querySelector('.mood-btn[data-mood="🥰"]').classList.add('selected');
@@ -728,12 +301,10 @@ function openModal(cityName) {
     document.getElementById('noteInput').value = info.note || '';
     if (info.mood) {
       currentMood = info.mood;
-      document.querySelectorAll('.mood-btn').forEach(b => {
-        b.classList.toggle('selected', b.dataset.mood === info.mood);
-      });
+      document.querySelectorAll('.mood-btn').forEach(b => { b.classList.toggle('selected', b.dataset.mood === info.mood); });
     }
   } else {
-    setModalMode(info && info.wishlist ? false : false);
+    setModalMode(false);
     document.getElementById('noteInput').value = '';
   }
 
@@ -767,14 +338,7 @@ function saveCity() {
   const note = document.getElementById('noteInput').value.trim();
   const now = new Date();
   const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
-  data[currentCity] = {
-    visited: true,
-    mood: currentMood,
-    note: note,
-    date: dateStr
-  };
-
+  data[currentCity] = { visited: true, mood: currentMood, note: note, date: dateStr };
   saveData(data);
   closeModal();
   refreshAll();
@@ -783,9 +347,7 @@ function saveCity() {
 function addToWishlist() {
   if (!currentCity) return;
   const data = loadData();
-  if (!data[currentCity]) {
-    data[currentCity] = {};
-  }
+  if (!data[currentCity]) data[currentCity] = {};
   data[currentCity].wishlist = true;
   data[currentCity].visited = false;
   saveData(data);
@@ -800,129 +362,74 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
-
     if (btn.dataset.tab === 'tabFootprints') renderFootprints();
     if (btn.dataset.tab === 'tabCard') renderShareCard();
   });
 });
 
 // ===== Refresh =====
-function refreshAll() {
-  renderCityGrids();
-  updateBadge();
-}
-
-function updateBadge() {
-  const data = loadData();
-  let count = 0;
-  Object.values(data).forEach(v => { if (v.visited) count++; });
-  document.getElementById('cityBadge').textContent = `${count}座`;
-}
+function refreshAll() { renderCityGrids(); }
 
 // ===== Render Footprints =====
 function renderFootprints() {
   const data = loadData();
   const container = document.getElementById('footprintList');
   let html = '';
-
   const visitedCities = [];
   const wishlistCities = [];
 
   Object.keys(data).forEach(name => {
-    if (data[name].visited) {
-      visitedCities.push({ name, ...data[name] });
-    }
-    if (data[name].wishlist && !data[name].visited) {
-      wishlistCities.push({ name, ...data[name] });
-    }
+    if (data[name].visited) visitedCities.push({ name, ...data[name] });
+    if (data[name].wishlist && !data[name].visited) wishlistCities.push({ name, ...data[name] });
   });
 
-  // Find continent for a city
+  function getCityEmoji(name) {
+    for (const g of CITIES) for (const c of g.cities) if (c.name === name) return c.emoji;
+    return '📍';
+  }
+
   function getContinent(name) {
-    for (const g of CITIES) {
-      for (const c of g.cities) {
-        if (c.name === name) return g.continent;
-      }
-    }
+    for (const g of CITIES) for (const c of g.cities) if (c.name === name) return g.continent;
     return '';
   }
 
   const continentSet = new Set();
-  visitedCities.forEach(c => {
-    const cont = getContinent(c.name);
-    if (cont) continentSet.add(cont);
-  });
+  visitedCities.forEach(c => { const cont = getContinent(c.name); if (cont) continentSet.add(cont); });
 
-  // Stats
   document.getElementById('statCities').textContent = visitedCities.length;
   document.getElementById('statContinents').textContent = continentSet.size;
 
   if (visitedCities.length === 0 && wishlistCities.length === 0) {
-    html = `<div class="empty-state">
-      <div class="empty-icon">🌍</div>
-      <p>还没有足迹<br>去地图上打个卡吧 ✨</p>
-    </div>`;
+    html = `<div class="empty-state"><div class="empty-icon">🌍</div><p>还没有足迹<br>去地图上打个卡吧 ✨</p></div>`;
   } else {
     if (visitedCities.length > 0) {
-      html += `<div class="footprint-section-title">📍 已探索 (${visitedCities.length})</div>`;
+      html += `<div class="fp-section-title">📍 已探索 (${visitedCities.length})</div>`;
       visitedCities.forEach(c => {
-        let cityEmoji = '📍';
-        for (const g of CITIES) {
-          for (const city of g.cities) {
-            if (city.name === c.name) { cityEmoji = city.emoji; break; }
-          }
-        }
-        html += `<div class="footprint-card">
-          <span class="fp-emoji">${cityEmoji}</span>
-          <div class="fp-info">
-            <div class="fp-name">${c.name}</div>
-            ${c.note ? `<div class="fp-note">${escapeHtml(c.note)}</div>` : ''}
-            ${c.date ? `<div class="fp-date">${c.date}</div>` : ''}
-          </div>
-          <span class="fp-mood">${c.mood || ''}</span>
-        </div>`;
+        html += `<div class="fp-card"><span class="fp-emoji">${getCityEmoji(c.name)}</span><div class="fp-info"><div class="fp-name">${c.name}</div>${c.note ? `<div class="fp-note">${escapeHtml(c.note)}</div>` : ''}${c.date ? `<div class="fp-date">${c.date}</div>` : ''}</div>${c.mood ? `<span class="fp-mood">${c.mood}</span>` : ''}</div>`;
       });
     }
-
     if (wishlistCities.length > 0) {
-      html += `<div class="footprint-section-title">💫 心愿单 (${wishlistCities.length})</div>`;
+      html += `<div class="fp-section-title">💫 心愿单 (${wishlistCities.length})</div>`;
       wishlistCities.forEach(c => {
-        let cityEmoji = '📍';
-        for (const g of CITIES) {
-          for (const city of g.cities) {
-            if (city.name === c.name) { cityEmoji = city.emoji; break; }
-          }
-        }
-        html += `<div class="wishlist-card">
-          <span class="fp-emoji">${cityEmoji}</span>
-          <span class="fp-name">${c.name}</span>
-        </div>`;
+        html += `<div class="wishlist-card"><span class="fp-emoji">${getCityEmoji(c.name)}</span><span class="fp-name">${c.name}</span></div>`;
       });
     }
   }
-
   container.innerHTML = html;
 }
 
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
+function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
 // ===== Share Card (Canvas) =====
 function renderShareCard() {
   const canvas = document.getElementById('shareCanvas');
   const ctx = canvas.getContext('2d');
   const W = 360, H = 480;
-  canvas.width = W;
-  canvas.height = H;
+  canvas.width = W; canvas.height = H;
 
   const data = loadData();
   const visitedCities = [];
-  Object.keys(data).forEach(name => {
-    if (data[name].visited) visitedCities.push({ name, ...data[name] });
-  });
+  Object.keys(data).forEach(name => { if (data[name].visited) visitedCities.push({ name, ...data[name] }); });
 
   // Background gradient
   const grad = ctx.createLinearGradient(0, 0, W, H);
@@ -938,35 +445,23 @@ function renderShareCard() {
   ctx.beginPath(); ctx.arc(-20, 400, 150, 0, Math.PI * 2); ctx.fill();
   ctx.globalAlpha = 1;
 
-  // Top plane icon
+  // Top section
   ctx.fillStyle = '#fff';
   ctx.font = '24px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('✈️', W / 2, 44);
 
-  // Title
-  ctx.fillStyle = '#fff';
   ctx.font = 'bold 24px Georgia, serif';
   ctx.fillText('我的旅行足迹', W / 2, 78);
 
-  // Divider line
+  // Divider
   ctx.strokeStyle = 'rgba(255,255,255,0.3)';
   ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(60, 92);
-  ctx.lineTo(W - 60, 92);
-  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(60, 92); ctx.lineTo(W - 60, 92); ctx.stroke();
 
   // City emoji grid (max 12, 3 columns)
-  let cityEmojis = [];
-  visitedCities.forEach(c => {
-    for (const g of CITIES) {
-      for (const city of g.cities) {
-        if (city.name === c.name) { cityEmojis.push(city.emoji); break; }
-      }
-    }
-  });
-  cityEmojis = cityEmojis.slice(0, 12);
+  function getCityEmoji(name) { for (const g of CITIES) for (const c of g.cities) if (c.name === name) return c.emoji; return '📍'; }
+  let cityEmojis = visitedCities.map(c => getCityEmoji(c.name)).slice(0, 12);
 
   const emojiSize = 32;
   const cols = 3;
@@ -983,10 +478,7 @@ function renderShareCard() {
   });
 
   // City count
-  const countY = cityEmojis.length > 0
-    ? startY + Math.ceil(cityEmojis.length / cols) * (emojiSize + 20) + 16
-    : 140;
-
+  const countY = cityEmojis.length > 0 ? startY + Math.ceil(cityEmojis.length / cols) * (emojiSize + 20) + 16 : 140;
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 48px -apple-system, sans-serif';
   ctx.fillText(String(visitedCities.length), W / 2, countY + 36);
@@ -998,29 +490,17 @@ function renderShareCard() {
   // Longest note
   if (visitedCities.length > 0) {
     let longestNote = '';
-    visitedCities.forEach(c => {
-      if (c.note && c.note.length > longestNote.length) longestNote = c.note;
-    });
-    if (!longestNote && visitedCities[0]) longestNote = visitedCities[0].note || '';
-
+    visitedCities.forEach(c => { if (c.note && c.note.length > longestNote.length) longestNote = c.note; });
     if (longestNote) {
       const noteY = countY + 80;
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.font = 'italic 13px Georgia, serif';
-      // Simple text wrapping
       const maxWidth = W - 80;
-      const words = longestNote;
-      let line = '';
-      let lineY = noteY;
-      for (let i = 0; i < words.length; i++) {
-        const testLine = line + words[i];
-        if (ctx.measureText(testLine).width > maxWidth && line) {
-          ctx.fillText(line, W / 2, lineY);
-          line = words[i];
-          lineY += 18;
-        } else {
-          line = testLine;
-        }
+      let line = ''; let lineY = noteY;
+      for (let i = 0; i < longestNote.length; i++) {
+        const testLine = line + longestNote[i];
+        if (ctx.measureText(testLine).width > maxWidth && line) { ctx.fillText(line, W / 2, lineY); line = longestNote[i]; lineY += 18; }
+        else { line = testLine; }
       }
       if (line) ctx.fillText(line, W / 2, lineY);
     }
@@ -1040,14 +520,11 @@ function downloadCard() {
   link.click();
 }
 
-// ===== Modal overlay click to close =====
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+// Modal overlay click to close
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
-// ===== Init =====
+// Init
 renderCityGrids();
-updateBadge();
 </script>
 </body>
 </html>
