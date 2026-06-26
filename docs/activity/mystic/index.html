@@ -2,521 +2,889 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>问天机</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔮 问天机</title>
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#FAF8F5;--card:#fff;--purple:#2D1B69;--gold:#C9A840;
-  --deep-red:#8B1A1A;--deep-brown:#3D2B1F;--land:#E8DDD0;
-  --shadow:0 8px 40px rgba(45,27,105,.08);
-  --radius:16px;
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #E8E4DC;
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
 }
-html{font-size:16px}
-body{
-  font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:var(--bg);color:var(--purple);min-height:100vh;
-  display:flex;justify-content:center;align-items:flex-start;padding:20px 0;
-  -webkit-font-smoothing:antialiased;
+.shell {
+  width: 100%;
+  max-width: 390px;
+  min-height: 100vh;
+  background: #F0EBE1;
+  position: relative;
+  box-shadow: 0 0 60px rgba(0,0,0,0.12);
 }
-.phone{
-  width:100%;max-width:390px;min-height:100vh;background:var(--card);
-  box-shadow:var(--shadow);border-radius:var(--radius);overflow:hidden;
-  position:relative;
+
+/* ===== NAV ===== */
+nav {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-@media(min-width:420px){
-  .phone{margin-top:40px;min-height:auto;border-radius:24px}
-  body{padding:40px 0}
+.nav-back {
+  font-size: 14px;
+  color: #6B4F2A;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(107,79,42,0.08);
 }
-.header{
-  text-align:center;padding:36px 20px 20px;
-  background:linear-gradient(180deg,rgba(45,27,105,.04) 0%,transparent 100%);
+.nav-back:hover { background: rgba(107,79,42,0.14); }
+.nav-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3D2B1F;
 }
-.header h1{
-  font-size:28px;font-weight:700;letter-spacing:6px;
-  background:linear-gradient(135deg,var(--purple) 30%,var(--gold) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
+
+/* ===== TABS ===== */
+.tabs-bar {
+  display: flex;
+  gap: 8px;
+  padding: 16px 20px 12px;
+  background: #FFF8F0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
 }
-.header p{font-size:12px;color:#998;margin-top:6px;letter-spacing:2px}
-.divider{
-  width:40px;height:1px;margin:12px auto 0;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+.tab-pill {
+  flex: 1;
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: 100px;
+  font-size: 13px;
+  color: #8B5E3C;
+  background: transparent;
+  border: 1px solid rgba(139,94,60,0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
-.tabs{
-  display:flex;justify-content:center;gap:6px;padding:16px 12px;
-  border-bottom:1px solid rgba(45,27,105,.06);
+.tab-pill.active {
+  background: #8B5E3C;
+  color: #fff;
+  border-color: #8B5E3C;
+  box-shadow: 0 2px 8px rgba(139,94,60,0.3);
 }
-.tab-btn{
-  flex:1;max-width:120px;padding:8px 0;border:none;border-radius:20px;
-  background:transparent;font-size:13px;color:#998;cursor:pointer;
-  transition:all .3s;font-family:inherit;
+
+/* ===== PANELS ===== */
+.panel { display: none; padding: 24px 20px 40px; }
+.panel.active { display: block; }
+
+/* ===== 仪式一：水晶球老虎机 ===== */
+.crystal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
-.tab-btn.active{
-  background:var(--purple);color:#fff;font-weight:600;
+.crystal-title {
+  font-size: 18px;
+  color: #3D2B1F;
+  font-weight: 600;
+  text-align: center;
 }
-.tab-btn:hover:not(.active){color:var(--purple)}
-.panels{position:relative}
-.panel{display:none;padding:20px 16px 40px;min-height:420px}
-.panel.active{display:block;animation:fadeUp .4s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.crystal-ball{
-  width:140px;height:140px;margin:0 auto 20px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,rgba(201,168,64,.15),rgba(45,27,105,.08) 70%);
-  border:2px solid rgba(201,168,64,.3);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 30px rgba(201,168,64,.15),inset 0 0 20px rgba(201,168,64,.08);
+.crystal-desc {
+  font-size: 13px;
+  color: #8B7355;
+  text-align: center;
+  line-height: 1.6;
 }
-.crystal-ball .inner{font-size:36px}
-.slot-machine{
-  display:flex;justify-content:center;gap:12px;margin-bottom:24px;
+.slot-machine {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  position: relative;
 }
-.reel{
-  width:80px;height:120px;background:linear-gradient(180deg,#f8f6f3,#fff);
-  border:1.5px solid rgba(45,27,105,.1);border-radius:12px;
-  overflow:hidden;position:relative;
-  box-shadow:inset 0 2px 8px rgba(0,0,0,.04);
+.slot-reel {
+  width: 72px;
+  height: 180px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+  border: 2px solid rgba(139,94,60,0.15);
+  position: relative;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.04);
 }
-.reel::before,.reel::after{
-  content:'';position:absolute;left:0;right:0;height:24px;z-index:2;pointer-events:none;
+.slot-reel::before,
+.slot-reel::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 50px;
+  z-index: 2;
+  pointer-events: none;
 }
-.reel::before{top:0;background:linear-gradient(180deg,#f8f6f3,transparent)}
-.reel::after{bottom:0;background:linear-gradient(0deg,#f8f6f3,transparent)}
-.reel-track{
-  display:flex;flex-direction:column;align-items:center;
-  transition:transform .1s linear;will-change:transform;
+.slot-reel::before {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.95), transparent);
 }
-.reel-track .emoji{
-  height:40px;display:flex;align-items:center;justify-content:center;
-  font-size:28px;width:100%;
+.slot-reel::after {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(255,255,255,0.95), transparent);
 }
-.reel.highlight{border-color:var(--gold);box-shadow:0 0 12px rgba(201,168,64,.3)}
-.spin-btn{
-  display:block;margin:0 auto 24px;padding:12px 40px;border:none;border-radius:24px;
-  background:linear-gradient(135deg,var(--purple),#4a3090);color:#fff;
-  font-size:15px;font-weight:600;letter-spacing:3px;cursor:pointer;
-  font-family:inherit;transition:all .3s;
-  box-shadow:0 4px 16px rgba(45,27,105,.25);
+.slot-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
 }
-.spin-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(45,27,105,.35)}
-.spin-btn:active{transform:translateY(0)}
-.spin-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.result-card{
-  background:linear-gradient(135deg,rgba(45,27,105,.03),rgba(201,168,64,.06));
-  border:1px solid rgba(201,168,64,.2);border-radius:16px;
-  padding:24px 20px;text-align:center;
-  animation:fadeUp .5s ease;
+.slot-item {
+  width: 72px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  flex-shrink: 0;
 }
-.result-card .city{
-  font-size:26px;font-weight:700;color:var(--purple);margin-bottom:10px;letter-spacing:2px;
+@keyframes slotSpin1 {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-600px); }
 }
-.result-card .fortune{
-  font-size:14px;color:#665;line-height:1.8;
+@keyframes slotSpin2 {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-660px); }
 }
-.result-card .fortune::before,.result-card .fortune::after{content:'✦';margin:0 6px;color:var(--gold);font-size:10px}
-.talisman-wrap{
-  display:flex;flex-direction:column;align-items:center;padding:10px 0;
+@keyframes slotSpin3 {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-720px); }
 }
-.talisman{
-  width:200px;height:320px;position:relative;
-  background:linear-gradient(180deg,#f5f0e6 0%,#f0e9d8 50%,#ede6d5 100%);
-  border-radius:4px;
-  box-shadow:2px 4px 16px rgba(0,0,0,.1),0 0 0 1px rgba(139,26,26,.08);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  overflow:hidden;padding:30px 20px;
+.spinning-1 .slot-inner { animation: slotSpin1 0.3s linear infinite; }
+.spinning-2 .slot-inner { animation: slotSpin2 0.35s linear infinite; }
+.spinning-3 .slot-inner { animation: slotSpin3 0.4s linear infinite; }
+
+.shake-btn {
+  padding: 12px 32px;
+  border-radius: 100px;
+  border: none;
+  background: linear-gradient(135deg, #C9A840, #8B6914);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(139,105,20,0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.1em;
 }
-.talisman::before{
-  content:'';position:absolute;top:6px;left:6px;right:6px;bottom:6px;
-  border:1.5px dashed rgba(139,26,26,.2);border-radius:2px;
-  pointer-events:none;
+.shake-btn:active { transform: scale(0.95); }
+.shake-btn:disabled { opacity: 0.5; cursor: default; }
+
+.result-card {
+  width: 100%;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 }
-.talisman::after{
-  content:'';position:absolute;top:12px;left:12px;right:12px;bottom:12px;
-  border:1px solid rgba(139,26,26,.1);border-radius:2px;
-  pointer-events:none;
+.result-card.show {
+  opacity: 1;
+  transform: translateY(0);
 }
-.talisman .corner{
-  position:absolute;width:20px;height:20px;border-color:rgba(139,26,26,.25);border-style:solid;
+.result-city {
+  font-size: 24px;
+  font-weight: 700;
+  color: #8B5E3C;
+  margin-bottom: 8px;
 }
-.talisman .corner.tl{top:14px;left:14px;border-width:2px 0 0 2px}
-.talisman .corner.tr{top:14px;right:14px;border-width:2px 2px 0 0}
-.talisman .corner.bl{bottom:14px;left:14px;border-width:0 0 2px 2px}
-.talisman .corner.br{bottom:14px;right:14px;border-width:0 2px 2px 0}
-.talisman .symbol{
-  font-size:20px;color:var(--deep-red);opacity:.3;margin-bottom:10px;
-  font-family:"STKaiti","KaiTi",serif;
+.result-fortune {
+  font-size: 14px;
+  color: #6B4F2A;
+  line-height: 1.6;
 }
-.talisman .city-display{transition:filter 1.5s ease;text-align:center}
-.talisman .city-display.blur{filter:blur(20px)}
-.talisman .city-display.clear{filter:blur(0)}
-.talisman .city-display.cn{
-  writing-mode:vertical-rl;
-  font-family:"STKaiti","KaiTi","PingFang SC",serif;
-  color:var(--deep-red);font-size:30px;letter-spacing:8px;line-height:1.6;
+
+/* ===== 仪式二：符纸显字 ===== */
+.talisman-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
-.talisman .city-display.en{
-  font-family:Georgia,"Times New Roman",serif;
-  color:var(--deep-brown);font-size:22px;font-weight:700;letter-spacing:4px;
+.talisman-title {
+  font-size: 18px;
+  color: #3D2B1F;
+  font-weight: 600;
 }
-.talisman .bottom-line{
-  margin-top:16px;width:30px;height:1px;background:rgba(139,26,26,.2);
+.talisman-desc {
+  font-size: 13px;
+  color: #8B7355;
+  text-align: center;
+  line-height: 1.6;
 }
-.qi-btn{
-  margin-top:24px;padding:12px 36px;border:1.5px solid var(--deep-red);
-  border-radius:24px;background:transparent;color:var(--deep-red);
-  font-size:14px;font-weight:600;letter-spacing:4px;cursor:pointer;
-  font-family:inherit;transition:all .3s;
+
+/* 符纸主体 */
+.paper {
+  width: 200px;
+  height: 340px;
+  border-radius: 4px;
+  background: linear-gradient(160deg, #F4E4BC 0%, #E8D49A 30%, #F0E0AA 60%, #E4D090 100%);
+  box-shadow: inset 0 0 30px rgba(100,70,20,0.15), 0 8px 32px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+  /* 纸张纹理 */
 }
-.qi-btn:hover{background:var(--deep-red);color:#fff}
-.qi-btn:active{transform:scale(.97)}
-.qi-btn:disabled{opacity:.4;cursor:not-allowed}
-.map-container{
-  width:100%;aspect-ratio:2/1;background:#f5f2ed;
-  border-radius:12px;border:1px solid rgba(45,27,105,.08);
-  overflow:hidden;position:relative;margin-bottom:20px;
+.paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(100,70,20,0.04) 3px,
+    rgba(100,70,20,0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
 }
-.map-container canvas{width:100%;height:100%;display:block}
-.burn-btn{
-  display:block;margin:0 auto 24px;padding:12px 40px;border:none;border-radius:24px;
-  background:linear-gradient(135deg,#c2590a,#e87820);color:#fff;
-  font-size:15px;font-weight:600;letter-spacing:3px;cursor:pointer;
-  font-family:inherit;transition:all .3s;
-  box-shadow:0 4px 16px rgba(194,89,10,.25);
+/* 红色横线 */
+.paper::after {
+  content: '';
+  position: absolute;
+  left: 16px; right: 16px;
+  height: 2px;
+  background: #B22222;
+  z-index: 2;
 }
-.burn-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(194,89,10,.35)}
-.burn-btn:active{transform:translateY(0)}
-.burn-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.map-result{
-  position:absolute;bottom:8px;left:8px;right:8px;
-  background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
-  border-radius:12px;padding:14px 16px;
-  border:1px solid rgba(201,168,64,.25);
-  opacity:0;transform:translateY(10px);transition:all .5s ease;
-  pointer-events:none;
+.paper-red-top {
+  position: absolute;
+  top: 10px;
+  left: 16px; right: 16px;
+  height: 2px;
+  background: #B22222;
+  z-index: 3;
 }
-.map-result.show{opacity:1;transform:none;pointer-events:auto}
-.map-result .city{font-size:18px;font-weight:700;color:var(--purple);margin-bottom:6px}
-.map-result .fortune{font-size:12px;color:#665;line-height:1.7}
-.footer{
-  text-align:center;padding:16px 0 24px;font-size:10px;color:#bbb;letter-spacing:1px;
+.paper-red-bottom {
+  position: absolute;
+  bottom: 10px;
+  left: 16px; right: 16px;
+  height: 2px;
+  background: #B22222;
+  z-index: 3;
+}
+
+/* 四角折角装饰 */
+.corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  z-index: 4;
+}
+.corner-tl {
+  top: 0; left: 0;
+  border-top: 3px solid #8B6914;
+  border-left: 3px solid #8B6914;
+  border-radius: 0 0 10px 0;
+}
+.corner-tr {
+  top: 0; right: 0;
+  border-top: 3px solid #8B6914;
+  border-right: 3px solid #8B6914;
+  border-radius: 0 0 0 10px;
+}
+.corner-bl {
+  bottom: 0; left: 0;
+  border-bottom: 3px solid #8B6914;
+  border-left: 3px solid #8B6914;
+  border-radius: 0 10px 0 0;
+}
+.corner-br {
+  bottom: 0; right: 0;
+  border-bottom: 3px solid #8B6914;
+  border-right: 3px solid #8B6914;
+  border-radius: 10px 0 0 0;
+}
+
+/* 敕令 */
+.paper-header {
+  position: absolute;
+  top: 18px;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 11px;
+  color: #8B1A1A;
+  letter-spacing: 0.5em;
+  font-weight: 700;
+  z-index: 5;
+}
+
+/* 符文区域 */
+.paper-body {
+  position: absolute;
+  top: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  z-index: 5;
+  transition: opacity 0.8s ease;
+}
+.paper-body.fade-out { opacity: 0; }
+
+.rune-col {
+  writing-mode: vertical-rl;
+  font-size: 22px;
+  color: #C4A35A;
+  line-height: 1.8;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+}
+
+/* 城市名显示 */
+.city-reveal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.city-reveal.show { opacity: 1; }
+.city-cn {
+  writing-mode: vertical-rl;
+  font-size: 52px;
+  font-weight: 900;
+  color: #8B1A1A;
+  text-shadow:
+    2px 2px 4px rgba(139,26,26,0.3),
+    0 0 20px rgba(180,30,30,0.2);
+  letter-spacing: 0.15em;
+  transition: filter 1.5s ease;
+  filter: blur(30px);
+}
+.city-en {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #3D2B1F;
+  letter-spacing: 0.08em;
+  writing-mode: horizontal-tb;
+  text-shadow: 1px 1px 3px rgba(61,43,31,0.4);
+  transition: filter 1.5s ease;
+  filter: blur(30px);
+}
+.city-reveal.revealed .city-cn,
+.city-reveal.revealed .city-en {
+  filter: blur(0);
+}
+
+/* 运势文案 */
+.paper-fortune {
+  position: absolute;
+  bottom: 28px;
+  left: 16px; right: 16px;
+  text-align: center;
+  font-size: 11px;
+  color: #6B4F2A;
+  line-height: 1.6;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.8s ease 0.5s;
+}
+.paper-fortune.show { opacity: 1; }
+
+/* 请气按钮 */
+.qi-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: radial-gradient(circle, #C9A840, #8B6914);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(139,105,20,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.1em;
+}
+.qi-btn:active { transform: scale(0.9); }
+.qi-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* 再问一次按钮 */
+.retry-btn {
+  padding: 10px 28px;
+  border-radius: 100px;
+  border: 2px solid #8B5E3C;
+  background: transparent;
+  color: #8B5E3C;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease 0.8s, transform 0.5s ease 0.8s;
+}
+.retry-btn.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.retry-btn:active {
+  background: rgba(139,94,60,0.08);
+}
+
+/* ===== 仪式三：地图烧蚀 ===== */
+.map-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.map-title {
+  font-size: 18px;
+  color: #3D2B1F;
+  font-weight: 600;
+}
+.map-desc {
+  font-size: 13px;
+  color: #8B7355;
+  text-align: center;
+  line-height: 1.6;
+}
+.canvas-frame {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(139,94,60,0.15);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  background: #EDE6D8;
+  position: relative;
+}
+canvas#mapCanvas {
+  display: block;
+}
+.city-label {
+  position: absolute;
+  background: rgba(255,255,255,0.95);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #3D2B1F;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.city-label.show { opacity: 1; }
+
+.burn-btn {
+  padding: 12px 32px;
+  border-radius: 100px;
+  border: none;
+  background: linear-gradient(135deg, #D4845A, #B25530);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(178,85,48,0.35);
+  transition: transform 0.2s;
+  letter-spacing: 0.1em;
+}
+.burn-btn:active { transform: scale(0.95); }
+.burn-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* ===== 通用 ===== */
+.section-label {
+  font-size: 12px;
+  color: #8B7355;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
 }
 </style>
 </head>
 <body>
-<div class="phone">
-  <div class="header">
-    <h1>问 天 机</h1>
-    <p>你的下一站，天意说了算</p>
-    <div class="divider"></div>
+<div class="shell">
+  <nav>
+    <a href="/08/activity/" class="nav-back">← 返回</a>
+    <span class="nav-title">🔮 问天机</span>
+    <span></span>
+  </nav>
+
+  <div class="tabs-bar">
+    <button class="tab-pill active" data-tab="crystal">🔮 水晶球</button>
+    <button class="tab-pill" data-tab="talisman">📜 符纸</button>
+    <button class="tab-pill" data-tab="map">🗺️ 地图</button>
   </div>
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="0">🔮 水晶球</button>
-    <button class="tab-btn" data-tab="1">📜 符纸显字</button>
-    <button class="tab-btn" data-tab="2">🗺️ 地图烧蚀</button>
-  </div>
-  <div class="panels">
-    <div class="panel active" id="panel-0">
-      <div class="crystal-ball"><span class="inner">🔮</span></div>
+
+  <!-- 仪式一：水晶球老虎机 -->
+  <div class="panel active" id="panel-crystal">
+    <div class="crystal-wrap">
+      <div class="crystal-title">水晶球老虎机</div>
+      <div class="crystal-desc">摇一摇，让天机为你指明方向</div>
       <div class="slot-machine">
-        <div class="reel" id="reel-0"><div class="reel-track"></div></div>
-        <div class="reel" id="reel-1"><div class="reel-track"></div></div>
-        <div class="reel" id="reel-2"><div class="reel-track"></div></div>
+        <div class="slot-reel" id="reel-0"><div class="slot-inner"></div></div>
+        <div class="slot-reel" id="reel-1"><div class="slot-inner"></div></div>
+        <div class="slot-reel" id="reel-2"><div class="slot-inner"></div></div>
       </div>
-      <button class="spin-btn" id="spinBtn">摇 一 摇</button>
-      <div id="slotResult" class="result-card hidden" style="display:none">
-        <div class="city" id="slotCity"></div>
-        <div class="fortune" id="slotFortune"></div>
+      <button class="shake-btn" id="shakeBtn">摇一摇</button>
+      <div class="result-card" id="crystalResult">
+        <div class="result-city" id="crystalCity"></div>
+        <div class="result-fortune" id="crystalFortune"></div>
       </div>
-    </div>
-    <div class="panel" id="panel-1">
-      <div class="talisman-wrap">
-        <div class="talisman">
-          <div class="corner tl"></div>
-          <div class="corner tr"></div>
-          <div class="corner bl"></div>
-          <div class="corner br"></div>
-          <div class="symbol">天 机 符</div>
-          <div class="city-display blur" id="talismanCity"></div>
-          <div class="bottom-line"></div>
-        </div>
-        <button class="qi-btn" id="qiBtn">请 气</button>
-        <div id="talismanResult" class="result-card hidden" style="margin-top:20px;display:none">
-          <div class="city" id="talismanCityName"></div>
-          <div class="fortune" id="talismanFortune"></div>
-        </div>
-      </div>
-    </div>
-    <div class="panel" id="panel-2">
-      <div class="map-container">
-        <canvas id="mapCanvas"></canvas>
-        <div class="map-result" id="mapResult">
-          <div class="city" id="mapCity"></div>
-          <div class="fortune" id="mapFortune"></div>
-        </div>
-      </div>
-      <button class="burn-btn" id="burnBtn">燃 烧 指 引</button>
     </div>
   </div>
-  <div class="footer">— 问天机 · 天命之旅 —</div>
+
+  <!-- 仪式二：符纸显字 -->
+  <div class="panel" id="panel-talisman">
+    <div class="talisman-wrap">
+      <div class="talisman-title">符纸显字</div>
+      <div class="talisman-desc">屏气凝神，请气之后天机自现</div>
+      <div class="paper" id="paper">
+        <!-- 红色横线 -->
+        <div class="paper-red-top"></div>
+        <div class="paper-red-bottom"></div>
+        <!-- 四角装饰 -->
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        <!-- 敕令 -->
+        <div class="paper-header">敕 令</div>
+        <!-- 符文 -->
+        <div class="paper-body" id="paperBody">
+          <div class="rune-col">勅※归</div>
+          <div class="rune-col">令※形</div>
+          <div class="rune-col">化※位</div>
+          <div class="rune-col">天※地</div>
+          <div class="rune-col">道※灵</div>
+          <div class="rune-col">※※※</div>
+          <div class="rune-col">神※明</div>
+        </div>
+        <!-- 城市名 -->
+        <div class="city-reveal" id="cityReveal">
+          <div class="city-cn" id="cityCn"></div>
+          <div class="city-en" id="cityEn"></div>
+        </div>
+        <!-- 运势文案 -->
+        <div class="paper-fortune" id="paperFortune"></div>
+      </div>
+      <button class="qi-btn" id="qiBtn">请气</button>
+      <button class="retry-btn" id="retryBtn">再问一次</button>
+    </div>
+  </div>
+
+  <!-- 仪式三：地图烧蚀 -->
+  <div class="panel" id="panel-map">
+    <div class="map-wrap">
+      <div class="map-title">地图烧蚀</div>
+      <div class="map-desc">燃烧指引，在地图上找到你的目的地</div>
+      <div class="canvas-frame">
+        <canvas id="mapCanvas" width="240" height="160"></canvas>
+        <div class="city-label" id="mapLabel"></div>
+      </div>
+      <button class="burn-btn" id="burnBtn">燃烧指引</button>
+      <div class="result-card" id="mapResult">
+        <div class="result-city" id="mapCity"></div>
+        <div class="result-fortune" id="mapFortune"></div>
+      </div>
+    </div>
+  </div>
 </div>
+
 <script>
-(function(){
-  'use strict';
+var CITIES = [
+  {name:'京都', cn:true, fortune:'枯山水会告诉你答案，去之前先学会沉默', lon:135.8, lat:35.0},
+  {name:'那不勒斯', cn:true, fortune:'最混乱的地方，藏着最真实的自己', lon:14.3, lat:40.9},
+  {name:'PARIS', cn:false, fortune:'你不需要理由去巴黎，巴黎本身就是理由', lon:2.3, lat:48.9},
+  {name:'布达佩斯', cn:true, fortune:'多瑙河的倒影里，藏着你还没想清楚的那件事', lon:19.0, lat:47.5},
+  {name:'里斯本', cn:true, fortune:'站在山顶看日落，你会突然觉得一切都值得', lon:-9.1, lat:38.7},
+  {name:'首尔', cn:true, fortune:'快节奏里有慢时光，找到属于你的那条胡同', lon:126.9, lat:37.6},
+  {name:'圣托里尼', cn:true, fortune:'蓝色和白色之间，是你需要的那种平静', lon:25.4, lat:36.4},
+  {name:'REYKJAVIK', cn:false, fortune:'去最远的地方，才能看到最近的自己', lon:-22.0, lat:64.1},
+  {name:'TOKYO', cn:false, fortune:'秩序里有自由，你会在这里找到那个平衡点', lon:139.7, lat:35.7},
+  {name:'ROME', cn:false, fortune:'每块石头都有故事，慢下来，听一听', lon:12.5, lat:41.9}
+];
 
-  var CITIES=[
-    {name:'京都',fortune:'枯山水会告诉你答案，去之前先学会沉默',cn:true,lat:35.0,lon:135.7},
-    {name:'那不勒斯',fortune:'最混乱的地方，藏着最真实的自己',cn:true,lat:40.85,lon:14.25},
-    {name:'PARIS',fortune:'你不需要理由去巴黎，巴黎本身就是理由',cn:false,lat:48.85,lon:2.35},
-    {name:'布达佩斯',fortune:'多瑙河的倒影里，藏着你还没想清楚的那件事',cn:true,lat:47.5,lon:19.0},
-    {name:'里斯本',fortune:'站在山顶看日落，你会突然觉得一切都值得',cn:true,lat:38.7,lon:-9.15},
-    {name:'首尔',fortune:'快节奏里有慢时光，找到属于你的那条胡同',cn:true,lat:37.56,lon:127.0},
-    {name:'圣托里尼',fortune:'蓝色和白色之间，是你需要的那种平静',cn:true,lat:36.4,lon:25.4},
-    {name:'REYKJAVIK',fortune:'去最远的地方，才能看到最近的自己',cn:false,lat:64.15,lon:-21.9},
-    {name:'TOKYO',fortune:'秩序里有自由，你会在这里找到那个平衡点',cn:false,lat:35.68,lon:139.69},
-    {name:'ROME',fortune:'每块石头都有故事，慢下来，听一听',cn:false,lat:41.9,lon:12.5}
-  ];
+var EMOJI_POOL = ['✈️','🗺️','🏔️','🌊','🏯','🌸','🏙️','🌋','🗽','🎭'];
 
-  /* ---- Tabs ---- */
-  var tabs=document.querySelectorAll('.tab-btn');
-  var panels=document.querySelectorAll('.panel');
-  tabs.forEach(function(btn){
-    btn.addEventListener('click',function(){
-      tabs.forEach(function(t){t.classList.remove('active')});
-      panels.forEach(function(p){p.classList.remove('active')});
-      btn.classList.add('active');
-      document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
-      if(btn.dataset.tab==='2') setTimeout(drawMap,50);
-    });
+/* ===== TABS ===== */
+var tabs = document.querySelectorAll('.tab-pill');
+var panels = document.querySelectorAll('.panel');
+tabs.forEach(function(t) {
+  t.addEventListener('click', function() {
+    tabs.forEach(function(x){ x.classList.remove('active'); });
+    panels.forEach(function(p){ p.classList.remove('active'); });
+    t.classList.add('active');
+    document.getElementById('panel-' + t.dataset.tab).classList.add('active');
   });
+});
 
-  /* ---- Ritual 1: Slot Machine ---- */
-  var EMOJIS=['✈️','🗺️','🏔️','🌊','🏯'];
-  var REEL_DURATIONS=[800,1000,1200];
-  var EMOJI_H=40;
-  function comboToCity(a,b,c){return CITIES[(a*25+b*5+c)%CITIES.length]}
-
-  var reelTracks=[
-    document.querySelector('#reel-0 .reel-track'),
-    document.querySelector('#reel-1 .reel-track'),
-    document.querySelector('#reel-2 .reel-track')
-  ];
-  var reelContainers=[
+/* ===== 仪式一：水晶球 ===== */
+(function(){
+  var reels = [
     document.getElementById('reel-0'),
     document.getElementById('reel-1'),
     document.getElementById('reel-2')
   ];
+  var btn = document.getElementById('shakeBtn');
+  var resultEl = document.getElementById('crystalResult');
+  var cityEl = document.getElementById('crystalCity');
+  var fortEl = document.getElementById('crystalFortune');
 
-  function buildReels(){
-    reelTracks.forEach(function(track){
-      track.innerHTML='';
-      for(var r=0;r<30;r++){
-        EMOJIS.forEach(function(e){
-          var d=document.createElement('div');
-          d.className='emoji';d.textContent=e;
-          track.appendChild(d);
-        });
-      }
-    });
-  }
-  buildReels();
-
-  var spinning=false;
-  var spinBtn=document.getElementById('spinBtn');
-  var _finalIndices=[0,0,0];
-
-  spinBtn.addEventListener('click',function(){
-    if(spinning)return;
-    spinning=true;spinBtn.disabled=true;
-    document.getElementById('slotResult').style.display='none';
-    reelContainers.forEach(function(r){r.classList.remove('highlight')});
-    _finalIndices=[
-      Math.floor(Math.random()*5),
-      Math.floor(Math.random()*5),
-      Math.floor(Math.random()*5)
-    ];
-    reelTracks.forEach(function(track,i){
-      var totalRows=EMOJIS.length*30;
-      var targetRow=20+_finalIndices[i];
-      var targetY=-(targetRow*EMOJI_H);
-      var startTime=performance.now();
-      var duration=REEL_DURATIONS[i];
-      function animate(now){
-        var elapsed=now-startTime;
-        var progress=Math.min(elapsed/duration,1);
-        var eased=1-Math.pow(1-progress,3);
-        var currentY=eased*targetY;
-        currentY=Math.max(currentY,-(totalRows-5)*EMOJI_H);
-        track.style.transform='translateY('+currentY+'px)';
-        if(progress<1){requestAnimationFrame(animate)}
-        else{
-          track.style.transform='translateY('+targetY+'px)';
-          reelContainers[i].classList.add('highlight');
-          if(i===2) setTimeout(showSlotResult,300);
-        }
-      }
-      requestAnimationFrame(animate);
-    });
-  });
-
-  function showSlotResult(){
-    var city=comboToCity(_finalIndices[0],_finalIndices[1],_finalIndices[2]);
-    document.getElementById('slotCity').textContent=city.name;
-    document.getElementById('slotFortune').textContent=city.fortune;
-    var el=document.getElementById('slotResult');
-    el.style.display='';el.classList.remove('hidden');
-    spinning=false;spinBtn.disabled=false;
-  }
-
-  /* ---- Ritual 2: Talisman ---- */
-  var qiBtn=document.getElementById('qiBtn');
-  var talismanCity=document.getElementById('talismanCity');
-  var talismanResultEl=document.getElementById('talismanResult');
-  var talismanCityName=document.getElementById('talismanCityName');
-  var talismanFortune=document.getElementById('talismanFortune');
-  var qiSpinning=false;
-
-  qiBtn.addEventListener('click',function(){
-    if(qiSpinning)return;
-    qiSpinning=true;qiBtn.disabled=true;
-    talismanResultEl.style.display='none';talismanResultEl.classList.add('hidden');
-    var city=CITIES[Math.floor(Math.random()*CITIES.length)];
-    talismanCity.classList.remove('clear');
-    talismanCity.classList.add('blur');
-    if(city.cn){
-      talismanCity.className='city-display blur cn';
-      talismanCity.textContent=city.name;
-    }else{
-      talismanCity.className='city-display blur en';
-      talismanCity.textContent=city.name;
+  // init reels
+  reels.forEach(function(r){
+    var inner = r.querySelector('.slot-inner');
+    inner.innerHTML = '';
+    // 填充足够多的emoji用于滚动
+    for(var i=0; i<16; i++){
+      var d = document.createElement('div');
+      d.className = 'slot-item';
+      d.textContent = EMOJI_POOL[i % EMOJI_POOL.length];
+      inner.appendChild(d);
     }
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        talismanCity.classList.remove('blur');
-        talismanCity.classList.add('clear');
-      });
-    });
-    setTimeout(function(){
-      talismanCityName.textContent=city.name;
-      talismanFortune.textContent=city.fortune;
-      var el=talismanResultEl;
-      el.style.display='';el.classList.remove('hidden');
-      qiSpinning=false;qiBtn.disabled=false;
-    },1800);
   });
 
-  /* ---- Ritual 3: Map ---- */
-  var canvas=document.getElementById('mapCanvas');
-  var ctx=canvas.getContext('2d');
-  var mapResultEl=document.getElementById('mapResult');
-  var mapCityEl=document.getElementById('mapCity');
-  var mapFortuneEl=document.getElementById('mapFortune');
-  var burnBtn=document.getElementById('burnBtn');
-  var burnSpinning=false;
+  btn.addEventListener('click', function(){
+    if(btn.disabled) return;
+    btn.disabled = true;
+    resultEl.classList.remove('show');
 
-  var continents=[
-    [[0.12,0.18],[0.08,0.25],[0.06,0.35],[0.10,0.42],[0.15,0.45],[0.20,0.42],[0.25,0.38],[0.28,0.32],[0.26,0.25],[0.22,0.20],[0.18,0.18],[0.12,0.18]],
-    [[0.22,0.52],[0.20,0.58],[0.22,0.68],[0.25,0.78],[0.28,0.82],[0.30,0.78],[0.32,0.68],[0.30,0.58],[0.28,0.52],[0.22,0.52]],
-    [[0.45,0.20],[0.42,0.25],[0.44,0.32],[0.48,0.35],[0.52,0.32],[0.55,0.28],[0.54,0.22],[0.50,0.18],[0.45,0.20]],
-    [[0.44,0.38],[0.42,0.45],[0.44,0.55],[0.48,0.65],[0.52,0.70],[0.55,0.62],[0.56,0.52],[0.54,0.42],[0.50,0.38],[0.44,0.38]],
-    [[0.55,0.15],[0.52,0.22],[0.55,0.30],[0.60,0.35],[0.68,0.38],[0.75,0.35],[0.80,0.30],[0.82,0.25],[0.78,0.18],[0.72,0.15],[0.65,0.14],[0.55,0.15]],
-    [[0.78,0.58],[0.75,0.65],[0.78,0.72],[0.84,0.74],[0.88,0.70],[0.88,0.62],[0.84,0.58],[0.78,0.58]]
+    reels[0].classList.add('spinning-1');
+    reels[1].classList.add('spinning-2');
+    reels[2].classList.add('spinning-3');
+
+    var city = CITIES[Math.floor(Math.random() * CITIES.length)];
+
+    setTimeout(function(){ reels[0].classList.remove('spinning-1'); }, 800);
+    setTimeout(function(){ reels[1].classList.remove('spinning-2'); }, 1000);
+    setTimeout(function(){ reels[2].classList.remove('spinning-3'); }, 1200);
+
+    setTimeout(function(){
+      // 随机显示3个emoji作为结果
+      reels.forEach(function(r){
+        var items = r.querySelectorAll('.slot-item');
+        var ri = Math.floor(Math.random() * EMOJI_POOL.length);
+        items.forEach(function(it, idx){
+          if(idx >= 11) it.textContent = EMOJI_POOL[ri];
+          else it.textContent = EMOJI_POOL[Math.floor(Math.random() * EMOJI_POOL.length)];
+        });
+      });
+
+      cityEl.textContent = city.name;
+      fortEl.textContent = city.fortune;
+      resultEl.classList.add('show');
+      btn.disabled = false;
+    }, 1400);
+  });
+})();
+
+/* ===== 仪式二：符纸 ===== */
+(function(){
+  var qiBtn = document.getElementById('qiBtn');
+  var retryBtn = document.getElementById('retryBtn');
+  var paperBody = document.getElementById('paperBody');
+  var cityReveal = document.getElementById('cityReveal');
+  var cityCn = document.getElementById('cityCn');
+  var cityEn = document.getElementById('cityEn');
+  var paperFortune = document.getElementById('paperFortune');
+  var activated = false;
+
+  qiBtn.addEventListener('click', function(){
+    if(qiBtn.disabled || activated) return;
+    qiBtn.disabled = true;
+    activated = true;
+
+    var city = CITIES[Math.floor(Math.random() * CITIES.length)];
+
+    // 符文消失
+    paperBody.classList.add('fade-out');
+
+    // 设置城市名
+    setTimeout(function(){
+      if(city.cn){
+        cityCn.textContent = city.name;
+        cityCn.style.display = 'block';
+        cityEn.style.display = 'none';
+      } else {
+        cityEn.textContent = city.name;
+        cityEn.style.display = 'block';
+        cityCn.style.display = 'none';
+      }
+      cityReveal.classList.add('show');
+      // 触发从模糊→清晰的过渡
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          cityReveal.classList.add('revealed');
+        });
+      });
+      paperFortune.textContent = city.fortune;
+      paperFortune.classList.add('show');
+      retryBtn.classList.add('show');
+      qiBtn.disabled = false;
+    }, 600);
+  });
+
+  retryBtn.addEventListener('click', function(){
+    // 重置
+    activated = false;
+    cityReveal.classList.remove('show', 'revealed');
+    paperBody.classList.remove('fade-out');
+    paperFortune.classList.remove('show');
+    retryBtn.classList.remove('show');
+    cityCn.textContent = '';
+    cityEn.textContent = '';
+  });
+})();
+
+/* ===== 仪式三：地图烧蚀 ===== */
+(function(){
+  var canvas = document.getElementById('mapCanvas');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var burnBtn = document.getElementById('burnBtn');
+  var mapResult = document.getElementById('mapResult');
+  var mapCity = document.getElementById('mapCity');
+  var mapFortune = document.getElementById('mapFortune');
+  var mapLabel = document.getElementById('mapLabel');
+
+  // 简化的大陆多边形
+  var continents = [
+    // 北美
+    [[20,30],[55,20],[80,25],[90,45],[85,70],[65,85],[40,80],[25,65],[20,50]],
+    // 南美
+    [[40,95],[60,90],[70,100],[65,130],[55,148],[42,145],[35,125],[38,105]],
+    // 欧洲
+    [[100,25],[130,20],[145,30],[140,50],[125,55],[108,50],[100,40]],
+    // 非洲
+    [[100,60],[125,55],[140,60],[148,85],[140,110],[125,125],[108,120],[98,100],[95,75]],
+    // 亚洲
+    [[140,20],[190,15],[225,20],[235,35],[225,55],[210,65],[195,75],[180,70],[160,60],[145,55],[140,40]],
+    // 澳洲
+    [[190,95],[215,90],[230,95],[228,115],[210,125],[195,118],[188,105]],
+    // 格陵兰
+    [[72,10],[92,8],[98,18],[90,28],[75,25],[68,18]],
   ];
 
-  function lonLatToXY(lon,lat,w,h){
-    return[((lon+180)/360)*w,((90-lat)/180)*h];
-  }
-
   function drawMap(){
-    var parent=canvas.parentElement;
-    var rect=parent.getBoundingClientRect();
-    var dpr=window.devicePixelRatio||1;
-    canvas.width=rect.width*dpr;
-    canvas.height=rect.height*dpr;
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    var w=rect.width,h=rect.height;
-    ctx.fillStyle='#f5f2ed';
-    ctx.fillRect(0,0,w,h);
-    ctx.strokeStyle='rgba(45,27,105,.04)';
-    ctx.lineWidth=0.5;
-    for(var i=0;i<=12;i++){
-      var gx=(w/12)*i;
-      ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,h);ctx.stroke();
-    }
-    for(var j=0;j<=6;j++){
-      var gy=(h/6)*j;
-      ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(w,gy);ctx.stroke();
-    }
-    ctx.fillStyle='#E8DDD0';
-    continents.forEach(function(pts){
+    ctx.clearRect(0,0,W,H);
+    // 海洋底色
+    ctx.fillStyle = '#E8E2D4';
+    ctx.fillRect(0,0,W,H);
+    // 大陆
+    ctx.fillStyle = '#D4C9B0';
+    continents.forEach(function(poly){
       ctx.beginPath();
-      pts.forEach(function(p,pi){
-        var x=p[0]*w,y=p[1]*h;
-        if(pi===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-      });
-      ctx.closePath();ctx.fill();
+      ctx.moveTo(poly[0][0], poly[0][1]);
+      for(var i=1; i<poly.length; i++){
+        ctx.lineTo(poly[i][0], poly[i][1]);
+      }
+      ctx.closePath();
+      ctx.fill();
     });
+    // 轻微网格线增加质感
+    ctx.strokeStyle = 'rgba(139,94,60,0.06)';
+    ctx.lineWidth = 0.5;
+    for(var x=0; x<W; x+=20){
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+    }
+    for(var y=0; y<H; y+=20){
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    }
   }
-  setTimeout(drawMap,100);
-  window.addEventListener('resize',drawMap);
 
-  burnBtn.addEventListener('click',function(){
-    if(burnSpinning)return;
-    burnSpinning=true;burnBtn.disabled=true;
-    mapResultEl.classList.remove('show');
-    var city=CITIES[Math.floor(Math.random()*CITIES.length)];
-    var parent=canvas.parentElement;
-    var rect=parent.getBoundingClientRect();
-    var w=rect.width,h=rect.height;
-    var pos=lonLatToXY(city.lon,city.lat,w,h);
+  function lonLatToXY(lon, lat){
+    var x = ((lon + 180) / 360) * W;
+    var y = ((90 - lat) / 180) * H;
+    return [x, y];
+  }
+
+  function animateRings(cx, cy, cb){
+    var maxR = 80;
+    var startTime = performance.now();
+    var duration = 1500;
+
+    function frame(now){
+      var elapsed = now - startTime;
+      var t = Math.min(elapsed / duration, 1);
+      var r = t * maxR;
+      var alpha = 1 - t;
+
+      // 外环
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(220,120,50,' + alpha * 0.8 + ')';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // 内环
+      if(r > 10){
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(240,80,40,' + alpha * 0.5 + ')';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      if(t < 1){
+        requestAnimationFrame(frame);
+      } else {
+        cb();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  burnBtn.addEventListener('click', function(){
+    if(burnBtn.disabled) return;
+    burnBtn.disabled = true;
+    mapResult.classList.remove('show');
+    mapLabel.classList.remove('show');
+
+    var city = CITIES[Math.floor(Math.random() * CITIES.length)];
+    var pos = lonLatToXY(city.lon, city.lat);
+
     drawMap();
 
-    var t0=performance.now();
-    function animateBurn(now){
-      var elapsed=now-t0;
-      if(elapsed<500){
-        ctx.save();
-        ctx.beginPath();ctx.arc(pos[0],pos[1],6,0,Math.PI*2);
-        ctx.fillStyle='#4285f4';ctx.fill();
-        ctx.restore();
-        requestAnimationFrame(animateBurn);
-        return;
-      }
-      if(elapsed<2000){
-        var progress=(elapsed-500)/1500;
-        var maxR=80*progress;
-        ctx.save();
-        ctx.beginPath();ctx.arc(pos[0],pos[1],6,0,Math.PI*2);
-        ctx.fillStyle='#4285f4';ctx.fill();
-        for(var r=maxR;r>0;r-=2){
-          var alpha=(1-r/maxR)*0.3*(1-progress*0.5);
-          ctx.beginPath();ctx.arc(pos[0],pos[1],r,0,Math.PI*2);
-          ctx.strokeStyle='rgba(232,120,32,'+alpha+')';
-          ctx.lineWidth=2;ctx.stroke();
-        }
-        var gradient=ctx.createRadialGradient(pos[0],pos[1],0,pos[0],pos[1],maxR);
-        gradient.addColorStop(0,'rgba(232,120,32,0.15)');
-        gradient.addColorStop(1,'rgba(232,120,32,0)');
-        ctx.fillStyle=gradient;
-        ctx.beginPath();ctx.arc(pos[0],pos[1],maxR,0,Math.PI*2);ctx.fill();
-        ctx.restore();
-        if(progress>0.5){
-          ctx.save();
-          ctx.font='600 11px -apple-system,"PingFang SC",sans-serif';
-          ctx.fillStyle='#2D1B69';ctx.textAlign='center';
-          ctx.fillText(city.name,pos[0],pos[1]-14);
-          ctx.restore();
-        }
-        requestAnimationFrame(animateBurn);
-        return;
-      }
-      mapCityEl.textContent=city.name;
-      mapFortuneEl.textContent=city.fortune;
-      mapResultEl.classList.add('show');
-      burnSpinning=false;burnBtn.disabled=false;
-    }
-    requestAnimationFrame(animateBurn);
+    // 蓝色光点
+    ctx.beginPath();
+    ctx.arc(pos[0], pos[1], 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#4A90D9';
+    ctx.fill();
+    ctx.shadowColor = '#4A90D9';
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // 扩散圆环
+    animateRings(pos[0], pos[1], function(){
+      // 显示标签
+      mapLabel.textContent = city.name;
+      mapLabel.style.left = Math.min(pos[0] + 10, W - 80) + 'px';
+      mapLabel.style.top = Math.max(pos[1] - 20, 5) + 'px';
+      mapLabel.classList.add('show');
+
+      mapCity.textContent = city.name;
+      mapFortune.textContent = city.fortune;
+      mapResult.classList.add('show');
+      burnBtn.disabled = false;
+    });
   });
 
+  // 初始绘制
+  drawMap();
 })();
 </script>
 </body>
