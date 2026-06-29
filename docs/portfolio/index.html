@@ -330,10 +330,19 @@ footer a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
     <div class="sub-sec">
       <div class="sub-hd">
         <div class="sub-ico" style="background:#FEF2F2"><svg viewBox="0 0 24 24" style="stroke:#EF4444"><circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/></svg></div>
-        <span class="sub-name">活动 Demo</span><span class="sub-cnt">8 个</span>
+        <span class="sub-name">活动 Demo</span><span class="sub-cnt">12 个</span>
         <div class="sub-line"></div>
       </div>
+      <!-- App 端分组 -->
+      <div style="margin:8px 0 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9CA3AF;display:flex;align-items:center;gap:8px">
+        <span>📱 App 端互动</span><span style="flex:1;height:1px;background:#E5E7EB"></span>
+      </div>
       <div class="g-activity-grid" id="g-activity"></div>
+      <!-- Web 端分组 -->
+      <div style="margin:24px 0 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9CA3AF;display:flex;align-items:center;gap:8px">
+        <span>💻 Web 端 MVP</span><span style="flex:1;height:1px;background:#E5E7EB"></span>
+      </div>
+      <div class="g-activity-grid" id="g-web"></div>
     </div>
   </div>
 </div>
@@ -390,6 +399,12 @@ var DATA_TOOLS=[
   {n:'DV4',t:'数据解读助手',d:'粘贴产品数据，AI 健康评估 + 根因诊断 + 实验方案，帮你看懂数字背后的信号。',h:'/08/portfolio/data-insight/',tag:'数据',ic:'#0EA5E9',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
   {n:'DV5',t:'周报生成器',d:'描述本周核心数据和达成情况，AI 生成结构化周报，含亮点、问题和下周计划。',h:'/08/portfolio/weekly-report/',tag:'周报',ic:'#8B5CF6',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'}
 ];
+var WEB_DEMO=[
+  {cls:'ac-compare',  em:'🗺️⚡', t:'AI 多方案对比',     d:'A/B/C三套旅行方案横向并排，预算/效率/体验三策略一次生成，支持混合优化。', h:'/08/web/compare/',   tag:'PC大屏', cta:'体验 Demo'},
+  {cls:'ac-midpoint', em:'📍🤝', t:'AI 中间点规划',     d:'多人从不同城市出发，AI 计算最优会合城市，综合交通/预算/体验多维评分。', h:'/08/web/midpoint/',  tag:'多人规划', cta:'体验 Demo'},
+  {cls:'ac-recap',    em:'📊✨', t:'AI 行程复盘',       d:'旅行结束自动生成 Travel Report，时间轴+统计+可分享小红书长图。',        h:'/08/web/recap/',    tag:'闭环能力', cta:'体验 Demo'},
+  {cls:'ac-radar',    em:'🛰️⚡', t:'AI 实时出行雷达',   d:'天气/限流/交通实时监测，风险高亮预警，AI 一键重排当天路线。',            h:'/08/web/radar/',    tag:'动态规划', cta:'体验 Demo'},
+];
 var ACTIVITY=[
   {cls:'ac-star',   em:'⚽🏆', t:'球星人格匹配',   d:'6题自动匹配旅行球星人格，解锁专属朝圣路线。',         h:'/08/activity/star/',      tag:'世界杯',   cta:'开始匹配'},
   {cls:'ac-fortune', em:'🔮✨', t:'命运之地',       d:'5道玄学题，测出你和哪座城市早就注定。',               h:'/08/activity/fortune/',   tag:'玄学占卜', cta:'开始占卜'},
@@ -437,6 +452,19 @@ function actCard(t){
     + '</div>'+close;
 }
 document.getElementById('g-data').innerHTML=DATA_TOOLS.map(card).join('');
+// render web demos
+var acClrs={'ac-compare':'linear-gradient(135deg,#EFF6FF,#DBEAFE)','ac-midpoint':'linear-gradient(135deg,#ECFDF5,#D1FAE5)','ac-recap':'linear-gradient(135deg,#FEF3C7,#FDE68A)','ac-radar':'linear-gradient(135deg,#F5F3FF,#EDE9FE)'};
+document.getElementById('g-web').innerHTML=WEB_DEMO.map(function(t){
+  var bg=acClrs[t.cls]||'linear-gradient(135deg,#F3F4F6,#E5E7EB)';
+  return '<a href="'+t.h+'" class="ac-card" style="text-decoration:none">'
+    +'<div class="ac-cover" style="background:'+bg+'">'+t.em+'</div>'
+    +'<div class="ac-body">'
+    +'<span class="ac-tag">'+t.tag+'</span>'
+    +'<div class="ac-title">'+t.t+'</div>'
+    +'<div class="ac-desc">'+t.d+'</div>'
+    +'<div class="ac-cta"><span>'+t.cta+'</span><span style="color:var(--blue);font-weight:700">→</span></div>'
+    +'</div></a>';
+}).join('');
 document.getElementById('g-activity').innerHTML=ACTIVITY.map(actCard).join('');
 
 /* ── Tab switching ── */
