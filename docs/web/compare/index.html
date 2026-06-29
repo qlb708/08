@@ -3,2192 +3,761 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 多方案对比 — 旅行规划</title>
+<title>AI 多方案对比 — 马德里旅游</title>
 <style>
-/* ========== RESET & BASE ========== */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg-start: #EBF8FF;
-  --bg-end: #F0F9FF;
-  --primary: #38BDF8;
-  --primary-dark: #0EA5E9;
-  --green: #10B981;
-  --green-bg: #ECFDF5;
-  --green-bg2: #D1FAE5;
-  --blue: #3B82F6;
-  --blue-bg: #EFF6FF;
-  --blue-bg2: #DBEAFE;
-  --purple: #8B5CF6;
-  --purple-bg: #F5F3FF;
-  --purple-bg2: #EDE9FE;
-  --card-radius: 16px;
-  --text-primary: #1E293B;
-  --text-secondary: #64748B;
-  --text-tertiary: #94A3B8;
-  --border: #E2E8F0;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;background:#F7F8FA;color:#1A1A2E;line-height:1.5;min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* ===== HEADER ===== */
+.header{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;padding:0 20px;z-index:100;gap:12px}
+.header-back{font-size:14px;color:#6B7280;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.header-back:hover{color:#1A1A2E}
+.header-title{flex:1;text-align:center;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
+.header-title svg{width:16px;height:16px;fill:#6B7280;flex-shrink:0}
+.header-actions{display:flex;gap:8px;align-items:center}
+.btn-outline{padding:6px 14px;border:1.5px solid #00C48C;color:#00C48C;border-radius:8px;font-size:13px;font-weight:500;transition:all .15s}
+.btn-outline:hover{background:#00C48C;color:#fff}
+.btn-solid{padding:6px 14px;background:#00C48C;color:#fff;border-radius:8px;font-size:13px;font-weight:500;transition:all .15s}
+.btn-solid:hover{background:#00b07e}
+
+/* ===== MAIN LAYOUT ===== */
+.main{display:flex;margin-top:52px;margin-bottom:64px;min-height:calc(100vh - 52px - 64px)}
+.main-left{flex:1;padding:16px 20px;overflow-y:auto;min-width:0}
+.main-right{width:320px;flex-shrink:0;padding:16px 16px 16px 0;overflow-y:auto}
+
+/* ===== PLAN TABS ===== */
+.plan-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.plan-tab{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;background:#fff;color:#6B7280;border:1.5px solid #E5E7EB;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none}
+.plan-tab.active{background:#00C48C;color:#fff;border-color:#00C48C}
+.plan-tab:hover:not(.active){border-color:#00C48C;color:#00C48C}
+.plan-tab.add-plan{border-style:dashed;color:#9CA3AF}
+.plan-tab.add-plan:hover{border-color:#00C48C;color:#00C48C}
+.plan-tab .check{display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid #ccc;margin-right:4px;vertical-align:middle;position:relative;top:-1px}
+.plan-tab.active .check{border-color:#fff;background:rgba(255,255,255,.3)}
+.plan-tab.active .check::after{content:'✓';font-size:10px;color:#fff;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.plan-hint{font-size:11px;color:#9CA3AF;margin-left:auto;white-space:nowrap}
+
+/* ===== PLAN GRID ===== */
+.plan-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.plan-grid.cols-1{grid-template-columns:1fr}
+.plan-grid.cols-2{grid-template-columns:1fr 1fr}
+.plan-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.plan-grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+
+/* ===== PLAN CARD ===== */
+.plan-card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;transition:transform .15s,box-shadow .15s}
+.plan-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.plan-card.accent-green .plan-header-top{background:#00C48C}
+.plan-card.accent-orange .plan-header-top{background:#FF9F43}
+.plan-card.accent-blue .plan-header-top{background:#5B8DEF}
+.plan-card.accent-red .plan-header-top{background:#FF6B6B}
+.plan-header-top{height:4px}
+.plan-body{padding:16px}
+.plan-name{font-size:16px;font-weight:700;margin-bottom:2px}
+.plan-desc{font-size:12px;color:#6B7280;margin-bottom:12px}
+.plan-metrics{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.plan-metric{display:flex;align-items:center;gap:4px;font-size:12px;color:#6B7280}
+.plan-metric .val{font-weight:600;color:#1A1A2E}
+.plan-metric.price .val{color:#FF6B6B}
+
+/* ===== DAY SECTION ===== */
+.day-section{margin-bottom:14px}
+.day-label{display:inline-flex;align-items:center;gap:4px;background:#00C48C;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;margin-bottom:8px}
+.day-spot-list{position:relative;padding-left:16px}
+.day-spot-list::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:#E5E7EB}
+.spot-item{position:relative;display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;transition:background .1s;cursor:default}
+.spot-item:hover{background:#F9FAFB}
+.spot-dot{width:8px;height:8px;border-radius:50%;background:#00C48C;flex-shrink:0;position:relative;z-index:1}
+.spot-dot.accent-orange{background:#FF9F43}
+.spot-dot.accent-blue{background:#5B8DEF}
+.spot-dot.accent-red{background:#FF6B6B}
+.spot-info{flex:1;min-width:0}
+.spot-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spot-time{font-size:10px;color:#9CA3AF;margin-top:1px}
+.spot-tag{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.spot-tag.play{background:#E8F5E9;color:#2E7D32}
+.spot-tag.food{background:#FFF3E0;color:#E65100}
+.spot-tag.shop{background:#E3F2FD;color:#1565C0}
+.spot-tag.culture{background:#F3E5F5;color:#7B1FA2}
+.spot-tag.transport{background:#ECEFF1;color:#546E7A}
+.spot-add{font-size:14px;color:#9CA3AF;padding:4px 6px;border-radius:4px;transition:all .1s;flex-shrink:0}
+.spot-add:hover{color:#00C48C;background:#F0FFF9}
+
+/* ===== RIGHT PANEL ===== */
+.right-map{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;margin-bottom:14px}
+.right-map-header{padding:12px 14px;font-size:14px;font-weight:600;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;gap:6px}
+.right-map-header svg{width:16px;height:16px;fill:#6B7280}
+.map-svg{width:100%;height:220px;background:#F0F2F5}
+.map-legend{padding:8px 14px;display:flex;gap:12px;font-size:11px;color:#6B7280}
+.map-legend span{display:flex;align-items:center;gap:4px}
+.map-legend i{width:12px;height:3px;border-radius:2px}
+.map-legend i.l-green{background:#00C48C}
+.map-legend i.l-orange{background:#FF9F43}
+.map-legend i.l-blue{background:#5B8DEF}
+
+/* ===== RECOMMEND SECTION ===== */
+.recommend{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
+.recommend-tabs{display:flex;border-bottom:1px solid #E5E7EB}
+.recommend-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;color:#6B7280;border-bottom:2px solid transparent;transition:all .15s}
+.recommend-tab.active{color:#00C48C;border-bottom-color:#00C48C}
+.recommend-tab:hover:not(.active){color:#1A1A2E}
+.recommend-scroll{display:flex;gap:10px;padding:12px 14px;overflow-x:auto;scrollbar-width:none}
+.recommend-scroll::-webkit-scrollbar{display:none}
+.rec-card{flex-shrink:0;width:130px;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:transform .1s}
+.rec-card:hover{transform:translateY(-1px)}
+.rec-img{height:72px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff}
+.rec-info{padding:6px 8px}
+.rec-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-type{font-size:10px;color:#9CA3AF;margin-top:2px}
+
+/* ===== BOTTOM BAR ===== */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-top:1px solid #E5E7EB;z-index:100;padding:10px 20px}
+.bottom-inner{display:flex;align-items:center;gap:12px;max-width:1200px;margin:0 auto;overflow-x:auto}
+.bottom-label{font-size:12px;font-weight:600;color:#6B7280;white-space:nowrap;flex-shrink:0}
+.bottom-divider{width:1px;height:28px;background:#E5E7EB;flex-shrink:0}
+.bottom-plans{display:flex;gap:16px;flex:1;min-width:0}
+.bottom-plan{flex:1;min-width:0}
+.bottom-plan-name{font-size:11px;font-weight:600;color:#1A1A2E;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bottom-metrics{display:flex;gap:10px;flex-wrap:wrap}
+.bottom-metric{font-size:11px;color:#6B7280;display:flex;align-items:center;gap:2px}
+.bottom-metric .bm-val{font-weight:600}
+.bottom-metric.best .bm-val{color:#00C48C}
+.bottom-metric.best .bm-val::after{content:' ✓';font-weight:400}
+.bottom-metric.worst .bm-val{color:#9CA3AF}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .main-right{display:none}
+  .plan-grid.cols-4{grid-template-columns:1fr 1fr}
 }
-html { font-size: 14px; }
-body {
-  font-family: 'Inter', -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif;
-  background: linear-gradient(160deg, var(--bg-start) 0%, var(--bg-end) 50%, #FFFFFF 100%);
-  color: var(--text-primary);
-  min-height: 100vh;
-  line-height: 1.6;
-  overflow-x: hidden;
+@media(max-width:768px){
+  .plan-grid.cols-2,.plan-grid.cols-3,.plan-grid.cols-4{grid-template-columns:1fr}
+  .header-title{font-size:14px}
+  .main-left{padding:12px}
+  .plan-tabs{gap:6px}
+  .plan-tab{padding:6px 12px;font-size:12px}
+  .plan-hint{display:none}
+  .bottom-bar{padding:8px 12px}
 }
 
-/* ========== HEADER ========== */
-.header {
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 28px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: var(--text-primary);
-  font-weight: 700;
-  font-size: 16px;
-}
-.logo-square {
-  width: 28px;
-  height: 28px;
-  background: var(--primary);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
-}
-.breadcrumbs {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--text-tertiary);
-}
-.breadcrumbs a {
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: var(--transition);
-}
-.breadcrumbs a:hover { color: var(--primary); }
-.breadcrumbs .sep { color: var(--border); }
-.breadcrumbs .current { color: var(--text-primary); font-weight: 500; }
-.header-link {
-  color: var(--primary);
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: white;
-  transition: var(--transition);
-}
-.header-link:hover {
-  background: var(--blue-bg);
-  border-color: var(--primary);
-}
-
-/* ========== MAIN LAYOUT ========== */
-.main-layout {
-  display: flex;
-  gap: 20px;
-  padding: 20px 24px;
-  padding-bottom: 100px;
-  max-width: 1480px;
-  margin: 0 auto;
-  min-height: calc(100vh - 56px);
-}
-
-/* ========== LEFT PANEL ========== */
-.left-panel {
-  width: 280px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 76px;
-  height: fit-content;
-}
-.input-card {
-  background: white;
-  border-radius: var(--card-radius);
-  box-shadow: var(--shadow-md);
-  padding: 24px;
-}
-.panel-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.panel-title .star { color: var(--primary); }
-.form-group {
-  margin-bottom: 18px;
-}
-.form-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.form-input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  transition: var(--transition);
-  background: #F8FAFC;
-  color: var(--text-primary);
-}
-.form-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
-  background: white;
-}
-.form-input::placeholder { color: var(--text-tertiary); }
-.number-input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  background: #F8FAFC;
-  transition: var(--transition);
-}
-.number-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
-}
-/* Slider */
-.slider-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.slider-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--primary);
-  text-align: center;
-}
-input[type="range"] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: linear-gradient(to right, var(--primary) 0%, var(--primary) var(--val, 50%), var(--border) var(--val, 50%));
-  outline: none;
-  transition: var(--transition);
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: white;
-  border: 3px solid var(--primary);
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(56,189,248,0.3);
-  transition: var(--transition);
-}
-input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-  box-shadow: 0 2px 10px rgba(56,189,248,0.4);
-}
-/* Pill selection */
-.pill-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.pill {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border);
-  background: #F8FAFC;
-  font-size: 13px;
-  cursor: pointer;
-  transition: var(--transition);
-  user-select: none;
-  font-family: inherit;
-  color: var(--text-secondary);
-}
-.pill:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-.pill.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: white;
-}
-/* People pills */
-.pill-group.people {
-  justify-content: center;
-}
-.pill.people {
-  min-width: 36px;
-  text-align: center;
-  padding: 6px 12px;
-}
-/* Generate button */
-.generate-btn {
-  width: 100%;
-  padding: 14px 20px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: inherit;
-  position: relative;
-  overflow: hidden;
-  margin-top: 8px;
-}
-.generate-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(56,189,248,0.35);
-}
-.generate-btn:active {
-  transform: translateY(0);
-}
-.generate-btn.loading {
-  pointer-events: none;
-  opacity: 0.85;
-}
-.generate-btn .btn-text { transition: var(--transition); }
-.generate-btn.loading .btn-text { opacity: 0; }
-.spinner {
-  display: none;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 22px;
-  height: 22px;
-  border: 2.5px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-.generate-btn.loading .spinner { display: block; }
-@keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
-
-/* ========== CENTER AREA ========== */
-.center-area {
-  flex: 1;
-  min-width: 0;
-}
-
-/* Empty state */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 40px;
-  text-align: center;
-}
-.empty-illustration {
-  width: 240px;
-  height: 200px;
-  margin-bottom: 32px;
-  position: relative;
-}
-/* CSS map illustration */
-.css-map {
-  width: 200px;
-  height: 160px;
-  background: #E2E8F0;
-  border-radius: 20px;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  overflow: hidden;
-}
-.css-map::before {
-  content: '';
-  position: absolute;
-  top: 30%;
-  left: 10%;
-  width: 80%;
-  height: 40%;
-  background: #CBD5E1;
-  border-radius: 40% 60% 50% 50%;
-  opacity: 0.6;
-}
-.css-map::after {
-  content: '';
-  position: absolute;
-  top: 15%;
-  right: 15%;
-  width: 35%;
-  height: 25%;
-  background: #CBD5E1;
-  border-radius: 50% 40% 60% 30%;
-  opacity: 0.5;
-}
-.map-dot {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: var(--primary);
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.2);
-}
-.map-dot::after {
-  content: '';
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: white;
-  border-radius: 50%;
-  top: 3px;
-  left: 3px;
-}
-.map-dot:nth-child(1) { top: 40px; left: 50px; }
-.map-dot:nth-child(2) { top: 60px; left: 120px; }
-.map-dot:nth-child(3) { top: 90px; left: 80px; }
-.map-dot:nth-child(4) { top: 110px; left: 150px; }
-.map-dot:nth-child(5) { top: 30px; left: 160px; }
-.map-line {
-  position: absolute;
-  height: 1.5px;
-  background: var(--primary);
-  opacity: 0.3;
-  transform-origin: left center;
-}
-.map-line:nth-child(6) { top: 45px; left: 55px; width: 65px; transform: rotate(15deg); }
-.map-line:nth-child(7) { top: 68px; left: 85px; width: 50px; transform: rotate(35deg); }
-.map-line:nth-child(8) { top: 95px; left: 85px; width: 70px; transform: rotate(12deg); }
-/* CSS airplane */
-.css-plane {
-  position: absolute;
-  top: 0;
-  right: 10px;
-  font-size: 48px;
-  color: var(--primary);
-  animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 2px 4px rgba(56,189,248,0.3));
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(-15deg); }
-  50% { transform: translateY(-8px) rotate(-10deg); }
-}
-.empty-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-}
-.empty-desc {
-  font-size: 14px;
-  color: var(--text-secondary);
-  max-width: 360px;
-}
-
-/* Skeleton screen */
-.skeleton-container {
-  display: none;
-  gap: 16px;
-}
-.skeleton-container.active {
-  display: flex;
-}
-.skeleton-col {
-  flex: 1;
-  background: white;
-  border-radius: var(--card-radius);
-  box-shadow: var(--shadow-sm);
-  padding: 24px;
-  min-height: 500px;
-}
-.skeleton-line {
-  height: 14px;
-  border-radius: 7px;
-  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
-  margin-bottom: 12px;
-}
-.skeleton-line:nth-child(1) { width: 60%; height: 20px; margin-bottom: 20px; }
-.skeleton-line:nth-child(2) { width: 100%; }
-.skeleton-line:nth-child(3) { width: 80%; }
-.skeleton-line:nth-child(4) { width: 90%; }
-.skeleton-line:nth-child(5) { width: 70%; margin-top: 20px; height: 20px; margin-bottom: 20px; }
-.skeleton-line:nth-child(6) { width: 100%; }
-.skeleton-line:nth-child(7) { width: 85%; }
-.skeleton-line:nth-child(8) { width: 95%; }
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* ========== RESULTS AREA ========== */
-.results-area {
-  display: none;
-  gap: 16px;
-  flex-direction: column;
-}
-.results-area.active {
-  display: flex;
-}
-
-/* Tabs */
-.tabs-bar {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-.tab-btn {
-  padding: 8px 24px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border);
-  background: white;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: inherit;
-  color: var(--text-secondary);
-}
-.tab-btn:hover { border-color: var(--primary); color: var(--primary); }
-.tab-btn.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: white;
-}
-.tab-btn.active[data-plan="a"] { background: var(--green); border-color: var(--green); }
-.tab-btn.active[data-plan="b"] { background: var(--blue); border-color: var(--blue); }
-.tab-btn.active[data-plan="c"] { background: var(--purple); border-color: var(--purple); }
-
-/* Results columns */
-.results-cols {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-/* Plan card */
-.plan-card {
-  background: white;
-  border-radius: var(--card-radius);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition: var(--transition);
-  opacity: 0;
-  transform: translateY(24px);
-}
-.plan-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.plan-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-.plan-card.visible:hover {
-  transform: translateY(-4px);
-}
-/* Plan header gradients */
-.plan-header {
-  padding: 20px;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-.plan-header::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  right: -20px;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-}
-.plan-header.plan-a { background: linear-gradient(135deg, #34D399, #10B981); }
-.plan-header.plan-b { background: linear-gradient(135deg, #60A5FA, #3B82F6); }
-.plan-header.plan-c { background: linear-gradient(135deg, #A78BFA, #8B5CF6); }
-.plan-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-  backdrop-filter: blur(4px);
-}
-.plan-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.plan-subtitle {
-  font-size: 13px;
-  opacity: 0.85;
-  line-height: 1.4;
-}
-/* Metrics row */
-.metrics-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 16px 20px;
-  background: #FAFBFC;
-  border-bottom: 1px solid var(--border);
-}
-.metric {
-  text-align: center;
-}
-.metric-icon {
-  font-size: 16px;
-  margin-bottom: 2px;
-}
-.metric-value {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-.metric-label {
-  font-size: 10px;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-/* Itinerary */
-.itinerary {
-  padding: 16px;
-  max-height: 420px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #CBD5E1 transparent;
-}
-.itinerary::-webkit-scrollbar { width: 4px; }
-.itinerary::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 2px; }
-.day-section {
-  margin-bottom: 12px;
-}
-.day-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: #F8FAFC;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: var(--transition);
-  margin-bottom: 8px;
-  user-select: none;
-}
-.day-header:hover { background: #EFF6FF; }
-.day-header.collapsed .day-toggle { transform: rotate(-90deg); }
-.day-toggle {
-  transition: var(--transition);
-  color: var(--text-tertiary);
-  font-size: 12px;
-}
-.day-info h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-.day-info span {
-  font-size: 12px;
-  color: var(--text-tertiary);
-}
-.day-content {
-  max-height: 2000px;
-  overflow: hidden;
-  transition: max-height 0.4s ease, opacity 0.3s ease;
-  opacity: 1;
-}
-.day-content.collapsed {
-  max-height: 0;
-  opacity: 0;
-}
-.time-block {
-  margin-bottom: 12px;
-  padding-left: 20px;
-  position: relative;
-}
-.time-block::before {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 8px;
-  bottom: -4px;
-  width: 2px;
-  background: var(--border);
-  border-radius: 1px;
-}
-.time-block:last-child::before { display: none; }
-.time-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
-}
-.spot-item {
-  display: flex;
-  gap: 10px;
-  padding: 8px 12px;
-  background: white;
-  border-radius: 8px;
-  margin-bottom: 6px;
-  border: 1px solid #F1F5F9;
-  transition: var(--transition);
-}
-.spot-item:hover {
-  border-color: var(--border);
-  background: #FAFBFC;
-}
-.spot-icon {
-  font-size: 18px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.spot-detail { flex: 1; min-width: 0; }
-.spot-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 2px;
-}
-.spot-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  color: var(--text-tertiary);
-  margin-bottom: 3px;
-}
-.spot-duration {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  background: #F1F5F9;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-.spot-desc {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-}
-
-/* Card footer */
-.card-footer {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.favorite-btn {
-  width: 100%;
-  padding: 10px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  background: white;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: inherit;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-.favorite-btn:hover {
-  border-color: #F43F5E;
-  color: #F43F5E;
-  background: #FFF1F2;
-}
-.favorite-btn.favorited {
-  border-color: #F43F5E;
-  background: #FFF1F2;
-  color: #F43F5E;
-}
-.favorite-btn .heart {
-  transition: var(--transition);
-  display: inline-block;
-}
-.favorite-btn.favorited .heart {
-  animation: heartBeat 0.6s ease;
-}
-@keyframes heartBeat {
-  0% { transform: scale(1); }
-  25% { transform: scale(1.3); }
-  50% { transform: scale(0.9); }
-  75% { transform: scale(1.15); }
-  100% { transform: scale(1); }
-}
-.merge-select {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-size: 13px;
-  font-family: inherit;
-  color: var(--text-secondary);
-  background: white;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-}
-.merge-select:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-/* ========== RIGHT MAP PANEL ========== */
-.right-panel {
-  width: 320px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 76px;
-  height: fit-content;
-}
-.map-card {
-  background: white;
-  border-radius: var(--card-radius);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-}
-.map-card-header {
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.map-card-title {
-  font-size: 15px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.map-legend {
-  display: flex;
-  gap: 12px;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: var(--text-tertiary);
-}
-.legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.legend-dot.a { background: var(--green); }
-.legend-dot.b { background: var(--blue); }
-.legend-dot.c { background: var(--purple); }
-.map-container {
-  height: 380px;
-  background: #F1F5F9;
-  position: relative;
-  overflow: hidden;
-  transition: var(--transition);
-}
-.map-container.satellite { background: #374151; }
-/* SVG Map */
-.map-svg {
-  width: 100%;
-  height: 100%;
-}
-.map-base {
-  fill: #E2E8F0;
-  rx: 0;
-}
-.satellite .map-base { fill: #4B5563; }
-.map-point {
-  transition: var(--transition);
-  cursor: pointer;
-}
-.map-point:hover {
-  r: 7;
-}
-.map-path {
-  fill: none;
-  stroke-width: 2;
-  stroke-dasharray: 6 4;
-  opacity: 0.4;
-  transition: var(--transition);
-}
-.map-path.a { stroke: var(--green); }
-.map-path.b { stroke: var(--blue); }
-.map-path.c { stroke: var(--purple); }
-.map-path.active {
-  stroke-width: 3;
-  stroke-dasharray: none;
-  opacity: 1;
-}
-.map-path.a.active { stroke: var(--green); }
-.map-path.b.active { stroke: var(--blue); }
-.map-path.c.active { stroke: var(--purple); }
-.map-point.a { fill: var(--green); stroke: rgba(255,255,255,0.6); stroke-width: 2; }
-.map-point.b { fill: var(--blue); stroke: rgba(255,255,255,0.6); stroke-width: 2; }
-.map-point.c { fill: var(--purple); stroke: rgba(255,255,255,0.6); stroke-width: 2; }
-.map-point.active {
-  r: 8;
-  stroke-width: 3;
-}
-.map-label {
-  font-size: 9px;
-  fill: var(--text-secondary);
-  pointer-events: none;
-}
-.map-bg-text {
-  font-size: 42px;
-  fill: #CBD5E1;
-  font-weight: 700;
-  opacity: 0.3;
-  pointer-events: none;
-}
-.satellite .map-bg-text { fill: #6B7280; }
-/* Map view tabs */
-.map-view-tabs {
-  display: flex;
-  padding: 12px 20px;
-  gap: 8px;
-  border-top: 1px solid var(--border);
-}
-.map-tab {
-  flex: 1;
-  padding: 8px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  background: white;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: inherit;
-  text-align: center;
-  color: var(--text-secondary);
-}
-.map-tab.active {
-  background: var(--blue-bg);
-  border-color: var(--primary);
-  color: var(--primary);
-}
-.map-tab:hover { border-color: var(--primary); }
-
-/* ========== BOTTOM COMPARISON BAR ========== */
-.comparison-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border);
-  padding: 12px 24px;
-  z-index: 99;
-  display: none;
-}
-.comparison-bar.visible { display: block; }
-.comparison-grid {
-  display: grid;
-  grid-template-columns: 100px repeat(3, 1fr);
-  gap: 0;
-  max-width: 800px;
-  margin: 0 auto;
-}
-.comp-cell {
-  padding: 6px 12px;
-  text-align: center;
-  font-size: 13px;
-}
-.comp-cell.label {
-  text-align: left;
-  font-weight: 600;
-  color: var(--text-secondary);
-  font-size: 12px;
-  border-right: 1px solid var(--border);
-}
-.comp-cell.header {
-  font-weight: 700;
-  font-size: 12px;
-  border-bottom: 2px solid var(--border);
-  padding-bottom: 8px;
-}
-.comp-cell.header.a { color: var(--green); }
-.comp-cell.header.b { color: var(--blue); }
-.comp-cell.header.c { color: var(--purple); }
-.comp-cell .best {
-  color: var(--blue);
-  font-weight: 700;
-}
-.comp-cell .worst {
-  color: var(--text-tertiary);
-}
-
-/* ========== MODAL ========== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(4px);
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition);
-}
-.modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-.modal {
-  background: white;
-  border-radius: 20px;
-  width: 480px;
-  max-width: 90vw;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-  transform: translateY(20px) scale(0.95);
-  transition: var(--transition);
-}
-.modal-overlay.active .modal {
-  transform: translateY(0) scale(1);
-}
-.modal-header {
-  padding: 24px 28px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.modal-title {
-  font-size: 18px;
-  font-weight: 700;
-}
-.modal-close {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: none;
-  background: #F1F5F9;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition);
-  color: var(--text-secondary);
-}
-.modal-close:hover { background: #E2E8F0; }
-.modal-body {
-  padding: 0 28px 28px;
-}
-.modal-loading {
-  text-align: center;
-  padding: 40px 20px;
-}
-.modal-spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid #E2E8F0;
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 16px;
-}
-.modal-loading-text {
-  font-size: 15px;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-/* Hybrid result */
-.hybrid-result {
-  display: none;
-}
-.hybrid-result.visible { display: block; }
-.hybrid-badge {
-  display: inline-block;
-  padding: 6px 14px;
-  background: linear-gradient(135deg, var(--primary), var(--purple));
-  color: white;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-.hybrid-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-.hybrid-desc {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-.hybrid-metrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.hybrid-metric {
-  background: #F8FAFC;
-  border-radius: 10px;
-  padding: 12px;
-  text-align: center;
-}
-.hybrid-metric-value {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-.hybrid-metric-label {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  margin-top: 2px;
-}
-.hybrid-preview {
-  background: #F8FAFC;
-  border-radius: 12px;
-  padding: 16px;
-  margin-top: 12px;
-}
-.hybrid-preview h4 {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: var(--text-secondary);
-}
-.hybrid-day {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-.hybrid-day:last-child { border-bottom: none; }
-.hybrid-day-num {
-  font-weight: 600;
-  color: var(--primary);
-  min-width: 40px;
-}
-.hybrid-day-text { color: var(--text-secondary); }
-.hybrid-source {
-  margin-left: auto;
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-.hybrid-source.from-a { background: var(--green-bg); color: var(--green); }
-.hybrid-source.from-b { background: var(--blue-bg); color: var(--blue); }
-.hybrid-source.from-c { background: var(--purple-bg); color: var(--purple); }
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 1280px) {
-  .results-cols { grid-template-columns: repeat(2, 1fr); }
-  .right-panel { display: none; }
-  .comparison-grid { grid-template-columns: 80px repeat(2, 1fr); }
-}
-@media (max-width: 768px) {
-  .header { padding: 0 16px; }
-  .breadcrumbs { display: none; }
-  .main-layout {
-    flex-direction: column;
-    padding: 16px;
-  }
-  .left-panel {
-    width: 100%;
-    position: static;
-  }
-  .results-cols { grid-template-columns: 1fr; }
-  .tabs-bar { flex-wrap: wrap; }
-  .comparison-grid {
-    grid-template-columns: 70px 1fr;
-  }
-  .comparison-bar .comp-cell:nth-child(4n+4) { display: none; }
-  .plan-card.visible:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-}
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.plan-card{animation:fadeIn .3s ease}
 </style>
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
+<!-- ===== HEADER ===== -->
 <header class="header">
-  <a href="/08/portfolio/" class="logo" style="font-size:15px;font-weight:700;color:#1F2937;text-decoration:none">
-    AI 多方案对比
+  <a class="header-back" href="/08/portfolio/">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    返回
   </a>
-  <nav class="breadcrumbs">
-    <a href="/08/portfolio/">作品集</a>
-    <span class="sep">›</span>
-    <span class="current">AI 多方案对比</span>
-  </nav>
-  <a href="/08/portfolio/" class="header-link">← 返回</a>
+  <div class="header-title">
+    <svg viewBox="0 0 16 16"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm0 2v2h10V4H3zm0 4v5h10V8H3z"/></svg>
+    马德里旅游 · 5天
+  </div>
+  <div class="header-actions">
+    <button class="btn-outline" onclick="addNewPlan()">+ 添加方案</button>
+    <button class="btn-solid" onclick="exportPlans()">导出</button>
+  </div>
 </header>
 
-<!-- ========== MAIN LAYOUT ========== -->
-<div class="main-layout">
-
-  <!-- ===== LEFT PANEL ===== -->
-  <aside class="left-panel">
-    <div class="input-card">
-      <div class="panel-title"><span class="star">✦</span> 出行偏好</div>
-      <!-- Destination -->
-      <div class="form-group">
-        <label class="form-label">目的地</label>
-        <input type="text" class="form-input" id="destination" placeholder="东京、巴黎、京都…" value="东京">
-      </div>
-      <!-- Days -->
-      <div class="form-group">
-        <label class="form-label">出行天数</label>
-        <input type="number" class="number-input" id="days" min="3" max="14" value="5">
-      </div>
-      <!-- Budget slider -->
-      <div class="form-group">
-        <label class="form-label">人均预算</label>
-        <div class="slider-container">
-          <div class="slider-value" id="budgetValue">¥ 8,000</div>
-          <input type="range" id="budget" min="2000" max="30000" step="500" value="8000" style="--val:22.2%">
-        </div>
-      </div>
-      <!-- People -->
-      <div class="form-group">
-        <label class="form-label">出行人数</label>
-        <div class="pill-group people" id="peoplePills">
-          <div class="pill people" data-val="1">1人</div>
-          <div class="pill people" data-val="2">2人</div>
-          <div class="pill people active" data-val="3">3人</div>
-          <div class="pill people" data-val="4">4人</div>
-          <div class="pill people" data-val="5">5人</div>
-          <div class="pill people" data-val="6">6人</div>
-          <div class="pill people" data-val="7">7人</div>
-          <div class="pill people" data-val="8">8人</div>
-        </div>
-      </div>
-      <!-- Travel preferences -->
-      <div class="form-group">
-        <label class="form-label">旅行偏好</label>
-        <div class="pill-group" id="prefPills">
-          <div class="pill active" data-pref="culture">🏛 文化历史</div>
-          <div class="pill active" data-pref="nature">🌿 自然风光</div>
-          <div class="pill active" data-pref="food">🍜 美食探索</div>
-          <div class="pill" data-pref="shopping">🛍 购物娱乐</div>
-          <div class="pill" data-pref="relax">🧘 轻松休闲</div>
-          <div class="pill" data-pref="adventure">🏔 极限冒险</div>
-        </div>
-      </div>
-      <!-- Generate button -->
-      <button class="generate-btn" id="generateBtn">
-        <span class="btn-text">✦ AI 生成三套方案</span>
-        <div class="spinner"></div>
+<!-- ===== MAIN ===== -->
+<div class="main">
+  <!-- LEFT: Plan Comparison -->
+  <div class="main-left">
+    <!-- Plan Tabs -->
+    <div class="plan-tabs" id="planTabs">
+      <button class="plan-tab active" data-plan="A" onclick="togglePlan(this,'A')">
+        <span class="check"></span>方案A 预算优先
       </button>
-    </div>
-  </aside>
-
-  <!-- ===== CENTER AREA ===== -->
-  <main class="center-area">
-
-    <!-- Empty state -->
-    <div class="empty-state" id="emptyState">
-      <div class="empty-illustration">
-        <div class="css-plane">✈️</div>
-        <div class="css-map">
-          <div class="map-dot"></div>
-          <div class="map-dot"></div>
-          <div class="map-dot"></div>
-          <div class="map-dot"></div>
-          <div class="map-dot"></div>
-          <div class="map-line"></div>
-          <div class="map-line"></div>
-          <div class="map-line"></div>
-        </div>
-      </div>
-      <div class="empty-title">输入偏好，AI 为你生成三套专属方案</div>
-      <div class="empty-desc">一次生成预算优先、效率优先、体验优先三套方案，横向对比，快速决策</div>
+      <button class="plan-tab active" data-plan="B" onclick="togglePlan(this,'B')">
+        <span class="check"></span>方案B 效率优先
+      </button>
+      <button class="plan-tab active" data-plan="C" onclick="togglePlan(this,'C')">
+        <span class="check"></span>方案C 体验优先
+      </button>
+      <button class="plan-tab add-plan" data-plan="D" onclick="togglePlan(this,'D')">
+        <span class="check"></span>+ 新方案
+      </button>
+      <span class="plan-hint">Ctrl + 点击可多选</span>
     </div>
 
-    <!-- Skeleton loading -->
-    <div class="skeleton-container" id="skeletonContainer">
-      <div class="skeleton-col">
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
+    <!-- Plan Grid -->
+    <div class="plan-grid cols-3" id="planGrid">
+      <!-- Plans will be rendered by JS -->
+    </div>
+  </div>
+
+  <!-- RIGHT: Map + Recommendations -->
+  <div class="main-right">
+    <!-- Map -->
+    <div class="right-map">
+      <div class="right-map-header">
+        <svg viewBox="0 0 16 16"><path d="M14 2L8 4.5 2 2v11l6 2.5L14 13V2z"/></svg>
+        地图
       </div>
-      <div class="skeleton-col">
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-      </div>
-      <div class="skeleton-col">
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
+      <svg class="map-svg" viewBox="0 0 320 220" id="mapSvg">
+        <!-- Background city grid -->
+        <rect x="0" y="0" width="320" height="220" fill="#F0F2F5"/>
+        <!-- Roads -->
+        <line x1="20" y1="60" x2="300" y2="60" stroke="#D1D5DB" stroke-width="1.5"/>
+        <line x1="20" y1="120" x2="300" y2="120" stroke="#D1D5DB" stroke-width="2"/>
+        <line x1="20" y1="180" x2="300" y2="180" stroke="#D1D5DB" stroke-width="1.5"/>
+        <line x1="60" y1="10" x2="60" y2="210" stroke="#D1D5DB" stroke-width="1.5"/>
+        <line x1="140" y1="10" x2="140" y2="210" stroke="#D1D5DB" stroke-width="2"/>
+        <line x1="220" y1="10" x2="220" y2="210" stroke="#D1D5DB" stroke-width="1.5"/>
+        <line x1="280" y1="10" x2="280" y2="210" stroke="#D1D5DB" stroke-width="1"/>
+        <!-- Diagonal road -->
+        <line x1="40" y1="30" x2="140" y2="150" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="160" y1="40" x2="260" y2="160" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="4,4"/>
+        <!-- Route lines for Plan A (green) -->
+        <g id="routeA" opacity="0.8">
+          <polyline points="80,50 120,80 160,65 200,100" fill="none" stroke="#00C48C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="100,130 150,140 180,125" fill="none" stroke="#00C48C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <!-- Route lines for Plan B (orange) -->
+        <g id="routeB" opacity="0.6">
+          <polyline points="90,55 130,90 170,70" fill="none" stroke="#FF9F43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="110,135 160,150 190,130" fill="none" stroke="#FF9F43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <!-- Route lines for Plan C (blue) -->
+        <g id="routeC" opacity="0.6">
+          <polyline points="70,45 140,75 210,55" fill="none" stroke="#5B8DEF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="120,140 170,155" fill="none" stroke="#5B8DEF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <!-- Attraction dots -->
+        <g id="attractions">
+          <!-- Prado -->
+          <circle cx="80" cy="50" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1" filter="url(#shadow)"/>
+          <text x="80" y="55" text-anchor="middle" font-size="12">🏛️</text>
+          <!-- Retiro -->
+          <circle cx="120" cy="80" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="120" y="85" text-anchor="middle" font-size="12">🌳</text>
+          <!-- Latin Quarter -->
+          <circle cx="160" cy="65" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="160" y="70" text-anchor="middle" font-size="12">🍷</text>
+          <!-- Palace -->
+          <circle cx="200" cy="100" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="200" y="105" text-anchor="middle" font-size="12">🏰</text>
+          <!-- Almudena -->
+          <circle cx="100" cy="130" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="100" y="135" text-anchor="middle" font-size="12">⛪</text>
+          <!-- Market -->
+          <circle cx="150" cy="140" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="150" y="145" text-anchor="middle" font-size="12">🛒</text>
+          <!-- Toledo -->
+          <circle cx="180" cy="125" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="180" y="130" text-anchor="middle" font-size="12">🏔️</text>
+          <!-- Gran Via -->
+          <circle cx="190" cy="130" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="190" y="135" text-anchor="middle" font-size="12">🛍️</text>
+          <!-- Reina Sofia -->
+          <circle cx="90" cy="55" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="90" y="60" text-anchor="middle" font-size="12">🎨</text>
+          <!-- Thyssen -->
+          <circle cx="130" cy="90" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="130" y="95" text-anchor="middle" font-size="12">🖼️</text>
+          <!-- Sorolla -->
+          <circle cx="170" cy="70" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="170" y="75" text-anchor="middle" font-size="12">🎭</text>
+          <!-- Helipad -->
+          <circle cx="70" cy="45" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="70" y="50" text-anchor="middle" font-size="12">🚁</text>
+          <!-- Star Restaurant -->
+          <circle cx="140" cy="75" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="140" y="80" text-anchor="middle" font-size="12">⭐</text>
+          <!-- Opera -->
+          <circle cx="210" cy="55" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="210" y="60" text-anchor="middle" font-size="12">🎶</text>
+        </g>
+        <!-- Shadow filter -->
+        <defs>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="rgba(0,0,0,0.08)"/>
+          </filter>
+        </defs>
+      </svg>
+      <div class="map-legend">
+        <span><i class="l-green"></i>方案A</span>
+        <span><i class="l-orange"></i>方案B</span>
+        <span><i class="l-blue"></i>方案C</span>
       </div>
     </div>
 
-    <!-- Results area -->
-    <div class="results-area" id="resultsArea">
-      <!-- Tabs -->
-      <div class="tabs-bar">
-        <button class="tab-btn active" data-plan="all">全部对比</button>
-        <button class="tab-btn" data-plan="a">方案 A</button>
-        <button class="tab-btn" data-plan="b">方案 B</button>
-        <button class="tab-btn" data-plan="c">方案 C</button>
+    <!-- Recommendations -->
+    <div class="recommend">
+      <div class="recommend-tabs">
+        <button class="recommend-tab active" onclick="switchRecTab(this,'rec')">推荐景点</button>
+        <button class="recommend-tab" onclick="switchRecTab(this,'pending')">待计划</button>
       </div>
-      <!-- Results columns -->
-      <div class="results-cols" id="resultsCols">
-        <!-- Filled by JS -->
+      <div class="recommend-scroll" id="recScroll">
+        <!-- Rendered by JS -->
       </div>
     </div>
-  </main>
-
-  <!-- ===== RIGHT PANEL ===== -->
-  <aside class="right-panel">
-    <div class="map-card">
-      <div class="map-card-header">
-        <div class="map-card-title">🗺 路线预览</div>
-        <div class="map-legend">
-          <div class="legend-item"><div class="legend-dot a"></div>A</div>
-          <div class="legend-item"><div class="legend-dot b"></div>B</div>
-          <div class="legend-item"><div class="legend-dot c"></div>C</div>
-        </div>
-      </div>
-      <div class="map-container" id="mapContainer">
-        <svg class="map-svg" viewBox="0 0 320 380" id="mapSvg">
-          <!-- Background text -->
-          <text x="160" y="210" text-anchor="middle" class="map-bg-text">TOKYO</text>
-          <!-- Map base shape -->
-          <path class="map-base" d="M40,80 Q60,30 120,40 Q180,35 200,60 Q250,70 270,100 Q290,140 280,180 Q285,220 260,250 Q240,280 200,290 Q160,310 120,300 Q80,310 60,280 Q40,250 35,210 Q30,170 40,130 Z" />
-          <!-- Paths for each plan -->
-          <path class="map-path a" id="pathA" d="M100,100 L140,130 L170,110 L195,155 L160,180 L120,200 L90,170" />
-          <path class="map-path b" id="pathB" d="M100,100 L170,110 L195,155 L120,200" />
-          <path class="map-path c" id="pathC" d="M100,100 L140,130 L195,155 L90,170 L120,200" />
-          <!-- Points for Plan A (green) -->
-          <circle class="map-point a" cx="100" cy="100" r="5" data-plan="a" />
-          <circle class="map-point a" cx="140" cy="130" r="5" data-plan="a" />
-          <circle class="map-point a" cx="170" cy="110" r="5" data-plan="a" />
-          <circle class="map-point a" cx="195" cy="155" r="5" data-plan="a" />
-          <circle class="map-point a" cx="160" cy="180" r="5" data-plan="a" />
-          <circle class="map-point a" cx="120" cy="200" r="5" data-plan="a" />
-          <circle class="map-point a" cx="90" cy="170" r="5" data-plan="a" />
-          <!-- Points for Plan B (blue) -->
-          <circle class="map-point b" cx="100" cy="100" r="5" data-plan="b" />
-          <circle class="map-point b" cx="170" cy="110" r="5" data-plan="b" />
-          <circle class="map-point b" cx="195" cy="155" r="5" data-plan="b" />
-          <circle class="map-point b" cx="120" cy="200" r="5" data-plan="b" />
-          <!-- Points for Plan C (purple) -->
-          <circle class="map-point c" cx="100" cy="100" r="5" data-plan="c" />
-          <circle class="map-point c" cx="140" cy="130" r="5" data-plan="c" />
-          <circle class="map-point c" cx="195" cy="155" r="5" data-plan="c" />
-          <circle class="map-point c" cx="90" cy="170" r="5" data-plan="c" />
-          <circle class="map-point c" cx="120" cy="200" r="5" data-plan="c" />
-          <!-- Labels -->
-          <text x="108" y="104" class="map-label">成田</text>
-          <text x="148" y="134" class="map-label">上野</text>
-          <text x="178" y="114" class="map-label">浅草</text>
-          <text x="203" y="159" class="map-label">银座</text>
-          <text x="168" y="184" class="map-label">新宿</text>
-          <text x="128" y="204" class="map-label">涩谷</text>
-          <text x="65" y="174" class="map-label">秋叶原</text>
-        </svg>
-      </div>
-      <div class="map-view-tabs">
-        <button class="map-tab active" id="tabStreet" onclick="setMapView('street')">🗺 街道图</button>
-        <button class="map-tab" id="tabSatellite" onclick="setMapView('satellite')">🛰 卫星图</button>
-      </div>
-    </div>
-  </aside>
-</div>
-
-<!-- ========== BOTTOM COMPARISON BAR ========== -->
-<div class="comparison-bar" id="comparisonBar">
-  <div class="comparison-grid">
-    <div class="comp-cell label">指标</div>
-    <div class="comp-cell header a">💚 方案A 预算优先</div>
-    <div class="comp-cell header b">💙 方案B 效率优先</div>
-    <div class="comp-cell header c">💜 方案C 体验优先</div>
-
-    <div class="comp-cell label">💰 总预算</div>
-    <div class="comp-cell"><span class="best">¥4,200</span></div>
-    <div class="comp-cell">¥6,800</div>
-    <div class="comp-cell"><span class="worst">¥12,000</span></div>
-
-    <div class="comp-cell label">📍 景点数</div>
-    <div class="comp-cell"><span class="best">12个</span></div>
-    <div class="comp-cell">8个</div>
-    <div class="comp-cell"><span class="worst">6个</span></div>
-
-    <div class="comp-cell label">🍜 美食数</div>
-    <div class="comp-cell"><span class="best">8家</span></div>
-    <div class="comp-cell">5家</div>
-    <div class="comp-cell"><span class="worst">4家</span></div>
-
-    <div class="comp-cell label">🚶 每日步行</div>
-    <div class="comp-cell"><span class="worst">8km</span></div>
-    <div class="comp-cell">5km</div>
-    <div class="comp-cell"><span class="best">3km</span></div>
-
-    <div class="comp-cell label">🚃 交通耗时</div>
-    <div class="comp-cell"><span class="worst">2.5h</span></div>
-    <div class="comp-cell">1.5h</div>
-    <div class="comp-cell"><span class="best">1h</span></div>
   </div>
 </div>
 
-<!-- ========== MODAL ========== -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modalTitle">混合优化方案</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <!-- Loading state -->
-      <div class="modal-loading" id="modalLoading">
-        <div class="modal-spinner"></div>
-        <div class="modal-loading-text" id="modalLoadingText">AI 正在融合方案A和方案C的优势…</div>
-      </div>
-      <!-- Hybrid result -->
-      <div class="hybrid-result" id="hybridResult">
-        <div class="hybrid-badge">✨ AI 混合优化完成</div>
-        <div class="hybrid-title" id="hybridTitle">A+C 混合方案</div>
-        <div class="hybrid-desc" id="hybridDesc">融合方案A的性价比优势与方案C的高品质体验，保留核心景点并优化住宿标准，为您打造最佳平衡方案。</div>
-        <div class="hybrid-metrics">
-          <div class="hybrid-metric">
-            <div class="hybrid-metric-value" id="hybridBudget">¥7,500</div>
-            <div class="hybrid-metric-label">总预算</div>
-          </div>
-          <div class="hybrid-metric">
-            <div class="hybrid-metric-value" id="hybridSpots">10个</div>
-            <div class="hybrid-metric-label">景点数</div>
-          </div>
-          <div class="hybrid-metric">
-            <div class="hybrid-metric-value" id="hybridFood">6家</div>
-            <div class="hybrid-metric-label">美食数</div>
-          </div>
-        </div>
-        <div class="hybrid-preview">
-          <h4>📋 行程概览</h4>
-          <div class="hybrid-day">
-            <span class="hybrid-day-num">Day 1</span>
-            <span class="hybrid-day-text">成田→上野→浅草</span>
-            <span class="hybrid-source from-a">来自A</span>
-          </div>
-          <div class="hybrid-day">
-            <span class="hybrid-day-num">Day 2</span>
-            <span class="hybrid-day-text">银座高端购物+午餐</span>
-            <span class="hybrid-source from-c">来自C</span>
-          </div>
-          <div class="hybrid-day">
-            <span class="hybrid-day-num">Day 3</span>
-            <span class="hybrid-day-text">筑地→银座→秋叶原</span>
-            <span class="hybrid-source from-a">来自A</span>
-          </div>
-          <div class="hybrid-day">
-            <span class="hybrid-day-num">Day 4</span>
-            <span class="hybrid-day-text">镰仓一日游（包车）</span>
-            <span class="hybrid-source from-c">来自C</span>
-          </div>
-          <div class="hybrid-day">
-            <span class="hybrid-day-num">Day 5</span>
-            <span class="hybrid-day-text">筑地→涩谷→机场</span>
-            <span class="hybrid-source from-b">来自B</span>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- ===== BOTTOM BAR ===== -->
+<div class="bottom-bar" id="bottomBar">
+  <div class="bottom-inner">
+    <!-- Rendered by JS -->
   </div>
 </div>
 
 <script>
-// ========== DATA ==========
-const plansData = {
-  a: {
-    name: '预算优先',
-    color: 'a',
-    gradientClass: 'plan-a',
-    subtitle: '精打细算也能玩得很开心',
-    budget: '¥4,200',
-    daysLabel: '5天',
-    spots: '12个',
-    food: '8家',
-    walk: '8km/天',
-    transport: '2.5h/天',
-    days: [
+// ===== DATA =====
+const plans = {
+  A: {
+    name: '方案A',
+    label: '预算优先',
+    desc: '高性价比选择，经济出行不妥协体验',
+    accent: 'green',
+    color: '#00C48C',
+    budget: 4200,
+    spots: 12,
+    days: 5,
+    walking: 8,
+    itinerary: [
       {
-        num: 1,
-        title: '初抵东京',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '✈️', name: '成田机场抵达', duration: '40min', desc: '办理入境手续，乘坐Skyliner前往市区' },
-              { icon: '🌳', name: '上野公园', duration: '2h', desc: '漫步公园，参观国立博物馆外围' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🛍', name: '阿美横丁', duration: '1.5h', desc: '逛平价市场，尝小吃+海鲜丼' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '⛩', name: '浅草寺', duration: '1.5h', desc: '夜访雷门，感受古刹氛围，仲见世通散步' },
-              { icon: '🍜', name: '浅草今半', duration: '1h', desc: '百年寿喜烧老店，人均¥80' }
-            ]
-          }
+        day: 1,
+        spots: [
+          { name: '普拉多博物馆', time: '09:00-11:30', type: 'culture', tag: '游玩' },
+          { name: '丽池公园', time: '12:00-14:00', type: 'play', tag: '游玩' },
+          { name: '拉丁区美食街', time: '18:00-20:00', type: 'food', tag: '吃喝' },
+          { name: '马约尔广场', time: '20:30-21:30', type: 'play', tag: '游玩' }
         ]
       },
       {
-        num: 2,
-        title: '东京经典',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🌸', name: '新宿御苑', duration: '2h', desc: '日式庭园漫步，四季花卉' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🌿', name: '代代木公园', duration: '1.5h', desc: '城市绿洲，当地人放松场所' },
-              { icon: '🛍', name: '原宿竹下通', duration: '1.5h', desc: '潮流文化一条街，可丽饼+扭蛋' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🏙', name: '涩谷十字路口', duration: '1h', desc: '世界最繁忙路口，观景台拍照' },
-              { icon: '🍣', name: '回转寿司 根室花丸', duration: '1h', desc: '平价美味回转寿司，人均¥45' }
-            ]
-          }
+        day: 2,
+        spots: [
+          { name: '马德里王宫', time: '09:00-11:00', type: 'culture', tag: '游玩' },
+          { name: '阿穆德纳大教堂', time: '11:30-12:30', type: 'culture', tag: '游玩' },
+          { name: '圣米格尔市场', time: '13:00-14:30', type: 'food', tag: '吃喝' },
+          { name: '太阳门广场', time: '15:00-16:00', type: 'play', tag: '游玩' }
         ]
       },
       {
-        num: 3,
-        title: '都市探索',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🐟', name: '筑地场外市场', duration: '2h', desc: '海鲜早餐+玉子烧+干物体验' },
-              { icon: '🏙', name: '银座步行街', duration: '1.5h', desc: '周末步行者天国，橱窗购物' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🎮', name: '秋叶原电器街', duration: '2.5h', desc: '手办、动漫、电子天堂' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🐼', name: '上野动物园（夜场）', duration: '1.5h', desc: '夜场特别开放，看大熊猫' },
-              { icon: '🍺', name: '居酒屋 鸟贵族', duration: '1.5h', desc: '连锁平价居酒屋，串烧+啤酒' }
-            ]
-          }
+        day: 3,
+        spots: [
+          { name: '托莱多古城', time: '08:00-12:00', type: 'culture', tag: '游玩' },
+          { name: '托莱多大教堂', time: '12:30-14:00', type: 'culture', tag: '游玩' },
+          { name: '阿尔卡萨城堡', time: '14:30-16:00', type: 'culture', tag: '游玩' }
         ]
       },
       {
-        num: 4,
-        title: '文化深度',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🏛', name: '东京国立博物馆', duration: '2.5h', desc: '日本最大博物馆，国宝级展品' },
-              { icon: '⛩', name: '根津神社', duration: '40min', desc: '小而美的神社，千本鸟居' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🎨', name: '谷根千地区', duration: '2h', desc: '老街漫步，谷中银座商店街' },
-              { icon: '☕', name: '根津咖啡馆', duration: '40min', desc: '老町屋改造的文艺咖啡馆' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🍜', name: '拉面二郎 三田本店', duration: '1h', desc: '超大份二郎系拉面，人均¥35' }
-            ]
-          }
+        day: 4,
+        spots: [
+          { name: '格兰大道购物', time: '10:00-13:00', type: 'shop', tag: '购物' },
+          { name: '塞万提斯故居', time: '14:00-15:30', type: 'culture', tag: '游玩' },
+          { name: '弗拉明戈表演', time: '20:00-21:30', type: 'culture', tag: '玩乐' },
+          { name: '天台酒吧夜景', time: '22:00-23:30', type: 'food', tag: '吃喝' }
         ]
       },
       {
-        num: 5,
-        title: '最后冲刺',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🛍', name: '晴空塔 Solamachi', duration: '2h', desc: '购物+观景，免税购物' },
-              { icon: '🍱', name: '晴空塔美食街', duration: '1h', desc: '各种便当+天妇罗' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '📸', name: '浅草再访', duration: '1.5h', desc: '白天拍照，买伴手礼' },
-              { icon: '🚄', name: 'Skyliner 返回机场', duration: '40min', desc: '结束完美旅程' }
-            ]
-          }
+        day: 5,
+        spots: [
+          { name: '伯纳乌球场', time: '10:00-12:00', type: 'play', tag: '游玩' },
+          { name: '机场免税店', time: '14:00-15:30', type: 'shop', tag: '购物' }
         ]
       }
     ]
   },
-  b: {
-    name: '效率优先',
-    color: 'b',
-    gradientClass: 'plan-b',
-    subtitle: '精华浓缩，不走冤枉路',
-    budget: '¥6,800',
-    daysLabel: '5天',
-    spots: '8个',
-    food: '5家',
-    walk: '5km/天',
-    transport: '1.5h/天',
-    days: [
+  B: {
+    name: '方案B',
+    label: '效率优先',
+    desc: '精简路线，最大化时间利用效率',
+    accent: 'orange',
+    color: '#FF9F43',
+    budget: 6800,
+    spots: 8,
+    days: 5,
+    walking: 5,
+    itinerary: [
       {
-        num: 1,
-        title: '抵达浅草',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '✈️', name: '成田机场抵达', duration: '30min', desc: '快速通关，N\'EX直达东京站' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '⛩', name: '浅草寺', duration: '2h', desc: '东京必访古刹，雷门+仲见世通' },
-              { icon: '🌳', name: '上野公园', duration: '1.5h', desc: '快速游览，博物馆外观打卡' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🍣', name: '浅草 神谷', duration: '1h', desc: '老字号天妇罗盖饭，性价比之王' }
-            ]
-          }
+        day: 1,
+        spots: [
+          { name: '普拉多博物馆', time: '09:00-13:00', type: 'culture', tag: '游玩' },
+          { name: '丽池公园野餐', time: '13:30-15:00', type: 'play', tag: '游玩' },
+          { name: '雷蒂罗区晚餐', time: '19:00-21:00', type: 'food', tag: '吃喝' }
         ]
       },
       {
-        num: 2,
-        title: '涩谷·新宿',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🌸', name: '新宿御苑', duration: '2h', desc: '日式·法式·英式三种庭园' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🏙', name: '涩谷十字路口', duration: '45min', desc: 'SHIBUYA SKY观景台俯瞰' },
-              { icon: '🛍', name: '涩谷PARCO', duration: '1.5h', desc: '潮牌+任天堂东京旗舰店' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🍺', name: '新宿回忆横丁', duration: '1.5h', desc: '复古小巷居酒屋体验' }
-            ]
-          }
+        day: 2,
+        spots: [
+          { name: '马德里王宫+大教堂', time: '09:00-12:00', type: 'culture', tag: '游玩' },
+          { name: '格兰大道漫步', time: '13:00-15:00', type: 'shop', tag: '游玩' },
+          { name: '马约尔广场', time: '16:00-17:30', type: 'play', tag: '游玩' }
         ]
       },
       {
-        num: 3,
-        title: '银座·筑地',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🐟', name: '筑地场外市场', duration: '2h', desc: '新鲜寿司+海鲜饭早餐' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🏙', name: '银座漫步', duration: '2h', desc: '精品橱窗+无印良品旗舰店' },
-              { icon: '🎨', name: '银座茑屋书店', duration: '1h', desc: '全球最美书店之一' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🍜', name: '银座 一兰拉面', duration: '45min', desc: '博多豚骨拉面经典味道' }
-            ]
-          }
+        day: 3,
+        spots: [
+          { name: '托莱多半日精华游', time: '08:00-14:00', type: 'culture', tag: '游玩' },
+          { name: '塞哥维亚古罗马水道', time: '15:00-17:00', type: 'culture', tag: '游玩' }
         ]
       },
       {
-        num: 4,
-        title: '镰仓半日',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🗿', name: '镰仓大佛', duration: '1h', desc: '国宝级青铜坐像，高德院' },
-              { icon: '🌊', name: '由比滨海岸', duration: '1.5h', desc: '湘南海岸漫步，灌篮高手取景地' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🏛', name: '鹤冈八幡宫', duration: '1h', desc: '镰仓核心神社，参道购物' },
-              { icon: '🌸', name: '小町通商店街', duration: '1h', desc: '特色小吃+手信采购' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🍱', name: '镰仓海鲜丼', duration: '1h', desc: '镰仓站前海鮮市場丼' }
-            ]
-          }
+        day: 4,
+        spots: [
+          { name: '索菲亚王后艺术中心', time: '10:00-13:00', type: 'culture', tag: '游玩' },
+          { name: '太阳门+市中心', time: '14:00-16:00', type: 'shop', tag: '游玩' }
         ]
       },
       {
-        num: 5,
-        title: '返程',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🎮', name: '秋叶原速览', duration: '1.5h', desc: '核心动漫店快速采购' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🚄', name: 'N\'EX 前往机场', duration: '90min', desc: '成田特快，舒适返程' }
-            ]
-          }
+        day: 5,
+        spots: [
+          { name: '伯纳乌球场VIP参观', time: '10:00-12:00', type: 'play', tag: '游玩' },
+          { name: '返程', time: '14:00', type: 'transport', tag: '交通' }
         ]
       }
     ]
   },
-  c: {
-    name: '体验优先',
-    color: 'c',
-    gradientClass: 'plan-c',
-    subtitle: '品质至上，每一刻都值得回忆',
-    budget: '¥12,000',
-    daysLabel: '5天',
-    spots: '6个',
-    food: '4家',
-    walk: '3km/天',
-    transport: '1h/天',
-    days: [
+  C: {
+    name: '方案C',
+    label: '体验优先',
+    desc: '豪华住宿+米其林，享受每一刻',
+    accent: 'blue',
+    color: '#5B8DEF',
+    budget: 12000,
+    spots: 6,
+    days: 5,
+    walking: 3,
+    itinerary: [
       {
-        num: 1,
-        title: '奢华抵达',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '✈️', name: '成田机场VIP通道', duration: '15min', desc: '快速通关+礼宾接机服务' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🏨', name: '东京半岛酒店 Check-in', duration: '', desc: '银座核心区顶级酒店，入住休息' },
-              { icon: '☕', name: '酒店下午茶', duration: '1.5h', desc: '半岛经典下午茶，俯瞰皇居' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🍣', name: '鮨 さいとう', duration: '2.5h', desc: '米其林三星寿司，Omakase体验' }
-            ]
-          }
+        day: 1,
+        spots: [
+          { name: '普拉多私人导览', time: '10:00-13:00', type: 'culture', tag: '游玩' },
+          { name: '米其林三星午餐 DiverXO', time: '13:30-15:30', type: 'food', tag: '吃喝' },
+          { name: '丽池公园私人马车', time: '16:00-17:30', type: 'play', tag: '游玩' },
+          { name: '屋顶露台香槟晚餐', time: '19:30-22:00', type: 'food', tag: '吃喝' }
         ]
       },
       {
-        num: 2,
-        title: '和式美学',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '⛩', name: '浅草寺私导体验', duration: '2h', desc: '专属讲解，含和服租赁体验' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🍵', name: '茶道体验', duration: '1.5h', desc: '表千家流派正统茶道体验' },
-              { icon: '🌳', name: '滨离宫恩赐庭园', duration: '1.5h', desc: '江户时代大名庭园，静谧之美' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🥩', name: '神户牛 银座 茂', duration: '2h', desc: 'A5级神户牛铁板烧，人均¥600' }
-            ]
-          }
+        day: 2,
+        spots: [
+          { name: '直升机俯瞰马德里', time: '09:00-10:00', type: 'play', tag: '玩乐' },
+          { name: '王宫VIP通道参观', time: '11:00-12:30', type: 'culture', tag: '游玩' },
+          { name: '米其林午餐 Ramonet', time: '13:00-15:00', type: 'food', tag: '吃喝' },
+          { name: '皇家歌剧院包厢演出', time: '20:00-22:30', type: 'culture', tag: '玩乐' }
         ]
       },
       {
-        num: 3,
-        title: '艺术之旅',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🎨', name: 'teamLab Planets', duration: '2h', desc: '沉浸式数字艺术展，沉浸体验' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🏙', name: '六本木之丘', duration: '1.5h', desc: '森美术馆+Sky Deck观景' },
-              { icon: '🌿', name: '根津美术馆', duration: '1.5h', desc: '隈研吾建筑+日本庭院' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '🍷', name: '银座 Bar High Five', duration: '2h', desc: '亚洲最佳调酒酒吧，世界TOP50' }
-            ]
-          }
+        day: 3,
+        spots: [
+          { name: '私人酒庄品酒之旅', time: '09:00-15:00', type: 'food', tag: '体验' },
+          { name: '托莱多私人导游', time: '15:30-18:00', type: 'culture', tag: '游玩' }
         ]
       },
       {
-        num: 4,
-        title: '箱根温泉',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🚃', name: '浪漫特快前往箱根', duration: '85min', desc: '小田急浪漫号，车窗富士山景' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🏔', name: '大涌谷', duration: '1.5h', desc: '火山口景观，吃延年益寿黑鸡蛋' },
-              { icon: '🌊', name: '芦之湖海盗船', duration: '1h', desc: '海盗船游湖，远眺富士山' }
-            ]
-          },
-          {
-            label: '晚间',
-            spots: [
-              { icon: '♨️', name: '箱根强罗温泉', duration: '', desc: '顶级温泉旅馆一泊二食' },
-              { icon: '🍱', name: '怀石料理', duration: '2h', desc: '旅馆内精致怀石料理' }
-            ]
-          }
+        day: 4,
+        spots: [
+          { name: 'SPA酒店放松', time: '09:00-11:00', type: 'play', tag: '体验' },
+          { name: '格兰大道私人购物助手', time: '12:00-16:00', type: 'shop', tag: '购物' },
+          { name: '弗拉明戈VIP席位', time: '20:00-22:00', type: 'culture', tag: '玩乐' }
         ]
       },
       {
-        num: 5,
-        title: '优雅返程',
-        blocks: [
-          {
-            label: '上午',
-            spots: [
-              { icon: '🌅', name: '旅馆晨间散步', duration: '1h', desc: '日式庭院晨间散步，最后宁静' },
-              { icon: '🚃', name: '返回东京', duration: '85min', desc: '返回银座取行李' }
-            ]
-          },
-          {
-            label: '下午',
-            spots: [
-              { icon: '🛍', name: '银座最后采购', duration: '1.5h', desc: '资生堂 Parlour + 伴手礼' },
-              { icon: '✈️', name: '专车送机', duration: '', desc: '专属礼宾车送机，圆满结束旅程' }
-            ]
-          }
+        day: 5,
+        spots: [
+          { name: 'Brunch at La Terraza', time: '10:00-12:00', type: 'food', tag: '吃喝' },
+          { name: '专车送机', time: '13:00', type: 'transport', tag: '交通' }
+        ]
+      }
+    ]
+  },
+  D: {
+    name: '方案D',
+    label: '深度文化',
+    desc: '博物馆主题线路，沉浸式艺术之旅',
+    accent: 'red',
+    color: '#FF6B6B',
+    budget: 8500,
+    spots: 10,
+    days: 5,
+    walking: 6,
+    itinerary: [
+      {
+        day: 1,
+        spots: [
+          { name: '普拉多博物馆全日', time: '09:00-16:00', type: 'culture', tag: '游玩' },
+          { name: '艺术大道晚餐', time: '18:00-20:00', type: 'food', tag: '吃喝' }
+        ]
+      },
+      {
+        day: 2,
+        spots: [
+          { name: '提森-博内米萨博物馆', time: '09:00-12:00', type: 'culture', tag: '游玩' },
+          { name: '索罗拉博物馆', time: '13:30-15:30', type: 'culture', tag: '游玩' },
+          { name: '国家考古博物馆', time: '16:00-18:00', type: 'culture', tag: '游玩' }
+        ]
+      },
+      {
+        day: 3,
+        spots: [
+          { name: '索菲亚王后艺术中心', time: '09:00-13:00', type: 'culture', tag: '游玩' },
+          { name: '马德里皇家织锦厂', time: '14:00-16:00', type: 'culture', tag: '游玩' },
+          { name: '弗拉门戈文化体验课', time: '19:00-21:00', type: 'culture', tag: '体验' }
+        ]
+      },
+      {
+        day: 4,
+        spots: [
+          { name: '王宫历史导览', time: '09:00-11:30', type: 'culture', tag: '游玩' },
+          { name: '阿穆德纳大教堂博物馆', time: '12:00-13:30', type: 'culture', tag: '游玩' },
+          { name: '西班牙广场', time: '14:30-15:30', type: 'play', tag: '游玩' },
+          { name: '圣安东市场晚餐', time: '19:00-21:00', type: 'food', tag: '吃喝' }
+        ]
+      },
+      {
+        day: 5,
+        spots: [
+          { name: '塞万提斯故居博物馆', time: '10:00-12:00', type: 'culture', tag: '游玩' },
+          { name: '格兰大道建筑漫步', time: '13:00-15:00', type: 'culture', tag: '游玩' }
         ]
       }
     ]
   }
 };
 
-// ========== DOM REFS ==========
-const emptyState = document.getElementById('emptyState');
-const skeletonContainer = document.getElementById('skeletonContainer');
-const resultsArea = document.getElementById('resultsArea');
-const resultsCols = document.getElementById('resultsCols');
-const generateBtn = document.getElementById('generateBtn');
-const comparisonBar = document.getElementById('comparisonBar');
-const budgetSlider = document.getElementById('budget');
-const budgetValue = document.getElementById('budgetValue');
-const modalOverlay = document.getElementById('modalOverlay');
-const modalLoading = document.getElementById('modalLoading');
-const hybridResult = document.getElementById('hybridResult');
-const modalLoadingText = document.getElementById('modalLoadingText');
-const mapContainer = document.getElementById('mapContainer');
+const recSpots = {
+  rec: [
+    { name: '西班牙广场', type: '地标广场', emoji: '🇪🇸', bg: 'linear-gradient(135deg,#F97316,#EF4444)' },
+    { name: '圣安东市场', type: '美食市场', emoji: '🥘', bg: 'linear-gradient(135deg,#F59E0B,#F97316)' },
+    { name: '德波神庙', type: '埃及神庙', emoji: '🏛️', bg: 'linear-gradient(135deg,#8B5CF6,#6366F1)' },
+    { name: '马约尔广场', type: '历史广场', emoji: '⛲', bg: 'linear-gradient(135deg,#10B981,#059669)' },
+    { name: '太阳门', type: '城市中心', emoji: '☀️', bg: 'linear-gradient(135deg,#FBBF24,#F59E0B)' },
+    { name: '西贝莱斯广场', type: '地标', emoji: '🏰', bg: 'linear-gradient(135deg,#3B82F6,#1D4ED8)' },
+    { name: '水晶宫', type: '艺术展馆', emoji: '💎', bg: 'linear-gradient(135deg,#06B6D4,#0891B2)' },
+    { name: '阿尔穆德纳大教堂', type: '宗教建筑', emoji: '⛪', bg: 'linear-gradient(135deg,#A855F7,#7C3AED)' }
+  ],
+  pending: [
+    { name: '塞哥维亚城堡', type: '中世纪城堡', emoji: '🏯', bg: 'linear-gradient(135deg,#78716C,#57534E)' },
+    { name: '阿维拉古城墙', type: '世界遗产', emoji: '🧱', bg: 'linear-gradient(135deg,#92400E,#78350F)' },
+    { name: '马德里动物园', type: '亲子景点', emoji: '🦁', bg: 'linear-gradient(135deg,#16A34A,#15803D)' },
+    { name: '拉斯文塔斯斗牛场', type: '传统文化', emoji: '🐂', bg: 'linear-gradient(135deg,#DC2626,#B91C1C)' },
+    { name: '查马丁区探店', type: '本地体验', emoji: '🔍', bg: 'linear-gradient(135deg,#0D9488,#0F766E)' }
+  ]
+};
 
-// ========== INIT ==========
-let activePlan = 'all';
-let currentMapView = 'street';
-let generated = false;
+// ===== STATE =====
+let activePlans = ['A', 'B', 'C'];
+let planDVisible = false;
 
-// Budget slider update
-budgetSlider.addEventListener('input', () => {
-  const val = parseInt(budgetSlider.value);
-  budgetValue.textContent = `¥ ${val.toLocaleString()}`;
-  const pct = ((val - 2000) / (30000 - 2000)) * 100;
-  budgetSlider.style.setProperty('--val', pct + '%');
-});
-
-// People pill selection
-document.querySelectorAll('#peoplePills .pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('#peoplePills .pill').forEach(p => p.classList.remove('active'));
-    pill.classList.add('active');
-  });
-});
-
-// Preference pill toggle
-document.querySelectorAll('#prefPills .pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    pill.classList.toggle('active');
-  });
-});
-
-// Tab switching
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activePlan = btn.dataset.plan;
-    filterPlans();
-  });
-});
-
-// ========== MAP HIGHLIGHT ==========
-function highlightMapPlan(planColor) {
-  document.querySelectorAll('.map-path').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.map-point').forEach(p => p.classList.remove('active'));
-  if (planColor && planColor !== 'all') {
-    const path = document.querySelector(`.map-path.${planColor}`);
-    if (path) path.classList.add('active');
-    document.querySelectorAll(`.map-point.${planColor}`).forEach(p => p.classList.add('active'));
-  }
+// ===== RENDER FUNCTIONS =====
+function getTagClass(type) {
+  const map = { play:'play', food:'food', shop:'shop', culture:'culture', transport:'transport' };
+  return map[type] || 'play';
 }
 
-// Plan cards hover → map highlight
-function setupPlanHover() {
-  document.querySelectorAll('.plan-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      const plan = card.dataset.plan;
-      highlightMapPlan(plan);
-    });
-    card.addEventListener('mouseleave', () => {
-      if (!generated) return;
-      // Reset to show all or based on active tab
-      highlightMapPlan(activePlan === 'all' ? null : activePlan);
-    });
-  });
+function getDotClass(accent) {
+  const map = { green:'', orange:'accent-orange', blue:'accent-blue', red:'accent-red' };
+  return map[accent] || '';
 }
 
-// ========== MAP VIEW ==========
-function setMapView(view) {
-  currentMapView = view;
-  mapContainer.classList.toggle('satellite', view === 'satellite');
-  document.getElementById('tabStreet').classList.toggle('active', view === 'street');
-  document.getElementById('tabSatellite').classList.toggle('active', view === 'satellite');
-}
+function renderPlanCards() {
+  const grid = document.getElementById('planGrid');
+  grid.innerHTML = '';
+  const cols = activePlans.length;
+  grid.className = 'plan-grid cols-' + cols;
 
-// ========== GENERATE ==========
-generateBtn.addEventListener('click', () => {
-  if (generated) return;
-  generated = true;
-
-  // Show loading
-  emptyState.style.display = 'none';
-  skeletonContainer.classList.add('active');
-  generateBtn.classList.add('loading');
-
-  // Simulate AI generation
-  setTimeout(() => {
-    skeletonContainer.classList.remove('active');
-    generateBtn.classList.remove('loading');
-    generateBtn.querySelector('.btn-text').textContent = '✓ 已生成';
-    generateBtn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
-
-    renderPlans();
-    resultsArea.classList.add('active');
-    comparisonBar.classList.add('visible');
-    setupPlanHover();
-  }, 1500);
-});
-
-// ========== RENDER PLANS ==========
-function renderPlans() {
-  resultsCols.innerHTML = '';
-  const plans = ['a', 'b', 'c'];
-
-  plans.forEach((key, idx) => {
-    const plan = plansData[key];
+  activePlans.forEach(key => {
+    const p = plans[key];
     const card = document.createElement('div');
-    card.className = `plan-card`;
-    card.dataset.plan = key;
-    card.style.transitionDelay = `${idx * 0.2}s`;
+    card.className = 'plan-card accent-' + p.accent;
+    card.setAttribute('data-plan', key);
 
-    // Build itinerary HTML
-    let itineraryHTML = '';
-    plan.days.forEach(day => {
-      let blocksHTML = '';
-      day.blocks.forEach(block => {
-        let spotsHTML = '';
-        block.spots.forEach(spot => {
-          spotsHTML += `
-            <div class="spot-item">
-              <div class="spot-icon">${spot.icon}</div>
-              <div class="spot-detail">
-                <div class="spot-name">${spot.name}</div>
-                <div class="spot-meta">
-                  ${spot.duration ? `<span class="spot-duration">⏱ ${spot.duration}</span>` : ''}
-                </div>
-                <div class="spot-desc">${spot.desc}</div>
-              </div>
-            </div>`;
-        });
-        blocksHTML += `
-          <div class="time-block">
-            <div class="time-label">${block.label}</div>
-            ${spotsHTML}
+    let itineraryHtml = '';
+    p.itinerary.forEach(d => {
+      let spotsHtml = '';
+      d.spots.forEach(s => {
+        spotsHtml += `
+          <div class="spot-item">
+            <div class="spot-dot ${getDotClass(p.accent)}"></div>
+            <div class="spot-info">
+              <div class="spot-name">${s.name}</div>
+              <div class="spot-time">${s.time}</div>
+            </div>
+            <span class="spot-tag ${getTagClass(s.type)}">${s.tag}</span>
+            <button class="spot-add" title="添加到行程">+</button>
           </div>`;
       });
-
-      itineraryHTML += `
+      itineraryHtml += `
         <div class="day-section">
-          <div class="day-header" onclick="toggleDay(this)">
-            <div class="day-info">
-              <h4>Day ${day.num} · ${day.title}</h4>
-              <span>${day.blocks.reduce((c, b) => c + b.spots.length, 0)} 个行程</span>
-            </div>
-            <span class="day-toggle">▼</span>
-          </div>
-          <div class="day-content ${day.num > 2 ? 'collapsed' : ''}">
-            ${blocksHTML}
-          </div>
+          <div class="day-label">DAY ${d.day}</div>
+          <div class="day-spot-list">${spotsHtml}</div>
         </div>`;
     });
 
     card.innerHTML = `
-      <div class="plan-header ${plan.gradientClass}">
-        <div class="plan-badge">方案${key.toUpperCase()}</div>
-        <div class="plan-title">${plan.name}</div>
-        <div class="plan-subtitle">${plan.subtitle}</div>
-      </div>
-      <div class="metrics-row">
-        <div class="metric">
-          <div class="metric-icon">💰</div>
-          <div class="metric-value">${plan.budget}</div>
-          <div class="metric-label">总预算</div>
+      <div class="plan-header-top"></div>
+      <div class="plan-body">
+        <div class="plan-name">${p.name} ${p.label}</div>
+        <div class="plan-desc">${p.desc}</div>
+        <div class="plan-metrics">
+          <div class="plan-metric price">💰 <span class="val">¥${p.budget.toLocaleString()}</span></div>
+          <div class="plan-metric">📍 <span class="val">${p.spots}个景点</span></div>
+          <div class="plan-metric">⏱️ <span class="val">${p.days}天</span></div>
+          <div class="plan-metric">🚶 <span class="val">${p.walking}km/天</span></div>
         </div>
-        <div class="metric">
-          <div class="metric-icon">⏱</div>
-          <div class="metric-value">${plan.daysLabel}</div>
-          <div class="metric-label">总天数</div>
-        </div>
-        <div class="metric">
-          <div class="metric-icon">📍</div>
-          <div class="metric-value">${plan.spots}</div>
-          <div class="metric-label">景点数</div>
-        </div>
-        <div class="metric">
-          <div class="metric-icon">🍜</div>
-          <div class="metric-value">${plan.food}</div>
-          <div class="metric-label">美食数</div>
-        </div>
-      </div>
-      <div class="itinerary">
-        ${itineraryHTML}
-      </div>
-      <div class="card-footer">
-        <button class="favorite-btn" onclick="toggleFavorite(this)">
-          <span class="heart">♡</span> 收藏此方案
-        </button>
-        <select class="merge-select" onchange="handleMerge(this)">
-          <option value="">⇄ 与其他方案混合优化</option>
-          ${key === 'a' ? '<option value="a-c">⇄ 与方案C（体验优先）混合</option><option value="a-b">⇄ 与方案B（效率优先）混合</option>' : ''}
-          ${key === 'b' ? '<option value="b-a">⇄ 与方案A（预算优先）混合</option><option value="b-c">⇄ 与方案C（体验优先）混合</option>' : ''}
-          ${key === 'c' ? '<option value="c-a">⇄ 与方案A（预算优先）混合</option><option value="c-b">⇄ 与方案B（效率优先）混合</option>' : ''}
-        </select>
-      </div>
-    `;
+        ${itineraryHtml}
+      </div>`;
+    grid.appendChild(card);
+  });
+}
 
-    resultsCols.appendChild(card);
+function renderBottomBar() {
+  const bar = document.getElementById('bottomBar');
+  if (activePlans.length === 0) {
+    bar.querySelector('.bottom-inner').innerHTML = '<span style="font-size:13px;color:#9CA3AF">请至少选择一个方案进行对比</span>';
+    return;
+  }
 
-    // Stagger animation
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        card.classList.add('visible');
-      }, idx * 200);
-    });
+  // Find best (min budget) and worst (max budget)
+  const budgets = activePlans.map(k => plans[k].budget);
+  const minBudget = Math.min(...budgets);
+  const maxBudget = Math.max(...budgets);
+
+  let html = '<div class="bottom-label">方案对比</div><div class="bottom-divider"></div><div class="bottom-plans">';
+
+  activePlans.forEach(key => {
+    const p = plans[key];
+    const isBest = p.budget === minBudget && activePlans.length > 1;
+    const isWorst = p.budget === maxBudget && activePlans.length > 1 && minBudget !== maxBudget;
+    let cls = '';
+    if (isBest) cls = 'best';
+    else if (isWorst) cls = 'worst';
+
+    html += `
+      <div class="bottom-plan">
+        <div class="bottom-plan-name" style="color:${p.color}">${p.name} ${p.label}</div>
+        <div class="bottom-metrics">
+          <div class="bottom-metric ${cls}">💰 <span class="bm-val">¥${p.budget.toLocaleString()}</span></div>
+          <div class="bottom-metric">📍 <span class="bm-val">${p.spots}</span></div>
+          <div class="bottom-metric">🚶 <span class="bm-val">${p.walking}km</span></div>
+        </div>
+      </div>`;
   });
 
-  // Set initial map highlight
-  highlightMapPlan('all' ? null : null);
+  html += '</div>';
+  bar.querySelector('.bottom-inner').innerHTML = html;
 }
 
-// ========== TOGGLE DAY ==========
-function toggleDay(header) {
-  const content = header.nextElementSibling;
-  const toggle = header.querySelector('.day-toggle');
-  header.classList.toggle('collapsed');
-  content.classList.toggle('collapsed');
+function renderRecs() {
+  const scroll = document.getElementById('recScroll');
+  const activeTab = document.querySelector('.recommend-tab.active');
+  const type = activeTab && activeTab.textContent === '推荐景点' ? 'rec' : 'pending';
+  const spots = recSpots[type];
+  scroll.innerHTML = spots.map(s => `
+    <div class="rec-card">
+      <div class="rec-img" style="background:${s.bg}">${s.emoji}</div>
+      <div class="rec-info">
+        <div class="rec-name">${s.name}</div>
+        <div class="rec-type">${s.type}</div>
+      </div>
+    </div>`).join('');
 }
 
-// ========== FAVORITE ==========
-function toggleFavorite(btn) {
-  btn.classList.toggle('favorited');
-  if (btn.classList.contains('favorited')) {
-    btn.innerHTML = '<span class="heart">♥</span> 已收藏 ✓';
-  } else {
-    btn.innerHTML = '<span class="heart">♡</span> 收藏此方案';
-  }
-}
-
-// ========== MERGE / HYBRID ==========
-function handleMerge(select) {
-  if (!select.value) return;
-  const planMap = {
-    'a-c': { label: 'A+C', name1: '预算优先', name2: '体验优先', budget: '¥7,500', spots: '10个', food: '6家' },
-    'a-b': { label: 'A+B', name1: '预算优先', name2: '效率优先', budget: '¥5,500', spots: '11个', food: '7家' },
-    'b-a': { label: 'B+A', name1: '效率优先', name2: '预算优先', budget: '¥5,500', spots: '11个', food: '7家' },
-    'b-c': { label: 'B+C', name1: '效率优先', name2: '体验优先', budget: '¥9,000', spots: '8个', food: '5家' },
-    'c-a': { label: 'C+A', name1: '体验优先', name2: '预算优先', budget: '¥7,500', spots: '10个', food: '6家' },
-    'c-b': { label: 'C+B', name1: '体验优先', name2: '效率优先', budget: '¥9,000', spots: '8个', food: '5家' }
-  };
-
-  const info = planMap[select.value];
-  if (!info) return;
-
-  // Show modal
-  modalLoading.style.display = 'block';
-  hybridResult.classList.remove('visible');
-  modalLoadingText.textContent = `AI 正在融合方案${info.name1}和方案${info.name2}的优势…`;
-  modalOverlay.classList.add('active');
-
-  // Simulate AI processing
-  setTimeout(() => {
-    modalLoading.style.display = 'none';
-    hybridResult.classList.add('visible');
-    document.getElementById('hybridTitle').textContent = `${info.label} 混合方案`;
-    document.getElementById('hybridDesc').textContent = `融合方案${info.name1}的${info.name1 === '预算优先' ? '性价比优势' : '精华行程设计'}与方案${info.name2}的${info.name2 === '体验优先' ? '高品质住宿餐饮' : '不走冤枉路'},为您打造最佳平衡方案。`;
-    document.getElementById('hybridBudget').textContent = info.budget;
-    document.getElementById('hybridSpots').textContent = info.spots;
-    document.getElementById('hybridFood').textContent = info.food;
-    select.value = '';
-  }, 3000);
-}
-
-// ========== CLOSE MODAL ==========
-function closeModal() {
-  modalOverlay.classList.remove('active');
-}
-
-modalOverlay.addEventListener('click', (e) => {
-  if (e.target === modalOverlay) closeModal();
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal();
-});
-
-// ========== FILTER PLANS ==========
-function filterPlans() {
-  const cards = document.querySelectorAll('.plan-card');
-  const grid = document.querySelector('.results-cols');
-  cards.forEach(card => {
-    const plan = card.dataset.plan;
-    if (activePlan === 'all' || activePlan === plan) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
+function renderMap() {
+  // Highlight routes based on active plans
+  ['A','B','C'].forEach(key => {
+    const el = document.getElementById('route' + key);
+    if (el) {
+      el.setAttribute('opacity', activePlans.includes(key) ? '0.8' : '0.15');
     }
   });
-  // adjust grid columns
-  if (activePlan === 'all') {
-    grid.style.gridTemplateColumns = 'repeat(3,1fr)';
-  } else {
-    grid.style.gridTemplateColumns = '1fr';
-  }
-  highlightMapPlan(activePlan === 'all' ? null : activePlan);
 }
 
-// ========== INITIAL SLIDER ==========
-budgetSlider.dispatchEvent(new Event('input'));
+// ===== INTERACTION =====
+function togglePlan(btn, key) {
+  if (key === 'D' && !planDVisible) {
+    planDVisible = true;
+    btn.classList.add('active');
+    if (!activePlans.includes('D')) activePlans.push('D');
+    render();
+    return;
+  }
+
+  if (key === 'D' && planDVisible) {
+    // Toggle D off
+    if (activePlans.includes('D')) {
+      activePlans = activePlans.filter(k => k !== 'D');
+      btn.classList.remove('active');
+    } else {
+      activePlans.push('D');
+      btn.classList.add('active');
+    }
+    render();
+    return;
+  }
+
+  if (event && (event.ctrlKey || event.metaKey)) {
+    // Multi-select
+    if (activePlans.includes(key)) {
+      if (activePlans.length > 1) {
+        activePlans = activePlans.filter(k => k !== key);
+        btn.classList.remove('active');
+      }
+    } else {
+      activePlans.push(key);
+      btn.classList.add('active');
+    }
+  } else {
+    // Single select: toggle if already the only one, otherwise select only this one
+    if (activePlans.length === 1 && activePlans[0] === key) {
+      // Already only this one selected, keep it
+    } else if (activePlans.includes(key) && activePlans.length === 1) {
+      return;
+    } else {
+      // Deactivate all tabs and set only this one
+      document.querySelectorAll('.plan-tab[data-plan]').forEach(t => {
+        t.classList.remove('active');
+      });
+      btn.classList.add('active');
+      activePlans = [key];
+    }
+  }
+
+  render();
+}
+
+function addNewPlan() {
+  if (!planDVisible) {
+    planDVisible = true;
+    const tabD = document.querySelector('.plan-tab[data-plan="D"]');
+    if (tabD) {
+      tabD.classList.add('active');
+      if (!activePlans.includes('D')) activePlans.push('D');
+    }
+    render();
+  } else {
+    alert('已存在方案D，当前最多支持4个方案对比');
+  }
+}
+
+function exportPlans() {
+  alert('导出功能开发中...\n当前选中方案: ' + activePlans.map(k => plans[k].name + ' ' + plans[k].label).join(', '));
+}
+
+function switchRecTab(btn, type) {
+  document.querySelectorAll('.recommend-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderRecs();
+}
+
+function render() {
+  renderPlanCards();
+  renderBottomBar();
+  renderMap();
+  renderRecs();
+}
+
+// ===== INIT =====
+render();
 </script>
 </body>
 </html>
