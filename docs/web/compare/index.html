@@ -1168,18 +1168,15 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 <!-- ========== HEADER ========== -->
 <header class="header">
-  <a href="/08/web/" class="logo">
-    <div class="logo-square">π</div>
-    <span>旅行规划</span>
+  <a href="/08/portfolio/" class="logo" style="font-size:15px;font-weight:700;color:#1F2937;text-decoration:none">
+    AI 多方案对比
   </a>
   <nav class="breadcrumbs">
-    <a href="/08/web/">首页</a>
+    <a href="/08/portfolio/">作品集</a>
     <span class="sep">›</span>
-    <a href="#">AI 规划</a>
-    <span class="sep">›</span>
-    <span class="current">多方案对比</span>
+    <span class="current">AI 多方案对比</span>
   </nav>
-  <a href="/08/web/" class="header-link">← 返回 Web Demo</a>
+  <a href="/08/portfolio/" class="header-link">← 返回</a>
 </header>
 
 <!-- ========== MAIN LAYOUT ========== -->
@@ -2171,7 +2168,9 @@ document.addEventListener('keydown', (e) => {
 
 // ========== FILTER PLANS ==========
 function filterPlans() {
-  document.querySelectorAll('.plan-card').forEach(card => {
+  const cards = document.querySelectorAll('.plan-card');
+  const grid = document.querySelector('.results-cols');
+  cards.forEach(card => {
     const plan = card.dataset.plan;
     if (activePlan === 'all' || activePlan === plan) {
       card.style.display = '';
@@ -2179,6 +2178,12 @@ function filterPlans() {
       card.style.display = 'none';
     }
   });
+  // adjust grid columns
+  if (activePlan === 'all') {
+    grid.style.gridTemplateColumns = 'repeat(3,1fr)';
+  } else {
+    grid.style.gridTemplateColumns = '1fr';
+  }
   highlightMapPlan(activePlan === 'all' ? null : activePlan);
 }
 
