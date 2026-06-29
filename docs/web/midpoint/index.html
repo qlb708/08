@@ -29,19 +29,19 @@ body {
 .header-left { display: flex; align-items: center; gap: 10px; }
 .logo-circle {
   width: 36px; height: 36px;
-  background: linear-gradient(135deg, #38BDF8, #818CF8);
+  background: linear-gradient(135deg, #00C48C, #818CF8);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-size: 18px; font-weight: 700;
 }
 .header-brand { font-size: 18px; font-weight: 700; color: #1E293B; }
-.header-title { font-size: 16px; font-weight: 600; color: #38BDF8; }
+.header-title { font-size: 16px; font-weight: 600; color: #00C48C; }
 .header-back {
   color: #64748B; text-decoration: none; font-size: 14px;
   display: flex; align-items: center; gap: 4px;
   transition: color 0.2s;
 }
-.header-back:hover { color: #38BDF8; }
+.header-back:hover { color: #00C48C; }
 
 /* ===== Main ===== */
 .main {
@@ -84,7 +84,7 @@ body {
   transition: all 0.3s ease;
   animation: slideIn 0.35s ease-out;
 }
-.member-card:hover { border-color: #38BDF8; box-shadow: 0 4px 16px rgba(56,189,248,0.12); }
+.member-card:hover { border-color: #00C48C; box-shadow: 0 4px 16px rgba(56,189,248,0.12); }
 
 @keyframes slideIn {
   from { transform: translateX(40px); opacity: 0; }
@@ -136,7 +136,7 @@ body {
 }
 .member-card select:focus,
 .member-card input[type="date"]:focus {
-  border-color: #38BDF8;
+  border-color: #00C48C;
 }
 
 .budget-row {
@@ -148,7 +148,7 @@ body {
 .budget-val {
   font-size: 12px;
   font-weight: 600;
-  color: #38BDF8;
+  color: #00C48C;
   white-space: nowrap;
   min-width: 52px;
 }
@@ -163,7 +163,7 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px; height: 16px;
-  background: #38BDF8;
+  background: #00C48C;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -203,13 +203,13 @@ input[type="range"]::-webkit-slider-thumb {
   transition: all 0.2s;
   flex-shrink: 0;
 }
-.btn-add:hover { border-color: #38BDF8; color: #38BDF8; background: rgba(56,189,248,0.04); }
+.btn-add:hover { border-color: #00C48C; color: #00C48C; background: rgba(56,189,248,0.04); }
 .btn-add-icon { font-size: 28px; }
 
 .btn-calculate {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #38BDF8, #818CF8);
+  background: linear-gradient(135deg, #00C48C, #818CF8);
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -259,7 +259,7 @@ input[type="range"]::-webkit-slider-thumb {
 .calculating-text {
   font-size: 18px;
   font-weight: 600;
-  color: #38BDF8;
+  color: #00C48C;
   margin-top: 24px;
 }
 .calculating-dots::after {
@@ -347,7 +347,7 @@ input[type="range"]::-webkit-slider-thumb {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-.city-card:hover { border-color: #38BDF8; box-shadow: 0 4px 20px rgba(56,189,248,0.12); }
+.city-card:hover { border-color: #00C48C; box-shadow: 0 4px 20px rgba(56,189,248,0.12); }
 .city-card.best { border-color: #FBBF24; background: #FFFBEB; }
 
 .city-card-header {
@@ -395,7 +395,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .route-arrow { color: #CBD5E1; font-size: 11px; }
 .route-detail { color: #94A3B8; margin-left: auto; font-size: 11px; }
-.route-price { font-weight: 600; color: #38BDF8; }
+.route-price { font-weight: 600; color: #00C48C; }
 
 /* Radar Chart */
 .radar-wrap {
@@ -409,7 +409,7 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: 12px;
   width: 100%;
   padding: 10px;
-  background: linear-gradient(135deg, #38BDF8, #818CF8);
+  background: linear-gradient(135deg, #00C48C, #818CF8);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -465,7 +465,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .btn-modal-cancel:hover { background: #E2E8F0; }
 .btn-modal-confirm {
-  background: linear-gradient(135deg, #38BDF8, #818CF8);
+  background: linear-gradient(135deg, #00C48C, #818CF8);
   color: #fff;
 }
 .btn-modal-confirm:hover { box-shadow: 0 4px 16px rgba(56,189,248,0.3); }
@@ -562,11 +562,11 @@ input[type="range"]::-webkit-slider-thumb {
               stroke="#CBD5E1" stroke-width="1.5" fill="#F8FAFC"/>
         <g id="calcLines"></g>
         <g id="calcCities"></g>
-        <circle cx="140" cy="100" r="8" fill="none" stroke="#38BDF8" stroke-width="2">
+        <circle cx="140" cy="100" r="8" fill="none" stroke="#00C48C" stroke-width="2">
           <animate attributeName="r" values="8;14;8" dur="1.5s" repeatCount="indefinite"/>
           <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
         </circle>
-        <circle cx="140" cy="100" r="4" fill="#38BDF8">
+        <circle cx="140" cy="100" r="4" fill="#00C48C">
           <animate attributeName="opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
         </circle>
       </svg>
@@ -964,7 +964,7 @@ function renderCityCards(cities) {
           <svg width="56" height="56" viewBox="0 0 56 56">
             <circle cx="28" cy="28" r="24" fill="none" stroke="#E2E8F0" stroke-width="4"/>
             <circle cx="28" cy="28" r="24" fill="none"
-              stroke="${idx === 0 ? '#FBBF24' : '#38BDF8'}"
+              stroke="${idx === 0 ? '#FBBF24' : '#00C48C'}"
               stroke-width="4"
               stroke-linecap="round"
               stroke-dasharray="${2 * Math.PI * 24}"
@@ -1049,12 +1049,12 @@ function renderRadar(data) {
   return `<svg class="radar-svg" viewBox="0 0 140 100">
     ${gridHTML}
     ${axisHTML}
-    <polygon points="${dataPts.join(' ')}" fill="rgba(56,189,248,0.15)" stroke="#38BDF8" stroke-width="1.5">
+    <polygon points="${dataPts.join(' ')}" fill="rgba(56,189,248,0.15)" stroke="#00C48C" stroke-width="1.5">
       <animate attributeName="opacity" from="0" to="1" dur="0.8s" fill="freeze"/>
     </polygon>
     ${dataPts.map(p => {
       const [px, py] = p.split(',');
-      return `<circle cx="${px}" cy="${py}" r="2.5" fill="#38BDF8"/>`;
+      return `<circle cx="${px}" cy="${py}" r="2.5" fill="#00C48C"/>`;
     }).join('')}
     ${labelHTML}
   </svg>`;
@@ -1064,7 +1064,7 @@ function highlightCard(idx) {
   document.querySelectorAll('.city-card').forEach(c => c.style.borderColor = '');
   const cards = document.querySelectorAll('.city-card');
   if (cards[idx]) {
-    cards[idx].style.borderColor = '#38BDF8';
+    cards[idx].style.borderColor = '#00C48C';
     cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
