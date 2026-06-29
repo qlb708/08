@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 多方案对比 — 圆周旅迹</title>
+<title>AI 多方案对比 — 旅行规划</title>
 <style>
 /* ========== RESET & BASE ========== */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1170,7 +1170,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 <header class="header">
   <a href="/08/web/" class="logo">
     <div class="logo-square">π</div>
-    <span>圆周旅迹</span>
+    <span>旅行规划</span>
   </a>
   <nav class="breadcrumbs">
     <a href="/08/web/">首页</a>
@@ -1480,7 +1480,7 @@ const plansData = {
     gradientClass: 'plan-a',
     subtitle: '精打细算也能玩得很开心',
     budget: '¥4,200',
-    days: '5天',
+    daysLabel: '5天',
     spots: '12个',
     food: '8家',
     walk: '8km/天',
@@ -1618,7 +1618,7 @@ const plansData = {
     gradientClass: 'plan-b',
     subtitle: '精华浓缩，不走冤枉路',
     budget: '¥6,800',
-    days: '5天',
+    daysLabel: '5天',
     spots: '8个',
     food: '5家',
     walk: '5km/天',
@@ -1751,7 +1751,7 @@ const plansData = {
     gradientClass: 'plan-c',
     subtitle: '品质至上，每一刻都值得回忆',
     budget: '¥12,000',
-    days: '5天',
+    daysLabel: '5天',
     spots: '6个',
     food: '4家',
     walk: '3km/天',
@@ -2060,7 +2060,7 @@ function renderPlans() {
         </div>
         <div class="metric">
           <div class="metric-icon">⏱</div>
-          <div class="metric-value">${plan.days}</div>
+          <div class="metric-value">${plan.daysLabel}</div>
           <div class="metric-label">总天数</div>
         </div>
         <div class="metric">
