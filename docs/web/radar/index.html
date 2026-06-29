@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 实时出行雷达 - 圆周旅迹</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue-50:#F0F9FF;--blue-100:#E0F2FE;--blue-200:#EBF8FF;--sky-400:#38BDF8;--sky-500:#0EA5E9;--sky-600:#0284C7;--orange-400:#FB923C;--orange-500:#F97316;--red-400:#F87171;--red-500:#EF4444;--green-400:#4ADE80;--green-500:#22C55E;--yellow-400:#FACC15;--yellow-500:#EAB308;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;--gray-800:#1F2937;--gray-900:#111827;--radius:12px;--radius-lg:16px;--radius-xl:20px;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.04),0 2px 4px rgba(0,0,0,.03);--shadow-lg:0 10px 25px rgba(0,0,0,.08)}
+body{font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#EBF8FF 0%,#F0F9FF 40%,#ffffff 100%);min-height:100vh;color:var(--gray-800);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* Header */
+.header{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.05);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:100}
+.header-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.header-logo svg{width:32px;height:32px}
+.header-logo span{font-size:16px;font-weight:600;color:var(--gray-900)}
+.header-title{font-size:17px;font-weight:600;color:var(--gray-700);letter-spacing:.5px}
+.header-actions{display:flex;align-items:center;gap:12px}
+.btn-back{display:flex;align-items:center;gap:4px;padding:8px 16px;border-radius:20px;border:1px solid var(--gray-200);background:transparent;color:var(--gray-600);font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-back:hover{background:var(--gray-50);border-color:var(--gray-300)}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green-400);animation:pulse 2s infinite;margin-right:4px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Main Layout */
+.main{display:flex;gap:20px;padding:84px 20px 40px;max-width:1440px;margin:0 auto;min-height:calc(100vh - 60px)}
+
+/* Left Column: Today's Itinerary */
+.itinerary{width:260px;flex-shrink:0}
+.itinerary-card{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-md);border:1px solid rgba(0,0,0,.04);overflow:hidden;position:sticky;top:84px}
+.itinerary-header{padding:20px 20px 12px;border-bottom:1px solid var(--gray-100)}
+.itinerary-header h3{font-size:15px;font-weight:700;color:var(--gray-900)}
+.itinerary-header .date{font-size:12px;color:var(--gray-400);margin-top:2px}
+.itinerary-period{padding:8px 20px 4px}
+.period-label{font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.itinerary-item{padding:10px 16px;margin:2px 12px;border-radius:var(--radius);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px;font-size:13px;position:relative;border-left:3px solid transparent}
+.itinerary-item:hover{background:var(--blue-50)}
+.itinerary-item.active{background:var(--blue-50);border-left-color:var(--sky-400)}
+.itinerary-item .time{font-size:11px;color:var(--gray-400);white-space:nowrap;min-width:48px}
+.itinerary-item .place{color:var(--gray-700);font-weight:500}
+.itinerary-item .duration{font-size:11px;color:var(--gray-400)}
+.itinerary-item.risk{background:rgba(250,204,21,.06)}
+.itinerary-item.risk::after{content:'⚠️';position:absolute;right:10px;font-size:12px}
+.itinerary-item.active.risk{background:rgba(250,204,21,.12);border-left-color:var(--yellow-500)}
+
+/* Center Column: Map */
+.map-area{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+.map-card{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-md);border:1px solid rgba(0,0,0,.04);padding:20px;flex:1;min-height:480px;position:relative;overflow:hidden}
+.map-title{font-size:15px;font-weight:700;color:var(--gray-800);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.map-container{position:relative;width:100%;height:380px;background:var(--gray-50);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--gray-100)}
+.map-svg{width:100%;height:100%}
+.map-heat-btn{position:absolute;bottom:16px;right:16px;padding:8px 16px;border-radius:20px;border:1px solid var(--sky-400);background:#fff;color:var(--sky-500);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit;z-index:2}
+.map-heat-btn.active{background:var(--sky-400);color:#fff}
+.map-heat-btn:hover{box-shadow:0 2px 8px rgba(56,189,248,.3)}
+
+/* Risk overlay animation */
+.risk-zone{transition:opacity .4s}
+.heat-overlay{transition:opacity .5s}
+
+/* Right Column: Radar */
+.radar{width:300px;flex-shrink:0}
+.radar-card{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-md);border:1px solid rgba(0,0,0,.04);overflow:hidden;position:sticky;top:84px}
+.radar-header{padding:20px 20px 12px;border-bottom:1px solid var(--gray-100);display:flex;justify-content:space-between;align-items:center}
+.radar-header h3{font-size:15px;font-weight:700;color:var(--gray-900)}
+.risk-gauge{position:relative;width:56px;height:56px}
+.risk-gauge svg{width:56px;height:56px}
+.risk-label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:600;color:var(--orange-500);white-space:nowrap}
+
+/* Radar Modules */
+.radar-modules{padding:12px}
+.radar-module{margin-bottom:12px}
+.radar-module:last-child{margin-bottom:0}
+.module-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--gray-50);border-radius:var(--radius);cursor:pointer;transition:all .2s}
+.module-header:hover{background:var(--blue-50)}
+.module-title{font-size:13px;font-weight:600;color:var(--gray-700);display:flex;align-items:center;gap:6px}
+.module-badge{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:500}
+.module-badge.green{background:rgba(74,222,128,.12);color:var(--green-500)}
+.module-badge.orange{background:rgba(251,146,60,.12);color:var(--orange-500)}
+.module-badge.red{background:rgba(248,113,113,.12);color:var(--red-500)}
+.module-badge.yellow{background:rgba(250,204,21,.12);color:var(--yellow-500)}
+.module-body{padding:12px 14px;display:none}
+.module-body.show{display:block}
+.module-item{padding:8px 0;border-bottom:1px solid var(--gray-50);font-size:12px}
+.module-item:last-child{border:none}
+.module-item .mi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.module-item .mi-name{font-weight:500;color:var(--gray-700)}
+.module-item .mi-status{display:flex;align-items:center;gap:4px}
+.module-item .mi-status .dot{width:6px;height:6px;border-radius:50%}
+.module-item .mi-detail{color:var(--gray-400);font-size:11px}
+.module-item .mi-suggestion{margin-top:6px;padding:6px 10px;background:var(--blue-50);border-radius:8px;font-size:11px;color:var(--sky-600);line-height:1.5}
+
+/* AI Suggestion Card */
+.ai-suggestion{margin:12px;padding:16px;background:linear-gradient(135deg,var(--blue-50),#E0F2FE);border-radius:var(--radius-lg);border:1px solid rgba(56,189,248,.15)}
+.ai-suggestion h4{font-size:13px;font-weight:700;color:var(--gray-800);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ai-tip{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:12px;color:var(--gray-600);line-height:1.5}
+.ai-tip .tip-icon{color:var(--sky-500);flex-shrink:0;margin-top:2px}
+.btn-apply{margin-top:12px;padding:8px 20px;border-radius:20px;border:none;background:#fff;color:var(--sky-500);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.btn-apply:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-1px)}
+.btn-apply:active{transform:scale(.97)}
+
+/* Reorder animation */
+.reordering .itinerary-item{transition:all .5s ease}
+.reordering .itinerary-item.moved{background:rgba(56,189,248,.15);border-left-color:var(--sky-400)}
+
+/* Responsive adjustments */
+@media(max-width:1200px){
+  .main{padding:84px 12px 40px}
+  .itinerary{width:220px}
+  .radar{width:260px}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-logo">
+    <svg viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="14" stroke="#38BDF8" stroke-width="2.5"/>
+      <circle cx="16" cy="16" r="4" fill="#38BDF8"/>
+      <path d="M16 2a14 14 0 0 1 0 28" stroke="#0EA5E9" stroke-width="1.5" opacity=".4"/>
+      <path d="M2 16a14 14 0 0 1 28 0" stroke="#0EA5E9" stroke-width="1.5" opacity=".4"/>
+    </svg>
+    <span>圆周旅迹</span>
+  </div>
+  <div class="header-title"><span class="live-dot"></span>AI 实时出行雷达</div>
+  <div class="header-actions">
+    <button class="btn-back">← 返回</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="main">
+  <!-- Left: Itinerary -->
+  <aside class="itinerary">
+    <div class="itinerary-card">
+      <div class="itinerary-header">
+        <h3>Day 3 · 东京</h3>
+        <div class="date">2024.03.17 · 周日</div>
+      </div>
+      <div id="itineraryList">
+        <div class="itinerary-period"><div class="period-label">☀️ 上午</div></div>
+        <div class="itinerary-item" data-idx="0" onclick="selectSpot(0)">
+          <span class="time">09:00</span>
+          <div><div class="place">上野公园</div><div class="duration">约1.5小时</div></div>
+        </div>
+        <div class="itinerary-item" data-idx="1" onclick="selectSpot(1)">
+          <span class="time">10:30</span>
+          <div><div class="place">上野动物园</div><div class="duration">约1小时</div></div>
+        </div>
+        <div class="itinerary-period" style="margin-top:8px"><div class="period-label">🌤️ 下午</div></div>
+        <div class="itinerary-item risk" data-idx="2" onclick="selectSpot(2)">
+          <span class="time">13:00</span>
+          <div><div class="place">浅草寺</div><div class="duration">约2小时</div></div>
+        </div>
+        <div class="itinerary-item risk" data-idx="3" onclick="selectSpot(3)">
+          <span class="time">15:30</span>
+          <div><div class="place">东京天空树</div><div class="duration">约1.5小时</div></div>
+        </div>
+        <div class="itinerary-period" style="margin-top:8px"><div class="period-label">🌙 晚间</div></div>
+        <div class="itinerary-item" data-idx="4" onclick="selectSpot(4)">
+          <span class="time">18:00</span>
+          <div><div class="place">新宿御苑</div><div class="duration">约1小时</div></div>
+        </div>
+        <div class="itinerary-item" data-idx="5" onclick="selectSpot(5)">
+          <span class="time">19:30</span>
+          <div><div class="place">歌舞伎町晚餐</div><div class="duration">约1.5小时</div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Center: Map -->
+  <div class="map-area">
+    <div class="map-card">
+      <div class="map-title">🗺️ 东京市区 · 今日路线</div>
+      <div class="map-container" id="mapContainer">
+        <svg class="map-svg" viewBox="0 0 600 380" id="mapSvg">
+          <!-- Background grid -->
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#F3F4F6" stroke-width="0.5"/>
+            </pattern>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="heat1" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#F87171;stop-opacity:0.3"/>
+              <stop offset="100%" style="stop-color:#F87171;stop-opacity:0.05"/>
+            </linearGradient>
+            <linearGradient id="heat2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#FB923C;stop-opacity:0.25"/>
+              <stop offset="100%" style="stop-color:#FB923C;stop-opacity:0.05"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="380" fill="url(#grid)"/>
+
+          <!-- River (Sumida) -->
+          <path d="M200 0 Q220 60 210 120 Q200 180 230 240 Q250 300 240 380" fill="none" stroke="#DBEAFE" stroke-width="18" stroke-linecap="round"/>
+
+          <!-- Areas -->
+          <!-- Ueno area -->
+          <rect x="80" y="60" width="120" height="70" rx="12" fill="#F0F9FF" stroke="#BFDBFE" stroke-width="1.5"/>
+          <text x="140" y="100" text-anchor="middle" font-size="12" fill="#64748B" font-family="PingFang SC">上野区域</text>
+
+          <!-- Asakusa area (risk) -->
+          <rect class="risk-zone" id="zone-asakusa" x="240" y="50" width="130" height="75" rx="12" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1.5" opacity="1"/>
+          <text x="305" y="92" text-anchor="middle" font-size="12" fill="#92400E" font-family="PingFang SC">浅草区域</text>
+          <!-- Risk overlay for Asakusa -->
+          <rect class="risk-zone" id="risk-asakusa" x="240" y="50" width="130" height="75" rx="12" fill="#FB923C" opacity="0.15"/>
+
+          <!-- Skytree area (risk) -->
+          <rect class="risk-zone" id="zone-skytree" x="380" y="60" width="100" height="65" rx="12" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1.5"/>
+          <text x="430" y="97" text-anchor="middle" font-size="11" fill="#92400E" font-family="PingFang SC">天空树</text>
+          <rect class="risk-zone" id="risk-skytree" x="380" y="60" width="100" height="65" rx="12" fill="#F87171" opacity="0.12"/>
+
+          <!-- Shinjuku area -->
+          <rect x="60" y="180" width="130" height="70" rx="12" fill="#F0F9FF" stroke="#BFDBFE" stroke-width="1.5"/>
+          <text x="125" y="220" text-anchor="middle" font-size="12" fill="#64748B" font-family="PingFang SC">新宿区域</text>
+
+          <!-- Ginza area -->
+          <rect x="250" y="200" width="110" height="65" rx="12" fill="#F0F9FF" stroke="#BFDBFE" stroke-width="1.5"/>
+          <text x="305" y="237" text-anchor="middle" font-size="12" fill="#64748B" font-family="PingFang SC">银座</text>
+
+          <!-- Shibuya area -->
+          <rect x="100" y="290" width="120" height="65" rx="12" fill="#F0F9FF" stroke="#BFDBFE" stroke-width="1.5"/>
+          <text x="160" y="327" text-anchor="middle" font-size="12" fill="#64748B" font-family="PingFang SC">涩谷</text>
+
+          <!-- Route lines -->
+          <path d="M140 95 Q190 80 305 88" fill="none" stroke="#38BDF8" stroke-width="2" stroke-dasharray="6,4" opacity="0.7"/>
+          <path d="M305 88 Q350 85 430 92" fill="none" stroke="#38BDF8" stroke-width="2" stroke-dasharray="6,4" opacity="0.7"/>
+          <path d="M430 92 Q380 160 125 215" fill="none" stroke="#38BDF8" stroke-width="2" stroke-dasharray="6,4" opacity="0.5"/>
+          <path d="M125 215 Q130 260 160 290" fill="none" stroke="#38BDF8" stroke-width="2" stroke-dasharray="6,4" opacity="0.5"/>
+
+          <!-- Spot markers -->
+          <!-- Ueno Park -->
+          <circle cx="120" cy="85" r="10" fill="#38BDF8" opacity="0.9" filter="url(#glow)"/>
+          <text x="120" y="89" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1</text>
+
+          <!-- Zoo -->
+          <circle cx="160" cy="80" r="10" fill="#38BDF8" opacity="0.9" filter="url(#glow)"/>
+          <text x="160" y="84" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">2</text>
+
+          <!-- Asakusa -->
+          <circle cx="305" cy="75" r="12" fill="#FB923C" opacity="0.9" filter="url(#glow)"/>
+          <text x="305" y="79" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">3</text>
+
+          <!-- Skytree -->
+          <circle cx="430" cy="80" r="12" fill="#FB923C" opacity="0.9" filter="url(#glow)"/>
+          <text x="430" y="84" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">4</text>
+
+          <!-- Shinjuku -->
+          <circle cx="125" cy="205" r="10" fill="#4ADE80" opacity="0.9" filter="url(#glow)"/>
+          <text x="125" y="209" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">5</text>
+
+          <!-- Kabukicho -->
+          <circle cx="155" cy="200" r="10" fill="#4ADE80" opacity="0.9" filter="url(#glow)"/>
+          <text x="155" y="204" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">6</text>
+
+          <!-- Heat overlay (hidden by default) -->
+          <rect class="heat-overlay" id="heat-ueno" x="80" y="60" width="120" height="70" rx="12" fill="#4ADE80" opacity="0"/>
+          <rect class="heat-overlay" id="heat-asakusa" x="240" y="50" width="130" height="75" rx="12" fill="#F87171" opacity="0"/>
+          <rect class="heat-overlay" id="heat-skytree" x="380" y="60" width="100" height="65" rx="12" fill="#F87171" opacity="0"/>
+          <rect class="heat-overlay" id="heat-shinjuku" x="60" y="180" width="130" height="70" rx="12" fill="#4ADE80" opacity="0"/>
+          <rect class="heat-overlay" id="heat-ginza" x="250" y="200" width="110" height="65" rx="12" fill="#FACC15" opacity="0"/>
+          <rect class="heat-overlay" id="heat-shibuya" x="100" y="290" width="120" height="65" rx="12" fill="#FACC15" opacity="0"/>
+
+          <!-- Legend -->
+          <g transform="translate(460, 310)">
+            <rect width="120" height="55" rx="8" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
+            <circle cx="20" cy="18" r="6" fill="#38BDF8"/>
+            <text x="32" y="22" font-size="9" fill="#6B7280" font-family="PingFang SC">正常</text>
+            <circle cx="65" cy="18" r="6" fill="#FB923C"/>
+            <text x="77" y="22" font-size="9" fill="#6B7280" font-family="PingFang SC">有风险</text>
+            <circle cx="20" cy="38" r="6" fill="#4ADE80"/>
+            <text x="32" y="42" font-size="9" fill="#6B7280" font-family="PingFang SC">舒适</text>
+            <circle cx="65" cy="38" r="6" fill="#FACC15"/>
+            <text x="77" y="42" font-size="9" fill="#6B7280" font-family="PingFang SC">人流中</text>
+          </g>
+        </svg>
+        <button class="map-heat-btn" id="heatBtn" onclick="toggleHeat()">🔥 热力图</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Radar -->
+  <aside class="radar">
+    <div class="radar-card">
+      <div class="radar-header">
+        <h3>🛰️ 实时出行雷达</h3>
+        <div class="risk-gauge">
+          <svg viewBox="0 0 56 56">
+            <circle cx="28" cy="28" r="22" fill="none" stroke="#E5E7EB" stroke-width="5"/>
+            <circle cx="28" cy="28" r="22" fill="none" stroke="#4ADE80" stroke-width="5" stroke-dasharray="23 115" stroke-dashoffset="-69" stroke-linecap="round" transform="rotate(0 28 28)" opacity="0.5"/>
+            <circle cx="28" cy="28" r="22" fill="none" stroke="#FB923C" stroke-width="5" stroke-dasharray="46 92" stroke-dashoffset="-46" stroke-linecap="round" transform="rotate(90 28 28)"/>
+            <circle cx="28" cy="28" r="22" fill="none" stroke="#F87171" stroke-width="5" stroke-dasharray="23 115" stroke-dashoffset="-92" stroke-linecap="round" transform="rotate(270 28 28)" opacity="0.3"/>
+            <line x1="28" y1="28" x2="28" y2="12" stroke="#374151" stroke-width="2" stroke-linecap="round" transform="rotate(65 28 28)"/>
+            <circle cx="28" cy="28" r="3" fill="#374151"/>
+          </svg>
+          <div class="risk-label">中等风险</div>
+        </div>
+      </div>
+
+      <div class="radar-modules">
+        <!-- Weather Module -->
+        <div class="radar-module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <span class="module-title">🌤️ 天气监测</span>
+            <span class="module-badge orange">⚠️ 降雨预警</span>
+          </div>
+          <div class="module-body show">
+            <div class="module-item">
+              <div class="mi-header">
+                <span class="mi-name">☀️ 当前天气</span>
+                <span class="mi-status"><span class="dot" style="background:var(--green-400)"></span>晴</span>
+              </div>
+              <div class="mi-detail">22°C · 湿度45% · 东南风2级</div>
+            </div>
+            <div class="module-item">
+              <div class="mi-header">
+                <span class="mi-name">🌧️ 下午3点预测</span>
+                <span class="mi-status"><span class="dot" style="background:var(--orange-400)"></span>降雨</span>
+              </div>
+              <div class="mi-detail">降水概率 78% · 预计雨量 15mm</div>
+            </div>
+            <div class="mi-suggestion">💡 建议将户外景点调整至上午，避开下午降雨时段。</div>
+          </div>
+        </div>
+
+        <!-- Crowd Module -->
+        <div class="radar-module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <span class="module-title">👥 人流热度</span>
+            <span class="module-badge red">🔴 爆满</span>
+          </div>
+          <div class="module-body show">
+            <div class="module-item">
+              <div class="mi-header">
+                <span class="mi-name">浅草寺</span>
+                <span class="mi-status"><span class="dot" style="background:var(--red-400)"></span><span style="color:var(--red-400);font-weight:500">爆满</span></span>
+              </div>
+              <div class="mi-detail">当前 >3,000人 · 预计等待 45分钟</div>
+            </div>
+            <div class="module-item">
+              <div class="mi-header">
+                <span class="mi-name">新宿御苑</span>
+                <span class="mi-status"><span class="dot" style="background:var(--green-400)"></span><span style="color:var(--green-500);font-weight:500">舒适</span></span>
+              </div>
+              <div class="mi-detail">当前 <500人 · 预计等待 5分钟</div>
+            </div>
+            <div class="mi-suggestion">💡 建议先去新宿御苑，下午人少时再回浅草寺。</div>
+          </div>
+        </div>
+
+        <!-- Traffic Module -->
+        <div class="radar-module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <span class="module-title">🚗 交通状况</span>
+            <span class="module-badge yellow">🟡 轻微拥堵</span>
+          </div>
+          <div class="module-body show">
+            <div class="module-item">
+              <div class="mi-header">
+                <span class="mi-name">东京地铁N线</span>
+                <span class="mi-status"><span class="dot" style="background:var(--yellow-400)"></span><span style="color:var(--yellow-500);font-weight:500">轻微拥堵</span></span>
+              </div>
+              <div class="mi-detail">上野→浅草段 拥挤度 72% · 延迟约3分钟</div>
+            </div>
+            <div class="module-item">
+              <div class="mi-header">
+                <span class="mi-name">成田机场高速</span>
+                <span class="mi-status"><span class="dot" style="background:var(--green-400)"></span><span style="color:var(--green-500);font-weight:500">畅通</span></span>
+              </div>
+              <div class="mi-detail">平均车速 65km/h · 无拥堵</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attraction Module -->
+        <div class="radar-module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <span class="module-title">🏛️ 景区动态</span>
+            <span class="module-badge orange">⚠️ 限流</span>
+          </div>
+          <div class="module-body show">
+            <div class="module-item">
+              <div class="mi-header">
+                <span class="mi-name">上野动物园</span>
+                <span class="mi-status"><span class="dot" style="background:var(--orange-400)"></span><span style="color:var(--orange-500);font-weight:500">今日限流</span></span>
+              </div>
+              <div class="mi-detail">仅剩 200个名额 · 预约截止 12:00</div>
+            </div>
+            <div class="mi-suggestion">💡 立即预约或更换为周边替代景点（谷中银座商店街）。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Suggestion -->
+      <div class="ai-suggestion">
+        <h4>📋 AI 建议调整方案</h4>
+        <div class="ai-tip">
+          <span class="tip-icon">①</span>
+          <span>将<b>浅草寺</b>调整至 09:00-11:00（避开下午人流高峰）</span>
+        </div>
+        <div class="ai-tip">
+          <span class="tip-icon">②</span>
+          <span>将<b>户外活动</b>（上野公园）提前至上午（规避下午降雨）</span>
+        </div>
+        <div class="ai-tip">
+          <span class="tip-icon">③</span>
+          <span><b>上野动物园</b>替换为谷中银座商店街（步行5分钟）</span>
+        </div>
+        <button class="btn-apply" id="btnApply" onclick="applyAdjust()">✨ 一键应用调整</button>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script>
+let heatOn = false;
+function toggleHeat(){
+  heatOn=!heatOn;
+  const btn=document.getElementById('heatBtn');
+  btn.classList.toggle('active',heatOn);
+  document.querySelectorAll('.heat-overlay').forEach(el=>{
+    el.style.opacity=heatOn?el.getAttribute('opacity')||'0.25':'0';
+  });
+  // Reset heat opacities
+  if(heatOn){
+    document.getElementById('heat-ueno').style.opacity='0.12';
+    document.getElementById('heat-asakusa').style.opacity='0.35';
+    document.getElementById('heat-skytree').style.opacity='0.30';
+    document.getElementById('heat-shinjuku').style.opacity='0.08';
+    document.getElementById('heat-ginza').style.opacity='0.18';
+    document.getElementById('heat-shibuya').style.opacity='0.18';
+  }else{
+    document.querySelectorAll('.heat-overlay').forEach(el=>el.style.opacity='0');
+  }
+}
+
+function toggleModule(header){
+  const body=header.nextElementSibling;
+  body.classList.toggle('show');
+}
+
+let activeSpot = -1;
+function selectSpot(idx){
+  document.querySelectorAll('.itinerary-item').forEach(el=>el.classList.remove('active'));
+  const item=document.querySelector(`.itinerary-item[data-idx="${idx}"]`);
+  if(item)item.classList.add('active');
+  activeSpot=idx;
+  // Highlight corresponding zone on map
+  const zones=['zone-asakusa','zone-skytree'];
+  const risks=['risk-asakusa','risk-skytree'];
+  if(idx===2||idx===3){
+    const zi=idx-2;
+    document.getElementById(zones[zi]).setAttribute('fill','#FDE68A');
+    risks[zi]&&document.getElementById(risks[zi]).setAttribute('opacity','0.3');
+    setTimeout(()=>{
+      document.getElementById(zones[zi]).setAttribute('fill','#FEF3C7');
+      risks[zi]&&document.getElementById(risks[zi]).setAttribute('opacity','0.15');
+    },1500);
+  }
+}
+
+function applyAdjust(){
+  const btn=document.getElementById('btnApply');
+  btn.textContent='⏳ 正在调整...';
+  btn.style.opacity='0.7';
+  const list=document.getElementById('itineraryList');
+  list.classList.add('reordering');
+
+  // Highlight moved items
+  const items=document.querySelectorAll('.itinerary-item');
+  setTimeout(()=>{
+    items[0].classList.add('moved');
+    items[2].classList.add('moved');
+  },300);
+
+  setTimeout(()=>{
+    btn.textContent='✅ 已应用调整';
+    btn.style.background='#22C55E';
+    btn.style.color='#fff';
+    btn.style.opacity='1';
+    items.forEach(el=>el.classList.remove('moved'));
+    setTimeout(()=>{
+      btn.textContent='✨ 一键应用调整';
+      btn.style.background='#fff';
+      btn.style.color='var(--sky-500)';
+      list.classList.remove('reordering');
+    },2000);
+  },1200);
+}
+
+// Auto open all modules
+document.querySelectorAll('.module-body').forEach(el=>el.classList.add('show'));
+
+// Live time update
+function updateLiveTime(){
+  const now=new Date();
+  const timeStr=now.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+  // Could update UI with live time
+}
+setInterval(updateLiveTime,30000);
+</script>
+</body>
+</html>
