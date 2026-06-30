@@ -415,10 +415,8 @@ var DATA_TOOLS=[
   {n:'DV5',t:'周报生成器',d:'描述本周核心数据和达成情况，AI 生成结构化周报，含亮点、问题和下周计划。',h:'/08/portfolio/weekly-report/',tag:'周报',ic:'#8B5CF6',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'}
 ];
 var WEB_DEMO=[
-  {cls:'ac-compare',  em:'🗺️⚡', t:'AI 多方案对比',     d:'A/B/C三套旅行方案横向并排，预算/效率/体验三策略一次生成，支持混合优化。', h:'/08/web/compare/',   tag:'PC大屏', cta:'体验 Demo'},
-  {cls:'ac-midpoint', em:'📍🤝', t:'AI 中间点规划',     d:'多人从不同城市出发，AI 计算最优会合城市，综合交通/预算/体验多维评分。', h:'/08/web/midpoint/',  tag:'多人规划', cta:'体验 Demo'},
-  {cls:'ac-recap',    em:'📊✨', t:'AI 行程复盘',       d:'旅行结束自动生成 Travel Report，时间轴+统计+可分享小红书长图。',        h:'/08/web/recap/',    tag:'闭环能力', cta:'体验 Demo'},
-  {cls:'ac-radar',    em:'🛰️⚡', t:'AI 实时出行雷达',   d:'天气/限流/交通实时监测，风险高亮预警，AI 一键重排当天路线。',            h:'/08/web/radar/',    tag:'动态规划', cta:'体验 Demo'},
+  {cls:'ac-mvp01', em:'⚖️✦', t:'AI 多方案决策',   d:'导入多篇攻略或 AI 规划结果，自动提取结构化信息，多维度横向对比，AI 生成推荐理由，辅助用户快速完成方案选择。', h:'/08/portfolio/yuanzhou-mvp/', tag:'Web MVP 01', cta:'体验原型'},
+  {cls:'ac-mvp02', em:'🗺️✦', t:'AI 地点归纳师',   d:'将收藏地点从零散资产转化为可执行路线，AI 分析地理分布、营业时间与出行场景，自动生成多条路线建议并支持手动调整。', h:'/08/portfolio/yuanzhou-mvp/', tag:'Web MVP 02', cta:'体验原型'},
 ];
 var ACTIVITY=[
   {cls:'ac-star',   em:'⚽🏆', t:'球星人格匹配',   d:'6题自动匹配旅行球星人格，解锁专属朝圣路线。',         h:'/08/activity/star/',      tag:'世界杯',   cta:'开始匹配'},
@@ -469,7 +467,7 @@ function actCard(t){
 document.getElementById('g-data').innerHTML=DATA_TOOLS.map(card).join('');
 // render web demos - horizontal list style cards
 document.getElementById('g-web').innerHTML=WEB_DEMO.map(function(t){
-  var clrMap={'ac-compare':'#2563EB','ac-midpoint':'#10B981','ac-recap':'#F59E0B','ac-radar':'#8B5CF6'};
+  var clrMap={'ac-mvp01':'#1D6FEB','ac-mvp02':'#4F46E5'};
   var clr=clrMap[t.cls]||'#6B7280';
   return '<a href="'+t.h+'" style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06);text-decoration:none;transition:all .2s;border:1px solid #F3F4F6" onmouseover="this.style.boxShadow=\'0 4px 16px rgba(37,99,235,.1)\';this.style.borderColor=\'#DBEAFE\'" onmouseout="this.style.boxShadow=\'0 1px 4px rgba(0,0,0,.06)\';this.style.borderColor=\'#F3F4F6\'">'
     +'<div style="width:40px;height:40px;border-radius:10px;background:'+clr+'15;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+t.em.split(/\s/)[0]+'</div>'
