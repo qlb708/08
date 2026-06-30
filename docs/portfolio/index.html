@@ -330,26 +330,19 @@ footer a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
     <div class="sub-sec">
       <div class="sub-hd">
         <div class="sub-ico" style="background:#FEF2F2"><svg viewBox="0 0 24 24" style="stroke:#EF4444"><circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/></svg></div>
-        <span class="sub-name">活动 Demo</span><span class="sub-cnt">11 个</span>
+        <span class="sub-name">活动 Demo</span><span class="sub-cnt">5 个</span>
         <div class="sub-line"></div>
       </div>
-      <!-- 左右分栏 -->
-      <div style="display:flex;gap:32px;align-items:flex-start">
-        <!-- 左：App 端 -->
-        <div style="flex:1;min-width:0">
-          <div style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9CA3AF;display:flex;align-items:center;gap:8px">
-            <span>📱 App 端</span><span style="flex:1;height:1px;background:#E5E7EB"></span>
-          </div>
-          <div class="g-activity-grid" id="g-activity"></div>
-        </div>
-        <!-- 右：Web 端 -->
-        <div style="flex:1;min-width:0">
-          <div style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9CA3AF;display:flex;align-items:center;gap:8px">
-            <span>💻 Web 端</span><span style="flex:1;height:1px;background:#E5E7EB"></span>
-          </div>
-          <div id="g-web" style="display:flex;flex-direction:column;gap:12px"></div>
-        </div>
+      <!-- APP 端 -->
+      <div style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9CA3AF;display:flex;align-items:center;gap:8px">
+        <span>📱 APP 端</span><span style="flex:1;height:1px;background:#E5E7EB"></span>
       </div>
+      <div id="g-activity" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px"></div>
+      <!-- WEB 端 -->
+      <div style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9CA3AF;display:flex;align-items:center;gap:8px">
+        <span>💻 WEB 端</span><span style="flex:1;height:1px;background:#E5E7EB"></span>
+      </div>
+      <div id="g-web" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px"></div>
     </div>
   </div>
 </div>
@@ -460,21 +453,22 @@ function actCard(t){
     + '</div>'+close;
 }
 document.getElementById('g-data').innerHTML=DATA_TOOLS.map(card).join('');
-// render web demos - horizontal list style cards
+// render web demos - large card style matching APP
 document.getElementById('g-web').innerHTML=WEB_DEMO.map(function(t){
   var clrMap={'ac-mvp01':'#1D6FEB','ac-mvp02':'#4F46E5'};
+  var bgMap={'ac-mvp01':'linear-gradient(135deg,#EFF6FF,#DBEAFE)','ac-mvp02':'linear-gradient(135deg,#EEF2FF,#E0E7FF)'};
   var clr=clrMap[t.cls]||'#6B7280';
-  return '<a href="'+t.h+'" style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06);text-decoration:none;transition:all .2s;border:1px solid #F3F4F6" onmouseover="this.style.boxShadow=\'0 4px 16px rgba(37,99,235,.1)\';this.style.borderColor=\'#DBEAFE\'" onmouseout="this.style.boxShadow=\'0 1px 4px rgba(0,0,0,.06)\';this.style.borderColor=\'#F3F4F6\'">'
-    +'<div style="width:40px;height:40px;border-radius:10px;background:'+clr+'15;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+t.em.split(/\s/)[0]+'</div>'
-    +'<div style="flex:1;min-width:0">'
-    +'<div style="font-size:14px;font-weight:700;color:#1F2937;margin-bottom:2px">'+t.t+'</div>'
-    +'<div style="font-size:12px;color:#6B7280;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+t.d+'</div>'
-    +'</div>'
-    +'<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'
-    +'<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:'+clr+'15;color:'+clr+'">'+t.tag+'</span>'
-    +'<svg viewBox="0 0 24 24" width="16" height="16" style="stroke:'+clr+';fill:none;stroke-width:2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'
-    +'</div>'
-    +'</a>';
+  var bg=bgMap[t.cls]||'#F9FAFB';
+  var em=t.cls==='ac-mvp01'?'⚖️':'🗺️';
+  return '<a href="'+t.h+'" class="acard '+t.cls+'" style="text-decoration:none">'
+    +'<div class="acard-cover" style="background:'+bg+';font-size:44px">'+em+'</div>'
+    +'<div class="acard-body">'
+    +'<span class="acard-tag" style="background:'+clr+'18;color:'+clr+'">'+t.tag+'</span>'
+    +'<div class="acard-title">'+t.t+'</div>'
+    +'<div class="acard-desc">'+t.d+'</div>'
+    +'<div class="acard-footer"><span class="acard-cta">'+t.cta+'</span>'
+    +'<span class="acard-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>'
+    +'</div></div></a>';
 }).join('');
 document.getElementById('g-activity').innerHTML=ACTIVITY.map(actCard).join('');
 
