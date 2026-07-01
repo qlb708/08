@@ -599,6 +599,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .success-detail-row span:first-child{font-size:13px;color:var(--neutral-500)}
 .success-detail-row span:last-child{font-size:13px;font-weight:600;color:var(--neutral-800)}
 .success-actions{display:flex;gap:12px;justify-content:center}
+
+/* === 右侧行程多列对比面板 === */
+.panel-day-tab{padding:4px 12px;border-radius:14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0;transition:all .15s}
+.active-day-tab{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}
+.itin-day-header{font-size:12px;font-weight:800;color:#fff;background:var(--blue);border-radius:8px;padding:3px 12px;display:inline-block;margin-bottom:8px}
+.itin-section{margin-bottom:0}
+.itin-row{display:grid;gap:0;border-bottom:1px solid var(--neutral-100)}
+.itin-cell{padding:10px 12px;font-size:12px;line-height:1.5;vertical-align:top;border-right:1px solid var(--neutral-100);min-width:0}
+.itin-cell:last-child{border-right:none}
+.itin-cell.is-selected{background:#EFF6FF}
+.itin-cell-name{font-weight:700;color:var(--neutral-900);margin-bottom:2px;font-size:12px}
+.itin-cell-time{font-size:10px;color:var(--neutral-400);margin-bottom:2px}
+.itin-cell-tip{font-size:10px;color:var(--neutral-500);line-height:1.4}
+.itin-transit{display:grid;gap:0;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)}
+.itin-transit-cell{padding:4px 12px;font-size:10px;color:var(--neutral-400);font-style:italic;border-right:1px solid var(--neutral-100);min-width:0}
+.itin-transit-cell:last-child{border-right:none}
+.itin-transit-cell.is-selected{background:#EFF6FF}
+.itin-col-head{padding:8px 12px;font-size:11px;font-weight:700;text-align:center;border-right:1px solid var(--neutral-100);background:var(--neutral-50);color:var(--neutral-500);position:sticky;top:0;z-index:2}
+.itin-col-head:last-child{border-right:none}
+.itin-col-head.is-selected{background:#EFF6FF;color:var(--blue)}
+.itin-day-row{display:grid;gap:0;border-bottom:2px solid var(--blue);margin-top:12px;background:#EFF6FF}
+.itin-day-cell{padding:7px 12px;font-size:12px;font-weight:800;color:var(--blue);border-right:1px solid #BFDBFE;min-width:0}
+.itin-day-cell:last-child{border-right:none}
+.itin-empty{color:var(--neutral-300);font-style:italic}
 </style>
 </head>
 <body>
@@ -1177,27 +1201,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="col-resizer" id="resizer-right"></div>
 
       <!-- 右栏：行程详情面板 -->
-      <div class="compare-panel" id="col-right" data-minw="260" data-maxw="620">
-        <div id="panel-empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;color:var(--neutral-400)">
-          <div style="font-size:48px;margin-bottom:16px">👈</div>
-          <div style="font-size:15px;font-weight:600;margin-bottom:6px">选择一个方案</div>
-          <div style="font-size:13px;line-height:1.6">点击左侧方案卡片<br>这里展示完整行程安排</div>
-        </div>
-        <div id="panel-content" style="display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden">
-          <!-- 头部：固定 -->
-          <div style="padding:14px 16px;border-bottom:1px solid var(--neutral-100);background:#fff;flex-shrink:0">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-              <div>
-                <div id="panel-plan-name" style="font-size:14px;font-weight:800;color:var(--neutral-900)"></div>
-                <div id="panel-plan-meta" style="font-size:11px;color:var(--neutral-400);margin-top:2px"></div>
-              </div>
-              <button onclick="goSuccess01()" style="padding:7px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">保存行程 →</button>
+      <div class="compare-panel" id="col-right" data-minw="320" data-maxw="900" style="width:520px">
+        <!-- 头部固定：标题 + Day筛选 + 操作 -->
+        <div style="padding:14px 16px;border-bottom:1px solid var(--neutral-100);background:#fff;flex-shrink:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div>
+              <div style="font-size:13px;font-weight:800;color:var(--neutral-900)">3 个方案行程对比</div>
+              <div style="font-size:11px;color:var(--neutral-400);margin-top:2px">点击方案列高亮 · 点 Day 定位</div>
             </div>
-            <!-- Day 快捷定位 tab -->
-            <div style="display:flex;gap:5px;overflow-x:auto;padding-bottom:2px" id="panel-day-tabs"></div>
+            <button id="panel-save-btn" onclick="goSuccess01()" style="padding:7px 14px;background:var(--neutral-200);color:var(--neutral-500);border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">选择方案后保存 →</button>
           </div>
-          <!-- 行程全量竖向展示，可滚动 -->
-          <div id="panel-all-days" style="flex:1;overflow-y:auto;padding:16px"></div>
+          <!-- Day 快捷定位 tab -->
+          <div style="display:flex;gap:5px;overflow-x:auto;padding-bottom:2px" id="panel-day-tabs">
+            <button onclick="scrollToDay(0)" class="panel-day-tab active-day-tab">Day1</button>
+            <button onclick="scrollToDay(1)" class="panel-day-tab">Day2</button>
+            <button onclick="scrollToDay(2)" class="panel-day-tab">Day3</button>
+            <button onclick="scrollToDay(3)" class="panel-day-tab">Day4</button>
+            <button onclick="scrollToDay(4)" class="panel-day-tab">Day5</button>
+          </div>
+        </div>
+        <!-- 3列并排行程对比，可滚动 -->
+        <div id="panel-all-days" style="flex:1;overflow-y:auto;overflow-x:auto;padding:12px 16px">
+          <!-- JS动态生成 -->
         </div>
       </div>
 
@@ -1807,69 +1832,122 @@ function selectPlan(plan) {
   selectedPlan = plan;
   ['a','b','c'].forEach(function(p){document.getElementById('plan-'+p).classList.remove('selected')});
   document.getElementById('plan-'+plan).classList.add('selected');
+  // 左栏更新
   var info = document.getElementById('selected-plan-info');
   var sBtn = document.getElementById('sidebar-confirm');
   var d = PLAN_DATA[plan];
   if(info) info.innerHTML = '<strong style="color:var(--neutral-900)">'+d.name+'</strong><br><span style="color:var(--neutral-400);font-size:12px">'+d.meta+'</span>';
   if(sBtn){ sBtn.style.background='var(--blue)'; sBtn.style.color='#fff'; sBtn.style.cursor='pointer'; }
-  document.getElementById('panel-empty').style.display='none';
-  var pc = document.getElementById('panel-content');
-  pc.style.display='flex'; pc.style.flexDirection='column';
-  document.getElementById('panel-plan-name').textContent = d.name;
-  document.getElementById('panel-plan-meta').textContent = d.meta;
-  // 生成 Day 快捷定位 tabs
+  // 保存按钮激活
+  var saveBtn = document.getElementById('panel-save-btn');
+  if(saveBtn){ saveBtn.style.background='var(--blue)'; saveBtn.style.color='#fff'; saveBtn.textContent='保存「'+d.name+'」→'; }
+  // 重新渲染右侧多列行程对比（高亮选中列）
+  renderItineraryGrid(plan);
+}
+function renderItineraryGrid(selectedCol) {
+  var plans = ['a','b','c'];
+  var maxDays = Math.max.apply(null, plans.map(function(p){ return PLAN_DATA[p].days.length; }));
+  var allDays = document.getElementById('panel-all-days');
+  // 重置 Day tabs（最多天数）
   var tabsEl = document.getElementById('panel-day-tabs');
   tabsEl.innerHTML = '';
-  d.days.forEach(function(day,i){
+  for(var d=0;d<maxDays;d++){
     var b = document.createElement('button');
-    b.textContent = 'Day'+(i+1);
-    b.id = 'day-qtab-'+i;
-    b.style.cssText='padding:4px 12px;border-radius:14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0';
-    b.onclick=(function(idx){return function(){
-      var el=document.getElementById('day-section-'+idx);
-      if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
-      setActiveDayTab(idx);
-    };})(i);
+    b.className = 'panel-day-tab' + (d===0?' active-day-tab':'');
+    b.textContent = 'Day'+(d+1);
+    b.setAttribute('data-day', d);
+    b.onclick = (function(idx){ return function(){ scrollToDay(idx); }; })(d);
     tabsEl.appendChild(b);
-  });
-  setActiveDayTab(0);
-  // 全量竖向行程
-  var allDays = document.getElementById('panel-all-days');
-  allDays.innerHTML = '';
-  d.days.forEach(function(day,i){
-    var section = document.createElement('div');
-    section.id = 'day-section-'+i;
-    section.style.cssText='margin-bottom:20px';
-    var header = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 0;border-bottom:2px solid var(--blue)"><div style="padding:3px 12px;background:var(--blue);border-radius:10px;color:#fff;font-size:12px;font-weight:800">Day'+(i+1)+'</div><div style="font-size:14px;font-weight:700;color:var(--neutral-800)">'+day.label.replace(/^Day\d+\s*/,'')+'</div></div>';
-    var stepsHtml = day.steps.map(function(s,si){
-      var card = '<div style="background:#fff;border:1px solid var(--neutral-200);border-radius:10px;padding:11px 14px;margin-bottom:4px;box-shadow:0 1px 3px rgba(0,0,0,.04)">'
-        +'<div style="display:flex;align-items:flex-start;gap:10px">'
-        +'<div style="width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">'+(si+1)+'</div>'
-        +'<span style="font-size:18px;flex-shrink:0;line-height:1.2">'+s.icon+'</span>'
-        +'<div style="flex:1;min-width:0">'
-        +'<div style="font-size:13px;font-weight:700;color:var(--neutral-900);line-height:1.4"><span style="color:var(--neutral-500);font-weight:500;margin-right:6px">'+s.time+'</span>'+s.name+'</div>'
-        +(s.tip?'<div style="font-size:12px;color:var(--neutral-500);margin-top:3px;line-height:1.4">'+s.tip+'</div>':'')
-        +'</div></div></div>';
-      var transit = s.transit
-        ? '<div style="display:flex;align-items:center;gap:8px;padding:4px 0 4px 38px;margin-bottom:2px">'
-          +'<div style="width:1px;height:18px;background:var(--neutral-300)"></div>'
-          +'<span style="font-size:11px;color:var(--neutral-400);background:var(--neutral-100);padding:2px 8px;border-radius:10px">'+s.transit+'</span></div>'
-        : '';
-      return card + transit;
-    }).join('');
-    section.innerHTML = header + stepsHtml;
-    allDays.appendChild(section);
-  });
-  // 滚动监听更新当前 Day tab
+  }
+  var gridCols = '1fr 1fr 1fr';
+  // 列头（固定）
+  var headerHTML = '<div style="display:grid;grid-template-columns:'+gridCols+';position:sticky;top:0;z-index:3;border-bottom:2px solid var(--neutral-200)">'
+    + plans.map(function(p){
+        var d = PLAN_DATA[p];
+        var sel = selectedCol !== null && p === selectedCol;
+        return '<div class="itin-col-head'+(sel?' is-selected':'')+(p==='b'?'" style="border-top:2px solid var(--blue)':'')+'">'
+          +(p==='b'?'<span style="background:var(--blue);color:#fff;font-size:9px;padding:1px 6px;border-radius:6px;margin-bottom:2px;display:inline-block">✦ AI推荐</span><br>':'')
+          +'<span style="font-size:10px;color:'+(sel?'var(--blue)':'var(--neutral-400)')+'">'+d.name+'</span></div>';
+      }).join('') + '</div>';
+
+  // 每个 Day 的行
+  var daysHTML = '';
+  for(var dayIdx=0;dayIdx<maxDays;dayIdx++){
+    var dayId = 'itin-day-'+dayIdx;
+    // Day 标题行
+    daysHTML += '<div class="itin-day-row" id="'+dayId+'" style="display:grid;grid-template-columns:'+gridCols+'">';
+    plans.forEach(function(p){
+      var planDays = PLAN_DATA[p].days;
+      var label = planDays[dayIdx] ? planDays[dayIdx].label.replace(/^Day\d+\s*/,'') : '—';
+      var sel = p === selectedCol;
+      daysHTML += '<div class="itin-day-cell'+(sel?' is-selected':'')+'">'
+        +'<span class="itin-day-header">Day'+(dayIdx+1)+'</span>'
+        +'<span style="font-size:11px;font-weight:600;color:'+(sel?'var(--blue)':'var(--neutral-700)')+'"> '+label+'</span></div>';
+    });
+    daysHTML += '</div>';
+
+    // 找最多步数
+    var maxSteps = Math.max.apply(null, plans.map(function(p){
+      var d = PLAN_DATA[p].days[dayIdx];
+      return d ? d.steps.length : 0;
+    }));
+
+    for(var stepIdx=0;stepIdx<maxSteps;stepIdx++){
+      // 地点卡行
+      daysHTML += '<div class="itin-row" style="display:grid;grid-template-columns:'+gridCols+'">';
+      plans.forEach(function(p){
+        var planDay = PLAN_DATA[p].days[dayIdx];
+        var step = planDay ? planDay.steps[stepIdx] : null;
+        var sel = selectedCol !== null && p === selectedCol;
+        if(step){
+          daysHTML += '<div class="itin-cell'+(sel?' is-selected':'')+'">'
+            +'<div class="itin-cell-time">'+step.icon+' '+step.time+'</div>'
+            +'<div class="itin-cell-name">'+step.name+'</div>'
+            +(step.tip?'<div class="itin-cell-tip">'+step.tip+'</div>':'')
+            +'</div>';
+        } else {
+          daysHTML += '<div class="itin-cell'+(sel?' is-selected':'')+'"><span class="itin-empty">—</span></div>';
+        }
+      });
+      daysHTML += '</div>';
+      // 路程行（取选中方案的 transit）
+      var selectedPlanDay = PLAN_DATA[selectedCol].days[dayIdx];
+      var transit = selectedPlanDay && selectedPlanDay.steps[stepIdx] ? selectedPlanDay.steps[stepIdx].transit : null;
+      if(transit && stepIdx < maxSteps-1){
+        daysHTML += '<div class="itin-transit" style="display:grid;grid-template-columns:'+gridCols+'">';
+        plans.forEach(function(p){
+          var sel = selectedCol !== null && p === selectedCol;
+          var t = PLAN_DATA[p].days[dayIdx] && PLAN_DATA[p].days[dayIdx].steps[stepIdx] ? PLAN_DATA[p].days[dayIdx].steps[stepIdx].transit : null;
+          daysHTML += '<div class="itin-transit-cell'+(sel?' is-selected':'')+'">'+(t||'')+'</div>';
+        });
+        daysHTML += '</div>';
+      }
+    }
+  }
+  allDays.innerHTML = headerHTML + daysHTML;
+
+  // 滚动监听 Day tabs
   allDays.onscroll = function(){
     var scrollTop = allDays.scrollTop;
     var active = 0;
-    d.days.forEach(function(_,i){
-      var sec = document.getElementById('day-section-'+i);
-      if(sec && sec.offsetTop <= scrollTop + 60) active = i;
+    for(var i=0;i<maxDays;i++){
+      var sec = document.getElementById('itin-day-'+i);
+      if(sec && sec.offsetTop <= scrollTop+20) active=i;
+    }
+    document.querySelectorAll('.panel-day-tab').forEach(function(tb,i){
+      if(i===active){ tb.classList.add('active-day-tab'); }
+      else { tb.classList.remove('active-day-tab'); }
     });
-    setActiveDayTab(active);
   };
+}
+function scrollToDay(idx) {
+  var allDays = document.getElementById('panel-all-days');
+  var sec = document.getElementById('itin-day-'+idx);
+  if(sec && allDays) allDays.scrollTo({top: sec.offsetTop - 40, behavior:'smooth'});
+  document.querySelectorAll('.panel-day-tab').forEach(function(tb,i){
+    if(i===idx) tb.classList.add('active-day-tab');
+    else tb.classList.remove('active-day-tab');
+  });
 }
 function setActiveDayTab(idx){
   var tabs = document.getElementById('panel-day-tabs').children;
@@ -1894,6 +1972,8 @@ function selectRoute(route) {
 function goSuccess02() { showScreen('mvp02-success'); }
   // 初始化拖拽分隔线
   initResizers();
+  // 初始化行程对比面板（无选中）
+  renderItineraryGrid(null);
 </script>
 </body>
 </html>
