@@ -260,7 +260,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .footer-sep{color:var(--neutral-300);font-size:14px}
 
 /* ===== PROTOTYPE SHELL ===== */
-.proto-shell{display:none;flex-direction:column;min-height:100vh;background:var(--neutral-50)}
+.proto-shell{display:none;flex-direction:column;height:100vh;overflow:hidden;background:var(--neutral-50)}
 .proto-shell.active{display:flex}
 
 /* Proto Nav */
@@ -970,7 +970,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         </div>
 
         <!-- 中栏主体：3列行程对比（可滚动） -->
-        <div id="panel-all-days" style="flex:1;overflow:auto;min-height:0;min-height:120px">
+        <div id="panel-all-days" style="flex:1;overflow:auto;min-height:80px">
           <!-- JS 动态生成 -->
         </div>
 
@@ -978,7 +978,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="row-resizer" id="row-resizer-mid"></div>
 
         <!-- 维度对比表（可选，放在行程下方，高度可拖拽） -->
-        <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:260px;min-height:60px;max-height:70%;overflow-y:auto;flex-shrink:0">
+        <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:240px;min-height:60px;max-height:70%;overflow-y:auto;flex-shrink:0">
           <div id="dim-overview">
             <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">📊 综合对比</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
@@ -1639,7 +1639,6 @@ function initResizers() {
   makeColResizer('resizer-left','col-left','left');
   makeColResizer('resizer-right','col-right','right');
   makeRowResizer('row-resizer-mid','panel-all-days','compare-dims-area');
-}
 }
 // 行程数据
 var PLAN_DATA = {
