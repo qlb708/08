@@ -393,9 +393,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .a-step.active .a-step-text{color:var(--blue);font-weight:600}
 
 /* ===== Compare ===== */
-.compare-screen{padding:28px 40px}
-.compare-layout{display:grid;grid-template-columns:260px 1fr;gap:20px;max-width:1200px;margin:0 auto;align-items:start}
-.compare-sidebar{position:sticky;top:72px;height:fit-content;max-height:calc(100vh - 90px);overflow-y:auto}
+/* === 全屏三栏对比布局 === */
+.compare-screen{height:calc(100vh - 56px);display:flex;flex-direction:column;overflow:hidden}
+.compare-3col{display:grid;grid-template-columns:220px 1fr 380px;height:100%;overflow:hidden}
+.compare-sidebar{border-right:1px solid var(--neutral-200);overflow-y:auto;padding:20px 16px;background:#fff}
+.compare-mid{overflow-y:auto;padding:24px 20px;background:var(--neutral-50)}
+.compare-panel{border-left:1px solid var(--neutral-200);overflow-y:auto;background:#fff;display:flex;flex-direction:column}
 .ai-summary-card{
   background:linear-gradient(135deg,var(--blue),#0EA5E9);
   border-radius:var(--radius-lg);padding:24px;color:#fff;margin-bottom:16px;
@@ -408,7 +411,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 }
 .ai-summary-body{font-size:13px;opacity:.85;line-height:1.65}
 .dim-list{display:flex;flex-direction:column;gap:6px}
-.dim-section-label{font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;padding:0 4px;margin-bottom:2px}
+.dim-check{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;font-size:13px;color:var(--neutral-700);cursor:pointer;transition:background .15s;font-weight:500}
+.dim-check input{accent-color:var(--blue);width:14px;height:14px;cursor:pointer}
+.dim-check:hover{background:var(--neutral-100)}
+.dim-check.active{background:#EFF6FF;color:var(--blue)}
 .dim-item{
   display:flex;align-items:center;justify-content:space-between;
   padding:9px 14px;background:#fff;border-radius:var(--radius);
@@ -879,158 +885,184 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div style="width:80px"></div>
   </nav>
   <div class="compare-screen">
-    <div class="compare-layout">
+    <div class="compare-3col">
+
+      <!-- 左栏：维度筛选 -->
       <div class="compare-sidebar">
-        <div class="ai-summary-card">
+        <div class="ai-summary-card" style="margin-bottom:16px">
           <div class="ai-summary-label">AI 综合推荐</div>
-          <div class="ai-summary-title">推荐选择方案 B，适合你的偏好</div>
-          <div class="ai-summary-tag">⚡ 通勤效率最高</div>
-          <div class="ai-summary-body">方案 B（AI 规划 · 4 日）预算最低，地铁可达比例 92%，景点密度高且排队时间最短，非常适合时间有限、追求效率的用户。</div>
+          <div class="ai-summary-title">推荐方案 B</div>
+          <div class="ai-summary-tag">⚡ 效率最高</div>
+          <div class="ai-summary-body" style="font-size:12px">预算最低，地铁可达 92%，排队时间最短。</div>
         </div>
-        <div class="dim-list">
-          <div class="dim-section-label">对比维度</div>
-          <div class="dim-item active" onclick="setDim(this,'overview')"><span>📊 综合对比</span><span id="dim-cur" style="font-size:11px;color:var(--blue)">当前</span></div>
-          <div class="dim-item" onclick="setDim(this,'budget')"><span>💰 预算分析</span></div>
-          <div class="dim-item" onclick="setDim(this,'route')"><span>🗺️ 路线效率</span></div>
-          <div class="dim-item" onclick="setDim(this,'spots')"><span>🏛️ 景点覆盖</span></div>
-          <div class="dim-item" onclick="setDim(this,'people')"><span>👥 适合人群</span></div>
+        <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:1px;margin-bottom:8px">对比维度（可多选）</div>
+        <div style="display:flex;flex-direction:column;gap:5px" id="dim-checks">
+          <label class="dim-check active" data-dim="overview"><input type="checkbox" checked onchange="toggleDim('overview',this)"> 📊 综合对比</label>
+          <label class="dim-check" data-dim="budget"><input type="checkbox" onchange="toggleDim('budget',this)"> 💰 预算分析</label>
+          <label class="dim-check" data-dim="route"><input type="checkbox" onchange="toggleDim('route',this)"> 🗺️ 路线效率</label>
+          <label class="dim-check" data-dim="spots"><input type="checkbox" onchange="toggleDim('spots',this)"> 🏛️ 景点覆盖</label>
+          <label class="dim-check" data-dim="people"><input type="checkbox" onchange="toggleDim('people',this)"> 👥 适合人群</label>
+          <label class="dim-check" data-dim="hotel"><input type="checkbox" onchange="toggleDim('hotel',this)"> 🏨 住宿建议</label>
+          <label class="dim-check" data-dim="food"><input type="checkbox" onchange="toggleDim('food',this)"> 🍜 餐饮推荐</label>
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--neutral-100)">
+          <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:1px;margin-bottom:8px">已选方案</div>
+          <div id="selected-plan-info" style="font-size:13px;color:var(--neutral-400)">尚未选择</div>
+          <button onclick="goItinerary()" id="sidebar-confirm" style="margin-top:10px;width:100%;padding:10px;border:none;background:var(--neutral-200);color:var(--neutral-500);border-radius:var(--radius);font-size:13px;font-weight:600;cursor:not-allowed">查看行程 →</button>
         </div>
       </div>
-      <div>
-        <div class="compare-meta">
-          <h2>3 个方案对比结果</h2>
-          <span style="font-size:13px;color:var(--neutral-400)">点击方案卡片选择后进入编辑</span>
+
+      <!-- 中栏：方案卡 + 对比表 -->
+      <div class="compare-mid">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <h2 style="font-size:18px;font-weight:800;color:var(--neutral-900)">3 个方案对比</h2>
+          <span style="font-size:12px;color:var(--neutral-400)">点击卡片选择 · 右侧查看行程</span>
         </div>
-        <div class="plan-cards">
-          <div class="plan-card" id="plan-a" onclick="selectPlan('a')">
-            <div class="plan-header">
-              <div class="plan-header-top"><div class="plan-label">方案 A</div><div style="font-size:18px">📕</div></div>
-              <div class="plan-name">北京 5 日经典路线</div>
-              <div class="plan-source">小红书攻略 · @旅行探索官</div>
+
+        <!-- 方案卡（竖向排列，更紧凑） -->
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+          <div class="plan-card" id="plan-a" onclick="selectPlan('a')" style="border-radius:10px">
+            <div style="display:flex;align-items:center;padding:14px 16px;gap:12px">
+              <div style="font-size:24px">📕</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+                  <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px">方案 A · 小红书</div>
+                </div>
+                <div style="font-size:14px;font-weight:700;color:var(--neutral-900)">北京 5 日经典路线</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:16px;font-weight:800;color:var(--neutral-800)">¥3,200</div>
+                <div style="font-size:11px;color:var(--neutral-400)">5 天 · 中等节奏</div>
+              </div>
+              <button class="plan-select-btn" onclick="selectPlan('a')" style="width:auto;padding:6px 14px;border-top:none;border-radius:6px;font-size:12px">选择</button>
             </div>
-            <div class="plan-body">
-              <div class="plan-row"><span class="plan-row-label">总预算</span><span class="plan-row-value">¥ 3,200</span></div>
-              <div class="plan-row"><span class="plan-row-label">天数</span><span class="plan-row-value">5 天</span></div>
-              <div class="plan-row"><span class="plan-row-label">主要景点</span><span class="plan-row-value">长城 故宫 胡同 颐和园 798</span></div>
-              <div class="plan-row"><span class="plan-row-label">节奏</span><span class="plan-row-value">中等</span></div>
-              <div class="plan-row"><span class="plan-row-label">适合</span><span class="plan-row-value">首次 深度游</span></div>
-            </div>
-            <button class="plan-select-btn" onclick="selectPlan('a')">选择此方案</button>
           </div>
-          <div class="plan-card recommended" id="plan-b" onclick="selectPlan('b')">
-            <div class="plan-header">
-              <div class="plan-header-top"><div class="plan-label">方案 B</div><div class="plan-recommend-badge">✦ AI 推荐</div></div>
-              <div class="plan-name">高效北京 4 日方案</div>
-              <div class="plan-source">AI 规划结果</div>
+          <div class="plan-card recommended" id="plan-b" onclick="selectPlan('b')" style="border-radius:10px">
+            <div style="display:flex;align-items:center;padding:14px 16px;gap:12px">
+              <div style="font-size:24px">🤖</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+                  <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px">方案 B · AI 规划</div>
+                  <div class="plan-recommend-badge" style="font-size:10px;padding:1px 7px">✦ AI 推荐</div>
+                </div>
+                <div style="font-size:14px;font-weight:700;color:var(--neutral-900)">高效北京 4 日方案</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:16px;font-weight:800;color:var(--blue)">¥2,500</div>
+                <div style="font-size:11px;color:var(--neutral-400)">4 天 · 高效</div>
+              </div>
+              <button class="plan-select-btn" onclick="selectPlan('b')" style="width:auto;padding:6px 14px;border-top:none;border-radius:6px;font-size:12px">选择</button>
             </div>
-            <div class="plan-body">
-              <div class="plan-row"><span class="plan-row-label">总预算</span><span class="plan-row-value hi">¥ 2,500</span></div>
-              <div class="plan-row"><span class="plan-row-label">天数</span><span class="plan-row-value">4 天</span></div>
-              <div class="plan-row"><span class="plan-row-label">主要景点</span><span class="plan-row-value">故宫 长城 南锣鼓巷 前门</span></div>
-              <div class="plan-row"><span class="plan-row-label">节奏</span><span class="plan-row-value ai">紧凑高效</span></div>
-              <div class="plan-row"><span class="plan-row-label">适合</span><span class="plan-row-value">时间有限 效率旅行</span></div>
-            </div>
-            <button class="plan-select-btn" onclick="selectPlan('b')">选择此方案</button>
           </div>
-          <div class="plan-card" id="plan-c" onclick="selectPlan('c')">
-            <div class="plan-header">
-              <div class="plan-header-top"><div class="plan-label">方案 C</div><div style="font-size:18px">📘</div></div>
-              <div class="plan-name">北京亲子 5 日游</div>
-              <div class="plan-source">知乎路书</div>
+          <div class="plan-card" id="plan-c" onclick="selectPlan('c')" style="border-radius:10px">
+            <div style="display:flex;align-items:center;padding:14px 16px;gap:12px">
+              <div style="font-size:24px">📘</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+                  <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px">方案 C · 知乎路书</div>
+                </div>
+                <div style="font-size:14px;font-weight:700;color:var(--neutral-900)">北京亲子 5 日游</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:16px;font-weight:800;color:var(--neutral-800)">¥4,000</div>
+                <div style="font-size:11px;color:var(--neutral-400)">5 天 · 轻松</div>
+              </div>
+              <button class="plan-select-btn" onclick="selectPlan('c')" style="width:auto;padding:6px 14px;border-top:none;border-radius:6px;font-size:12px">选择</button>
             </div>
-            <div class="plan-body">
-              <div class="plan-row"><span class="plan-row-label">总预算</span><span class="plan-row-value">¥ 4,000</span></div>
-              <div class="plan-row"><span class="plan-row-label">天数</span><span class="plan-row-value">5 天</span></div>
-              <div class="plan-row"><span class="plan-row-label">主要景点</span><span class="plan-row-value">故宫 科技馆 动物园 长城</span></div>
-              <div class="plan-row"><span class="plan-row-label">节奏</span><span class="plan-row-value">轻松慢游</span></div>
-              <div class="plan-row"><span class="plan-row-label">适合</span><span class="plan-row-value">亲子家庭 带老人</span></div>
-            </div>
-            <button class="plan-select-btn" onclick="selectPlan('c')">选择此方案</button>
           </div>
         </div>
-        <!-- 综合对比 -->
-        <div class="compare-table-card" id="dim-overview">
+
+        <!-- 对比表格区（多选维度叠加显示） -->
+        <div id="dim-overview" class="compare-table-card" style="margin-bottom:10px">
           <div class="compare-table-header">📊 综合对比</div>
-          <table class="compare-table">
-            <thead><tr><th style="width:120px">维度</th><th>方案 A · 小红书</th><th>方案 B · AI 推荐</th><th>方案 C · 知乎</th></tr></thead>
-            <tbody>
-              <tr><td>每日预算</td><td>¥ 640 / 天</td><td style="color:var(--blue)">¥ 625 / 天 ✓</td><td>¥ 800 / 天</td></tr>
-              <tr><td>通勤方式</td><td>地铁 + 打车</td><td style="color:var(--blue)">92% 地铁可达 ✓</td><td>打车为主</td></tr>
-              <tr><td>景点数量</td><td>18 个</td><td>12 个</td><td style="color:var(--blue)">16 个（适宜）✓</td></tr>
-              <tr><td>平均排队</td><td>45 分钟</td><td style="color:var(--blue)">20 分钟 ✓</td><td>38 分钟</td></tr>
-              <tr><td>综合评分</td>
-                <td><div class="bar-wrapper"><div class="bar"><div class="bar-fill brand" style="width:72%"></div></div><span class="bar-val">7.2</span></div></td>
-                <td><div class="bar-wrapper"><div class="bar"><div class="bar-fill sky" style="width:91%"></div></div><span class="bar-val" style="color:var(--blue)">9.1</span></div></td>
-                <td><div class="bar-wrapper"><div class="bar"><div class="bar-fill green" style="width:68%"></div></div><span class="bar-val">6.8</span></div></td>
-              </tr>
-            </tbody>
-          </table>
+          <table class="compare-table"><thead><tr><th>维度</th><th>方案 A</th><th>方案 B · AI</th><th>方案 C</th></tr></thead><tbody>
+            <tr><td>每日预算</td><td>¥640/天</td><td style="color:var(--blue)">¥625/天 ✓</td><td>¥800/天</td></tr>
+            <tr><td>通勤方式</td><td>地铁+打车</td><td style="color:var(--blue)">92%地铁 ✓</td><td>打车为主</td></tr>
+            <tr><td>景点数量</td><td>18个</td><td>12个</td><td style="color:var(--blue)">16个 ✓</td></tr>
+            <tr><td>平均排队</td><td>45分钟</td><td style="color:var(--blue)">20分钟 ✓</td><td>38分钟</td></tr>
+            <tr><td>综合评分</td>
+              <td><div class="bar-wrapper"><div class="bar"><div class="bar-fill brand" style="width:72%"></div></div><span class="bar-val">7.2</span></div></td>
+              <td><div class="bar-wrapper"><div class="bar"><div class="bar-fill sky" style="width:91%"></div></div><span class="bar-val" style="color:var(--blue)">9.1</span></div></td>
+              <td><div class="bar-wrapper"><div class="bar"><div class="bar-fill green" style="width:68%"></div></div><span class="bar-val">6.8</span></div></td>
+            </tr>
+          </tbody></table>
         </div>
-        <!-- 预算分析 -->
-        <div class="compare-table-card" id="dim-budget" style="display:none">
+        <div id="dim-budget" class="compare-table-card" style="display:none;margin-bottom:10px">
           <div class="compare-table-header">💰 预算分析</div>
-          <table class="compare-table">
-            <thead><tr><th style="width:140px">预算项目</th><th>方案 A</th><th>方案 B · AI 推荐</th><th>方案 C</th></tr></thead>
-            <tbody>
-              <tr><td>总预算</td><td>¥ 3,200</td><td style="color:var(--blue)">¥ 2,500 ✓ 最低</td><td>¥ 4,000</td></tr>
-              <tr><td>每日预算</td><td>¥ 640 / 天</td><td style="color:var(--blue)">¥ 625 / 天 ✓</td><td>¥ 800 / 天</td></tr>
-              <tr><td>住宿预算</td><td>¥ 350 / 晚</td><td style="color:var(--blue)">¥ 280 / 晚 ✓</td><td>¥ 420 / 晚</td></tr>
-              <tr><td>餐饮预算</td><td>¥ 120 / 天</td><td>¥ 130 / 天</td><td style="color:var(--blue)">¥ 110 / 天 ✓</td></tr>
-              <tr><td>门票合计</td><td>¥ 480</td><td style="color:var(--blue)">¥ 360 ✓</td><td>¥ 520</td></tr>
-              <tr><td>交通预算</td><td>¥ 200</td><td style="color:var(--blue)">¥ 80 ✓ 地铁为主</td><td>¥ 320</td></tr>
-            </tbody>
-          </table>
+          <table class="compare-table"><thead><tr><th>项目</th><th>方案 A</th><th>方案 B · AI</th><th>方案 C</th></tr></thead><tbody>
+            <tr><td>总预算</td><td>¥3,200</td><td style="color:var(--blue)">¥2,500 ✓</td><td>¥4,000</td></tr>
+            <tr><td>住宿/晚</td><td>¥350</td><td style="color:var(--blue)">¥280 ✓</td><td>¥420</td></tr>
+            <tr><td>门票合计</td><td>¥480</td><td style="color:var(--blue)">¥360 ✓</td><td>¥520</td></tr>
+            <tr><td>交通费用</td><td>¥200</td><td style="color:var(--blue)">¥80 ✓ 地铁</td><td>¥320</td></tr>
+          </tbody></table>
         </div>
-        <!-- 路线效率 -->
-        <div class="compare-table-card" id="dim-route" style="display:none">
+        <div id="dim-route" class="compare-table-card" style="display:none;margin-bottom:10px">
           <div class="compare-table-header">🗺️ 路线效率</div>
-          <table class="compare-table">
-            <thead><tr><th style="width:140px">效率指标</th><th>方案 A</th><th>方案 B · AI 推荐</th><th>方案 C</th></tr></thead>
-            <tbody>
-              <tr><td>通勤方式</td><td>地铁 + 打车</td><td style="color:var(--blue)">92% 地铁可达 ✓</td><td>打车为主</td></tr>
-              <tr><td>日均通勤</td><td>约 90 分钟</td><td style="color:var(--blue)">约 45 分钟 ✓</td><td>约 120 分钟</td></tr>
-              <tr><td>平均排队</td><td>45 分钟</td><td style="color:var(--blue)">20 分钟 ✓ 错峰</td><td>38 分钟</td></tr>
-              <tr><td>步行距离</td><td>约 8km / 天</td><td style="color:var(--blue)">约 6km / 天 ✓</td><td>约 5km / 天</td></tr>
-              <tr><td>区域集中度</td><td>分散 · 5 个区</td><td style="color:var(--blue)">集中 · 3 个区 ✓</td><td>分散 · 5 个区</td></tr>
-            </tbody>
-          </table>
+          <table class="compare-table"><thead><tr><th>指标</th><th>方案 A</th><th>方案 B · AI</th><th>方案 C</th></tr></thead><tbody>
+            <tr><td>日均通勤</td><td>90分钟</td><td style="color:var(--blue)">45分钟 ✓</td><td>120分钟</td></tr>
+            <tr><td>平均排队</td><td>45分钟</td><td style="color:var(--blue)">20分钟 ✓</td><td>38分钟</td></tr>
+            <tr><td>区域集中</td><td>5个区</td><td style="color:var(--blue)">3个区 ✓</td><td>5个区</td></tr>
+          </tbody></table>
         </div>
-        <!-- 景点覆盖 -->
-        <div class="compare-table-card" id="dim-spots" style="display:none">
+        <div id="dim-spots" class="compare-table-card" style="display:none;margin-bottom:10px">
           <div class="compare-table-header">🏛️ 景点覆盖</div>
-          <table class="compare-table">
-            <thead><tr><th style="width:140px">景点类型</th><th>方案 A</th><th>方案 B · AI 推荐</th><th>方案 C</th></tr></thead>
-            <tbody>
-              <tr><td>历史文化</td><td>故宫 长城 颐和园</td><td>故宫 长城</td><td style="color:var(--blue)">故宫 长城 博物馆 ✓</td></tr>
-              <tr><td>文艺街区</td><td>胡同 798</td><td style="color:var(--blue)">南锣鼓巷 前门 ✓</td><td>—</td></tr>
-              <tr><td>亲子友好</td><td>一般</td><td>一般</td><td style="color:var(--blue)">科技馆 动物园 ✓</td></tr>
-              <tr><td>景点总数</td><td>18 个（偏多）</td><td style="color:var(--blue)">12 个（精选）✓</td><td>16 个（适宜）</td></tr>
-              <tr><td>必打卡率</td><td>85%</td><td style="color:var(--blue)">100% ✓ 全是精华</td><td>75%</td></tr>
-            </tbody>
-          </table>
+          <table class="compare-table"><thead><tr><th>类型</th><th>方案 A</th><th>方案 B · AI</th><th>方案 C</th></tr></thead><tbody>
+            <tr><td>历史文化</td><td>故宫长城颐和园</td><td>故宫长城</td><td style="color:var(--blue)">故宫长城博物馆 ✓</td></tr>
+            <tr><td>文艺街区</td><td>胡同 798</td><td style="color:var(--blue)">南锣鼓巷前门 ✓</td><td>—</td></tr>
+            <tr><td>必打卡率</td><td>85%</td><td style="color:var(--blue)">100% ✓</td><td>75%</td></tr>
+          </tbody></table>
         </div>
-        <!-- 适合人群 -->
-        <div class="compare-table-card" id="dim-people" style="display:none">
+        <div id="dim-people" class="compare-table-card" style="display:none;margin-bottom:10px">
           <div class="compare-table-header">👥 适合人群</div>
-          <table class="compare-table">
-            <thead><tr><th style="width:140px">人群特征</th><th>方案 A</th><th>方案 B · AI 推荐</th><th>方案 C</th></tr></thead>
-            <tbody>
-              <tr><td>适合出行天数</td><td>5 天假期</td><td style="color:var(--blue)">3–4 天短假 ✓</td><td>5 天假期</td></tr>
-              <tr><td>预算敏感度</td><td>中等</td><td style="color:var(--blue)">预算有限 ✓</td><td>预算充裕</td></tr>
-              <tr><td>旅行经验</td><td>首次来京</td><td>有一定经验</td><td style="color:var(--blue)">亲子家庭 ✓</td></tr>
-              <tr><td>体力要求</td><td>中等偏高</td><td>中等</td><td style="color:var(--blue)">轻松 ✓ 老人孩子</td></tr>
-              <tr><td>节奏偏好</td><td>充实紧凑</td><td style="color:var(--blue)">高效精准 ✓</td><td>悠闲慢游</td></tr>
-            </tbody>
-          </table>
+          <table class="compare-table"><thead><tr><th>特征</th><th>方案 A</th><th>方案 B · AI</th><th>方案 C</th></tr></thead><tbody>
+            <tr><td>出行天数</td><td>5天假期</td><td style="color:var(--blue)">3-4天短假 ✓</td><td>5天假期</td></tr>
+            <tr><td>预算敏感</td><td>中等</td><td style="color:var(--blue)">预算有限 ✓</td><td>预算充裕</td></tr>
+            <tr><td>适合人群</td><td>首次来京</td><td>有经验旅行者</td><td style="color:var(--blue)">亲子家庭 ✓</td></tr>
+          </tbody></table>
         </div>
-        <div class="confirm-action" id="confirm-action" style="opacity:.4">
-          <div class="confirm-action-left">
-            <h4 id="confirm-title">请先选择一个方案</h4>
-            <p id="confirm-sub">点击上方方案卡片完成选择，选中后查看具体行程</p>
-          </div>
-          <button class="btn-confirm" id="confirm-btn" onclick="goItinerary()" style="pointer-events:none">查看具体行程 →</button>
+        <div id="dim-hotel" class="compare-table-card" style="display:none;margin-bottom:10px">
+          <div class="compare-table-header">🏨 住宿建议</div>
+          <table class="compare-table"><thead><tr><th>住宿项</th><th>方案 A</th><th>方案 B · AI</th><th>方案 C</th></tr></thead><tbody>
+            <tr><td>推荐区域</td><td>西城区</td><td style="color:var(--blue)">东城·西城 ✓</td><td>海淀区</td></tr>
+            <tr><td>均价/晚</td><td>¥350</td><td style="color:var(--blue)">¥280 ✓</td><td>¥420</td></tr>
+            <tr><td>推荐类型</td><td>商务酒店</td><td style="color:var(--blue)">精品民宿 ✓</td><td>亲子酒店</td></tr>
+          </tbody></table>
+        </div>
+        <div id="dim-food" class="compare-table-card" style="display:none;margin-bottom:10px">
+          <div class="compare-table-header">🍜 餐饮推荐</div>
+          <table class="compare-table"><thead><tr><th>餐饮项</th><th>方案 A</th><th>方案 B · AI</th><th>方案 C</th></tr></thead><tbody>
+            <tr><td>特色推荐</td><td>炸酱面 涮肉</td><td style="color:var(--blue)">烤鸭 炸酱面 簋街 ✓</td><td>护国寺小吃</td></tr>
+            <tr><td>餐饮预算</td><td>¥120/天</td><td>¥130/天</td><td style="color:var(--blue)">¥110/天 ✓</td></tr>
+            <tr><td>特色体验</td><td>一般</td><td style="color:var(--blue)">老北京风味全覆盖 ✓</td><td>传统小吃为主</td></tr>
+          </tbody></table>
         </div>
       </div>
+
+      <!-- 右栏：行程详情面板 -->
+      <div class="compare-panel">
+        <div id="panel-empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;color:var(--neutral-400)">
+          <div style="font-size:48px;margin-bottom:16px">👈</div>
+          <div style="font-size:15px;font-weight:600;margin-bottom:6px">选择一个方案</div>
+          <div style="font-size:13px;line-height:1.6">点击左侧方案卡片<br>这里将展示完整行程安排</div>
+        </div>
+        <div id="panel-content" style="display:none;flex:1;overflow-y:auto">
+          <!-- 方案信息头 -->
+          <div style="padding:16px 20px;border-bottom:1px solid var(--neutral-100);position:sticky;top:0;background:#fff;z-index:1">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div>
+                <div id="panel-plan-name" style="font-size:15px;font-weight:800;color:var(--neutral-900)">高效北京 4 日方案</div>
+                <div id="panel-plan-meta" style="font-size:12px;color:var(--neutral-400);margin-top:2px">AI 规划 · 4天 · ¥2,500</div>
+              </div>
+              <button onclick="goSuccess01()" style="padding:7px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">保存行程 →</button>
+            </div>
+            <!-- Day tabs -->
+            <div style="display:flex;gap:6px" id="panel-day-tabs"></div>
+          </div>
+          <!-- 行程内容 -->
+          <div id="panel-day-content" style="padding:16px 20px"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1511,13 +1543,86 @@ function selectPlan(plan) {
   document.getElementById('confirm-title').textContent='已选择：'+names[plan];
   document.getElementById('confirm-sub').textContent='确认后将加载到行程编辑器，可继续调整细节';
 }
-function switchDay(n) {
-  [1,2,3,4].forEach(function(i){
-    document.getElementById('day-content-'+i).style.display = i===n ? '' : 'none';
-    var tb = document.getElementById('day-tab-'+i);
-    if(i===n){ tb.style.background='var(--blue)'; tb.style.color='#fff'; tb.style.border='none'; }
-    else{ tb.style.background='#fff'; tb.style.color='var(--neutral-600)'; tb.style.border='1px solid var(--neutral-200)'; }
+// 多选维度 checkbox
+function toggleDim(dim, cb) {
+  var el = document.getElementById('dim-'+dim);
+  if(el) el.style.display = cb.checked ? '' : 'none';
+  var label = cb.closest('label');
+  if(label) label.classList.toggle('active', cb.checked);
+}
+// 选方案 -> 关联行程数据
+var PLAN_DATA = {
+  a: {
+    name: '北京 5 日经典路线', meta: '小红书攻略 · 5天 · ¥3,200',
+    days: [
+      { label:'Day1 故宫+南锣', steps: ['🎯 08:30 故宫博物院 · 预订提前入宫','🍜 12:00 炸酱面 · 老北京风味','🛍️ 14:00 南锣鼓巷 · 文艺漫步','☕ 16:00 胡同和平和和和','🥢 19:00 簪街麻小'] },
+      { label:'Day2 长城', steps: ['🧱 07:30 八达岭长城 · 建议早出发','🦆 13:00 搱道烤鸭 · 必预约','🌃 19:30 后海酒吧街'] },
+      { label:'Day3 颐和园+798', steps: ['🌸 09:00 颐和园 · 上午游客少','🎨 14:30 798艺术区 · 下午光线好','☕ 17:30 MOViE MOViE和平和和和'] },
+      { label:'Day4 前门', steps: ['🏘️ 09:00 国家博物馆 · 免费','🏁 12:00 天安门广场拍照','🍢 13:30 前门大栈店小吃','☕ 15:30 前门大磗茶'] },
+      { label:'Day5 马迭宫与天坛', steps: ['🏛️ 09:00 天坛公园 · 历史点','🥢 12:00 马迭宫与天坛周边小吃','🤯 15:00 天坛+马迭宫公开语课朋友圆'] }
+    ]
+  },
+  b: {
+    name: '高效北京 4 日方案', meta: 'AI 规划 · 4天 · ¥2,500',
+    days: [
+      { label:'Day1 故宫+簪街', steps: ['🎯 08:30 故宫博物院 · 9点前入宫','🍜 12:00 张记炸酱面','🛍️ 13:30 南锣鼓巷','☕ 15:30 胡同和平和和和','🥢 18:30 簪街麻小'] },
+      { label:'Day2 八达岭+后海', steps: ['🧱 07:30 八达岭长城 · 早起避开旅游团','🦆 13:00 搱道烤鸭','🌃 19:30 后海酒吧街'] },
+      { label:'Day3 颐和园+798', steps: ['🌸 09:00 颐和园','🥢 12:30 周边美食','🎨 14:30 798艺术区','☕ 17:30 网红和平和和和'] },
+      { label:'Day4 国博+前门', steps: ['🏘️ 09:00 国家博物馆','🏁 12:00 天安门广场','🍢 13:00 前门大栈店小吃','☕ 15:00 前门大磗茶'] }
+    ]
+  },
+  c: {
+    name: '北京亲子 5 日游', meta: '知乎路书 · 5天 · ¥4,000',
+    days: [
+      { label:'Day1 故宫+天安门', steps: ['🎯 09:00 故宫博物院 · 亲子讲解器','🍢 12:00 前门大栈店小吃','🏁 14:00 天安门广场拍照','🌃 19:00 后海夜景'] },
+      { label:'Day2 长城', steps: ['🧱 08:00 八达岭长城 · 亲子同游','🦆 14:00 烤鸭午餐','🌃 18:00 返程休息'] },
+      { label:'Day3 科技馆+动物园', steps: ['🔭 09:00 中国科技馆','🐼 13:30 北京动物园','🍜 18:00 周边特色餐厅'] },
+      { label:'Day4 颐和园', steps: ['🌸 09:00 颐和园 · 舒适慢游','🍢 12:00 周边小吃','☕ 15:00 下午茶 · 漫步苏堂'] },
+      { label:'Day5 离京日', steps: ['🍢 09:00 护国寺小吃 · 早餐','🏘️ 10:30 天坛公园 · 轻松游览','🏁 14:00 购物䯁成平 · 伴手礼'] }
+    ]
+  }
+};
+var currentPlanDay = 1;
+function selectPlan(plan) {
+  selectedPlan = plan;
+  ['a','b','c'].forEach(function(p){document.getElementById('plan-'+p).classList.remove('selected')});
+  document.getElementById('plan-'+plan).classList.add('selected');
+  // 左栏更新
+  var info = document.getElementById('selected-plan-info');
+  var btn = document.getElementById('sidebar-confirm');
+  var d = PLAN_DATA[plan];
+  if(info) info.innerHTML = '<strong style="color:var(--neutral-900)">' + d.name + '</strong><br><span style="color:var(--neutral-400);font-size:12px">' + d.meta + '</span>';
+  if(btn){ btn.style.background='var(--blue)'; btn.style.color='#fff'; btn.style.cursor='pointer'; }
+  // 右侧面板
+  document.getElementById('panel-empty').style.display='none';
+  document.getElementById('panel-content').style.display='flex';
+  document.getElementById('panel-content').style.flexDirection='column';
+  document.getElementById('panel-plan-name').textContent = d.name;
+  document.getElementById('panel-plan-meta').textContent = d.meta;
+  // 生成 Day tabs
+  var tabsEl = document.getElementById('panel-day-tabs');
+  tabsEl.innerHTML = '';
+  d.days.forEach(function(day, i){
+    var btn2 = document.createElement('button');
+    btn2.textContent = day.label;
+    btn2.style.cssText = 'padding:5px 12px;border-radius:16px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap';
+    if(i===0){ btn2.style.background='var(--blue)'; btn2.style.color='#fff'; btn2.style.border='none'; }
+    btn2.onclick = (function(idx, b){ return function(){ switchPanelDay(idx, b); }; })(i, btn2);
+    tabsEl.appendChild(btn2);
   });
+  switchPanelDay(0, tabsEl.firstChild);
+}
+function switchPanelDay(idx, clickedBtn) {
+  var plan = selectedPlan;
+  var d = PLAN_DATA[plan];
+  // reset tabs
+  var tabs = document.getElementById('panel-day-tabs').children;
+  for(var i=0;i<tabs.length;i++){ tabs[i].style.background='#fff'; tabs[i].style.color='var(--neutral-600)'; tabs[i].style.border='1px solid var(--neutral-200)'; }
+  clickedBtn.style.background='var(--blue)'; clickedBtn.style.color='#fff'; clickedBtn.style.border='none';
+  // 显示内容
+  var content = document.getElementById('panel-day-content');
+  var steps = d.days[idx].steps;
+  content.innerHTML = steps.map(function(s,i){ return '<div style="display:flex;gap:10px;margin-bottom:14px"><div style="width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">'+(i+1)+'</div><div style="font-size:13px;color:var(--neutral-700);line-height:1.5;font-weight:500">'+s+'</div></div>'; }).join('');
 }
 function goItinerary() { if (selectedPlan) showScreen('mvp01-itinerary'); }
 function goSuccess01() { showScreen('mvp01-success'); }
