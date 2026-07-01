@@ -395,10 +395,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 /* ===== Compare ===== */
 /* === 全屏三栏对比布局 === */
 .compare-screen{height:calc(100vh - 56px);display:flex;flex-direction:column;overflow:hidden}
-.compare-3col{display:grid;grid-template-columns:220px 1fr 380px;height:100%;overflow:hidden}
-.compare-sidebar{border-right:1px solid var(--neutral-200);overflow-y:auto;padding:20px 16px;background:#fff}
-.compare-mid{overflow-y:auto;padding:24px 20px;background:var(--neutral-50)}
-.compare-panel{border-left:1px solid var(--neutral-200);overflow-y:auto;background:#fff;display:flex;flex-direction:column}
+.compare-3col{display:flex;height:100%;overflow:hidden}
+.compare-sidebar{flex-shrink:0;width:220px;min-width:140px;max-width:360px;border-right:1px solid var(--neutral-200);overflow-y:auto;padding:20px 16px;background:#fff}
+.compare-mid{flex:1;overflow-y:auto;padding:24px 20px;background:var(--neutral-50);min-width:0}
+.compare-panel{flex-shrink:0;width:380px;min-width:260px;max-width:600px;border-left:1px solid var(--neutral-200);overflow-y:auto;background:#fff;display:flex;flex-direction:column}
+.col-resizer{width:5px;cursor:col-resize;background:transparent;flex-shrink:0;transition:background .15s;z-index:10}
+.col-resizer:hover,.col-resizer.dragging{background:var(--blue)}
 .ai-summary-card{
   background:linear-gradient(135deg,var(--blue),#0EA5E9);
   border-radius:var(--radius-lg);padding:24px;color:#fff;margin-bottom:16px;
@@ -885,10 +887,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div style="width:80px"></div>
   </nav>
   <div class="compare-screen">
-    <div class="compare-3col">
+    <div class="compare-3col" id="compare-3col">
 
       <!-- 左栏：维度筛选 -->
-      <div class="compare-sidebar">
+      <div class="compare-sidebar" id="col-left" data-minw="140" data-maxw="360">
         <div class="ai-summary-card" style="margin-bottom:16px">
           <div class="ai-summary-label">AI 综合推荐</div>
           <div class="ai-summary-title">推荐方案 B</div>
@@ -912,8 +914,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         </div>
       </div>
 
-      <!-- 中栏：方案卡 + 对比表 -->
-      <div class="compare-mid">
+      <!-- 分隔最1 -->
+      <div class="col-resizer" id="resizer-left"></div>
+
+      <!-- 中栏 -->
+      <div class="compare-mid" id="col-mid">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
           <h2 style="font-size:18px;font-weight:800;color:var(--neutral-900)">3 个方案对比</h2>
           <span style="font-size:12px;color:var(--neutral-400)">点击卡片选择 · 右侧查看行程</span>
@@ -1038,28 +1043,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         </div>
       </div>
 
+      <!-- 分隔最2 -->
+      <div class="col-resizer" id="resizer-right"></div>
+
       <!-- 右栏：行程详情面板 -->
-      <div class="compare-panel">
+      <div class="compare-panel" id="col-right" data-minw="260" data-maxw="620">
         <div id="panel-empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;color:var(--neutral-400)">
           <div style="font-size:48px;margin-bottom:16px">👈</div>
           <div style="font-size:15px;font-weight:600;margin-bottom:6px">选择一个方案</div>
-          <div style="font-size:13px;line-height:1.6">点击左侧方案卡片<br>这里将展示完整行程安排</div>
+          <div style="font-size:13px;line-height:1.6">点击左侧方案卡片<br>这里展示完整行程安排</div>
         </div>
-        <div id="panel-content" style="display:none;flex:1;overflow-y:auto">
-          <!-- 方案信息头 -->
-          <div style="padding:16px 20px;border-bottom:1px solid var(--neutral-100);position:sticky;top:0;background:#fff;z-index:1">
+        <div id="panel-content" style="display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden">
+          <!-- 头部：固定 -->
+          <div style="padding:14px 16px;border-bottom:1px solid var(--neutral-100);background:#fff;flex-shrink:0">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
               <div>
-                <div id="panel-plan-name" style="font-size:15px;font-weight:800;color:var(--neutral-900)">高效北京 4 日方案</div>
-                <div id="panel-plan-meta" style="font-size:12px;color:var(--neutral-400);margin-top:2px">AI 规划 · 4天 · ¥2,500</div>
+                <div id="panel-plan-name" style="font-size:14px;font-weight:800;color:var(--neutral-900)"></div>
+                <div id="panel-plan-meta" style="font-size:11px;color:var(--neutral-400);margin-top:2px"></div>
               </div>
-              <button onclick="goSuccess01()" style="padding:7px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">保存行程 →</button>
+              <button onclick="goSuccess01()" style="padding:7px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">保存行程 →</button>
             </div>
-            <!-- Day tabs -->
-            <div style="display:flex;gap:6px" id="panel-day-tabs"></div>
+            <!-- Day 快捷定位 tab -->
+            <div style="display:flex;gap:5px;overflow-x:auto;padding-bottom:2px" id="panel-day-tabs"></div>
           </div>
-          <!-- 行程内容 -->
-          <div id="panel-day-content" style="padding:16px 20px"></div>
+          <!-- 行程全量竖向展示，可滚动 -->
+          <div id="panel-all-days" style="flex:1;overflow-y:auto;padding:16px"></div>
         </div>
       </div>
 
@@ -1531,18 +1539,6 @@ function setDim(el, dim) {
     if(el2) el2.style.display = d===dim ? '' : 'none';
   });
 }
-function selectPlan(plan) {
-  selectedPlan = plan;
-  ['a','b','c'].forEach(function(p){document.getElementById('plan-'+p).classList.remove('selected')});
-  document.getElementById('plan-'+plan).classList.add('selected');
-  var names = {a:'北京 5 日经典路线',b:'高效 4 日方案',c:'北京亲子 5 日游'};
-  var confirm = document.getElementById('confirm-action');
-  var btn = document.getElementById('confirm-btn');
-  confirm.style.opacity='1';
-  btn.style.pointerEvents='auto';
-  document.getElementById('confirm-title').textContent='已选择：'+names[plan];
-  document.getElementById('confirm-sub').textContent='确认后将加载到行程编辑器，可继续调整细节';
-}
 // 多选维度 checkbox
 function toggleDim(dim, cb) {
   var el = document.getElementById('dim-'+dim);
@@ -1550,79 +1546,208 @@ function toggleDim(dim, cb) {
   var label = cb.closest('label');
   if(label) label.classList.toggle('active', cb.checked);
 }
-// 选方案 -> 关联行程数据
+// 全屏三栏拖拽调整宽度
+function initResizers() {
+  function makeResizer(resizerId, targetId, side) {
+    var rz = document.getElementById(resizerId);
+    var target = document.getElementById(targetId);
+    if(!rz || !target) return;
+    var startX, startW;
+    rz.addEventListener('mousedown', function(e){
+      startX = e.clientX; startW = target.offsetWidth;
+      rz.classList.add('dragging');
+      document.body.style.cursor='col-resize'; document.body.style.userSelect='none';
+      function onMove(e2){
+        var dx = e2.clientX - startX;
+        var newW = side==='right' ? startW - dx : startW + dx;
+        var minW = parseInt(target.getAttribute('data-minw')||120);
+        var maxW = parseInt(target.getAttribute('data-maxw')||700);
+        target.style.width = Math.max(minW, Math.min(maxW, newW)) + 'px';
+      }
+      function onUp(){
+        rz.classList.remove('dragging');
+        document.body.style.cursor=''; document.body.style.userSelect='';
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  }
+  makeResizer('resizer-left','col-left','left');
+  makeResizer('resizer-right','col-right','right');
+}
+// 行程数据
 var PLAN_DATA = {
   a: {
     name: '北京 5 日经典路线', meta: '小红书攻略 · 5天 · ¥3,200',
     days: [
-      { label:'Day1 故宫+南锣', steps: ['🎯 08:30 故宫博物院 · 预订提前入宫','🍜 12:00 炸酱面 · 老北京风味','🛍️ 14:00 南锣鼓巷 · 文艺漫步','☕ 16:00 胡同和平和和和','🥢 19:00 簪街麻小'] },
-      { label:'Day2 长城', steps: ['🧱 07:30 八达岭长城 · 建议早出发','🦆 13:00 搱道烤鸭 · 必预约','🌃 19:30 后海酒吧街'] },
-      { label:'Day3 颐和园+798', steps: ['🌸 09:00 颐和园 · 上午游客少','🎨 14:30 798艺术区 · 下午光线好','☕ 17:30 MOViE MOViE和平和和和'] },
-      { label:'Day4 前门', steps: ['🏘️ 09:00 国家博物馆 · 免费','🏁 12:00 天安门广场拍照','🍢 13:30 前门大栈店小吃','☕ 15:30 前门大磗茶'] },
-      { label:'Day5 马迭宫与天坛', steps: ['🏛️ 09:00 天坛公园 · 历史点','🥢 12:00 马迭宫与天坛周边小吃','🤯 15:00 天坛+马迭宫公开语课朋友圆'] }
+      { label:'Day1 故宫+南锣', steps: [
+        {icon:'🎯',time:'08:30',name:'故宫博物院',tip:'9点前入宫排队最短',transit:'步行 10 分钟 →'},
+        {icon:'🍜',time:'12:00',name:'张记炸酱面',tip:'老北京风味，山水山峙',transit:'地铁 2 站 约 12 分钟 →'},
+        {icon:'🛍️',time:'13:30',name:'南锣鼓巷',tip:'下午人少，文创小店最佳',transit:'步行 5 分钟 →'},
+        {icon:'☕',time:'15:30',name:'和平和和和和和',tip:'阳光好，适合拍照'},
+        {icon:'🥢',time:'18:30',name:'簪街麻小',tip:'工作日晚高峰前到达可避开排队'}
+      ]},
+      { label:'Day2 八达岭长城', steps: [
+        {icon:'🧱',time:'07:30',name:'八达岭长城',tip:'早起可避开旅游团，建议游览 3-4h',transit:'打车返回 约 60 分钟 →'},
+        {icon:'🦆',time:'13:00',name:'搱道烤鸭',tip:'必预约，建议提前一天预订',transit:'地铁 2 站 约 10 分钟 →'},
+        {icon:'🌃',time:'19:30',name:'后海酒吧街',tip:'晚长城返回精力充沛，后海夜景适合打卡'}
+      ]},
+      { label:'Day3 颐和园+798', steps: [
+        {icon:'🌸',time:'09:00',name:'颐和园',tip:'上午游客少，下午光线也好',transit:'地铁+公交 约 50 分钟 →'},
+        {icon:'🥢',time:'12:30',name:'颐和园附近美食',tip:'山水山峙驾车区膳',transit:'地铁 约 35 分钟 →'},
+        {icon:'🎨',time:'14:30',name:'798 艺术区',tip:'下午凌晚光线最适合拍照',transit:'打车 约 25 分钟 →'},
+        {icon:'☕',time:'17:30',name:'MOViE MOViE 和平和和和',tip:'798 附近美食坐落'}
+      ]},
+      { label:'Day4 前门大栈', steps: [
+        {icon:'🏘️',time:'09:00',name:'国家博物馆',tip:'免费入场，预订后入内',transit:'地铁 3 站 →'},
+        {icon:'🏁',time:'12:00',name:'天安门广场',tip:'必拍打卡点',transit:'地铁 2 站 →'},
+        {icon:'🍢',time:'13:00',name:'前门大栈店小吃',tip:'地道小吃集中',transit:'步行 15 分钟 →'},
+        {icon:'☕',time:'15:00',name:'前门大磗茶',tip:'老北京层层超级大栈'}
+      ]},
+      { label:'Day5 天坛+马迭宫', steps: [
+        {icon:'🏛️',time:'09:00',name:'天坛公园',tip:'历史点',transit:'步行 10 分钟 →'},
+        {icon:'🥢',time:'12:00',name:'周边小吃',tip:'',transit:'步行 →'},
+        {icon:'🤯',time:'15:00',name:'马迭宫',tip:'公开语课朋友圆'}
+      ]}
     ]
   },
   b: {
     name: '高效北京 4 日方案', meta: 'AI 规划 · 4天 · ¥2,500',
     days: [
-      { label:'Day1 故宫+簪街', steps: ['🎯 08:30 故宫博物院 · 9点前入宫','🍜 12:00 张记炸酱面','🛍️ 13:30 南锣鼓巷','☕ 15:30 胡同和平和和和','🥢 18:30 簪街麻小'] },
-      { label:'Day2 八达岭+后海', steps: ['🧱 07:30 八达岭长城 · 早起避开旅游团','🦆 13:00 搱道烤鸭','🌃 19:30 后海酒吧街'] },
-      { label:'Day3 颐和园+798', steps: ['🌸 09:00 颐和园','🥢 12:30 周边美食','🎨 14:30 798艺术区','☕ 17:30 网红和平和和和'] },
-      { label:'Day4 国博+前门', steps: ['🏘️ 09:00 国家博物馆','🏁 12:00 天安门广场','🍢 13:00 前门大栈店小吃','☕ 15:00 前门大磗茶'] }
+      { label:'Day1 故宫+簪街', steps: [
+        {icon:'🎯',time:'08:30',name:'故宫博物院',tip:'9点前入宫，排队最短',transit:'步行 10 分钟 →'},
+        {icon:'🍜',time:'12:00',name:'张记炸酱面',tip:'工作日午市不排队',transit:'地铁 2 站 约 12 分钟 →'},
+        {icon:'🛍️',time:'13:30',name:'南锣鼓巷',tip:'下午人少，文创小店最佳',transit:'步行 5 分钟 →'},
+        {icon:'☕',time:'15:30',name:'和平和和和',tip:'网红和平和和和',transit:'地铁 3 站 约 18 分钟 →'},
+        {icon:'🥢',time:'18:30',name:'簪街麻小',tip:'早到避开排队高峰'}
+      ]},
+      { label:'Day2 八达岭+后海', steps: [
+        {icon:'🧱',time:'07:30',name:'八达岭长城',tip:'早起避开旅游团队',transit:'打车返回 约 60 分钟 →'},
+        {icon:'🦆',time:'13:00',name:'搱道烤鸭',tip:'局加必吃，预约提前',transit:'地铁 2 站 →'},
+        {icon:'🌃',time:'19:30',name:'后海酒吧街',tip:'夜景好、眼滋居鞙准'}
+      ]},
+      { label:'Day3 颐和园+798', steps: [
+        {icon:'🌸',time:'09:00',name:'颐和园',tip:'上午游客少',transit:'地铁 约 35 分钟 →'},
+        {icon:'🎨',time:'14:30',name:'798 艺术区',tip:'下午光线最好',transit:'打车 约 25 分钟 →'},
+        {icon:'☕',time:'17:30',name:'MOViE MOViE',tip:'798 附近美食坐落'}
+      ]},
+      { label:'Day4 国博+前门', steps: [
+        {icon:'🏘️',time:'09:00',name:'国家博物馆',tip:'免费入场',transit:'地铁 3 站 →'},
+        {icon:'🏁',time:'12:00',name:'天安门广场',tip:'必拍打卡点',transit:'地铁 2 站 →'},
+        {icon:'🍢',time:'13:00',name:'前门小吃',tip:'前门大栈店地道小吃',transit:'步行 →'},
+        {icon:'☕',time:'15:00',name:'前门大磗茶',tip:'老北京层层大栈'}
+      ]}
     ]
   },
   c: {
     name: '北京亲子 5 日游', meta: '知乎路书 · 5天 · ¥4,000',
     days: [
-      { label:'Day1 故宫+天安门', steps: ['🎯 09:00 故宫博物院 · 亲子讲解器','🍢 12:00 前门大栈店小吃','🏁 14:00 天安门广场拍照','🌃 19:00 后海夜景'] },
-      { label:'Day2 长城', steps: ['🧱 08:00 八达岭长城 · 亲子同游','🦆 14:00 烤鸭午餐','🌃 18:00 返程休息'] },
-      { label:'Day3 科技馆+动物园', steps: ['🔭 09:00 中国科技馆','🐼 13:30 北京动物园','🍜 18:00 周边特色餐厅'] },
-      { label:'Day4 颐和园', steps: ['🌸 09:00 颐和园 · 舒适慢游','🍢 12:00 周边小吃','☕ 15:00 下午茶 · 漫步苏堂'] },
-      { label:'Day5 离京日', steps: ['🍢 09:00 护国寺小吃 · 早餐','🏘️ 10:30 天坛公园 · 轻松游览','🏁 14:00 购物䯁成平 · 伴手礼'] }
+      { label:'Day1 故宫+天安门', steps: [
+        {icon:'🎯',time:'09:00',name:'故宫博物院',tip:'亲子讲解器推荐',transit:'步行 5 分钟 →'},
+        {icon:'🍢',time:'12:00',name:'前门大栈店小吃',tip:'',transit:'步行 10 分钟 →'},
+        {icon:'🏁',time:'14:00',name:'天安门广场',tip:'必拍打卡',transit:'出租车 约 25 分钟 →'},
+        {icon:'🌃',time:'19:00',name:'后海夜景',tip:'亲子夙散'}
+      ]},
+      { label:'Day2 八达岭长城', steps: [
+        {icon:'🧱',time:'08:00',name:'八达岭长城',tip:'亲子同游',transit:'大巴返回 约 70 分钟 →'},
+        {icon:'🦆',time:'14:00',name:'烤鸭午餐',tip:'亲子必吃项目'},
+        {icon:'🌃',time:'18:00',name:'返程休息',tip:''}
+      ]},
+      { label:'Day3 科技馆+动物园', steps: [
+        {icon:'🔭',time:'09:00',name:'中国科技馆',tip:'开心玩一上午',transit:'打车 约 30 分钟 →'},
+        {icon:'🐼',time:'13:30',name:'北京动物园',tip:'孩子必喜',transit:'地铁 约 20 分钟 →'},
+        {icon:'🍜',time:'18:00',name:'周边特色餐厅',tip:''}
+      ]},
+      { label:'Day4 颐和园', steps: [
+        {icon:'🌸',time:'09:00',name:'颐和园',tip:'舒适慢游',transit:'步行 20 分钟 →'},
+        {icon:'🍢',time:'12:00',name:'周边小吃',tip:'',transit:'步行 →'},
+        {icon:'☕',time:'15:00',name:'苏堂下午茶',tip:'漫步苏堂'}
+      ]},
+      { label:'Day5 离京日', steps: [
+        {icon:'🍢',time:'09:00',name:'护国寺小吃',tip:'',transit:'步行 →'},
+        {icon:'🏘️',time:'10:30',name:'天坛公园',tip:'轻松游览',transit:'打车 →'},
+        {icon:'🏁',time:'14:00',name:'购物伴手礼',tip:'伴手礼回家'}
+      ]}
     ]
   }
 };
-var currentPlanDay = 1;
 function selectPlan(plan) {
   selectedPlan = plan;
   ['a','b','c'].forEach(function(p){document.getElementById('plan-'+p).classList.remove('selected')});
   document.getElementById('plan-'+plan).classList.add('selected');
-  // 左栏更新
   var info = document.getElementById('selected-plan-info');
-  var btn = document.getElementById('sidebar-confirm');
+  var sBtn = document.getElementById('sidebar-confirm');
   var d = PLAN_DATA[plan];
-  if(info) info.innerHTML = '<strong style="color:var(--neutral-900)">' + d.name + '</strong><br><span style="color:var(--neutral-400);font-size:12px">' + d.meta + '</span>';
-  if(btn){ btn.style.background='var(--blue)'; btn.style.color='#fff'; btn.style.cursor='pointer'; }
-  // 右侧面板
+  if(info) info.innerHTML = '<strong style="color:var(--neutral-900)">'+d.name+'</strong><br><span style="color:var(--neutral-400);font-size:12px">'+d.meta+'</span>';
+  if(sBtn){ sBtn.style.background='var(--blue)'; sBtn.style.color='#fff'; sBtn.style.cursor='pointer'; }
   document.getElementById('panel-empty').style.display='none';
-  document.getElementById('panel-content').style.display='flex';
-  document.getElementById('panel-content').style.flexDirection='column';
+  var pc = document.getElementById('panel-content');
+  pc.style.display='flex'; pc.style.flexDirection='column';
   document.getElementById('panel-plan-name').textContent = d.name;
   document.getElementById('panel-plan-meta').textContent = d.meta;
-  // 生成 Day tabs
+  // 生成 Day 快捷定位 tabs
   var tabsEl = document.getElementById('panel-day-tabs');
   tabsEl.innerHTML = '';
-  d.days.forEach(function(day, i){
-    var btn2 = document.createElement('button');
-    btn2.textContent = day.label;
-    btn2.style.cssText = 'padding:5px 12px;border-radius:16px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap';
-    if(i===0){ btn2.style.background='var(--blue)'; btn2.style.color='#fff'; btn2.style.border='none'; }
-    btn2.onclick = (function(idx, b){ return function(){ switchPanelDay(idx, b); }; })(i, btn2);
-    tabsEl.appendChild(btn2);
+  d.days.forEach(function(day,i){
+    var b = document.createElement('button');
+    b.textContent = 'Day'+(i+1);
+    b.id = 'day-qtab-'+i;
+    b.style.cssText='padding:4px 12px;border-radius:14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0';
+    b.onclick=(function(idx){return function(){
+      var el=document.getElementById('day-section-'+idx);
+      if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+      setActiveDayTab(idx);
+    };})(i);
+    tabsEl.appendChild(b);
   });
-  switchPanelDay(0, tabsEl.firstChild);
+  setActiveDayTab(0);
+  // 全量竖向行程
+  var allDays = document.getElementById('panel-all-days');
+  allDays.innerHTML = '';
+  d.days.forEach(function(day,i){
+    var section = document.createElement('div');
+    section.id = 'day-section-'+i;
+    section.style.cssText='margin-bottom:20px';
+    var header = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:6px 0;border-bottom:2px solid var(--blue)"><div style="width:46px;height:20px;background:var(--blue);border-radius:10px;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center">Day'+(i+1)+'</div><div style="font-size:13px;font-weight:700;color:var(--neutral-700)">'+day.label.replace(/^Day\d+\s*/,'')+'</div></div>';
+    var stepsHtml = day.steps.map(function(s,si){
+      var card = '<div style="background:var(--neutral-50);border:1px solid var(--neutral-200);border-radius:10px;padding:10px 12px;margin-bottom:4px">'
+        +'<div style="display:flex;align-items:flex-start;gap:8px">'
+        +'<div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">'+(si+1)+'</div>'
+        +'<span style="font-size:16px;flex-shrink:0">'+s.icon+'</span>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:12px;font-weight:700;color:var(--neutral-900)">'+s.time+'&nbsp;&nbsp;'+s.name+'</div>'
+        +(s.tip?'<div style="font-size:11px;color:var(--neutral-500);margin-top:2px">'+s.tip+'</div>':'')
+        +'</div></div></div>';
+      var transit = s.transit
+        ? '<div style="display:flex;align-items:center;gap:6px;padding:3px 0 3px 30px">'
+          +'<div style="width:1px;height:16px;background:var(--neutral-300)"></div>'
+          +'<span style="font-size:11px;color:var(--neutral-400)">'+s.transit+'</span></div>'
+        : '';
+      return card + transit;
+    }).join('');
+    section.innerHTML = header + stepsHtml;
+    allDays.appendChild(section);
+  });
+  // 滚动监听更新当前 Day tab
+  allDays.onscroll = function(){
+    var scrollTop = allDays.scrollTop;
+    var active = 0;
+    d.days.forEach(function(_,i){
+      var sec = document.getElementById('day-section-'+i);
+      if(sec && sec.offsetTop <= scrollTop + 60) active = i;
+    });
+    setActiveDayTab(active);
+  };
 }
-function switchPanelDay(idx, clickedBtn) {
-  var plan = selectedPlan;
-  var d = PLAN_DATA[plan];
-  // reset tabs
+function setActiveDayTab(idx){
   var tabs = document.getElementById('panel-day-tabs').children;
-  for(var i=0;i<tabs.length;i++){ tabs[i].style.background='#fff'; tabs[i].style.color='var(--neutral-600)'; tabs[i].style.border='1px solid var(--neutral-200)'; }
-  clickedBtn.style.background='var(--blue)'; clickedBtn.style.color='#fff'; clickedBtn.style.border='none';
-  // 显示内容
-  var content = document.getElementById('panel-day-content');
-  var steps = d.days[idx].steps;
-  content.innerHTML = steps.map(function(s,i){ return '<div style="display:flex;gap:10px;margin-bottom:14px"><div style="width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">'+(i+1)+'</div><div style="font-size:13px;color:var(--neutral-700);line-height:1.5;font-weight:500">'+s+'</div></div>'; }).join('');
+  for(var i=0;i<tabs.length;i++){
+    tabs[i].style.background = i===idx ? 'var(--blue)' : '#fff';
+    tabs[i].style.color = i===idx ? '#fff' : 'var(--neutral-600)';
+    tabs[i].style.border = i===idx ? 'none' : '1px solid var(--neutral-200)';
+  }
 }
 function goItinerary() { if (selectedPlan) showScreen('mvp01-itinerary'); }
 function goSuccess01() { showScreen('mvp01-success'); }
@@ -1637,6 +1762,8 @@ function selectRoute(route) {
   document.getElementById('route-'+route).classList.add('active');
 }
 function goSuccess02() { showScreen('mvp02-success'); }
+  // 初始化拖拽分隔线
+  initResizers();
 </script>
 </body>
 </html>
