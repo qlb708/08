@@ -41,19 +41,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   position:fixed;top:0;left:0;right:0;z-index:200;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 48px;height:64px;
-  background:rgba(10,15,30,.7);
+  background:rgba(255,255,255,.92);
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid var(--neutral-200);
 }
-.nav-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#fff;cursor:pointer;text-decoration:none}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:var(--neutral-900);cursor:pointer;text-decoration:none}
 .nav-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue)}
 .nav-links{display:flex;gap:4px}
 .nav-link{
   padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;
-  color:rgba(255,255,255,.55);cursor:pointer;border:none;background:none;
+  color:var(--neutral-500);cursor:pointer;border:none;background:none;
   transition:all .15s;text-decoration:none;
 }
-.nav-link:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav-link:hover{color:var(--neutral-900);background:var(--neutral-100)}
 .nav-link.cta{
   background:var(--blue);color:#fff;
   box-shadow:0 0 0 1px rgba(29,111,235,.5);
@@ -63,48 +63,48 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 /* --- Hero --- */
 .hero{
   min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:var(--dark);position:relative;overflow:hidden;padding:120px 48px 80px;
+  background:linear-gradient(180deg,#EFF6FF 0%,#ffffff 60%);position:relative;overflow:hidden;padding:120px 48px 80px;
   text-align:center;
 }
 /* Grid texture */
 .hero::before{
   content:'';position:absolute;inset:0;
   background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+    linear-gradient(rgba(29,111,235,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(29,111,235,.05) 1px,transparent 1px);
   background-size:48px 48px;
 }
 /* Blue glow */
 .hero::after{
   content:'';position:absolute;top:20%;left:50%;transform:translateX(-50%);
   width:600px;height:300px;
-  background:radial-gradient(ellipse,rgba(29,111,235,.18) 0%,transparent 70%);
+  background:radial-gradient(ellipse,rgba(29,111,235,.10) 0%,transparent 70%);
   pointer-events:none;
 }
 .hero-inner{position:relative;z-index:1;max-width:800px}
 .hero-badge{
   display:inline-flex;align-items:center;gap:8px;
   padding:6px 16px;border-radius:20px;
-  background:rgba(29,111,235,.12);
-  border:1px solid rgba(29,111,235,.3);
-  font-size:12px;font-weight:600;color:rgba(255,255,255,.7);
+  background:rgba(29,111,235,.08);
+  border:1px solid rgba(29,111,235,.25);
+  font-size:12px;font-weight:600;color:var(--blue);
   letter-spacing:.5px;margin-bottom:32px;
 }
 .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:blink 2s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .hero-title{
   font-size:64px;font-weight:800;line-height:1.1;letter-spacing:-1.5px;
-  color:#fff;margin-bottom:20px;
+  color:#0F172A;margin-bottom:20px;
 }
 .hero-title span{
   background:linear-gradient(135deg,#60A5FA,#1D6FEB);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .hero-sub{
-  font-size:17px;color:rgba(255,255,255,.45);line-height:1.7;
+  font-size:17px;color:var(--neutral-500);line-height:1.7;
   margin-bottom:44px;font-weight:400;
 }
-.hero-sub strong{color:rgba(255,255,255,.7);font-weight:600}
+.hero-sub strong{color:var(--neutral-700);font-weight:600}
 .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:72px}
 .btn-hero-primary{
   display:inline-flex;align-items:center;gap:8px;
@@ -117,36 +117,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .btn-hero-ghost{
   display:inline-flex;align-items:center;gap:8px;
   padding:14px 28px;border-radius:var(--radius);
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  color:rgba(255,255,255,.8);font-size:15px;font-weight:500;
-  cursor:pointer;transition:all .2s;backdrop-filter:blur(8px);
+  background:#fff;
+  border:1.5px solid var(--neutral-300);
+  color:var(--neutral-700);font-size:15px;font-weight:500;
+  cursor:pointer;transition:all .2s;
 }
-.btn-hero-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);transform:translateY(-2px)}
+.btn-hero-ghost:hover{background:var(--neutral-50);border-color:var(--neutral-400);transform:translateY(-2px)}
 
 /* Stats row */
 .hero-stats{
   display:flex;gap:1px;border-radius:var(--radius-lg);overflow:hidden;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.04);
-  backdrop-filter:blur(8px);
+  border:1px solid var(--neutral-200);
+  background:#fff;
+  box-shadow:var(--shadow);
 }
 .stat-item{
   flex:1;padding:20px 32px;text-align:center;
-  border-right:1px solid rgba(255,255,255,.06);
+  border-right:1px solid var(--neutral-100);
 }
 .stat-item:last-child{border-right:none}
 .stat-num{font-size:32px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1}
 .stat-num span{font-size:20px;font-weight:600;color:var(--blue)}
-.stat-label{font-size:12px;color:rgba(255,255,255,.4);margin-top:6px;font-weight:500}
+.stat-label{font-size:12px;color:var(--neutral-400);margin-top:6px;font-weight:500}
 
 /* Scroll hint */
 .scroll-hint{
   position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
   display:flex;flex-direction:column;align-items:center;gap:6px;
-  color:rgba(255,255,255,.25);font-size:11px;letter-spacing:1px;
+  color:var(--neutral-400);font-size:11px;letter-spacing:1px;
 }
-.scroll-arrow{width:20px;height:20px;animation:bounce 2s ease-in-out infinite}
+.scroll-arrow{width:20px;height:20px;animation:bounce 2s ease-in-out infinite;stroke:var(--neutral-300)}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
 /* --- Section wrappers --- */
@@ -749,7 +749,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-left">
-      <div class="footer-eyebrow">Product Portfolio · 2024</div>
+      <div class="footer-eyebrow">Product Portfolio · 2026</div>
       <div class="footer-title">Web AI 产品探索 · 从用户研究到原型验证</div>
     </div>
     <div class="footer-right">
