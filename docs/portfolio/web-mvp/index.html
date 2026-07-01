@@ -394,8 +394,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
 /* ===== Compare ===== */
 .compare-screen{padding:28px 40px}
-.compare-layout{display:grid;grid-template-columns:260px 1fr;gap:20px;max-width:1200px;margin:0 auto}
-.compare-sidebar{position:sticky;top:72px;height:fit-content}
+.compare-layout{display:grid;grid-template-columns:260px 1fr;gap:20px;max-width:1200px;margin:0 auto;align-items:start}
+.compare-sidebar{position:sticky;top:72px;height:fit-content;max-height:calc(100vh - 90px);overflow-y:auto}
 .ai-summary-card{
   background:linear-gradient(135deg,var(--blue),#0EA5E9);
   border-radius:var(--radius-lg);padding:24px;color:#fff;margin-bottom:16px;
@@ -889,11 +889,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         </div>
         <div class="dim-list">
           <div class="dim-section-label">对比维度</div>
-          <div class="dim-item active" onclick="setDim(this)"><span>📊 综合对比</span><span style="font-size:11px;color:var(--blue)">当前</span></div>
-          <div class="dim-item" onclick="setDim(this)"><span>💰 预算分析</span></div>
-          <div class="dim-item" onclick="setDim(this)"><span>🗺️ 路线效率</span></div>
-          <div class="dim-item" onclick="setDim(this)"><span>🏛️ 景点覆盖</span></div>
-          <div class="dim-item" onclick="setDim(this)"><span>👥 适合人群</span></div>
+          <div class="dim-item active" onclick="setDim(this,'overview')"><span>📊 综合对比</span><span id="dim-cur" style="font-size:11px;color:var(--blue)">当前</span></div>
+          <div class="dim-item" onclick="setDim(this,'budget')"><span>💰 预算分析</span></div>
+          <div class="dim-item" onclick="setDim(this,'route')"><span>🗺️ 路线效率</span></div>
+          <div class="dim-item" onclick="setDim(this,'spots')"><span>🏛️ 景点覆盖</span></div>
+          <div class="dim-item" onclick="setDim(this,'people')"><span>👥 适合人群</span></div>
         </div>
       </div>
       <div>
@@ -948,8 +948,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
             <button class="plan-select-btn" onclick="selectPlan('c')">选择此方案</button>
           </div>
         </div>
-        <div class="compare-table-card">
-          <div class="compare-table-header">📊 关键维度横向对比</div>
+        <!-- 综合对比 -->
+        <div class="compare-table-card" id="dim-overview">
+          <div class="compare-table-header">📊 综合对比</div>
           <table class="compare-table">
             <thead><tr><th style="width:120px">维度</th><th>方案 A · 小红书</th><th>方案 B · AI 推荐</th><th>方案 C · 知乎</th></tr></thead>
             <tbody>
@@ -965,19 +966,196 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
             </tbody>
           </table>
         </div>
+        <!-- 预算分析 -->
+        <div class="compare-table-card" id="dim-budget" style="display:none">
+          <div class="compare-table-header">💰 预算分析</div>
+          <table class="compare-table">
+            <thead><tr><th style="width:140px">预算项目</th><th>方案 A</th><th>方案 B · AI 推荐</th><th>方案 C</th></tr></thead>
+            <tbody>
+              <tr><td>总预算</td><td>¥ 3,200</td><td style="color:var(--blue)">¥ 2,500 ✓ 最低</td><td>¥ 4,000</td></tr>
+              <tr><td>每日预算</td><td>¥ 640 / 天</td><td style="color:var(--blue)">¥ 625 / 天 ✓</td><td>¥ 800 / 天</td></tr>
+              <tr><td>住宿预算</td><td>¥ 350 / 晚</td><td style="color:var(--blue)">¥ 280 / 晚 ✓</td><td>¥ 420 / 晚</td></tr>
+              <tr><td>餐饮预算</td><td>¥ 120 / 天</td><td>¥ 130 / 天</td><td style="color:var(--blue)">¥ 110 / 天 ✓</td></tr>
+              <tr><td>门票合计</td><td>¥ 480</td><td style="color:var(--blue)">¥ 360 ✓</td><td>¥ 520</td></tr>
+              <tr><td>交通预算</td><td>¥ 200</td><td style="color:var(--blue)">¥ 80 ✓ 地铁为主</td><td>¥ 320</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- 路线效率 -->
+        <div class="compare-table-card" id="dim-route" style="display:none">
+          <div class="compare-table-header">🗺️ 路线效率</div>
+          <table class="compare-table">
+            <thead><tr><th style="width:140px">效率指标</th><th>方案 A</th><th>方案 B · AI 推荐</th><th>方案 C</th></tr></thead>
+            <tbody>
+              <tr><td>通勤方式</td><td>地铁 + 打车</td><td style="color:var(--blue)">92% 地铁可达 ✓</td><td>打车为主</td></tr>
+              <tr><td>日均通勤</td><td>约 90 分钟</td><td style="color:var(--blue)">约 45 分钟 ✓</td><td>约 120 分钟</td></tr>
+              <tr><td>平均排队</td><td>45 分钟</td><td style="color:var(--blue)">20 分钟 ✓ 错峰</td><td>38 分钟</td></tr>
+              <tr><td>步行距离</td><td>约 8km / 天</td><td style="color:var(--blue)">约 6km / 天 ✓</td><td>约 5km / 天</td></tr>
+              <tr><td>区域集中度</td><td>分散 · 5 个区</td><td style="color:var(--blue)">集中 · 3 个区 ✓</td><td>分散 · 5 个区</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- 景点覆盖 -->
+        <div class="compare-table-card" id="dim-spots" style="display:none">
+          <div class="compare-table-header">🏛️ 景点覆盖</div>
+          <table class="compare-table">
+            <thead><tr><th style="width:140px">景点类型</th><th>方案 A</th><th>方案 B · AI 推荐</th><th>方案 C</th></tr></thead>
+            <tbody>
+              <tr><td>历史文化</td><td>故宫 长城 颐和园</td><td>故宫 长城</td><td style="color:var(--blue)">故宫 长城 博物馆 ✓</td></tr>
+              <tr><td>文艺街区</td><td>胡同 798</td><td style="color:var(--blue)">南锣鼓巷 前门 ✓</td><td>—</td></tr>
+              <tr><td>亲子友好</td><td>一般</td><td>一般</td><td style="color:var(--blue)">科技馆 动物园 ✓</td></tr>
+              <tr><td>景点总数</td><td>18 个（偏多）</td><td style="color:var(--blue)">12 个（精选）✓</td><td>16 个（适宜）</td></tr>
+              <tr><td>必打卡率</td><td>85%</td><td style="color:var(--blue)">100% ✓ 全是精华</td><td>75%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- 适合人群 -->
+        <div class="compare-table-card" id="dim-people" style="display:none">
+          <div class="compare-table-header">👥 适合人群</div>
+          <table class="compare-table">
+            <thead><tr><th style="width:140px">人群特征</th><th>方案 A</th><th>方案 B · AI 推荐</th><th>方案 C</th></tr></thead>
+            <tbody>
+              <tr><td>适合出行天数</td><td>5 天假期</td><td style="color:var(--blue)">3–4 天短假 ✓</td><td>5 天假期</td></tr>
+              <tr><td>预算敏感度</td><td>中等</td><td style="color:var(--blue)">预算有限 ✓</td><td>预算充裕</td></tr>
+              <tr><td>旅行经验</td><td>首次来京</td><td>有一定经验</td><td style="color:var(--blue)">亲子家庭 ✓</td></tr>
+              <tr><td>体力要求</td><td>中等偏高</td><td>中等</td><td style="color:var(--blue)">轻松 ✓ 老人孩子</td></tr>
+              <tr><td>节奏偏好</td><td>充实紧凑</td><td style="color:var(--blue)">高效精准 ✓</td><td>悠闲慢游</td></tr>
+            </tbody>
+          </table>
+        </div>
         <div class="confirm-action" id="confirm-action" style="opacity:.4">
           <div class="confirm-action-left">
             <h4 id="confirm-title">请先选择一个方案</h4>
-            <p id="confirm-sub">点击上方方案卡片完成选择，选中后可进入编辑流程</p>
+            <p id="confirm-sub">点击上方方案卡片完成选择，选中后查看具体行程</p>
           </div>
-          <button class="btn-confirm" id="confirm-btn" onclick="goSuccess01()" style="pointer-events:none">进入行程编辑 →</button>
+          <button class="btn-confirm" id="confirm-btn" onclick="goItinerary()" style="pointer-events:none">查看具体行程 →</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===================== MVP01 · SUCCESS ===================== -->
+<!-- ===================== MVP01 · ITINERARY ===================== -->
+<div id="mvp01-itinerary" class="proto-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showScreen('mvp01-compare')">← 返回对比</button>
+      <div class="proto-title">AI 多方案决策</div><div class="proto-badge">MVP 01</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step done"><div class="step-dot">✓</div> 导入方案</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> AI 分析</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> 方案对比</div>
+      <div class="proto-step active"><div class="step-dot">4</div> 具体行程</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+  <div style="padding:28px 40px;max-width:1000px;margin:0 auto;width:100%">
+    <!-- 已选方案标注 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <div>
+        <div style="font-size:12px;color:var(--neutral-400);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">已选定方案</div>
+        <div style="font-size:24px;font-weight:800;color:var(--neutral-900);letter-spacing:-.3px">高效北京 4 日方案 <span style="font-size:14px;background:#EFF6FF;color:var(--blue);padding:3px 10px;border-radius:20px;font-weight:600;margin-left:8px">✓ AI 推荐</span></div>
+      </div>
+      <button class="btn-confirm" onclick="goSuccess01()">保存行程 →</button>
+    </div>
+
+    <!-- 概要卡片 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
+      <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--neutral-200);padding:16px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:var(--blue)">4</div>
+        <div style="font-size:12px;color:var(--neutral-500);margin-top:2px">天行程</div>
+      </div>
+      <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--neutral-200);padding:16px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:var(--blue)">¥2,500</div>
+        <div style="font-size:12px;color:var(--neutral-500);margin-top:2px">参考预算</div>
+      </div>
+      <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--neutral-200);padding:16px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:var(--blue)">12</div>
+        <div style="font-size:12px;color:var(--neutral-500);margin-top:2px">主要景点</div>
+      </div>
+      <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--neutral-200);padding:16px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:var(--blue)">92%</div>
+        <div style="font-size:12px;color:var(--neutral-500);margin-top:2px">地铁可达</div>
+      </div>
+    </div>
+
+    <!-- Day Tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <button onclick="switchDay(1)" id="day-tab-1" style="padding:8px 20px;border-radius:20px;border:none;background:var(--blue);color:#fff;font-size:13px;font-weight:700;cursor:pointer">Day 1</button>
+      <button onclick="switchDay(2)" id="day-tab-2" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 2</button>
+      <button onclick="switchDay(3)" id="day-tab-3" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 3</button>
+      <button onclick="switchDay(4)" id="day-tab-4" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 4</button>
+    </div>
+
+    <!-- Day 1 -->
+    <div id="day-content-1" class="route-detail-card">
+      <div class="route-detail-header">
+        <div><div class="route-detail-title">🏥 Day 1 · 故宫 + 胡同 + 简街</div><div style="font-size:13px;color:var(--neutral-500);margin-top:4px">清晨入宫避开排队，下午漫步文化街区</div></div>
+      </div>
+      <div class="route-steps">
+        <div class="route-step"><div class="route-step-num">1</div><div class="route-step-body"><div class="route-step-name">🎯 故宫博物院</div><div class="route-step-meta">⏰ 08:30 入宫 · 预计 3–4h · 东城区</div><div class="route-step-reason">❖ 工作日早上排队最短，9 点前入宫效率最高，建议提前预约门票</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">步行 10 分钟</div></div>
+        <div class="route-step"><div class="route-step-num">2</div><div class="route-step-body"><div class="route-step-name">🍜 张记炸酱面</div><div class="route-step-meta">⏰ 12:00 午餐 · 老北京风味 · 西城区</div><div class="route-step-reason">❖ 工作日午市不排队，与故宫步行可达，地道地道风味</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 2 站</div></div>
+        <div class="route-step"><div class="route-step-num">3</div><div class="route-step-body"><div class="route-step-name">🛍️ 南锣鼓巷</div><div class="route-step-meta">⏰ 13:30 · 文艺漫步 · 东城区</div><div class="route-step-reason">❖ 午后人流较少，文创小店和胡同拍照最佳时段</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">步行 5 分钟</div></div>
+        <div class="route-step"><div class="route-step-num">4</div><div class="route-step-body"><div class="route-step-name">☕ 胡同和平和和和</div><div class="route-step-meta">⏰ 15:30 下午茶 · 东城区</div><div class="route-step-reason">❖ 南锣鼓巷附近，阳光适合拍照，小息补能</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 3 站</div></div>
+        <div class="route-step"><div class="route-step-num">5</div><div class="route-step-body"><div class="route-step-name">🥢 簪街麻小</div><div class="route-step-meta">⏰ 18:30 晚餐夜宵 · 东城区</div><div class="route-step-reason">❖ 工作日晚间高峰前到达可避开排队，建议 18:30–19:00 入场</div></div></div>
+      </div>
+      <div class="route-actions">
+        <button class="btn-outline">✏️ 编辑天行</button>
+        <button class="btn-confirm" onclick="goSuccess01()">保存并继续编辑 →</button>
+      </div>
+    </div>
+
+    <!-- Day 2 -->
+    <div id="day-content-2" class="route-detail-card" style="display:none">
+      <div class="route-detail-header"><div><div class="route-detail-title">🧱 Day 2 · 八达岭长城 + 晃道烤鸭</div><div style="font-size:13px;color:var(--neutral-500);margin-top:4px">长城尽量早去，搀登长城很耗体，下午早返休息</div></div></div>
+      <div class="route-steps">
+        <div class="route-step"><div class="route-step-num">1</div><div class="route-step-body"><div class="route-step-name">🧱 八达岭长城</div><div class="route-step-meta">⏰ 07:30 出发 · 建议游览 3–4h · 延庆区</div><div class="route-step-reason">❖ 早起出发可避开旅游团队了点时段，返程打车约 1h</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">打车返市区 约 60 分钟</div></div>
+        <div class="route-step"><div class="route-step-num">2</div><div class="route-step-body"><div class="route-step-name">🦆 搱道烤鸭</div><div class="route-step-meta">⏰ 13:00 吴道店 · 必吃的北京烤鸭 · 东城区</div><div class="route-step-reason">❖ 老店必订，建议提前一天在线预约，建议选客单</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 2 站</div></div>
+        <div class="route-step"><div class="route-step-num">3</div><div class="route-step-body"><div class="route-step-name">🌃 后海酒吧街</div><div class="route-step-meta">⏰ 19:30 夜晚 · 眼滀居饿準 · 西城区</div><div class="route-step-reason">❖ 晚长城返回剩余精力充沛，后海夜景美适合打卡</div></div></div>
+      </div>
+      <div class="route-actions"><button class="btn-outline">✏️ 编辑天行</button><button class="btn-confirm" onclick="goSuccess01()">保存并继续编辑 →</button></div>
+    </div>
+
+    <!-- Day 3 -->
+    <div id="day-content-3" class="route-detail-card" style="display:none">
+      <div class="route-detail-header"><div><div class="route-detail-title">🇺🇳 Day 3 · 颠和园 + 798 艺术区</div><div style="font-size:13px;color:var(--neutral-500);margin-top:4px">上午自然港 + 下午文艺打卡</div></div></div>
+      <div class="route-steps">
+        <div class="route-step"><div class="route-step-num">1</div><div class="route-step-body"><div class="route-step-name">🌸 颠和园</div><div class="route-step-meta">⏰ 09:00 入园 · 游览 2–3h · 海淡区</div><div class="route-step-reason">❖ 上午游客少，下午书法光线也更好，适合拍照</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 + 公交 约 50 分钟</div></div>
+        <div class="route-step"><div class="route-step-num">2</div><div class="route-step-body"><div class="route-step-name">🥢 大跃进队集</div><div class="route-step-meta">⏰ 12:30 午餐 · 山水山忯尽驱车区墅</div><div class="route-step-reason">❖ 颠和园付近美食处，性价比高</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 约 35 分钟</div></div>
+        <div class="route-step"><div class="route-step-num">3</div><div class="route-step-body"><div class="route-step-name">🎨 798 艺术区</div><div class="route-step-meta">⏰ 14:30 · 文化打卡 · 朝阳区</div><div class="route-step-reason">❖ 下午凌晚光线最适合拍照，工作日游客少</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">打车 约 25 分钟</div></div>
+        <div class="route-step"><div class="route-step-num">4</div><div class="route-step-body"><div class="route-step-name">☕ MOViE MOViE 和平和和和</div><div class="route-step-meta">⏰ 17:30 下午茶 · 朝阳区</div><div class="route-step-reason">❖ 798 附近网红和平和和和，拍照出片率高</div></div></div>
+      </div>
+      <div class="route-actions"><button class="btn-outline">✏️ 编辑天行</button><button class="btn-confirm" onclick="goSuccess01()">保存并继续编辑 →</button></div>
+    </div>
+
+    <!-- Day 4 -->
+    <div id="day-content-4" class="route-detail-card" style="display:none">
+      <div class="route-detail-header"><div><div class="route-detail-title">🏛️ Day 4 · 国家博物馆 + 前门大栈</div><div style="font-size:13px;color:var(--neutral-500);margin-top:4px">最后一天鼓足气，文化层扁内浶果</div></div></div>
+      <div class="route-steps">
+        <div class="route-step"><div class="route-step-num">1</div><div class="route-step-body"><div class="route-step-name">🏛️ 国家博物馆</div><div class="route-step-meta">⏰ 09:00 · 游览 2–3h · 东城区</div><div class="route-step-reason">❖ 免费入場，预订后入内。展品级别高，必看不过来的厤</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 3 站</div></div>
+        <div class="route-step"><div class="route-step-num">2</div><div class="route-step-body"><div class="route-step-name">🏁 天安门广场 · 觀景</div><div class="route-step-meta">⏰ 12:00 · 依馓拍照 · 东城区</div><div class="route-step-reason">❖ 巬子有点糖小片，广场是必拍打卡</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 2 站</div></div>
+        <div class="route-step"><div class="route-step-num">3</div><div class="route-step-body"><div class="route-step-name">🍢 前门大栈店</div><div class="route-step-meta">⏰ 13:00 午餐 · 前门大栈店 · 西城区</div><div class="route-step-reason">❖ 地道小吃集中，与离京前最后一頓实刻</div></div></div>
+        <div class="route-step-connector"><div class="line"></div><div class="transit">步行 15 分钟</div></div>
+        <div class="route-step"><div class="route-step-num">4</div><div class="route-step-body"><div class="route-step-name">☕ 前门大磗茶</div><div class="route-step-meta">⏰ 15:00 下午茶 · 中国茶文化</div><div class="route-step-reason">❖ 老北京层层超级大栈，临走前最后一次沉浸</div></div></div>
+      </div>
+      <div class="route-actions"><button class="btn-outline">✏️ 编辑天行</button><button class="btn-confirm" onclick="goSuccess01()">保存并继续编辑 →</button></div>
+    </div>
+  </div>
+</div>
+
+
 <div id="mvp01-success" class="proto-shell">
   <nav class="proto-nav">
     <div class="proto-nav-left">
@@ -1308,9 +1486,18 @@ function startAnalyzing() {
   }, 1200);
   setTimeout(function(){ showScreen('mvp01-compare'); }, 2600);
 }
-function setDim(el) {
+function setDim(el, dim) {
   document.querySelectorAll('.dim-item').forEach(function(d){d.classList.remove('active')});
   el.classList.add('active');
+  var cur = document.getElementById('dim-cur');
+  if(cur) cur.parentNode.removeChild(cur);
+  var tag = document.createElement('span');
+  tag.id='dim-cur'; tag.style.cssText='font-size:11px;color:var(--blue)';
+  tag.textContent='当前'; el.appendChild(tag);
+  ['overview','budget','route','spots','people'].forEach(function(d){
+    var el2=document.getElementById('dim-'+d);
+    if(el2) el2.style.display = d===dim ? '' : 'none';
+  });
 }
 function selectPlan(plan) {
   selectedPlan = plan;
@@ -1324,7 +1511,16 @@ function selectPlan(plan) {
   document.getElementById('confirm-title').textContent='已选择：'+names[plan];
   document.getElementById('confirm-sub').textContent='确认后将加载到行程编辑器，可继续调整细节';
 }
-function goSuccess01() { if (selectedPlan) showScreen('mvp01-success'); }
+function switchDay(n) {
+  [1,2,3,4].forEach(function(i){
+    document.getElementById('day-content-'+i).style.display = i===n ? '' : 'none';
+    var tb = document.getElementById('day-tab-'+i);
+    if(i===n){ tb.style.background='var(--blue)'; tb.style.color='#fff'; tb.style.border='none'; }
+    else{ tb.style.background='#fff'; tb.style.color='var(--neutral-600)'; tb.style.border='1px solid var(--neutral-200)'; }
+  });
+}
+function goItinerary() { if (selectedPlan) showScreen('mvp01-itinerary'); }
+function goSuccess01() { showScreen('mvp01-success'); }
 
 // ===== MVP02 =====
 function startPlaceAnalysis() {
