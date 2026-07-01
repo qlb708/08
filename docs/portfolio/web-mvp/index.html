@@ -396,11 +396,33 @@
   .note-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 4px; font-size: 11px; color: #1558C9; font-weight: 500; }
   
   /* ===== Footer portfolio bar ===== */
-  .portfolio-bar { background: var(--neutral-900); color: white; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
-  .portfolio-bar-left { opacity: .6; }
-  .portfolio-bar-right { display: flex; gap: 20px; }
-  .portfolio-bar-right a { color: rgba(255,255,255,.6); text-decoration: none; font-size: 12px; }
-  .portfolio-bar-right a:hover { color: white; }
+  .portfolio-bar {
+    background: white;
+    border-top: 1px solid var(--neutral-200);
+    padding: 32px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .portfolio-bar-left {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .portfolio-bar-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--neutral-400);
+  }
+  .portfolio-bar-title {
+    font-size: 15px; font-weight: 700; color: var(--neutral-800);
+  }
+  .portfolio-bar-right { display: flex; align-items: center; gap: 8px; }
+  .bar-phase {
+    display: flex; align-items: center; gap: 4px;
+    padding: 5px 12px; border-radius: 20px;
+    background: var(--neutral-100);
+    font-size: 12px; font-weight: 500; color: var(--neutral-600);
+  }
+  .bar-phase.active {
+    background: #EFF6FF; color: #1D6FEB; font-weight: 600;
+  }
+  .bar-arrow { color: var(--neutral-300); font-size: 14px; }
 </style>
 </head>
 <body>
@@ -505,9 +527,18 @@
   </section>
 
   <div class="portfolio-bar">
-    <div class="portfolio-bar-left">旅行规划 Web AI 功能探索 · Product Portfolio 2024</div>
+    <div class="portfolio-bar-left">
+      <div class="portfolio-bar-label">Product Portfolio · 2024</div>
+      <div class="portfolio-bar-title">Web AI 产品探索 · 从用户研究到原型验证</div>
+    </div>
     <div class="portfolio-bar-right">
-      <span style="color:rgba(255,255,255,.5)">用户研究 → 需求分析 → 产品设计 → 原型验证</span>
+      <div class="bar-phase">👥 用户研究</div>
+      <div class="bar-arrow">›</div>
+      <div class="bar-phase">🔍 需求分析</div>
+      <div class="bar-arrow">›</div>
+      <div class="bar-phase">✏️ 产品设计</div>
+      <div class="bar-arrow">›</div>
+      <div class="bar-phase active">▶ 原型验证</div>
     </div>
   </div>
 </div>
