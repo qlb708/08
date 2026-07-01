@@ -401,6 +401,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .compare-panel{flex-shrink:0;background:#fff;display:flex;flex-direction:column}
 .col-resizer{width:5px;cursor:col-resize;background:transparent;flex-shrink:0;transition:background .15s;z-index:10}
 .col-resizer:hover,.col-resizer.dragging{background:var(--blue)}
+.row-resizer{height:5px;cursor:row-resize;background:transparent;flex-shrink:0;transition:background .15s;z-index:10;width:100%}
+.row-resizer:hover,.row-resizer.dragging{background:var(--blue)}
 .ai-summary-card{
   background:#EFF6FF;border:1px solid #BFDBFE;
   border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;
@@ -949,23 +951,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <!-- 中栏：行程3列对比（主体，占最大宽度） -->
       <div class="compare-mid" id="col-mid" style="padding:0;display:flex;flex-direction:column;overflow:hidden">
 
-        <!-- 中栏固定头部：Day tab + 标题 -->
-        <div style="flex-shrink:0;background:#fff;border-bottom:1px solid var(--neutral-200);padding:14px 20px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <div style="font-size:14px;font-weight:800;color:var(--neutral-900)">3 个方案行程对比</div>
-            <div style="font-size:11px;color:var(--neutral-400)">点击列高亮 · 点 Day 切换</div>
+        <!-- 中栏固定头部：方案 tab + Day tab + 标题 -->
+        <div style="flex-shrink:0;background:#fff;border-bottom:1px solid var(--neutral-200);padding:10px 20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="font-size:13px;font-weight:800;color:var(--neutral-900)">3 个方案行程对比</div>
+            <div style="font-size:11px;color:var(--neutral-400)">点击方案高亮列 · 点 Day 切换</div>
           </div>
-          <!-- Day tab 行（放在最上方） -->
-          <div id="panel-day-tabs" style="display:flex;gap:6px;overflow-x:auto"></div>
+          <!-- 方案 tab + Day tab 二合一行 -->
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-right:2px">方案</span>
+            <button id="plan-tab-a" onclick="selectPlanTab('a')" style="padding:4px 12px;border-radius:14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">A 小红书</button>
+            <button id="plan-tab-b" onclick="selectPlanTab('b')" style="padding:4px 12px;border-radius:14px;border:none;background:var(--blue);color:#fff;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s">B AI推荐 ✦</button>
+            <button id="plan-tab-c" onclick="selectPlanTab('c')" style="padding:4px 12px;border-radius:14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">C 知乎</button>
+            <div style="width:1px;height:16px;background:var(--neutral-200);margin:0 4px"></div>
+            <span style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-right:2px">天</span>
+            <div id="panel-day-tabs" style="display:flex;gap:6px"></div>
+          </div>
         </div>
 
         <!-- 中栏主体：3列行程对比（可滚动） -->
-        <div id="panel-all-days" style="flex:1;overflow:auto;min-height:0">
+        <div id="panel-all-days" style="flex:1;overflow:auto;min-height:0;min-height:120px">
           <!-- JS 动态生成 -->
         </div>
 
-        <!-- 维度对比表（可选，放在行程下方） -->
-        <div id="compare-dims-area" style="border-top:2px solid var(--neutral-200);max-height:280px;overflow-y:auto;flex-shrink:0">
+        <!-- 水平拖拽分隔线 -->
+        <div class="row-resizer" id="row-resizer-mid"></div>
+
+        <!-- 维度对比表（可选，放在行程下方，高度可拖拽） -->
+        <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:260px;min-height:60px;max-height:70%;overflow-y:auto;flex-shrink:0">
           <div id="dim-overview">
             <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">📊 综合对比</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
@@ -1565,9 +1578,9 @@ function toggleDim(dim, cb) {
   var label = cb.closest('label');
   if(label) label.classList.toggle('active', cb.checked);
 }
-// 全屏三栏拖拽调整宽度
+// 全屏三栏拖拽调整宽度 + 上下拖拽
 function initResizers() {
-  function makeResizer(resizerId, targetId, side) {
+  function makeColResizer(resizerId, targetId, side) {
     var rz = document.getElementById(resizerId);
     var target = document.getElementById(targetId);
     if(!rz || !target) return;
@@ -1593,8 +1606,40 @@ function initResizers() {
       document.addEventListener('mouseup', onUp);
     });
   }
-  makeResizer('resizer-left','col-left','left');
-  makeResizer('resizer-right','col-right','right');
+  function makeRowResizer(resizerId, topId, bottomId) {
+    var rz = document.getElementById(resizerId);
+    var top = document.getElementById(topId);
+    var bot = document.getElementById(bottomId);
+    if(!rz || !top || !bot) return;
+    var startY, startTopH, startBotH;
+    rz.addEventListener('mousedown', function(e){
+      startY = e.clientY;
+      startTopH = top.offsetHeight;
+      startBotH = bot.offsetHeight;
+      rz.classList.add('dragging');
+      document.body.style.cursor='row-resize'; document.body.style.userSelect='none';
+      function onMove(e2){
+        var dy = e2.clientY - startY;
+        var newTopH = Math.max(80, startTopH + dy);
+        var newBotH = Math.max(60, startBotH - dy);
+        top.style.flex = 'none';
+        top.style.height = newTopH + 'px';
+        bot.style.height = newBotH + 'px';
+      }
+      function onUp(){
+        rz.classList.remove('dragging');
+        document.body.style.cursor=''; document.body.style.userSelect='';
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  }
+  makeColResizer('resizer-left','col-left','left');
+  makeColResizer('resizer-right','col-right','right');
+  makeRowResizer('row-resizer-mid','panel-all-days','compare-dims-area');
+}
 }
 // 行程数据
 var PLAN_DATA = {
@@ -1692,6 +1737,20 @@ var PLAN_DATA = {
     ]
   }
 };
+function selectPlanTab(plan) {
+  // 高亮方案 tab
+  ['a','b','c'].forEach(function(p){
+    var tb = document.getElementById('plan-tab-'+p);
+    if(!tb) return;
+    if(p===plan){
+      tb.style.background='var(--blue)'; tb.style.color='#fff'; tb.style.border='none'; tb.style.fontWeight='700';
+    } else {
+      tb.style.background='#fff'; tb.style.color='var(--neutral-600)'; tb.style.border='1px solid var(--neutral-200)'; tb.style.fontWeight='600';
+    }
+  });
+  // 同步选中方案（高亮中间列 + 右栏方案卡）
+  selectPlan(plan);
+}
 function selectPlan(plan) {
   selectedPlan = plan;
   ['a','b','c'].forEach(function(p){document.getElementById('plan-'+p).classList.remove('selected')});
@@ -1707,6 +1766,13 @@ function selectPlan(plan) {
   if(saveBtn){ saveBtn.style.background='var(--blue)'; saveBtn.style.color='#fff'; saveBtn.textContent='保存「'+d.name+'」→'; }
   // 重新渲染右侧多列行程对比（高亮选中列）
   window._currentSelectedPlan = plan;
+  // 同步顶部方案 tab 高亮
+  ['a','b','c'].forEach(function(p){
+    var tb = document.getElementById('plan-tab-'+p);
+    if(!tb) return;
+    if(p===plan){ tb.style.background='var(--blue)'; tb.style.color='#fff'; tb.style.border='none'; tb.style.fontWeight='700'; }
+    else { tb.style.background='#fff'; tb.style.color='var(--neutral-600)'; tb.style.border='1px solid var(--neutral-200)'; tb.style.fontWeight='600'; }
+  });
   renderItineraryGrid(plan);
 }
 function renderItineraryGrid(selectedCol) {
