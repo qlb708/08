@@ -635,11 +635,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .itin-empty{color:var(--neutral-300);font-style:italic}
 
 /* ===== Preference Page ===== */
-.pref-opt{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .2s;color:#fff;text-align:center}
-.pref-opt:hover{background:rgba(29,111,235,0.25);border-color:#1D6FEB;transform:translateY(-2px)}
-.pref-opt.selected{background:rgba(29,111,235,0.35);border-color:#1D6FEB;box-shadow:0 0 0 3px rgba(29,111,235,0.3)}
-.pref-rank-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 14px;transition:all .3s}
-.pref-rank-item.top{background:rgba(29,111,235,0.2);border-color:rgba(29,111,235,0.5)}
+.pref-opt{background:#fff;border:1.5px solid var(--neutral-200);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .2s;color:var(--neutral-700);text-align:center}
+.pref-opt:hover{background:#F0F7FF;border-color:#1D6FEB;transform:translateY(-2px);box-shadow:0 4px 12px rgba(29,111,235,0.1)}
+.pref-opt.selected{background:#EFF6FF;border-color:#1D6FEB;box-shadow:0 0 0 3px rgba(29,111,235,0.15)}
+.pref-rank-item{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--neutral-200);border-radius:12px;padding:10px 14px;transition:all .3s}
+.pref-rank-item.top{background:#EFF6FF;border-color:#1D6FEB}
 </style>
 </head>
 <body>
@@ -1040,50 +1040,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     </div>
     <div class="proto-nav-right"></div>
   </nav>
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#0A0F1E 0%,#1a1f3a 60%,#0d1117 100%);padding:40px 20px;min-height:0">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--neutral-50);padding:40px 20px;min-height:0;overflow-y:auto">
     <!-- AI 分析完成提示 -->
-    <div style="text-align:center;margin-bottom:36px">
-      <div style="font-size:28px;margin-bottom:10px">✦</div>
-      <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px" id="pref-title">5 个方案分析完毕</div>
-      <div style="font-size:14px;color:#94A3B8">我发现它们各有侧重，有一件事想先确认一下</div>
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="width:48px;height:48px;background:linear-gradient(135deg,#1D6FEB,#4F46E5);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px">✦</div>
+      <div style="font-size:20px;font-weight:800;color:var(--neutral-900);margin-bottom:6px" id="pref-title">5 个方案分析完毕</div>
+      <div style="font-size:13px;color:var(--neutral-400)">它们各有侧重，有一件事想先确认一下</div>
     </div>
 
-    <!-- 核心问题 -->
-    <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:28px 32px;max-width:480px;width:100%;backdrop-filter:blur(10px)">
-      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:24px;text-align:center">
+    <!-- 核心问题卡片 -->
+    <div style="background:#fff;border:1px solid var(--neutral-200);border-radius:16px;padding:24px;max-width:460px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+      <div style="font-size:15px;font-weight:700;color:var(--neutral-900);margin-bottom:16px;text-align:center">
         这次出行，你最在意哪一个？
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="pref-options">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="pref-options">
         <button class="pref-opt" data-pref="efficient" onclick="selectPref(this,'efficient')">
-          <div style="font-size:24px;margin-bottom:6px">🚀</div>
-          <div style="font-size:14px;font-weight:700">玩得多</div>
-          <div style="font-size:11px;opacity:.7;margin-top:3px">景点密度高，不虚此行</div>
+          <div style="font-size:22px;margin-bottom:5px">🚀</div>
+          <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">玩得多</div>
+          <div style="font-size:11px;color:var(--neutral-400);margin-top:2px">景点密度高，不虚此行</div>
         </button>
         <button class="pref-opt" data-pref="budget" onclick="selectPref(this,'budget')">
-          <div style="font-size:24px;margin-bottom:6px">💸</div>
-          <div style="font-size:14px;font-weight:700">花得少</div>
-          <div style="font-size:11px;opacity:.7;margin-top:3px">控制预算，性价比优先</div>
+          <div style="font-size:22px;margin-bottom:5px">💸</div>
+          <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">花得少</div>
+          <div style="font-size:11px;color:var(--neutral-400);margin-top:2px">控制预算，性价比优先</div>
         </button>
         <button class="pref-opt" data-pref="photo" onclick="selectPref(this,'photo')">
-          <div style="font-size:24px;margin-bottom:6px">📸</div>
-          <div style="font-size:14px;font-weight:700">拍得好</div>
-          <div style="font-size:11px;opacity:.7;margin-top:3px">出片率高，打卡必到</div>
+          <div style="font-size:22px;margin-bottom:5px">📸</div>
+          <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">拍得好</div>
+          <div style="font-size:11px;color:var(--neutral-400);margin-top:2px">出片率高，打卡必到</div>
         </button>
         <button class="pref-opt" data-pref="relax" onclick="selectPref(this,'relax')">
-          <div style="font-size:24px;margin-bottom:6px">😌</div>
-          <div style="font-size:14px;font-weight:700">不太累</div>
-          <div style="font-size:11px;opacity:.7;margin-top:3px">节奏慢，留白多</div>
+          <div style="font-size:22px;margin-bottom:5px">😌</div>
+          <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">不太累</div>
+          <div style="font-size:11px;color:var(--neutral-400);margin-top:2px">节奏慢，留白多</div>
         </button>
       </div>
     </div>
 
     <!-- AI 匹配结果（选择后显示） -->
-    <div id="pref-result" style="display:none;margin-top:28px;max-width:480px;width:100%;text-align:center">
-      <div style="font-size:12px;color:#94A3B8;margin-bottom:12px">根据你的偏好，AI 重新排了个序</div>
-      <div id="pref-ranking" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+    <div id="pref-result" style="display:none;margin-top:20px;max-width:460px;width:100%">
+      <div style="font-size:12px;color:var(--neutral-400);margin-bottom:10px;text-align:center">根据你的偏好，AI 重新排了个序 👇</div>
+      <div id="pref-ranking" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
         <!-- 动态生成 -->
       </div>
-      <button onclick="showScreen('mvp01-compare')" style="background:#1D6FEB;color:#fff;border:none;border-radius:12px;padding:14px 40px;font-size:15px;font-weight:700;cursor:pointer;width:100%">
+      <button onclick="showScreen('mvp01-compare')" style="background:#1D6FEB;color:#fff;border:none;border-radius:12px;padding:14px 40px;font-size:15px;font-weight:700;cursor:pointer;width:100%;box-shadow:0 4px 16px rgba(29,111,235,0.3)">
         查看方案对比 →
       </button>
     </div>
@@ -2988,8 +2988,8 @@ function selectPref(btn, pref) {
     var item = document.createElement('div');
     item.className = 'pref-rank-item' + (i===0?' top':'');
     item.innerHTML = '<span style="font-size:18px">'+medals[i]+'</span>'
-      +'<span style="flex:1;font-size:13px;font-weight:700;color:#fff">'+planNames[s.p]+'</span>'
-      +'<span style="font-size:12px;font-weight:700;color:'+(i===0?'#60A5FA':'#94A3B8')+'">匹配度 '+s.match+'%</span>';
+      +'<span style="flex:1;font-size:13px;font-weight:700;color:var(--neutral-900)">'+planNames[s.p]+'</span>'
+      +'<span style="font-size:12px;font-weight:700;color:'+(i===0?'#1D6FEB':'#94A3B8')+'">匹配度 '+s.match+'%</span>';
     rankEl.appendChild(item);
   });
 
