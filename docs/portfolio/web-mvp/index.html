@@ -2379,11 +2379,27 @@ var PLAN_DATA = {
   }
 };
 function selectPlanTab(plan) {
-  ['a','b','c'].forEach(function(p){
+  getActivePlans().forEach(function(p){
     var tb = document.getElementById('plan-tab-'+p);
     if(!tb) return;
-    if(p===plan){ tb.style.background='var(--blue)'; tb.style.color='#fff'; tb.style.border='none'; tb.style.fontWeight='700'; }
-    else { tb.style.background='#fff'; tb.style.color='var(--neutral-600)'; tb.style.border='1px solid var(--neutral-200)'; tb.style.fontWeight='600'; }
+    if(p===plan){
+      tb.style.background='var(--blue)'; tb.style.color='#fff';
+      tb.style.borderColor='var(--blue)'; tb.style.fontWeight='700';
+    } else {
+      tb.style.background='#fff'; tb.style.color='var(--neutral-600)';
+      tb.style.borderColor='var(--neutral-200)'; tb.style.fontWeight='600';
+    }
+  });
+  // 同步高亮中间列卡片头
+  document.querySelectorAll('.plan-card-header').forEach(function(el){
+    var p = el.getAttribute('data-plan');
+    var c = PLAN_COLORS[p] || {};
+    if(p === plan){
+      el.style.outline = '3px solid var(--blue)';
+      el.style.outlineOffset = '-1px';
+    } else {
+      el.style.outline = 'none';
+    }
   });
   selectPlan(plan);
 }
@@ -2453,15 +2469,21 @@ function selectPlan(plan) {
   getActivePlans().forEach(function(p){
     var tb = document.getElementById('plan-tab-'+p);
     if(!tb) return;
-    if(p===plan){ tb.style.background='var(--blue)'; tb.style.color='#fff'; tb.style.border='none'; tb.style.fontWeight='700'; }
-    else { tb.style.background='#fff'; tb.style.color='var(--neutral-600)'; tb.style.border='1px solid var(--neutral-200)'; tb.style.fontWeight='600'; }
+    if(p===plan){ tb.style.background='var(--blue)'; tb.style.color='#fff'; tb.style.borderColor='var(--blue)'; tb.style.fontWeight='700'; }
+    else { tb.style.background='#fff'; tb.style.color='var(--neutral-600)'; tb.style.borderColor='var(--neutral-200)'; tb.style.fontWeight='600'; }
   });
-  renderDays();
+  // 重新生成 Day tabs（天数跟随选中方案）
+  _selectedDays = null;
+  renderItineraryGrid(plan);
 }
 function renderItineraryGrid(selectedCol) {
   var plans = getActivePlans();
-  var maxDays = Math.max.apply(null, plans.map(function(p){ return PLAN_DATA[p].days.length; }));
-  if(_selectedDays === null) {
+  // Day tab 数量：如果选了某列，显示该方案的天数；否则显示最大天数
+  var activePlan = selectedCol || window._currentSelectedPlan;
+  var maxDays = activePlan && PLAN_DATA[activePlan]
+    ? PLAN_DATA[activePlan].days.length
+    : Math.max.apply(null, plans.map(function(p){ return PLAN_DATA[p].days.length; }));
+  if(_selectedDays === null || (_selectedDays.length > 0 && _selectedDays[_selectedDays.length-1] >= maxDays)) {
     _selectedDays = [];
     for(var i=0;i<maxDays;i++) _selectedDays.push(i);
   }
