@@ -1819,11 +1819,11 @@ function setTripType(btn, type) {
 var selectedPlan = null;
 var _selectedDays = null;
 var PLAN_COLORS = {
-  a: {border:'#CBD5E1', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'},
-  b: {border:'#3B82F6', head:'#EFF6FF', badge:'#ffffff', badgeBg:'#3B82F6', accent:'#1D6FEB'},
-  c: {border:'#10B981', head:'#ECFDF5', badge:'#ffffff', badgeBg:'#10B981', accent:'#059669'},
-  d: {border:'#8B5CF6', head:'#F5F3FF', badge:'#ffffff', badgeBg:'#8B5CF6', accent:'#7C3AED'},
-  e: {border:'#F59E0B', head:'#FFFBEB', badge:'#ffffff', badgeBg:'#F59E0B', accent:'#D97706'}
+  a: {border:'#E2E8F0', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'},
+  b: {border:'#E2E8F0', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'},
+  c: {border:'#E2E8F0', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'},
+  d: {border:'#E2E8F0', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'},
+  e: {border:'#E2E8F0', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'}
 };
 // 获取当前参与对比的方案列表（与 filledSlots 同步）
 function getActivePlans() {
@@ -2556,42 +2556,45 @@ function renderDays() {
     html += '</div>';
   });
   html += '</div>';
-  // 主体：按天分组，每组内三列行程
+  // 主体：按天分组，每组内各列行程
+  var colFr = '1fr '.repeat(plans.length).trim();
   days.forEach(function(dayIdx){
     var dayNum = dayIdx + 1;
     // Day 标签行
-    html += '<div style="display:grid;grid-template-columns:'+('1fr '.repeat(plans.length).trim())+';gap:12px;padding:8px 12px 4px">';
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:8px 12px 0">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
-      var c = PLAN_COLORS[p];
+      var sel = p === selectedCol;
       var label = planDay ? planDay.label.replace(/^Day\d+\s*/,'') : '—';
-      html += '<div style="border-left:2px solid '+c.border+';border-right:2px solid '+c.border+';border-top:2px solid '+c.border+';background:'+c.head+';padding:6px 12px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:6px">';
-      html += '<span style="font-size:10px;font-weight:800;color:#fff;background:'+c.border+';padding:2px 8px;border-radius:6px">Day'+dayNum+'</span>';
-      html += '<span style="font-size:11px;font-weight:700;color:'+c.accent+'">'+label+'</span>';
+      var bdr = sel ? '2px solid var(--blue)' : '2px solid #E2E8F0';
+      var bg = sel ? '#EFF6FF' : '#F8FAFC';
+      var txtColor = sel ? 'var(--blue)' : '#475569';
+      html += '<div style="border-left:'+bdr+';border-right:'+bdr+';border-top:'+bdr+';background:'+bg+';padding:7px 12px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:6px">';
+      html += '<span style="font-size:10px;font-weight:800;color:#fff;background:'+(sel?'var(--blue)':'#94A3B8')+';padding:2px 8px;border-radius:5px">Day'+dayNum+'</span>';
+      html += '<span style="font-size:11px;font-weight:700;color:'+txtColor+'">'+label+'</span>';
       html += '</div>';
     });
     html += '</div>';
 
-    // 计算最大步骤数
     var maxSteps = Math.max.apply(null, plans.map(function(p){
-      var pd = PLAN_DATA[p].days[dayIdx];
-      return pd ? pd.steps.length : 0;
+      var pd = PLAN_DATA[p].days[dayIdx]; return pd ? pd.steps.length : 0;
     }));
 
-    // 步骤行
     for(var si=0;si<maxSteps;si++){
-      html += '<div style="display:grid;grid-template-columns:'+('1fr '.repeat(plans.length).trim())+';gap:12px;padding:0 12px">';
+      html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0 12px">';
       plans.forEach(function(p){
         var planDay = PLAN_DATA[p].days[dayIdx];
         var step = planDay ? planDay.steps[si] : null;
-        var c = PLAN_COLORS[p];
-        var isLastStep = si === maxSteps - 1;
-        html += '<div style="border-left:2px solid '+c.border+';border-right:2px solid '+c.border+';'+(isLastStep?'border-bottom:2px solid '+c.border+';border-radius:0 0 8px 8px;':'')+';padding:10px 12px;background:#fff">';
+        var sel = p === selectedCol;
+        var isLast = si === maxSteps - 1;
+        var bdr = sel ? 'var(--blue)' : '#E2E8F0';
+        var bg = sel ? '#F5F9FF' : '#fff';
+        html += '<div style="border-left:2px solid '+bdr+';border-right:2px solid '+bdr+';'+(isLast?'border-bottom:2px solid '+bdr+';border-radius:0 0 8px 8px;':'')+';padding:10px 12px;background:'+bg+'">';
         if(step){
           html += '<div style="font-size:10px;color:#94A3B8;margin-bottom:2px">'+step.icon+' '+step.time+'</div>';
           html += '<div style="font-size:12px;font-weight:700;color:#1E293B;margin-bottom:3px">'+step.name+'</div>';
-          if(step.tip) html += '<div style="font-size:11px;color:#64748B;line-height:1.4;padding:4px 8px;background:#F8FAFC;border-radius:4px">'+step.tip+'</div>';
-          if(step.transit && !isLastStep) html += '<div style="font-size:10px;color:#94A3B8;margin-top:6px;padding-top:6px;border-top:1px dashed #E2E8F0">→ '+step.transit+'</div>';
+          if(step.tip) html += '<div style="font-size:11px;color:#64748B;line-height:1.4;padding:4px 8px;background:'+(sel?'#E0EDFF':'#F8FAFC')+';border-radius:4px">'+step.tip+'</div>';
+          if(step.transit && !isLast) html += '<div style="font-size:10px;color:#94A3B8;margin-top:6px;padding-top:6px;border-top:1px dashed #E2E8F0">→ '+step.transit+'</div>';
         } else {
           html += '<div style="font-size:11px;color:#CBD5E1;font-style:italic">— 当日无安排</div>';
         }
@@ -2600,15 +2603,17 @@ function renderDays() {
       html += '</div>';
     }
 
-    // 住宿行（虚线框突出）
-    html += '<div style="display:grid;grid-template-columns:'+('1fr '.repeat(plans.length).trim())+';gap:12px;padding:8px 12px 12px">';
+    // 住宿行
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:8px 12px 14px">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
-      var c = PLAN_COLORS[p];
+      var sel = p === selectedCol;
       var hotel = planDay && planDay.hotel ? planDay.hotel : {name:'—',price:'—',type:'—'};
-      html += '<div style="border:2px dashed '+c.border+';border-radius:10px;padding:10px 12px;background:'+c.head+';display:flex;align-items:center;gap:8px">';
+      var bdr = sel ? '2px dashed var(--blue)' : '2px dashed #E2E8F0';
+      var bg = sel ? '#EFF6FF' : '#F8FAFC';
+      html += '<div style="border:'+bdr+';border-radius:10px;padding:10px 12px;background:'+bg+';display:flex;align-items:center;gap:8px">';
       html += '<span style="font-size:16px">🏨</span>';
-      html += '<div style="flex:1"><div style="font-size:11px;font-weight:700;color:'+c.accent+';margin-bottom:2px">'+hotel.name+'</div>';
+      html += '<div style="flex:1"><div style="font-size:11px;font-weight:700;color:'+(sel?'var(--blue)':'#475569')+';margin-bottom:2px">'+hotel.name+'</div>';
       html += '<div style="font-size:10px;color:#94A3B8">'+hotel.type+' · '+hotel.price+'</div></div>';
       html += '</div>';
     });
