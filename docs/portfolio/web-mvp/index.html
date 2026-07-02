@@ -929,6 +929,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <button id="remove-slot-btn" onclick="removeSlot()" style="padding:6px 14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-500);border-radius:8px;font-size:12px;cursor:pointer;display:none">− 移除</button>
     </div>
 
+    <!-- 出行参数选择 -->
+    <div style="background:#fff;border:1px solid var(--neutral-200);border-radius:var(--radius-lg);padding:16px 20px;max-width:860px;margin:0 auto 16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+      <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;white-space:nowrap">出行参数</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--neutral-600)">👤 出行人数</span>
+        <div style="display:flex;align-items:center;gap:0;border:1px solid var(--neutral-200);border-radius:8px;overflow:hidden">
+          <button onclick="setPax(-1)" style="width:28px;height:28px;border:none;background:#F8FAFC;cursor:pointer;font-size:16px;color:var(--neutral-600)">−</button>
+          <span id="pax-num" style="width:32px;text-align:center;font-size:13px;font-weight:700;color:var(--neutral-900)">2</span>
+          <button onclick="setPax(1)" style="width:28px;height:28px;border:none;background:#F8FAFC;cursor:pointer;font-size:16px;color:var(--neutral-600)">+</button>
+        </div>
+        <span style="font-size:11px;color:var(--neutral-400)">人</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--neutral-600)">📅 旅行天数</span>
+        <select id="travel-days" style="padding:4px 10px;border:1px solid var(--neutral-200);border-radius:8px;font-size:12px;color:var(--neutral-800);background:#fff">
+          <option value="3">3 天</option>
+          <option value="4">4 天</option>
+          <option value="5" selected>5 天</option>
+          <option value="7">7 天</option>
+          <option value="10">10 天</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--neutral-600)">💼 出行类型</span>
+        <div id="trip-type-btns" style="display:flex;gap:6px">
+          <button onclick="setTripType(this,'情侣')" class="trip-type-btn" style="padding:4px 10px;border:1.5px solid var(--neutral-200);border-radius:6px;font-size:11px;background:#fff;color:var(--neutral-600);cursor:pointer">💑 情侣</button>
+          <button onclick="setTripType(this,'家庭')" class="trip-type-btn" style="padding:4px 10px;border:1.5px solid var(--neutral-200);border-radius:6px;font-size:11px;background:#fff;color:var(--neutral-600);cursor:pointer">👨‍👩‍👧 家庭</button>
+          <button onclick="setTripType(this,'朋友')" class="trip-type-btn active" style="padding:4px 10px;border:1.5px solid var(--blue);border-radius:6px;font-size:11px;background:#EFF6FF;color:var(--blue);cursor:pointer;font-weight:600">🧑‍🤝‍🧑 朋友</button>
+          <button onclick="setTripType(this,'独行')" class="trip-type-btn" style="padding:4px 10px;border:1.5px solid var(--neutral-200);border-radius:6px;font-size:11px;background:#fff;color:var(--neutral-600);cursor:pointer">🎒 独行</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--neutral-600)">💰 预算偏好</span>
+        <select id="budget-pref" style="padding:4px 10px;border:1px solid var(--neutral-200);border-radius:8px;font-size:12px;color:var(--neutral-800);background:#fff">
+          <option value="budget">省钱优先</option>
+          <option value="mid" selected>均衡</option>
+          <option value="luxury">品质优先</option>
+        </select>
+      </div>
+    </div>
+
     <div class="import-tips">
       <div style="font-size:20px;flex-shrink:0;margin-top:2px">✦</div>
       <div>
@@ -1058,30 +1099,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <!-- 维度对比表（可选，放在行程下方，高度可拖拽） -->
         <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:240px;min-height:60px;max-height:70%;overflow-y:auto;flex-shrink:0">
           <div id="dim-overview">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">📊 综合对比</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">每日预算</div><div class="cmp-val">¥640/天</div></div>
-                <div class="cmp-item"><div class="cmp-label">通勤方式</div><div class="cmp-val">地铁+打车</div></div>
-                <div class="cmp-item"><div class="cmp-label">景点数量</div><div class="cmp-val">18个</div></div>
-                <div class="cmp-item"><div class="cmp-label">平均排队</div><div class="cmp-val">45分钟</div></div>
-                <div class="cmp-item"><div class="cmp-label">综合评分</div><div class="cmp-score"><div class="cmp-bar" style="width:72%;background:#93C5FD"></div><span>7.2</span></div></div>
-              </div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">每日预算</div><div class="cmp-val cmp-win">¥625/天 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">通勤方式</div><div class="cmp-val cmp-win">92%地铁 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">景点数量</div><div class="cmp-val">12个</div></div>
-                <div class="cmp-item"><div class="cmp-label">平均排队</div><div class="cmp-val cmp-win">20分钟 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">综合评分</div><div class="cmp-score"><div class="cmp-bar" style="width:91%;background:var(--blue)"></div><span class="cmp-win">9.1</span></div></div>
-              </div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">每日预算</div><div class="cmp-val">¥800/天</div></div>
-                <div class="cmp-item"><div class="cmp-label">通勤方式</div><div class="cmp-val">打车为主</div></div>
-                <div class="cmp-item"><div class="cmp-label">景点数量</div><div class="cmp-val cmp-win">16个 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">平均排队</div><div class="cmp-val">38分钟</div></div>
-                <div class="cmp-item"><div class="cmp-label">综合评分</div><div class="cmp-score"><div class="cmp-bar" style="width:68%;background:#6EE7B7"></div><span>6.8</span></div></div>
-              </div>
-            </div>
+            <!-- 由 renderDimOverview() 动态生成 -->
           </div>
           <div id="dim-budget" style="display:none">
             <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">💰 预算分析</div>
@@ -1242,26 +1260,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="compare-panel" id="col-right" data-minw="160" data-maxw="280" style="width:200px;border-left:1px solid var(--neutral-200);overflow-y:auto;padding:16px;flex-direction:column;display:flex;gap:10px">
         <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px">选择方案</div>
 
-        <div id="plan-cards-zone" style="display:flex;flex-direction:column;gap:8px">
+        <div id="plan-cards-zone" style="display:flex;flex-direction:column;gap:7px">
         <!-- 由 rebuildCompare() 动态生成 -->
-        </div>
-
-        <div id="plan-a" class="plan-card" onclick="selectPlan('a')" style="display:none;border-radius:10px;cursor:pointer;padding:12px;transition:all .15s">
-          <div style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-bottom:2px">方案 A · 小红书</div>
-          <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">北京 5 日经典</div>
-          <div style="font-size:11px;color:var(--neutral-500);margin-top:4px">¥3,200 · 5天</div>
-        </div>
-
-        <div id="plan-b" class="plan-card" onclick="selectPlan('b')" style="border-radius:10px;cursor:pointer;padding:12px;border:2px solid var(--blue);background:#F8FBFF;transition:all .15s">
-          <div style="font-size:10px;color:var(--blue);font-weight:700;margin-bottom:2px">方案 B · AI推荐 ✦</div>
-          <div style="font-size:13px;font-weight:700;color:var(--blue)">高效 4 日方案</div>
-          <div style="font-size:11px;color:var(--neutral-500);margin-top:4px">¥2,500 · 4天</div>
-        </div>
-
-        <div id="plan-c" class="plan-card" onclick="selectPlan('c')" style="border-radius:10px;cursor:pointer;padding:12px;transition:all .15s">
-          <div style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-bottom:2px">方案 C · 知乎路书</div>
-          <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">亲子 5 日游</div>
-          <div style="font-size:11px;color:var(--neutral-500);margin-top:4px">¥4,000 · 5天</div>
         </div>
 
         <div style="border-top:1px solid var(--neutral-100);padding-top:12px;margin-top:4px">
@@ -1325,12 +1325,85 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       </div>
     </div>
 
-    <!-- Day Tabs -->
-    <div style="display:flex;gap:8px;margin-bottom:20px">
-      <button onclick="switchDay(1)" id="day-tab-1" style="padding:8px 20px;border-radius:20px;border:none;background:var(--blue);color:#fff;font-size:13px;font-weight:700;cursor:pointer">Day 1</button>
-      <button onclick="switchDay(2)" id="day-tab-2" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 2</button>
-      <button onclick="switchDay(3)" id="day-tab-3" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 3</button>
-      <button onclick="switchDay(4)" id="day-tab-4" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 4</button>
+    <!-- 视图切换 + Day Tabs -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;gap:8px">
+        <button onclick="switchDay(1)" id="day-tab-1" style="padding:8px 20px;border-radius:20px;border:none;background:var(--blue);color:#fff;font-size:13px;font-weight:700;cursor:pointer">Day 1</button>
+        <button onclick="switchDay(2)" id="day-tab-2" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 2</button>
+        <button onclick="switchDay(3)" id="day-tab-3" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 3</button>
+        <button onclick="switchDay(4)" id="day-tab-4" style="padding:8px 20px;border-radius:20px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:13px;font-weight:600;cursor:pointer">Day 4</button>
+      </div>
+      <div style="display:flex;gap:6px;border:1px solid var(--neutral-200);border-radius:8px;padding:2px">
+        <button id="view-list-btn" onclick="switchItineraryView('list')" style="padding:6px 14px;border:none;border-radius:6px;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">📋 列表</button>
+        <button id="view-map-btn" onclick="switchItineraryView('map')" style="padding:6px 14px;border:none;border-radius:6px;background:transparent;color:var(--neutral-500);font-size:12px;font-weight:600;cursor:pointer">🗺️ 地图</button>
+      </div>
+    </div>
+    <!-- 地图视图（默认隐藏） -->
+    <div id="itin-map-view" style="display:none;background:#fff;border-radius:var(--radius-lg);border:1px solid var(--neutral-200);overflow:hidden;margin-bottom:20px">
+      <div style="background:#EFF6FF;padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:700;color:var(--neutral-900)" id="map-day-title">📍 Day 1 路线地图</div>
+        <div style="font-size:11px;color:var(--neutral-500)">基于 AI 推荐顺序 · 点击景点可查看详情</div>
+      </div>
+      <div style="position:relative;height:380px;background:linear-gradient(135deg,#E8F4F8 0%,#D4EAF0 30%,#B8DDE8 60%,#E8F0F5 100%)">
+        <!-- 模拟地图背景 + 街道网格 -->
+        <svg width="100%" height="100%" viewBox="0 0 800 380" style="position:absolute;top:0;left:0">
+          <!-- 街道网格 -->
+          <line x1="0" y1="120" x2="800" y2="120" stroke="#C9DDED" stroke-width="8"/>
+          <line x1="0" y1="200" x2="800" y2="200" stroke="#C9DDED" stroke-width="6"/>
+          <line x1="0" y1="290" x2="800" y2="290" stroke="#C9DDED" stroke-width="4"/>
+          <line x1="150" y1="0" x2="150" y2="380" stroke="#C9DDED" stroke-width="6"/>
+          <line x1="350" y1="0" x2="350" y2="380" stroke="#C9DDED" stroke-width="8"/>
+          <line x1="550" y1="0" x2="550" y2="380" stroke="#C9DDED" stroke-width="5"/>
+          <line x1="680" y1="0" x2="680" y2="380" stroke="#C9DDED" stroke-width="3"/>
+          <!-- 公园绿地 -->
+          <rect x="200" y="60" width="120" height="100" rx="8" fill="#C8E6C9" opacity=".7"/>
+          <text x="260" y="115" text-anchor="middle" fill="#388E3C" font-size="10">景山公园</text>
+          <rect x="380" y="230" width="140" height="80" rx="8" fill="#C8E6C9" opacity=".6"/>
+          <text x="450" y="275" text-anchor="middle" fill="#388E3C" font-size="10">北海公园</text>
+          <!-- 故宫区域 -->
+          <rect x="170" y="140" width="160" height="80" rx="4" fill="#FFCCBC" opacity=".8"/>
+          <text x="250" y="185" text-anchor="middle" fill="#BF360C" font-size="11" font-weight="bold">故宫博物院</text>
+          <!-- 路线连线 -->
+          <polyline points="250,180 250,220 420,220 420,150 550,150 550,240 680,240" stroke="#1D6FEB" stroke-width="3" fill="none" stroke-dasharray="none" stroke-linecap="round"/>
+          <!-- 景点标记 -->
+          <circle cx="250" cy="180" r="12" fill="#1D6FEB"/><text x="250" y="184" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">1</text>
+          <circle cx="420" cy="150" r="12" fill="#1D6FEB"/><text x="420" y="154" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">2</text>
+          <circle cx="550" cy="150" r="12" fill="#1D6FEB"/><text x="550" y="154" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">3</text>
+          <circle cx="680" cy="240" r="12" fill="#1D6FEB"/><text x="680" y="244" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">4</text>
+          <!-- 酒店标记 -->
+          <rect x="580" y="280" width="60" height="26" rx="6" fill="#8B5CF6"/>
+          <text x="610" y="297" text-anchor="middle" fill="#fff" font-size="10">🏨 住宿</text>
+        </svg>
+        <!-- 图例 -->
+        <div style="position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.92);border-radius:8px;padding:8px 12px;font-size:11px;display:flex;gap:12px;align-items:center">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#1D6FEB;display:inline-block"></span>景点顺序</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#8B5CF6;display:inline-block"></span>住宿</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:20px;height:3px;background:#1D6FEB;display:inline-block;border-radius:2px"></span>路线</span>
+        </div>
+      </div>
+      <!-- 景点列表 -->
+      <div style="padding:12px 16px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
+        <div style="padding:8px 10px;border:1.5px solid var(--blue);border-radius:8px;text-align:center;cursor:pointer;background:#EFF6FF">
+          <div style="font-size:18px;margin-bottom:2px">🎯</div>
+          <div style="font-size:11px;font-weight:700;color:var(--blue)">① 故宫博物院</div>
+          <div style="font-size:10px;color:var(--neutral-500)">08:30 · 3-4h</div>
+        </div>
+        <div style="padding:8px 10px;border:1px solid var(--neutral-200);border-radius:8px;text-align:center;cursor:pointer" onclick="this.style.border='1.5px solid var(--blue)';this.style.background='#EFF6FF'">
+          <div style="font-size:18px;margin-bottom:2px">🍜</div>
+          <div style="font-size:11px;font-weight:700;color:var(--neutral-800)">② 张记炸酱面</div>
+          <div style="font-size:10px;color:var(--neutral-500)">12:00 · 1h</div>
+        </div>
+        <div style="padding:8px 10px;border:1px solid var(--neutral-200);border-radius:8px;text-align:center;cursor:pointer" onclick="this.style.border='1.5px solid var(--blue)';this.style.background='#EFF6FF'">
+          <div style="font-size:18px;margin-bottom:2px">🛍️</div>
+          <div style="font-size:11px;font-weight:700;color:var(--neutral-800)">③ 南锣鼓巷</div>
+          <div style="font-size:10px;color:var(--neutral-500)">13:30 · 2h</div>
+        </div>
+        <div style="padding:8px 10px;border:1px solid var(--neutral-200);border-radius:8px;text-align:center;cursor:pointer" onclick="this.style.border='1.5px solid var(--blue)';this.style.background='#EFF6FF'">
+          <div style="font-size:18px;margin-bottom:2px">🥢</div>
+          <div style="font-size:11px;font-weight:700;color:var(--neutral-800)">④ 簪街麻小</div>
+          <div style="font-size:10px;color:var(--neutral-500)">18:30 · 晚餐</div>
+        </div>
+      </div>
     </div>
 
     <!-- Day 1 -->
@@ -1836,6 +1909,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 <script>
 // ===== State =====
 var filledSlots = new Set();
+
+function switchItineraryView(view) {
+  var listBtn = document.getElementById('view-list-btn');
+  var mapBtn = document.getElementById('view-map-btn');
+  var mapView = document.getElementById('itin-map-view');
+  var listContents = document.querySelectorAll('[id^="day-content-"]');
+  if(view === 'map') {
+    if(mapView) mapView.style.display = '';
+    listContents.forEach(function(el){ el.style.display='none'; });
+    if(listBtn){ listBtn.style.background='transparent'; listBtn.style.color='var(--neutral-500)'; }
+    if(mapBtn){ mapBtn.style.background='var(--blue)'; mapBtn.style.color='#fff'; }
+  } else {
+    if(mapView) mapView.style.display = 'none';
+    // 恢复当前选中 day
+    var active = document.querySelector('.route-detail-card:not([style*="display:none"])');
+    if(!active) { var d1=document.getElementById('day-content-1'); if(d1) d1.style.display=''; }
+    else listContents.forEach(function(el){ el.style.display=''; });
+    switchDay(_currentDay || 1);
+    if(listBtn){ listBtn.style.background='var(--blue)'; listBtn.style.color='#fff'; }
+    if(mapBtn){ mapBtn.style.background='transparent'; mapBtn.style.color='var(--neutral-500)'; }
+  }
+}
+var _currentDay = 1;
+var _pax = 2;
+var _tripType = '朋友';
+function setPax(delta) {
+  _pax = Math.max(1, Math.min(10, _pax + delta));
+  var el = document.getElementById('pax-num');
+  if(el) el.textContent = _pax;
+}
+function setTripType(btn, type) {
+  _tripType = type;
+  document.querySelectorAll('.trip-type-btn').forEach(function(b){
+    b.style.border = '1.5px solid var(--neutral-200)';
+    b.style.background = '#fff';
+    b.style.color = 'var(--neutral-600)';
+    b.style.fontWeight = '400';
+  });
+  btn.style.border = '1.5px solid var(--blue)';
+  btn.style.background = '#EFF6FF';
+  btn.style.color = 'var(--blue)';
+  btn.style.fontWeight = '600';
+}
 var selectedPlan = null;
 var _selectedDays = null;
 var PLAN_COLORS = {
@@ -1902,6 +2018,7 @@ function rebuildCompare() {
   // 不逐一改，靠 renderDays 重写维度区
   var lbl = document.getElementById('compare-count-label');
   if(lbl) lbl.textContent = n + ' 个方案行程对比';
+  renderDimOverview();
   // 动态更新维度对比区所有 grid 行的列数
   var dimArea = document.getElementById('compare-dims-area');
   if(dimArea) {
@@ -1926,6 +2043,18 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
   if(id === 'mvp01-compare') { setTimeout(function(){ rebuildCompare(); }, 30); }
+}
+function switchDay(n) {
+  _currentDay = n;
+  [1,2,3,4,5].forEach(function(i){
+    var tab = document.getElementById('day-tab-'+i);
+    var content = document.getElementById('day-content-'+i);
+    if(tab) {
+      if(i===n){ tab.style.background='var(--blue)'; tab.style.color='#fff'; tab.style.border='none'; tab.style.fontWeight='700'; }
+      else { tab.style.background='#fff'; tab.style.color='var(--neutral-600)'; tab.style.border='1px solid var(--neutral-200)'; tab.style.fontWeight='600'; }
+    }
+    if(content) content.style.display = (i===n ? '' : 'none');
+  });
 }
 function startMVP(mvp) {
   if (mvp === 'mvp01') {
@@ -2253,6 +2382,55 @@ function selectPlanTab(plan) {
   });
   selectPlan(plan);
 }
+
+// 动态渲染综合对比维度区
+function renderDimOverview() {
+  var plans = getActivePlans();
+  var n = plans.length;
+  var container = document.getElementById('dim-overview');
+  if(!container) return;
+  var DIM_OVERVIEW_DATA = {
+    a: { budget:'¥640/天', transit:'地铁+打车', spots:'18个', queue:'45分钟', pace:'较慢', score:'72分' },
+    b: { budget:'¥625/天 ✓', transit:'92%地铁 ✓', spots:'12个 ✓', queue:'20分钟 ✓', pace:'适中 ✓', score:'91分 ✓' },
+    c: { budget:'¥800/天', transit:'打车为主', spots:'16个 ✓', queue:'38分钟', pace:'慢', score:'68分' },
+    d: { budget:'¥700/天', transit:'地铁+步行', spots:'14个', queue:'30分钟', pace:'适中', score:'80分' },
+    e: { budget:'¥660/天', transit:'地铁为主', spots:'10个 ✓', queue:'15分钟 ✓', pace:'快', score:'85分' }
+  };
+  var dims = [
+    { key:'budget', label:'每日预算' },
+    { key:'transit', label:'通勤方式' },
+    { key:'spots', label:'景点数量' },
+    { key:'queue', label:'平均排队' },
+    { key:'pace', label:'行程节奏' },
+    { key:'score', label:'综合评分' }
+  ];
+  var colFr = '1fr '.repeat(n).trim();
+  var html = '<div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">📊 综合对比</div>';
+  // 方案标题行
+  html += '<div style="display:grid;grid-template-columns:'+colFr+';border-bottom:1px solid var(--neutral-100)">';
+  plans.forEach(function(p,i){
+    var c = PLAN_COLORS[p];
+    var d = PLAN_DATA[p];
+    html += '<div style="padding:8px 14px;background:'+c.head+';border-right:1px solid var(--neutral-100);font-size:11px;font-weight:700;color:'+c.accent+'">攻略 '+(i+1)+'<br><span style="font-size:10px;color:var(--neutral-400);font-weight:400">'+d.meta+'</span></div>';
+  });
+  html += '</div>';
+  // 每个维度一行
+  dims.forEach(function(dim, di){
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';border-bottom:1px solid var(--neutral-100)">';
+    plans.forEach(function(p,i){
+      var c = PLAN_COLORS[p];
+      var val = (DIM_OVERVIEW_DATA[p]||{})[dim.key] || '—';
+      var isWin = val.indexOf('✓') >= 0;
+      html += '<div style="padding:8px 14px;border-right:1px solid var(--neutral-100)">';
+      html += '<div style="font-size:10px;color:var(--neutral-400);margin-bottom:2px">'+dim.label+'</div>';
+      html += '<div style="font-size:12px;font-weight:'+(isWin?'700':'500')+';color:'+(isWin?'var(--blue)':'var(--neutral-800)')+'">'+val+'</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
 function selectPlan(plan) {
   selectedPlan = plan;
   getActivePlans().forEach(function(p){
