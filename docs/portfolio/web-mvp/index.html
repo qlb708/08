@@ -1841,11 +1841,11 @@ function rebuildCompare() {
   // 雷达卡数据（五维：预算/效率/文化深度/亲子友好/体力要求）
   // 值越高=越好（预算高=越省钱，体力高=体力要求高）
   var RADAR_DATA = {
-    a: { vals:[60,55,75,60,50] },
-    b: { vals:[80,95,60,55,75] },
-    c: { vals:[40,45,65,95,35] },
-    d: { vals:[70,65,95,50,60] },
-    e: { vals:[90,90,70,40,85] }
+    a: { vals:[60,55,75,60,50], slogan:'景点全覆盖，天天满档' },
+    b: { vals:[80,95,60,55,75], slogan:'最短时间，最多景点' },
+    c: { vals:[40,45,65,95,35], slogan:'孩子不哭，大人也嗨' },
+    d: { vals:[70,65,95,50,60], slogan:'本地人才知道的路线' },
+    e: { vals:[90,90,70,40,85], slogan:'3天打完别人5天的点' }
   };
   var DIMS = ['省钱','效率','文化','亲子','体力'];
   var RADAR_COLORS = ['#1D6FEB','#7C3AED','#059669','#D97706','#DC2626'];
@@ -1863,7 +1863,8 @@ function rebuildCompare() {
       card.style.cssText = 'flex-shrink:0;width:158px;border:2px solid #E2E8F0;border-radius:10px;background:#fff;cursor:pointer;transition:all .15s;padding:9px 10px 8px;display:flex;flex-direction:column;align-items:center;gap:3px';
       // 方案名
       var meta = '<div style="font-size:9px;font-weight:700;color:#94A3B8;align-self:flex-start">攻略'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
-      var name = '<div style="font-size:10px;font-weight:800;color:#1E293B;line-height:1.3;align-self:flex-start;margin-bottom:2px">'+d.name+'</div>';
+      var slogan = '<div style="font-size:9px;color:#64748B;align-self:flex-start;margin-bottom:2px;font-style:italic">'+rd.slogan+'</div>';
+      var name = '<div style="font-size:10px;font-weight:800;color:#1E293B;line-height:1.3;align-self:flex-start">'+d.name+'</div>';
       // 雷达图
       var svg = buildRadarSVG(rd.vals, color, 76);
       // 五维标签行
@@ -1875,7 +1876,7 @@ function rebuildCompare() {
         tags += '<span style="font-size:8px;padding:1px 5px;border-radius:3px;background:'+bg+';color:'+tc+';font-weight:700">'+dim+' '+v+'</span>';
       });
       tags += '</div>';
-      card.innerHTML = meta + name + svg + tags;
+      card.innerHTML = meta + name + slogan + svg + tags;
       card.onclick = (function(pp){ return function(){ selectPlanTab(pp); }; })(p);
       radarRow.appendChild(card);
     });
@@ -2155,7 +2156,7 @@ function initResizers() {
 // 行程数据
 var PLAN_DATA = {
   a: {
-    name: '北京 5 日经典路线', meta: '小红书攻略 · 5天 · ¥3,200',
+    name: '打卡狂魔 🔥', meta: '小红书攻略 · 5天 · ¥3,200',
     days: [
       { label:'Day1 故宫+南锣', hotel:{name:'南锣胡同精品民宿',type:'精品民宿',price:'¥320/晚'}, steps: [
         {icon:'🎯',time:'08:30',name:'故宫博物院',tip:'9点前入宫效率最高',transit:'步行 10 分钟 →'},
@@ -2188,7 +2189,7 @@ var PLAN_DATA = {
     ]
   },
   b: {
-    name: '高效北京 4 日方案', meta: 'AI 推荐 · 4天 · ¥2,500',
+    name: '效率玩家 ⚡', meta: 'AI 推荐 · 4天 · ¥2,500',
     days: [
       { label:'Day1 故宫+簪街', hotel:{name:'东城区连锁精品酒店',type:'精品酒店',price:'¥280/晚'}, steps: [
         {icon:'🎯',time:'08:30',name:'故宫博物院',tip:'9点前入宫，排队最短',transit:'步行 10 分钟 →'},
@@ -2216,7 +2217,7 @@ var PLAN_DATA = {
     ]
   },
   d: {
-    name: '北京深度文化 4 日', meta: '自定义规划 · 4天 · ¥2,800',
+    name: '胡同隐士 🏯', meta: '自定义规划 · 4天 · ¥2,800',
     days: [
       { label:'Day1 胡同深度游', hotel:{name:'南锣胡同民宿',type:'精品民宿',price:'¥290/晚'}, steps: [
         {icon:'🏯',time:'09:00',name:'烟袋斜街',tip:'老北京胡同文化起点',transit:'步行 15 分钟 →'},
@@ -2247,7 +2248,7 @@ var PLAN_DATA = {
     ]
   },
   e: {
-    name: '北京极致精华 3 日', meta: '马蜂窝攻略 · 3天 · ¥1,980',
+    name: '闪击特种兵 💨', meta: '马蜂窝攻略 · 3天 · ¥1,980',
     days: [
       { label:'Day1 历史核心线', hotel:{name:'东城区快捷酒店',type:'快捷酒店',price:'¥200/晚'}, steps: [
         {icon:'🎯',time:'08:00',name:'故宫博物院',tip:'开门第一批入场，体验最佳',transit:'步行 10 分钟 →'},
@@ -2269,7 +2270,7 @@ var PLAN_DATA = {
     ]
   },
   c: {
-    name: '北京亲子 5 日游', meta: '知乎路书 · 5天 · ¥4,000',
+    name: '遛娃大师 👶', meta: '知乎路书 · 5天 · ¥4,000',
     days: [
       { label:'Day1 故宫+天安门', hotel:{name:'西城区亲子主题酒店',type:'亲子酒店',price:'¥520/晚'}, steps: [
         {icon:'🎯',time:'09:00',name:'故宫博物院',tip:'亲子讲解器推荐',transit:'步行 5 分钟 →'},
