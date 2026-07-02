@@ -1096,7 +1096,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="row-resizer" id="row-resizer-mid"></div>
 
         <!-- 维度对比表（可选，放在行程下方，高度可拖拽） -->
-        <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:180px;min-height:50px;max-height:60%;overflow-y:auto;flex-shrink:0">
+        <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:0;min-height:0;max-height:60%;overflow-y:auto;flex-shrink:0;transition:height .2s">
           <div id="dim-overview"><!-- 由 renderDimOverview() 动态生成 --></div>
           <div id="dim-budget" style="display:none"></div>
           <div id="dim-transport" style="display:none"></div>
@@ -1818,6 +1818,7 @@ function setTripType(btn, type) {
 }
 var selectedPlan = null;
 var _selectedDays = null;
+var _expandedDays = [0]; // 默认展开 Day1
 var PLAN_COLORS = {
   a: {border:'#E2E8F0', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'},
   b: {border:'#E2E8F0', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'},
@@ -2029,10 +2030,17 @@ function toggleDim(dim, cb) {
   if(el) el.style.display = cb.checked ? '' : 'none';
   var label = cb.closest('label');
   if(label) label.classList.toggle('active', cb.checked);
+  var plans = getActivePlans();
   if(cb.checked) {
-    var plans = getActivePlans();
     if(dim === 'overview') renderDimOverview();
     else renderDimSection(dim, plans);
+  }
+  // 展开/收起维度区
+  var dimsArea = document.getElementById('compare-dims-area');
+  if(dimsArea) {
+    var anyChecked = document.querySelector('#dim-checks input:checked');
+    dimsArea.style.height = anyChecked ? '200px' : '0';
+    dimsArea.style.minHeight = anyChecked ? '50px' : '0';
   }
 }
 // 全屏三栏拖拽调整宽度 + 上下拖拽
@@ -2487,6 +2495,7 @@ function selectPlan(plan) {
   });
   // 重新生成 Day tabs（天数跟随选中方案）
   _selectedDays = null;
+  _expandedDays = [0];
   renderItineraryGrid(plan);
 }
 function renderItineraryGrid(selectedCol) {
@@ -2499,6 +2508,7 @@ function renderItineraryGrid(selectedCol) {
   if(_selectedDays === null || (_selectedDays.length > 0 && _selectedDays[_selectedDays.length-1] >= maxDays)) {
     _selectedDays = [];
     for(var i=0;i<maxDays;i++) _selectedDays.push(i);
+    _expandedDays = [0]; // 切换方案/天数时，只展开 Day1
   }
   window._currentSelectedPlan = selectedCol;
   // 生成 Day tabs（多选）
@@ -2538,90 +2548,108 @@ function renderItineraryGrid(selectedCol) {
   renderDays();
 }
 
+
+function toggleDay(dayIdx) {
+  var pos = _expandedDays.indexOf(dayIdx);
+  if(pos >= 0) {
+    _expandedDays.splice(pos, 1);
+  } else {
+    _expandedDays.push(dayIdx);
+  }
+  renderDays();
+}
 function renderDays() {
   var plans = getActivePlans();
   var selectedCol = window._currentSelectedPlan;
   var allDays = document.getElementById('panel-all-days');
   var days = _selectedDays.slice().sort(function(a,b){return a-b;});
-  var html = '';
+  var colFr = '1fr '.repeat(plans.length).trim();
 
-  // 顶部：各列方案卡头（sticky）
-  html += '<div style="display:grid;grid-template-columns:'+(('1fr '.repeat(plans.length).trim()))+';gap:8px;padding:0 12px 8px;position:sticky;top:0;z-index:5;background:#F9FAFB">';
+  // 方案列头（sticky）
+  var html = '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0 12px 8px;position:sticky;top:0;z-index:5;background:#F9FAFB;border-bottom:1px solid #E2E8F0">';
   plans.forEach(function(p, pi){
     var d = PLAN_DATA[p];
-    var c = PLAN_COLORS[p];
-    var sel = p === window._currentSelectedPlan;
-    var borderStyle = sel ? 'border:2.5px solid var(--blue);box-shadow:0 0 0 3px rgba(29,111,235,.13)' : 'border:2px solid '+c.border;
-    var bg = sel ? '#EFF6FF' : c.head;
-    html += '<div class="plan-card-header" data-plan="'+p+'" style="'+borderStyle+';border-radius:10px 10px 0 0;background:'+bg+';padding:10px;text-align:center;cursor:pointer;transition:all .15s" onclick="selectPlanTab(\''+p+'\')">'; 
-    html += '<div style="display:inline-block;background:'+(sel?'var(--blue)':c.badgeBg)+';color:'+(sel?'#fff':c.badge)+';font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;margin-bottom:3px">方案'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
-    html += '<div style="font-size:12px;font-weight:800;color:'+(sel?'var(--blue)':c.accent)+'">'+d.name+'</div>';
+    var sel = p === selectedCol;
+    var bg = sel ? '#EFF6FF' : '#F8FAFC';
+    var border = sel ? '2px solid var(--blue)' : '2px solid #E2E8F0';
+    var txtCol = sel ? 'var(--blue)' : '#475569';
+    html += '<div data-plan="'+p+'" style="border:'+border+';border-radius:8px;background:'+bg+';padding:8px 10px;text-align:center;cursor:pointer;transition:all .15s" onclick="selectPlanTab(\''+p+'\')">';
+    html += '<div style="font-size:10px;font-weight:700;color:'+(sel?'var(--blue)':'#94A3B8')+';margin-bottom:2px">方案'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
+    html += '<div style="font-size:11px;font-weight:700;color:'+txtCol+';line-height:1.3">'+d.name+'</div>';
     html += '<div style="font-size:10px;color:#94A3B8;margin-top:1px">'+d.meta+'</div>';
     html += '</div>';
   });
   html += '</div>';
-  // 主体：按天分组，每组内各列行程
-  var colFr = '1fr '.repeat(plans.length).trim();
+
+  // 每一天：折叠卡片
   days.forEach(function(dayIdx){
     var dayNum = dayIdx + 1;
-    // Day 标签行
-    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:8px 12px 0">';
+    var isExpanded = (_expandedDays.indexOf(dayIdx) >= 0);
+
+    // Day 折叠头行
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:6px 12px 0;cursor:pointer" onclick="toggleDay('+dayIdx+')" id="day-header-'+dayIdx+'">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
       var sel = p === selectedCol;
-      var label = planDay ? planDay.label.replace(/^Day\d+\s*/,'') : '—';
-      var bdr = sel ? '2px solid var(--blue)' : '2px solid #E2E8F0';
+      var label = planDay ? planDay.label.replace(/^Day\d+\s*/,'') : '无安排';
+      // 预览：前两个景点名
+      var preview = planDay ? planDay.steps.slice(0,2).map(function(s){return s.name}).join(' · ') : '—';
+      var bdr = sel ? 'var(--blue)' : '#E2E8F0';
       var bg = sel ? '#EFF6FF' : '#F8FAFC';
-      var txtColor = sel ? 'var(--blue)' : '#475569';
-      html += '<div style="border-left:'+bdr+';border-right:'+bdr+';border-top:'+bdr+';background:'+bg+';padding:7px 12px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:6px">';
-      html += '<span style="font-size:10px;font-weight:800;color:#fff;background:'+(sel?'var(--blue)':'#94A3B8')+';padding:2px 8px;border-radius:5px">Day'+dayNum+'</span>';
-      html += '<span style="font-size:11px;font-weight:700;color:'+txtColor+'">'+label+'</span>';
+      html += '<div style="border:1px solid '+bdr+';border-radius:8px;background:'+bg+';padding:7px 10px;display:flex;align-items:center;gap:6px">';
+      html += '<span style="font-size:9px;font-weight:700;color:#fff;background:'+(sel?'var(--blue)':'#94A3B8')+';padding:1px 6px;border-radius:4px;flex-shrink:0">Day'+dayNum+'</span>';
+      html += '<div style="flex:1;min-width:0">';
+      html += '<div style="font-size:11px;font-weight:700;color:'+(sel?'var(--blue)':'#334155')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+label+'</div>';
+      html += '<div style="font-size:10px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+preview+'</div>';
+      html += '</div>';
+      html += '<span style="font-size:10px;color:#94A3B8;flex-shrink:0">'+(isExpanded?'▲':'▼')+'</span>';
       html += '</div>';
     });
     html += '</div>';
 
-    var maxSteps = Math.max.apply(null, plans.map(function(p){
-      var pd = PLAN_DATA[p].days[dayIdx]; return pd ? pd.steps.length : 0;
-    }));
+    // 展开详情
+    if(isExpanded) {
+      var maxSteps = Math.max.apply(null, plans.map(function(p){
+        var pd = PLAN_DATA[p].days[dayIdx]; return pd ? pd.steps.length : 0;
+      }));
 
-    for(var si=0;si<maxSteps;si++){
-      html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0 12px">';
+      for(var si=0;si<maxSteps;si++){
+        html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0 12px">';
+        plans.forEach(function(p){
+          var planDay = PLAN_DATA[p].days[dayIdx];
+          var step = planDay ? planDay.steps[si] : null;
+          var sel = p === selectedCol;
+          var isLast = si === maxSteps - 1;
+          var bdr = sel ? 'var(--blue)' : '#E2E8F0';
+          var bg = sel ? '#F5F9FF' : '#fff';
+          html += '<div style="border-left:2px solid '+bdr+';border-right:2px solid '+bdr+';'+(isLast?'border-bottom:2px solid '+bdr+';border-radius:0 0 6px 6px;':'')+';padding:8px 10px;background:'+bg+'">';
+          if(step){
+            html += '<div style="font-size:10px;color:#94A3B8;margin-bottom:1px">'+step.icon+' '+step.time+'</div>';
+            html += '<div style="font-size:12px;font-weight:700;color:#1E293B;margin-bottom:2px">'+step.name+'</div>';
+            if(step.tip) html += '<div style="font-size:10px;color:#64748B;padding:3px 6px;background:'+(sel?'#E0EDFF':'#F8FAFC')+';border-radius:3px">'+step.tip+'</div>';
+            if(step.transit && !isLast) html += '<div style="font-size:10px;color:#94A3B8;margin-top:5px;padding-top:5px;border-top:1px dashed #E2E8F0">→ '+step.transit+'</div>';
+          } else {
+            html += '<div style="font-size:10px;color:#CBD5E1;font-style:italic">— 当日无安排</div>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      // 住宿行
+      html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:6px 12px 4px">';
       plans.forEach(function(p){
         var planDay = PLAN_DATA[p].days[dayIdx];
-        var step = planDay ? planDay.steps[si] : null;
         var sel = p === selectedCol;
-        var isLast = si === maxSteps - 1;
-        var bdr = sel ? 'var(--blue)' : '#E2E8F0';
-        var bg = sel ? '#F5F9FF' : '#fff';
-        html += '<div style="border-left:2px solid '+bdr+';border-right:2px solid '+bdr+';'+(isLast?'border-bottom:2px solid '+bdr+';border-radius:0 0 8px 8px;':'')+';padding:10px 12px;background:'+bg+'">';
-        if(step){
-          html += '<div style="font-size:10px;color:#94A3B8;margin-bottom:2px">'+step.icon+' '+step.time+'</div>';
-          html += '<div style="font-size:12px;font-weight:700;color:#1E293B;margin-bottom:3px">'+step.name+'</div>';
-          if(step.tip) html += '<div style="font-size:11px;color:#64748B;line-height:1.4;padding:4px 8px;background:'+(sel?'#E0EDFF':'#F8FAFC')+';border-radius:4px">'+step.tip+'</div>';
-          if(step.transit && !isLast) html += '<div style="font-size:10px;color:#94A3B8;margin-top:6px;padding-top:6px;border-top:1px dashed #E2E8F0">→ '+step.transit+'</div>';
-        } else {
-          html += '<div style="font-size:11px;color:#CBD5E1;font-style:italic">— 当日无安排</div>';
-        }
+        var hotel = planDay && planDay.hotel ? planDay.hotel : {name:'—',price:'—',type:'—'};
+        html += '<div style="border:1px dashed '+(sel?'var(--blue)':'#CBD5E1')+';border-radius:6px;padding:6px 10px;background:'+(sel?'#EFF6FF':'#F8FAFC')+';display:flex;align-items:center;gap:6px">';
+        html += '<span style="font-size:14px">🏨</span>';
+        html += '<div><div style="font-size:10px;font-weight:700;color:'+(sel?'var(--blue)':'#475569')+'">'+hotel.name+'</div>';
+        html += '<div style="font-size:10px;color:#94A3B8">'+hotel.type+' · '+hotel.price+'</div></div>';
         html += '</div>';
       });
       html += '</div>';
     }
-
-    // 住宿行
-    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:8px 12px 14px">';
-    plans.forEach(function(p){
-      var planDay = PLAN_DATA[p].days[dayIdx];
-      var sel = p === selectedCol;
-      var hotel = planDay && planDay.hotel ? planDay.hotel : {name:'—',price:'—',type:'—'};
-      var bdr = sel ? '2px dashed var(--blue)' : '2px dashed #E2E8F0';
-      var bg = sel ? '#EFF6FF' : '#F8FAFC';
-      html += '<div style="border:'+bdr+';border-radius:10px;padding:10px 12px;background:'+bg+';display:flex;align-items:center;gap:8px">';
-      html += '<span style="font-size:16px">🏨</span>';
-      html += '<div style="flex:1"><div style="font-size:11px;font-weight:700;color:'+(sel?'var(--blue)':'#475569')+';margin-bottom:2px">'+hotel.name+'</div>';
-      html += '<div style="font-size:10px;color:#94A3B8">'+hotel.type+' · '+hotel.price+'</div></div>';
-      html += '</div>';
-    });
-    html += '</div>';
   });
 
   allDays.innerHTML = html;
@@ -2759,5 +2787,38 @@ document.addEventListener('click', function(e) {
     </div>
   </div>
 </div>
+
+<script>
+// ===== 内容保护 =====
+(function(){
+  // 禁用右键菜单
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  // 禁用选中文本
+  document.addEventListener('selectstart', function(e){ e.preventDefault(); });
+  // 禁用 Ctrl+C / Ctrl+S / Ctrl+U / F12
+  document.addEventListener('keydown', function(e){
+    if(e.ctrlKey && (e.key==='c'||e.key==='s'||e.key==='u'||e.key==='a')) e.preventDefault();
+    if(e.key==='F12') e.preventDefault();
+  });
+  // 水印层（每次显示页面时自动覆盖）
+  function addWatermark() {
+    var existing = document.getElementById('wm-layer');
+    if(existing) return;
+    var layer = document.createElement('div');
+    layer.id = 'wm-layer';
+    layer.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9999;overflow:hidden;user-select:none';
+    var wmText = 'PM Portfolio · 未经许可禁止转载';
+    var html = '';
+    for(var y=0;y<8;y++){
+      for(var x=0;x<5;x++){
+        html += '<div style="position:absolute;left:'+(x*22)+'%;top:'+(y*14)+'%;font-size:11px;color:rgba(0,0,0,0.06);transform:rotate(-25deg);white-space:nowrap;font-weight:600">'+wmText+'</div>';
+      }
+    }
+    layer.innerHTML = html;
+    document.body.appendChild(layer);
+  }
+  addWatermark();
+})();
+</script>
 </body>
 </html>
