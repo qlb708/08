@@ -1103,52 +1103,57 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step active"><div class="step-dot">3</div> 方案对比</div>
       <div class="proto-step"><div class="step-dot">4</div> 完成决策</div>
     </div>
-    <div class="proto-nav-right"></div>
+    <div class="proto-nav-right">
+      <button id="compare-mode-btn" onclick="toggleCompareMode()" style="padding:6px 14px;border:1.5px solid var(--neutral-200);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:var(--neutral-600);display:flex;align-items:center;gap:5px">
+        <span>⇄</span> 对比模式
+      </button>
+    </div>
   </nav>
-  <div class="compare-screen">
-    <div class="compare-3col" id="compare-3col">
 
-      <!-- 左栏：AI推荐 + 维度筛选（固定窄栏） -->
-      <div class="compare-sidebar" id="col-left" data-minw="130" data-maxw="260" style="width:180px">
-        <div class="ai-summary-card" style="margin-bottom:16px">
+  <!-- 单列模式 -->
+  <div id="single-mode" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <!-- 顶部雷达卡横排 -->
+    <div id="radar-cards-row" style="display:flex;gap:10px;padding:14px 20px;overflow-x:auto;background:#fff;border-bottom:1px solid var(--neutral-100);flex-shrink:0">
+      <!-- rebuildCompare() 动态生成 -->
+    </div>
+
+    <!-- 当前方案行程（单列） -->
+    <div id="single-day-tabs" style="display:flex;gap:6px;padding:10px 20px 0;flex-shrink:0;background:#fff;border-bottom:1px solid var(--neutral-100)">
+      <!-- renderSingleView() 动态生成 Day tabs -->
+    </div>
+    <div id="single-itinerary" style="flex:1;overflow-y:auto;padding:0 20px 40px;max-width:700px;width:100%;margin:0 auto">
+      <!-- renderSingleView() 动态生成 -->
+    </div>
+  </div>
+
+  <!-- 对比模式（默认隐藏） -->
+  <div id="multi-mode" style="flex:1;display:none;overflow:hidden">
+    <div class="compare-3col" id="compare-3col">
+      <div class="compare-sidebar" id="col-left" data-minw="130" data-maxw="260" style="width:170px">
+        <div class="ai-summary-card" style="margin-bottom:12px">
           <div class="ai-summary-label">AI 分析结论</div>
-          <div class="ai-summary-title">综合推荐第 2 个攻略</div>
-          <div class="ai-summary-tag">⚡ 效率最优</div>
-          <div class="ai-summary-body" style="font-size:12px">预算最低，地铁可达 92%，动线集中在 3 个区，排队时间最短，适合短假期。</div>
+          <div class="ai-summary-title" id="ai-rec-title">综合推荐第 2 个攻略</div>
+          <div class="ai-summary-tag" id="ai-rec-tag">⚡ 效率最优</div>
+          <div class="ai-summary-body" id="ai-rec-body" style="font-size:11px">预算最低，地铁可达 92%，动线集中在 3 个区，排队时间最短。</div>
         </div>
-        <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:1px;margin-bottom:6px">对比维度（可多选）</div>
-        <div style="display:flex;flex-direction:column;gap:4px" id="dim-checks">
-          <div style="font-size:9px;color:var(--neutral-400);padding:4px 0 2px;letter-spacing:.5px">基础维度</div>
+        <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;margin-bottom:8px">对比维度</div>
+        <div id="dim-checks" style="display:flex;flex-direction:column;gap:4px">
           <label class="dim-check active" data-dim="overview"><input type="checkbox" checked onchange="toggleDim('overview',this)"> 📊 综合评分</label>
           <label class="dim-check" data-dim="budget"><input type="checkbox" onchange="toggleDim('budget',this)"> 💰 预算对比</label>
           <label class="dim-check" data-dim="transport"><input type="checkbox" onchange="toggleDim('transport',this)"> ✈️ 交通方式</label>
           <label class="dim-check" data-dim="route"><input type="checkbox" onchange="toggleDim('route',this)"> 🗺️ 路线效率</label>
-          <div style="font-size:9px;color:var(--neutral-400);padding:6px 0 2px;letter-spacing:.5px">景点 & 体验</div>
           <label class="dim-check" data-dim="spots"><input type="checkbox" onchange="toggleDim('spots',this)"> 🏛️ 景点覆盖</label>
           <label class="dim-check" data-dim="weather"><input type="checkbox" onchange="toggleDim('weather',this)"> ⛅ 天气适宜</label>
           <label class="dim-check" data-dim="people"><input type="checkbox" onchange="toggleDim('people',this)"> 👥 适合人群</label>
-          <div style="font-size:9px;color:var(--neutral-400);padding:6px 0 2px;letter-spacing:.5px">住宿 & 餐饮</div>
           <label class="dim-check" data-dim="hotel"><input type="checkbox" onchange="toggleDim('hotel',this)"> 🏨 住宿建议</label>
           <label class="dim-check" data-dim="food"><input type="checkbox" onchange="toggleDim('food',this)"> 🍜 餐饮推荐</label>
-          <div style="font-size:9px;color:var(--neutral-400);padding:6px 0 2px;letter-spacing:.5px">规划辅助</div>
           <label class="dim-check" data-dim="luggage"><input type="checkbox" onchange="toggleDim('luggage',this)"> 🎒 行李建议</label>
           <label class="dim-check" data-dim="risk"><input type="checkbox" onchange="toggleDim('risk',this)"> ⚠️ 风险预警</label>
         </div>
       </div>
-
-      <!-- 分隔线1 -->
       <div class="col-resizer" id="resizer-left"></div>
-
-      <!-- 中栏：行程3列对比（主体，占最大宽度） -->
       <div class="compare-mid" id="col-mid" style="padding:0;display:flex;flex-direction:column;overflow:hidden;min-width:0;flex:1">
-
-        <!-- 中栏固定头部：雷达卡 + Day tab -->
         <div style="flex-shrink:0;background:#fff;border-bottom:1px solid var(--neutral-200)">
-          <!-- 雷达卡横排区 -->
-          <div id="radar-cards-row" style="display:flex;gap:8px;padding:10px 10px 8px;overflow-x:auto;background:#F8FAFC;border-bottom:1px solid #F1F5F9">
-            <!-- 由 rebuildCompare() 动态生成 -->
-          </div>
-          <!-- Day tab 行 -->
           <div style="display:flex;align-items:center;gap:6px;padding:7px 10px">
             <span style="font-size:10px;color:var(--neutral-400);font-weight:600" id="compare-count-label">5 个方案</span>
             <div style="width:1px;height:14px;background:var(--neutral-200);margin:0 2px"></div>
@@ -1158,18 +1163,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
             <span style="font-size:10px;color:var(--neutral-400)">点卡片高亮列 · 点 Day 筛选</span>
           </div>
         </div>
-
-        <!-- 中栏主体：3列行程对比（可滚动） -->
-        <div id="panel-all-days" style="flex:1;overflow:auto;min-height:80px">
-          <!-- JS 动态生成 -->
-        </div>
-
-        <!-- 水平拖拽分隔线 -->
+        <div id="panel-all-days" style="flex:1;overflow:auto;min-height:80px"></div>
         <div class="row-resizer" id="row-resizer-mid"></div>
-
-        <!-- 维度对比表（可选，放在行程下方，高度可拖拽） -->
         <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:0;min-height:0;max-height:60%;overflow-y:auto;flex-shrink:0;transition:height .2s">
-          <div id="dim-overview"><!-- 由 renderDimOverview() 动态生成 --></div>
+          <div id="dim-overview"></div>
           <div id="dim-budget" style="display:none"></div>
           <div id="dim-transport" style="display:none"></div>
           <div id="dim-route" style="display:none"></div>
@@ -1182,28 +1179,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div id="dim-risk" style="display:none"></div>
         </div>
       </div>
-
-      <!-- 分隔线2 -->
       <div class="col-resizer" id="resizer-right"></div>
-
-      <!-- 右栏：方案选择 + 操作（固定窄栏） -->
       <div class="compare-panel" id="col-right" data-minw="150" data-maxw="240" style="width:190px;min-width:150px;max-width:300px;flex-shrink:0;border-left:1px solid var(--neutral-200);overflow-y:auto;padding:14px;flex-direction:column;display:flex;gap:10px">
         <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px">选择方案</div>
-
-        <div id="plan-cards-zone" style="display:flex;flex-direction:column;gap:7px">
-        <!-- 由 rebuildCompare() 动态生成 -->
-        </div>
-
-        <div style="border-top:1px solid var(--neutral-100);padding-top:12px;margin-top:4px">
+        <div id="plan-cards-zone" style="display:flex;flex-direction:column;gap:7px"></div>
+        <div style="border-top:1px solid var(--neutral-100);padding-top:10px;margin-top:4px">
           <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;margin-bottom:8px">已选方案</div>
-          <div id="selected-plan-info" style="font-size:12px;color:var(--neutral-400);margin-bottom:10px">尚未选择</div>
-          <button onclick="goItinerary()" id="sidebar-confirm" style="width:100%;padding:10px;border:none;background:var(--neutral-200);color:var(--neutral-500);border-radius:var(--radius);font-size:12px;font-weight:600;cursor:not-allowed;transition:all .15s">查看行程 →</button>
+          <div id="selected-plan-preview" style="font-size:12px;color:var(--neutral-500)">— 未选择</div>
         </div>
-        <div style="border-top:1px solid var(--neutral-100);padding-top:12px">
-          <button onclick="openHealthCheck()" style="width:100%;padding:10px;border:1.5px solid var(--indigo);background:#EEF2FF;color:var(--indigo);border-radius:var(--radius);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s">🔍 AI 行程体检</button>
-        </div>
+        <button class="btn-confirm" onclick="goItinerary()" style="margin-top:auto;font-size:13px;padding:10px">查看行程 →</button>
+        <button onclick="openHealthCheck()" style="background:#F0FDF4;color:#16A34A;border:1px solid #86EFAC;border-radius:8px;padding:8px;font-size:12px;font-weight:600;cursor:pointer">🩺 AI 行程体检</button>
       </div>
-
     </div>
   </div>
 </div>
@@ -1911,8 +1897,6 @@ function rebuildCompare() {
   var plans = getActivePlans();
   var n = plans.length;
 
-  // 雷达卡数据（五维：预算/效率/文化深度/亲子友好/体力要求）
-  // 值越高=越好（预算高=越省钱，体力高=体力要求高）
   var RADAR_DATA = {
     a: { vals:[60,55,75,60,50], slogan:'景点全覆盖，天天满档' },
     b: { vals:[80,95,60,55,75], slogan:'最短时间，最多景点' },
@@ -1922,26 +1906,25 @@ function rebuildCompare() {
   };
   var DIMS = ['省钱','效率','文化','亲子','体力'];
   var RADAR_COLORS = ['#1D6FEB','#7C3AED','#059669','#D97706','#DC2626'];
+  var PLAN_LABELS = { a:'打卡狂魔 🔥', b:'效率玩家 ⚡', c:'遛娃大师 👶', d:'胡同隐士 🏯', e:'闪击特种兵 💨' };
 
-  // 生成雷达卡
+  // 雷达卡（单列+对比模式共用）
   var radarRow = document.getElementById('radar-cards-row');
   if(radarRow) {
     radarRow.innerHTML = '';
     plans.forEach(function(p, pi){
       var d = PLAN_DATA[p];
-      var rd = RADAR_DATA[p] || { vals:[60,60,60,60,60] };
+      var rd = RADAR_DATA[p] || { vals:[60,60,60,60,60], slogan:'' };
       var color = RADAR_COLORS[pi] || '#1D6FEB';
+      var isSel = p === window._currentSelectedPlan;
       var card = document.createElement('div');
       card.id = 'plan-tab-'+p;
-      card.style.cssText = 'flex-shrink:0;width:158px;border:2px solid #E2E8F0;border-radius:10px;background:#fff;cursor:pointer;transition:all .15s;padding:9px 10px 8px;display:flex;flex-direction:column;align-items:center;gap:3px';
-      // 方案名
+      card.style.cssText = 'flex-shrink:0;width:148px;border:2px solid '+(isSel?color:'#E2E8F0')+';border-radius:12px;background:'+(isSel?'#F0F7FF':'#fff')+';cursor:pointer;transition:all .18s;padding:10px 10px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:'+(isSel?'0 4px 16px rgba(29,111,235,0.12)':'none');
       var meta = '<div style="font-size:9px;font-weight:700;color:#94A3B8;align-self:flex-start">攻略'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
-      var slogan = '<div style="font-size:9px;color:#64748B;align-self:flex-start;margin-bottom:2px;font-style:italic">'+rd.slogan+'</div>';
-      var name = '<div style="font-size:10px;font-weight:800;color:#1E293B;line-height:1.3;align-self:flex-start">'+d.name+'</div>';
-      // 雷达图
-      var svg = buildRadarSVG(rd.vals, color, 76);
-      // 五维标签行
-      var tags = '<div style="display:flex;flex-wrap:wrap;gap:2px;margin-top:2px;align-self:stretch">';
+      var name = '<div style="font-size:10px;font-weight:800;color:'+(isSel?color:'#1E293B')+';line-height:1.3;align-self:flex-start">'+d.name+'</div>';
+      var slogan = '<div style="font-size:9px;color:#94A3B8;align-self:flex-start;font-style:italic;margin-bottom:3px">'+rd.slogan+'</div>';
+      var svg = buildRadarSVG(rd.vals, color, 72);
+      var tags = '<div style="display:flex;flex-wrap:wrap;gap:2px;margin-top:3px;align-self:stretch">';
       DIMS.forEach(function(dim, di){
         var v = rd.vals[di];
         var bg = v>=80?'#DBEAFE':v>=65?'#F0FDF4':'#F8FAFC';
@@ -1955,7 +1938,7 @@ function rebuildCompare() {
     });
   }
 
-  // 右栏方案卡
+  // 右栏方案卡（对比模式）
   var cardZone = document.getElementById('plan-cards-zone');
   if(cardZone) {
     cardZone.innerHTML = '';
@@ -1964,10 +1947,10 @@ function rebuildCompare() {
       var card = document.createElement('div');
       card.id = 'plan-'+p;
       card.className = 'plan-card';
-      card.style.cssText = 'border-radius:10px;cursor:pointer;padding:12px;transition:all .15s';
-      card.innerHTML = '<div style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-bottom:2px">攻略 '+(i+1)+'</div>'
-        +'<div style="font-size:13px;font-weight:700;color:var(--neutral-900);line-height:1.3;margin-bottom:3px">'+d.name+'</div>'
-        +'<div style="font-size:11px;color:var(--neutral-500)">'+d.meta+'</div>';
+      card.style.cssText = 'border-radius:10px;cursor:pointer;padding:10px;transition:all .15s';
+      card.innerHTML = '<div style="font-size:9px;color:var(--neutral-400);font-weight:600;margin-bottom:1px">攻略 '+(i+1)+'</div>'
+        +'<div style="font-size:12px;font-weight:700;color:var(--neutral-900);line-height:1.3;margin-bottom:2px">'+d.name+'</div>'
+        +'<div style="font-size:10px;color:var(--neutral-500)">'+d.meta+'</div>';
       card.onclick = (function(pp){ return function(){ selectPlan(pp); }; })(p);
       cardZone.appendChild(card);
     });
@@ -1975,46 +1958,195 @@ function rebuildCompare() {
 
   var lbl = document.getElementById('compare-count-label');
   if(lbl) lbl.textContent = n + ' 个方案';
+
+  // 默认选第1个（或按偏好排序后的第1个）
+  var defaultPlan = (window._prefRanking && window._prefRanking[0]) ? window._prefRanking[0].p : plans[0];
+  window._currentSelectedPlan = defaultPlan;
+  renderSingleView(defaultPlan);
   renderDimOverview();
   renderAllDims();
-  renderItineraryGrid(null);
+  renderItineraryGrid(defaultPlan);
 }
 
-// 生成雷达图 SVG
+// ===== 单列行程视图 =====
+var _singleDay = 0; // 当前展开的 Day
+
+function renderSingleView(plan) {
+  window._currentSelectedPlan = plan;
+  // 更新雷达卡高亮
+  var plans = getActivePlans();
+  var RADAR_COLORS = ['#1D6FEB','#7C3AED','#059669','#D97706','#DC2626'];
+  plans.forEach(function(p, pi){
+    var card = document.getElementById('plan-tab-'+p);
+    if(!card) return;
+    var color = RADAR_COLORS[pi];
+    var isSel = p === plan;
+    card.style.border = '2px solid '+(isSel?color:'#E2E8F0');
+    card.style.background = isSel?'#F0F7FF':'#fff';
+    card.style.boxShadow = isSel?'0 4px 16px rgba(29,111,235,0.12)':'none';
+  });
+
+  var planData = PLAN_DATA[plan];
+  if(!planData) return;
+  var days = planData.days;
+
+  // Day tabs
+  var dayTabsEl = document.getElementById('single-day-tabs');
+  if(dayTabsEl) {
+    dayTabsEl.innerHTML = '';
+    days.forEach(function(day, i){
+      var btn = document.createElement('button');
+      btn.textContent = 'Day'+(i+1);
+      btn.style.cssText = 'padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid '+(i===_singleDay?'var(--blue)':'var(--neutral-200)')+';background:'+(i===_singleDay?'var(--blue)':'#fff')+';color:'+(i===_singleDay?'#fff':'var(--neutral-600)')+';margin-bottom:8px';
+      btn.onclick = (function(idx){ return function(){ _singleDay=idx; renderSingleItinerary(plan); renderSingleDayTabs(plan); }; })(i);
+      dayTabsEl.appendChild(btn);
+    });
+  }
+  renderSingleItinerary(plan);
+}
+
+function renderSingleDayTabs(plan) {
+  var plans = getActivePlans();
+  var days = PLAN_DATA[plan].days;
+  var dayTabsEl = document.getElementById('single-day-tabs');
+  if(!dayTabsEl) return;
+  dayTabsEl.innerHTML = '';
+  days.forEach(function(day, i){
+    var btn = document.createElement('button');
+    btn.textContent = 'Day'+(i+1);
+    btn.style.cssText = 'padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid '+(i===_singleDay?'var(--blue)':'var(--neutral-200)')+';background:'+(i===_singleDay?'var(--blue)':'#fff')+';color:'+(i===_singleDay?'#fff':'var(--neutral-600)')+';margin-bottom:8px';
+    btn.onclick = (function(idx){ return function(){ _singleDay=idx; renderSingleItinerary(plan); renderSingleDayTabs(plan); }; })(i);
+    dayTabsEl.appendChild(btn);
+  });
+}
+
+// 地点简介数据
+var SPOT_INFO = {
+  '故宫博物院':   {worth:true,  stars:'★★★★★', intro:'必去TOP1。建议2-3h，重点看太和殿、后宫区域，9点前入园排队最短。'},
+  '八达岭长城':   {worth:true,  stars:'★★★★☆', intro:'最经典长城段，设施完善。旺季人多，建议早8点前或工作日前往。'},
+  '慕田峪长城':   {worth:true,  stars:'★★★★★', intro:'景色比八达岭更原始壮观，游客少50%，拍照效果更佳，强烈推荐。'},
+  '颐和园':      {worth:true,  stars:'★★★★☆', intro:'皇家园林精华，昆明湖+万寿山。建议留3h，可泛舟湖上。'},
+  '国家博物馆':  {worth:true,  stars:'★★★★★', intro:'免费，需提前预约。「古代中国」常设展必看，至少留3h。'},
+  '天坛公园':    {worth:true,  stars:'★★★★☆', intro:'祈年殿标志建筑。清晨来可看老北京晨练，文化体验很独特。'},
+  '南锣鼓巷':   {worth:null,  stars:'★★★☆☆', intro:'网红胡同，周末人很多。走支巷比主街更有意思，别期望太高。'},
+  '景山公园':    {worth:true,  stars:'★★★★☆', intro:'俯瞰故宫全景最佳位置，门票仅¥2，与故宫连着逛效率最高。'},
+  '798艺术区':  {worth:null,  stars:'★★★☆☆', intro:'当代艺术聚集地，工作日游客少体验更好，对艺术感兴趣才推荐。'},
+  '雍和宫':     {worth:true,  stars:'★★★★☆', intro:'北京最大藏传佛教寺庙，建筑精美。节假日人多，建议工作日上午。'},
+  '北海公园':   {worth:true,  stars:'★★★★☆', intro:'皇家园林，清晨划船几乎无人，性价比极高，与景山公园连着玩最合适。'},
+  '前门大栅栏': {worth:null,  stars:'★★★☆☆', intro:'老北京商业街，老字号集中。商业化较重，适合购买伴手礼。'},
+  '天安门广场': {worth:true,  stars:'★★★★☆', intro:'必去打卡。建议早晨升旗仪式或傍晚前往，光线最好。'},
+  '烟袋斜街':   {worth:true,  stars:'★★★★☆', intro:'北京最古老斜街，人少安静，适合漫步拍照，周边咖啡馆不错。'},
+  '什刹海胡同游':{worth:true, stars:'★★★★☆', intro:'老北京胡同文化精华。骑车穿行体验极好，傍晚光线好适合拍照。'},
+  '国子监街':   {worth:true,  stars:'★★★★☆', intro:'古朴安静，书香气息浓。与雍和宫相连步行可达，人少适合拍照。'},
+};
+
+function renderSingleItinerary(plan) {
+  var el = document.getElementById('single-itinerary');
+  if(!el) return;
+  var planData = PLAN_DATA[plan];
+  if(!planData || !planData.days[_singleDay]) { el.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8">当日无安排</div>'; return; }
+  var day = planData.days[_singleDay];
+  var html = '';
+
+  // Day 标题
+  html += '<div style="padding:20px 0 12px">';
+  html += '<div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:4px">Day'+(_singleDay+1)+'</div>';
+  html += '<div style="font-size:18px;font-weight:800;color:#1E293B;margin-bottom:4px">'+day.label.replace(/^Day\d+\s*/,'')+'</div>';
+  html += '<div style="font-size:12px;color:#94A3B8">'+planData.name+' · '+planData.meta+'</div>';
+  html += '</div>';
+
+  // 地点列表
+  day.steps.forEach(function(step, si){
+    var info = SPOT_INFO[step.name] || null;
+    var isOpen = !!_expandedSpots[plan+'_'+_singleDay+'_'+si];
+    var worthLabel = info ? (info.worth===true?'✅ 值得去':info.worth===false?'⚡ 可跳过':'💡 按需') : null;
+    var worthColor = info ? (info.worth===true?'#16A34A':info.worth===false?'#DC2626':'#D97706') : '#94A3B8';
+    var worthBg   = info ? (info.worth===true?'#F0FDF4':info.worth===false?'#FEF2F2':'#FFFBEB') : '#F8FAFC';
+
+    html += '<div style="margin-bottom:8px">';
+    // 主卡片
+    html += '<div style="background:#fff;border:1.5px solid '+(isOpen?'var(--blue)':'#E2E8F0')+';border-radius:12px;overflow:hidden;transition:all .18s">';
+    html += '<div style="padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px" onclick="toggleSingleSpot(\'' + plan + '\',' + _singleDay + ',' + si + ')">';
+    html += '<div style="font-size:28px;flex-shrink:0">'+step.icon+'</div>';
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="font-size:10px;color:#94A3B8;margin-bottom:2px">'+step.time+'</div>';
+    html += '<div style="font-size:15px;font-weight:700;color:#1E293B">'+step.name+'</div>';
+    if(info && worthLabel) html += '<span style="font-size:10px;font-weight:700;color:'+worthColor+';background:'+worthBg+';padding:1px 7px;border-radius:4px;margin-top:3px;display:inline-block">'+worthLabel+'</span>';
+    html += '</div>';
+    html += '<span style="font-size:12px;color:#94A3B8">'+( isOpen?'▲':'▼')+'</span>';
+    html += '</div>';
+    // 展开区
+    if(isOpen){
+      html += '<div style="padding:0 16px 14px;border-top:1px solid #F1F5F9">';
+      if(info) html += '<div style="font-size:12px;color:#475569;line-height:1.7;padding-top:10px;margin-bottom:8px">'+info.intro+'</div>';
+      if(step.tip) html += '<div style="font-size:11px;color:#1D6FEB;background:#EFF6FF;padding:6px 10px;border-radius:6px;margin-bottom:4px">💡 '+step.tip+'</div>';
+      if(info) html += '<div style="font-size:11px;color:#94A3B8">评分：'+info.stars+'</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+    // 交通衔接
+    if(step.transit && si < day.steps.length-1){
+      html += '<div style="padding:4px 16px;font-size:11px;color:#94A3B8;display:flex;align-items:center;gap:4px"><span>↓</span>'+step.transit+'</div>';
+    }
+    html += '</div>';
+  });
+
+  // 住宿
+  if(day.hotel){
+    html += '<div style="background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:4px">';
+    html += '<div style="font-size:24px">🏨</div>';
+    html += '<div><div style="font-size:13px;font-weight:700;color:#1E293B">'+day.hotel.name+'</div>';
+    html += '<div style="font-size:11px;color:#94A3B8">'+day.hotel.type+' · '+day.hotel.price+'</div></div>';
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+function toggleSingleSpot(plan, dayIdx, stepIdx) {
+  var key = plan+'_'+dayIdx+'_'+stepIdx;
+  _expandedSpots[key] = !_expandedSpots[key];
+  renderSingleItinerary(plan);
+}
+
+// 对比模式切换
+var _compareMode = false;
+function toggleCompareMode() {
+  _compareMode = !_compareMode;
+  var btn = document.getElementById('compare-mode-btn');
+  var single = document.getElementById('single-mode');
+  var multi = document.getElementById('multi-mode');
+  if(_compareMode){
+    single.style.display = 'none';
+    multi.style.display = 'flex';
+    if(btn){ btn.style.background='var(--blue)'; btn.style.color='#fff'; btn.style.borderColor='var(--blue)'; }
+    renderItineraryGrid(window._currentSelectedPlan);
+  } else {
+    single.style.display = 'flex';
+    multi.style.display = 'none';
+    if(btn){ btn.style.background='#fff'; btn.style.color='var(--neutral-600)'; btn.style.borderColor='var(--neutral-200)'; }
+    renderSingleView(window._currentSelectedPlan);
+  }
+}
+
 function buildRadarSVG(vals, color, size) {
   var cx = size/2, cy = size/2, r = size*0.36;
   var n = vals.length;
   function pt(i, v) {
     var angle = (Math.PI*2/n)*i - Math.PI/2;
-    var rr = r * v / 100;
-    return [cx + rr*Math.cos(angle), cy + rr*Math.sin(angle)];
+    return [cx + r*v/100*Math.cos(angle), cy + r*v/100*Math.sin(angle)];
   }
   var grid = '';
   [25,50,75,100].forEach(function(pct){
-    var pts = [];
-    for(var i=0;i<n;i++) pts.push(pt(i,pct).join(','));
+    var pts=[]; for(var i=0;i<n;i++) pts.push(pt(i,pct).join(','));
     grid += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#E2E8F0" stroke-width="0.8"/>';
   });
-  var axes = '';
-  for(var i=0;i<n;i++) {
-    var p = pt(i,100);
-    axes += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="#E2E8F0" stroke-width="0.8"/>';
-  }
-  var dataPts = [];
-  for(var i=0;i<n;i++) dataPts.push(pt(i,vals[i]).join(','));
-  var poly = '<polygon points="'+dataPts.join(' ')+'" fill="'+color+'" fill-opacity="0.18" stroke="'+color+'" stroke-width="1.5" stroke-linejoin="round"/>';
-  var dots = '';
-  for(var i=0;i<n;i++) {
-    var p2 = pt(i,vals[i]);
-    dots += '<circle cx="'+p2[0]+'" cy="'+p2[1]+'" r="2.5" fill="'+color+'"/>';
-  }
-  // 维度标签
-  var labels = '';
-  var DIMS_SHORT = ['省钱','效率','文化','亲子','体力'];
-  for(var i=0;i<n;i++) {
-    var lp = pt(i, 118);
-    labels += '<text x="'+lp[0]+'" y="'+lp[1]+'" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="#94A3B8" font-family="sans-serif">'+DIMS_SHORT[i]+'</text>';
-  }
+  var axes = ''; for(var i=0;i<n;i++){ var p=pt(i,100); axes+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="#E2E8F0" stroke-width="0.8"/>'; }
+  var dp=[]; for(var i=0;i<n;i++) dp.push(pt(i,vals[i]).join(','));
+  var poly='<polygon points="'+dp.join(' ')+'" fill="'+color+'" fill-opacity="0.18" stroke="'+color+'" stroke-width="1.5" stroke-linejoin="round"/>';
+  var dots=''; for(var i=0;i<n;i++){ var p2=pt(i,vals[i]); dots+='<circle cx="'+p2[0]+'" cy="'+p2[1]+'" r="2.5" fill="'+color+'"/>'; }
+  var DIMS_S=['省钱','效率','文化','亲子','体力']; var labels='';
+  for(var i=0;i<n;i++){ var lp=pt(i,118); labels+='<text x="'+lp[0]+'" y="'+lp[1]+'" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="#94A3B8" font-family="sans-serif">'+DIMS_S[i]+'</text>'; }
   return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" style="display:block;margin:0 auto;overflow:visible">'+grid+axes+poly+dots+labels+'</svg>';
 }
 
