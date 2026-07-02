@@ -633,6 +633,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .itin-day-cell{padding:7px 12px;font-size:12px;font-weight:800;color:var(--blue);border-right:1px solid #BFDBFE;min-width:0}
 .itin-day-cell:last-child{border-right:none}
 .itin-empty{color:var(--neutral-300);font-style:italic}
+
+/* ===== Preference Page ===== */
+.pref-opt{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .2s;color:#fff;text-align:center}
+.pref-opt:hover{background:rgba(29,111,235,0.25);border-color:#1D6FEB;transform:translateY(-2px)}
+.pref-opt.selected{background:rgba(29,111,235,0.35);border-color:#1D6FEB;box-shadow:0 0 0 3px rgba(29,111,235,0.3)}
+.pref-rank-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 14px;transition:all .3s}
+.pref-rank-item.top{background:rgba(29,111,235,0.2);border-color:rgba(29,111,235,0.5)}
 </style>
 </head>
 <body>
@@ -1013,6 +1020,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="a-step active" id="as3"><div class="a-step-icon" style="color:#fff;font-size:10px">…</div><div class="a-step-text">识别方案间差异与优劣</div></div>
         <div class="a-step" id="as4"><div class="a-step-icon" style="color:var(--neutral-400)">4</div><div class="a-step-text">生成推荐理由与对比结论</div></div>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== MVP01 · PREFERENCE ===================== -->
+<div id="mvp01-preference" class="proto-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showScreen('mvp01-import')">← 返回</button>
+      <div class="proto-title">AI 多方案决策</div><div class="proto-badge">MVP 01</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step done"><div class="step-dot">✓</div> 导入方案</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> AI 分析</div>
+      <div class="proto-step active"><div class="step-dot">3</div> 偏好确认</div>
+      <div class="proto-step"><div class="step-dot">4</div> 完成决策</div>
+    </div>
+    <div class="proto-nav-right"></div>
+  </nav>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#0A0F1E 0%,#1a1f3a 60%,#0d1117 100%);padding:40px 20px;min-height:0">
+    <!-- AI 分析完成提示 -->
+    <div style="text-align:center;margin-bottom:36px">
+      <div style="font-size:28px;margin-bottom:10px">✦</div>
+      <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px" id="pref-title">5 个方案分析完毕</div>
+      <div style="font-size:14px;color:#94A3B8">我发现它们各有侧重，有一件事想先确认一下</div>
+    </div>
+
+    <!-- 核心问题 -->
+    <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:28px 32px;max-width:480px;width:100%;backdrop-filter:blur(10px)">
+      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:24px;text-align:center">
+        这次出行，你最在意哪一个？
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="pref-options">
+        <button class="pref-opt" data-pref="efficient" onclick="selectPref(this,'efficient')">
+          <div style="font-size:24px;margin-bottom:6px">🚀</div>
+          <div style="font-size:14px;font-weight:700">玩得多</div>
+          <div style="font-size:11px;opacity:.7;margin-top:3px">景点密度高，不虚此行</div>
+        </button>
+        <button class="pref-opt" data-pref="budget" onclick="selectPref(this,'budget')">
+          <div style="font-size:24px;margin-bottom:6px">💸</div>
+          <div style="font-size:14px;font-weight:700">花得少</div>
+          <div style="font-size:11px;opacity:.7;margin-top:3px">控制预算，性价比优先</div>
+        </button>
+        <button class="pref-opt" data-pref="photo" onclick="selectPref(this,'photo')">
+          <div style="font-size:24px;margin-bottom:6px">📸</div>
+          <div style="font-size:14px;font-weight:700">拍得好</div>
+          <div style="font-size:11px;opacity:.7;margin-top:3px">出片率高，打卡必到</div>
+        </button>
+        <button class="pref-opt" data-pref="relax" onclick="selectPref(this,'relax')">
+          <div style="font-size:24px;margin-bottom:6px">😌</div>
+          <div style="font-size:14px;font-weight:700">不太累</div>
+          <div style="font-size:11px;opacity:.7;margin-top:3px">节奏慢，留白多</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- AI 匹配结果（选择后显示） -->
+    <div id="pref-result" style="display:none;margin-top:28px;max-width:480px;width:100%;text-align:center">
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:12px">根据你的偏好，AI 重新排了个序</div>
+      <div id="pref-ranking" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+        <!-- 动态生成 -->
+      </div>
+      <button onclick="showScreen('mvp01-compare')" style="background:#1D6FEB;color:#fff;border:none;border-radius:12px;padding:14px 40px;font-size:15px;font-weight:700;cursor:pointer;width:100%">
+        查看方案对比 →
+      </button>
     </div>
   </div>
 </div>
@@ -2057,7 +2130,7 @@ function startAnalyzing() {
     if(s4){ s4.className='a-step done'; s4.querySelector('.a-step-icon').textContent='✓'; s4.querySelector('.a-step-text').style.color='#16A34A'; }
     if(titleEl) titleEl.textContent = '✦ '+n+' 个方案分析完成';
   }, 2800);
-  setTimeout(function(){ showScreen('mvp01-compare'); }, 3800);
+  setTimeout(function(){ showPreference(); }, 3800);
 }
 function setDim(el, dim) {
   document.querySelectorAll('.dim-item').forEach(function(d){d.classList.remove('active')});
@@ -2852,6 +2925,80 @@ document.addEventListener('click', function(e) {
   var modal = document.getElementById('health-check-modal');
   if (e.target === modal) closeHealthCheck();
 });
+
+
+// ===== Preference Page =====
+var _userPref = null;
+
+function showPreference() {
+  var n = filledSlots.size;
+  var titleEl = document.getElementById('pref-title');
+  if(titleEl) titleEl.textContent = n + ' 个方案分析完毕';
+  document.getElementById('pref-result').style.display = 'none';
+  document.querySelectorAll('.pref-opt').forEach(function(b){ b.classList.remove('selected'); });
+  showScreen('mvp01-preference');
+}
+
+// 偏好与方案的匹配分（预算/效率/文化/亲子/体力）
+var PREF_WEIGHTS = {
+  efficient: [0, 95, 5, 0, 0],   // 效率最重要
+  budget:    [95, 5, 0, 0, 0],   // 省钱最重要
+  photo:     [0, 30, 40, 10, 20], // 文化景观+效率
+  relax:     [20, 0, 30, 30, -50] // 体力惩罚，亲子友好
+};
+var RADAR_SCORES = {
+  a: [60,55,75,60,50],
+  b: [80,95,60,55,75],
+  c: [40,45,65,95,35],
+  d: [70,65,95,50,60],
+  e: [90,90,70,40,85]
+};
+
+function selectPref(btn, pref) {
+  _userPref = pref;
+  document.querySelectorAll('.pref-opt').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+
+  // 计算每个方案的匹配分
+  var weights = PREF_WEIGHTS[pref];
+  var plans = getActivePlans();
+  var scored = plans.map(function(p){
+    var vals = RADAR_SCORES[p] || [60,60,60,60,60];
+    var score = 0;
+    weights.forEach(function(w,i){ score += w * vals[i] / 100; });
+    // 归一化到 60-99
+    return { p: p, raw: score };
+  });
+  var maxRaw = Math.max.apply(null, scored.map(function(s){ return s.raw; }));
+  var minRaw = Math.min.apply(null, scored.map(function(s){ return s.raw; }));
+  scored.forEach(function(s){
+    s.match = Math.round(60 + (s.raw - minRaw) / (maxRaw - minRaw + 0.001) * 38);
+  });
+  scored.sort(function(a,b){ return b.match - a.match; });
+
+  // 保存排序结果供 compare 页使用
+  window._prefRanking = scored;
+
+  // 渲染排名
+  var rankEl = document.getElementById('pref-ranking');
+  var planNames = { a:'打卡狂魔 🔥', b:'效率玩家 ⚡', c:'遛娃大师 👶', d:'胡同隐士 🏯', e:'闪击特种兵 💨' };
+  var medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+  rankEl.innerHTML = '';
+  scored.forEach(function(s, i){
+    var item = document.createElement('div');
+    item.className = 'pref-rank-item' + (i===0?' top':'');
+    item.innerHTML = '<span style="font-size:18px">'+medals[i]+'</span>'
+      +'<span style="flex:1;font-size:13px;font-weight:700;color:#fff">'+planNames[s.p]+'</span>'
+      +'<span style="font-size:12px;font-weight:700;color:'+(i===0?'#60A5FA':'#94A3B8')+'">匹配度 '+s.match+'%</span>';
+    rankEl.appendChild(item);
+  });
+
+  // 显示结果区
+  var resultEl = document.getElementById('pref-result');
+  resultEl.style.display = 'block';
+  resultEl.style.opacity = '0';
+  setTimeout(function(){ resultEl.style.transition='opacity .4s'; resultEl.style.opacity='1'; }, 50);
+}
 
 </script>
 
