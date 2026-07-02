@@ -2788,37 +2788,6 @@ document.addEventListener('click', function(e) {
   </div>
 </div>
 
-<script>
-// ===== 内容保护 =====
-(function(){
-  // 禁用右键菜单
-  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  // 禁用选中文本
-  document.addEventListener('selectstart', function(e){ e.preventDefault(); });
-  // 禁用 Ctrl+C / Ctrl+S / Ctrl+U / F12
-  document.addEventListener('keydown', function(e){
-    if(e.ctrlKey && (e.key==='c'||e.key==='s'||e.key==='u'||e.key==='a')) e.preventDefault();
-    if(e.key==='F12') e.preventDefault();
-  });
-  // 水印层（每次显示页面时自动覆盖）
-  function addWatermark() {
-    var existing = document.getElementById('wm-layer');
-    if(existing) return;
-    var layer = document.createElement('div');
-    layer.id = 'wm-layer';
-    layer.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9999;overflow:hidden;user-select:none';
-    var wmText = 'PM Portfolio · 未经许可禁止转载';
-    var html = '';
-    for(var y=0;y<8;y++){
-      for(var x=0;x<5;x++){
-        html += '<div style="position:absolute;left:'+(x*22)+'%;top:'+(y*14)+'%;font-size:11px;color:rgba(0,0,0,0.06);transform:rotate(-25deg);white-space:nowrap;font-weight:600">'+wmText+'</div>';
-      }
-    }
-    layer.innerHTML = html;
-    document.body.appendChild(layer);
-  }
-  addWatermark();
-})();
-</script>
+<!-- Author: qlb | Created: 2026-07-02 | Original Design -->
 </body>
 </html>
