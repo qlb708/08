@@ -265,11 +265,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
 /* Proto Nav */
 .proto-nav{
-  display:flex;align-items:center;justify-content:space-between;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   padding:0 24px;height:56px;
   background:#fff;border-bottom:1px solid var(--neutral-200);
   position:sticky;top:0;z-index:200;
 }
+.proto-nav-left{display:flex;align-items:center;gap:12px;justify-content:flex-start}
+.proto-nav-right{display:flex;align-items:center;justify-content:flex-end}
 .proto-nav-left{display:flex;align-items:center;gap:12px}
 .back-btn{
   display:flex;align-items:center;gap:6px;font-size:14px;color:var(--neutral-500);
@@ -312,6 +314,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .import-slot.filled{border-style:solid;border-color:var(--blue);background:#EFF6FF}
 .import-slot.filled-b{border-style:solid;border-color:#0EA5E9;background:#F0F9FF}
 .import-slot.filled-c{border-style:solid;border-color:#16A34A;background:#F0FDF4}
+.import-slot.filled-d{border-style:solid;border-color:#9333EA;background:#FAF5FF}
+.import-slot.filled-e{border-style:solid;border-color:#EA580C;background:#FFF7ED}
 .slot-icon{font-size:32px;margin-bottom:12px}
 .slot-label{font-size:13px;font-weight:700;color:var(--neutral-700);margin-bottom:4px}
 .slot-hint{font-size:12px;color:var(--neutral-400)}
@@ -319,10 +323,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .slot-filled-content{display:none}
 .import-slot.filled .slot-filled-content,
 .import-slot.filled-b .slot-filled-content,
-.import-slot.filled-c .slot-filled-content{display:block}
+.import-slot.filled-c .slot-filled-content,
+.import-slot.filled-d .slot-filled-content,
+.import-slot.filled-e .slot-filled-content{display:block}
 .import-slot.filled .slot-empty,
 .import-slot.filled-b .slot-empty,
-.import-slot.filled-c .slot-empty{display:none}
+.import-slot.filled-c .slot-empty,
+.import-slot.filled-d .slot-empty,
+.import-slot.filled-e .slot-empty{display:none}
 .slot-source-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:10px}
 .slot-source-tag.xhs{background:#FFE4E4;color:#DC2626}
 .slot-source-tag.ai{background:#EFF6FF;color:var(--blue)}
@@ -823,51 +831,113 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step"><div class="step-dot">3</div> 方案对比</div>
       <div class="proto-step"><div class="step-dot">4</div> 完成决策</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div class="import-screen">
     <div class="import-header">
       <h2>导入你想比较的方案</h2>
-      <p>支持导入多个来源的方案内容，最多同时对比 3 个。点击卡片体验导入效果。</p>
+      <p>支持小红书攻略、AI 规划、知乎路书等多种来源，最多同时对比 <strong>5 个</strong>方案。至少导入 2 个后解锁分析。</p>
     </div>
-    <div class="import-container">
+
+    <!-- 来源说明 tag 行 -->
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap">
+      <span style="padding:4px 12px;background:#FFF1F2;color:#BE123C;border-radius:20px;font-size:11px;font-weight:600">📕 小红书攻略</span>
+      <span style="padding:4px 12px;background:#EFF6FF;color:var(--blue);border-radius:20px;font-size:11px;font-weight:600">✦ AI 规划</span>
+      <span style="padding:4px 12px;background:#EFF8FF;color:#1D4ED8;border-radius:20px;font-size:11px;font-weight:600">📘 知乎路书</span>
+      <span style="padding:4px 12px;background:#F0FDF4;color:#15803D;border-radius:20px;font-size:11px;font-weight:600">📄 自定义输入</span>
+      <span style="padding:4px 12px;background:#FFF7ED;color:#C2410C;border-radius:20px;font-size:11px;font-weight:600">🔗 网页链接导入</span>
+    </div>
+
+    <!-- 动态槽位（默认显示2+1个添加按钮，最多5个） -->
+    <div id="import-slots-container" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:860px;margin:0 auto 16px">
+      <!-- 槽位 1 -->
       <div class="import-slot" id="slot-a" onclick="fillSlot('a')">
         <div class="slot-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <div class="slot-empty"><div class="slot-icon">📋</div><div class="slot-label">方案 A</div><div class="slot-hint">点击导入</div></div>
+        <div class="slot-empty">
+          <div class="slot-icon">📕</div>
+          <div class="slot-label">攻略 1</div>
+          <div class="slot-hint">点击导入小红书攻略</div>
+        </div>
         <div class="slot-filled-content">
           <div class="slot-source-tag xhs">📕 小红书攻略</div>
           <div class="slot-title">「北京 5 日经典路线」深度游攻略</div>
           <div class="slot-meta">预算 ¥3,200 · 5 天 · 含长城+故宫+胡同<br>来源：@旅行探索官 · 1.2w 收藏</div>
         </div>
       </div>
+      <!-- 槽位 2 -->
       <div class="import-slot" id="slot-b" onclick="fillSlot('b')">
         <div class="slot-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <div class="slot-empty"><div class="slot-icon">🤖</div><div class="slot-label">方案 B</div><div class="slot-hint">点击导入 AI 规划结果</div></div>
+        <div class="slot-empty">
+          <div class="slot-icon">🤖</div>
+          <div class="slot-label">攻略 2</div>
+          <div class="slot-hint">点击导入 AI 规划结果</div>
+        </div>
         <div class="slot-filled-content">
           <div class="slot-source-tag ai">✦ AI 规划</div>
           <div class="slot-title">AI · 高效北京 4 日方案</div>
           <div class="slot-meta">预算 ¥2,500 · 4 天 · 重点核心景点<br>地铁通勤优化 · 排队时间最短</div>
         </div>
       </div>
+      <!-- 槽位 3 -->
       <div class="import-slot" id="slot-c" onclick="fillSlot('c')">
         <div class="slot-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-        <div class="slot-empty"><div class="slot-icon">📝</div><div class="slot-label">方案 C</div><div class="slot-hint">点击导入第三个方案（可选）</div></div>
+        <div class="slot-empty">
+          <div class="slot-icon">📘</div>
+          <div class="slot-label">攻略 3</div>
+          <div class="slot-hint">点击导入知乎路书</div>
+        </div>
         <div class="slot-filled-content">
           <div class="slot-source-tag zh">📘 知乎路书</div>
           <div class="slot-title">北京亲子 5 日游超详细路书</div>
           <div class="slot-meta">预算 ¥4,000 · 5 天 · 适合带孩子家庭<br>节奏较慢 · 包含科技馆+动物园</div>
         </div>
       </div>
+      <!-- 槽位 4（隐藏） -->
+      <div class="import-slot" id="slot-d" onclick="fillSlot('d')" style="display:none">
+        <div class="slot-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <div class="slot-empty">
+          <div class="slot-icon">📄</div>
+          <div class="slot-label">攻略 4</div>
+          <div class="slot-hint">点击导入自定义方案</div>
+        </div>
+        <div class="slot-filled-content">
+          <div class="slot-source-tag" style="background:#F0FDF4;color:#15803D">📄 自定义</div>
+          <div class="slot-title">手动规划：北京深度文化 4 日</div>
+          <div class="slot-meta">预算 ¥2,800 · 4 天 · 侧重胡同+老北京<br>用户自定义，包含冷门景点</div>
+        </div>
+      </div>
+      <!-- 槽位 5（隐藏） -->
+      <div class="import-slot" id="slot-e" onclick="fillSlot('e')" style="display:none">
+        <div class="slot-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <div class="slot-empty">
+          <div class="slot-icon">🔗</div>
+          <div class="slot-label">攻略 5</div>
+          <div class="slot-hint">粘贴网页链接自动解析</div>
+        </div>
+        <div class="slot-filled-content">
+          <div class="slot-source-tag" style="background:#FFF7ED;color:#C2410C">🔗 链接导入</div>
+          <div class="slot-title">马蜂窝「10月北京精华 3 日」</div>
+          <div class="slot-meta">预算 ¥1,980 · 3 天 · 极致精华路线<br>来源：马蜂窝攻略 · 自动解析</div>
+        </div>
+      </div>
     </div>
+
+    <!-- 添加更多 / 数量控制 -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px">
+      <div id="slot-counter" style="font-size:12px;color:var(--neutral-500)">已添加 <span id="slot-count-num" style="font-weight:700;color:var(--blue)">0</span> / 5 个方案</div>
+      <button id="add-slot-btn" onclick="addSlot()" style="padding:6px 16px;border:1.5px dashed var(--blue);background:#F8FBFF;color:var(--blue);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">+ 添加更多方案</button>
+      <button id="remove-slot-btn" onclick="removeSlot()" style="padding:6px 14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-500);border-radius:8px;font-size:12px;cursor:pointer;display:none">− 移除</button>
+    </div>
+
     <div class="import-tips">
       <div style="font-size:20px;flex-shrink:0;margin-top:2px">✦</div>
       <div>
         <h4>AI 将从以下维度自动对比方案</h4>
-        <p>旅行天数 · 每日预算 · 主要景点 · 住宿区域 · 通勤方式 · 适合人群 · 节奏快慢 · 覆盖范围</p>
+        <p>旅行天数 · 每日预算 · 交通方式 · 主要景点 · 住宿区域 · 适合人群 · 节奏快慢 · 天气适宜性 · 风险预警</p>
       </div>
     </div>
     <div class="import-action">
-      <div><div class="note-badge">📝 原型说明</div><span style="font-size:12px;color:var(--neutral-400);margin-left:8px">点击三个方案卡片体验「导入」，导入 2 个后解锁分析</span></div>
+      <div><div class="note-badge">📝 原型说明</div><span style="font-size:12px;color:var(--neutral-400);margin-left:8px">点击方案卡片体验「导入」，导入 2 个后解锁分析</span></div>
       <button class="btn-ai" id="analyze-btn" onclick="startAnalyzing()" style="opacity:.4;pointer-events:none">✦ 开始 AI 分析</button>
     </div>
   </div>
@@ -886,7 +956,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step"><div class="step-dot">3</div> 方案对比</div>
       <div class="proto-step"><div class="step-dot">4</div> 完成决策</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div class="analyzing-screen">
     <div class="analyzing-card">
@@ -920,7 +990,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step active"><div class="step-dot">3</div> 方案对比</div>
       <div class="proto-step"><div class="step-dot">4</div> 完成决策</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div class="compare-screen">
     <div class="compare-3col" id="compare-3col">
@@ -1218,7 +1288,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step active"><div class="step-dot">4</div> 具体行程</div>
       <div class="proto-step"><div class="step-dot">5</div> 确认出发</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div style="padding:28px 40px;max-width:1000px;margin:0 auto;width:100%">
     <!-- 已选方案标注 -->
@@ -1341,7 +1411,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step done"><div class="step-dot">✓</div> 具体行程</div>
       <div class="proto-step active"><div class="step-dot">5</div> 确认出发</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div style="padding:28px 40px;max-width:960px;margin:0 auto;width:100%">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">
@@ -1499,7 +1569,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step done"><div class="step-dot">✓</div> 方案对比</div>
       <div class="proto-step active"><div class="step-dot">4</div> 完成决策</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div class="success-screen">
     <div class="success-icon">✅</div>
@@ -1533,7 +1603,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step"><div class="step-dot">3</div> 路线建议</div>
       <div class="proto-step"><div class="step-dot">4</div> 保存行程</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div class="places-screen">
     <div class="places-header">
@@ -1603,7 +1673,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step active"><div class="step-dot">3</div> 路线建议</div>
       <div class="proto-step"><div class="step-dot">4</div> 保存行程</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div class="routes-screen">
     <div class="routes-layout">
@@ -1738,7 +1808,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step done"><div class="step-dot">✓</div> 路线建议</div>
       <div class="proto-step active"><div class="step-dot">4</div> 保存行程</div>
     </div>
-    <div style="width:80px"></div>
+    <div class="proto-nav-right"></div>
   </nav>
   <div class="success-screen">
     <div class="success-icon">🗺️</div>
@@ -1797,15 +1867,48 @@ function startMVP(mvp) {
 // ===== MVP01 =====
 function fillSlot(slot) {
   var el = document.getElementById('slot-'+slot);
-  var map = {a:'filled',b:'filled-b',c:'filled-c'};
+  var colorMap = {a:'filled',b:'filled-b',c:'filled-c',d:'filled-d',e:'filled-e'};
   if (el.className.includes('filled')) {
     el.className='import-slot'; filledSlots.delete(slot);
   } else {
-    el.className='import-slot '+map[slot]; filledSlots.add(slot);
+    el.className='import-slot '+(colorMap[slot]||'filled'); filledSlots.add(slot);
   }
   var btn = document.getElementById('analyze-btn');
   if (filledSlots.size >= 2) { btn.style.opacity='1'; btn.style.pointerEvents='auto'; }
   else { btn.style.opacity='.4'; btn.style.pointerEvents='none'; }
+  updateSlotCounter();
+}
+var _visibleSlots = ['a','b','c'];
+function updateSlotCounter() {
+  var num = document.getElementById('slot-count-num');
+  if(num) num.textContent = filledSlots.size;
+  var addBtn = document.getElementById('add-slot-btn');
+  var rmBtn = document.getElementById('remove-slot-btn');
+  if(addBtn) addBtn.style.display = _visibleSlots.length >= 5 ? 'none' : '';
+  if(rmBtn) rmBtn.style.display = _visibleSlots.length > 2 ? '' : 'none';
+}
+var _allSlots = ['a','b','c','d','e'];
+function addSlot() {
+  var next = _allSlots.find(function(s){ return _visibleSlots.indexOf(s) === -1; });
+  if(!next) return;
+  var el = document.getElementById('slot-'+next);
+  if(el) el.style.display = '';
+  _visibleSlots.push(next);
+  // 更新 grid 列数
+  var n = _visibleSlots.length;
+  var cols = n <= 2 ? 2 : n <= 4 ? 2 : 3;
+  document.getElementById('import-slots-container').style.gridTemplateColumns = 'repeat('+cols+',1fr)';
+  updateSlotCounter();
+}
+function removeSlot() {
+  if(_visibleSlots.length <= 2) return;
+  var last = _visibleSlots.pop();
+  var el = document.getElementById('slot-'+last);
+  if(el){ el.style.display='none'; el.className='import-slot'; filledSlots.delete(last); }
+  var n = _visibleSlots.length;
+  var cols = n <= 2 ? 2 : n <= 4 ? 2 : 3;
+  document.getElementById('import-slots-container').style.gridTemplateColumns = 'repeat('+cols+',1fr)';
+  updateSlotCounter();
 }
 function startAnalyzing() {
   showScreen('mvp01-analyzing');
@@ -2178,6 +2281,8 @@ function goSuccess02() { showScreen('mvp02-success'); }
   // 初始化行程对比面板（无选中）
   window._currentSelectedPlan = null;
   renderItineraryGrid(null);
+  // 初始化导入页槽位计数器
+  updateSlotCounter();
 
 // ===== 行程体检 =====
 function openHealthCheck() {
