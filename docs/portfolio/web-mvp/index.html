@@ -1005,7 +1005,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="ai-spinner-ring"></div>
         <div class="ai-emoji">✦</div>
       </div>
-      <div class="analyzing-title">AI 正在分析 3 个方案</div>
+      <div class="analyzing-title" id="analyzing-count-title">AI 正在分析方案</div>
       <div class="analyzing-sub">提取关键信息、比较差异并生成推荐理由，预计几秒钟</div>
       <div class="analyzing-steps">
         <div class="a-step done" id="as1"><div class="a-step-icon">✓</div><div class="a-step-text">解析方案内容与结构</div></div>
@@ -1036,7 +1036,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div class="compare-3col" id="compare-3col">
 
       <!-- 左栏：AI推荐 + 维度筛选（固定窄栏） -->
-      <div class="compare-sidebar" id="col-left" data-minw="140" data-maxw="300" style="width:210px">
+      <div class="compare-sidebar" id="col-left" data-minw="130" data-maxw="260" style="width:180px">
         <div class="ai-summary-card" style="margin-bottom:16px">
           <div class="ai-summary-label">AI 分析结论</div>
           <div class="ai-summary-title">综合推荐第 2 个攻略</div>
@@ -1096,7 +1096,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="row-resizer" id="row-resizer-mid"></div>
 
         <!-- 维度对比表（可选，放在行程下方，高度可拖拽） -->
-        <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:240px;min-height:60px;max-height:70%;overflow-y:auto;flex-shrink:0">
+        <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:180px;min-height:50px;max-height:60%;overflow-y:auto;flex-shrink:0">
           <div id="dim-overview"><!-- 由 renderDimOverview() 动态生成 --></div>
           <div id="dim-budget" style="display:none"></div>
           <div id="dim-transport" style="display:none"></div>
@@ -1115,7 +1115,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="col-resizer" id="resizer-right"></div>
 
       <!-- 右栏：方案选择 + 操作（固定窄栏） -->
-      <div class="compare-panel" id="col-right" data-minw="160" data-maxw="280" style="width:200px;border-left:1px solid var(--neutral-200);overflow-y:auto;padding:16px;flex-direction:column;display:flex;gap:10px">
+      <div class="compare-panel" id="col-right" data-minw="150" data-maxw="240" style="width:180px;border-left:1px solid var(--neutral-200);overflow-y:auto;padding:16px;flex-direction:column;display:flex;gap:10px">
         <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px">选择方案</div>
 
         <div id="plan-cards-zone" style="display:flex;flex-direction:column;gap:7px">
@@ -1992,19 +1992,23 @@ function removeSlot() {
 }
 function startAnalyzing() {
   showScreen('mvp01-analyzing');
+  var titleEl = document.getElementById('analyzing-count-title');
+  var n = filledSlots.size;
+  if(titleEl) titleEl.textContent = 'AI 正在分析 '+n+' 个攻略方案';
+  // Step3 完成
   setTimeout(function(){
     var s3 = document.getElementById('as3');
-    s3.className='a-step done';
-    s3.querySelector('.a-step-icon').textContent='✓';
-    s3.querySelector('.a-step-text').style.color='#16A34A';
+    if(s3){ s3.className='a-step done'; s3.querySelector('.a-step-icon').textContent='✓'; s3.querySelector('.a-step-text').style.color='#16A34A'; }
     var s4 = document.getElementById('as4');
-    s4.className='a-step active';
-    s4.querySelector('.a-step-icon').style.background='var(--blue)';
-    s4.querySelector('.a-step-icon').style.color='#fff';
-    s4.querySelector('.a-step-icon').textContent='…';
-    s4.querySelector('.a-step-text').style.color='var(--blue)';
-  }, 1200);
-  setTimeout(function(){ showScreen('mvp01-compare'); }, 2600);
+    if(s4){ s4.className='a-step active'; s4.querySelector('.a-step-icon').style.background='var(--blue)'; s4.querySelector('.a-step-icon').style.color='#fff'; s4.querySelector('.a-step-icon').textContent='…'; s4.querySelector('.a-step-text').style.color='var(--blue)'; }
+  }, 1400);
+  // Step4 完成
+  setTimeout(function(){
+    var s4 = document.getElementById('as4');
+    if(s4){ s4.className='a-step done'; s4.querySelector('.a-step-icon').textContent='✓'; s4.querySelector('.a-step-text').style.color='#16A34A'; }
+    if(titleEl) titleEl.textContent = '✦ '+n+' 个方案分析完成';
+  }, 2800);
+  setTimeout(function(){ showScreen('mvp01-compare'); }, 3800);
 }
 function setDim(el, dim) {
   document.querySelectorAll('.dim-item').forEach(function(d){d.classList.remove('active')});
