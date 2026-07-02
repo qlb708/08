@@ -1109,7 +1109,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   </nav>
 
   <!-- 顶部雷达卡区 -->
-  <div id="radar-cards-row" style="display:flex;gap:12px;padding:16px 20px;background:#fff;border-bottom:1px solid var(--neutral-100);overflow-x:auto;flex-shrink:0;align-items:stretch">
+  <div id="radar-cards-row" style="display:flex;gap:12px;padding:10px 20px;background:#fff;border-bottom:1px solid var(--neutral-100);overflow-x:auto;flex-shrink:0;align-items:stretch">
     <!-- rebuildCompare() 动态生成 -->
   </div>
 
@@ -1870,10 +1870,10 @@ function rebuildCompare() {
         'flex:1','min-width:160px','max-width:240px',
         'border:2px solid '+(isSel?color:'#E8EDF5'),
         'border-radius:16px',
-        'background:'+(isSel?'linear-gradient(145deg,#F8FBFF,#EEF4FF)':'#FAFBFC'),
+        'background:#fff',
         'cursor:pointer',
         'transition:all .2s cubic-bezier(.4,0,.2,1)',
-        'padding:14px 12px 12px',
+        'padding:10px 10px 8px',
         'display:flex','flex-direction:column','align-items:center','gap:6px',
         'box-shadow:'+(isSel?'0 6px 24px rgba(29,111,235,0.15)':'0 1px 4px rgba(0,0,0,0.04)'),
         'position:relative'
@@ -1882,7 +1882,7 @@ function rebuildCompare() {
       var badge = '<div style="position:absolute;top:10px;left:12px;font-size:9px;font-weight:800;color:'+(isSel?color:'#94A3B8')+';letter-spacing:.5px">攻略'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
       var name = '<div style="font-size:13px;font-weight:800;color:#1E293B;text-align:center;margin-top:14px;line-height:1.3">'+d.name+'</div>';
       var slogan = '<div style="font-size:10px;color:#94A3B8;text-align:center;font-style:italic;margin-bottom:2px">'+rd.slogan+'</div>';
-      var svg = buildRadarSVG(rd.vals, color, 90);
+      var svg = buildRadarSVG(rd.vals, color, 72);
 
       // 5维标签，2行排列
       var tags = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;width:100%;margin-top:4px">';
@@ -2305,8 +2305,8 @@ function selectPlanTab(plan) {
     var color = RADAR_COLORS[p] || '#1D6FEB';
     if(p === plan){
       tb.style.border = '2px solid '+color;
-      tb.style.background = 'linear-gradient(145deg,#F8FBFF,#EEF4FF)';
-      tb.style.boxShadow = '0 6px 24px rgba(29,111,235,0.15)';
+      tb.style.background = '#fff';
+      tb.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
     } else {
       tb.style.border = '2px solid #E8EDF5';
       tb.style.background = '#FAFBFC';
@@ -2596,8 +2596,12 @@ function renderItineraryGrid(selectedCol) {
 
 // 地点简介展开状态：key = planKey+'_'+dayIdx+'_'+stepIdx
 var _expandedSpots = {};
+var _lastOpenSpot = null;
 function toggleSpot(key) {
-  _expandedSpots[key] = !_expandedSpots[key];
+  // 同一行只展开一个：关掉上一个，展开当前（如果当前已开则关掉）
+  var alreadyOpen = !!_expandedSpots[key];
+  _expandedSpots = {}; // 关掉所有
+  if (!alreadyOpen) _expandedSpots[key] = true; // 如果之前关着则打开
   renderDays();
 }
 function renderDays() {
