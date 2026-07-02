@@ -1097,158 +1097,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
         <!-- 维度对比表（可选，放在行程下方，高度可拖拽） -->
         <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:240px;min-height:60px;max-height:70%;overflow-y:auto;flex-shrink:0">
-          <div id="dim-overview">
-            <!-- 由 renderDimOverview() 动态生成 -->
-          </div>
-          <div id="dim-budget" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">💰 预算分析</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">总预算</div><div class="cmp-val">¥3,200</div></div>
-                <div class="cmp-item"><div class="cmp-label">住宿/晚</div><div class="cmp-val">¥350</div></div>
-                <div class="cmp-item"><div class="cmp-label">门票合计</div><div class="cmp-val">¥480</div></div>
-                <div class="cmp-item"><div class="cmp-label">交通费用</div><div class="cmp-val">¥200</div></div>
-              </div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">总预算</div><div class="cmp-val cmp-win">¥2,500 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">住宿/晚</div><div class="cmp-val cmp-win">¥280 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">门票合计</div><div class="cmp-val cmp-win">¥360 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">交通费用</div><div class="cmp-val cmp-win">¥80 地铁 ✓</div></div>
-              </div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">总预算</div><div class="cmp-val">¥4,000</div></div>
-                <div class="cmp-item"><div class="cmp-label">住宿/晚</div><div class="cmp-val">¥420</div></div>
-                <div class="cmp-item"><div class="cmp-label">门票合计</div><div class="cmp-val">¥520</div></div>
-                <div class="cmp-item"><div class="cmp-label">交通费用</div><div class="cmp-val">¥320</div></div>
-              </div>
-            </div>
-          </div>
-          <div id="dim-route" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">🗺️ 路线效率</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">日均通勤</div><div class="cmp-val">90分钟</div></div><div class="cmp-item"><div class="cmp-label">平均排队</div><div class="cmp-val">45分钟</div></div><div class="cmp-item"><div class="cmp-label">区域集中</div><div class="cmp-val">5个区</div></div></div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">日均通勤</div><div class="cmp-val cmp-win">45分钟 ✓</div></div><div class="cmp-item"><div class="cmp-label">平均排队</div><div class="cmp-val cmp-win">20分钟 ✓</div></div><div class="cmp-item"><div class="cmp-label">区域集中</div><div class="cmp-val cmp-win">3个区 ✓</div></div></div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px"><div class="cmp-item"><div class="cmp-label">日均通勤</div><div class="cmp-val">120分钟</div></div><div class="cmp-item"><div class="cmp-label">平均排队</div><div class="cmp-val">38分钟</div></div><div class="cmp-item"><div class="cmp-label">区域集中</div><div class="cmp-val">5个区</div></div></div>
-            </div>
-          </div>
-          <div id="dim-spots" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">️ 景点覆盖</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">历史文化</div><div class="cmp-val">故宫 长城 颐和园</div></div><div class="cmp-item"><div class="cmp-label">文艺街区</div><div class="cmp-val">胡同 798</div></div><div class="cmp-item"><div class="cmp-label">必打卡率</div><div class="cmp-val">85%</div></div></div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">历史文化</div><div class="cmp-val">故宫 长城</div></div><div class="cmp-item"><div class="cmp-label">文艺街区</div><div class="cmp-val cmp-win">南锣 前门 ✓</div></div><div class="cmp-item"><div class="cmp-label">必打卡率</div><div class="cmp-val cmp-win">100% ✓</div></div></div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px"><div class="cmp-item"><div class="cmp-label">历史文化</div><div class="cmp-val cmp-win">故宫 长城 博物馆 ✓</div></div><div class="cmp-item"><div class="cmp-label">文艺街区</div><div class="cmp-val">—</div></div><div class="cmp-item"><div class="cmp-label">必打卡率</div><div class="cmp-val">75%</div></div></div>
-            </div>
-          </div>
-          <div id="dim-people" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)"> 适合人群</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">出行天数</div><div class="cmp-val">5天假期</div></div><div class="cmp-item"><div class="cmp-label">预算敏感</div><div class="cmp-val">中等</div></div><div class="cmp-item"><div class="cmp-label">适合人群</div><div class="cmp-val">首次来京</div></div></div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">出行天数</div><div class="cmp-val cmp-win">3-4天短假 ✓</div></div><div class="cmp-item"><div class="cmp-label">预算敏感</div><div class="cmp-val cmp-win">预算有限 ✓</div></div><div class="cmp-item"><div class="cmp-label">适合人群</div><div class="cmp-val">有经验旅行者</div></div></div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px"><div class="cmp-item"><div class="cmp-label">出行天数</div><div class="cmp-val">5天假期</div></div><div class="cmp-item"><div class="cmp-label">预算敏感</div><div class="cmp-val">预算充裕</div></div><div class="cmp-item"><div class="cmp-label">适合人群</div><div class="cmp-val cmp-win">亲子家庭 ✓</div></div></div>
-            </div>
-          </div>
-          <div id="dim-hotel" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">🏨 住宿建议</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">推荐区域</div><div class="cmp-val">西城区</div></div><div class="cmp-item"><div class="cmp-label">均价/晚</div><div class="cmp-val">¥350</div></div><div class="cmp-item"><div class="cmp-label">推荐类型</div><div class="cmp-val">商务酒店</div></div></div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">推荐区域</div><div class="cmp-val cmp-win">东城·西城 ✓</div></div><div class="cmp-item"><div class="cmp-label">均价/晚</div><div class="cmp-val cmp-win">¥280 ✓</div></div><div class="cmp-item"><div class="cmp-label">推荐类型</div><div class="cmp-val cmp-win">精品民宿 ✓</div></div></div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px"><div class="cmp-item"><div class="cmp-label">推荐区域</div><div class="cmp-val">海淀区</div></div><div class="cmp-item"><div class="cmp-label">均价/晚</div><div class="cmp-val">¥420</div></div><div class="cmp-item"><div class="cmp-label">推荐类型</div><div class="cmp-val">亲子酒店</div></div></div>
-            </div>
-          </div>
-          <div id="dim-food" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">🍜 餐饮推荐</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">特色推荐</div><div class="cmp-val">炸酱面 涮肉</div></div><div class="cmp-item"><div class="cmp-label">餐饮预算</div><div class="cmp-val">¥120/天</div></div><div class="cmp-item"><div class="cmp-label">体验评价</div><div class="cmp-val">一般</div></div></div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px"><div class="cmp-item"><div class="cmp-label">特色推荐</div><div class="cmp-val cmp-win">烤鸭 炸酱面 街 ✓</div></div><div class="cmp-item"><div class="cmp-label">餐饮预算</div><div class="cmp-val">¥130/天</div></div><div class="cmp-item"><div class="cmp-label">体验评价</div><div class="cmp-val cmp-win">老北京全覆盖 ✓</div></div></div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px"><div class="cmp-item"><div class="cmp-label">特色推荐</div><div class="cmp-val">护国寺小吃</div></div><div class="cmp-item"><div class="cmp-label">餐饮预算</div><div class="cmp-val cmp-win">¥110/天 ✓</div></div><div class="cmp-item"><div class="cmp-label">体验评价</div><div class="cmp-val">传统小吃为主</div></div></div>
-            </div>
-          </div>
-          <div id="dim-transport" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">✈️ 交通方式对比</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">抵京交通</div><div class="cmp-val">高铁 G字头</div></div>
-                <div class="cmp-item"><div class="cmp-label">票价</div><div class="cmp-val">¥553/人</div></div>
-                <div class="cmp-item"><div class="cmp-label">市内通勤</div><div class="cmp-val">地铁+打车</div></div>
-                <div class="cmp-item"><div class="cmp-label">日均交通费</div><div class="cmp-val">¥40/天</div></div>
-              </div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">抵京交通</div><div class="cmp-val cmp-win">高铁 G字头 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">票价</div><div class="cmp-val">¥553/人</div></div>
-                <div class="cmp-item"><div class="cmp-label">市内通勤</div><div class="cmp-val cmp-win">92% 地铁 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">日均交通费</div><div class="cmp-val cmp-win">¥20/天 ✓</div></div>
-              </div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">抵京交通</div><div class="cmp-val">飞机</div></div>
-                <div class="cmp-item"><div class="cmp-label">机票价格</div><div class="cmp-val">¥680/人</div></div>
-                <div class="cmp-item"><div class="cmp-label">市内通勤</div><div class="cmp-val">打车为主</div></div>
-                <div class="cmp-item"><div class="cmp-label">日均交通费</div><div class="cmp-val">¥64/天</div></div>
-              </div>
-            </div>
-          </div>
-          <div id="dim-weather" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">⛅ 天气适宜性</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">出行时段</div><div class="cmp-val">10月上旬</div></div>
-                <div class="cmp-item"><div class="cmp-label">天气预报</div><div class="cmp-val">晴 18-26°C</div></div>
-                <div class="cmp-item"><div class="cmp-label">适宜指数</div><div class="cmp-val" style="color:#059669">⭐⭐⭐⭐⭐ 极佳</div></div>
-                <div class="cmp-item"><div class="cmp-label">降水概率</div><div class="cmp-val">15%</div></div>
-              </div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">出行时段</div><div class="cmp-val">10月上旬</div></div>
-                <div class="cmp-item"><div class="cmp-label">天气预报</div><div class="cmp-val">晴 18-26°C</div></div>
-                <div class="cmp-item"><div class="cmp-label">适宜指数</div><div class="cmp-val cmp-win" style="color:#059669">⭐⭐⭐⭐⭐ 极佳 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">出行黄金季</div><div class="cmp-val cmp-win">秋高气爽最宜拍照 ✓</div></div>
-              </div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">出行时段</div><div class="cmp-val">10月上旬</div></div>
-                <div class="cmp-item"><div class="cmp-label">天气预报</div><div class="cmp-val">晴 18-26°C</div></div>
-                <div class="cmp-item"><div class="cmp-label">适宜指数</div><div class="cmp-val" style="color:#059669">⭐⭐⭐⭐⭐ 极佳</div></div>
-                <div class="cmp-item"><div class="cmp-label">降水概率</div><div class="cmp-val">15%</div></div>
-              </div>
-            </div>
-          </div>
-          <div id="dim-luggage" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">🎒 行李建议</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">行李规模</div><div class="cmp-val">大号行李箱</div></div>
-                <div class="cmp-item"><div class="cmp-label">日均步行</div><div class="cmp-val">约8km，轻便鞋必备</div></div>
-                <div class="cmp-item"><div class="cmp-label">拍照装备</div><div class="cmp-val">建议带相机</div></div>
-              </div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">行李规模</div><div class="cmp-val cmp-win">小箱/双肩包 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">日均步行</div><div class="cmp-val cmp-win">约6km，较轻松 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">拍照装备</div><div class="cmp-val">手机即可</div></div>
-              </div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">行李规模</div><div class="cmp-val">亲子推车+大箱</div></div>
-                <div class="cmp-item"><div class="cmp-label">日均步行</div><div class="cmp-val">约5km，适合亲子</div></div>
-                <div class="cmp-item"><div class="cmp-label">儿童必备</div><div class="cmp-val cmp-win">科技馆/动物园 ✓</div></div>
-              </div>
-            </div>
-          </div>
-          <div id="dim-risk" style="display:none">
-            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">⚠️ 风险预警</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">行程密度</div><div class="cmp-val" style="color:#DC2626">🔴 景点过多</div></div>
-                <div class="cmp-item"><div class="cmp-label">闭馆风险</div><div class="cmp-val" style="color:#DC2626">🔴 国博周一闭</div></div>
-                <div class="cmp-item"><div class="cmp-label">预算超支</div><div class="cmp-val" style="color:#D97706">🟡 可能超15%</div></div>
-              </div>
-              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">行程密度</div><div class="cmp-val cmp-win" style="color:#059669">🟢 节奏适中 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">闭馆风险</div><div class="cmp-val cmp-win" style="color:#059669">🟢 无冲突 ✓</div></div>
-                <div class="cmp-item"><div class="cmp-label">预算超支</div><div class="cmp-val cmp-win" style="color:#059669">🟢 余量充足 ✓</div></div>
-              </div>
-              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
-                <div class="cmp-item"><div class="cmp-label">行程密度</div><div class="cmp-val" style="color:#DC2626">🔴 Day3过满</div></div>
-                <div class="cmp-item"><div class="cmp-label">闭馆风险</div><div class="cmp-val" style="color:#059669">🟢 无冲突</div></div>
-                <div class="cmp-item"><div class="cmp-label">预算超支</div><div class="cmp-val" style="color:#D97706">🟡 住宿占比高</div></div>
-              </div>
-            </div>
-          </div>
+          <div id="dim-overview"><!-- 由 renderDimOverview() 动态生成 --></div>
+          <div id="dim-budget" style="display:none"></div>
+          <div id="dim-transport" style="display:none"></div>
+          <div id="dim-route" style="display:none"></div>
+          <div id="dim-spots" style="display:none"></div>
+          <div id="dim-weather" style="display:none"></div>
+          <div id="dim-people" style="display:none"></div>
+          <div id="dim-hotel" style="display:none"></div>
+          <div id="dim-food" style="display:none"></div>
+          <div id="dim-luggage" style="display:none"></div>
+          <div id="dim-risk" style="display:none"></div>
         </div>
       </div>
 
@@ -2024,6 +1883,7 @@ function rebuildCompare() {
   var lbl = document.getElementById('compare-count-label');
   if(lbl) lbl.textContent = n + ' 个方案行程对比';
   renderDimOverview();
+  renderAllDims();
   // 动态更新维度对比区所有 grid 行的列数
   var dimArea = document.getElementById('compare-dims-area');
   if(dimArea) {
@@ -2165,6 +2025,11 @@ function toggleDim(dim, cb) {
   if(el) el.style.display = cb.checked ? '' : 'none';
   var label = cb.closest('label');
   if(label) label.classList.toggle('active', cb.checked);
+  if(cb.checked) {
+    var plans = getActivePlans();
+    if(dim === 'overview') renderDimOverview();
+    else renderDimSection(dim, plans);
+  }
 }
 // 全屏三栏拖拽调整宽度 + 上下拖拽
 function initResizers() {
@@ -2404,6 +2269,150 @@ function selectPlanTab(plan) {
   selectPlan(plan);
 }
 
+
+// ========== 全维度动态渲染 ==========
+var DIM_DATA = {
+  overview: {
+    label:'📊 综合评分', icon:'📊',
+    fields: [
+      { key:'budget', label:'每日预算', vals:{a:'¥640/天',b:'¥625/天',c:'¥800/天',d:'¥700/天',e:'¥660/天'}, best:'b' },
+      { key:'transit', label:'通勤方式', vals:{a:'地铁+打车',b:'92%地铁',c:'打车为主',d:'地铁+步行',e:'地铁为主'}, best:'b' },
+      { key:'spots', label:'景点数量', vals:{a:'18个',b:'12个',c:'16个',d:'14个',e:'10个'}, best:'e' },
+      { key:'queue', label:'平均排队', vals:{a:'45分钟',b:'20分钟',c:'38分钟',d:'30分钟',e:'15分钟'}, best:'e' },
+      { key:'pace', label:'行程节奏', vals:{a:'较慢',b:'适中',c:'慢',d:'适中',e:'快'}, best:'b' },
+      { key:'score', label:'综合评分', vals:{a:'72分',b:'91分',c:'68分',d:'80分',e:'85分'}, best:'b' }
+    ]
+  },
+  budget: {
+    label:'💰 预算分析', icon:'💰',
+    fields: [
+      { key:'total', label:'总预算', vals:{a:'¥3,200',b:'¥2,500',c:'¥4,000',d:'¥2,800',e:'¥1,980'}, best:'e' },
+      { key:'hotel', label:'住宿/晚', vals:{a:'¥350',b:'¥280',c:'¥420',d:'¥290',e:'¥200'}, best:'e' },
+      { key:'ticket', label:'门票合计', vals:{a:'¥480',b:'¥360',c:'¥520',d:'¥400',e:'¥125'}, best:'e' },
+      { key:'transit_cost', label:'交通费用', vals:{a:'¥200',b:'¥80 地铁',c:'¥320',d:'¥120',e:'¥60'}, best:'b' }
+    ]
+  },
+  transport: {
+    label:'✈️ 交通方式', icon:'✈️',
+    fields: [
+      { key:'arrival', label:'抵京交通', vals:{a:'高铁G字头',b:'高铁G字头',c:'飞机',d:'高铁D字头',e:'高铁G字头'}, best:'a' },
+      { key:'price', label:'票价估算', vals:{a:'¥553/人',b:'¥553/人',c:'¥680/人',d:'¥420/人',e:'¥553/人'}, best:'d' },
+      { key:'city', label:'市内通勤', vals:{a:'地铁+打车',b:'92%地铁',c:'打车为主',d:'地铁+步行',e:'地铁为主'}, best:'b' },
+      { key:'daily', label:'日均交通费', vals:{a:'¥40/天',b:'¥20/天',c:'¥64/天',d:'¥30/天',e:'¥20/天'}, best:'b' }
+    ]
+  },
+  route: {
+    label:'🗺️ 路线效率', icon:'🗺️',
+    fields: [
+      { key:'commute', label:'日均通勤', vals:{a:'90分钟',b:'45分钟',c:'120分钟',d:'60分钟',e:'40分钟'}, best:'e' },
+      { key:'queue2', label:'平均排队', vals:{a:'45分钟',b:'20分钟',c:'38分钟',d:'30分钟',e:'15分钟'}, best:'e' },
+      { key:'zones', label:'区域集中', vals:{a:'5个区',b:'3个区',c:'5个区',d:'4个区',e:'3个区'}, best:'b' }
+    ]
+  },
+  spots: {
+    label:'🏛️ 景点覆盖', icon:'🏛️',
+    fields: [
+      { key:'history', label:'历史文化', vals:{a:'故宫 长城 颐和园',b:'故宫 长城',c:'故宫 长城 博物馆',d:'胡同 雍和宫',e:'故宫 慕田峪'}, best:'c' },
+      { key:'art', label:'文艺街区', vals:{a:'胡同 798',b:'南锣 前门',c:'—',d:'胡同 五道营',e:'南锣'}, best:'b' },
+      { key:'checkin', label:'必打卡率', vals:{a:'85%',b:'100%',c:'75%',d:'70%',e:'95%'}, best:'b' }
+    ]
+  },
+  weather: {
+    label:'⛅ 天气适宜', icon:'⛅',
+    fields: [
+      { key:'period', label:'出行时段', vals:{a:'10月上旬',b:'10月上旬',c:'10月上旬',d:'10月上旬',e:'10月上旬'}, best:null },
+      { key:'forecast', label:'天气预报', vals:{a:'晴 18-26°C',b:'晴 18-26°C',c:'晴 18-26°C',d:'晴 18-26°C',e:'晴 18-26°C'}, best:null },
+      { key:'index', label:'适宜指数', vals:{a:'⭐⭐⭐⭐⭐ 极佳',b:'⭐⭐⭐⭐⭐ 极佳',c:'⭐⭐⭐⭐⭐ 极佳',d:'⭐⭐⭐⭐⭐ 极佳',e:'⭐⭐⭐⭐⭐ 极佳'}, best:'b' },
+      { key:'rain', label:'降水概率', vals:{a:'15%',b:'15%',c:'15%',d:'15%',e:'15%'}, best:null }
+    ]
+  },
+  people: {
+    label:'👥 适合人群', icon:'👥',
+    fields: [
+      { key:'days', label:'出行天数', vals:{a:'5天假期',b:'3-4天短假',c:'5天假期',d:'4天假期',e:'3天短假'}, best:'b' },
+      { key:'budget_sense', label:'预算敏感', vals:{a:'中等',b:'预算有限',c:'预算充裕',d:'适中',e:'极省钱'}, best:'e' },
+      { key:'who', label:'适合人群', vals:{a:'首次来京',b:'有经验旅行者',c:'亲子家庭',d:'文化爱好者',e:'时间有限'}, best:null }
+    ]
+  },
+  hotel: {
+    label:'🏨 住宿建议', icon:'🏨',
+    fields: [
+      { key:'area', label:'推荐区域', vals:{a:'西城区',b:'东城·西城',c:'海淀区',d:'东城区',e:'东城区'}, best:'b' },
+      { key:'price', label:'均价/晚', vals:{a:'¥350',b:'¥280',c:'¥420',d:'¥290',e:'¥200'}, best:'e' },
+      { key:'type', label:'推荐类型', vals:{a:'商务酒店',b:'精品民宿',c:'亲子酒店',d:'精品民宿',e:'快捷酒店'}, best:'b' }
+    ]
+  },
+  food: {
+    label:'🍜 餐饮推荐', icon:'🍜',
+    fields: [
+      { key:'rec', label:'特色推荐', vals:{a:'炸酱面 涮肉',b:'烤鸭 炸酱面',c:'护国寺小吃',d:'卤煮 胡同小馆',e:'快餐+烤鸭'}, best:'b' },
+      { key:'cost', label:'餐饮预算', vals:{a:'¥120/天',b:'¥130/天',c:'¥110/天',d:'¥100/天',e:'¥80/天'}, best:'e' },
+      { key:'exp', label:'体验评价', vals:{a:'一般',b:'老北京全覆盖',c:'传统小吃为主',d:'地道文化体验',e:'基础满足'}, best:'b' }
+    ]
+  },
+  luggage: {
+    label:'🎒 行李建议', icon:'🎒',
+    fields: [
+      { key:'size', label:'行李规模', vals:{a:'大号行李箱',b:'小箱/双肩包',c:'亲子推车+大箱',d:'中号行李箱',e:'双肩包即可'}, best:'e' },
+      { key:'walk', label:'日均步行', vals:{a:'约8km',b:'约6km',c:'约5km',d:'约7km',e:'约5km'}, best:'c' },
+      { key:'photo', label:'拍照装备', vals:{a:'建议带相机',b:'手机即可',c:'随意',d:'建议相机',e:'手机即可'}, best:'b' }
+    ]
+  },
+  risk: {
+    label:'⚠️ 风险预警', icon:'⚠️',
+    fields: [
+      { key:'density', label:'行程密度',
+        vals:{a:'🔴 景点过多',b:'🟢 节奏适中',c:'🔴 Day3过满',d:'🟡 稍密',e:'🟢 节奏轻松'},
+        best:'e', raw:true },
+      { key:'closed', label:'闭馆风险',
+        vals:{a:'🔴 国博周一闭',b:'🟢 无冲突',c:'🟢 无冲突',d:'🟡 注意周一',e:'🟢 无冲突'},
+        best:'b', raw:true },
+      { key:'over', label:'预算超支',
+        vals:{a:'🟡 可能超15%',b:'🟢 余量充足',c:'🟡 住宿占比高',d:'🟢 余量适中',e:'🟢 充裕'},
+        best:'b', raw:true }
+    ]
+  }
+};
+
+function renderDimSection(dimKey, plans) {
+  var dim = DIM_DATA[dimKey];
+  if(!dim) return;
+  var el = document.getElementById('dim-'+dimKey);
+  if(!el || el.style.display === 'none') return;
+  var n = plans.length;
+  var colFr = Array(n).fill('1fr').join(' ');
+  var h = '<div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:8px 14px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">'+dim.label+'</div>';
+  // 表头行（方案编号）
+  h += '<div style="display:grid;grid-template-columns:'+colFr+';border-bottom:1px solid var(--neutral-100)">';
+  plans.forEach(function(p,i){
+    var c = PLAN_COLORS[p]||{};
+    h += '<div style="padding:5px 12px;background:'+(c.head||'#f9fafb')+';border-right:1px solid var(--neutral-100);font-size:10px;font-weight:700;color:'+(c.accent||'#475569')+'">方案'+(i+1)+'</div>';
+  });
+  h += '</div>';
+  // 数据行
+  dim.fields.forEach(function(field){
+    h += '<div style="display:grid;grid-template-columns:'+colFr+';border-bottom:1px solid var(--neutral-100)">';
+    plans.forEach(function(p,i){
+      var isLast = i === plans.length-1;
+      var val = (field.vals||{})[p] || '—';
+      var isBest = field.best === p;
+      var c = PLAN_COLORS[p]||{};
+      h += '<div style="padding:7px 12px;border-right:'+(isLast?'none':'1px solid var(--neutral-100)')+'">';
+      h += '<div style="font-size:10px;color:var(--neutral-400);margin-bottom:2px">'+field.label+'</div>';
+      h += '<div style="font-size:12px;font-weight:'+(isBest?'700':'400')+';color:'+(isBest?'var(--blue)':'var(--neutral-800)')+'">'+val+(isBest?' ✓':'')+'</div>';
+      h += '</div>';
+    });
+    h += '</div>';
+  });
+  el.innerHTML = h;
+}
+
+function renderAllDims() {
+  var plans = getActivePlans();
+  var dimKeys = ['overview','budget','transport','route','spots','weather','people','hotel','food','luggage','risk'];
+  dimKeys.forEach(function(k){ renderDimSection(k, plans); });
+}
+
 // 动态渲染综合对比维度区
 function renderDimOverview() {
   var plans = getActivePlans();
@@ -2532,20 +2541,21 @@ function renderDays() {
   var days = _selectedDays.slice().sort(function(a,b){return a-b;});
   var html = '';
 
-  // 顶部：三列方案卡头（sticky）
-  html += '<div style="display:grid;grid-template-columns:'+('1fr '.repeat(plans.length).trim())+';gap:12px;padding:0 12px 8px;position:sticky;top:0;z-index:5;background:#F9FAFB">';
-  plans.forEach(function(p){
+  // 顶部：各列方案卡头（sticky）
+  html += '<div style="display:grid;grid-template-columns:'+(('1fr '.repeat(plans.length).trim()))+';gap:8px;padding:0 12px 8px;position:sticky;top:0;z-index:5;background:#F9FAFB">';
+  plans.forEach(function(p, pi){
     var d = PLAN_DATA[p];
     var c = PLAN_COLORS[p];
-    var sel = selectedCol === p;
-    html += '<div class="plan-card-header" data-plan="'+p+'" style="border:2px solid '+c.border+';border-radius:12px 12px 0 0;background:'+c.head+';padding:12px;text-align:center;cursor:pointer;transition:all .15s" onclick="selectPlanTab(\''+p+'\')">';
-    html += '<div style="display:inline-block;background:'+c.badgeBg+';color:'+c.badge+';font-size:9px;font-weight:700;padding:2px 8px;border-radius:6px;margin-bottom:4px">'+(p==='b'?'✦ AI推荐':p==='a'?'方案 A':'方案 C')+'</div>';
-    html += '<div style="font-size:13px;font-weight:800;color:'+c.accent+'">'+d.name+'</div>';
-    html += '<div style="font-size:10px;color:#94A3B8;margin-top:2px">'+d.meta+'</div>';
+    var sel = p === window._currentSelectedPlan;
+    var borderStyle = sel ? 'border:2.5px solid var(--blue);box-shadow:0 0 0 3px rgba(29,111,235,.13)' : 'border:2px solid '+c.border;
+    var bg = sel ? '#EFF6FF' : c.head;
+    html += '<div class="plan-card-header" data-plan="'+p+'" style="'+borderStyle+';border-radius:10px 10px 0 0;background:'+bg+';padding:10px;text-align:center;cursor:pointer;transition:all .15s" onclick="selectPlanTab(\''+p+'\')">'; 
+    html += '<div style="display:inline-block;background:'+(sel?'var(--blue)':c.badgeBg)+';color:'+(sel?'#fff':c.badge)+';font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;margin-bottom:3px">方案'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
+    html += '<div style="font-size:12px;font-weight:800;color:'+(sel?'var(--blue)':c.accent)+'">'+d.name+'</div>';
+    html += '<div style="font-size:10px;color:#94A3B8;margin-top:1px">'+d.meta+'</div>';
     html += '</div>';
   });
   html += '</div>';
-
   // 主体：按天分组，每组内三列行程
   days.forEach(function(dayIdx){
     var dayNum = dayIdx + 1;
