@@ -943,13 +943,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:12px;color:var(--neutral-600)">📅 旅行天数</span>
-        <select id="travel-days" style="padding:4px 10px;border:1px solid var(--neutral-200);border-radius:8px;font-size:12px;color:var(--neutral-800);background:#fff">
-          <option value="3">3 天</option>
-          <option value="4">4 天</option>
-          <option value="5" selected>5 天</option>
-          <option value="7">7 天</option>
-          <option value="10">10 天</option>
-        </select>
+        <div style="display:flex;align-items:center;gap:0;border:1px solid var(--neutral-200);border-radius:8px;overflow:hidden">
+          <button onclick="setDays(-1)" style="width:28px;height:28px;border:none;background:#F8FAFC;cursor:pointer;font-size:16px;color:var(--neutral-600)">−</button>
+          <span id="days-num" style="width:32px;text-align:center;font-size:13px;font-weight:700;color:var(--neutral-900)">5</span>
+          <button onclick="setDays(1)" style="width:28px;height:28px;border:none;background:#F8FAFC;cursor:pointer;font-size:16px;color:var(--neutral-600)">+</button>
+        </div>
+        <span style="font-size:11px;color:var(--neutral-400)">天</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:12px;color:var(--neutral-600)">💼 出行类型</span>
@@ -1933,11 +1932,17 @@ function switchItineraryView(view) {
 }
 var _currentDay = 1;
 var _pax = 2;
+var _days = 5;
 var _tripType = '朋友';
 function setPax(delta) {
   _pax = Math.max(1, Math.min(10, _pax + delta));
   var el = document.getElementById('pax-num');
   if(el) el.textContent = _pax;
+}
+function setDays(delta) {
+  _days = Math.max(1, Math.min(30, _days + delta));
+  var el = document.getElementById('days-num');
+  if(el) el.textContent = _days;
 }
 function setTripType(btn, type) {
   _tripType = type;
