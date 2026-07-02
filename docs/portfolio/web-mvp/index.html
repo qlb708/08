@@ -1067,7 +1067,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="col-resizer" id="resizer-left"></div>
 
       <!-- 中栏：行程3列对比（主体，占最大宽度） -->
-      <div class="compare-mid" id="col-mid" style="padding:0;display:flex;flex-direction:column;overflow:hidden">
+      <div class="compare-mid" id="col-mid" style="padding:0;display:flex;flex-direction:column;overflow:hidden;min-width:0;flex:1">
 
         <!-- 中栏固定头部：方案 tab + Day tab + 标题 -->
         <div style="flex-shrink:0;background:#fff;border-bottom:1px solid var(--neutral-200);padding:10px 20px">
@@ -1115,7 +1115,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="col-resizer" id="resizer-right"></div>
 
       <!-- 右栏：方案选择 + 操作（固定窄栏） -->
-      <div class="compare-panel" id="col-right" data-minw="150" data-maxw="240" style="width:180px;border-left:1px solid var(--neutral-200);overflow-y:auto;padding:16px;flex-direction:column;display:flex;gap:10px">
+      <div class="compare-panel" id="col-right" data-minw="150" data-maxw="240" style="width:190px;min-width:150px;max-width:300px;flex-shrink:0;border-left:1px solid var(--neutral-200);overflow-y:auto;padding:14px;flex-direction:column;display:flex;gap:10px">
         <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px">选择方案</div>
 
         <div id="plan-cards-zone" style="display:flex;flex-direction:column;gap:7px">
@@ -2549,13 +2549,10 @@ function renderItineraryGrid(selectedCol) {
 }
 
 
-function toggleDay(dayIdx) {
-  var pos = _expandedDays.indexOf(dayIdx);
-  if(pos >= 0) {
-    _expandedDays.splice(pos, 1);
-  } else {
-    _expandedDays.push(dayIdx);
-  }
+// 地点简介展开状态：key = planKey+'_'+dayIdx+'_'+stepIdx
+var _expandedSpots = {};
+function toggleSpot(key) {
+  _expandedSpots[key] = !_expandedSpots[key];
   renderDays();
 }
 function renderDays() {
@@ -2565,95 +2562,136 @@ function renderDays() {
   var days = _selectedDays.slice().sort(function(a,b){return a-b;});
   var colFr = '1fr '.repeat(plans.length).trim();
 
+  // 地点简介数据（按名称匹配）
+  var SPOT_INFO = {
+    '故宫博物院':   {worth:true,  stars:'★★★★★', intro:'中国最大的皇家宫殿群，必去TOP1。建议游览2-3h，重点看太和殿、后宫区域。'},
+    '八达岭长城':   {worth:true,  stars:'★★★★☆', intro:'最经典长城段，设施完善。旺季人多，建议早8点前入园或选择淡季工作日。'},
+    '慕田峪长城':   {worth:true,  stars:'★★★★★', intro:'景色比八达岭更原始壮观，游客少50%。拍照效果绝佳，强烈推荐替代八达岭。'},
+    '颐和园':      {worth:true,  stars:'★★★★☆', intro:'皇家园林精华，昆明湖+万寿山经典组合。建议留3h，可泛舟湖上，光线好适合拍照。'},
+    '国家博物馆':  {worth:true,  stars:'★★★★★', intro:'免费，需提前预约。馆藏国宝级文物无数，「古代中国」常设展必看，至少留3h。'},
+    '天坛公园':    {worth:true,  stars:'★★★★☆', intro:'祈年殿是北京标志性建筑。清晨来可看老北京人晨练打拳，别有一番风味。'},
+    '南锣鼓巷':   {worth:null,  stars:'★★★☆☆', intro:'网红胡同，文创小店密集。周末人很多，可以逛逛但别期望太高，支巷更有意思。'},
+    '景山公园':    {worth:true,  stars:'★★★★☆', intro:'俯瞰故宫全景的最佳位置，门票仅¥2。游览1h足够，与故宫连着逛效率最高。'},
+    '798艺术区':  {worth:null,  stars:'★★★☆☆', intro:'当代艺术聚集地，拍照出片。工作日游客少体验更好，对艺术感兴趣的必去。'},
+    '雍和宫':     {worth:true,  stars:'★★★★☆', intro:'北京最大藏传佛教寺庙，香火旺盛，建筑精美。节假日人多，建议工作日上午去。'},
+    '北海公园':   {worth:true,  stars:'★★★★☆', intro:'皇家园林，白塔标志。清晨划船几乎没人，性价比极高，与景山公园连着玩最合适。'},
+    '前门大栅栏': {worth:null,  stars:'★★★☆☆', intro:'老北京商业街，老字号集中。商业化较重，适合购买伴手礼，美食性价比一般。'},
+    '烟袋斜街':   {worth:true,  stars:'★★★★☆', intro:'北京最古老的斜街，胡同文化体验地道。人少安静，适合漫步拍照，周边有咖啡馆。'},
+    '琉璃厂文化街':{worth:null, stars:'★★★☆☆', intro:'古玩字画集中，文化气息浓。对书法、古玩有兴趣才值得逛，普通游客可跳过。'},
+    '正乙祠戏楼':  {worth:null, stars:'★★★☆☆', intro:'北京现存最古老会馆戏楼，有昆曲演出。小众但有文化价值，对京剧感兴趣推荐。'},
+    '后海酒吧街': {worth:null,  stars:'★★★☆☆', intro:'夜生活聚集地，湖景不错。消费偏高，夏夜氛围好，冬天体验一般，按需选择。'},
+    '三里屯':     {worth:null,  stars:'★★★☆☆', intro:'购物餐饮聚集，国际化氛围。可去看看，但对旅游意义不大，更适合本地生活。'},
+    '什刹海胡同游':{worth:true, stars:'★★★★☆', intro:'老北京胡同文化精华地带。骑车穿行胡同体验极好，傍晚光线好适合拍照。'},
+    '天安门广场': {worth:true,  stars:'★★★★☆', intro:'必去打卡，象征意义重大。建议早晨升旗仪式（需提前预约）或傍晚光线好时前往。'},
+    '国子监街':   {worth:true,  stars:'★★★★☆', intro:'古朴安静的文化街，书香气息浓。与雍和宫相连，步行可达，人少适合拍照。'},
+  };
+
   // 方案列头（sticky）
-  var html = '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0 12px 8px;position:sticky;top:0;z-index:5;background:#F9FAFB;border-bottom:1px solid #E2E8F0">';
+  var html = '<div style="display:grid;grid-template-columns:'+colFr+';gap:6px;padding:8px 10px;position:sticky;top:0;z-index:5;background:#F8FAFC;border-bottom:1px solid #E2E8F0">';
   plans.forEach(function(p, pi){
     var d = PLAN_DATA[p];
     var sel = p === selectedCol;
-    var bg = sel ? '#EFF6FF' : '#F8FAFC';
-    var border = sel ? '2px solid var(--blue)' : '2px solid #E2E8F0';
-    var txtCol = sel ? 'var(--blue)' : '#475569';
-    html += '<div data-plan="'+p+'" style="border:'+border+';border-radius:8px;background:'+bg+';padding:8px 10px;text-align:center;cursor:pointer;transition:all .15s" onclick="selectPlanTab(\''+p+'\')">';
-    html += '<div style="font-size:10px;font-weight:700;color:'+(sel?'var(--blue)':'#94A3B8')+';margin-bottom:2px">方案'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
-    html += '<div style="font-size:11px;font-weight:700;color:'+txtCol+';line-height:1.3">'+d.name+'</div>';
-    html += '<div style="font-size:10px;color:#94A3B8;margin-top:1px">'+d.meta+'</div>';
+    html += '<div data-plan="'+p+'" onclick="selectPlanTab(\''+p+'\')" style="border:2px solid '+(sel?'var(--blue)':'#E2E8F0')+';border-radius:8px;background:'+(sel?'#EFF6FF':'#fff')+';padding:7px 8px;text-align:center;cursor:pointer;transition:all .15s">';
+    html += '<div style="font-size:9px;font-weight:700;color:'+(sel?'var(--blue)':'#94A3B8')+';margin-bottom:1px">方案'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
+    html += '<div style="font-size:11px;font-weight:700;color:'+(sel?'var(--blue)':'#334155')+';line-height:1.3">'+d.name+'</div>';
+    html += '<div style="font-size:9px;color:#94A3B8">'+d.meta+'</div>';
     html += '</div>';
   });
   html += '</div>';
 
-  // 每一天：折叠卡片
+  // 每一天：直接展开，按行显示地点卡片
   days.forEach(function(dayIdx){
     var dayNum = dayIdx + 1;
-    var isExpanded = (_expandedDays.indexOf(dayIdx) >= 0);
-
-    // Day 折叠头行
-    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:6px 12px 0;cursor:pointer" onclick="toggleDay('+dayIdx+')" id="day-header-'+dayIdx+'">';
+    // Day 标题行
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:6px;padding:10px 10px 4px">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
       var sel = p === selectedCol;
-      var label = planDay ? planDay.label.replace(/^Day\d+\s*/,'') : '无安排';
-      // 预览：前两个景点名
-      var preview = planDay ? planDay.steps.slice(0,2).map(function(s){return s.name}).join(' · ') : '—';
-      var bdr = sel ? 'var(--blue)' : '#E2E8F0';
-      var bg = sel ? '#EFF6FF' : '#F8FAFC';
-      html += '<div style="border:1px solid '+bdr+';border-radius:8px;background:'+bg+';padding:7px 10px;display:flex;align-items:center;gap:6px">';
-      html += '<span style="font-size:9px;font-weight:700;color:#fff;background:'+(sel?'var(--blue)':'#94A3B8')+';padding:1px 6px;border-radius:4px;flex-shrink:0">Day'+dayNum+'</span>';
-      html += '<div style="flex:1;min-width:0">';
-      html += '<div style="font-size:11px;font-weight:700;color:'+(sel?'var(--blue)':'#334155')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+label+'</div>';
-      html += '<div style="font-size:10px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+preview+'</div>';
-      html += '</div>';
-      html += '<span style="font-size:10px;color:#94A3B8;flex-shrink:0">'+(isExpanded?'▲':'▼')+'</span>';
+      var label = planDay ? planDay.label.replace(/^Day\d+\s*/,'') : '—';
+      html += '<div style="display:flex;align-items:center;gap:5px">';
+      html += '<span style="font-size:9px;font-weight:800;color:#fff;background:'+(sel?'var(--blue)':'#94A3B8')+';padding:2px 7px;border-radius:4px;flex-shrink:0">Day'+dayNum+'</span>';
+      html += '<span style="font-size:10px;font-weight:700;color:'+(sel?'var(--blue)':'#64748B')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+label+'</span>';
       html += '</div>';
     });
     html += '</div>';
 
-    // 展开详情
-    if(isExpanded) {
-      var maxSteps = Math.max.apply(null, plans.map(function(p){
-        var pd = PLAN_DATA[p].days[dayIdx]; return pd ? pd.steps.length : 0;
-      }));
+    // 每个步骤：按行展示地点卡片
+    var maxSteps = Math.max.apply(null, plans.map(function(p){
+      var pd = PLAN_DATA[p].days[dayIdx]; return pd ? pd.steps.length : 0;
+    }));
 
-      for(var si=0;si<maxSteps;si++){
-        html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0 12px">';
+    for(var si=0;si<maxSteps;si++){
+      (function(stepIdx){
+        html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:6px;padding:0 10px 3px">';
         plans.forEach(function(p){
           var planDay = PLAN_DATA[p].days[dayIdx];
-          var step = planDay ? planDay.steps[si] : null;
+          var step = planDay ? planDay.steps[stepIdx] : null;
           var sel = p === selectedCol;
-          var isLast = si === maxSteps - 1;
-          var bdr = sel ? 'var(--blue)' : '#E2E8F0';
-          var bg = sel ? '#F5F9FF' : '#fff';
-          html += '<div style="border-left:2px solid '+bdr+';border-right:2px solid '+bdr+';'+(isLast?'border-bottom:2px solid '+bdr+';border-radius:0 0 6px 6px;':'')+';padding:8px 10px;background:'+bg+'">';
+          var spotKey = p+'_'+dayIdx+'_'+stepIdx;
+          var isOpen = !!_expandedSpots[spotKey];
+
           if(step){
-            html += '<div style="font-size:10px;color:#94A3B8;margin-bottom:1px">'+step.icon+' '+step.time+'</div>';
-            html += '<div style="font-size:12px;font-weight:700;color:#1E293B;margin-bottom:2px">'+step.name+'</div>';
-            if(step.tip) html += '<div style="font-size:10px;color:#64748B;padding:3px 6px;background:'+(sel?'#E0EDFF':'#F8FAFC')+';border-radius:3px">'+step.tip+'</div>';
-            if(step.transit && !isLast) html += '<div style="font-size:10px;color:#94A3B8;margin-top:5px;padding-top:5px;border-top:1px dashed #E2E8F0">→ '+step.transit+'</div>';
+            var info = SPOT_INFO[step.name] || null;
+            var worthLabel = info ? (info.worth === true ? '✅ 值得去' : info.worth === false ? '⚡ 可跳过' : '💡 按需选择') : null;
+            var worthColor = info ? (info.worth === true ? '#16A34A' : info.worth === false ? '#DC2626' : '#D97706') : '#64748B';
+            var worthBg   = info ? (info.worth === true ? '#F0FDF4' : info.worth === false ? '#FEF2F2' : '#FFFBEB') : '#F8FAFC';
+
+            html += '<div style="background:'+(sel?'#F5F9FF':'#fff')+';border:1px solid '+(sel?'#BFDBFE':'#E2E8F0')+';border-radius:7px;overflow:hidden">';
+            // 地点主卡（可点击）
+            html += '<div style="padding:7px 10px;cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleSpot(\''+spotKey+'\')">';
+            html += '<span style="font-size:13px;flex-shrink:0">'+step.icon+'</span>';
+            html += '<div style="flex:1;min-width:0">';
+            html += '<div style="font-size:11px;font-weight:700;color:'+(sel?'var(--blue)':'#1E293B')+';line-height:1.3">'+step.name+'</div>';
+            html += '<div style="font-size:9px;color:#94A3B8">'+step.time+'</div>';
+            html += '</div>';
+            html += '<span style="font-size:9px;color:#94A3B8;flex-shrink:0">'+(isOpen?'▲':'▼')+'</span>';
+            html += '</div>';
+            // 展开的简介卡
+            if(isOpen){
+              html += '<div style="padding:8px 10px;background:'+(sel?'#EFF6FF':'#F8FAFC')+';border-top:1px solid '+(sel?'#BFDBFE':'#E2E8F0')+'">';
+              if(info){
+                html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">';
+                html += '<span style="font-size:11px;font-weight:700;color:'+worthColor+';background:'+worthBg+';padding:2px 8px;border-radius:4px">'+worthLabel+'</span>';
+                html += '<span style="font-size:10px;color:#F59E0B">'+info.stars+'</span>';
+                html += '</div>';
+                html += '<div style="font-size:10px;color:#475569;line-height:1.6">'+info.intro+'</div>';
+              }
+              if(step.tip){
+                html += '<div style="font-size:10px;color:#1D6FEB;background:#EFF6FF;padding:4px 8px;border-radius:4px;margin-top:5px">💡 '+step.tip+'</div>';
+              }
+              html += '</div>';
+            }
+            // 交通衔接
+            if(step.transit && stepIdx < maxSteps-1){
+              html += '<div style="padding:3px 10px 5px;font-size:9px;color:#94A3B8;border-top:1px dashed '+(sel?'#BFDBFE':'#F1F5F9')+'">→ '+step.transit+'</div>';
+            }
+            html += '</div>';
           } else {
-            html += '<div style="font-size:10px;color:#CBD5E1;font-style:italic">— 当日无安排</div>';
+            html += '<div style="padding:7px 10px;background:#F8FAFC;border:1px dashed #E2E8F0;border-radius:7px;font-size:10px;color:#CBD5E1;font-style:italic">—</div>';
           }
-          html += '</div>';
         });
         html += '</div>';
-      }
-
-      // 住宿行
-      html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:6px 12px 4px">';
-      plans.forEach(function(p){
-        var planDay = PLAN_DATA[p].days[dayIdx];
-        var sel = p === selectedCol;
-        var hotel = planDay && planDay.hotel ? planDay.hotel : {name:'—',price:'—',type:'—'};
-        html += '<div style="border:1px dashed '+(sel?'var(--blue)':'#CBD5E1')+';border-radius:6px;padding:6px 10px;background:'+(sel?'#EFF6FF':'#F8FAFC')+';display:flex;align-items:center;gap:6px">';
-        html += '<span style="font-size:14px">🏨</span>';
-        html += '<div><div style="font-size:10px;font-weight:700;color:'+(sel?'var(--blue)':'#475569')+'">'+hotel.name+'</div>';
-        html += '<div style="font-size:10px;color:#94A3B8">'+hotel.type+' · '+hotel.price+'</div></div>';
-        html += '</div>';
-      });
-      html += '</div>';
+      })(si);
     }
+
+    // 住宿行
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:6px;padding:3px 10px 10px;border-bottom:1px solid #F1F5F9">';
+    plans.forEach(function(p){
+      var planDay = PLAN_DATA[p].days[dayIdx];
+      var sel = p === selectedCol;
+      var hotel = planDay && planDay.hotel ? planDay.hotel : {name:'—',price:'—',type:'—'};
+      html += '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;background:'+(sel?'#EFF6FF':'#F8FAFC')+';border:1px dashed '+(sel?'var(--blue)':'#CBD5E1')+';border-radius:6px">';
+      html += '<span style="font-size:12px">🏨</span>';
+      html += '<div style="min-width:0"><div style="font-size:10px;font-weight:700;color:'+(sel?'var(--blue)':'#475569')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+hotel.name+'</div>';
+      html += '<div style="font-size:9px;color:#94A3B8">'+hotel.price+'</div></div>';
+      html += '</div>';
+    });
+    html += '</div>';
   });
 
   allDays.innerHTML = html;
 }
+
 function goItinerary() { if (selectedPlan) showScreen('mvp01-itinerary'); }
 function goSuccess01() { showScreen('mvp01-success'); }
 
