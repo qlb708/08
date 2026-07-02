@@ -926,22 +926,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div class="compare-3col" id="compare-3col">
 
       <!-- 左栏：AI推荐 + 维度筛选（固定窄栏） -->
-      <div class="compare-sidebar" id="col-left" data-minw="140" data-maxw="280" style="width:200px">
+      <div class="compare-sidebar" id="col-left" data-minw="140" data-maxw="300" style="width:210px">
         <div class="ai-summary-card" style="margin-bottom:16px">
-          <div class="ai-summary-label">AI 综合推荐</div>
-          <div class="ai-summary-title">推荐方案 B</div>
-          <div class="ai-summary-tag">⚡ 效率最高</div>
-          <div class="ai-summary-body" style="font-size:12px">预算最低，地铁可达 92%，排队时间最短。</div>
+          <div class="ai-summary-label">AI 分析结论</div>
+          <div class="ai-summary-title">综合推荐第 2 个攻略</div>
+          <div class="ai-summary-tag">⚡ 效率最优</div>
+          <div class="ai-summary-body" style="font-size:12px">预算最低，地铁可达 92%，动线集中在 3 个区，排队时间最短，适合短假期。</div>
         </div>
-        <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:1px;margin-bottom:8px">对比维度（可多选）</div>
-        <div style="display:flex;flex-direction:column;gap:5px" id="dim-checks">
-          <label class="dim-check active" data-dim="overview"><input type="checkbox" checked onchange="toggleDim('overview',this)"> 📊 综合对比</label>
-          <label class="dim-check" data-dim="budget"><input type="checkbox" onchange="toggleDim('budget',this)"> 💰 预算分析</label>
+        <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:1px;margin-bottom:6px">对比维度（可多选）</div>
+        <div style="display:flex;flex-direction:column;gap:4px" id="dim-checks">
+          <div style="font-size:9px;color:var(--neutral-400);padding:4px 0 2px;letter-spacing:.5px">基础维度</div>
+          <label class="dim-check active" data-dim="overview"><input type="checkbox" checked onchange="toggleDim('overview',this)"> 📊 综合评分</label>
+          <label class="dim-check" data-dim="budget"><input type="checkbox" onchange="toggleDim('budget',this)"> 💰 预算对比</label>
+          <label class="dim-check" data-dim="transport"><input type="checkbox" onchange="toggleDim('transport',this)"> ✈️ 交通方式</label>
           <label class="dim-check" data-dim="route"><input type="checkbox" onchange="toggleDim('route',this)"> 🗺️ 路线效率</label>
-          <label class="dim-check" data-dim="spots"><input type="checkbox" onchange="toggleDim('spots',this)"> ️ 景点覆盖</label>
+          <div style="font-size:9px;color:var(--neutral-400);padding:6px 0 2px;letter-spacing:.5px">景点 & 体验</div>
+          <label class="dim-check" data-dim="spots"><input type="checkbox" onchange="toggleDim('spots',this)"> 🏛️ 景点覆盖</label>
+          <label class="dim-check" data-dim="weather"><input type="checkbox" onchange="toggleDim('weather',this)"> ⛅ 天气适宜</label>
           <label class="dim-check" data-dim="people"><input type="checkbox" onchange="toggleDim('people',this)"> 👥 适合人群</label>
+          <div style="font-size:9px;color:var(--neutral-400);padding:6px 0 2px;letter-spacing:.5px">住宿 & 餐饮</div>
           <label class="dim-check" data-dim="hotel"><input type="checkbox" onchange="toggleDim('hotel',this)"> 🏨 住宿建议</label>
           <label class="dim-check" data-dim="food"><input type="checkbox" onchange="toggleDim('food',this)"> 🍜 餐饮推荐</label>
+          <div style="font-size:9px;color:var(--neutral-400);padding:6px 0 2px;letter-spacing:.5px">规划辅助</div>
+          <label class="dim-check" data-dim="luggage"><input type="checkbox" onchange="toggleDim('luggage',this)"> 🎒 行李建议</label>
+          <label class="dim-check" data-dim="risk"><input type="checkbox" onchange="toggleDim('risk',this)"> ⚠️ 风险预警</label>
         </div>
       </div>
 
@@ -1068,6 +1076,92 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
               <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px"><div class="cmp-item"><div class="cmp-label">特色推荐</div><div class="cmp-val">护国寺小吃</div></div><div class="cmp-item"><div class="cmp-label">餐饮预算</div><div class="cmp-val cmp-win">¥110/天 ✓</div></div><div class="cmp-item"><div class="cmp-label">体验评价</div><div class="cmp-val">传统小吃为主</div></div></div>
             </div>
           </div>
+          <div id="dim-transport" style="display:none">
+            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">✈️ 交通方式对比</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">抵京交通</div><div class="cmp-val">高铁 G字头</div></div>
+                <div class="cmp-item"><div class="cmp-label">票价</div><div class="cmp-val">¥553/人</div></div>
+                <div class="cmp-item"><div class="cmp-label">市内通勤</div><div class="cmp-val">地铁+打车</div></div>
+                <div class="cmp-item"><div class="cmp-label">日均交通费</div><div class="cmp-val">¥40/天</div></div>
+              </div>
+              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">抵京交通</div><div class="cmp-val cmp-win">高铁 G字头 ✓</div></div>
+                <div class="cmp-item"><div class="cmp-label">票价</div><div class="cmp-val">¥553/人</div></div>
+                <div class="cmp-item"><div class="cmp-label">市内通勤</div><div class="cmp-val cmp-win">92% 地铁 ✓</div></div>
+                <div class="cmp-item"><div class="cmp-label">日均交通费</div><div class="cmp-val cmp-win">¥20/天 ✓</div></div>
+              </div>
+              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">抵京交通</div><div class="cmp-val">飞机</div></div>
+                <div class="cmp-item"><div class="cmp-label">机票价格</div><div class="cmp-val">¥680/人</div></div>
+                <div class="cmp-item"><div class="cmp-label">市内通勤</div><div class="cmp-val">打车为主</div></div>
+                <div class="cmp-item"><div class="cmp-label">日均交通费</div><div class="cmp-val">¥64/天</div></div>
+              </div>
+            </div>
+          </div>
+          <div id="dim-weather" style="display:none">
+            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">⛅ 天气适宜性</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">出行时段</div><div class="cmp-val">10月上旬</div></div>
+                <div class="cmp-item"><div class="cmp-label">天气预报</div><div class="cmp-val">晴 18-26°C</div></div>
+                <div class="cmp-item"><div class="cmp-label">适宜指数</div><div class="cmp-val" style="color:#059669">⭐⭐⭐⭐⭐ 极佳</div></div>
+                <div class="cmp-item"><div class="cmp-label">降水概率</div><div class="cmp-val">15%</div></div>
+              </div>
+              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">出行时段</div><div class="cmp-val">10月上旬</div></div>
+                <div class="cmp-item"><div class="cmp-label">天气预报</div><div class="cmp-val">晴 18-26°C</div></div>
+                <div class="cmp-item"><div class="cmp-label">适宜指数</div><div class="cmp-val cmp-win" style="color:#059669">⭐⭐⭐⭐⭐ 极佳 ✓</div></div>
+                <div class="cmp-item"><div class="cmp-label">出行黄金季</div><div class="cmp-val cmp-win">秋高气爽最宜拍照 ✓</div></div>
+              </div>
+              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">出行时段</div><div class="cmp-val">10月上旬</div></div>
+                <div class="cmp-item"><div class="cmp-label">天气预报</div><div class="cmp-val">晴 18-26°C</div></div>
+                <div class="cmp-item"><div class="cmp-label">适宜指数</div><div class="cmp-val" style="color:#059669">⭐⭐⭐⭐⭐ 极佳</div></div>
+                <div class="cmp-item"><div class="cmp-label">降水概率</div><div class="cmp-val">15%</div></div>
+              </div>
+            </div>
+          </div>
+          <div id="dim-luggage" style="display:none">
+            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">🎒 行李建议</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">行李规模</div><div class="cmp-val">大号行李箱</div></div>
+                <div class="cmp-item"><div class="cmp-label">日均步行</div><div class="cmp-val">约8km，轻便鞋必备</div></div>
+                <div class="cmp-item"><div class="cmp-label">拍照装备</div><div class="cmp-val">建议带相机</div></div>
+              </div>
+              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">行李规模</div><div class="cmp-val cmp-win">小箱/双肩包 ✓</div></div>
+                <div class="cmp-item"><div class="cmp-label">日均步行</div><div class="cmp-val cmp-win">约6km，较轻松 ✓</div></div>
+                <div class="cmp-item"><div class="cmp-label">拍照装备</div><div class="cmp-val">手机即可</div></div>
+              </div>
+              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">行李规模</div><div class="cmp-val">亲子推车+大箱</div></div>
+                <div class="cmp-item"><div class="cmp-label">日均步行</div><div class="cmp-val">约5km，适合亲子</div></div>
+                <div class="cmp-item"><div class="cmp-label">儿童必备</div><div class="cmp-val cmp-win">科技馆/动物园 ✓</div></div>
+              </div>
+            </div>
+          </div>
+          <div id="dim-risk" style="display:none">
+            <div style="font-size:11px;font-weight:700;color:var(--neutral-500);letter-spacing:.5px;padding:10px 16px 4px;background:var(--neutral-50);border-bottom:1px solid var(--neutral-100)">⚠️ 风险预警</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+              <div class="cmp-col" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">行程密度</div><div class="cmp-val" style="color:#DC2626">🔴 景点过多</div></div>
+                <div class="cmp-item"><div class="cmp-label">闭馆风险</div><div class="cmp-val" style="color:#DC2626">🔴 国博周一闭</div></div>
+                <div class="cmp-item"><div class="cmp-label">预算超支</div><div class="cmp-val" style="color:#D97706">🟡 可能超15%</div></div>
+              </div>
+              <div class="cmp-col cmp-col-best" style="border-radius:0;border:none;border-right:1px solid var(--neutral-100);padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">行程密度</div><div class="cmp-val cmp-win" style="color:#059669">🟢 节奏适中 ✓</div></div>
+                <div class="cmp-item"><div class="cmp-label">闭馆风险</div><div class="cmp-val cmp-win" style="color:#059669">🟢 无冲突 ✓</div></div>
+                <div class="cmp-item"><div class="cmp-label">预算超支</div><div class="cmp-val cmp-win" style="color:#059669">🟢 余量充足 ✓</div></div>
+              </div>
+              <div class="cmp-col" style="border-radius:0;border:none;padding:12px 16px">
+                <div class="cmp-item"><div class="cmp-label">行程密度</div><div class="cmp-val" style="color:#DC2626">🔴 Day3过满</div></div>
+                <div class="cmp-item"><div class="cmp-label">闭馆风险</div><div class="cmp-val" style="color:#059669">🟢 无冲突</div></div>
+                <div class="cmp-item"><div class="cmp-label">预算超支</div><div class="cmp-val" style="color:#D97706">🟡 住宿占比高</div></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1122,6 +1216,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="proto-step done"><div class="step-dot">✓</div> AI 分析</div>
       <div class="proto-step done"><div class="step-dot">✓</div> 方案对比</div>
       <div class="proto-step active"><div class="step-dot">4</div> 具体行程</div>
+      <div class="proto-step"><div class="step-dot">5</div> 确认出发</div>
     </div>
     <div style="width:80px"></div>
   </nav>
@@ -1132,7 +1227,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div style="font-size:12px;color:var(--neutral-400);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">已选定方案</div>
         <div style="font-size:24px;font-weight:800;color:var(--neutral-900);letter-spacing:-.3px">高效北京 4 日方案 <span style="font-size:14px;background:#EFF6FF;color:var(--blue);padding:3px 10px;border-radius:20px;font-weight:600;margin-left:8px">✓ AI 推荐</span></div>
       </div>
-      <button class="btn-confirm" onclick="goSuccess01()">保存行程 →</button>
+      <button onclick="openHealthCheck()" style="margin-right:10px;padding:10px 18px;border:1.5px solid var(--indigo);background:#EEF2FF;color:var(--indigo);border-radius:var(--radius);font-size:13px;font-weight:700;cursor:pointer">🔍 行程体检</button>
+      <button class="btn-confirm" onclick="showScreen('mvp01-confirm')">&#x786e;&#x8ba4;&#x51fa;&#x53d1; →</button>
     </div>
 
     <!-- 概要卡片 -->
@@ -1230,6 +1326,166 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   </div>
 </div>
 
+
+<!-- ===================== MVP01 · CONFIRM ===================== -->
+<div id="mvp01-confirm" class="proto-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showScreen('mvp01-itinerary')">← 返回行程</button>
+      <div class="proto-title">AI 多方案决策</div><div class="proto-badge">MVP 01</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step done"><div class="step-dot">✓</div> 导入方案</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> AI 分析</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> 方案对比</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> 具体行程</div>
+      <div class="proto-step active"><div class="step-dot">5</div> 确认出发</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+  <div style="padding:28px 40px;max-width:960px;margin:0 auto;width:100%">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">
+      <div>
+        <div style="font-size:12px;color:var(--neutral-400);font-weight:600;letter-spacing:1px;margin-bottom:4px">STEP 5 · 确认出发</div>
+        <div style="font-size:24px;font-weight:800;color:var(--neutral-900)">高效北京 4 日方案 <span style="font-size:14px;background:#EFF6FF;color:var(--blue);padding:3px 10px;border-radius:20px;font-weight:600;margin-left:8px">✓ AI 推荐</span></div>
+      </div>
+      <button class="btn-confirm" onclick="goSuccess01()">生成出行包 ✈️</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+      <!-- 左列：日期选择 + 天气 -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <!-- 日期选择 -->
+        <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--neutral-200);padding:20px">
+          <div style="font-size:13px;font-weight:700;color:var(--neutral-900);margin-bottom:14px">📅 出行日期</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div>
+              <div style="font-size:11px;color:var(--neutral-500);margin-bottom:4px">出发日期</div>
+              <input type="date" value="2026-10-03" style="width:100%;padding:8px 10px;border:1.5px solid var(--neutral-200);border-radius:8px;font-size:13px;color:var(--neutral-900);font-family:inherit">
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--neutral-500);margin-bottom:4px">返回日期</div>
+              <input type="date" value="2026-10-06" style="width:100%;padding:8px 10px;border:1.5px solid var(--neutral-200);border-radius:8px;font-size:13px;color:var(--neutral-900);font-family:inherit">
+            </div>
+          </div>
+          <div style="background:#EFF6FF;border-radius:8px;padding:10px 12px;font-size:12px;color:var(--blue)">
+            💡 10月3-6日为国庆假期，故宫建议提前 30 天预约门票
+          </div>
+        </div>
+
+        <!-- 天气预览 -->
+        <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--neutral-200);padding:20px">
+          <div style="font-size:13px;font-weight:700;color:var(--neutral-900);margin-bottom:14px">⛅ 出行期间天气预报</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+            <div style="text-align:center;padding:10px 4px;background:#F8FAFC;border-radius:8px">
+              <div style="font-size:10px;color:var(--neutral-500);margin-bottom:4px">10/3</div>
+              <div style="font-size:20px;margin-bottom:4px">☀️</div>
+              <div style="font-size:11px;font-weight:700;color:#1E293B">22°</div>
+              <div style="font-size:10px;color:var(--neutral-400)">14° / 26°</div>
+            </div>
+            <div style="text-align:center;padding:10px 4px;background:#F8FAFC;border-radius:8px">
+              <div style="font-size:10px;color:var(--neutral-500);margin-bottom:4px">10/4</div>
+              <div style="font-size:20px;margin-bottom:4px">🌤️</div>
+              <div style="font-size:11px;font-weight:700;color:#1E293B">19°</div>
+              <div style="font-size:10px;color:var(--neutral-400)">12° / 24°</div>
+            </div>
+            <div style="text-align:center;padding:10px 4px;background:#F8FAFC;border-radius:8px">
+              <div style="font-size:10px;color:var(--neutral-500);margin-bottom:4px">10/5</div>
+              <div style="font-size:20px;margin-bottom:4px">⛅</div>
+              <div style="font-size:11px;font-weight:700;color:#1E293B">17°</div>
+              <div style="font-size:10px;color:var(--neutral-400)">11° / 22°</div>
+            </div>
+            <div style="text-align:center;padding:10px 4px;background:#F8FAFC;border-radius:8px">
+              <div style="font-size:10px;color:var(--neutral-500);margin-bottom:4px">10/6</div>
+              <div style="font-size:20px;margin-bottom:4px">☀️</div>
+              <div style="font-size:11px;font-weight:700;color:#1E293B">21°</div>
+              <div style="font-size:10px;color:var(--neutral-400)">13° / 25°</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--neutral-500)">🌡️ 平均气温 20°C，秋高气爽，适合户外景点，建议备薄外套</div>
+        </div>
+      </div>
+
+      <!-- 右列：完整预算明细 -->
+      <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--neutral-200);padding:20px">
+        <div style="font-size:13px;font-weight:700;color:var(--neutral-900);margin-bottom:14px">💴 完整预算明细</div>
+        <div style="display:flex;flex-direction:column;gap:0">
+
+          <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;padding:4px 0 6px">🚄 长途交通</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--neutral-100)">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--neutral-800)">高铁往返（G字头）</div>
+              <div style="font-size:11px;color:var(--neutral-500)">上海→北京 约4.5h / 人均</div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">¥1,106</div>
+          </div>
+
+          <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;padding:10px 0 6px">🏨 住宿</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--neutral-100)">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--neutral-800)">东城区精品民宿 × 3晚</div>
+              <div style="font-size:11px;color:var(--neutral-500)">¥280/晚，近景点步行可达</div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">¥840</div>
+          </div>
+
+          <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;padding:10px 0 6px">🎫 景点门票</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--neutral-100)">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--neutral-800)">故宫 + 长城 + 国博</div>
+              <div style="font-size:11px;color:var(--neutral-500)">故宫¥60 · 八达岭¥65 · 国博免费</div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">¥125</div>
+          </div>
+
+          <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;padding:10px 0 6px">🍜 餐饮</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--neutral-100)">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--neutral-800)">餐饮 × 4天</div>
+              <div style="font-size:11px;color:var(--neutral-500)">含烤鸭 ¥288/人 · 其余 ¥100/天</div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">¥588</div>
+          </div>
+
+          <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;padding:10px 0 6px">🚇 市内交通</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--neutral-100)">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--neutral-800)">地铁 + 打车（机场）</div>
+              <div style="font-size:11px;color:var(--neutral-500)">92%地铁可达，日均约¥20</div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">¥80</div>
+          </div>
+
+          <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;padding:10px 0 6px">🛍️ 购物/其他</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--neutral-200)">
+            <div style="font-size:12px;font-weight:600;color:var(--neutral-800)">伴手礼、保险等</div>
+            <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">¥200</div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0 0">
+            <div style="font-size:14px;font-weight:800;color:var(--neutral-900)">合计（每人）</div>
+            <div style="font-size:22px;font-weight:800;color:var(--blue)">¥2,939</div>
+          </div>
+          <div style="font-size:11px;color:var(--neutral-400);text-align:right">含来回高铁 · 3晚住宿 · 全程餐饮</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 底部行程体检状态 -->
+    <div style="margin-top:20px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:24px">✅</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#065F46">行程体检通过 · 90/100</div>
+          <div style="font-size:11px;color:#047857">无闭馆冲突 · 动线合理 · 节奏适中 · 预算充足</div>
+        </div>
+      </div>
+      <button onclick="openHealthCheck()" style="padding:8px 16px;border:1px solid #059669;background:#fff;color:#059669;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">查看完整报告</button>
+    </div>
+  </div>
+</div>
 
 <div id="mvp01-success" class="proto-shell">
   <nav class="proto-nav">
