@@ -1032,15 +1032,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <!-- 中栏固定头部：方案 tab + Day tab + 标题 -->
         <div style="flex-shrink:0;background:#fff;border-bottom:1px solid var(--neutral-200);padding:10px 20px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <div style="font-size:13px;font-weight:800;color:var(--neutral-900)">3 个方案行程对比</div>
+            <div style="font-size:13px;font-weight:800;color:var(--neutral-900)" id="compare-count-label">3 个方案行程对比</div>
             <div style="font-size:11px;color:var(--neutral-400)">点击方案高亮列 · 点 Day 切换</div>
           </div>
-          <!-- 方案 tab + Day tab 二合一行 -->
+          <!-- 方案 tab + Day tab 二合一行（动态生成） -->
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <span style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-right:2px">方案</span>
-            <button id="plan-tab-a" onclick="selectPlanTab('a')" style="padding:4px 12px;border-radius:14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">A 小红书</button>
-            <button id="plan-tab-b" onclick="selectPlanTab('b')" style="padding:4px 12px;border-radius:14px;border:none;background:var(--blue);color:#fff;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s">B AI推荐 ✦</button>
-            <button id="plan-tab-c" onclick="selectPlanTab('c')" style="padding:4px 12px;border-radius:14px;border:1px solid var(--neutral-200);background:#fff;color:var(--neutral-600);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">C 知乎</button>
+            <div id="compare-plan-tabs" style="display:flex;gap:5px;flex-wrap:wrap">
+              <!-- 由 rebuildCompare() 动态生成 -->
+            </div>
             <div style="width:1px;height:16px;background:var(--neutral-200);margin:0 4px"></div>
             <span style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-right:2px">天</span>
             <div id="panel-day-tabs" style="display:flex;gap:6px"></div>
@@ -1242,7 +1242,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="compare-panel" id="col-right" data-minw="160" data-maxw="280" style="width:200px;border-left:1px solid var(--neutral-200);overflow-y:auto;padding:16px;flex-direction:column;display:flex;gap:10px">
         <div style="font-size:10px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px">选择方案</div>
 
-        <div id="plan-a" class="plan-card" onclick="selectPlan('a')" style="border-radius:10px;cursor:pointer;padding:12px;transition:all .15s">
+        <div id="plan-cards-zone" style="display:flex;flex-direction:column;gap:8px">
+        <!-- 由 rebuildCompare() 动态生成 -->
+        </div>
+
+        <div id="plan-a" class="plan-card" onclick="selectPlan('a')" style="display:none;border-radius:10px;cursor:pointer;padding:12px;transition:all .15s">
           <div style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-bottom:2px">方案 A · 小红书</div>
           <div style="font-size:13px;font-weight:700;color:var(--neutral-900)">北京 5 日经典</div>
           <div style="font-size:11px;color:var(--neutral-500);margin-top:4px">¥3,200 · 5天</div>
@@ -1837,8 +1841,78 @@ var _selectedDays = null;
 var PLAN_COLORS = {
   a: {border:'#CBD5E1', head:'#F8FAFC', badge:'#64748B', badgeBg:'#F1F5F9', accent:'#475569'},
   b: {border:'#3B82F6', head:'#EFF6FF', badge:'#ffffff', badgeBg:'#3B82F6', accent:'#1D6FEB'},
-  c: {border:'#10B981', head:'#ECFDF5', badge:'#ffffff', badgeBg:'#10B981', accent:'#059669'}
+  c: {border:'#10B981', head:'#ECFDF5', badge:'#ffffff', badgeBg:'#10B981', accent:'#059669'},
+  d: {border:'#8B5CF6', head:'#F5F3FF', badge:'#ffffff', badgeBg:'#8B5CF6', accent:'#7C3AED'},
+  e: {border:'#F59E0B', head:'#FFFBEB', badge:'#ffffff', badgeBg:'#F59E0B', accent:'#D97706'}
 };
+// 获取当前参与对比的方案列表（与 filledSlots 同步）
+function getActivePlans() {
+  var order = ['a','b','c','d','e'];
+  var result = [];
+  order.forEach(function(p){ if(filledSlots.has(p)) result.push(p); });
+  // 如果没有选，默认 a/b/c（fallback）
+  return result.length >= 2 ? result : ['a','b','c'];
+}
+// 每次进入对比页时，根据 filledSlots 动态重建对比区
+function rebuildCompare() {
+  var plans = getActivePlans();
+  var n = plans.length;
+  var colFr = 'repeat('+n+',1fr)';
+  // 顶部方案 Tab 行
+  var tabRow = document.getElementById('compare-plan-tabs');
+  if(tabRow) {
+    tabRow.innerHTML = '';
+    tabRow.style.gridTemplateColumns = colFr;
+    plans.forEach(function(p){
+      var c = PLAN_COLORS[p];
+      var d = PLAN_DATA[p];
+      var num = plans.indexOf(p)+1;
+      var btn = document.createElement('button');
+      btn.id = 'plan-tab-'+p;
+      btn.style.cssText = 'padding:8px 14px;border:1px solid var(--neutral-200);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:var(--neutral-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
+      btn.textContent = '攻略 '+num+'・'+d.name;
+      btn.onclick = (function(pp){ return function(){ selectPlanTab(pp); }; })(p);
+      tabRow.appendChild(btn);
+    });
+  }
+  // 右栏方案卡
+  var colRight = document.getElementById('col-right');
+  if(colRight) {
+    // 只重建方案选择卡部分（保留其他元素）
+    var cardZone = document.getElementById('plan-cards-zone');
+    if(cardZone) {
+      cardZone.innerHTML = '';
+      plans.forEach(function(p,i){
+        var c = PLAN_COLORS[p];
+        var d = PLAN_DATA[p];
+        var card = document.createElement('div');
+        card.id = 'plan-'+p;
+        card.className = 'plan-card';
+        card.style.cssText = 'border-radius:10px;cursor:pointer;padding:12px;transition:all .15s';
+        card.innerHTML = '<div style="font-size:10px;color:var(--neutral-400);font-weight:600;margin-bottom:2px">攻略 '+(i+1)+'</div>'
+          +'<div style="font-size:13px;font-weight:700;color:var(--neutral-900);line-height:1.3;margin-bottom:3px">'+d.name+'</div>'
+          +'<div style="font-size:11px;color:var(--neutral-500)">'+d.meta+'</div>';
+        card.onclick = (function(pp){ return function(){ selectPlan(pp); }; })(p);
+        cardZone.appendChild(card);
+      });
+    }
+  }
+  // 维度对比区列数同步
+  var dimTables = document.querySelectorAll('#compare-dims-area .cmp-col');
+  // 不逐一改，靠 renderDays 重写维度区
+  var lbl = document.getElementById('compare-count-label');
+  if(lbl) lbl.textContent = n + ' 个方案行程对比';
+  // 动态更新维度对比区所有 grid 行的列数
+  var dimArea = document.getElementById('compare-dims-area');
+  if(dimArea) {
+    dimArea.querySelectorAll('[style]').forEach(function(el){
+      if(el.style.gridTemplateColumns && el.style.gridTemplateColumns.indexOf('1fr') >= 0) {
+        el.style.gridTemplateColumns = '1fr '.repeat(n).trim();
+      }
+    });
+  }
+  renderItineraryGrid(null);
+}
 
 // ===== Navigation =====
 function showHome() {
@@ -1851,11 +1925,15 @@ function showScreen(id) {
   document.getElementById('home-screen').style.display = 'none';
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  if(id === 'mvp01-compare') { setTimeout(function(){ rebuildCompare(); }, 30); }
 }
 function startMVP(mvp) {
   if (mvp === 'mvp01') {
     filledSlots.clear(); selectedPlan = null;
-    ['a','b','c'].forEach(function(s){ document.getElementById('slot-'+s).className='import-slot'; });
+    ['a','b','c','d','e'].forEach(function(s){ var el=document.getElementById('slot-'+s); if(el) el.className='import-slot'; });
+    _visibleSlots = ['a','b','c'];
+    ['d','e'].forEach(function(s){ var el=document.getElementById('slot-'+s); if(el) el.style.display='none'; });
+    document.getElementById('import-slots-container').style.gridTemplateColumns='repeat(3,1fr)';
     document.getElementById('analyze-btn').style.opacity='.4';
     document.getElementById('analyze-btn').style.pointerEvents='none';
     showScreen('mvp01-import');
@@ -1896,8 +1974,14 @@ function addSlot() {
   _visibleSlots.push(next);
   // 更新 grid 列数
   var n = _visibleSlots.length;
-  var cols = n <= 2 ? 2 : n <= 4 ? 2 : 3;
+  var cols = n <= 3 ? 3 : n === 4 ? 2 : 3;
   document.getElementById('import-slots-container').style.gridTemplateColumns = 'repeat('+cols+',1fr)';
+  // 5个时最后一行有空格，用伪占位修复
+  var ph = document.getElementById('slot-placeholder');
+  if(n === 5) {
+    if(!ph){ ph = document.createElement('div'); ph.id='slot-placeholder'; }
+    document.getElementById('import-slots-container').appendChild(ph);
+  } else if(ph && ph.parentNode) { ph.parentNode.removeChild(ph); }
   updateSlotCounter();
 }
 function removeSlot() {
@@ -1906,8 +1990,10 @@ function removeSlot() {
   var el = document.getElementById('slot-'+last);
   if(el){ el.style.display='none'; el.className='import-slot'; filledSlots.delete(last); }
   var n = _visibleSlots.length;
-  var cols = n <= 2 ? 2 : n <= 4 ? 2 : 3;
+  var cols = n <= 3 ? 3 : n === 4 ? 2 : 3;
   document.getElementById('import-slots-container').style.gridTemplateColumns = 'repeat('+cols+',1fr)';
+  var ph = document.getElementById('slot-placeholder');
+  if(ph && ph.parentNode) { ph.parentNode.removeChild(ph); }
   updateSlotCounter();
 }
 function startAnalyzing() {
@@ -2071,6 +2157,59 @@ var PLAN_DATA = {
       ]}
     ]
   },
+  d: {
+    name: '北京深度文化 4 日', meta: '自定义规划 · 4天 · ¥2,800',
+    days: [
+      { label:'Day1 胡同深度游', hotel:{name:'南锣胡同民宿',type:'精品民宿',price:'¥290/晚'}, steps: [
+        {icon:'🏯',time:'09:00',name:'烟袋斜街',tip:'老北京胡同文化起点',transit:'步行 15 分钟 →'},
+        {icon:'🍜',time:'11:30',name:'卤煮火烧老店',tip:'北京传统小吃，排队约 20 分钟',transit:'步行 →'},
+        {icon:'🛍️',time:'13:30',name:'南锣鼓巷深处',tip:'避开主街，走支巷更有味道',transit:'步行 20 分钟 →'},
+        {icon:'☕',time:'16:00',name:'钟鼓楼广场',tip:'傍晚光线最好，适合拍照',transit:'步行 →'},
+        {icon:'🌃',time:'19:00',name:'什刹海夜市',tip:'夜晚人文氛围浓厚'}
+      ]},
+      { label:'Day2 老北京特色线', hotel:{name:'东城区精品酒店',type:'精品酒店',price:'¥320/晚'}, steps: [
+        {icon:'⛩️',time:'09:00',name:'雍和宫',tip:'北京最大的藏传佛教寺庙',transit:'地铁 2 站 →'},
+        {icon:'🌿',time:'11:00',name:'国子监街',tip:'古朴安静，拍照出片',transit:'步行 →'},
+        {icon:'🥢',time:'12:30',name:'五道营胡同',tip:'文艺餐厅聚集，适合午餐',transit:'打车 约 30 分钟 →'},
+        {icon:'🎨',time:'15:00',name:'798艺术区',tip:'当代艺术，适合打卡',transit:'打车 →'},
+        {icon:'🌆',time:'18:00',name:'三里屯',tip:'夜生活起点'}
+      ]},
+      { label:'Day3 皇家园林日', hotel:{name:'海淀区连锁酒店',type:'商务酒店',price:'¥260/晚'}, steps: [
+        {icon:'🌸',time:'08:30',name:'北海公园',tip:'清晨划船，游客稀少',transit:'地铁 →'},
+        {icon:'🏛️',time:'11:00',name:'景山公园',tip:'俯瞰故宫全景最佳点',transit:'步行 →'},
+        {icon:'🥢',time:'13:00',name:'北海附近四合院餐厅',tip:'老北京风味',transit:'打车 约 40 分钟 →'},
+        {icon:'🌺',time:'15:00',name:'颐和园',tip:'下午人少，昆明湖泛舟'}
+      ]},
+      { label:'Day4 冷门景点探索', hotel:{name:'首都机场附近商务酒店',type:'商务酒店',price:'¥280/晚'}, steps: [
+        {icon:'🎭',time:'09:00',name:'正乙祠戏楼',tip:'北京最古老的会馆戏楼',transit:'步行 →'},
+        {icon:'📚',time:'10:30',name:'琉璃厂文化街',tip:'古玩字画集中，文化体验',transit:'步行 →'},
+        {icon:'🥢',time:'12:30',name:'大董烤鸭',tip:'精致烤鸭体验，提前预订',transit:'地铁 →'},
+        {icon:'🛍️',time:'15:00',name:'前门大栅栏',tip:'传统商业街，购买伴手礼'}
+      ]}
+    ]
+  },
+  e: {
+    name: '北京极致精华 3 日', meta: '马蜂窝攻略 · 3天 · ¥1,980',
+    days: [
+      { label:'Day1 历史核心线', hotel:{name:'东城区快捷酒店',type:'快捷酒店',price:'¥200/晚'}, steps: [
+        {icon:'🎯',time:'08:00',name:'故宫博物院',tip:'开门第一批入场，体验最佳',transit:'步行 10 分钟 →'},
+        {icon:'🏯',time:'11:30',name:'景山公园',tip:'故宫全景打卡',transit:'步行 →'},
+        {icon:'🥢',time:'12:30',name:'附近快餐',tip:'节省时间，把时间留给景点',transit:'地铁 →'},
+        {icon:'🧱',time:'14:00',name:'天安门广场',tip:'必打卡',transit:'步行 →'},
+        {icon:'🌃',time:'17:00',name:'前门大栅栏',tip:'收尾逛街，晚餐在此'}
+      ]},
+      { label:'Day2 长城+文化日', hotel:{name:'西城区青年旅社',type:'青年旅社',price:'¥150/晚'}, steps: [
+        {icon:'🧱',time:'07:00',name:'慕田峪长城',tip:'人少、景色更原始，拍照更美',transit:'大巴返回 约 90 分钟 →'},
+        {icon:'🦆',time:'14:00',name:'四季民福烤鸭',tip:'故宫旁，性价比高',transit:'打车 →'},
+        {icon:'🛍️',time:'17:00',name:'南锣鼓巷',tip:'挑选文创伴手礼'}
+      ]},
+      { label:'Day3 效率收官日', hotel:{name:'返程，无需住宿',type:'—',price:'—'}, steps: [
+        {icon:'🌸',time:'08:30',name:'颐和园（半日游）',tip:'起早去，10点前人少',transit:'地铁 →'},
+        {icon:'🥢',time:'12:00',name:'海底捞/品牌餐厅',tip:'北京特色最后一餐',transit:'地铁 →'},
+        {icon:'✈️',time:'15:00',name:'前往机场/高铁站',tip:'留足2小时余量办理手续'}
+      ]}
+    ]
+  },
   c: {
     name: '北京亲子 5 日游', meta: '知乎路书 · 5天 · ¥4,000',
     days: [
@@ -2116,7 +2255,7 @@ function selectPlanTab(plan) {
 }
 function selectPlan(plan) {
   selectedPlan = plan;
-  ['a','b','c'].forEach(function(p){
+  getActivePlans().forEach(function(p){
     var el = document.getElementById('plan-'+p);
     if(el) el.classList.remove('selected');
   });
@@ -2124,11 +2263,11 @@ function selectPlan(plan) {
   if(sel) sel.classList.add('selected');
   var info = document.getElementById('selected-plan-info');
   var sBtn = document.getElementById('sidebar-confirm');
-  var d = PLAN_DATA[plan];
+  var d = PLAN_DATA[plan] || PLAN_DATA['b'];
   if(info) info.innerHTML = '<strong style="color:var(--neutral-900)">'+d.name+'</strong><br><span style="color:var(--neutral-400);font-size:12px">'+d.meta+'</span>';
   if(sBtn){ sBtn.style.background='var(--blue)'; sBtn.style.color='#fff'; sBtn.style.cursor='pointer'; }
   window._currentSelectedPlan = plan;
-  ['a','b','c'].forEach(function(p){
+  getActivePlans().forEach(function(p){
     var tb = document.getElementById('plan-tab-'+p);
     if(!tb) return;
     if(p===plan){ tb.style.background='var(--blue)'; tb.style.color='#fff'; tb.style.border='none'; tb.style.fontWeight='700'; }
@@ -2137,7 +2276,7 @@ function selectPlan(plan) {
   renderDays();
 }
 function renderItineraryGrid(selectedCol) {
-  var plans = ['a','b','c'];
+  var plans = getActivePlans();
   var maxDays = Math.max.apply(null, plans.map(function(p){ return PLAN_DATA[p].days.length; }));
   if(_selectedDays === null) {
     _selectedDays = [];
@@ -2182,14 +2321,14 @@ function renderItineraryGrid(selectedCol) {
 }
 
 function renderDays() {
-  var plans = ['a','b','c'];
+  var plans = getActivePlans();
   var selectedCol = window._currentSelectedPlan;
   var allDays = document.getElementById('panel-all-days');
   var days = _selectedDays.slice().sort(function(a,b){return a-b;});
   var html = '';
 
   // 顶部：三列方案卡头（sticky）
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 12px 8px;position:sticky;top:0;z-index:5;background:#F9FAFB">';
+  html += '<div style="display:grid;grid-template-columns:'+('1fr '.repeat(plans.length).trim())+';gap:12px;padding:0 12px 8px;position:sticky;top:0;z-index:5;background:#F9FAFB">';
   plans.forEach(function(p){
     var d = PLAN_DATA[p];
     var c = PLAN_COLORS[p];
@@ -2206,7 +2345,7 @@ function renderDays() {
   days.forEach(function(dayIdx){
     var dayNum = dayIdx + 1;
     // Day 标签行
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:8px 12px 4px">';
+    html += '<div style="display:grid;grid-template-columns:'+('1fr '.repeat(plans.length).trim())+';gap:12px;padding:8px 12px 4px">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
       var c = PLAN_COLORS[p];
@@ -2226,7 +2365,7 @@ function renderDays() {
 
     // 步骤行
     for(var si=0;si<maxSteps;si++){
-      html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 12px">';
+      html += '<div style="display:grid;grid-template-columns:'+('1fr '.repeat(plans.length).trim())+';gap:12px;padding:0 12px">';
       plans.forEach(function(p){
         var planDay = PLAN_DATA[p].days[dayIdx];
         var step = planDay ? planDay.steps[si] : null;
@@ -2247,7 +2386,7 @@ function renderDays() {
     }
 
     // 住宿行（虚线框突出）
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:8px 12px 12px">';
+    html += '<div style="display:grid;grid-template-columns:'+('1fr '.repeat(plans.length).trim())+';gap:12px;padding:8px 12px 12px">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
       var c = PLAN_COLORS[p];
