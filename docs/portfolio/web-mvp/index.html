@@ -260,7 +260,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .footer-sep{color:var(--neutral-300);font-size:14px}
 
 /* ===== PROTOTYPE SHELL ===== */
-.proto-shell{display:none;flex-direction:column;height:100vh;overflow:hidden;background:var(--neutral-50)}
+.proto-shell{display:none;flex-direction:column;height:100vh;overflow-y:auto;background:var(--neutral-50)}
 .proto-shell.active{display:flex}
 
 /* Proto Nav */
@@ -1101,6 +1101,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div id="selected-plan-info" style="font-size:12px;color:var(--neutral-400);margin-bottom:10px">尚未选择</div>
           <button onclick="goItinerary()" id="sidebar-confirm" style="width:100%;padding:10px;border:none;background:var(--neutral-200);color:var(--neutral-500);border-radius:var(--radius);font-size:12px;font-weight:600;cursor:not-allowed;transition:all .15s">查看行程 →</button>
         </div>
+        <div style="border-top:1px solid var(--neutral-100);padding-top:12px">
+          <button onclick="openHealthCheck()" style="width:100%;padding:10px;border:1.5px solid var(--indigo);background:#EEF2FF;color:var(--indigo);border-radius:var(--radius);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s">🔍 AI 行程体检</button>
+        </div>
       </div>
 
     </div>
@@ -1919,6 +1922,118 @@ function goSuccess02() { showScreen('mvp02-success'); }
   // 初始化行程对比面板（无选中）
   window._currentSelectedPlan = null;
   renderItineraryGrid(null);
+
+// ===== 行程体检 =====
+function openHealthCheck() {
+  var modal = document.getElementById('health-check-modal');
+  modal.style.display = 'block';
+  var content = document.getElementById('health-check-content');
+  content.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--neutral-400)">正在扫描行程...</div>';
+  
+  setTimeout(function() {
+    var report = generateHealthReport();
+    content.innerHTML = report;
+  }, 1200);
+}
+
+function closeHealthCheck() {
+  document.getElementById('health-check-modal').style.display = 'none';
+}
+
+function generateHealthReport() {
+  var plans = ['a','b','c'];
+  var planNames = {a:'方案A·小红书',b:'方案B·AI推荐',c:'方案C·知乎'};
+  var issues = {
+    a: [
+      {severity:'red', icon:'🔴', title:'闭馆检测', desc:'国家博物馆周一闭馆，但安排在周一', suggestion:'建议调整到周二或周三'},
+      {severity:'red', icon:'', title:'景点密度预警', desc:'Day1 安排5个景点，预计游览时间超过10小时', suggestion:'建议删减至3个或拆分到两天'},
+      {severity:'yellow', icon:'🟡', title:'住宿区域建议', desc:'住宿在海淀，但Day1景点在东城，每日通勤约40分钟', suggestion:'建议换到东城区住宿可节省每日1小时'},
+      {severity:'yellow', icon:'🟡', title:'动线合理性', desc:'Day3 颐和园→798 路线绕路，总移动时间约1.5小时', suggestion:'建议先798后颐和园，可节省30分钟'},
+      {severity:'green', icon:'🟢', title:'人流高峰', desc:'故宫建议09:00前到达避开排队', suggestion:'已安排在08:30，时间合理'}
+    ],
+    b: [
+      {severity:'green', icon:'🟢', title:'整体健康', desc:'92%地铁可达，动线最优，预算最低', suggestion:'无需调整'},
+      {severity:'yellow', icon:'🟡', title:'人流高峰提醒', desc:'八达岭长城工作日也有团队，建议07:00前到达', suggestion:'已安排在07:30，建议提前到07:00'},
+      {severity:'green', icon:'', title:'住宿合理', desc:'东城区住宿与景点距离近，每日通勤<20分钟', suggestion:'无需调整'},
+      {severity:'green', icon:'🟢', title:'景点密度', desc:'每天3-4个景点，节奏适中', suggestion:'无需调整'}
+    ],
+    c: [
+      {severity:'red', icon:'🔴', title:'动线问题', desc:'Day3 颐和园→科技馆→动物园，总移动时间超3小时', suggestion:'建议拆分到两天或调整顺序'},
+      {severity:'red', icon:'🔴', title:'景点密度预警', desc:'Day3 安排5个景点，小朋友体力可能不足', suggestion:'建议删减至3个，保留科技馆和动物园'},
+      {severity:'yellow', icon:'🟡', title:'住宿价格', desc:'亲子酒店¥520/晚，5天总计¥2600，占预算65%', suggestion:'考虑换到¥380/晚的家庭公寓可节省¥700'},
+      {severity:'yellow', icon:'🟡', title:'交通方式', desc:'部分路段打车为主，带小孩不方便', suggestion:'建议提前预约专车或选择地铁沿线酒店'},
+      {severity:'green', icon:'🟢', title:'亲子友好', desc:'科技馆和动物园非常适合小朋友', suggestion:'建议预留充足休息时间'}
+    ]
+  };
+  
+  var html = '';
+  plans.forEach(function(p) {
+    var planIssues = issues[p];
+    var redCount = planIssues.filter(function(i){return i.severity==='red'}).length;
+    var yellowCount = planIssues.filter(function(i){return i.severity==='yellow'}).length;
+    var greenCount = planIssues.filter(function(i){return i.severity==='green'}).length;
+    var score = Math.max(0, 100 - redCount*20 - yellowCount*10);
+    
+    html += '<div style="margin-bottom:24px;border:1px solid var(--neutral-200);border-radius:12px;overflow:hidden">';
+    html += '<div style="padding:14px 16px;background:#F9FAFB;border-bottom:1px solid var(--neutral-200);display:flex;align-items:center;justify-content:space-between">';
+    html += '<div style="font-size:13px;font-weight:700;color:var(--neutral-900)">'+planNames[p]+'</div>';
+    html += '<div style="display:flex;align-items:center;gap:8px">';
+    html += '<div style="font-size:20px;font-weight:800;color:'+(score>=80?'#059669':score>=60?'#D97706':'#DC2626')+'">'+score+'</div>';
+    html += '<div style="font-size:10px;color:var(--neutral-500)">/100</div>';
+    html += '<div style="font-size:10px;color:#DC2626">🔴'+redCount+'</div>';
+    html += '<div style="font-size:10px;color:#D97706">🟡'+yellowCount+'</div>';
+    html += '<div style="font-size:10px;color:#059669">🟢'+greenCount+'</div>';
+    html += '</div></div>';
+    
+    planIssues.forEach(function(issue) {
+      var borderColor = issue.severity==='red'?'#FEE2E2':issue.severity==='yellow'?'#FEF3C7':'#D1FAE5';
+      var bgColor = issue.severity==='red'?'#FEF2F2':issue.severity==='yellow'?'#FFFBEB':'#F0FDF4';
+      var titleColor = issue.severity==='red'?'#DC2626':issue.severity==='yellow'?'#D97706':'#059669';
+      
+      html += '<div style="padding:12px 16px;border-bottom:1px solid var(--neutral-100);border-left:3px solid '+borderColor+';background:'+bgColor+'">';
+      html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">';
+      html += '<span style="font-size:12px">'+issue.icon+'</span>';
+      html += '<span style="font-size:12px;font-weight:700;color:'+titleColor+'">'+issue.title+'</span>';
+      html += '</div>';
+      html += '<div style="font-size:11px;color:var(--neutral-700);margin-bottom:6px">'+issue.desc+'</div>';
+      html += '<div style="font-size:11px;color:var(--blue);background:#EFF6FF;padding:6px 10px;border-radius:6px">💡 '+issue.suggestion+'</div>';
+      html += '</div>';
+    });
+    
+    html += '<div style="padding:10px 16px;background:#F9FAFB;border-top:1px solid var(--neutral-200);text-align:right">';
+    html += '<button onclick="alert(\''+planNames[p]+' AI优化已完成！\')" style="padding:6px 16px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">⚡ 一键优化此方案</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  
+  return html;
+}
+
+// 点击模态框背景关闭
+document.addEventListener('click', function(e) {
+  var modal = document.getElementById('health-check-modal');
+  if (e.target === modal) closeHealthCheck();
+});
+
 </script>
+
+<!-- ===== 行程体检模态框 ===== -->
+<div id="health-check-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)">
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:720px;max-height:85vh;overflow-y:auto;background:#fff;border-radius:16px;box-shadow:0 24px 48px rgba(0,0,0,.2)">
+    <div style="padding:20px 24px;border-bottom:1px solid var(--neutral-200);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0;z-index:1">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#818CF8,#6366F1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">🔍</div>
+        <div>
+          <div style="font-size:15px;font-weight:800;color:var(--neutral-900)">AI 行程体检报告</div>
+          <div style="font-size:11px;color:var(--neutral-500)">基于 5 个维度自动扫描</div>
+        </div>
+      </div>
+      <button onclick="closeHealthCheck()" style="width:32px;height:32px;border:none;background:var(--neutral-100);border-radius:8px;font-size:16px;cursor:pointer">✕</button>
+    </div>
+    <div style="padding:20px 24px" id="health-check-content">
+      <div style="text-align:center;padding:40px 0;color:var(--neutral-400)">正在扫描行程...</div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
