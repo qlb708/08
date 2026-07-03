@@ -49,8 +49,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .city-search-input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(29,111,235,0.1)}
 .city-search-input::placeholder{color:#9CA3AF}
 .city-search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none}
+.city-dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1.5px solid var(--blue);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:200;max-height:220px;overflow-y:auto;display:none}
+.city-dropdown.show{display:block}
+.city-dropdown-item{padding:11px 16px;font-size:14px;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:10px;transition:background 0.12s}
+.city-dropdown-item:hover{background:var(--blue-l);color:var(--blue)}
+.city-dropdown-item .city-dd-emoji{font-size:16px;width:24px;text-align:center}
 .city-hot-label{font-size:12px;color:var(--gray);font-weight:600;margin-bottom:10px;letter-spacing:1px}
-.city-hot-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.city-hot-section{margin-bottom:12px}
+.city-hot-section-title{font-size:11px;color:var(--gray);font-weight:700;letter-spacing:1px;margin-bottom:8px;padding-left:2px}
+.city-hot-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
 .city-hot-tag{padding:6px 14px;border-radius:50px;border:1.5px solid var(--border);font-size:13px;cursor:pointer;background:#fff;color:var(--gray);transition:all 0.15s;display:flex;align-items:center;gap:5px}
 .city-hot-tag:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
 .city-hot-tag.sel{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -269,23 +276,61 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
     <div style="font-size:12px;font-weight:700;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px">选择目的地</div>
     <div class="city-search-wrap">
-      <input class="city-search-input" id="city-input" placeholder="输入城市或目的地，如：东京、巴黎、纽约…" oninput="onCityInput(this.value)" onkeydown="if(event.key==='Enter')confirmCityInput()">
+      <input class="city-search-input" id="city-input" placeholder="输入任意城市，如：伦敦、悉尼、大阪…" oninput="onCityInput(this.value)" onkeydown="onCityKey(event)" onfocus="showDropdown()" onblur="hideDropdown()">
       <span class="city-search-icon">🔍</span>
+      <div class="city-dropdown" id="city-dropdown"></div>
     </div>
     <div class="city-hot-label">🔥 热门目的地</div>
-    <div class="city-hot-tags" id="city-hot-tags">
-      <div class="city-hot-tag sel" onclick="hotTag(this,'北京')">🏯 北京</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'上海')">🌆 上海</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'成都')">🐼 成都</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'西安')">🏺 西安</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'杭州')">🌸 杭州</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'厦门')">🌊 厦门</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'东京')">🗼 东京</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'巴黎')">🗺 巴黎</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'纽约')">🗽 纽约</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'曼谷')">🛕 曼谷</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'新加坡')">🌴 新加坡</div>
-      <div class="city-hot-tag" onclick="hotTag(this,'首尔')">🎎 首尔</div>
+    <div class="city-hot-section">
+      <div class="city-hot-section-title">🇨🇳 国内</div>
+      <div class="city-hot-tags">
+        <div class="city-hot-tag sel" onclick="hotTag(this,'北京')">🏯 北京</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'上海')">🌆 上海</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'成都')">🐼 成都</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'西安')">🏺 西安</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'杭州')">🌸 杭州</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'厦门')">🌊 厦门</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'重庆')">🌃 重庆</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'三亚')">🏖️ 三亚</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'丽江')">🏔️ 丽江</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'桂林')">🌿 桂林</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'张家界')">🌁 张家界</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'苏州')">🏮 苏州</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'南京')">🦆 南京</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'武汉')">🌸 武汉</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'青岛')">🍺 青岛</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'大理')">🌊 大理</div>
+      </div>
+    </div>
+    <div class="city-hot-section">
+      <div class="city-hot-section-title">🌏 亚洲</div>
+      <div class="city-hot-tags">
+        <div class="city-hot-tag" onclick="hotTag(this,'东京')">🗼 东京</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'大阪')">🏯 大阪</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'京都')">⛩️ 京都</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'首尔')">🎎 首尔</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'曼谷')">🛕 曼谷</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'新加坡')">🌴 新加坡</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'巴厘岛')">🌺 巴厘岛</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'香港')">🌃 香港</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'澳门')">🎰 澳门</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'台北')">🧋 台北</div>
+      </div>
+    </div>
+    <div class="city-hot-section">
+      <div class="city-hot-section-title">🌍 欧美澳</div>
+      <div class="city-hot-tags">
+        <div class="city-hot-tag" onclick="hotTag(this,'巴黎')">🗺️ 巴黎</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'伦敦')">🎡 伦敦</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'罗马')">🏛️ 罗马</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'巴塞罗那')">🎨 巴塞罗那</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'阿姆斯特丹')">🚲 阿姆斯特丹</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'纽约')">🗽 纽约</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'洛杉矶')">🎬 洛杉矶</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'悉尼')">🦘 悉尼</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'迪拜')">🏙️ 迪拜</div>
+        <div class="city-hot-tag" onclick="hotTag(this,'伊斯坦布尔')">🕌 伊斯坦布尔</div>
+      </div>
     </div>
     <div id="city-confirm-banner" style="display:none;background:var(--blue-l);border:1.5px solid var(--blue-m);border-radius:12px;padding:12px 16px;margin-bottom:16px;align-items:center;justify-content:space-between">
       <div style="font-size:14px;font-weight:600;color:var(--ink)">已选：<span id="city-confirm-name" style="color:var(--blue)"></span></div>
@@ -675,18 +720,63 @@ var DIM_DATA = {
 var currentQ = 0;
 
 // ===== CITY SELECT =====
+// 城市搜索数据
+var ALL_CITIES = [
+  {n:'北京',e:'🏯'},{n:'上海',e:'🌆'},{n:'成都',e:'🐼'},{n:'西安',e:'🏺'},{n:'杭州',e:'🌸'},{n:'厦门',e:'🌊'},
+  {n:'重庆',e:'🌃'},{n:'三亚',e:'🏖️'},{n:'丽江',e:'🏔️'},{n:'桂林',e:'🌿'},{n:'张家界',e:'🌁'},{n:'苏州',e:'🏮'},
+  {n:'南京',e:'🦆'},{n:'武汉',e:'🌸'},{n:'青岛',e:'🍺'},{n:'大理',e:'🌊'},{n:'哈尔滨',e:'❄️'},{n:'西藏',e:'🏔️'},
+  {n:'新疆',e:'🐫'},{n:'云南',e:'🌈'},{n:'广州',e:'🏙️'},{n:'深圳',e:'💻'},{n:'长沙',e:'🌶️'},
+  {n:'东京',e:'🗼'},{n:'大阪',e:'🏯'},{n:'京都',e:'⛩️'},{n:'首尔',e:'🎎'},{n:'曼谷',e:'🛕'},{n:'新加坡',e:'🌴'},
+  {n:'巴厘岛',e:'🌺'},{n:'香港',e:'🌃'},{n:'澳门',e:'🎰'},{n:'台北',e:'🧋'},{n:'吉隆坡',e:'🏙️'},{n:'胡志明市',e:'🛵'},
+  {n:'巴黎',e:'🗺️'},{n:'伦敦',e:'🎡'},{n:'罗马',e:'🏛️'},{n:'巴塞罗那',e:'🎨'},{n:'阿姆斯特丹',e:'🚲'},
+  {n:'纽约',e:'🗽'},{n:'洛杉矶',e:'🎬'},{n:'悉尼',e:'🦘'},{n:'迪拜',e:'🏙️'},{n:'伊斯坦布尔',e:'🕌'},
+  {n:'布拉格',e:'🏰'},{n:'维也纳',e:'🎻'},{n:'苏黎世',e:'🏔️'},{n:'里斯本',e:'🚋'},{n:'雅典',e:'🏛️'},
+  {n:'开罗',e:'🐪'},{n:'迪拜',e:'🏙️'},{n:'首尔',e:'🎎'}
+];
+var _hideTimer = null;
+
 function hotTag(el, city) {
   document.querySelectorAll('.city-hot-tag').forEach(function(t){ t.classList.remove('sel'); });
-  el.classList.add('sel');
+  if(el) el.classList.add('sel');
   state.city = city;
   document.getElementById('city-input').value = '';
   showCityConfirm(city);
 }
 
 function onCityInput(val) {
-  if(!val.trim()) return;
+  val = val.trim();
+  var dd = document.getElementById('city-dropdown');
+  if(!val){ dd.classList.remove('show'); dd.innerHTML=''; return; }
   document.querySelectorAll('.city-hot-tag').forEach(function(t){ t.classList.remove('sel'); });
-  state.city = val.trim();
+  state.city = val;
+  // 搜索匹配
+  var matches = ALL_CITIES.filter(function(c){ return c.n.indexOf(val)>=0; }).slice(0,8);
+  if(val && matches.length===0) matches=[{n:val,e:'📍'}];
+  dd.innerHTML = matches.map(function(c){
+    return '<div class="city-dropdown-item" onmousedown="pickDropdown(\''+c.n+'\')">' +
+      '<span class="city-dd-emoji">'+c.e+'</span><span>'+c.n+'</span></div>';
+  }).join('');
+  dd.classList.add('show');
+}
+
+function onCityKey(e) {
+  if(e.key==='Enter'){ confirmCityInput(); document.getElementById('city-dropdown').classList.remove('show'); }
+}
+
+function showDropdown() {
+  if(_hideTimer){ clearTimeout(_hideTimer); _hideTimer=null; }
+}
+
+function hideDropdown() {
+  _hideTimer = setTimeout(function(){ document.getElementById('city-dropdown').classList.remove('show'); }, 200);
+}
+
+function pickDropdown(city) {
+  state.city = city;
+  document.getElementById('city-input').value = city;
+  document.getElementById('city-dropdown').classList.remove('show');
+  document.querySelectorAll('.city-hot-tag').forEach(function(t){ t.classList.remove('sel'); });
+  showCityConfirm(city);
 }
 
 function confirmCityInput() {
@@ -711,9 +801,7 @@ function clearCity() {
   showCityConfirm('北京');
 }
 
-function selectCity(el, city) {
-  hotTag(el, city);
-}
+function selectCity(el, city) { hotTag(el, city); }
 
 function selOpt(el, group) {
   el.closest('.basics-opts').querySelectorAll('.basics-opt').forEach(function(o){ o.classList.remove('sel'); });
