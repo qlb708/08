@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<!-- Author: qlb | Created: 2026-07-03 | Travel Personality Quiz -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你是哪种旅行者？</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --blue: #1D6FEB;
+    --blue-light: #EEF4FF;
+    --ink: #111827;
+    --gray: #6B7280;
+    --gray-light: #F3F4F6;
+    --border: #E5E7EB;
+    --radius: 20px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    background: #0A0A0F;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== STARS BG ===== */
+  #stars-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 20% 20%, #1a1a3e 0%, #0A0A0F 60%);
+  }
+  .star {
+    position: absolute; border-radius: 50%; background: #fff;
+    animation: twinkle var(--d, 3s) ease-in-out infinite;
+    opacity: var(--o, 0.6);
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: var(--o, 0.6); transform: scale(1); }
+    50% { opacity: 0.1; transform: scale(0.5); }
+  }
+
+  /* ===== SCREEN SYSTEM ===== */
+  .screen { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .screen.hidden { display: none; }
+
+  /* ===== INTRO SCREEN ===== */
+  #screen-intro {
+    text-align: center;
+    gap: 32px;
+  }
+  .intro-eyebrow {
+    font-size: 13px; letter-spacing: 4px; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); font-weight: 500;
+  }
+  .intro-title {
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800; line-height: 1.15;
+    background: linear-gradient(135deg, #fff 0%, #a8c0ff 50%, #7986fb 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .intro-sub {
+    font-size: 16px; color: rgba(255,255,255,0.5); line-height: 1.7;
+    max-width: 420px; margin: 0 auto;
+  }
+  .intro-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--blue); color: #fff;
+    padding: 16px 40px; border-radius: 50px;
+    font-size: 17px; font-weight: 700; border: none; cursor: pointer;
+    box-shadow: 0 0 40px rgba(29,111,235,0.5);
+    transition: all 0.2s; margin-top: 8px;
+  }
+  .intro-btn:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(29,111,235,0.7); }
+  .intro-btn .arrow { font-size: 20px; transition: transform 0.2s; }
+  .intro-btn:hover .arrow { transform: translateX(4px); }
+  .intro-dots {
+    display: flex; gap: 6px; justify-content: center; margin-top: 8px;
+  }
+  .intro-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); }
+
+  /* ===== QUIZ SCREEN ===== */
+  #screen-quiz { padding: 0; }
+
+  .quiz-wrap {
+    width: 100%; max-width: 880px;
+    padding: 48px 32px;
+    display: flex; flex-direction: column; gap: 40px;
+    align-items: center;
+  }
+
+  /* progress */
+  .quiz-progress-wrap { width: 100%; display: flex; align-items: center; gap: 16px; }
+  .quiz-progress-bar {
+    flex: 1; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%; background: var(--blue); border-radius: 2px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+  .quiz-progress-label { font-size: 12px; color: rgba(255,255,255,0.35); white-space: nowrap; }
+
+  /* question */
+  .quiz-q-wrap { text-align: center; min-height: 80px; }
+  .quiz-q-emoji { font-size: 36px; margin-bottom: 12px; display: block; animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  .quiz-q-text {
+    font-size: clamp(20px, 3vw, 28px); font-weight: 700; line-height: 1.4;
+    color: #fff; animation: fadeUp 0.4s ease;
+  }
+  @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes fadeUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* choices */
+  .quiz-choices {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; width: 100%;
+  }
+  .quiz-choice {
+    position: relative; border-radius: 20px; overflow: hidden;
+    cursor: pointer; border: 2px solid transparent;
+    transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    background: rgba(255,255,255,0.05);
+    aspect-ratio: 4/3;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .quiz-choice:hover { transform: scale(1.02); border-color: rgba(255,255,255,0.3); }
+  .quiz-choice.selecting { animation: selectPulse 0.4s ease; }
+  .quiz-choice.dismissed { animation: dismissFade 0.4s ease forwards; }
+  @keyframes selectPulse {
+    0% { transform: scale(1); } 30% { transform: scale(1.05); box-shadow: 0 0 40px rgba(29,111,235,0.6); }
+    100% { transform: scale(1); }
+  }
+  @keyframes dismissFade {
+    to { transform: scale(0.9); opacity: 0.2; filter: grayscale(1); }
+  }
+
+  .choice-bg {
+    position: absolute; inset: 0; background-size: cover; background-position: center;
+    transition: transform 0.4s ease;
+  }
+  .quiz-choice:hover .choice-bg { transform: scale(1.05); }
+  .choice-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+  }
+  .choice-content {
+    position: relative; z-index: 2; padding: 20px;
+  }
+  .choice-tag {
+    display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; color: rgba(255,255,255,0.8);
+    margin-bottom: 8px; font-weight: 500;
+  }
+  .choice-label {
+    font-size: 18px; font-weight: 700; color: #fff; line-height: 1.3;
+  }
+  .choice-desc {
+    font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 4px; line-height: 1.5;
+  }
+
+  /* vs divider */
+  .quiz-vs {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+    z-index: 20; background: rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.15);
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.5);
+    letter-spacing: 1px; backdrop-filter: blur(8px);
+    pointer-events: none;
+  }
+
+  /* ===== LOADING SCREEN ===== */
+  #screen-loading { gap: 32px; text-align: center; }
+  .loading-orb {
+    width: 120px; height: 120px; border-radius: 50%;
+    background: conic-gradient(from 0deg, #7986fb, #1D6FEB, #a8c0ff, #7986fb);
+    animation: orbSpin 2s linear infinite;
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .loading-orb::after {
+    content: ''; position: absolute; inset: 6px; border-radius: 50%; background: #0A0A0F;
+  }
+  .loading-orb-inner {
+    position: relative; z-index: 1; font-size: 32px; animation: orbSpin 2s linear infinite reverse;
+  }
+  @keyframes orbSpin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 18px; color: rgba(255,255,255,0.6); }
+  .loading-steps { display: flex; flex-direction: column; gap: 12px; min-width: 280px; }
+  .loading-step {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: rgba(255,255,255,0.3);
+    transition: color 0.5s;
+  }
+  .loading-step.active { color: #fff; }
+  .loading-step.done { color: rgba(255,255,255,0.5); }
+  .loading-step-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); flex-shrink: 0;
+    transition: background 0.5s, box-shadow 0.5s;
+  }
+  .loading-step.active .loading-step-dot {
+    background: var(--blue); box-shadow: 0 0 10px rgba(29,111,235,0.8);
+    animation: dotPulse 1s ease-in-out infinite;
+  }
+  .loading-step.done .loading-step-dot { background: #4CAF50; }
+  @keyframes dotPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+
+  /* ===== RESULT SCREEN ===== */
+  #screen-result {
+    padding: 0; overflow-y: auto; justify-content: flex-start;
+    background: linear-gradient(180deg, #0A0A0F 0%, #0d0d1a 100%);
+  }
+  .result-wrap { width: 100%; max-width: 900px; padding: 48px 32px 80px; margin: 0 auto; }
+
+  /* persona reveal */
+  .result-persona {
+    text-align: center; margin-bottom: 48px;
+    animation: fadeUp 0.6s ease;
+  }
+  .persona-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    padding: 6px 16px; border-radius: 50px; font-size: 13px;
+    color: rgba(255,255,255,0.5); margin-bottom: 24px;
+  }
+  .persona-emoji {
+    font-size: 72px; margin-bottom: 16px; display: block;
+    animation: bounceIn 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+  }
+  @keyframes bounceIn { from{transform:scale(0) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+  .persona-name {
+    font-size: clamp(32px,5vw,52px); font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, #a8c0ff 60%, #7986fb 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 12px;
+  }
+  .persona-desc {
+    font-size: 16px; color: rgba(255,255,255,0.55); max-width: 440px; margin: 0 auto; line-height: 1.7;
+  }
+
+  /* traits */
+  .result-traits {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 48px; animation: fadeUp 0.6s ease 0.2s both;
+  }
+  .trait-chip {
+    padding: 8px 18px; border-radius: 50px; font-size: 13px; font-weight: 600;
+    border: 1px solid; backdrop-filter: blur(4px);
+  }
+
+  /* route */
+  .result-section-title {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); margin-bottom: 20px; font-weight: 600;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+  .route-timeline { position: relative; }
+  .route-timeline::before {
+    content: ''; position: absolute; left: 28px; top: 16px; bottom: 16px;
+    width: 2px; background: linear-gradient(to bottom, var(--blue), rgba(29,111,235,0.1));
+  }
+  .route-day {
+    display: flex; gap: 20px; margin-bottom: 32px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .route-day-num {
+    width: 56px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding-top: 4px;
+  }
+  .day-circle {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--blue); border: 3px solid #0A0A0F;
+    box-shadow: 0 0 12px rgba(29,111,235,0.6);
+    position: relative; z-index: 1;
+  }
+  .day-label { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 6px; }
+  .route-day-content { flex: 1; }
+  .day-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .day-spots {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .spot-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 12px 16px; cursor: pointer;
+    transition: all 0.2s; min-width: 140px;
+  }
+  .spot-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.18); transform: translateY(-2px); }
+  .spot-card.expanded { border-color: rgba(29,111,235,0.5); background: rgba(29,111,235,0.08); }
+  .spot-name { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .spot-meta { font-size: 11px; color: rgba(255,255,255,0.4); display: flex; gap: 8px; align-items: center; }
+  .spot-expand {
+    margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.6;
+    border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;
+    display: none;
+  }
+  .spot-card.expanded .spot-expand { display: block; }
+
+  /* stats */
+  .result-stats {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 12px;
+    margin-bottom: 40px; animation: fadeUp 0.6s ease 0.4s both;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 20px 16px; text-align: center;
+  }
+  .stat-val { font-size: 28px; font-weight: 800; color: #fff; }
+  .stat-unit { font-size: 12px; color: rgba(255,255,255,0.4); }
+  .stat-label { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 4px; }
+
+  /* radar */
+  .result-radar-wrap {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px; padding: 28px; margin-bottom: 40px;
+    display: flex; align-items: center; gap: 40px;
+    animation: fadeUp 0.6s ease 0.5s both;
+  }
+  .radar-labels { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .radar-label-row { display: flex; align-items: center; gap: 10px; }
+  .radar-label-bar-wrap { flex:1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow:hidden; }
+  .radar-label-bar { height: 100%; border-radius: 2px; background: var(--blue); transition: width 1.5s cubic-bezier(0.4,0,0.2,1) 0.8s; }
+  .radar-label-name { font-size: 12px; color: rgba(255,255,255,0.5); width: 48px; flex-shrink:0; }
+  .radar-label-val { font-size: 12px; color: #fff; font-weight: 700; width: 24px; text-align: right; flex-shrink:0; }
+
+  /* cta */
+  .result-cta {
+    text-align: center; margin-top: 48px; animation: fadeUp 0.6s ease 0.6s both;
+  }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--blue); color: #fff;
+    padding: 14px 36px; border-radius: 50px;
+    font-size: 16px; font-weight: 700; border: none; cursor: pointer;
+    box-shadow: 0 0 40px rgba(29,111,235,0.4);
+    transition: all 0.2s; margin: 0 8px;
+  }
+  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(29,111,235,0.6); }
+  .cta-btn.secondary {
+    background: rgba(255,255,255,0.07); box-shadow: none;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .cta-btn.secondary:hover { background: rgba(255,255,255,0.12); box-shadow: none; }
+
+  /* ===== TRANSITIONS ===== */
+  .screen { transition: opacity 0.4s ease, transform 0.4s ease; }
+  .screen.exit { opacity: 0; transform: scale(0.97); pointer-events: none; }
+  .screen.enter { animation: screenEnter 0.5s cubic-bezier(0.4,0,0.2,1) both; }
+  @keyframes screenEnter { from{opacity:0;transform:scale(1.02)} to{opacity:1;transform:scale(1)} }
+</style>
+</head>
+<body>
+
+<div id="stars-bg"></div>
+
+<!-- ===== INTRO ===== -->
+<div id="screen-intro" class="screen">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:28px;max-width:600px;padding:32px">
+    <div class="intro-eyebrow">✦ 旅行人格测试 ✦</div>
+    <div class="intro-title">你是哪种<br>旅行者？</div>
+    <div class="intro-sub">5个选择，2分钟<br>解锁你的旅行人格 + AI定制北京5日行程</div>
+    <button class="intro-btn" onclick="startQuiz()">
+      开始测试 <span class="arrow">→</span>
+    </button>
+    <div class="intro-dots">
+      <div class="intro-dot"></div>
+      <div class="intro-dot"></div>
+      <div class="intro-dot"></div>
+      <div class="intro-dot"></div>
+      <div class="intro-dot"></div>
+    </div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.2)">共5题 · 每题选一张图</div>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="screen-quiz" class="screen hidden">
+  <div class="quiz-wrap">
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="quiz-progress-label" id="progress-label">1 / 5</div>
+    </div>
+    <div class="quiz-q-wrap">
+      <span class="quiz-q-emoji" id="q-emoji">✈️</span>
+      <div class="quiz-q-text" id="q-text"></div>
+    </div>
+    <div style="position:relative;width:100%">
+      <div class="quiz-choices" id="quiz-choices"></div>
+      <div class="quiz-vs">VS</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LOADING ===== -->
+<div id="screen-loading" class="screen hidden">
+  <div class="loading-orb"><div class="loading-orb-inner">🧠</div></div>
+  <div class="loading-text">AI 正在解析你的旅行基因…</div>
+  <div class="loading-steps" id="loading-steps">
+    <div class="loading-step" id="lstep-0"><div class="loading-step-dot"></div>分析选择偏好</div>
+    <div class="loading-step" id="lstep-1"><div class="loading-step-dot"></div>匹配旅行人格</div>
+    <div class="loading-step" id="lstep-2"><div class="loading-step-dot"></div>规划个性化路线</div>
+    <div class="loading-step" id="lstep-3"><div class="loading-step-dot"></div>计算最优时间分配</div>
+    <div class="loading-step" id="lstep-4"><div class="loading-step-dot"></div>生成专属行程</div>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div id="screen-result" class="screen hidden">
+  <div class="result-wrap" id="result-wrap"></div>
+</div>
+
+<script>
+// ===== STARS =====
+(function(){
+  var bg = document.getElementById('stars-bg');
+  for(var i=0;i<120;i++){
+    var s = document.createElement('div');
+    s.className = 'star';
+    var size = Math.random()*2+0.5;
+    s.style.cssText = [
+      'width:'+size+'px','height:'+size+'px',
+      'left:'+(Math.random()*100)+'%','top:'+(Math.random()*100)+'%',
+      '--d:'+(Math.random()*4+2)+'s','--o:'+(Math.random()*0.6+0.1)
+    ].join(';');
+    bg.appendChild(s);
+  }
+})();
+
+// ===== QUIZ DATA =====
+var QUESTIONS = [
+  {
+    emoji: '🌅',
+    text: '早上醒来，你最想做的第一件事是？',
+    choices: [
+      {
+        tag: '效率派', label: '已经在路上了', desc: '7点出门，第一个到景点，绝不排队',
+        bg: 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)',
+        emoji: '🏃',
+        value: 'rush'
+      },
+      {
+        tag: '慢活派', label: '先喝杯咖啡再说', desc: '找家好看的早餐店，在巷子里发会呆',
+        bg: 'linear-gradient(135deg,#2d1b69 0%,#11998e 100%)',
+        emoji: '☕',
+        value: 'slow'
+      }
+    ]
+  },
+  {
+    emoji: '🗺️',
+    text: '你的旅行行程表长什么样？',
+    choices: [
+      {
+        tag: '精密计划', label: '分钟级精确规划', desc: '每个景点几点到、停多久，全部列好',
+        bg: 'linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%)',
+        emoji: '📋',
+        value: 'plan'
+      },
+      {
+        tag: '随心走', label: '地图都不带一张', desc: '走到哪算哪，迷路才是乐趣',
+        bg: 'linear-gradient(135deg,#f093fb 0%,#f5576c 100%)',
+        emoji: '🌀',
+        value: 'wander'
+      }
+    ]
+  },
+  {
+    emoji: '📸',
+    text: '拍照对你来说是？',
+    choices: [
+      {
+        tag: '记录狂', label: '每个角度都要拍', desc: '回家有1000张照片，每张都有用',
+        bg: 'linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)',
+        emoji: '📷',
+        value: 'photo'
+      },
+      {
+        tag: '活在当下', label: '手机留在口袋里', desc: '眼睛看到的比相册重要',
+        bg: 'linear-gradient(135deg,#43e97b 0%,#38f9d7 100%)',
+        emoji: '👁️',
+        value: 'live'
+      }
+    ]
+  },
+  {
+    emoji: '🍜',
+    text: '说到吃，你更倾向于？',
+    choices: [
+      {
+        tag: '探店达人', label: '提前研究好必吃清单', desc: '大众点评收藏夹里有50家等着打卡',
+        bg: 'linear-gradient(135deg,#fa709a 0%,#fee140 100%)',
+        emoji: '🔖',
+        value: 'foodie'
+      },
+      {
+        tag: '随缘觅食', label: '路边摊才是真滋味', desc: '看到队伍就排，不知道吃什么才好吃',
+        bg: 'linear-gradient(135deg,#a18cd1 0%,#fbc2eb 100%)',
+        emoji: '🥢',
+        value: 'street'
+      }
+    ]
+  },
+  {
+    emoji: '🌙',
+    text: '旅行最后一天，你会？',
+    choices: [
+      {
+        tag: '榨干每一刻', label: '飞机起飞前还在逛', desc: '行李箱塞满，连过安检都在刷手机找攻略',
+        bg: 'linear-gradient(135deg,#667eea 0%,#764ba2 100%)',
+        emoji: '⚡',
+        value: 'max'
+      },
+      {
+        tag: '留白派', label: '找个地方坐着什么都不做', desc: '发发呆，回味这几天的每个瞬间',
+        bg: 'linear-gradient(135deg,#2c3e50 0%,#4ca1af 100%)',
+        emoji: '🌌',
+        value: 'chill'
+      }
+    ]
+  }
+];
+
+// ===== PERSONAS =====
+var PERSONAS = {
+  rush_plan_photo_foodie_max: { name:'打卡狂魔', emoji:'🔥', desc:'你的旅行是场高效的闯关游戏。景点密度最高，效率最强，回家有1000张照片和一份完整的打卡清单。', traits:['⚡ 极限效率','📸 照片收割机','🗺️ 路线大师','🍱 探店达人'], colors:['#FF6B6B','#FF8E53'] },
+  slow_wander_live_street_chill: { name:'胡同隐士', emoji:'🏯', desc:'你不是在旅游，你是在短暂地住进一座城市。早餐摊、随机小巷、无目的地闲逛——这才是旅行的真正意义。', traits:['☕ 慢活哲学','🌀 随遇而安','👁️ 活在当下','🥢 随缘觅食'], colors:['#667eea','#764ba2'] },
+  default: { name:'自由探索者', emoji:'🌈', desc:'你的旅行风格独一无二——有时冲锋陷阵，有时慢慢悠悠。你用自己的节奏感受这座城市，不被任何攻略框住。', traits:['🎯 目标明确','✨ 随机应变','🎭 多面旅者','💡 灵感驱动'], colors:['#1D6FEB','#7986fb'] }
+};
+
+// ===== ITINERARIES =====
+var ITINERARIES = {
+  rush: [
+    { day:'Day 1', title:'皇城全制霸', spots:[
+      {name:'故宫博物院',time:'08:00',cat:'文化',tip:'提前网上预约，避开旺季人流'},
+      {name:'景山公园',time:'12:00',cat:'观景',tip:'俯瞰故宫全景最佳机位'},
+      {name:'北海公园',time:'13:30',cat:'园林',tip:'白塔倒影绝美，下午光线最好'},
+      {name:'什刹海',time:'16:00',cat:'街区',tip:'银锭桥看西山日落经典打卡'}
+    ]},
+    { day:'Day 2', title:'胡同深处探秘', spots:[
+      {name:'南锣鼓巷',time:'09:00',cat:'街区',tip:'早上人少，商铺刚开门氛围最好'},
+      {name:'雍和宫',time:'11:00',cat:'宗教',tip:'北京最大藏传佛教寺院，建筑震撼'},
+      {name:'国子监',time:'13:00',cat:'历史',tip:'古代最高学府，槐树下拍照超出片'},
+      {name:'簋街',time:'18:00',cat:'美食',tip:'麻辣小龙虾必吃，人均80-120元'}
+    ]},
+    { day:'Day 3', title:'长城冲顶计划', spots:[
+      {name:'慕田峪长城',time:'07:30',cat:'地标',tip:'缆车直达，人比八达岭少一半'},
+      {name:'怀柔板栗街',time:'14:00',cat:'美食',tip:'现炒栗子，10元一斤带走'},
+      {name:'红螺寺',time:'16:00',cat:'文化',tip:'千年古刹，银杏秋色绝美'}
+    ]},
+    { day:'Day 4', title:'798现代艺术冲锋', spots:[
+      {name:'798艺术区',time:'10:00',cat:'艺术',tip:'周二闭馆，周末人多，工作日最佳'},
+      {name:'草场地',time:'13:00',cat:'艺术',tip:'798旁边更小众，摄影爱好者圣地'},
+      {name:'三里屯',time:'16:00',cat:'商业',tip:'太古里逛一圈，晚饭在这解决'}
+    ]},
+    { day:'Day 5', title:'颐和园终极收官', spots:[
+      {name:'颐和园',time:'08:00',cat:'园林',tip:'南如意门进，人少路线从后山开始'},
+      {name:'圆明园',time:'12:00',cat:'历史',tip:'西洋楼遗址，历史厚重感拉满'},
+      {name:'五道口',time:'16:00',cat:'街区',tip:'学院路氛围，文艺小店扎堆'}
+    ]}
+  ],
+  slow: [
+    { day:'Day 1', title:'东城·慢进城', spots:[
+      {name:'朝阳门豆汁铺',time:'09:00',cat:'美食',tip:'正宗北京早餐，豆汁+焦圈，敢喝才算来过'},
+      {name:'隆福寺',time:'10:30',cat:'文化',tip:'老北京商业街改造，顶楼看法源寺钟楼'},
+      {name:'东四胡同群',time:'14:00',cat:'街区',tip:'随便进一条，都有惊喜小院'}
+    ]},
+    { day:'Day 2', title:'烟袋斜街，发呆一整天', spots:[
+      {name:'烟袋斜街',time:'10:00',cat:'街区',tip:'北京最古老商业街，文玩古董随便淘'},
+      {name:'荷花市场',time:'12:00',cat:'休闲',tip:'什刹海边，夏天荷花，冬天冰场'},
+      {name:'鼓楼',time:'15:00',cat:'历史',tip:'爬上去看整个北京老城'}
+    ]},
+    { day:'Day 3', title:'长城，只是坐在那看着', spots:[
+      {name:'箱峪沟野长城',time:'09:00',cat:'地标',tip:'未开发野长城，需徒步2小时，景色原始'},
+      {name:'虹鳟鱼餐厅',time:'14:00',cat:'美食',tip:'怀柔山里，现钓现烤，吃完可以待到晚上'}
+    ]},
+    { day:'Day 4', title:'文化不用赶', spots:[
+      {name:'国家博物馆',time:'10:00',cat:'文化',tip:'免费，馆藏140万件，半天都看不完'},
+      {name:'前门大栅栏',time:'14:00',cat:'街区',tip:'北京最古老商业街，老字号扎堆'}
+    ]},
+    { day:'Day 5', title:'宋庄·艺术村收尾', spots:[
+      {name:'宋庄艺术区',time:'10:00',cat:'艺术',tip:'中国最大艺术家聚居地，画廊随便进'},
+      {name:'通惠河骑行',time:'14:00',cat:'户外',tip:'租辆自行车沿河骑，看斜阳'}
+    ]}
+  ]
+};
+
+// ===== STATE =====
+var answers = [];
+var currentQ = 0;
+var persona = null;
+
+// ===== SCREENS =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.add('hidden'); s.classList.remove('enter'); });
+  var el = document.getElementById('screen-'+id);
+  el.classList.remove('hidden');
+  el.classList.add('enter');
+}
+
+// ===== INTRO =====
+function startQuiz() {
+  answers = []; currentQ = 0;
+  showScreen('quiz');
+  renderQuestion(0);
+}
+
+// ===== QUIZ =====
+function renderQuestion(idx) {
+  var q = QUESTIONS[idx];
+  var pct = (idx / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = (idx+1) + ' / ' + QUESTIONS.length;
+
+  var emojiEl = document.getElementById('q-emoji');
+  emojiEl.style.animation = 'none'; void emojiEl.offsetWidth; emojiEl.style.animation = '';
+  emojiEl.textContent = q.emoji;
+
+  var textEl = document.getElementById('q-text');
+  textEl.style.animation = 'none'; void textEl.offsetWidth; textEl.style.animation = '';
+  textEl.textContent = q.text;
+
+  var container = document.getElementById('quiz-choices');
+  container.innerHTML = '';
+  q.choices.forEach(function(c, ci) {
+    var div = document.createElement('div');
+    div.className = 'quiz-choice';
+    div.style.animationDelay = (ci*0.1)+'s';
+    div.innerHTML =
+      '<div class="choice-bg" style="background:'+c.bg+'"></div>' +
+      '<div class="choice-overlay"></div>' +
+      '<div class="choice-content">' +
+        '<div class="choice-tag">'+c.tag+'</div>' +
+        '<div style="font-size:32px;margin-bottom:8px">'+c.emoji+'</div>' +
+        '<div class="choice-label">'+c.label+'</div>' +
+        '<div class="choice-desc">'+c.desc+'</div>' +
+      '</div>';
+    div.onclick = function(){ selectChoice(ci, c.value); };
+    container.appendChild(div);
+  });
+}
+
+function selectChoice(chosen, value) {
+  answers.push(value);
+  var cards = document.querySelectorAll('.quiz-choice');
+  cards[chosen].classList.add('selecting');
+  cards[1-chosen].classList.add('dismissed');
+
+  setTimeout(function(){
+    currentQ++;
+    if(currentQ < QUESTIONS.length) {
+      renderQuestion(currentQ);
+    } else {
+      showLoading();
+    }
+  }, 500);
+}
+
+// ===== LOADING =====
+function showLoading() {
+  showScreen('loading');
+  var steps = ['lstep-0','lstep-1','lstep-2','lstep-3','lstep-4'];
+  var delays = [0, 700, 1400, 2100, 2800];
+  steps.forEach(function(id, i){
+    setTimeout(function(){
+      steps.forEach(function(sid){ document.getElementById(sid).classList.remove('active'); });
+      document.getElementById(id).classList.add('active');
+      if(i > 0) document.getElementById(steps[i-1]).classList.add('done');
+    }, delays[i]);
+  });
+  setTimeout(function(){
+    document.getElementById('lstep-4').classList.add('done');
+    showResult();
+  }, 3600);
+}
+
+// ===== RESULT =====
+function computePersona() {
+  var rushScore = 0, slowScore = 0;
+  var rushVals = ['rush','plan','photo','foodie','max'];
+  var slowVals = ['slow','wander','live','street','chill'];
+  answers.forEach(function(a){
+    if(rushVals.indexOf(a) >= 0) rushScore++;
+    else slowScore++;
+  });
+  if(rushScore >= 4) return PERSONAS.rush_plan_photo_foodie_max;
+  if(slowScore >= 4) return PERSONAS.slow_wander_live_street_chill;
+  return PERSONAS.default;
+}
+
+function showResult() {
+  showScreen('result');
+  var p = computePersona();
+  persona = p;
+  var itinerary = answers[0] === 'rush' ? ITINERARIES.rush : ITINERARIES.slow;
+
+  // Radar vals
+  var radarVals = answers[0]==='rush'
+    ? {省钱:60, 效率:95, 文化:80, 亲子:40, 体力:90}
+    : {省钱:75, 效率:45, 文化:90, 亲子:70, 体力:50};
+
+  var html = '';
+
+  // Persona reveal
+  html += '<div class="result-persona">';
+  html += '<div class="persona-badge">✦ 你的旅行人格 ✦</div>';
+  html += '<span class="persona-emoji">'+p.emoji+'</span>';
+  html += '<div class="persona-name">'+p.name+'</div>';
+  html += '<div class="persona-desc">'+p.desc+'</div>';
+  html += '</div>';
+
+  // Traits
+  html += '<div class="result-traits">';
+  p.traits.forEach(function(t,i){
+    var colors = ['rgba(29,111,235,0.15)','rgba(121,134,251,0.15)','rgba(76,175,80,0.15)','rgba(255,152,0,0.15)'];
+    var bcolors = ['rgba(29,111,235,0.4)','rgba(121,134,251,0.4)','rgba(76,175,80,0.4)','rgba(255,152,0,0.4)'];
+    html += '<div class="trait-chip" style="background:'+colors[i]+';border-color:'+bcolors[i]+';color:#fff">'+t+'</div>';
+  });
+  html += '</div>';
+
+  // Stats
+  html += '<div class="result-stats">';
+  var statsData = answers[0]==='rush'
+    ? [{val:'5',unit:'天',label:'行程天数'},{val:'18',unit:'个',label:'覆盖景点'},{val:'¥3200',unit:'',label:'人均预算'},{val:'9.2',unit:'分',label:'综合评分'}]
+    : [{val:'5',unit:'天',label:'行程天数'},{val:'11',unit:'个',label:'覆盖景点'},{val:'¥2100',unit:'',label:'人均预算'},{val:'9.6',unit:'分',label:'体验评分'}];
+  statsData.forEach(function(s){
+    html += '<div class="stat-card"><div class="stat-val">'+s.val+'<span class="stat-unit">'+s.unit+'</span></div><div class="stat-label">'+s.label+'</div></div>';
+  });
+  html += '</div>';
+
+  // Radar
+  html += '<div class="result-radar-wrap">';
+  html += '<div style="text-align:center;flex-shrink:0">'+buildResultRadar(radarVals, p.colors[0])+'<div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:8px">旅行画像</div></div>';
+  html += '<div class="radar-labels">';
+  Object.keys(radarVals).forEach(function(k){
+    html += '<div class="radar-label-row">';
+    html += '<div class="radar-label-name">'+k+'</div>';
+    html += '<div class="radar-label-bar-wrap"><div class="radar-label-bar" style="width:'+radarVals[k]+'%;background:'+p.colors[0]+'"></div></div>';
+    html += '<div class="radar-label-val">'+radarVals[k]+'</div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  // Route
+  html += '<div class="result-section-title">✦ AI 定制行程</div>';
+  html += '<div class="route-timeline">';
+  itinerary.forEach(function(day, di){
+    html += '<div class="route-day" style="animation-delay:'+(0.3+di*0.1)+'s">';
+    html += '<div class="route-day-num"><div class="day-circle"></div><div class="day-label">'+day.day+'</div></div>';
+    html += '<div class="route-day-content">';
+    html += '<div class="day-title">'+day.title+'</div>';
+    html += '<div class="day-spots">';
+    day.spots.forEach(function(spot, si){
+      var key = 'spot_'+di+'_'+si;
+      html += '<div class="spot-card" id="'+key+'" onclick="toggleResultSpot(\''+key+'\')">';
+      html += '<div class="spot-name">'+spot.name+'</div>';
+      html += '<div class="spot-meta"><span>🕐 '+spot.time+'</span><span>·</span><span>'+spot.cat+'</span></div>';
+      html += '<div class="spot-expand">💡 '+spot.tip+'</div>';
+      html += '</div>';
+    });
+    html += '</div></div></div>';
+  });
+  html += '</div>';
+
+  // CTA
+  html += '<div class="result-cta">';
+  html += '<div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">想用完整版 AI 规划你的行程？</div>';
+  html += '<div style="font-size:14px;color:rgba(255,255,255,0.4);margin-bottom:24px">支持多人对比 · 实时预算 · 一键修改路线</div>';
+  html += '<button class="cta-btn" onclick="window.open(\'https://qlb708.github.io/08/portfolio/web-mvp/\',\'_blank\')">查看完整对比版本 →</button>';
+  html += '<button class="cta-btn secondary" onclick="startQuiz()">重新测试</button>';
+  html += '</div>';
+
+  document.getElementById('result-wrap').innerHTML = html;
+}
+
+function toggleResultSpot(key) {
+  var el = document.getElementById(key);
+  var isOpen = el.classList.contains('expanded');
+  document.querySelectorAll('.spot-card').forEach(function(c){ c.classList.remove('expanded'); });
+  if(!isOpen) el.classList.add('expanded');
+}
+
+// ===== RADAR SVG (result) =====
+function buildResultRadar(vals, color) {
+  var size = 140; var cx = size/2; var cy = size/2; var r = size*0.38;
+  var keys = Object.keys(vals); var n = keys.length;
+  function pt(i, pct) {
+    var angle = (Math.PI*2/n)*i - Math.PI/2;
+    var rv = r * (pct/100);
+    return [cx + rv*Math.cos(angle), cy + rv*Math.sin(angle)];
+  }
+  // grid
+  var svg = '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">';
+  [0.25,0.5,0.75,1].forEach(function(scale){
+    var pts = keys.map(function(_,i){ var p=pt(i,100*scale); return p[0]+','+p[1]; }).join(' ');
+    svg += '<polygon points="'+pts+'" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>';
+  });
+  keys.forEach(function(_,i){
+    var p = pt(i,100);
+    svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>';
+  });
+  // fill
+  var pts = keys.map(function(k,i){ var p=pt(i,vals[k]); return p[0]+','+p[1]; }).join(' ');
+  svg += '<polygon points="'+pts+'" fill="'+color+'" fill-opacity="0.25" stroke="'+color+'" stroke-width="2"/>';
+  // dots
+  keys.forEach(function(k,i){
+    var p = pt(i, vals[k]);
+    svg += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3" fill="'+color+'"/>';
+  });
+  // labels
+  keys.forEach(function(k,i){
+    var p = pt(i, 118);
+    svg += '<text x="'+p[0]+'" y="'+p[1]+'" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.45)" font-size="9">'+k+'</text>';
+  });
+  svg += '</svg>';
+  return svg;
+}
+</script>
+</body>
+</html>
