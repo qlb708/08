@@ -14,6 +14,21 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:#F8FAFF;color:var(--ink);min-height:100vh;overflow-x:hidden}
 
+/* ===== AI旅行官 ===== */
+#ai-guide{position:fixed;bottom:32px;right:32px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none}
+#ai-bubble{background:#fff;border-radius:20px 20px 4px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.14);padding:14px 18px;max-width:260px;font-size:14px;line-height:1.6;color:var(--ink);border:1.5px solid var(--blue-m);pointer-events:auto;position:relative;animation:bubblePop 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+#ai-bubble::after{content:'';position:absolute;bottom:-10px;right:18px;width:0;height:0;border-left:8px solid transparent;border-right:0;border-top:10px solid #fff;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.06))}
+#ai-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1D6FEB,#7C3AED);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 16px rgba(29,111,235,0.35);cursor:pointer;pointer-events:auto;flex-shrink:0;transition:transform 0.2s}
+#ai-avatar:hover{transform:scale(1.08)}
+#ai-avatar-row{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+#ai-name{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:1px}
+.bubble-typing{display:inline-flex;gap:4px;padding:2px 0}
+.bubble-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:dotBounce 1.2s infinite}
+.bubble-dot:nth-child(2){animation-delay:0.2s}
+.bubble-dot:nth-child(3){animation-delay:0.4s}
+@keyframes dotBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@keyframes bubblePop{from{opacity:0;transform:scale(0.7) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
 /* ===== SCREENS ===== */
 .screen{display:none;min-height:100vh}
 .screen.active{display:flex;flex-direction:column;animation:fadeIn 0.4s ease}
@@ -253,6 +268,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 </style>
 </head>
 <body>
+<!-- ===== AI旅行官 ===== -->
+<div id="ai-guide">
+  <div id="ai-bubble">
+    <div class="bubble-typing"><div class="bubble-dot"></div><div class="bubble-dot"></div><div class="bubble-dot"></div></div>
+  </div>
+  <div id="ai-avatar-row">
+    <div id="ai-name">AI 旅行官</div>
+    <div id="ai-avatar">🤖</div>
+  </div>
+</div>
 
 <!-- ======== STEP 1: CITY ======== -->
 <div id="s-city" class="screen active">
@@ -481,6 +506,109 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
 <script>
 // ===== STATE =====
+// ===== AI旅行官 =====
+var _guideTimer = null;
+var _typingTimer = null;
+
+// 台词库
+var GUIDE_LINES = {
+  city_open: [
+    '哈，又一个准备出门的人。去哪里？🤔',
+    '我已经分析了几百份攻略，告诉我目的地吧。',
+    '每个城市都有自己的气味。你想要哪种？',
+  ],
+  city_beijing: '北京啊……故宫、胡同、炸酱面，还有那种让人又爱又累的气地。🏯',
+  city_shanghai: '上海？南上北下、洋房和小笼子、魔都的气质。我喜欢这个城市。🌆',
+  city_chengdu: '成都！熊猫、火锅、打麻将、慧意生活。这是一个会让人不想回家的地方。🐼',
+  city_tokyo: '东京。深夜的拉面馆、清晨的神社、永远起不完的地铁。一个运转精确得让人善妈的城市。🗼',
+  city_paris: '巴黎……我帮你把『去卢浮宫要排多久』这个问题解决挸9大月。你欢迎。🗺️',
+  city_other: '不错的选择！我之前分析过这个地方的数据。我们继续。📍',
+  days_3: '只會3天？没问题，冲击式旅行我最擅长。效率拉满。⚡',
+  days_5: '5天刚好！不太紧也不浮躁，我展开手脚的节奏。👌',
+  days_7: '7天！可以展开讲了。我计划把几个平时不容易去的地方也带上。💪',
+  days_10: '10天！这是真正的旅行。我不会让你往返于几个普通景点之间。【深呼吸】',
+  ppl_solo: '独行？最自由的旅行方式。我不会安排家庭合照项目的。😎',
+  ppl_2: '两个人。意味着我得小心平衡两个人的偏好——这是我的强项。',
+  ppl_family: '带孩子啊！我会把所有需要爬标的景点全部过滤掉。优先保证易达性和实用性。👶',
+  ppl_group: '团队出行！人多意见多，我会帮你岁数几个能让所有人都不大心寡的方案。',
+  quiz_start: '好了，开始测你的旅行性格。没有对错，只有适不适合。🧠',
+  quiz_q2: '有意思。我开始对你有点感觉了。',
+  quiz_q3: '这个选择很能说明问题。继续。',
+  quiz_q4: '我在心里已经有了初步判断。再回答两个问题确认一下。',
+  quiz_q5: '最后一问题了。这个关键。',
+  quiz_conflict: '我发现你有点自相矛盾——即想文色慢游又不能错过打卡。戒了，这才是真实的人类。',
+  loading_1: '被你选择的项目已经天屄了。我开始生成方案了。',
+  loading_2: '分析完毕，平均每个方案筛掉了31个踩雷景点。不客气的。',
+  result_ready: '好了，我摸清你了。看看我给你准备了什么。🤑',
+};
+
+var _lastBubbleText = '';
+
+function aiSay(text, delay) {
+  if(_guideTimer) clearTimeout(_guideTimer);
+  if(_typingTimer) clearTimeout(_typingTimer);
+  delay = delay || 0;
+  _guideTimer = setTimeout(function(){
+    var bubble = document.getElementById('ai-bubble');
+    if(!bubble) return;
+    // 先显示打字动画
+    bubble.innerHTML = '<div class="bubble-typing"><div class="bubble-dot"></div><div class="bubble-dot"></div><div class="bubble-dot"></div></div>';
+    bubble.style.animation = 'none';
+    bubble.offsetHeight;
+    bubble.style.animation = 'bubblePop 0.35s cubic-bezier(0.34,1.56,0.64,1)';
+    _typingTimer = setTimeout(function(){
+      typeText(bubble, text);
+    }, 900);
+  }, delay);
+}
+
+function typeText(el, text) {
+  el.innerHTML = '';
+  var i = 0;
+  var speed = text.length > 30 ? 28 : 40;
+  function tick() {
+    if(i < text.length) {
+      el.innerHTML += text[i];
+      i++;
+      setTimeout(tick, speed);
+    }
+  }
+  tick();
+}
+
+function aiSayRandom(arr, delay) {
+  aiSay(arr[Math.floor(Math.random()*arr.length)], delay);
+}
+
+// 城市选择触发
+function aiOnCity(city) {
+  var lines = {
+    '北京': GUIDE_LINES.city_beijing,
+    '上海': GUIDE_LINES.city_shanghai,
+    '成都': GUIDE_LINES.city_chengdu,
+    '东京': GUIDE_LINES.city_tokyo,
+    '大阪': '大阪！这个城市无论吃还是玩都不会让你失望。骨子里都是美食基因。🏯',
+    '京都': '京都！将进1000年的气质、有点傲娇但确实有资格傲娇的山城。妳府排队已经计入方案。⛩️',
+    '首尔': '首尔！狂热的咖啡、香辣的烤肉、和把所有人都应勦得很潮的街头文化。🎎',
+    '巴黎': GUIDE_LINES.city_paris,
+    '伦敦': '伦敦！灵魂曲奇、下午茶、和永远说不清楚天气。会硬上一层峱慌的天加包。🎡',
+    '纽约': '纽约！时代广场、中心公园、深夜的煙熄。这个城市从不让人寓如。🗽',
+  };
+  var line = lines[city] || GUIDE_LINES.city_other;
+  aiSay(line, 300);
+}
+
+// 行程选择触发
+function aiOnDays(days) {
+  var m = {'3天': GUIDE_LINES.days_3, '5天': GUIDE_LINES.days_5, '7天': GUIDE_LINES.days_7, '10天': GUIDE_LINES.days_10};
+  if(m[days]) aiSay(m[days], 200);
+}
+
+function aiOnPpl(ppl) {
+  var m = {'独行': GUIDE_LINES.ppl_solo, '2人': GUIDE_LINES.ppl_2, '家庭': GUIDE_LINES.ppl_family, '团队': GUIDE_LINES.ppl_group};
+  if(m[ppl]) aiSay(m[ppl], 200);
+}
+
 var state = {
   city: '北京',
   days: '5天',
@@ -741,6 +869,7 @@ function hotTag(el, city) {
   state.city = city;
   document.getElementById('city-input').value = '';
   showCityConfirm(city);
+  aiOnCity(city);
 }
 
 function onCityInput(val) {
@@ -807,6 +936,8 @@ function selOpt(el, group) {
   el.closest('.basics-opts').querySelectorAll('.basics-opt').forEach(function(o){ o.classList.remove('sel'); });
   el.classList.add('sel');
   state[group] = el.textContent;
+  if(group === 'days') aiOnDays(el.textContent);
+  if(group === 'ppl') aiOnPpl(el.textContent);
 }
 
 // ===== STEP 1 → 2 =====
@@ -815,6 +946,7 @@ function goQuiz() {
   state.answers = [];
   currentQ = 0;
   showScreen('s-quiz');
+  aiSay(GUIDE_LINES.quiz_start, 500);
   renderQ(0);
 }
 
@@ -858,6 +990,9 @@ function pick(chosen, val) {
   var cards = document.querySelectorAll('.qcard');
   cards[chosen].classList.add('picking');
   cards[1 - chosen].classList.add('out');
+  // AI旅行官评论
+  var qComments = [null, GUIDE_LINES.quiz_q2, GUIDE_LINES.quiz_q3, GUIDE_LINES.quiz_q4, GUIDE_LINES.quiz_q5];
+  if(qComments[currentQ]) aiSay(qComments[currentQ], 300);
   setTimeout(function(){
     currentQ++;
     if(currentQ < QUESTIONS.length) renderQ(currentQ);
@@ -868,6 +1003,7 @@ function pick(chosen, val) {
 // ===== LOADING =====
 function goLoading() {
   showScreen('s-loading');
+  aiSay(GUIDE_LINES.loading_1, 400);
   document.getElementById('loading-city-sub').textContent = '正在分析' + state.city + '行程数据…';
   var ids = ['ls0','ls1','ls2','ls3','ls4'];
   var delays = [0, 700, 1400, 2200, 3000];
@@ -877,12 +1013,14 @@ function goLoading() {
       for(var j=0;j<i;j++) document.getElementById(ids[j]).className = 'lstep ok';
       document.getElementById(id).className = 'lstep on';
       document.getElementById(id).querySelector('.lstep-ico').textContent = '';
+      if(i===2) aiSay(GUIDE_LINES.loading_2, 100);
     }, delays[i]);
   });
   setTimeout(function(){
     ids.forEach(function(x){ document.getElementById(x).className = 'lstep ok'; });
     buildCompare();
     showScreen('s-compare');
+    aiSay(GUIDE_LINES.result_ready, 600);
   }, 4000);
 }
 
@@ -1163,6 +1301,11 @@ function startResize(e, side) {
   document.addEventListener('mousemove', onMove);
   document.addEventListener('mouseup', onUp);
 }
+
+// 开场白
+window.addEventListener('load', function(){
+  aiSayRandom(GUIDE_LINES.city_open, 800);
+});
 </script>
 </body>
 </html>
