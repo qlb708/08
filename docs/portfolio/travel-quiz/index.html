@@ -44,6 +44,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .hero-title{font-size:clamp(32px,4vw,52px);font-weight:800;line-height:1.2;color:var(--ink);margin-bottom:12px}
 .hero-title em{font-style:normal;color:var(--blue)}
 .hero-sub{font-size:16px;color:var(--gray);margin-bottom:40px;line-height:1.7}
+.city-search-wrap{position:relative;margin-bottom:16px}
+.city-search-input{width:100%;padding:14px 48px 14px 18px;font-size:16px;border:2px solid var(--border);border-radius:14px;background:#fff;color:var(--ink);outline:none;transition:border-color 0.2s;font-family:inherit}
+.city-search-input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(29,111,235,0.1)}
+.city-search-input::placeholder{color:#9CA3AF}
+.city-search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none}
+.city-hot-label{font-size:12px;color:var(--gray);font-weight:600;margin-bottom:10px;letter-spacing:1px}
+.city-hot-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.city-hot-tag{padding:6px 14px;border-radius:50px;border:1.5px solid var(--border);font-size:13px;cursor:pointer;background:#fff;color:var(--gray);transition:all 0.15s;display:flex;align-items:center;gap:5px}
+.city-hot-tag:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
+.city-hot-tag.sel{background:var(--blue);border-color:var(--blue);color:#fff}
 .city-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px}
 .city-card{
   border-radius:20px;overflow:hidden;cursor:pointer;position:relative;
@@ -258,31 +268,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div class="hero-sub">选好目的地和行程天数，AI 生成多套专属方案<br>每个方案都有自己的「旅行性格」</div>
 
     <div style="font-size:12px;font-weight:700;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px">选择目的地</div>
-    <div class="city-grid" id="city-grid">
-      <div class="city-card" onclick="selectCity(this,'北京')" data-city="北京">
-        <div class="city-card-bg" style="background:linear-gradient(135deg,#1a1a4e 0%,#4a4e8a 100%)"></div>
-        <div class="city-card-overlay"></div>
-        <div class="city-card-body"><div class="city-card-name">北京</div><div class="city-card-tag">故宫 · 长城 · 胡同</div></div>
-        <div class="city-card-check">✓</div>
-      </div>
-      <div class="city-card" onclick="selectCity(this,'上海')" data-city="上海">
-        <div class="city-card-bg" style="background:linear-gradient(135deg,#0f4c75 0%,#1b6ca8 100%)"></div>
-        <div class="city-card-overlay"></div>
-        <div class="city-card-body"><div class="city-card-name">上海</div><div class="city-card-tag">外滩 · 弄堂 · 摩登</div></div>
-        <div class="city-card-check">✓</div>
-      </div>
-      <div class="city-card" onclick="selectCity(this,'成都')" data-city="成都">
-        <div class="city-card-bg" style="background:linear-gradient(135deg,#1e3c1e 0%,#4a7c4a 100%)"></div>
-        <div class="city-card-overlay"></div>
-        <div class="city-card-body"><div class="city-card-name">成都</div><div class="city-card-tag">熊猫 · 火锅 · 慢生活</div></div>
-        <div class="city-card-check">✓</div>
-      </div>
-      <div class="city-card" onclick="selectCity(this,'西安')" data-city="西安">
-        <div class="city-card-bg" style="background:linear-gradient(135deg,#4a2800 0%,#8b5e00 100%)"></div>
-        <div class="city-card-overlay"></div>
-        <div class="city-card-body"><div class="city-card-name">西安</div><div class="city-card-tag">兵马俑 · 城墙 · 回民街</div></div>
-        <div class="city-card-check">✓</div>
-      </div>
+    <div class="city-search-wrap">
+      <input class="city-search-input" id="city-input" placeholder="输入城市或目的地，如：东京、巴黎、纽约…" oninput="onCityInput(this.value)" onkeydown="if(event.key==='Enter')confirmCityInput()">
+      <span class="city-search-icon">🔍</span>
+    </div>
+    <div class="city-hot-label">🔥 热门目的地</div>
+    <div class="city-hot-tags" id="city-hot-tags">
+      <div class="city-hot-tag sel" onclick="hotTag(this,'北京')">🏯 北京</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'上海')">🌆 上海</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'成都')">🐼 成都</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'西安')">🏺 西安</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'杭州')">🌸 杭州</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'厦门')">🌊 厦门</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'东京')">🗼 东京</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'巴黎')">🗺 巴黎</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'纽约')">🗽 纽约</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'曼谷')">🛕 曼谷</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'新加坡')">🌴 新加坡</div>
+      <div class="city-hot-tag" onclick="hotTag(this,'首尔')">🎎 首尔</div>
+    </div>
+    <div id="city-confirm-banner" style="display:none;background:var(--blue-l);border:1.5px solid var(--blue-m);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between">
+      <div style="font-size:14px;font-weight:600;color:var(--ink)">已选：<span id="city-confirm-name" style="color:var(--blue)"></span></div>
+      <button onclick="clearCity()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--gray)">更换 ×</button>
     </div>
 
     <div class="trip-basics">
@@ -668,10 +675,44 @@ var DIM_DATA = {
 var currentQ = 0;
 
 // ===== CITY SELECT =====
-function selectCity(el, city) {
-  document.querySelectorAll('.city-card').forEach(function(c){ c.classList.remove('selected'); });
-  el.classList.add('selected');
+function hotTag(el, city) {
+  document.querySelectorAll('.city-hot-tag').forEach(function(t){ t.classList.remove('sel'); });
+  el.classList.add('sel');
   state.city = city;
+  document.getElementById('city-input').value = '';
+  showCityConfirm(city);
+}
+
+function onCityInput(val) {
+  if(!val.trim()) return;
+  document.querySelectorAll('.city-hot-tag').forEach(function(t){ t.classList.remove('sel'); });
+  state.city = val.trim();
+}
+
+function confirmCityInput() {
+  var val = document.getElementById('city-input').value.trim();
+  if(!val) return;
+  state.city = val;
+  showCityConfirm(val);
+}
+
+function showCityConfirm(city) {
+  var banner = document.getElementById('city-confirm-banner');
+  document.getElementById('city-confirm-name').textContent = city;
+  banner.style.display = 'flex';
+}
+
+function clearCity() {
+  state.city = '北京';
+  document.getElementById('city-input').value = '';
+  document.getElementById('city-confirm-banner').style.display = 'none';
+  document.querySelectorAll('.city-hot-tag').forEach(function(t){ t.classList.remove('sel'); });
+  document.querySelector('.city-hot-tag').classList.add('sel');
+  showCityConfirm('北京');
+}
+
+function selectCity(el, city) {
+  hotTag(el, city);
 }
 
 function selOpt(el, group) {
