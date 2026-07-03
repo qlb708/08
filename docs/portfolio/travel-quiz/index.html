@@ -15,11 +15,11 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:#F8FAFF;color:var(--ink);min-height:100vh;overflow-x:hidden}
 
 /* ===== AI旅行官 ===== */
-#ai-guide{position:fixed;bottom:32px;right:32px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none}
+#ai-guide{position:fixed;bottom:32px;right:32px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none;touch-action:none}
 #ai-bubble{background:#fff;border-radius:20px 20px 4px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.14);padding:14px 18px;max-width:260px;font-size:14px;line-height:1.6;color:var(--ink);border:1.5px solid var(--blue-m);pointer-events:auto;position:relative;animation:bubblePop 0.35s cubic-bezier(0.34,1.56,0.64,1)}
 #ai-bubble::after{content:'';position:absolute;bottom:-10px;right:18px;width:0;height:0;border-left:8px solid transparent;border-right:0;border-top:10px solid #fff;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.06))}
-#ai-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1D6FEB,#7C3AED);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 16px rgba(29,111,235,0.35);cursor:pointer;pointer-events:auto;flex-shrink:0;transition:transform 0.2s}
-#ai-avatar:hover{transform:scale(1.08)}
+#ai-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1D6FEB,#7C3AED);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 20px rgba(29,111,235,0.45);cursor:grab;pointer-events:auto;flex-shrink:0;transition:transform 0.15s,box-shadow 0.15s;user-select:none}
+#ai-avatar:active{cursor:grabbing;transform:scale(1.12);box-shadow:0 8px 28px rgba(29,111,235,0.55)}
 #ai-avatar-row{display:flex;align-items:center;gap:10px;justify-content:flex-end}
 #ai-name{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:1px}
 .bubble-typing{display:inline-flex;gap:4px;padding:2px 0}
@@ -1301,6 +1301,49 @@ function startResize(e, side) {
   document.addEventListener('mousemove', onMove);
   document.addEventListener('mouseup', onUp);
 }
+
+// ===== AI旅行官拖拽 =====
+(function(){
+  var guide = document.getElementById('ai-guide');
+  var avatar = document.getElementById('ai-avatar');
+  var isDrag = false, hasMoved = false;
+  var startX, startY, startRight, startBottom;
+
+  function getPos() {
+    var r = parseInt(guide.style.right) || 32;
+    var b = parseInt(guide.style.bottom) || 32;
+    return {r:r, b:b};
+  }
+
+  avatar.addEventListener('mousedown', function(e){
+    isDrag = true; hasMoved = false;
+    startX = e.clientX; startY = e.clientY;
+    var pos = getPos();
+    startRight = pos.r; startBottom = pos.b;
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', function(e){
+    if(!isDrag) return;
+    var dx = e.clientX - startX;
+    var dy = e.clientY - startY;
+    if(Math.abs(dx)+Math.abs(dy) > 4) hasMoved = true;
+    var newR = Math.max(8, Math.min(window.innerWidth - 64, startRight - dx));
+    var newB = Math.max(8, Math.min(window.innerHeight - 64, startBottom - dy));
+    guide.style.right = newR + 'px';
+    guide.style.bottom = newB + 'px';
+  });
+
+  window.addEventListener('mouseup', function(e){
+    if(!isDrag) return;
+    isDrag = false;
+    // 没移动 = 点击，切换气泡显示
+    if(!hasMoved){
+      var bubble = document.getElementById('ai-bubble');
+      bubble.style.display = bubble.style.display === 'none' ? '' : (bubble.innerHTML.trim() ? '' : 'none');
+    }
+  });
+})();
 
 // 开场白
 window.addEventListener('load', function(){
