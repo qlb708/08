@@ -1148,7 +1148,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <button onclick="openHealthCheck()" style="padding:3px 10px;background:#F0FDF4;color:#16A34A;border:1px solid #86EFAC;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">🩺 体检</button>
       </div>
       <!-- 行程多列（含雷达卡列头） -->
-      <div id="panel-all-days" style="flex:1;overflow:auto;padding:0"></div>
+      <div id="panel-all-days" style="flex:1;overflow:auto;padding:0 20px"></div>
       <!-- 维度对比区 -->
       <div class="row-resizer" id="row-resizer-mid"></div>
       <div id="compare-dims-area" style="border-top:1px solid var(--neutral-200);height:0;min-height:0;max-height:50%;overflow-y:auto;flex-shrink:0">
@@ -2620,7 +2620,7 @@ function renderDays() {
 
   // 方案列头含雷达卡（sticky）
   var DIMS_S = ['省钱','效率','文化','亲子','体力'];
-  var html = '<div style="display:grid;grid-template-columns:'+colFr+';gap:0;position:sticky;top:0;z-index:5;background:#fff;border-bottom:2px solid #E2E8F0">';
+  var html = '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0;position:sticky;top:0;z-index:5;background:#fff;border-bottom:2px solid #E2E8F0">';
   plans.forEach(function(p, pi){
     var d = PLAN_DATA[p];
     var rd = RADAR_DATA[p] || { vals:[60,60,60,60,60], slogan:'', color:'#1D6FEB' };
@@ -2650,7 +2650,7 @@ function renderDays() {
   days.forEach(function(dayIdx){
     var dayNum = dayIdx + 1;
     // Day 标题行
-    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:6px;padding:10px 10px 4px">';
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:10px 0 4px">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
       var sel = p === selectedCol;
