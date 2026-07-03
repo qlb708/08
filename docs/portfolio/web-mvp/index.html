@@ -2606,33 +2606,34 @@ function renderDays() {
   var days = _selectedDays.slice().sort(function(a,b){return a-b;});
   var colFr = '1fr '.repeat(plans.length).trim();
 
-  // 地点简介数据（按名称匹配）
   var SPOT_INFO = {
-    '故宫博物院':   {worth:true,  stars:'★★★★★', intro:'中国最大的皇家宫殿群，必去TOP1。建议游览2-3h，重点看太和殿、后宫区域。'},
-    '八达岭长城':   {worth:true,  stars:'★★★★☆', intro:'最经典长城段，设施完善。旺季人多，建议早8点前入园或选择淡季工作日。'},
-    '慕田峪长城':   {worth:true,  stars:'★★★★★', intro:'景色比八达岭更原始壮观，游客少50%。拍照效果绝佳，强烈推荐替代八达岭。'},
-    '颐和园':      {worth:true,  stars:'★★★★☆', intro:'皇家园林精华，昆明湖+万寿山经典组合。建议留3h，可泛舟湖上，光线好适合拍照。'},
-    '国家博物馆':  {worth:true,  stars:'★★★★★', intro:'免费，需提前预约。馆藏国宝级文物无数，「古代中国」常设展必看，至少留3h。'},
-    '天坛公园':    {worth:true,  stars:'★★★★☆', intro:'祈年殿是北京标志性建筑。清晨来可看老北京人晨练打拳，别有一番风味。'},
-    '南锣鼓巷':   {worth:null,  stars:'★★★☆☆', intro:'网红胡同，文创小店密集。周末人很多，可以逛逛但别期望太高，支巷更有意思。'},
-    '景山公园':    {worth:true,  stars:'★★★★☆', intro:'俯瞰故宫全景的最佳位置，门票仅¥2。游览1h足够，与故宫连着逛效率最高。'},
-    '798艺术区':  {worth:null,  stars:'★★★☆☆', intro:'当代艺术聚集地，拍照出片。工作日游客少体验更好，对艺术感兴趣的必去。'},
-    '雍和宫':     {worth:true,  stars:'★★★★☆', intro:'北京最大藏传佛教寺庙，香火旺盛，建筑精美。节假日人多，建议工作日上午去。'},
-    '北海公园':   {worth:true,  stars:'★★★★☆', intro:'皇家园林，白塔标志。清晨划船几乎没人，性价比极高，与景山公园连着玩最合适。'},
-    '前门大栅栏': {worth:null,  stars:'★★★☆☆', intro:'老北京商业街，老字号集中。商业化较重，适合购买伴手礼，美食性价比一般。'},
-    '烟袋斜街':   {worth:true,  stars:'★★★★☆', intro:'北京最古老的斜街，胡同文化体验地道。人少安静，适合漫步拍照，周边有咖啡馆。'},
-    '琉璃厂文化街':{worth:null, stars:'★★★☆☆', intro:'古玩字画集中，文化气息浓。对书法、古玩有兴趣才值得逛，普通游客可跳过。'},
-    '正乙祠戏楼':  {worth:null, stars:'★★★☆☆', intro:'北京现存最古老会馆戏楼，有昆曲演出。小众但有文化价值，对京剧感兴趣推荐。'},
-    '后海酒吧街': {worth:null,  stars:'★★★☆☆', intro:'夜生活聚集地，湖景不错。消费偏高，夏夜氛围好，冬天体验一般，按需选择。'},
-    '三里屯':     {worth:null,  stars:'★★★☆☆', intro:'购物餐饮聚集，国际化氛围。可去看看，但对旅游意义不大，更适合本地生活。'},
-    '什刹海胡同游':{worth:true, stars:'★★★★☆', intro:'老北京胡同文化精华地带。骑车穿行胡同体验极好，傍晚光线好适合拍照。'},
-    '天安门广场': {worth:true,  stars:'★★★★☆', intro:'必去打卡，象征意义重大。建议早晨升旗仪式（需提前预约）或傍晚光线好时前往。'},
-    '国子监街':   {worth:true,  stars:'★★★★☆', intro:'古朴安静的文化街，书香气息浓。与雍和宫相连，步行可达，人少适合拍照。'},
+    '故宫博物院':   {worth:true,  stars:'★★★★★', intro:'中国最大的皇家宫殿群，必去TOP1。建议游览2-3h，重点看太和殿、后宫区域。', tip:'9点前入宫效率最高'},
+    '八达岭长城':   {worth:true,  stars:'★★★★☆', intro:'最经典长城段，设施完善。旺季人多，建议早8点前入园或选择淡季工作日。', tip:'早7点到避开高峰'},
+    '慕田峪长城':   {worth:true,  stars:'★★★★★', intro:'景色比八达岭更原始壮观，游客少50%。拍照效果绝佳，强烈推荐替代八达岭。', tip:'缆车上，徒步下'},
+    '颐和园':      {worth:true,  stars:'★★★★☆', intro:'皇家园林精华，昆明湖+万寿山经典组合。建议留3h，可泛舟湖上，光线好适合拍照。', tip:'西门入园人少'},
+    '国家博物馆':  {worth:true,  stars:'★★★★★', intro:'免费，需提前预约。馆藏国宝级文物无数，「古代中国」常设展必看，至少留3h。', tip:'提前7天网上预约'},
+    '天坛公园':    {worth:true,  stars:'★★★★☆', intro:'祈年殿是北京标志性建筑。清晨来可看老北京人晨练打拳，别有一番风味。', tip:'清晨来体验晨练'},
+    '南锣鼓巷':   {worth:null,  stars:'★★★☆☆', intro:'网红胡同，文创小店密集。周末人很多，可以逛逛但别期望太高，支巷更有意思。', tip:'走支巷更有意思'},
+    '景山公园':    {worth:true,  stars:'★★★★☆', intro:'俯瞰故宫全景的最佳位置，门票仅¥2。游览1h足够，与故宫连着逛效率最高。', tip:'门票仅¥2，性价比极高'},
+    '798艺术区':  {worth:null,  stars:'★★★☆☆', intro:'当代艺术聚集地，拍照出片。工作日游客少体验更好，对艺术感兴趣的必去。', tip:'工作日人少体验好'},
+    '雍和宫':     {worth:true,  stars:'★★★★☆', intro:'北京最大藏传佛教寺庙，香火旺盛，建筑精美。节假日人多，建议工作日上午去。', tip:'上午9点前进入'},
+    '北海公园':   {worth:true,  stars:'★★★★☆', intro:'皇家园林，白塔标志。清晨划船几乎没人，性价比极高，与景山公园连着玩最合适。', tip:'清晨划船体验佳'},
+    '前门大栅栏': {worth:null,  stars:'★★★☆☆', intro:'老北京商业街，老字号集中。商业化较重，适合购买伴手礼，美食性价比一般。', tip:'买伴手礼首选'},
+    '烟袋斜街':   {worth:true,  stars:'★★★★☆', intro:'北京最古老的斜街，胡同文化体验地道。人少安静，适合漫步拍照，周边有咖啡馆。', tip:'傍晚光线最美'},
+    '琉璃厂文化街':{worth:null, stars:'★★★☆☆', intro:'古玩字画集中，文化气息浓。对书法、古玩有兴趣才值得逛，普通游客可跳过。', tip:'有兴趣再逛'},
+    '正乙祠戏楼':  {worth:null, stars:'★★★☆☆', intro:'北京现存最古老会馆戏楼，有昆曲演出。小众但有文化价值，对京剧感兴趣推荐。', tip:'提前买演出票'},
+    '后海酒吧街': {worth:null,  stars:'★★★☆☆', intro:'夜生活聚集地，湖景不错。消费偏高，夏夜氛围好，冬天体验一般，按需选择。', tip:'夏夜体验最佳'},
+    '三里屯':     {worth:null,  stars:'★★★☆☆', intro:'购物餐饮聚集，国际化氛围。可去看看，但对旅游意义不大，更适合本地生活。', tip:'购物适合下午'},
+    '什刹海胡同游':{worth:true, stars:'★★★★☆', intro:'老北京胡同文化精华地带。骑车穿行胡同体验极好，傍晚光线好适合拍照。', tip:'租车骑行最有趣'},
+    '天安门广场': {worth:true,  stars:'★★★★☆', intro:'必去打卡，象征意义重大。建议早晨升旗仪式（需提前预约）或傍晚光线好时前往。', tip:'提前预约升旗'},
+    '国子监街':   {worth:true,  stars:'★★★★☆', intro:'古朴安静的文化街，书香气息浓。与雍和宫相连，步行可达，人少适合拍照。', tip:'与雍和宫连着逛'},
   };
 
-  // 方案列头含雷达卡（sticky）
+  var html = '';
+
+  // 列头（含雷达卡，sticky）
+  html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0;position:sticky;top:0;z-index:5;background:#fff;border-bottom:2px solid #E2E8F0">';
   var DIMS_S = ['省钱','效率','文化','亲子','体力'];
-  var html = '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:0;position:sticky;top:0;z-index:5;background:#fff;border-bottom:2px solid #E2E8F0">';
   plans.forEach(function(p, pi){
     var d = PLAN_DATA[p];
     var rd = RADAR_DATA[p] || { vals:[60,60,60,60,60], slogan:'', color:'#1D6FEB' };
@@ -2640,12 +2641,10 @@ function renderDays() {
     var sel = p === selectedCol;
     var borderR = pi < plans.length-1 ? 'border-right:1px solid #F1F5F9;' : '';
     html += '<div id="plan-tab-'+p+'" data-plan="'+p+'" onclick="selectPlanTab(\''+p+'\')" style="'+borderR+'background:'+(sel?'#F8FBFF':'#fff')+';border-bottom:3px solid '+(sel?color:'transparent')+';padding:12px 10px 8px;text-align:center;cursor:pointer;transition:all .18s">';
-    html += '<div style="font-size:9px;font-weight:800;color:'+(sel?color:'#94A3B8')+';letter-spacing:.3px;margin-bottom:3px">攻略'+(pi+1)+(p==='b'?' ✦':'')+'</div>';
+    html += '<div style="font-size:9px;font-weight:800;color:'+(sel?color:'#94A3B8')+';letter-spacing:.3px;margin-bottom:3px">攻略'+(pi+1)+(p==="b"?" ✦":"")+'</div>';
     html += '<div style="font-size:12px;font-weight:800;color:'+(sel?'#1E293B':'#334155')+';line-height:1.3;margin-bottom:2px">'+d.name+'</div>';
     html += '<div style="font-size:9px;color:#94A3B8;font-style:italic;margin-bottom:8px">'+rd.slogan+'</div>';
-    // 雷达图
     html += '<div style="display:flex;justify-content:center;margin-bottom:6px">'+buildRadarSVG(rd.vals, color, 68)+'</div>';
-    // 维度标签
     html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px">';
     DIMS_S.forEach(function(dim, di){
       var v = rd.vals[di];
@@ -2658,11 +2657,11 @@ function renderDays() {
   });
   html += '</div>';
 
-  // 每一天：直接展开，按行显示地点卡片
+  // 内容区：每天各列独立纵向，不共享行高
   days.forEach(function(dayIdx){
     var dayNum = dayIdx + 1;
-    // Day 标题行
-    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:10px 0 4px">';
+    // Day标题行（列头对齐）
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;padding:10px 0 6px">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
       var sel = p === selectedCol;
@@ -2674,78 +2673,54 @@ function renderDays() {
     });
     html += '</div>';
 
-    // 每个步骤：按行展示地点卡片
-    var maxSteps = Math.max.apply(null, plans.map(function(p){
-      var pd = PLAN_DATA[p].days[dayIdx]; return pd ? pd.steps.length : 0;
-    }));
-
-    for(var si=0;si<maxSteps;si++){
-      (function(stepIdx){
-        html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:6px;padding:0 10px 3px">';
-        plans.forEach(function(p){
-          var planDay = PLAN_DATA[p].days[dayIdx];
-          var step = planDay ? planDay.steps[stepIdx] : null;
-          var sel = p === selectedCol;
-          var spotKey = p+'_'+dayIdx+'_'+stepIdx;
-          var isOpen = !!_expandedSpots[spotKey];
-
-          if(step){
-            var info = SPOT_INFO[step.name] || null;
-            var worthLabel = info ? (info.worth === true ? '✅ 值得去' : info.worth === false ? '⚡ 可跳过' : '💡 按需选择') : null;
-            var worthColor = info ? (info.worth === true ? '#16A34A' : info.worth === false ? '#DC2626' : '#D97706') : '#64748B';
-            var worthBg   = info ? (info.worth === true ? '#F0FDF4' : info.worth === false ? '#FEF2F2' : '#FFFBEB') : '#F8FAFC';
-
-            html += '<div style="background:'+(sel?'#F5F9FF':'#fff')+';border:1px solid '+(sel?'#BFDBFE':'#E2E8F0')+';border-radius:7px;overflow:hidden">';
-            // 地点主卡（可点击）
-            html += '<div style="padding:7px 10px;cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleSpot(\''+spotKey+'\')">';
-            html += '<span style="font-size:13px;flex-shrink:0">'+step.icon+'</span>';
-            html += '<div style="flex:1;min-width:0">';
-            html += '<div style="font-size:11px;font-weight:700;color:'+(sel?'var(--blue)':'#1E293B')+';line-height:1.3">'+step.name+'</div>';
-            html += '<div style="font-size:9px;color:#94A3B8">'+step.time+'</div>';
-            html += '</div>';
-            html += '<span style="font-size:9px;color:#94A3B8;flex-shrink:0">'+(isOpen?'▲':'▼')+'</span>';
-            html += '</div>';
-            // 展开的简介卡
-            if(isOpen){
-              html += '<div style="padding:8px 10px;background:'+(sel?'#EFF6FF':'#F8FAFC')+';border-top:1px solid '+(sel?'#BFDBFE':'#E2E8F0')+'">';
-              if(info){
-                html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">';
-                html += '<span style="font-size:11px;font-weight:700;color:'+worthColor+';background:'+worthBg+';padding:2px 8px;border-radius:4px">'+worthLabel+'</span>';
-                html += '<span style="font-size:10px;color:#F59E0B">'+info.stars+'</span>';
-                html += '</div>';
-                html += '<div style="font-size:10px;color:#475569;line-height:1.6">'+info.intro+'</div>';
-              }
-              if(step.tip){
-                html += '<div style="font-size:10px;color:#1D6FEB;background:#EFF6FF;padding:4px 8px;border-radius:4px;margin-top:5px">💡 '+step.tip+'</div>';
-              }
-              html += '</div>';
-            }
-            // 交通衔接
-            if(step.transit && stepIdx < maxSteps-1){
-              html += '<div style="padding:3px 10px 5px;font-size:9px;color:#94A3B8;border-top:1px dashed '+(sel?'#BFDBFE':'#F1F5F9')+'">→ '+step.transit+'</div>';
-            }
-            html += '</div>';
-          } else {
-            html += '<div style="padding:7px 10px;background:#F8FAFC;border:1px dashed #E2E8F0;border-radius:7px;font-size:10px;color:#CBD5E1;font-style:italic">—</div>';
-          }
-        });
-        html += '</div>';
-      })(si);
-    }
-
-    // 住宿行
-    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:6px;padding:3px 10px 10px;border-bottom:1px solid #F1F5F9">';
+    // 各列独立纵向（align-items:start 防止高度被拉伸）
+    html += '<div style="display:grid;grid-template-columns:'+colFr+';gap:8px;align-items:start;padding-bottom:14px;border-bottom:1px solid #F1F5F9">';
     plans.forEach(function(p){
       var planDay = PLAN_DATA[p].days[dayIdx];
       var sel = p === selectedCol;
-      var hotel = planDay && planDay.hotel ? planDay.hotel : {name:'—',price:'—',type:'—'};
-      html += '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;background:'+(sel?'#EFF6FF':'#F8FAFC')+';border:1px dashed '+(sel?'var(--blue)':'#CBD5E1')+';border-radius:6px">';
-      html += '<span style="font-size:12px">🏨</span>';
-      html += '<div style="min-width:0"><div style="font-size:10px;font-weight:700;color:'+(sel?'var(--blue)':'#475569')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+hotel.name+'</div>';
-      html += '<div style="font-size:9px;color:#94A3B8">'+hotel.price+'</div></div>';
-      html += '</div>';
+      html += '<div style="display:flex;flex-direction:column;gap:4px">';
+      if(planDay){
+        planDay.steps.forEach(function(step, stepIdx){
+          if(!step) return;
+          var spotKey = p+'_'+dayIdx+'_'+stepIdx;
+          var isOpen = !!_expandedSpots[spotKey];
+          var info = SPOT_INFO[step.name] || null;
+          var worthLabel = info ? (info.worth === true ? '✅ 值得去' : info.worth === false ? '⚡ 可跳过' : '💡 按需选择') : null;
+          var worthColor = info ? (info.worth === true ? '#16A34A' : info.worth === false ? '#DC2626' : '#D97706') : '#64748B';
+          var worthBg   = info ? (info.worth === true ? '#F0FDF4' : info.worth === false ? '#FEF2F2' : '#FFFBEB') : '#F8FAFC';
+          html += '<div style="background:'+(sel?'#F5F9FF':'#fff')+';border:1px solid '+(sel?'#BFDBFE':'#E2E8F0')+';border-radius:7px;overflow:hidden">';
+          html += '<div style="padding:7px 10px;cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleSpot(\''+spotKey+'\')">';
+          html += '<span style="font-size:13px;flex-shrink:0">'+step.icon+'</span>';
+          html += '<div style="flex:1;min-width:0"><div style="font-size:11px;font-weight:700;color:'+(sel?'var(--blue)':'#1E293B')+';line-height:1.3">'+step.name+'</div>';
+          html += '<div style="font-size:9px;color:#94A3B8">'+step.time+'</div></div>';
+          html += '<span style="font-size:9px;color:#94A3B8;flex-shrink:0">'+(isOpen?'▲':'▼')+'</span>';
+          html += '</div>';
+          if(isOpen){
+            html += '<div style="padding:8px 10px;background:'+(sel?'#EFF6FF':'#F8FAFC')+';border-top:1px solid '+(sel?'#BFDBFE':'#E2E8F0')+'">';
+            if(info){
+              html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><span style="font-size:11px;font-weight:700;color:'+worthColor+';background:'+worthBg+';padding:2px 8px;border-radius:4px">'+worthLabel+'</span><span style="font-size:10px;color:#F59E0B">'+info.stars+'</span></div>';
+              html += '<div style="font-size:10px;color:#475569;line-height:1.6">'+info.intro+'</div>';
+            }
+            if(step.tip){
+              html += '<div style="font-size:10px;color:#1D6FEB;background:#EFF6FF;padding:4px 8px;border-radius:4px;margin-top:5px">💡 '+step.tip+'</div>';
+            }
+            html += '</div>';
+          }
+          if(step.transit && stepIdx < planDay.steps.length-1){
+            html += '<div style="padding:3px 10px 5px;font-size:9px;color:#94A3B8;border-top:1px dashed '+(sel?'#BFDBFE':'#F1F5F9')+'">→ '+step.transit+'</div>';
+          }
+          html += '</div>';
+        });
+      }
+      // 住宿
+      var hotel = planDay && planDay.hotel ? planDay.hotel : {name:'—',price:'—'};
+      html += '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;background:'+(sel?'#EFF6FF':'#F8FAFC')+';border:1px dashed '+(sel?'var(--blue)':'#CBD5E1')+';border-radius:6px;margin-top:2px">';
+      html += '<span style="font-size:12px">🏨</span><div style="min-width:0">';
+      html += '<div style="font-size:10px;font-weight:700;color:'+(sel?'var(--blue)':'#475569')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+hotel.name+'</div>';
+      html += '<div style="font-size:9px;color:#94A3B8">'+hotel.price+'</div></div></div>';
+      html += '</div>'; // end 列
     });
-    html += '</div>';
+    html += '</div>'; // end 行程行
   });
 
   allDays.innerHTML = html;
