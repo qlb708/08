@@ -374,7 +374,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   <div class="hero-wrap">
     <div class="hero-eyebrow">✦ 2026 旅行规划</div>
     <div class="hero-title">去哪儿？<br>让 <em>AI</em> 帮你规划</div>
-    <div class="hero-sub">选好目的地和行程天数，AI 生成多套专属方案<br>每个方案都有自己的「旅行性格」</div>
+    <div class="hero-sub">选好目的地和行程天数，AI 生成3套专属方案<br>每个方案都有自己的「旅行性格」</div>
 
     <div style="font-size:12px;font-weight:700;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px">选择目的地</div>
     <div class="city-search-wrap">
@@ -518,7 +518,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div class="loading-steps-list" id="lsteps">
       <div class="lstep" id="ls0"><div class="lstep-ico"></div>读取偏好数据</div>
       <div class="lstep" id="ls1"><div class="lstep-ico"></div>匹配旅行人格</div>
-      <div class="lstep" id="ls2"><div class="lstep-ico"></div>生成 5 套行程方案</div>
+      <div class="lstep" id="ls2"><div class="lstep-ico"></div>生成 3 套行程方案</div>
       <div class="lstep" id="ls3"><div class="lstep-ico"></div>计算各方案评分</div>
       <div class="lstep" id="ls4"><div class="lstep-ico"></div>准备对比视图</div>
     </div>
@@ -743,12 +743,6 @@ var PERSONAS = [
   {id:'c',name:'文化深潜',emoji:'🏯',slogan:'宁可少去，必要看懂',color:'#7C3AED',
    scores:{省钱:65,效率:50,文化:98,亲子:60,体力:55},
    match:75, budget:'¥2600',transport:'★★★',culture:'★★★★★',family:'★★★',food:'★★★'},
-  {id:'d',name:'遛娃大师',emoji:'👶',slogan:'娃开心，全家赢',color:'#059669',
-   scores:{省钱:55,效率:60,文化:65,亲子:98,体力:50},
-   match:68, budget:'¥3800',transport:'★★★',culture:'★★★',family:'★★★★★',food:'★★★★'},
-  {id:'e',name:'胡同隐士',emoji:'🥢',slogan:'不走景区走小巷',color:'#D97706',
-   scores:{省钱:85,效率:40,文化:88,亲子:65,体力:45},
-   match:61, budget:'¥1800',transport:'★★',culture:'★★★★',family:'★★★',food:'★★★★★'}
 ];
 
 var ITIN = {
@@ -827,51 +821,8 @@ var ITIN = {
       {name:'颐和园',time:'13:00',cat:'园林',verdict:'go',tip:'皇家园林，文化内涵丰富',stars:5}
     ]}
   ],
-  d:[
-    {day:'Day 1',title:'亲子启蒙日',spots:[
-      {name:'北京动物园',time:'09:00',cat:'亲子',verdict:'go',tip:'国宝大熊猫馆是重点，票提前买',stars:5},
-      {name:'北京植物园',time:'14:00',cat:'自然',verdict:'go',tip:'适合散步，孩子认植物',stars:4}
-    ]},
-    {day:'Day 2',title:'故宫亲子游',spots:[
-      {name:'故宫博物院',time:'09:00',cat:'文化',verdict:'go',tip:'带儿童音频讲解，让孩子参与互动展',stars:5},
-      {name:'景山公园',time:'14:00',cat:'观景',verdict:'go',tip:'孩子爬山，大人俯瞰故宫',stars:4}
-    ]},
-    {day:'Day 3',title:'科学探索日',spots:[
-      {name:'中国科技馆',time:'09:00',cat:'亲子',verdict:'go',tip:'互动展品超多，孩子可以玩一整天',stars:5},
-      {name:'奥林匹克公园',time:'14:30',cat:'户外',verdict:'go',tip:'鸟巢水立方外观，广场跑跑很开心',stars:4}
-    ]},
-    {day:'Day 4',title:'欢乐亲子',spots:[
-      {name:'欢乐谷',time:'09:00',cat:'主题乐园',verdict:'go',tip:'北京最大主题乐园，孩子最爱，全天',stars:5}
-    ]},
-    {day:'Day 5',title:'自然收尾',spots:[
-      {name:'颐和园',time:'09:00',cat:'园林',verdict:'go',tip:'湖边骑船，孩子划船很开心',stars:5},
-      {name:'圆明园',time:'13:00',cat:'历史',verdict:'go',tip:'大草坪放风筝，历史教育',stars:4}
-    ]}
-  ],
-  e:[
-    {day:'Day 1',title:'老城慢走',spots:[
-      {name:'豆汁铺早餐',time:'08:30',cat:'美食',verdict:'go',tip:'正宗北京早餐，豆汁+焦圈，敢喝才算来过',stars:5},
-      {name:'隆福寺',time:'10:30',cat:'文化',verdict:'go',tip:'老北京商业街改造，顶楼看钟楼',stars:4},
-      {name:'东四胡同',time:'14:00',cat:'街区',verdict:'go',tip:'随便进一条，都有惊喜小院',stars:5}
-    ]},
-    {day:'Day 2',title:'烟袋斜街发呆',spots:[
-      {name:'烟袋斜街',time:'10:00',cat:'街区',verdict:'go',tip:'北京最古老商业街，文玩古董随便淘',stars:5},
-      {name:'什刹海荷花市场',time:'12:30',cat:'休闲',verdict:'go',tip:'湖边喝茶，夏天荷花满满',stars:4},
-      {name:'鼓楼',time:'15:30',cat:'历史',verdict:'go',tip:'爬上去看整个老城，整点鼓声震撼',stars:4}
-    ]},
-    {day:'Day 3',title:'野长城探险',spots:[
-      {name:'箱峪沟野长城',time:'09:00',cat:'地标',verdict:'go',tip:'未开发野长城，需徒步，原始震撼，适合爱探险的',stars:5}
-    ]},
-    {day:'Day 4',title:'文艺一整天',spots:[
-      {name:'宋庄艺术区',time:'10:00',cat:'艺术',verdict:'go',tip:'中国最大艺术家聚居地，画廊随便进，免费',stars:5},
-      {name:'通惠河骑行',time:'15:00',cat:'户外',verdict:'go',tip:'租辆自行车，沿河骑，看斜阳入水',stars:4}
-    ]},
-    {day:'Day 5',title:'胡同告别',spots:[
-      {name:'前门胡同群',time:'09:30',cat:'街区',verdict:'go',tip:'前门西河沿街，老北京市井最后一块净土',stars:5},
-      {name:'天坛公园',time:'13:00',cat:'历史',verdict:'go',tip:'祈年殿建筑美学极致，老人晨练氛围绝',stars:5}
-    ]}
-  ]
 };
+
 
 var DIM_DATA = {
   budget:{
