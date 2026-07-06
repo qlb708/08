@@ -252,8 +252,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .right-score-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:3px}
 .right-score-fill{height:100%;border-radius:2px;background:var(--blue)}
 
-/* resizer */
-.resizer{width:5px;cursor:col-resize;background:transparent;flex-shrink:0;transition:background 0.2s;position:relative}
+.flip-card-item{width:280px;height:400px;cursor:pointer}
+.flip-scene{perspective:1200px}
+.flip-card-inner{
+  position:relative;width:100%;height:100%;
+  transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  transform-style:preserve-3d;
+}
+.flip-card-inner.flipped{transform:rotateY(180deg)}
+.flip-card-back,.flip-card-front{
+  position:absolute;inset:0;border-radius:16px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:16px 12px;overflow:hidden;
+}
+.flip-card-back{
+  background:#fff;border:2px solid var(--border);
+  box-shadow:var(--shadow);
+}
+.flip-card-front{
+  transform:rotateY(180deg);
+  border:2px solid var(--border);
+  box-shadow:var(--shadow);
+  overflow-y:auto;
+}
+.flip-pill{
+  padding:6px 16px;border-radius:20px;font-size:13px;
+  cursor:pointer;border:1.5px solid var(--border);
+  background:#fff;color:var(--gray);transition:all 0.2s;
+}
+.flip-pill.active,.flip-pill:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.flip-btn-confirm{
+  padding:12px 32px;border-radius:50px;font-size:15px;
+  background:var(--blue);color:#fff;border:none;cursor:pointer;
+  transition:all 0.2s;font-weight:600;
+}
+.flip-btn-confirm:disabled{opacity:0.5;cursor:not-allowed}
+.flip-btn-refresh{
+  padding:10px 20px;border-radius:50px;font-size:13px;
+  background:none;border:1.5px solid var(--border);color:var(--gray);
+  cursor:pointer;transition:all 0.2s;
+}
+.flip-btn-refresh:hover{border-color:var(--blue);color:var(--blue)}
+
 .resizer:hover,.resizer.dragging{background:var(--blue)}
 .resizer::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1px;height:40px;background:var(--border);border-radius:1px}
 
@@ -279,8 +320,44 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   </div>
 </div>
 
-<!-- ======== STEP 1: CITY ======== -->
-<div id="s-city" class="screen active">
+<!-- ======== STEP 0: 翻牌选城市 ======== -->
+<div id="s-flip" class="screen active" style="background:linear-gradient(160deg,#EEF4FF 0%,#F8FAFF 100%)">
+  <div style="max-width:960px;width:100%;margin:0 auto;padding:40px 32px 60px">
+    <!-- 首部 -->
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="font-size:13px;font-weight:600;letter-spacing:3px;color:var(--blue);margin-bottom:12px;text-transform:uppercase">✦ 2026 旅行规划</div>
+      <h1 style="font-size:clamp(28px,4vw,48px);font-weight:800;color:#111;margin-bottom:12px;line-height:1.2">你的下一站<br>让城市来找你</h1>
+      <p style="color:var(--gray);font-size:16px;margin-bottom:24px">不知道去哪儿？翻一张牌，让城市选择你</p>
+      <button id="flip-btn-have-city" style="padding:10px 24px;border-radius:50px;border:1.5px solid var(--blue);color:var(--blue);background:#fff;cursor:pointer;font-size:13px;transition:all 0.2s"
+        onmouseover="this.style.background='var(--blue-l)'" onmouseout="this.style.background='#fff'">
+        已有目的地，直接规划 →
+      </button>
+    </div>
+
+    <!-- 筛选条 -->
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
+      <span class="flip-pill active" data-tag="全部">🗺️ 随便去</span>
+      <span class="flip-pill" data-tag="看海">🌊 看海</span>
+      <span class="flip-pill" data-tag="美食">🍜 美食</span>
+      <span class="flip-pill" data-tag="出片">📸 出片</span>
+      <span class="flip-pill" data-tag="亲子">👨‍👩‍👧 亲子游</span>
+      <span class="flip-pill" data-tag="人文">🏛️ 人文探索</span>
+      <span class="flip-pill" data-tag="户外">🏕️ 户外冒险</span>
+    </div>
+
+    <!-- 三张翻牌 -->
+    <div id="flip-cards-wrapper" style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;min-height:360px;" class="flip-scene"></div>
+
+    <!-- 底部操作区 -->
+    <div id="flip-bottom-actions" style="display:none;flex-direction:column;align-items:center;gap:12px;margin-top:28px">
+      <button id="flip-btn-confirm" class="flip-btn-confirm" disabled style="opacity:0.5;pointer-events:none">确认选择</button>
+      <button id="flip-btn-refresh" class="flip-btn-refresh">🔄 换一批城市</button>
+      <p style="font-size:12px;color:var(--gray);text-align:center">翻开全部牌，点击选中一座城市，开始规划</p>
+    </div>
+  </div>
+</div>
+
+<div id="s-city" class="screen">
   <nav class="top-nav">
     <div class="nav-logo"><span>✈</span> AI 旅行规划</div>
     <div class="nav-steps">
@@ -292,7 +369,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       <div class="nav-step-line"></div>
       <div class="nav-step" id="ns4"><div class="nav-step-dot">4</div><div class="nav-step-label">方案对比</div></div>
     </div>
-    <div style="width:120px"></div>
+    <div style="width:120px"><button onclick="backToFlip()" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--gray)">← 重选城市</button></div>
   </nav>
   <div class="hero-wrap">
     <div class="hero-eyebrow">✦ 2026 旅行规划</div>
@@ -1345,10 +1422,224 @@ function startResize(e, side) {
   });
 })();
 
-// 开场白
+// 开场白 + URL参数处理 + 翻牌入口逻辑
 window.addEventListener('load', function(){
-  aiSayRandom(GUIDE_LINES.city_open, 800);
+  // 读取URL参数：?city=成都 或 ?from=flip&city=成都
+  var params = new URLSearchParams(window.location.search);
+  var urlCity = params.get('city');
+  var fromFlip = params.get('from') === 'flip';
+
+  if(urlCity) {
+    // 从翻牌页跳来，预填城市，直接显示城市规划页
+    state.city = urlCity;
+    var input = document.getElementById('city-input');
+    if(input) input.value = urlCity;
+    showCityConfirm(urlCity);
+    // 高亮匹配的热门标签
+    document.querySelectorAll('.city-hot-tag').forEach(function(t){
+      if(t.textContent.indexOf(urlCity) >= 0) t.classList.add('sel');
+      else t.classList.remove('sel');
+    });
+    aiSay('✨ 已为你选好「' + urlCity + '」！调整行程天数和预算，开始规划吧～', 500);
+    // 显示城市规划页
+    showScreen('s-city');
+  } else if(!fromFlip) {
+    // 正常入口：先显示翻牌选城市页
+    showScreen('s-flip');
+    initFlipPage();
+  } else {
+    // from=flip 但没有城市：直接进规划
+    showScreen('s-city');
+    aiSayRandom(GUIDE_LINES.city_open, 800);
+  }
 });
+
+// ==================== 翻牌选城市功能 ====================
+var FLIP_CITIES = [
+  { name: '成都', emoji: '🐼', color: '#FFF0E0', tags: ['美食天堂', '慢生活', '麻辣鲜香'], intro: '四川盆地里最会享受生活的城市，火锅煮进灵魂。' },
+  { name: '重庆', emoji: '🌶️', color: '#FFE0E0', tags: ['山城', '魔幻地形', '火锅之都'], intro: '让导航都怀疑人生的城市，夜景不服来辩。' },
+  { name: '西安', emoji: '🏯', color: '#FFF3D0', tags: ['千年古都', '历史文化', '碳水天堂'], intro: '十三朝古都，踩下去都是历史，肉夹馍一口烦恼全没。' },
+  { name: '厦门', emoji: '🌊', color: '#E0F0FF', tags: ['海边城市', '文艺清新', '小资情调'], intro: '小而精致，鼓浪屿等你来发呆，落日每个都是壁纸。' },
+  { name: '大理', emoji: '🌸', color: '#F0E8FF', tags: ['苍山洱海', '慢生活', '白族文化'], intro: '来了就想留下来开客栈，时间在这里慢下来。' },
+  { name: '杭州', emoji: '☕', color: '#E8F5E0', tags: ['人间天堂', '西湖', '江南水乡'], intro: '苏轼说欲把西湖比西子，我觉得他说少了。' },
+  { name: '北京', emoji: '🏛️', color: '#E8E8F8', tags: ['首都', '皇城根', '胡同文化'], intro: '宏大是它的底色，胡同里才是真正的北京。' },
+  { name: '上海', emoji: '🌃', color: '#E0E8F0', tags: ['国际都市', '外滩夜景', '魔都'], intro: '永远不会无聊，黄浦江边风吹得正好。' },
+  { name: '三亚', emoji: '🏖️', color: '#E0F8F0', tags: ['热带海岛', '阳光沙滩', '度假天堂'], intro: '把手机放下才叫度假，全年无冬永远在线。' },
+  { name: '丽江', emoji: '🎵', color: '#FFE8F0', tags: ['古城', '雪山', '纳西文化'], intro: '纳西古乐一响时间停了，玉龙雪山照片都不够用。' },
+  { name: '青岛', emoji: '🍺', color: '#E0F4FF', tags: ['啤酒之城', '德式建筑', '海鲜'], intro: '啤酒+海鲜=完美公式，接地气的浪漫不装。' },
+  { name: '武汉', emoji: '🌸', color: '#FFF0F5', tags: ['江城', '热干面', '樱花'], intro: '热干面一碗元气满满，不服周是这座城市的精气神。' },
+  { name: '南京', emoji: '🦆', color: '#E8F0E8', tags: ['六朝古都', '鸭血粉丝', '梧桐大道'], intro: '鸭血粉丝汤一碗，梧桐大道下时间慢下来。' },
+  { name: '苏州', emoji: '🏮', color: '#F5F0E8', tags: ['园林之城', '江南水乡', '丝绸刺绣'], intro: '园林之美慢慢看才懂，苏式面每碗都有讲究。' },
+  { name: '乌鲁木齐', emoji: '🐑', color: '#F0EDE0', tags: ['西域风情', '烤肉', '边疆探索'], intro: '夕阳九点才落山，天山草场绿得不真实。' }
+];
+
+var FLIP_TAG_MAP = {
+  '全部': null,
+  '看海': ['厦门','青岛','三亚','上海'],
+  '美食': ['成都','重庆','西安','武汉','青岛','上海','南京'],
+  '出片': ['重庆','厦门','大理','丽江','西安','乌鲁木齐'],
+  '亲子': ['北京','杭州','西安','苏州','三亚'],
+  '人文': ['北京','西安','南京','苏州','杭州','丽江'],
+  '户外': ['重庆','大理','丽江','乌鲁木齐','三亚'],
+};
+
+var flipState = {
+  currentCities: [],
+  flippedCount: 0,
+  selectedIndex: -1,
+  activeFilter: '全部',
+  isAnimating: false
+};
+
+function initFlipPage() {
+  flipState.currentCities = pickFlipCities(3, flipState.activeFilter);
+  flipState.flippedCount = 0;
+  flipState.selectedIndex = -1;
+  flipState.isAnimating = false;
+  renderFlipCards();
+  // 绑定筛选条
+  document.querySelectorAll('.flip-pill').forEach(function(pill){
+    pill.addEventListener('click', function(){
+      document.querySelectorAll('.flip-pill').forEach(function(p){ p.classList.remove('active'); });
+      pill.classList.add('active');
+      flipState.activeFilter = pill.dataset.tag;
+      refreshFlipCards();
+    });
+  });
+  // 绑定「已有目的地」按钮
+  var btnA = document.getElementById('flip-btn-have-city');
+  if(btnA) btnA.addEventListener('click', function(){
+    showScreen('s-city');
+    aiSayRandom(GUIDE_LINES.city_open, 300);
+  });
+  // 绑定「换一批」
+  var btnRefresh = document.getElementById('flip-btn-refresh');
+  if(btnRefresh) btnRefresh.addEventListener('click', refreshFlipCards);
+  // 绑定「确认选择」
+  var btnConfirm = document.getElementById('flip-btn-confirm');
+  if(btnConfirm) btnConfirm.addEventListener('click', function(){
+    if(flipState.selectedIndex < 0) return;
+    var city = flipState.currentCities[flipState.selectedIndex];
+    // 预填城市，进入规划流程
+    state.city = city.name;
+    var input = document.getElementById('city-input');
+    if(input) input.value = city.name;
+    showCityConfirm(city.name);
+    document.querySelectorAll('.city-hot-tag').forEach(function(t){
+      if(t.textContent.indexOf(city.name) >= 0) t.classList.add('sel');
+      else t.classList.remove('sel');
+    });
+    showScreen('s-city');
+    aiSay('✨ ' + city.emoji + ' 「' + city.name + '」已选好！调整天数和预算，下一步开始规划吧～', 400);
+  });
+}
+
+function pickFlipCities(count, filter) {
+  var pool = FLIP_CITIES.slice();
+  if(filter && FLIP_TAG_MAP[filter]) {
+    var whitelist = FLIP_TAG_MAP[filter];
+    pool = pool.filter(function(c){ return whitelist.indexOf(c.name) >= 0; });
+  }
+  if(pool.length < count) pool = FLIP_CITIES.slice();
+  // 洗牌
+  for(var i = pool.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+  }
+  return pool.slice(0, count);
+}
+
+function renderFlipCards() {
+  var wrapper = document.getElementById('flip-cards-wrapper');
+  if(!wrapper) return;
+  wrapper.innerHTML = '';
+  flipState.currentCities.forEach(function(city, idx){
+    var card = document.createElement('div');
+    card.className = 'flip-card-item';
+    card.id = 'flip-card-' + idx;
+    card.innerHTML = '<div class="flip-card-inner" id="flip-inner-' + idx + '">' +
+      '<div class="flip-card-back" data-idx="' + idx + '">' +
+        '<div style="font-size:40px;color:var(--blue);margin-bottom:8px">?</div>' +
+        '<div style="font-size:13px;color:var(--gray)">点我翻开</div>' +
+      '</div>' +
+      '<div class="flip-card-front" id="flip-front-' + idx + '" style="background:' + city.color + '">' +
+        '<div style="font-size:36px;margin-bottom:8px">' + city.emoji + '</div>' +
+        '<div style="font-size:20px;font-weight:700;color:#333;margin-bottom:8px">' + city.name + '</div>' +
+        '<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">' +
+          city.tags.map(function(t){ return '<span style="padding:2px 8px;background:rgba(64,150,255,0.15);color:#4096FF;border-radius:10px;font-size:11px">' + t + '</span>'; }).join('') +
+        '</div>' +
+        '<div style="font-size:12px;color:#666;line-height:1.6;padding:0 8px">' + city.intro + '</div>' +
+      '</div>' +
+    '</div>';
+    // 翻牌事件（正面翻开前可点，翻开后点击选中）
+    card.addEventListener('click', function(){
+      var inner = document.getElementById('flip-inner-' + idx);
+      if(!inner.classList.contains('flipped')) {
+        // 翻开
+        inner.classList.add('flipped');
+        flipState.flippedCount++;
+        if(flipState.flippedCount === 3) {
+          setTimeout(function(){
+            document.getElementById('flip-bottom-actions').style.display = 'flex';
+            // 所有翻开的卡片变为可选中
+            for(var i = 0; i < 3; i++){
+              (function(i){
+                var fc = document.getElementById('flip-front-' + i);
+                if(fc) {
+                  fc.style.cursor = 'pointer';
+                  fc.addEventListener('click', function(e){
+                    e.stopPropagation();
+                    flipSelectCard(i);
+                  });
+                }
+              })(i);
+            }
+          }, 600);
+        }
+      }
+    });
+    wrapper.appendChild(card);
+  });
+}
+
+function flipSelectCard(idx) {
+  flipState.selectedIndex = idx;
+  for(var i = 0; i < 3; i++){
+    var fc = document.getElementById('flip-front-' + i);
+    if(fc) fc.style.boxShadow = '';
+  }
+  var sel = document.getElementById('flip-front-' + idx);
+  if(sel) sel.style.boxShadow = '0 0 0 3px #4096FF, 0 4px 20px rgba(64,150,255,0.3)';
+  var btnConfirm = document.getElementById('flip-btn-confirm');
+  if(btnConfirm) {
+    btnConfirm.textContent = '确认选择 · ' + flipState.currentCities[idx].name + ' →';
+    btnConfirm.disabled = false;
+    btnConfirm.style.opacity = '1';
+    btnConfirm.style.pointerEvents = 'auto';
+  }
+}
+
+function refreshFlipCards() {
+  flipState.currentCities = pickFlipCities(3, flipState.activeFilter);
+  flipState.flippedCount = 0;
+  flipState.selectedIndex = -1;
+  flipState.isAnimating = false;
+  document.getElementById('flip-bottom-actions').style.display = 'none';
+  var btnConfirm = document.getElementById('flip-btn-confirm');
+  if(btnConfirm) {
+    btnConfirm.textContent = '确认选择';
+    btnConfirm.disabled = true;
+    btnConfirm.style.opacity = '0.5';
+    btnConfirm.style.pointerEvents = 'none';
+  }
+  renderFlipCards();
+}
+
+// 绑定「← 重新选城市」按钮（在 s-city 页）
+function backToFlip() {
+  showScreen('s-flip');
+  refreshFlipCards();
+}
 </script>
 </body>
 </html>
