@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qinlin Bo · Portfolio</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #020010;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ── Canvas ── */
+    #hero-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1;
+      display: block;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    /* ── Orbs ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 2;
+      transition: opacity 0.8s ease;
+    }
+    #orb1 { width: 600px; height: 600px; top: -150px; right: -150px; }
+    #orb2 { width: 500px; height: 500px; bottom: -100px; left: -100px; }
+    #orb3 { width: 350px; height: 350px; top: 35%; left: 25%; }
+
+    /* ── Hero ── */
+    #hero {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      pointer-events: none;
+      /* text-shadow so text pops through particles */
+      text-shadow: 0 0 40px rgba(0,0,0,0.8), 0 0 80px rgba(0,0,0,0.6);
+    }
+
+    .hero-eyebrow {
+      font-size: clamp(10px, 1.1vw, 12px);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 22px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.6s forwards;
+    }
+
+    .hero-name {
+      font-size: clamp(56px, 9vw, 120px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      background: linear-gradient(140deg,
+        #fff 0%,
+        #e0c3fc 30%,
+        #f9a8d4 60%,
+        #fca5a5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+      text-align: center;
+      text-shadow: none;
+    }
+
+    .hero-role {
+      margin-top: 18px;
+      font-size: clamp(13px, 1.6vw, 17px);
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+    }
+
+    .hero-divider {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,181,253,0.6), transparent);
+      margin: 28px auto;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.35s forwards;
+    }
+
+    .hero-tagline {
+      font-size: clamp(13px, 1.4vw, 15px);
+      color: rgba(255,255,255,0.32);
+      max-width: 400px;
+      text-align: center;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.5s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 44px;
+      pointer-events: all;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.8s forwards;
+    }
+
+    .btn-enter {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 36px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      text-decoration: none;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-enter::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(196,181,253,0.12) 0%,
+        rgba(249,168,212,0.12) 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn-enter:hover {
+      border-color: rgba(196,181,253,0.4);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow:
+        0 0 0 1px rgba(196,181,253,0.15),
+        0 8px 32px rgba(196,181,253,0.18),
+        0 0 60px rgba(196,181,253,0.08);
+    }
+    .btn-enter:hover::after { opacity: 1; }
+
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      font-size: 10px;
+    }
+
+    /* ── Scene Nav ── */
+    #scene-nav {
+      position: fixed;
+      right: 28px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      pointer-events: all;
+    }
+
+    .scene-dot {
+      position: relative;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      border: 1.5px solid rgba(255,255,255,0.3);
+    }
+    .scene-dot::before {
+      content: attr(data-label);
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      color: rgba(255,255,255,0);
+      transition: color 0.3s;
+      pointer-events: none;
+    }
+    .scene-dot:hover::before { color: rgba(255,255,255,0.5); }
+    .scene-dot.active {
+      background: #fff;
+      transform: scale(1.6);
+      box-shadow: 0 0 16px rgba(255,255,255,0.7);
+    }
+
+    /* ── Scene Info ── */
+    .scene-info {
+      position: fixed;
+      bottom: 80px;
+      left: 36px;
+      z-index: 100;
+      pointer-events: none;
+    }
+    .scene-info-number {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 4px;
+    }
+    .scene-info-name {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      transition: opacity 0.5s;
+    }
+
+    /* ── Scroll Hint ── */
+    .scroll-hint {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      animation: fadeIn 1s ease 2.4s forwards;
+      pointer-events: none;
+    }
+    .scroll-hint-label {
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+    .scroll-mouse {
+      width: 20px; height: 32px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 5px;
+    }
+    .scroll-wheel {
+      width: 3px; height: 6px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 2px;
+      animation: wheelScroll 1.8s ease-in-out infinite;
+    }
+
+    /* ── Portfolio Frame ── */
+    #portfolio-frame {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      min-height: 100vh;
+      background: #f5f5f7;
+    }
+    #portfolio-iframe {
+      width: 100%;
+      min-height: 200vh;
+      border: none;
+      display: block;
+    }
+
+    /* ── Keyframes ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes wheelScroll {
+      0%   { opacity: 1; transform: translateY(0); }
+      80%  { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 0; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      #scene-nav { right: 14px; }
+      .scene-info { left: 16px; bottom: 72px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Orbs -->
+  <div class="orb" id="orb1" style="background:radial-gradient(circle, rgba(109,40,217,0.45),transparent)"></div>
+  <div class="orb" id="orb2" style="background:radial-gradient(circle, rgba(59,130,246,0.3),transparent)"></div>
+  <div class="orb" id="orb3" style="background:radial-gradient(circle, rgba(236,72,153,0.22),transparent)"></div>
+
+  <!-- Three.js Canvas -->
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Hero Text -->
+  <section id="hero">
+    <p class="hero-eyebrow">Product Designer &amp; AI Operator</p>
+    <h1 class="hero-name">Qinlin Bo</h1>
+    <p class="hero-role">旅行 × AI × 产品运营</p>
+    <div class="hero-divider"></div>
+    <p class="hero-tagline">Limitless begins here —<br>where data meets design,<br>and tools become experiences.</p>
+    <div class="hero-cta">
+      <a class="btn-enter" href="#portfolio-frame" onclick="enterPortfolio(event)">
+        <span class="btn-icon">↓</span>
+        探索我的作品集
+      </a>
+    </div>
+  </section>
+
+  <!-- Scene Navigation -->
+  <nav id="scene-nav">
+    <div class="scene-dot active" data-scene="0" data-label="Space"></div>
+    <div class="scene-dot" data-scene="1" data-label="Ocean"></div>
+    <div class="scene-dot" data-scene="2" data-label="Nebula"></div>
+  </nav>
+
+  <!-- Scene Info -->
+  <div class="scene-info">
+    <p class="scene-info-number" id="scene-number">01 / 03</p>
+    <p class="scene-info-name" id="scene-name">Deep Space · Particle Field</p>
+  </div>
+
+  <!-- Scroll Hint -->
+  <div class="scroll-hint">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+    <span class="scroll-hint-label">scroll</span>
+  </div>
+
+  <!-- Portfolio iframe below -->
+  <div id="portfolio-frame">
+    <iframe
+      id="portfolio-iframe"
+      src="https://qlb708.github.io/08/portfolio/"
+      title="Portfolio Content"
+      loading="lazy"
+    ></iframe>
+  </div>
+
+  <!-- Three.js r128 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+// ════════════════════════════════════════════════
+//  SCENE DEFINITIONS
+// ════════════════════════════════════════════════
+const SCENES = [
+  {
+    label: '01 / 03',
+    name: 'Deep Space · Particle Field',
+    bg: [0.008, 0, 0.063],          // #020010
+    fog: 0x050020,
+    p1: { r:0.769, g:0.710, b:0.988 }, // #c4b5fd violet
+    p2: { r:0.941, g:0.671, b:0.988 }, // #f0abfc pink
+    star: 0x7c3aed,
+    orbColors: [
+      'radial-gradient(circle, rgba(109,40,217,0.45),transparent)',
+      'radial-gradient(circle, rgba(59,130,246,0.30),transparent)',
+      'radial-gradient(circle, rgba(236,72,153,0.22),transparent)',
+    ],
+  },
+  {
+    label: '02 / 03',
+    name: 'Pink Ocean · Bioluminescence',
+    bg: [0.012, 0, 0.102],          // #030019
+    fog: 0x100025,
+    p1: { r:0.984, g:0.443, b:0.522 }, // #fb7185 rose
+    p2: { r:0.024, g:0.714, b:0.831 }, // #06b6d4 cyan
+    star: 0xf0abfc,
+    orbColors: [
+      'radial-gradient(circle, rgba(236,72,153,0.50),transparent)',
+      'radial-gradient(circle, rgba(6,182,212,0.30),transparent)',
+      'radial-gradient(circle, rgba(167,139,250,0.25),transparent)',
+    ],
+  },
+  {
+    label: '03 / 03',
+    name: 'Golden Nebula · Cosmic Dust',
+    bg: [0.031, 0, 0],              // #080000
+    fog: 0x150505,
+    p1: { r:0.984, g:0.749, b:0.141 }, // #fbbf24 gold
+    p2: { r:0.957, g:0.247, b:0.369 }, // #f43f5e red-pink
+    star: 0xfcd34d,
+    orbColors: [
+      'radial-gradient(circle, rgba(251,191,36,0.35),transparent)',
+      'radial-gradient(circle, rgba(244,63,94,0.40),transparent)',
+      'radial-gradient(circle, rgba(139,92,246,0.28),transparent)',
+    ],
+  },
+];
+
+let currentScene = 0;
+let transitioning = false;
+let autoTimer;
+
+// ════════════════════════════════════════════════
+//  THREE.JS SETUP
+// ════════════════════════════════════════════════
+const canvas = document.getElementById('hero-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x020010, 1);
+
+const scene3 = new THREE.Scene();
+scene3.fog = new THREE.FogExp2(SCENES[0].fog, 0.035);
+
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(0, 0, 6);
+
+const clock = new THREE.Clock();
+const mouse = { x:0, y:0, tx:0, ty:0 };
+window.addEventListener('mousemove', e => {
+  mouse.tx = (e.clientX / window.innerWidth  - 0.5) * 2;
+  mouse.ty = -(e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+// ════════════════════════════════════════════════
+//  STAR FIELD
+// ════════════════════════════════════════════════
+const STAR_COUNT = 6000;
+const starPos = new Float32Array(STAR_COUNT * 3);
+for (let i = 0; i < STAR_COUNT; i++) {
+  starPos[i*3]   = (Math.random()-0.5)*100;
+  starPos[i*3+1] = (Math.random()-0.5)*100;
+  starPos[i*3+2] = (Math.random()-0.5)*100;
+}
+const starGeo = new THREE.BufferGeometry();
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+const starMat = new THREE.PointsMaterial({ color:0x7c3aed, size:0.06, transparent:true, opacity:0.7,
+  blending:THREE.AdditiveBlending, depthWrite:false });
+const stars = new THREE.Points(starGeo, starMat);
+scene3.add(stars);
+
+// ════════════════════════════════════════════════
+//  MAIN PARTICLE SYSTEM — Custom Shader
+// ════════════════════════════════════════════════
+const N = 5000;
+const pPos   = new Float32Array(N * 3);
+const pCol   = new Float32Array(N * 3);
+const pSize  = new Float32Array(N);
+const pPhase = new Float32Array(N);
+const pSpeed = new Float32Array(N);
+
+const S0 = SCENES[0];
+
+function placeParticle(i) {
+  const r = Math.random();
+  if (r < 0.45) {
+    // Spiral arms
+    const radius = Math.pow(Math.random(), 0.6) * 4.5;
+    const arm    = Math.floor(Math.random() * 3) * (Math.PI * 2 / 3);
+    const angle  = Math.random() * Math.PI * 2 + arm + radius * 0.5;
+    pPos[i*3]   = radius * Math.cos(angle);
+    pPos[i*3+1] = (Math.random()-0.5) * 0.5;
+    pPos[i*3+2] = radius * Math.sin(angle);
+  } else if (r < 0.75) {
+    // Sphere halo
+    const rh   = 2 + Math.random() * 2;
+    const th   = Math.random() * Math.PI * 2;
+    const ph   = Math.acos(2*Math.random()-1);
+    pPos[i*3]   = rh*Math.sin(ph)*Math.cos(th);
+    pPos[i*3+1] = rh*Math.sin(ph)*Math.sin(th);
+    pPos[i*3+2] = rh*Math.cos(ph);
+  } else {
+    // Scattered
+    pPos[i*3]   = (Math.random()-0.5)*9;
+    pPos[i*3+1] = (Math.random()-0.5)*9;
+    pPos[i*3+2] = (Math.random()-0.5)*9;
+  }
+}
+
+for (let i = 0; i < N; i++) {
+  placeParticle(i);
+
+  const t    = i/N;
+  const c    = t < 0.5 ? S0.p1 : S0.p2;
+  const brt  = 0.5 + Math.random() * 0.5;
+  pCol[i*3]   = c.r * brt;
+  pCol[i*3+1] = c.g * brt;
+  pCol[i*3+2] = c.b * brt;
+
+  pSize[i]  = 0.4 + Math.random() * 2.2;
+  pPhase[i] = Math.random() * Math.PI * 2;
+  pSpeed[i] = 0.3 + Math.random() * 0.7;
+}
+
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol, 3));
+pGeo.setAttribute('size',     new THREE.BufferAttribute(pSize, 1));
+
+const pMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime:  { value: 0 },
+    uPR:    { value: renderer.getPixelRatio() },
+  },
+  vertexShader: `
+    attribute float size;
+    varying vec3 vCol;
+    varying float vDist;
+    uniform float uTime;
+    uniform float uPR;
+
+    void main() {
+      vCol = color;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      vDist = -mv.z;
+      float s = size * (300.0 / max(-mv.z, 0.1)) * uPR;
+      gl_PointSize = clamp(s, 0.5, 24.0);
+      gl_Position  = projectionMatrix * mv;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vCol;
+    varying float vDist;
+
+    void main() {
+      vec2 uv = gl_PointCoord - 0.5;
+      float d  = length(uv);
+      if (d > 0.5) discard;
+
+      float alpha = (1.0 - smoothstep(0.05, 0.5, d)) * 0.65;
+      float core  = (1.0 - smoothstep(0.0,  0.15, d)) * 0.5;
+      vec3  col   = vCol + core * 0.4;
+
+      // Distance fade — push far particles to be barely visible
+      float fade = smoothstep(16.0, 2.5, vDist);
+      gl_FragColor = vec4(col, alpha * fade);
+    }
+  `,
+  transparent: true,
+  depthWrite:  false,
+  blending:    THREE.AdditiveBlending,
+  vertexColors: true,
+});
+
+const points = new THREE.Points(pGeo, pMat);
+scene3.add(points);
+
+// ════════════════════════════════════════════════
+//  FLOATING 3D WIREFRAMES
+// ════════════════════════════════════════════════
+const floaters = [];
+function addWire(geometry, color, x, y, z, rx, ry) {
+  const mat  = new THREE.MeshBasicMaterial({
+    color, wireframe:true, transparent:true, opacity:0.15
+  });
+  const mesh = new THREE.Mesh(geometry, mat);
+  mesh.position.set(x, y, z);
+  mesh.rotation.set(rx || 0, ry || 0, 0);
+  scene3.add(mesh);
+  floaters.push({
+    mesh,
+    orbitR:   Math.sqrt(x*x + z*z),
+    orbitAngle: Math.atan2(z, x),
+    orbitSpeed: (Math.random()-0.5) * 0.004,
+    bobSpeed:   0.4 + Math.random() * 0.4,
+    bobAmp:     0.12 + Math.random() * 0.12,
+    bobPhase:   Math.random() * Math.PI * 2,
+    spinX:      (Math.random()-0.5) * 0.008,
+    spinY:      (Math.random()-0.5) * 0.010,
+    spinZ:      (Math.random()-0.5) * 0.006,
+    baseY:      y,
+  });
+}
+
+addWire(new THREE.TorusGeometry(0.9, 0.28, 16, 80),        0xc4b5fd, -2.5,  0.6, -1.5);
+addWire(new THREE.IcosahedronGeometry(0.65, 1),             0xf0abfc,  2.8, -0.4, -2.0);
+addWire(new THREE.OctahedronGeometry(0.55),                 0xfb7185, -0.8, -1.6, -1.2);
+addWire(new THREE.TorusKnotGeometry(0.55, 0.16, 80, 12),   0x818cf8,  2.0,  1.6, -3.0);
+addWire(new THREE.DodecahedronGeometry(0.5),                0xfcd34d, -2.8, -1.4, -2.5);
+addWire(new THREE.IcosahedronGeometry(0.35, 0),             0x06b6d4,  0.6,  2.2, -2.0);
+
+// ════════════════════════════════════════════════
+//  SCENE TRANSITION
+// ════════════════════════════════════════════════
+function switchScene(idx) {
+  if (transitioning || idx === currentScene) return;
+  transitioning = true;
+  currentScene  = idx;
+
+  // Update UI
+  document.querySelectorAll('.scene-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+  document.getElementById('scene-number').textContent = SCENES[idx].label;
+  document.getElementById('scene-name').textContent   = SCENES[idx].name;
+
+  // Update orbs
+  const orbs = [orb1, orb2, orb3];
+  SCENES[idx].orbColors.forEach((g,i) => { orbs[i].style.background = g; });
+
+  const s    = SCENES[idx];
+  const c1   = s.p1, c2 = s.p2;
+  const STEPS = 90;
+  let step  = 0;
+
+  const col = pGeo.attributes.color;
+
+  const tick = setInterval(() => {
+    step++;
+    const t   = Math.min(step/STEPS, 1);
+    const ease = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+
+    // Lerp particle colors
+    for (let i = 0; i < N; i++) {
+      const target = i/N < 0.5 ? c1 : c2;
+      const brt    = 0.5 + Math.random() * 0.02;
+      col.array[i*3]   += (target.r * brt - col.array[i*3])   * ease * 0.12;
+      col.array[i*3+1] += (target.g * brt - col.array[i*3+1]) * ease * 0.12;
+      col.array[i*3+2] += (target.b * brt - col.array[i*3+2]) * ease * 0.12;
+    }
+    col.needsUpdate = true;
+
+    // Lerp bg clear color
+    const [tr, tg, tb] = s.bg;
+    const cur = renderer.getClearColor(new THREE.Color());
+    renderer.setClearColor(new THREE.Color(
+      cur.r + (tr - cur.r) * ease * 0.1,
+      cur.g + (tg - cur.g) * ease * 0.1,
+      cur.b + (tb - cur.b) * ease * 0.1,
+    ), 1);
+
+    // Lerp fog
+    scene3.fog.color.lerp(new THREE.Color(s.fog), ease * 0.08);
+
+    // Star color
+    starMat.color.lerp(new THREE.Color(s.star), ease * 0.08);
+
+    if (step >= STEPS) { clearInterval(tick); transitioning = false; }
+  }, 16);
+}
+
+// ── Dot clicks ──
+document.querySelectorAll('.scene-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    clearInterval(autoTimer);
+    switchScene(parseInt(dot.dataset.scene));
+    resetAutoTimer();
+  });
+});
+
+function resetAutoTimer() {
+  clearInterval(autoTimer);
+  autoTimer = setInterval(() => switchScene((currentScene+1) % SCENES.length), 9000);
+}
+resetAutoTimer();
+
+// ════════════════════════════════════════════════
+//  ANIMATE
+// ════════════════════════════════════════════════
+let heroVisible = true;
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (!heroVisible) return;  // skip rendering when scrolled away
+
+  const t = clock.getElapsedTime();
+  pMat.uniforms.uTime.value = t;
+
+  // Mouse smooth follow
+  mouse.x += (mouse.tx - mouse.x) * 0.04;
+  mouse.y += (mouse.ty - mouse.y) * 0.04;
+
+  // Camera drift
+  camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.025;
+  camera.position.y += (mouse.y * 0.4 - camera.position.y) * 0.025;
+  camera.lookAt(0, 0, 0);
+
+  // Particle cluster rotation
+  points.rotation.y  = t * 0.035;
+  points.rotation.x += 0.0002;
+
+  // Stars slow drift
+  stars.rotation.y = t * 0.005;
+  stars.rotation.x = t * 0.002;
+
+  // Floating objects
+  floaters.forEach(f => {
+    f.mesh.rotation.x += f.spinX;
+    f.mesh.rotation.y += f.spinY;
+    f.mesh.rotation.z += f.spinZ;
+    f.orbitAngle       += f.orbitSpeed;
+    f.mesh.position.x  = Math.cos(f.orbitAngle) * f.orbitR;
+    f.mesh.position.z  = Math.sin(f.orbitAngle) * f.orbitR;
+    f.mesh.position.y  = f.baseY + Math.sin(t * f.bobSpeed + f.bobPhase) * f.bobAmp;
+  });
+
+  // Subtle particle wave (every 15th particle for perf)
+  const pa = pGeo.attributes.position;
+  for (let i = 0; i < N; i += 15) {
+    pa.array[i*3+1] += Math.sin(t*0.7 + pPhase[i]) * 0.0006;
+  }
+  pa.needsUpdate = true;
+
+  renderer.render(scene3, camera);
+}
+
+animate();
+
+// ════════════════════════════════════════════════
+//  SCROLL — fade canvas out
+// ════════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  const sy   = window.scrollY;
+  const winH = window.innerHeight;
+  const fade = Math.max(0, 1 - sy / (winH * 0.8));
+
+  canvas.style.opacity = fade;
+  document.querySelectorAll('.orb').forEach(o => o.style.opacity = fade * 0.9);
+
+  if (sy > winH * 0.9) {
+    heroVisible = false;
+  } else {
+    heroVisible = true;
+  }
+}, { passive: true });
+
+// ════════════════════════════════════════════════
+//  RESIZE
+// ════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  pMat.uniforms.uPR.value = renderer.getPixelRatio();
+});
+
+// ════════════════════════════════════════════════
+//  ENTER PORTFOLIO
+// ════════════════════════════════════════════════
+function enterPortfolio(e) {
+  e.preventDefault();
+  document.getElementById('portfolio-frame').scrollIntoView({ behavior:'smooth' });
+}
+window.enterPortfolio = enterPortfolio;
+
+// ── iframe auto-height ──
+const iframeEl = document.getElementById('portfolio-iframe');
+iframeEl.addEventListener('load', () => {
+  try {
+    const h = iframeEl.contentWindow.document.documentElement.scrollHeight;
+    iframeEl.style.height = Math.max(h, 2000) + 'px';
+  } catch(err) {
+    iframeEl.style.height = '3000px';
+  }
+});
+
+  </script>
+</body>
+</html>
