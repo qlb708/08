@@ -574,35 +574,64 @@ Particle.prototype.update = function(t) {
   this.life++;
   var progress = this.life / this.maxLife;
 
-  // Fade in / out
+  // Fade in / out with twinkle
   if (progress < 0.12) {
     this.alpha = (progress / 0.12) * this.targetAlpha;
   } else if (progress > 0.75) {
     this.alpha = ((1 - progress) / 0.25) * this.targetAlpha;
   } else {
-    // Twinkle
     this.alpha = this.targetAlpha * (0.7 + 0.3 * Math.sin(t * this.twinkleSpeed * 60 + this.twinklePhase));
   }
 
-  // Orbital + drift
+  // Mouse interaction — runs BEFORE position update
+  var dx = this.x - mouse.x;
+  var dy = this.y - mouse.y;
+  var dist = Math.sqrt(dx * dx + dy * dy);
+
+  if (mouse.x > -999 && dist < 180) {
+    var norm = dist < 1 ? 1 : dist;
+    // Strong repulsion within 80px
+    if (dist < 80) {
+      var repel = (80 - dist) / 80;
+      this.vx += (dx / norm) * repel * 0.6;
+      this.vy += (dy / norm) * repel * 0.6;
+    }
+    // Medium push 80-180px
+    else {
+      var push = (180 - dist) / 180;
+      this.vx += (dx / norm) * push * 0.2;
+      this.vy += (dy / norm) * push * 0.2;
+    }
+    // Brighten near mouse
+    this.alpha = Math.min(1, this.alpha * (1 + (1 - dist/180) * 0.8));
+  }
+
+  // Dampen velocity (friction) so particles drift back naturally
+  this.vx *= 0.92;
+  this.vy *= 0.92;
+
+  // Slowly return to base drift
+  var baseDriftX = (Math.random() - 0.5) * 0.04;
+  var baseDriftY = -(0.05 + Math.random() * 0.1);
+  this.vx += baseDriftX * 0.15;
+  this.vy += baseDriftY * 0.15;
+
+  // Cap speed
+  var speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+  if (speed > 4) { this.vx = this.vx/speed*4; this.vy = this.vy/speed*4; }
+
+  // Orbital
   this.orbitAngle += this.orbitSpeed;
   this.orbitX += this.vx;
   this.orbitY += this.vy;
-  this.x = this.orbitX + Math.cos(this.orbitAngle) * this.orbitR * 0.3;
-  this.y = this.orbitY + Math.sin(this.orbitAngle) * this.orbitR * 0.15;
-
-  // Mouse repulsion (subtle)
-  var dx = this.x - mouse.x;
-  var dy = this.y - mouse.y;
-  var dist = Math.sqrt(dx*dx + dy*dy);
-  if (dist < 120) {
-    var force = (120 - dist) / 120;
-    this.orbitX += dx / dist * force * 1.2;
-    this.orbitY += dy / dist * force * 1.2;
-  }
+  this.x = this.orbitX + Math.cos(this.orbitAngle) * this.orbitR * 0.25;
+  this.y = this.orbitY + Math.sin(this.orbitAngle) * this.orbitR * 0.12;
 
   // Glow pulse
-  this.r = this.baseR * (1 + 0.3 * Math.sin(t * 0.05 + this.twinklePhase));
+  this.r = this.baseR * (1 + 0.35 * Math.sin(t * 0.05 + this.twinklePhase));
+  if (mouse.x > -999 && dist < 100) {
+    this.r = this.baseR * (1.5 + (1 - dist/100) * 1.5);
+  }
 
   if (this.life >= this.maxLife) this.reset(false);
 };
@@ -767,14 +796,18 @@ var autoInterval = setInterval(function(){
 // ═══════════════════════════════════════
 //  MOUSE
 // ═══════════════════════════════════════
-document.getElementById('ph-wrap').addEventListener('mousemove', function(e){
-  var rect = canvas.getBoundingClientRect();
-  mouse.x = e.clientX - rect.left;
-  mouse.y = e.clientY - rect.top;
-});
-document.getElementById('ph-wrap').addEventListener('mouseleave', function(){
-  mouse.x = -9999; mouse.y = -9999;
-});
+// Listen on window so text/button overlays don't block the event
+window.addEventListener('mousemove', function(e){
+  var wrap = document.getElementById('ph-wrap');
+  var rect = wrap.getBoundingClientRect();
+  // Only active when hero is visible
+  if (e.clientY < rect.bottom) {
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  } else {
+    mouse.x = -9999; mouse.y = -9999;
+  }
+}, {passive:true});
 
 // ═══════════════════════════════════════
 //  ANIMATION LOOP
