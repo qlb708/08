@@ -319,13 +319,9 @@ footer a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
 }
 
 /* Scene info */
-.ph-scene-info {
-  position:absolute; bottom:78px; left:34px;
-  z-index:100; pointer-events:none;
-  font-family:-apple-system,sans-serif;
-}
-.ph-scene-num  { font-size:11px; letter-spacing:0.2em; color:rgba(255,255,255,0.18); margin-bottom:3px; }
-.ph-scene-name { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:rgba(255,255,255,0.28); }
+
+
+
 
 /* Scroll hint */
 .ph-scroll {
@@ -354,6 +350,10 @@ footer a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
   from { opacity:0; }
   to   { opacity:1; }
 }
+
+/* Nav hide during hero */
+nav{transition:transform 0.5s ease,opacity 0.5s ease;}
+nav.ph-hidden{transform:translateY(-100%);opacity:0;pointer-events:none;}
 @keyframes phWheel {
   0%  { opacity:1; transform:translateY(0); }
   80% { opacity:0; transform:translateY(8px); }
@@ -384,10 +384,6 @@ footer a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
     <div class="ph-dot" data-sc="1"></div>
     <div class="ph-dot" data-sc="2"></div>
   </nav>
-  <div class="ph-scene-info">
-    <p class="ph-scene-num" id="ph-scene-num">01 / 03</p>
-    <p class="ph-scene-name" id="ph-scene-name">Deep Space · Particle Field</p>
-  </div>
   <div class="ph-scroll">
     <div class="ph-scroll-mouse"><div class="ph-scroll-wheel"></div></div>
     <span class="ph-scroll-label">scroll</span>
@@ -684,7 +680,7 @@ function tf(el){
 <!-- ── end main-portfolio wrapper ── -->
 
 <!-- Three.js Particle Hero Script -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+<script src="https://cdn.bootcdn.net/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
 const PH_SCENES=[
@@ -800,8 +796,8 @@ const phFloaters=WF.map(([g,c,x,y,z])=>{
 function phSwitch(idx){
   if(phTrans||idx===phCurr)return; phTrans=true; phCurr=idx;
   document.querySelectorAll('.ph-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
-  document.getElementById('ph-scene-num').textContent=PH_SCENES[idx].label;
-  document.getElementById('ph-scene-name').textContent=PH_SCENES[idx].name;
+  
+  
   const os=[ph_orb1,ph_orb2,ph_orb3];
   PH_SCENES[idx].orbs.forEach((g,i)=>os[i].style.background=g);
   const s=PH_SCENES[idx],c1=s.p1,c2=s.p2;
@@ -863,7 +859,9 @@ window.addEventListener('scroll',()=>{
   phCanvas.style.opacity=fade;
   [ph_orb1,ph_orb2,ph_orb3].forEach(o=>o.style.opacity=fade);
   phVisible=sy<wh*0.95;
+  var _nav=document.querySelector('nav');if(_nav){if(sy<wh*0.85)_nav.classList.add('ph-hidden');else _nav.classList.remove('ph-hidden');}
 },{passive:true});
+(function(){var _n=document.querySelector('nav');if(_n)_n.classList.add('ph-hidden');})();
 
 // Resize
 window.addEventListener('resize',()=>{
@@ -883,7 +881,7 @@ const ph_orb1=document.getElementById('ph-orb1');
 const ph_orb2=document.getElementById('ph-orb2');
 const ph_orb3=document.getElementById('ph-orb3');
 })();
-<\/script>
+</script>
 
 </body>
 </html>
