@@ -7,11 +7,13 @@
   <title>心灵塔罗牌</title>
   <style>@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&display=swap');</style>
   <link rel="stylesheet" href="style.css">
+  <!-- 模式选择未完成前隐藏原版欢迎页 -->
+  <style id="ms-hide">#welcome-screen{display:none!important}</style>
 
   <!-- ══ 模式选择页专属样式 ══ -->
   <style>
   #ms-screen{
-    position:fixed;inset:0;z-index:9999;
+    position:fixed;inset:0;z-index:99999!important;
     background:radial-gradient(ellipse at 50% 40%,#1e0a3c 0%,#0d0019 60%,#060010 100%);
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:40px 24px;
@@ -356,6 +358,9 @@ function msStart(){
   if(!MS_MODE) return;
   window.__MS_MODE=MS_MODE;
   window.__MS_CAM=MS_CAM;
+  // 移除欢迎页隐藏样式
+  var hideStyle=document.getElementById('ms-hide');
+  if(hideStyle) hideStyle.remove();
   document.getElementById('ms-screen').classList.add('hidden');
   document.getElementById('btn-back-ms').classList.add('show');
 
