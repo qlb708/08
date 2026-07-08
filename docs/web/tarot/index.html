@@ -5,529 +5,523 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <script>(function(){var u=navigator.userAgent||'';if(/Mobi|Android|iPhone|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(u))document.documentElement.classList.add('perf-flip-lite');if(/VivoBrowser|\b(iqoo|vivo)\b|HeyTapBrowser|HeyTap|OppoBrowser|HuaweiBrowser|HONOR|\bMiuiBrowser|\bMQQBrowser\/|\bUCBrowser\/|\bQuark\//i.test(u))document.documentElement.classList.add('perf-tarot-vivo');})();</script>
   <title>心灵塔罗牌</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&display=swap');
-  </style>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&display=swap');</style>
   <link rel="stylesheet" href="style.css">
-  <!-- 模式选择页专属样式 -->
+
+  <!-- ══ 模式选择页专属样式 ══ -->
   <style>
-    #mode-select-screen {
-      position: fixed; inset: 0; z-index: 9999;
-      background: radial-gradient(ellipse at 50% 40%, #1e0a3c 0%, #0d0019 60%, #060010 100%);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 40px 24px; gap: 0;
-    }
-    #mode-select-screen.hidden { display: none; }
+  #ms-screen{
+    position:fixed;inset:0;z-index:9999;
+    background:radial-gradient(ellipse at 50% 40%,#1e0a3c 0%,#0d0019 60%,#060010 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:40px 24px;
+  }
+  #ms-screen.hidden{display:none}
 
-    .ms-stars { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-    .ms-star { position: absolute; border-radius: 50%; background: #fff; animation: ms-twinkle 3s infinite alternate; }
-    @keyframes ms-twinkle { 0%{opacity:.15} 100%{opacity:.7} }
+  /* 星空 */
+  .ms-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+  .ms-star{position:absolute;border-radius:50%;background:#fff;animation:ms-tw 3s infinite alternate}
+  @keyframes ms-tw{0%{opacity:.12}100%{opacity:.65}}
 
-    .ms-badge {
-      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-      color: #c4a9f0; background: rgba(140,80,255,.18); border: 1px solid rgba(180,130,255,.25);
-      padding: 5px 16px; border-radius: 20px; margin-bottom: 20px;
-    }
-    .ms-crystal {
-      width: 80px; height: 80px; border-radius: 50%;
-      background: radial-gradient(circle at 38% 35%, #9f6fff 0%, #5b21b6 45%, #2d0f6e 80%, #110036 100%);
-      box-shadow: 0 0 40px 10px rgba(130,60,255,.45), 0 0 80px 20px rgba(100,30,220,.2);
-      margin-bottom: 20px; position: relative; flex-shrink: 0;
-      animation: ms-pulse 3s ease-in-out infinite;
-    }
-    .ms-crystal::after { content:'✦'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:28px; color:rgba(255,255,255,.6); }
-    @keyframes ms-pulse { 0%,100%{box-shadow:0 0 40px 10px rgba(130,60,255,.45),0 0 80px 20px rgba(100,30,220,.2)} 50%{box-shadow:0 0 60px 20px rgba(160,80,255,.6),0 0 100px 30px rgba(120,50,240,.3)} }
+  /* 水晶球 */
+  .ms-crystal{
+    width:88px;height:88px;border-radius:50%;flex-shrink:0;
+    background:radial-gradient(circle at 38% 35%,#b08cff 0%,#6d28d9 40%,#3b0f8e 75%,#120033 100%);
+    box-shadow:0 0 48px 14px rgba(140,70,255,.5),0 0 90px 24px rgba(110,40,230,.22);
+    margin-bottom:24px;animation:ms-pulse 3s ease-in-out infinite;position:relative;
+  }
+  .ms-crystal::after{content:'✦';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;color:rgba(255,255,255,.55)}
+  @keyframes ms-pulse{0%,100%{box-shadow:0 0 48px 14px rgba(140,70,255,.5),0 0 90px 24px rgba(110,40,230,.22)}50%{box-shadow:0 0 70px 22px rgba(170,90,255,.65),0 0 110px 34px rgba(130,55,245,.33)}}
 
-    .ms-title { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: .04em; margin-bottom: 6px; text-align: center; }
-    .ms-sub { font-size: 13px; color: rgba(255,255,255,.5); margin-bottom: 36px; text-align: center; line-height: 1.7; }
+  .ms-badge{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c4a9f0;background:rgba(140,80,255,.18);border:1px solid rgba(180,130,255,.25);padding:5px 16px;border-radius:20px;margin-bottom:20px}
+  .ms-title{font-size:clamp(24px,4vw,36px);font-weight:800;color:#fff;letter-spacing:.03em;margin-bottom:8px;text-align:center}
+  .ms-sub{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:36px;text-align:center;line-height:1.7;max-width:360px}
 
-    .ms-cards { display: flex; gap: 16px; width: 100%; max-width: 480px; margin-bottom: 28px; }
-    .ms-card {
-      flex: 1; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
-      border-radius: 18px; padding: 24px 16px; cursor: pointer; transition: all .25s;
-      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px;
-      position: relative; overflow: hidden;
-    }
-    .ms-card::before { content:''; position:absolute; inset:0; border-radius:18px; background:linear-gradient(135deg,rgba(140,60,255,.2),transparent); opacity:0; transition:.3s; }
-    .ms-card:hover { border-color: rgba(180,120,255,.5); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(120,50,220,.3); }
-    .ms-card:hover::before { opacity: 1; }
-    .ms-card.selected { border-color: #a78bfa; background: rgba(120,50,220,.2); box-shadow: 0 0 0 2px rgba(180,140,255,.3), 0 12px 40px rgba(120,50,220,.35); }
-    .ms-card-icon { font-size: 40px; }
-    .ms-card-tag { font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #a78bfa; background: rgba(167,139,250,.15); padding: 2px 10px; border-radius: 20px; }
-    .ms-card-name { font-size: 16px; font-weight: 700; color: #fff; }
-    .ms-card-desc { font-size: 12px; color: rgba(255,255,255,.5); line-height: 1.6; }
+  .ms-cards{display:flex;gap:16px;width:100%;max-width:440px;margin-bottom:24px}
+  .ms-card{
+    flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+    border-radius:18px;padding:24px 14px;cursor:pointer;transition:all .25s;
+    display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+    position:relative;overflow:hidden;
+  }
+  .ms-card::before{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(140,60,255,.2),transparent);opacity:0;transition:.3s}
+  .ms-card:hover{border-color:rgba(180,120,255,.5);transform:translateY(-3px);box-shadow:0 12px 40px rgba(120,50,220,.3)}
+  .ms-card:hover::before{opacity:1}
+  .ms-card.selected{border-color:#a78bfa;background:rgba(120,50,220,.22);box-shadow:0 0 0 2px rgba(180,140,255,.3),0 12px 40px rgba(120,50,220,.35)}
+  .ms-icon{font-size:40px}
+  .ms-tag{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#a78bfa;background:rgba(167,139,250,.15);padding:2px 10px;border-radius:20px}
+  .ms-name{font-size:15px;font-weight:700;color:#fff}
+  .ms-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6}
 
-    /* 摄像头选项 */
-    .ms-cam-opts {
-      width: 100%; max-width: 480px; background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08); border-radius: 14px;
-      padding: 16px 20px; margin-bottom: 24px; display: none;
-    }
-    .ms-cam-opts.show { display: block; }
-    .ms-cam-opts-title { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 12px; }
-    .ms-cam-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .ms-cam-btn {
-      font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: 20px;
-      border: 1px solid rgba(255,255,255,.15); background: transparent;
-      color: rgba(255,255,255,.5); cursor: pointer; transition: all .2s;
-    }
-    .ms-cam-btn:hover { border-color: rgba(167,139,250,.4); color: #a78bfa; }
-    .ms-cam-btn.active { border-color: #a78bfa; background: rgba(120,50,220,.2); color: #a78bfa; }
-    .ms-cam-hint { font-size: 11px; color: rgba(255,255,255,.25); margin-left: auto; }
+  /* 摄像头选项 */
+  .ms-cam{width:100%;max-width:440px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 18px;margin-bottom:22px;display:none}
+  .ms-cam.show{display:block}
+  .ms-cam-title{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px}
+  .ms-cam-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .ms-cam-btn{font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:transparent;color:rgba(255,255,255,.45);cursor:pointer;transition:all .2s}
+  .ms-cam-btn:hover{border-color:rgba(167,139,250,.4);color:#a78bfa}
+  .ms-cam-btn.active{border-color:#a78bfa;background:rgba(120,50,220,.2);color:#a78bfa}
+  .ms-cam-hint{font-size:10px;color:rgba(255,255,255,.2);margin-left:auto}
 
-    .ms-start-btn {
-      background: linear-gradient(135deg, #7c3aed, #5b21b6);
-      color: #fff; font-size: 15px; font-weight: 700;
-      padding: 14px 44px; border-radius: 100px; border: none; cursor: pointer;
-      transition: all .25s; letter-spacing: .03em;
-      box-shadow: 0 6px 28px rgba(120,50,220,.45);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .ms-start-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(120,50,220,.55); }
-    .ms-start-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+  .ms-start{
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;
+    font-size:15px;font-weight:700;padding:14px 44px;border-radius:100px;border:none;cursor:pointer;
+    transition:all .25s;letter-spacing:.03em;box-shadow:0 6px 28px rgba(120,50,220,.45);
+    display:flex;align-items:center;gap:8px;
+  }
+  .ms-start:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 36px rgba(120,50,220,.55)}
+  .ms-start:disabled{opacity:.35;cursor:not-allowed}
 
-    /* 鼠标模式提示条 */
-    #mouse-hint-bar {
-      position: fixed; top: 0; inset-x: 0; z-index: 800;
-      background: rgba(13,0,25,.85); backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(167,139,250,.2);
-      padding: 10px 20px; text-align: center;
-      font-size: 13px; color: #a78bfa; display: none;
-    }
-    #mouse-hint-bar.show { display: block; }
+  /* 游戏内浮动按钮 */
+  #btn-back-ms,#btn-switch-cam-ms{
+    position:fixed;top:12px;z-index:1000;
+    font-size:12px;color:rgba(255,255,255,.45);background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);border-radius:20px;
+    padding:6px 14px;cursor:pointer;transition:all .2s;display:none;
+  }
+  #btn-back-ms{left:14px}
+  #btn-switch-cam-ms{right:60px}
+  #btn-back-ms.show,#btn-switch-cam-ms.show{display:block}
+  #btn-back-ms:hover,#btn-switch-cam-ms:hover{color:#fff;background:rgba(255,255,255,.1)}
 
-    /* 鼠标模式：点击卡牌交互 */
-    .mouse-mode-card { cursor: pointer !important; }
-    .mouse-mode-card:hover { filter: brightness(1.3) drop-shadow(0 0 12px rgba(167,139,250,.8)) !important; }
+  /* 鼠标模式提示 */
+  #mouse-bar{
+    position:fixed;top:0;inset-x:0;z-index:800;
+    background:rgba(13,0,25,.88);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(167,139,250,.2);
+    padding:9px 20px;text-align:center;font-size:13px;color:#a78bfa;display:none;
+  }
+  #mouse-bar.show{display:block}
 
-    /* 返回按钮 */
-    #btn-back-to-mode {
-      position: fixed; top: 14px; left: 16px; z-index: 900;
-      font-size: 12px; color: rgba(255,255,255,.5); background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12); border-radius: 20px;
-      padding: 6px 14px; cursor: pointer; transition: all .2s; display: none;
-    }
-    #btn-back-to-mode.show { display: block; }
-    #btn-back-to-mode:hover { color: #fff; background: rgba(255,255,255,.1); }
-
-    /* 摄像头切换按钮（游戏内） */
-    #btn-switch-cam {
-      position: fixed; top: 14px; right: 60px; z-index: 900;
-      font-size: 12px; color: rgba(255,255,255,.5); background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12); border-radius: 20px;
-      padding: 6px 14px; cursor: pointer; transition: all .2s; display: none;
-    }
-    #btn-switch-cam.show { display: flex; align-items: center; gap: 5px; }
-    #btn-switch-cam:hover { color: #fff; background: rgba(255,255,255,.1); }
+  /* 鼠标模式卡牌可点 */
+  .mc-clickable{cursor:pointer!important}
+  .mc-clickable:hover{filter:brightness(1.4) drop-shadow(0 0 14px rgba(167,139,250,.9))!important}
   </style>
 </head>
 <body>
 
-  <!-- ✦ 模式选择页（新增）✦ -->
-  <div id="mode-select-screen">
-    <div class="ms-stars" id="ms-stars"></div>
+<!-- ══ 模式选择页 ══ -->
+<div id="ms-screen">
+  <div class="ms-stars" id="ms-stars"></div>
+  <div class="ms-badge">✦ 心灵塔罗牌</div>
+  <div class="ms-crystal"></div>
+  <h1 class="ms-title">选择你的占卜方式</h1>
+  <p class="ms-sub">两种仪式，同样的命运揭示<br>选择最适合你的方式，开启今日占卜</p>
 
-    <div class="ms-badge">✦ 心灵塔罗牌</div>
-    <div class="ms-crystal"></div>
-    <h1 class="ms-title">选择你的占卜方式</h1>
-    <p class="ms-sub">两种仪式，同样的命运揭示<br>选择最适合你的方式，开启今日占卜</p>
-
-    <div class="ms-cards">
-      <div class="ms-card" id="ms-card-gesture" onclick="msSelect('gesture')">
-        <div class="ms-card-icon">🖐️</div>
-        <div class="ms-card-tag">沉浸体验</div>
-        <div class="ms-card-name">手势模式</div>
-        <div class="ms-card-desc">摄像头识别手势<br>握拳选牌，张手翻开</div>
-      </div>
-      <div class="ms-card" id="ms-card-mouse" onclick="msSelect('mouse')">
-        <div class="ms-card-icon">🖱️</div>
-        <div class="ms-card-tag">快捷体验</div>
-        <div class="ms-card-name">鼠标模式</div>
-        <div class="ms-card-desc">无需摄像头授权<br>点击卡牌即可抽取</div>
-      </div>
+  <div class="ms-cards">
+    <div class="ms-card" id="ms-c-gesture" onclick="msSelect('gesture')">
+      <div class="ms-icon">🖐️</div>
+      <div class="ms-tag">沉浸体验</div>
+      <div class="ms-name">手势模式</div>
+      <div class="ms-desc">摄像头识别手势<br>握拳选牌，张手翻开</div>
     </div>
-
-    <!-- 摄像头配置（手势模式） -->
-    <div class="ms-cam-opts" id="ms-cam-opts">
-      <div class="ms-cam-opts-title">摄像头偏好</div>
-      <div class="ms-cam-row">
-        <button class="ms-cam-btn active" id="ms-btn-front" onclick="msSetCam('user')">📷 前置</button>
-        <button class="ms-cam-btn" id="ms-btn-back" onclick="msSetCam('environment')">📸 后置</button>
-        <span class="ms-cam-hint">进入后仍可随时切换</span>
-      </div>
-    </div>
-
-    <button class="ms-start-btn" id="ms-start-btn" onclick="msStart()" disabled>
-      <span>✦</span><span id="ms-start-label">请先选择方式</span>
-    </button>
-  </div>
-
-  <!-- 返回模式选择 -->
-  <button id="btn-back-to-mode" onclick="msBackToSelect()">← 换个方式</button>
-  <!-- 游戏内切换摄像头 -->
-  <button id="btn-switch-cam" onclick="msSwitchCam()">🔄 切换摄像头</button>
-  <!-- 鼠标模式提示 -->
-  <div id="mouse-hint-bar">🖱️ 鼠标模式 · 点击旋转木马上的卡牌即可抽取</div>
-
-  <!-- ✦ 以下完整复原原版 tarot-journey ✦ -->
-
-  <!-- 开场欢迎页 -->
-  <div id="welcome-screen">
-    <div class="welcome-stars"></div>
-    <div class="crystal-ball-wrapper">
-      <div class="crystal-base">
-        <div class="base-rune">✦</div>
-      </div>
-      <div class="crystal-ball">
-        <div class="crystal-glow"></div>
-        <div class="crystal-mist"></div>
-        <div class="crystal-mist mist-2"></div>
-        <div class="crystal-sparkle s1">✧</div>
-        <div class="crystal-sparkle s2">✦</div>
-        <div class="crystal-sparkle s3">☽</div>
-        <div class="crystal-sparkle s4">✧</div>
-        <div class="crystal-highlight"></div>
-      </div>
-      <div class="crystal-ring"></div>
-    </div>
-    <h1 class="welcome-title">心灵塔罗牌</h1>
-    <p class="welcome-subtitle">触碰灵珠，开启命运之门</p>
-    <button type="button" id="btn-start-ritual" class="welcome-start-btn">
-      <span class="btn-glow"></span>
-      <span class="btn-text">✦ 开启占卜仪式 ✦</span>
-    </button>
-    <p class="welcome-hint" id="welcome-hint-text">点击后将请求摄像头权限以识别手势</p>
-  </div>
-
-  <!-- 加载画面 -->
-  <div id="loading-screen" class="hidden">
-    <div class="magic-circle-loader">
-      <div class="circle outer"></div>
-      <div class="circle inner"></div>
-      <div class="star">✦</div>
-    </div>
-    <p class="loading-text">正在唤醒塔罗牌灵…</p>
-    <p class="loading-sub" id="loading-status">初始化中…</p>
-  </div>
-
-  <!-- 占卜提问面板 -->
-  <div id="question-panel" class="hidden">
-    <div class="question-title">✦ 在开始之前 ✦</div>
-    <div class="question-desc">塔罗牌回应的是你内心的声音。<br>请闭上眼睛，默念你最想探寻的方向。</div>
-    <div class="question-theme-label">✦ 选择今日意图 ✦</div>
-    <div class="question-themes" id="question-themes">
-      <button class="theme-btn active" data-theme="今日运势">🌙 今日</button>
-      <button class="theme-btn" data-theme="爱情缘分">♡ 爱情</button>
-      <button class="theme-btn" data-theme="事业财运">✦ 事业</button>
-    </div>
-    <button id="btn-silent-start" class="question-silent-btn">🙏 已选定意图，开始占卜</button>
-  </div>
-
-  <!-- 主界面 -->
-  <div id="app" class="hidden">
-    <canvas id="starfield-canvas"></canvas>
-    <video id="camera" autoplay playsinline muted></video>
-    <canvas id="camera-overlay"></canvas>
-
-    <div id="gesture-hint" class="hidden">
-      <div class="hint-icon">✊</div>
-      <div class="hint-text">握拳开始仪式</div>
-    </div>
-
-    <div id="state-badge" class="hidden">塔罗占卜</div>
-
-    <div id="tarot-collection" class="hidden">
-      <div class="collection-slot" id="slot-0">
-        <div class="slot-label">过去</div>
-        <div class="slot-content"></div>
-      </div>
-      <div class="collection-slot" id="slot-1">
-        <div class="slot-label">现在</div>
-        <div class="slot-content"></div>
-      </div>
-      <div class="collection-slot" id="slot-2">
-        <div class="slot-label">未来</div>
-        <div class="slot-content"></div>
-      </div>
-    </div>
-
-    <!-- 3D 立体底盘 -->
-    <div id="platform-3d" class="hidden">
-      <div class="platform-layers">
-        <div class="platform-glow-surface"></div>
-        <div class="platform-sakura-circle">
-          <div class="sakura-ring sakura-ring-outer"></div>
-          <div class="sakura-ring sakura-ring-mid"></div>
-          <div class="sakura-ring sakura-ring-inner"></div>
-          <div class="sakura-star-12-platform"></div>
-          <div class="sakura-inner-ring-platform"></div>
-          <div class="sakura-symbols-platform">
-            <span class="sakura-sun">☀</span>
-            <span class="sakura-moon">☽</span>
-            <span class="sakura-star-sym">★</span>
-            <span class="sakura-star-sym s2">★</span>
-          </div>
-          <div class="sakura-cross-platform">
-            <div class="cross-h"></div>
-            <div class="cross-v"></div>
-            <div class="cross-d1"></div>
-            <div class="cross-d2"></div>
-          </div>
-          <div class="platform-runes" id="platform-runes"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3D 环形旋转木马 -->
-    <div id="carousel-stage" class="hidden">
-      <div id="carousel-wrapper">
-        <div id="carousel"></div>
-      </div>
-    </div>
-
-    <!-- 选定卡牌特效展示 -->
-    <div id="card-selected-view" class="hidden">
-      <div class="selected-magic-circle"></div>
-      <div class="selected-glow" id="selected-glow"></div>
-      <div class="selected-card-wrapper">
-        <div class="flip-burst" id="flip-burst"></div>
-        <div class="flip-ring" id="flip-ring"></div>
-        <div class="selected-card-flipper" id="selected-card-flipper">
-          <div class="selected-card-back" id="selected-card-back">
-            <img class="selected-back-img" src="cards/back/back1.jpg" alt="牌背">
-          </div>
-          <div class="selected-card-front" id="selected-card-front"></div>
-        </div>
-      </div>
-      <div class="selected-card-name" id="selected-card-name"></div>
-      <div class="release-hint" id="release-hint">🖐️ 张开手掌释放卡牌</div>
-    </div>
-
-    <!-- 占卜结果展示 -->
-    <div id="tarot-result-view" class="hidden">
-      <div class="tarot-result-inner" role="dialog" aria-modal="true" aria-label="命运揭示结果">
-        <div class="tr-header">
-          <div class="tr-title">✦ 命运揭示 ✦</div>
-        </div>
-        <div class="tr-cards-wrap">
-          <div class="result-showcase" id="result-showcase"></div>
-        </div>
-        <div class="tr-quote" id="result-doc-quote"></div>
-        <div class="tr-destiny-card">
-          <div class="tr-destiny-body" id="result-doc-insight"></div>
-        </div>
-        <div class="tr-actions">
-          <button type="button" class="tr-btn tr-btn-retry" id="btn-restart-reading">重新占卜</button>
-          <button type="button" class="tr-btn tr-btn-save" id="btn-tarot-save-share">保存分享</button>
-        </div>
-        <div id="travel-recommend-section" class="hidden"></div>
-      </div>
-    </div>
-
-    <!-- 魔法特效层 -->
-    <canvas id="fx-canvas"></canvas>
-    <canvas id="particle-canvas"></canvas>
-
-    <!-- 调试面板 -->
-    <div id="debug-panel" class="hidden">
-      <div class="debug-header">
-        <span>🔍 调试面板</span>
-        <button id="debug-close">✕</button>
-      </div>
-      <canvas id="debug-canvas" width="320" height="240"></canvas>
-      <div id="debug-info">
-        <div>手势: <span id="dbg-gesture">无</span></div>
-        <div>状态: <span id="dbg-state">idle</span></div>
-        <div>手数: <span id="dbg-hands">0</span></div>
-        <div>FPS: <span id="dbg-fps">0</span></div>
-        <div>置信度: <span id="dbg-confidence">0</span></div>
-      </div>
-    </div>
-
-    <!-- 底部工具栏 -->
-    <div id="toolbar">
-      <button id="btn-debug" title="调试面板">🔍</button>
-      <button id="btn-mirror" title="镜像翻转">🪞</button>
+    <div class="ms-card" id="ms-c-mouse" onclick="msSelect('mouse')">
+      <div class="ms-icon">🖱️</div>
+      <div class="ms-tag">快捷体验</div>
+      <div class="ms-name">鼠标模式</div>
+      <div class="ms-desc">无需摄像头<br>点击卡牌即可抽取</div>
     </div>
   </div>
 
-  <!-- 分享导出用 DOM -->
-  <div id="tarot-share-root" class="tarot-share-root" aria-hidden="true">
-    <div class="share-card" id="share-card">
-      <div class="sc-header">
-        <div class="sc-title">✦ 命运揭示 ✦</div>
-        <div class="sc-sub">心灵塔罗牌 · RIDER-WAITE TAROT</div>
-      </div>
-      <div class="sc-cards-row" id="tarot-share-cards-row"></div>
-      <div class="sc-quote" id="tarot-share-sc-quote"></div>
-      <div class="sc-destiny-card">
-        <div class="sc-destiny-body" id="tarot-share-sc-body"></div>
-      </div>
-      <div class="sc-footer-block">
-        <div class="sc-divider"></div>
-        <div class="sc-cta">隔空手势 · 三张牌阵占卜 →</div>
+  <div class="ms-cam" id="ms-cam">
+    <div class="ms-cam-title">摄像头偏好</div>
+    <div class="ms-cam-row">
+      <button class="ms-cam-btn active" id="ms-btn-front" onclick="msSetCam('user')">📷 前置</button>
+      <button class="ms-cam-btn" id="ms-btn-back" onclick="msSetCam('environment')">📸 后置</button>
+      <span class="ms-cam-hint">进入后可随时切换</span>
+    </div>
+  </div>
+
+  <button class="ms-start" id="ms-start" onclick="msStart()" disabled>
+    <span>✦</span><span id="ms-start-label">请先选择方式</span>
+  </button>
+</div>
+
+<!-- 游戏内按钮 -->
+<button id="btn-back-ms" onclick="location.reload()">← 换个方式</button>
+<button id="btn-switch-cam-ms" onclick="msSwitchCam()">🔄 切换摄像头</button>
+<div id="mouse-bar">🖱️ 鼠标模式 · 点击旋转木马上的卡牌即可抽取</div>
+
+<!-- ══ 原版完整结构（不改任何内容）══ -->
+<div id="welcome-screen">
+  <div class="welcome-stars"></div>
+  <div class="crystal-ball-wrapper">
+    <div class="crystal-base"><div class="base-rune">✦</div></div>
+    <div class="crystal-ball">
+      <div class="crystal-glow"></div>
+      <div class="crystal-mist"></div>
+      <div class="crystal-mist mist-2"></div>
+      <div class="crystal-sparkle s1">✧</div>
+      <div class="crystal-sparkle s2">✦</div>
+      <div class="crystal-sparkle s3">☽</div>
+      <div class="crystal-sparkle s4">✧</div>
+      <div class="crystal-highlight"></div>
+    </div>
+    <div class="crystal-ring"></div>
+  </div>
+  <h1 class="welcome-title">心灵塔罗牌</h1>
+  <p class="welcome-subtitle">触碰灵珠，开启命运之门</p>
+  <button type="button" id="btn-start-ritual" class="welcome-start-btn">
+    <span class="btn-glow"></span>
+    <span class="btn-text">✦ 开启占卜仪式 ✦</span>
+  </button>
+  <p class="welcome-hint" id="welcome-hint">点击后将请求摄像头权限以识别手势</p>
+</div>
+
+<div id="loading-screen" class="hidden">
+  <div class="magic-circle-loader">
+    <div class="circle outer"></div>
+    <div class="circle inner"></div>
+    <div class="star">✦</div>
+  </div>
+  <p class="loading-text">正在唤醒塔罗牌灵…</p>
+  <p class="loading-sub" id="loading-status">初始化中…</p>
+</div>
+
+<div id="question-panel" class="hidden">
+  <div class="question-title">✦ 在开始之前 ✦</div>
+  <div class="question-desc">塔罗牌回应的是你内心的声音。<br>请闭上眼睛，默念你最想探寻的方向。</div>
+  <div class="question-theme-label">✦ 选择今日意图 ✦</div>
+  <div class="question-themes" id="question-themes">
+    <button class="theme-btn active" data-theme="今日运势">🌙 今日</button>
+    <button class="theme-btn" data-theme="爱情缘分">♡ 爱情</button>
+    <button class="theme-btn" data-theme="事业财运">✦ 事业</button>
+  </div>
+  <button id="btn-silent-start" class="question-silent-btn">🙏 已选定意图，开始占卜</button>
+</div>
+
+<div id="app" class="hidden">
+  <canvas id="starfield-canvas"></canvas>
+  <video id="camera" autoplay playsinline muted></video>
+  <canvas id="camera-overlay"></canvas>
+
+  <div id="gesture-hint" class="hidden">
+    <div class="hint-icon">✊</div>
+    <div class="hint-text">握拳开始仪式</div>
+  </div>
+  <div id="state-badge" class="hidden">塔罗占卜</div>
+
+  <div id="tarot-collection" class="hidden">
+    <div class="collection-slot" id="slot-0"><div class="slot-label">过去</div><div class="slot-content"></div></div>
+    <div class="collection-slot" id="slot-1"><div class="slot-label">现在</div><div class="slot-content"></div></div>
+    <div class="collection-slot" id="slot-2"><div class="slot-label">未来</div><div class="slot-content"></div></div>
+  </div>
+
+  <div id="platform-3d" class="hidden">
+    <div class="platform-layers">
+      <div class="platform-glow-surface"></div>
+      <div class="platform-sakura-circle">
+        <div class="sakura-ring sakura-ring-outer"></div>
+        <div class="sakura-ring sakura-ring-mid"></div>
+        <div class="sakura-ring sakura-ring-inner"></div>
+        <div class="sakura-star-12-platform"></div>
+        <div class="sakura-inner-ring-platform"></div>
+        <div class="sakura-symbols-platform">
+          <span class="sakura-sun">☀</span><span class="sakura-moon">☽</span>
+          <span class="sakura-star-sym">★</span><span class="sakura-star-sym s2">★</span>
+        </div>
+        <div class="sakura-cross-platform">
+          <div class="cross-h"></div><div class="cross-v"></div>
+          <div class="cross-d1"></div><div class="cross-d2"></div>
+        </div>
+        <div class="platform-runes" id="platform-runes"></div>
       </div>
     </div>
   </div>
 
-  <!-- 原版脚本 -->
-  <script src="cards.js"></script>
-  <script src="readings.js"></script>
-  <script src="tarot-card-energy-map.js"></script>
-  <script src="tarot-readings-doc.js"></script>
-  <script src="tarot-card-readings.js"></script>
-  <script src="tarot-tag-engine.js"></script>
-  <script src="tarot-copy-engine.js"></script>
-  <script src="gestures.js"></script>
-  <script src="effects.js"></script>
-  <script src="sakura/share-capture.js"></script>
-  <script src="libs/html2canvas.min.js"></script>
-  <script src="libs/html-to-image.min.js"></script>
-  <script src="sakura/share-export.js"></script>
-  <script src="travel-recommend.js"></script>
-  <script src="tarot-main.js"></script>
+  <div id="carousel-stage" class="hidden">
+    <div id="carousel-wrapper"><div id="carousel"></div></div>
+  </div>
 
-  <!-- 模式选择控制层 -->
-  <script>
-  // ── 生成星空背景 ──
-  (function(){
-    var c=document.getElementById('ms-stars');
-    for(var i=0;i<120;i++){
-      var s=document.createElement('div');
-      s.className='ms-star';
-      var size=Math.random()*1.5+.4;
-      s.style.cssText='width:'+size+'px;height:'+size+'px;'
-        +'top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;'
-        +'animation-delay:'+Math.random()*4+'s;animation-duration:'+(2+Math.random()*3)+'s;';
-      c.appendChild(s);
-    }
-  })();
+  <div id="card-selected-view" class="hidden">
+    <div class="selected-magic-circle"></div>
+    <div class="selected-glow" id="selected-glow"></div>
+    <div class="selected-card-wrapper">
+      <div class="flip-burst" id="flip-burst"></div>
+      <div class="flip-ring" id="flip-ring"></div>
+      <div class="selected-card-flipper" id="selected-card-flipper">
+        <div class="selected-card-back" id="selected-card-back">
+          <img class="selected-back-img" src="cards/back/back1.jpg" alt="牌背">
+        </div>
+        <div class="selected-card-front" id="selected-card-front"></div>
+      </div>
+    </div>
+    <div class="selected-card-name" id="selected-card-name"></div>
+    <div class="release-hint" id="release-hint">🖐️ 张开手掌释放卡牌</div>
+  </div>
 
-  // ── 状态 ──
-  var MS_MODE = '';        // 'gesture' | 'mouse'
-  var MS_CAM_FACING = 'user';
-  var MS_STARTED = false;
+  <div id="tarot-result-view" class="hidden">
+    <div class="tarot-result-inner" role="dialog" aria-modal="true" aria-label="命运揭示结果">
+      <div class="tr-header"><div class="tr-title">✦ 命运揭示 ✦</div></div>
+      <div class="tr-cards-wrap"><div class="result-showcase" id="result-showcase"></div></div>
+      <div class="tr-quote" id="result-doc-quote"></div>
+      <div class="tr-destiny-card"><div class="tr-destiny-body" id="result-doc-insight"></div></div>
+      <div class="tr-actions">
+        <button type="button" class="tr-btn tr-btn-retry" id="btn-restart-reading">重新占卜</button>
+        <button type="button" class="tr-btn tr-btn-save" id="btn-tarot-save-share">保存分享</button>
+      </div>
+      <div id="travel-recommend-section" class="hidden"></div>
+    </div>
+  </div>
 
-  // ── 选择模式 ──
-  function msSelect(m) {
-    MS_MODE = m;
-    document.getElementById('ms-card-gesture').classList.toggle('selected', m==='gesture');
-    document.getElementById('ms-card-mouse').classList.toggle('selected', m==='mouse');
-    document.getElementById('ms-cam-opts').classList.toggle('show', m==='gesture');
-    var btn = document.getElementById('ms-start-btn');
-    btn.disabled = false;
-    document.getElementById('ms-start-label').textContent =
-      m==='gesture' ? '🖐 开启手势占卜' : '🖱 开启点击占卜';
+  <canvas id="fx-canvas"></canvas>
+  <canvas id="particle-canvas"></canvas>
+
+  <div id="debug-panel" class="hidden">
+    <div class="debug-header"><span>🔍 调试面板</span><button id="debug-close">✕</button></div>
+    <canvas id="debug-canvas" width="320" height="240"></canvas>
+    <div id="debug-info">
+      <div>手势: <span id="dbg-gesture">无</span></div>
+      <div>状态: <span id="dbg-state">idle</span></div>
+      <div>手数: <span id="dbg-hands">0</span></div>
+      <div>FPS: <span id="dbg-fps">0</span></div>
+      <div>置信度: <span id="dbg-confidence">0</span></div>
+    </div>
+  </div>
+
+  <div id="toolbar">
+    <button id="btn-debug" title="调试面板">🔍</button>
+    <button id="btn-mirror" title="镜像翻转">🪞</button>
+  </div>
+</div>
+
+<div id="tarot-share-root" class="tarot-share-root" aria-hidden="true">
+  <div class="share-card" id="share-card">
+    <div class="sc-header">
+      <div class="sc-title">✦ 命运揭示 ✦</div>
+      <div class="sc-sub">心灵塔罗牌 · RIDER-WAITE TAROT</div>
+    </div>
+    <div class="sc-cards-row" id="tarot-share-cards-row"></div>
+    <div class="sc-quote" id="tarot-share-sc-quote"></div>
+    <div class="sc-destiny-card"><div class="sc-destiny-body" id="tarot-share-sc-body"></div></div>
+    <div class="sc-footer-block">
+      <div class="sc-divider"></div>
+      <div class="sc-cta">隔空手势 · 三张牌阵占卜 →</div>
+    </div>
+  </div>
+</div>
+
+<!-- 原版脚本 -->
+<script src="cards.js"></script>
+<script src="readings.js"></script>
+<script src="tarot-card-energy-map.js"></script>
+<script src="tarot-readings-doc.js"></script>
+<script src="tarot-card-readings.js"></script>
+<script src="tarot-tag-engine.js"></script>
+<script src="tarot-copy-engine.js"></script>
+<script src="gestures.js"></script>
+<script src="effects.js"></script>
+<script src="sakura/share-capture.js"></script>
+<script src="libs/html2canvas.min.js"></script>
+<script src="libs/html-to-image.min.js"></script>
+<script src="sakura/share-export.js"></script>
+<script src="travel-recommend.js"></script>
+<script src="tarot-main.js"></script>
+
+<!-- ══ 模式选择控制逻辑 ══ -->
+<script>
+// ── 星空 ──
+(function(){
+  var c=document.getElementById('ms-stars');
+  for(var i=0;i<120;i++){
+    var s=document.createElement('div'); s.className='ms-star';
+    var sz=Math.random()*1.4+.3;
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;'
+      +'animation-delay:'+Math.random()*5+'s;animation-duration:'+(2+Math.random()*3)+'s;';
+    c.appendChild(s);
+  }
+})();
+
+var MS_MODE='', MS_CAM='user';
+
+function msSelect(m){
+  MS_MODE=m;
+  document.getElementById('ms-c-gesture').classList.toggle('selected',m==='gesture');
+  document.getElementById('ms-c-mouse').classList.toggle('selected',m==='mouse');
+  document.getElementById('ms-cam').classList.toggle('show',m==='gesture');
+  var btn=document.getElementById('ms-start');
+  btn.disabled=false;
+  document.getElementById('ms-start-label').textContent=
+    m==='gesture'?'🖐 开启手势占卜':'🖱 开启点击占卜';
+}
+
+function msSetCam(f){
+  MS_CAM=f;
+  document.getElementById('ms-btn-front').classList.toggle('active',f==='user');
+  document.getElementById('ms-btn-back').classList.toggle('active',f==='environment');
+  window.__MS_CAM=f;
+}
+
+function msStart(){
+  if(!MS_MODE) return;
+  window.__MS_MODE=MS_MODE;
+  window.__MS_CAM=MS_CAM;
+  document.getElementById('ms-screen').classList.add('hidden');
+  document.getElementById('btn-back-ms').classList.add('show');
+
+  if(MS_MODE==='mouse'){
+    // 鼠标模式：隐藏摄像头，mock GestureEngine，直接走原版 App boot 跳过 MediaPipe
+    document.getElementById('mouse-bar').classList.add('show');
+    _bootMouseMode();
+  } else {
+    // 手势模式：显示摄像头切换按钮，正常走 bootstrap.js
+    document.getElementById('btn-switch-cam-ms').classList.add('show');
+    var hint=document.getElementById('welcome-hint');
+    if(hint) hint.textContent='📷 摄像头权限将在点击后请求';
+    _bootGestureMode();
+  }
+}
+
+// ── 手势模式：正常走原版 bootstrap ──
+function _bootGestureMode(){
+  var s=document.createElement('script');
+  s.type='module'; s.src='bootstrap.js';
+  document.body.appendChild(s);
+}
+
+// ── 鼠标模式：mock 掉摄像头 + GestureEngine，直接 boot App ──
+function _bootMouseMode(){
+  // 1. 隐藏摄像头、手势提示
+  var vid=document.getElementById('camera');
+  var ov=document.getElementById('camera-overlay');
+  if(vid){ vid.style.display='none'; }
+  if(ov){ ov.style.display='none'; }
+
+  // 2. Mock GestureEngine（让 App.boot 不报错）
+  window._GestureEngineOriginal = window.GestureEngine;
+  window.GestureEngine = function(){
+    this.running=false; this.mirrored=false;
+    this.onGesture=null; this.onHandUpdate=null;
+    this.init=function(){ return Promise.resolve(); };
+    this.start=function(){ this.running=true; };
+    this.stop=function(){ this.running=false; };
+    this.getSwipeDelta=function(){ return 0; };
+    this.mirrored=false;
+  };
+
+  // 3. Mock navigator.mediaDevices.getUserMedia（返回空 stream）
+  if(navigator.mediaDevices){
+    navigator.mediaDevices._origGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+    navigator.mediaDevices.getUserMedia = function(){
+      // 返回一个静默的空 MediaStream
+      try{
+        var ctx=new AudioContext();
+        var dest=ctx.createMediaStreamDestination();
+        return Promise.resolve(dest.stream);
+      }catch(e){
+        return Promise.resolve(new MediaStream());
+      }
+    };
   }
 
-  // ── 选择摄像头 ──
-  function msSetCam(facing) {
-    MS_CAM_FACING = facing;
-    document.getElementById('ms-btn-front').classList.toggle('active', facing==='user');
-    document.getElementById('ms-btn-back').classList.toggle('active', facing==='environment');
-    // 把偏好写入全局，给 bootstrap.js / gestures.js 读取
-    window.__MS_CAM_FACING = facing;
-  }
+  // 4. 直接启动 App（不经过 bootstrap.js 的 MediaPipe 加载）
+  // 先显示欢迎页，修改提示文字，然后自动"点击"开始按钮
+  var hint=document.getElementById('welcome-hint');
+  if(hint) hint.textContent='🖱 鼠标模式 · 点击卡牌即可抽取，无需摄像头';
 
-  // ── 开始 ──
-  function msStart() {
-    if(!MS_MODE) return;
-    MS_STARTED = true;
-    window.__MS_MODE = MS_MODE;
-    window.__MS_CAM_FACING = MS_CAM_FACING;
+  // 触发 welcome-screen 里的「开启占卜仪式」流程
+  // 直接走 App 初始化（不经过 bootstrap 的 MediaPipe await）
+  (async function(){
+    try{
+      var welcomeScreen=document.getElementById('welcome-screen');
+      var startBtn=document.getElementById('btn-start-ritual');
+      var loadingScreen=document.getElementById('loading-screen');
 
-    // 隐藏选择页
-    document.getElementById('mode-select-screen').classList.add('hidden');
-
-    // 鼠标模式：调整 welcome 提示文字 + 隐藏摄像头相关
-    if(MS_MODE === 'mouse') {
-      var hint = document.getElementById('welcome-hint-text');
-      if(hint) hint.textContent = '🖱 鼠标模式 · 点击卡牌即可抽取';
-    }
-
-    // 显示控制按钮
-    document.getElementById('btn-back-to-mode').classList.add('show');
-    if(MS_MODE === 'gesture') {
-      document.getElementById('btn-switch-cam').classList.add('show');
-    }
-    if(MS_MODE === 'mouse') {
-      document.getElementById('mouse-hint-bar').classList.add('show');
-    }
-
-    // 启动原版 bootstrap
-    var s = document.createElement('script');
-    s.setAttribute('type','module');
-    s.src = 'bootstrap.js';
-    document.body.appendChild(s);
-  }
-
-  // ── 返回模式选择 ──
-  function msBackToSelect() {
-    window.location.reload();
-  }
-
-  // ── 游戏内切换摄像头 ──
-  function msSwitchCam() {
-    MS_CAM_FACING = MS_CAM_FACING==='user' ? 'environment' : 'user';
-    window.__MS_CAM_FACING = MS_CAM_FACING;
-    // 触发全局事件，让 gestures.js 处理
-    window.dispatchEvent(new CustomEvent('ms-switch-camera', {detail:{facing:MS_CAM_FACING}}));
-  }
-  </script>
-
-  <!-- 鼠标模式 Patch（在 bootstrap 之后注入）-->
-  <script>
-  // 监听 app 显示，注入鼠标点击交互
-  (function(){
-    var obs = new MutationObserver(function(){
-      var app = document.getElementById('app');
-      if(!app || app.classList.contains('hidden')) return;
-      if(window.__MS_MODE !== 'mouse') return;
-
-      // 等 carousel 渲染完后，给每张牌加 click 事件
-      var carouselObs = new MutationObserver(function(){
-        var carousel = document.getElementById('carousel');
-        if(!carousel || !carousel.children.length) return;
-        injectMouseClick();
-        carouselObs.disconnect();
+      // 等待用户点击欢迎页按钮
+      await new Promise(function(resolve){
+        startBtn.addEventListener('click', resolve, {once:true});
       });
-      carouselObs.observe(document.getElementById('carousel')||document.body, {childList:true,subtree:true});
-    });
-    obs.observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
 
-    function injectMouseClick(){
-      // 每隔 200ms 检查并绑定点击（carousel 会动态更新）
-      var bound = new Set();
-      setInterval(function(){
-        var cards = document.querySelectorAll('#carousel .tarot-card, #carousel [class*="card"]');
-        cards.forEach(function(card){
-          if(bound.has(card)) return;
-          bound.add(card);
-          card.classList.add('mouse-mode-card');
-          card.addEventListener('click', function(){
-            // 触发原版的"卡牌被选中"逻辑（模拟握拳选中中心牌）
-            if(window.TarotApp && typeof window.TarotApp.selectCard === 'function'){
-              window.TarotApp.selectCard(card);
-            } else if(window.tarotSelectCard){
-              window.tarotSelectCard(card);
-            } else {
-              // 通用降级：派发自定义事件
-              card.dispatchEvent(new CustomEvent('tarot-click-select', {bubbles:true}));
-            }
-          });
-        });
-      }, 200);
+      welcomeScreen.classList.add('fading-out');
+      loadingScreen.classList.remove('hidden');
+      setTimeout(function(){ welcomeScreen.style.display='none'; }, 800);
 
-      // 同时隐藏 video / camera-overlay（鼠标模式不需要）
-      var vid = document.getElementById('camera');
-      var ov = document.getElementById('camera-overlay');
-      var hint = document.getElementById('gesture-hint');
-      if(vid) vid.style.display='none';
-      if(ov) ov.style.display='none';
-      if(hint) hint.style.display='none';
+      // 启动 App（App 类在 tarot-main.js 里定义为 App）
+      var app = new App();
+      await app.boot();
+
+      // boot 完成后注入鼠标点击逻辑
+      _injectMouseClick(app);
+
+    }catch(err){
+      console.error('鼠标模式启动失败:', err);
     }
   })();
-  </script>
+}
 
+// ── 在 App boot 完成后，为旋转木马卡牌绑定点击事件 ──
+function _injectMouseClick(app){
+  var bound=new WeakSet();
+  var observer=new MutationObserver(function(){
+    document.querySelectorAll('#carousel .tarot-card-el, #carousel [class*="tarot-card"]').forEach(function(el){
+      if(bound.has(el)) return;
+      bound.add(el);
+      el.classList.add('mc-clickable');
+      el.addEventListener('click', function(e){
+        e.stopPropagation();
+        _mousePickCard(app);
+      });
+    });
+  });
+  observer.observe(document.getElementById('carousel')||document.body,{childList:true,subtree:true});
+
+  // 也绑定一次 carousel-stage 的点击（降级）
+  var stage=document.getElementById('carousel-stage');
+  if(stage){
+    stage.addEventListener('click', function(e){
+      var target=e.target;
+      // 找到最近的卡牌元素
+      var cardEl=target.closest('[class*="card"]')||target;
+      _mousePickCard(app);
+    });
+  }
+}
+
+// ── 鼠标点击触发抽牌流程 ──
+function _mousePickCard(app){
+  // 按照原版状态机：SUMMONED → focus → hold → release
+  var STATE_SUMMONED=1, STATE_FOCUSED=2, STATE_HOLDING=3;
+  try{
+    if(app.state===STATE_SUMMONED||app.state===1){
+      // 先 focus 当前中心牌
+      app._focusCard && app._focusCard();
+      // 稍后自动确认（hold）
+      setTimeout(function(){
+        try{
+          app._holdCard && app._holdCard();
+          // 再稍后自动释放
+          setTimeout(function(){
+            try{ app._releaseCard && app._releaseCard(); }catch(e){}
+          }, 800);
+        }catch(e){}
+      }, 300);
+    } else if(app.state===STATE_FOCUSED||app.state===2){
+      app._holdCard && app._holdCard();
+      setTimeout(function(){
+        try{ app._releaseCard && app._releaseCard(); }catch(e){}
+      }, 800);
+    }
+  }catch(e){ console.warn('mousePickCard err', e); }
+}
+
+// ── 游戏内切换摄像头（手势模式） ──
+function msSwitchCam(){
+  MS_CAM=MS_CAM==='user'?'environment':'user';
+  window.dispatchEvent(new CustomEvent('ms-switch-cam',{detail:{facing:MS_CAM}}));
+}
+
+// ── 监听 app 显示后隐藏摄像头（鼠标模式） ──
+window.addEventListener('load', function(){
+  new MutationObserver(function(){
+    if(window.__MS_MODE!=='mouse') return;
+    var app=document.getElementById('app');
+    if(!app||app.classList.contains('hidden')) return;
+    var v=document.getElementById('camera');
+    var o=document.getElementById('camera-overlay');
+    if(v) v.style.display='none';
+    if(o) o.style.display='none';
+  }).observe(document.body,{attributes:true,subtree:true,attributeFilter:['class']});
+});
+</script>
 </body>
 </html>
