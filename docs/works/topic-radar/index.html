@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOPIC RADAR · 爆款选题预测器</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAFAF8;
+    --navy: #0A1628;
+    --blue: #1a56db;
+    --blue2: #3b82f6;
+    --blue3: #60a5fa;
+    --blue4: #93c5fd;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --border: rgba(10,22,40,0.08);
+    --border-md: rgba(10,22,40,0.14);
+    --text-muted: rgba(10,22,40,0.45);
+    --card-bg: #ffffff;
+    --sidebar-w: 400px;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  html { font-size: 15px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--navy);
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: rgba(255,255,255,0.92);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .header-brand h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--navy);
+  }
+
+  .header-brand span {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .header-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--blue);
+    display: inline-block;
+    margin-right: 4px;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .header-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(26,86,219,0.08);
+    color: var(--blue);
+  }
+
+  /* ── Layout ── */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* ── Sidebar / Input panel ── */
+  .input-panel {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    padding: 32px 24px;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .input-panel::-webkit-scrollbar { width: 4px; }
+  .input-panel::-webkit-scrollbar-track { background: transparent; }
+  .input-panel::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
+
+  .panel-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .panel-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .section-label {
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  /* Form elements */
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+  .form-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--navy);
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--navy);
+    font-size: 0.82rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+
+  input[type="text"]:focus { border-color: var(--blue); }
+  input[type="text"]::placeholder { color: var(--text-muted); }
+
+  /* Pills */
+  .pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1.5px solid var(--border-md);
+    background: transparent;
+    color: var(--navy);
+    font-family: inherit;
+    transition: all var(--transition);
+    user-select: none;
+  }
+
+  .pill:hover { border-color: var(--blue); color: var(--blue); }
+
+  .pill.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: white;
+  }
+
+  .pill.multi.active {
+    background: rgba(26,86,219,0.1);
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  /* Divider */
+  .divider { width: 100%; height: 1px; background: var(--border); }
+
+  /* Generate button */
+  .btn-generate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    background: var(--blue);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: all var(--transition);
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-generate::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  }
+
+  .btn-generate:hover { background: #1747c0; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,86,219,0.35); }
+  .btn-generate:active { transform: translateY(0); }
+
+  .btn-generate.loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    display: none;
+    animation: spin 0.7s linear infinite;
+  }
+
+  .btn-generate.loading .spinner { display: block; }
+  .btn-generate.loading .btn-text { display: none; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Result Panel ── */
+  .result-panel {
+    flex: 1;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
+
+  /* Empty state */
+  .empty-result {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-family: Georgia, serif;
+    font-size: 4rem;
+    color: rgba(10,22,40,0.1);
+    line-height: 1;
+  }
+
+  .empty-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* Result cards */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 1100px) {
+    .result-grid { grid-template-columns: 1fr; }
+  }
+
+  .r-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    transition: all var(--transition);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 0.5s forwards;
+  }
+
+  .r-card:hover {
+    border-color: var(--border-md);
+    box-shadow: 0 6px 24px rgba(10,22,40,0.06);
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .r-card:nth-child(1) { animation-delay: 0.05s; }
+  .r-card:nth-child(2) { animation-delay: 0.12s; }
+  .r-card:nth-child(3) { animation-delay: 0.19s; }
+  .r-card:nth-child(4) { animation-delay: 0.26s; }
+  .r-card:nth-child(5) { animation-delay: 0.33s; }
+
+  .r-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .r-card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+
+  .r-card-title {
+    font-family: Georgia, serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  /* Score card */
+  .score-card {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 28px 32px;
+  }
+
+  .score-ring-wrap {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+  }
+
+  .score-ring-wrap svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .score-ring-bg {
+    fill: none;
+    stroke: rgba(10,22,40,0.06);
+    stroke-width: 8;
+  }
+
+  .score-ring-fg {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 339.3;
+    stroke-dashoffset: 339.3;
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .score-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-num {
+    font-family: Georgia, serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    transition: all 1.5s ease-out;
+  }
+
+  .score-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  .score-info { flex: 1; }
+
+  .score-headline {
+    font-family: Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .score-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .score-tags {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  .score-tag {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(26,86,219,0.08);
+    color: var(--blue);
+  }
+
+  /* Title versions */
+  .title-version {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .title-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    transition: all var(--transition);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .title-item:hover {
+    border-color: var(--blue);
+    background: rgba(26,86,219,0.03);
+  }
+
+  .title-badge {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: white;
+    background: var(--blue);
+    padding: 2px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .title-badge.q { background: #f59e0b; }
+  .title-badge.n { background: var(--blue); }
+  .title-badge.e { background: #10b981; }
+
+  .title-text {
+    font-size: 0.83rem;
+    color: var(--navy);
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  .copy-btn {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: inherit;
+    flex-shrink: 0;
+    transition: color var(--transition);
+  }
+
+  .copy-btn:hover { color: var(--blue); }
+
+  /* Time card */
+  .time-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(26,86,219,0.04);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(26,86,219,0.12);
+  }
+
+  .time-icon {
+    font-size: 1.4rem;
+  }
+
+  .time-main {
+    font-family: Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 2px;
+  }
+
+  .time-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  /* Checklist */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all var(--transition);
+    user-select: none;
+  }
+
+  .check-item:hover { border-color: var(--border-md); background: rgba(10,22,40,0.02); }
+
+  .check-item.checked {
+    border-color: rgba(16,185,129,0.3);
+    background: rgba(16,185,129,0.05);
+  }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all var(--transition);
+    color: transparent;
+    font-size: 11px;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .check-text {
+    font-size: 0.8rem;
+    color: var(--navy);
+    flex: 1;
+    transition: all var(--transition);
+  }
+
+  .check-item.checked .check-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  /* Similar angles */
+  .angle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .angle-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    transition: all var(--transition);
+  }
+
+  .angle-item:hover {
+    border-color: var(--border-md);
+    transform: translateX(4px);
+    box-shadow: 0 2px 12px rgba(10,22,40,0.05);
+  }
+
+  .angle-num {
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--blue);
+    opacity: 0.4;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+
+  .angle-text {
+    font-size: 0.83rem;
+    color: var(--navy);
+    line-height: 1.55;
+  }
+
+  .angle-tag {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  /* Progress bar (loading) */
+  .loading-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .loading-bar-wrap.visible { opacity: 1; }
+
+  .loading-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--blue3));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--navy);
+    color: white;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.3s;
+    z-index: 200;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    header { padding: 0 20px; }
+    .layout { flex-direction: column; }
+    .input-panel {
+      width: 100%;
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 20px;
+    }
+    .result-panel { padding: 20px; }
+    .score-card { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .result-grid { grid-template-columns: 1fr; }
+    .score-card { grid-column: auto; }
+  }
+
+  @media (max-width: 480px) {
+    .pill-group { gap: 5px; }
+    .pill { padding: 5px 11px; font-size: 0.72rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <h1><span class="header-dot"></span>TOPIC RADAR</h1>
+    <span>· 爆款选题预测器</span>
+  </div>
+  <div class="header-badge">规则引擎 · 零AI调用</div>
+</header>
+
+<div class="loading-bar-wrap" id="loadingBarWrap">
+  <div class="loading-bar" id="loadingBar"></div>
+</div>
+
+<div class="layout">
+  <!-- ── Input Panel ── -->
+  <aside class="input-panel">
+    <div>
+      <div class="panel-title">选题分析</div>
+      <div class="panel-sub">输入内容信息，获取爆款预测报告</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Account positioning -->
+    <div class="form-group">
+      <label class="form-label">账号定位</label>
+      <input type="text" id="accountInput" placeholder="旅行类博主，25-35岁女性为主">
+    </div>
+
+    <!-- Topic -->
+    <div class="form-group">
+      <label class="form-label">内容主题 <span style="color:var(--blue)">*</span></label>
+      <input type="text" id="topicInput" placeholder="京都秋季5日行程">
+    </div>
+
+    <!-- Platform -->
+    <div class="form-group">
+      <label class="form-label">发布平台</label>
+      <div class="pill-group" id="platformGroup">
+        <button class="pill active" data-val="小红书">小红书</button>
+        <button class="pill" data-val="微博">微博</button>
+        <button class="pill" data-val="抖音">抖音</button>
+        <button class="pill" data-val="B站">B站</button>
+      </div>
+    </div>
+
+    <!-- Audience -->
+    <div class="form-group">
+      <label class="form-label">目标人群（可多选）</label>
+      <div class="pill-group" id="audienceGroup">
+        <button class="pill multi" data-val="学生党">学生党</button>
+        <button class="pill multi" data-val="上班族">上班族</button>
+        <button class="pill multi" data-val="宝妈">宝妈</button>
+        <button class="pill multi" data-val="情侣">情侣</button>
+        <button class="pill multi" data-val="独行侠">独行侠</button>
+      </div>
+    </div>
+
+    <!-- Format -->
+    <div class="form-group">
+      <label class="form-label">内容形式</label>
+      <div class="pill-group" id="formatGroup">
+        <button class="pill active" data-val="图文">图文</button>
+        <button class="pill" data-val="视频">视频</button>
+        <button class="pill" data-val="Vlog">Vlog</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="btn-generate" id="generateBtn">
+      <div class="spinner"></div>
+      <span class="btn-text">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:inline-block;vertical-align:middle;margin-right:5px">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
+        </svg>
+        生成预测报告
+      </span>
+    </button>
+
+    <div style="text-align:center;font-size:0.68rem;color:var(--text-muted);margin-top:-8px;">
+      基于内容规则引擎分析，仅供参考
+    </div>
+  </aside>
+
+  <!-- ── Result Panel ── -->
+  <main class="result-panel" id="resultPanel">
+    <div class="empty-result" id="emptyResult">
+      <div class="empty-icon">◎</div>
+      <div class="empty-text">
+        填写左侧表单，点击「生成预测报告」<br>即可获取爆款选题分析
+      </div>
+    </div>
+    <!-- results injected here -->
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Pill groups ──
+function initPillGroup(id, multi) {
+  const group = document.getElementById(id);
+  group.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      if (multi) {
+        pill.classList.toggle('active');
+      } else {
+        group.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+      }
+    });
+  });
+}
+
+initPillGroup('platformGroup', false);
+initPillGroup('audienceGroup', true);
+initPillGroup('formatGroup', false);
+
+function getSelected(id) {
+  return Array.from(document.querySelectorAll(`#${id} .pill.active`)).map(p => p.dataset.val);
+}
+
+// ── Cities dictionary ──
+const CITIES = ['京都','巴黎','东京','大阪','纽约','伦敦','首尔','曼谷','台北','香港','悉尼','罗马','巴塞罗那','新加坡','迪拜','北京','上海','成都','西安','厦门','三亚','丽江','桂林','黄山','张家界'];
+const KEYWORDS_SCORE = ['攻略','合集','测评','避坑','推荐','必看','必去','盘点'];
+
+function extractCity(topic) {
+  for (const city of CITIES) {
+    if (topic.includes(city)) return city;
+  }
+  return null;
+}
+
+function extractNumber(topic) {
+  const m = topic.match(/\d+/);
+  return m ? parseInt(m[0]) : Math.floor(Math.random() * 8) + 3;
+}
+
+// ── Score calculation ──
+function calcScore(topic, platform, audience, format) {
+  let score = 50;
+
+  // keyword bonus
+  if (KEYWORDS_SCORE.some(k => topic.includes(k))) score += 15;
+  // city bonus
+  if (extractCity(topic)) score += 10;
+  // platform
+  if (platform === '小红书') score += 5;
+  // audience
+  if (audience.includes('上班族') || audience.includes('情侣')) score += 8;
+  // format
+  if (format === '图文') score += 5;
+  // random ±8
+  score += Math.round((Math.random() * 16) - 8);
+
+  return Math.min(99, Math.max(22, score));
+}
+
+function scoreLevel(s) {
+  if (s >= 85) return { label: '极高潜力', color: '#10b981', tags: ['爆款概率高', '强烈推荐发布'] };
+  if (s >= 70) return { label: '高潜力', color: '#1a56db', tags: ['内容质量优秀', '建议优化封面'] };
+  if (s >= 55) return { label: '中等潜力', color: '#f59e0b', tags: ['有一定流量', '建议强化标题'] };
+  return { label: '待优化', color: '#ef4444', tags: ['需要改进选题', '建议参考爆款'] };
+}
+
+// ── Title generation ──
+function genTitles(topic, city, n) {
+  const c = city || topic.slice(0, 4);
+  const num = n || extractNumber(topic);
+  return [
+    { type: 'q', badge: '疑问式', text: `为什么去${c}的人都后悔没做这件事？` },
+    { type: 'n', badge: '数字式', text: `${c}旅行攻略 | ${num}个必知要点，建议收藏` },
+    { type: 'e', badge: '情绪式', text: `去了${c}我才明白，真正的旅行是这样的` },
+  ];
+}
+
+// ── Best time ──
+function bestTime(platform, audience) {
+  const map = {
+    '小红书': {
+      '上班族': '周五 晚 8:00 – 10:00',
+      '情侣': '周六 晚 8:30 – 10:30',
+      '学生党': '周日 晚 9:00 – 11:00',
+      '宝妈': '周二 上午 10:00 – 12:00',
+      '独行侠': '周三 晚 9:00 – 11:00',
+      'default': '周五 晚 8:00 – 10:00',
+    },
+    '微博': {
+      '上班族': '工作日 午间 12:00 – 13:00',
+      'default': '周末 上午 10:00 – 11:00',
+    },
+    '抖音': {
+      '学生党': '晚间 20:00 – 22:00',
+      'default': '晚间 19:30 – 21:30',
+    },
+    'B站': {
+      '学生党': '周末 下午 3:00 – 5:00',
+      'default': '周五 晚 20:00 – 22:00',
+    },
+  };
+  const plMap = map[platform] || map['小红书'];
+  for (const aud of audience) {
+    if (plMap[aud]) return plMap[aud];
+  }
+  return plMap['default'] || '周五 晚 8:00 – 10:00';
+}
+
+// ── Similar angles pool ──
+const ANGLE_POOL = [
+  { text: '当地人才知道的[city]隐藏景点', tag: '在地视角' },
+  { text: '[city][n]日穷游攻略，人均[x]元', tag: '预算参考' },
+  { text: '在[city]住了[n]天，发现这件事太重要了', tag: '深度体验' },
+  { text: '[city]避坑指南：这[n]件事一定不能做', tag: '避坑向' },
+  { text: '去[city]旅行，我只后悔没早点知道这些', tag: '经验分享' },
+  { text: '[city]旅行[n]日游完整攻略（超详细）', tag: '攻略合集' },
+  { text: '第一次去[city]，这份清单太实用了', tag: '新手必看' },
+  { text: '[city]旅行拍照圣地合集，每张都出片', tag: '摄影攻略' },
+  { text: '住过才知道！[city]最值得入住的[n]家民宿', tag: '住宿推荐' },
+  { text: '[city]美食地图 | [n]家必吃餐厅实测', tag: '美食向' },
+  { text: '一个人去[city]旅行，比想象中更美好', tag: '独旅体验' },
+  { text: '[city]自由行完全攻略，看这一篇就够了', tag: '全面攻略' },
+  { text: '情侣去[city]的正确打开方式', tag: '情侣向' },
+  { text: '[city]旅行花费明细，给你看真实数字', tag: '费用透明' },
+  { text: '去[city]旅行前，我希望有人告诉我这些', tag: '经验总结' },
+  { text: '[city]最被低估的[n]个角落', tag: '小众发现' },
+  { text: '带娃去[city]，这份亲子攻略请收藏', tag: '亲子向' },
+  { text: '[city][n]月去对了！这个季节最美', tag: '时节推荐' },
+  { text: '深度游[city]：我在这里住了[n]个月', tag: '长期旅居' },
+  { text: '[city]交通全攻略，一分钟搞懂怎么坐车', tag: '交通指南' },
+];
+
+function pickAngles(city, n, count = 3) {
+  const shuffled = [...ANGLE_POOL].sort(() => Math.random() - 0.5).slice(0, count);
+  return shuffled.map(a => ({
+    text: a.text.replace(/\[city\]/g, city || '目的地').replace(/\[n\]/g, n || 5).replace(/\[x\]/g, Math.floor(Math.random()*1500+300)),
+    tag: a.tag,
+  }));
+}
+
+// ── Generate ──
+document.getElementById('generateBtn').addEventListener('click', generate);
+
+function generate() {
+  const topic = document.getElementById('topicInput').value.trim();
+  if (!topic) { showToast('请先输入内容主题'); document.getElementById('topicInput').focus(); return; }
+
+  const platform = getSelected('platformGroup')[0] || '小红书';
+  const audience = getSelected('audienceGroup');
+  const format = getSelected('formatGroup')[0] || '图文';
+
+  // Loading
+  const btn = document.getElementById('generateBtn');
+  btn.classList.add('loading');
+  const bar = document.getElementById('loadingBar');
+  const barWrap = document.getElementById('loadingBarWrap');
+  barWrap.classList.add('visible');
+  bar.style.width = '0%';
+  setTimeout(() => bar.style.width = '88%', 50);
+
+  setTimeout(() => {
+    const score = calcScore(topic, platform, audience, format);
+    const city = extractCity(topic);
+    const n = extractNumber(topic);
+    const level = scoreLevel(score);
+    const titles = genTitles(topic, city, n);
+    const time = bestTime(platform, audience);
+    const angles = pickAngles(city, n);
+
+    bar.style.width = '100%';
+    setTimeout(() => {
+      barWrap.classList.remove('visible');
+      bar.style.width = '0%';
+    }, 400);
+
+    btn.classList.remove('loading');
+    renderResults(score, level, titles, time, angles, topic, platform);
+  }, 1500);
+}
+
+function renderResults(score, level, titles, time, angles, topic, platform) {
+  const panel = document.getElementById('resultPanel');
+
+  panel.innerHTML = `<div class="result-grid" id="resultGrid"></div>`;
+  const grid = document.getElementById('resultGrid');
+
+  // 1. Score card
+  const scoreCard = document.createElement('div');
+  scoreCard.className = 'r-card score-card';
+  scoreCard.innerHTML = `
+    <div class="score-ring-wrap">
+      <svg viewBox="0 0 120 120">
+        <circle class="score-ring-bg" cx="60" cy="60" r="54"/>
+        <circle class="score-ring-fg" id="scoreRing" cx="60" cy="60" r="54"/>
+      </svg>
+      <div class="score-number">
+        <div class="score-num" id="scoreNum">0</div>
+        <div class="score-label">/ 100</div>
+      </div>
+    </div>
+    <div class="score-info">
+      <div class="score-headline" style="color:${level.color}">${level.label}</div>
+      <div class="score-desc">
+        基于「${topic}」内容方向，结合${platform}平台算法规律，综合评估爆款潜力分析。
+      </div>
+      <div class="score-tags">
+        ${level.tags.map(t => `<span class="score-tag">${t}</span>`).join('')}
+        <span class="score-tag" style="background:rgba(10,22,40,0.05);color:var(--text-muted)">${platform}</span>
+      </div>
+    </div>
+  `;
+  grid.appendChild(scoreCard);
+
+  // Animate ring
+  const circumference = 2 * Math.PI * 54; // 339.3
+  const ring = scoreCard.querySelector('#scoreRing');
+  const numEl = scoreCard.querySelector('#scoreNum');
+  ring.style.stroke = level.color;
+
+  setTimeout(() => {
+    const offset = circumference * (1 - score / 100);
+    ring.style.strokeDashoffset = offset;
+
+    // Count up
+    let start = 0;
+    const dur = 1500;
+    const step = 16;
+    const inc = score / (dur / step);
+    const counter = setInterval(() => {
+      start = Math.min(start + inc, score);
+      numEl.textContent = Math.round(start);
+      if (start >= score) clearInterval(counter);
+    }, step);
+  }, 100);
+
+  // 2. Titles card
+  const titlesCard = document.createElement('div');
+  titlesCard.className = 'r-card';
+  titlesCard.innerHTML = `
+    <div class="r-card-header">
+      <div class="r-card-icon" style="background:rgba(26,86,219,0.08);color:var(--blue)">✏️</div>
+      <div class="r-card-title">标题优化建议</div>
+    </div>
+    <div class="title-version">
+      ${titles.map(t => `
+        <div class="title-item">
+          <span class="title-badge ${t.type}">${t.badge}</span>
+          <span class="title-text">${t.text}</span>
+          <button class="copy-btn" onclick="copyText('${escapeJs(t.text)}', this)">复制</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  grid.appendChild(titlesCard);
+
+  // 3. Best time card
+  const timeCard = document.createElement('div');
+  timeCard.className = 'r-card';
+  timeCard.innerHTML = `
+    <div class="r-card-header">
+      <div class="r-card-icon" style="background:rgba(245,158,11,0.1);color:var(--amber)">🕐</div>
+      <div class="r-card-title">最佳发布时间</div>
+    </div>
+    <div class="time-display">
+      <div class="time-icon">📅</div>
+      <div>
+        <div class="time-main">${time}</div>
+        <div class="time-sub">适用于 ${platform} 平台 · 用户活跃峰值窗口</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:0.75rem;color:var(--text-muted);line-height:1.7">
+      💡 发布后前30分钟互动率对算法权重影响最大，建议在上线后立即回复评论。
+    </div>
+  `;
+  grid.appendChild(timeCard);
+
+  // 4. Checklist card
+  const checks = [
+    '封面图有大字标题',
+    '前3张图信息密度高',
+    '正文包含数字（5天/3个/2小时）',
+    '结尾有互动引导（你去过吗？）',
+    '标签≥5个，含热门+垂直',
+    '发布时间在晚8点后',
+  ];
+  const checkCard = document.createElement('div');
+  checkCard.className = 'r-card';
+  checkCard.innerHTML = `
+    <div class="r-card-header">
+      <div class="r-card-icon" style="background:rgba(16,185,129,0.1);color:var(--green)">✅</div>
+      <div class="r-card-title">内容要素清单</div>
+    </div>
+    <div class="checklist">
+      ${checks.map((c, i) => `
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <span class="check-text">${c}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  grid.appendChild(checkCard);
+
+  // 5. Angles card
+  const anglesCard = document.createElement('div');
+  anglesCard.className = 'r-card';
+  anglesCard.style.gridColumn = '1 / -1';
+  anglesCard.innerHTML = `
+    <div class="r-card-header">
+      <div class="r-card-icon" style="background:rgba(26,86,219,0.08);color:var(--blue)">🎯</div>
+      <div class="r-card-title">相似爆款角度参考</div>
+    </div>
+    <div class="angle-list">
+      ${angles.map((a, i) => `
+        <div class="angle-item">
+          <div class="angle-num">0${i+1}</div>
+          <div>
+            <div class="angle-text">${a.text}</div>
+            <div class="angle-tag"># ${a.tag}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  grid.appendChild(anglesCard);
+
+  showToast('预测报告已生成');
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ 已复制';
+    setTimeout(() => btn.textContent = '复制', 1800);
+  }).catch(() => {
+    showToast('复制失败');
+  });
+}
+
+function escapeJs(s) {
+  return s.replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Enter key trigger
+document.getElementById('topicInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>
