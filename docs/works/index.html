@@ -330,7 +330,7 @@ footer a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
     <div class="sub-sec">
       <div class="sub-hd">
         <div class="sub-ico" style="background:#FEF2F2"><svg viewBox="0 0 24 24" style="stroke:#EF4444"><circle cx="12" cy="12" r="10"/><path d="M12 8l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2h3z"/></svg></div>
-        <span class="sub-name">活动 Demo</span><span class="sub-cnt">11 个</span>
+        <span class="sub-name">活动 Demo</span><span class="sub-cnt">6 个</span>
         <div class="sub-line"></div>
       </div>
       <!-- 左右分栏 -->
@@ -415,20 +415,14 @@ var DATA_TOOLS=[
   {n:'DV5',t:'周报生成器',d:'描述本周核心数据和达成情况，AI 生成结构化周报，含亮点、问题和下周计划。',h:'/08/works/weekly-report/',tag:'周报',ic:'#8B5CF6',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'}
 ];
 var WEB_DEMO=[
-  {cls:'ac-compare',  em:'🗺️⚡', t:'AI 多方案对比',     d:'A/B/C三套旅行方案横向并排，预算/效率/体验三策略一次生成，支持混合优化。', h:'/08/web/compare/',   tag:'PC大屏', cta:'体验 Demo'},
-  {cls:'ac-midpoint', em:'📍🤝', t:'AI 中间点规划',     d:'多人从不同城市出发，AI 计算最优会合城市，综合交通/预算/体验多维评分。', h:'/08/web/midpoint/',  tag:'多人规划', cta:'体验 Demo'},
-  {cls:'ac-recap',    em:'📊✨', t:'AI 行程复盘',       d:'旅行结束自动生成 Travel Report，时间轴+统计+可分享小红书长图。',        h:'/08/web/recap/',    tag:'闭环能力', cta:'体验 Demo'},
-  {cls:'ac-radar',    em:'🛰️⚡', t:'AI 实时出行雷达',   d:'天气/限流/交通实时监测，风险高亮预警，AI 一键重排当天路线。',            h:'/08/web/radar/',    tag:'动态规划', cta:'体验 Demo'},
+  {cls:'ac-compare',  em:'🗺️⚡', t:'AI 多方案对比',     d:'A/B/C三套旅行方案横向并排，预算/效率/体验三策略一次生成，支持混合优化。', h:'/08/web/compare/',   tag:'辅助决策', cta:'体验 Demo'},
+  {cls:'ac-midpoint', em:'📍🤝', t:'AI 地点整理助手',   d:'多人从不同城市出发，AI 计算最优会合城市，综合交通/预算/体验多维评分。', h:'/08/web/midpoint/',  tag:'地点整理', cta:'体验 Demo'},
+  {cls:'ac-tarot',    em:'🔮✨', t:'塔罗命运旅途',       d:'手势隔空抽牌 or 鼠标点击，两套交互自选。三张牌解读旅行命运与目的地。',  h:'/08/web/tarot/',    tag:'沉浸体验', cta:'开启占卜'},
 ];
 var ACTIVITY=[
-  {cls:'ac-star',   em:'⚽🏆', t:'球星人格匹配',   d:'6题自动匹配旅行球星人格，解锁专属朝圣路线。',         h:'/08/activity/star/',      tag:'世界杯',   cta:'开始匹配'},
-  {cls:'ac-fortune', em:'🔮✨', t:'命运之地',       d:'5道玄学题，测出你和哪座城市早就注定。',               h:'/08/activity/fortune/',   tag:'玄学占卜', cta:'开始占卜'},
-  {cls:'ac-puzzle',  em:'🧩🌍', t:'风景拼图',       d:'6张世界风景图，3D立体感拼图，点击交换拼完为止。',     h:'/08/activity/puzzle/',    tag:'益智游戏', cta:'开始拼图'},
-  {cls:'ac-mystic',  em:'📜🕯️', t:'问天机',         d:'三种玄学仪式，测出你的命定旅行目的地。',               h:'/08/activity/mystic/',    tag:'玄学仪式', cta:'问天机'},
-  {cls:'ac-traveler',em:'🎒🗺️', t:'旅行达人鉴定',   d:'最多4人测出旅行角色，揭晓团队默契值。',               h:'/08/activity/traveler/',  tag:'角色鉴定', cta:'开始鉴定'},
-  {cls:'ac-footprint',em:'🌍✈️', t:'我的旅行足迹',  d:'标记去过的城市，生成专属旅行卡片，一键分享。',        h:'/08/activity/footprint/', tag:'UGC足迹',  cta:'开始打卡'},
-  {cls:'ac-monopoly', em:'🎲🏆', t:'旅行大富翁',    d:'掷骰子探索城市，触发旅行事件，解锁旅行段位。',        h:'/08/activity/monopoly/',  tag:'小游戏',   cta:'开始游戏'},
-  {cls:'ac-coming',   em:'✦',   t:'更多即将到来',   d:'新的互动 Demo 正在制作中……',                           h:'#',                       tag:'敬请期待', cta:'', isComing:true}
+  {cls:'ac-mystic',  em:'🔮✨🕯️', t:'命运之地 × 问天机', d:'城市命运测定 + 三式仪式问卜，两套玄学体验合一入口。',  h:'/08/activity/fortune/',   tag:'玄学占卜', cta:'开始占卜'},
+  {cls:'ac-traveler',em:'🎒🗺️', t:'旅行达人鉴定',       d:'最多4人测出旅行角色，揭晓团队默契值。',                  h:'/08/activity/traveler/',  tag:'角色鉴定', cta:'开始鉴定'},
+  {cls:'ac-footprint',em:'🌍✈️', t:'我的旅行足迹',      d:'标记去过的城市，生成专属旅行卡片，一键分享。',            h:'/08/activity/footprint/', tag:'UGC足迹',  cta:'开始打卡'},
 ];
 
 /* ── Card renderer ── */
