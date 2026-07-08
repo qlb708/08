@@ -14,7 +14,6 @@
 html{-webkit-font-smoothing:antialiased}
 body{font-family:var(--font);background:linear-gradient(160deg,#EBF8FF 0%,#F0F9FF 50%,#F8FBFF 100%);min-height:100vh;color:var(--text)}
 
-/* NAV */
 nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(56,189,248,0.15);display:flex;align-items:center;padding:0 48px;gap:16px;position:sticky;top:0;z-index:100}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
 .logo-mark{width:28px;height:28px;background:linear-gradient(135deg,#38BDF8,#0EA5E9);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
@@ -26,7 +25,6 @@ nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);bor
 .nav-btn{font-size:13px;background:var(--blue-dark);color:#fff;padding:7px 16px;border-radius:20px;text-decoration:none;font-weight:500;transition:background .15s}
 .nav-btn:hover{background:#0284C7}
 
-/* HERO */
 .hero{text-align:center;padding:72px 48px 48px}
 .hero-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--blue-dark);background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);padding:5px 14px;border-radius:20px;margin-bottom:20px}
 .hero h1{font-size:40px;font-weight:800;letter-spacing:-.03em;color:var(--text);line-height:1.15;margin-bottom:14px}
@@ -34,8 +32,7 @@ nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);bor
 .hero p{font-size:16px;color:var(--soft);max-width:560px;margin:0 auto 12px;line-height:1.7}
 .hero-note{font-size:13px;color:var(--muted)}
 
-/* GRID */
-.grid{max-width:1200px;margin:0 auto;padding:0 48px 80px;display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid{max-width:1200px;margin:0 auto;padding:0 48px 80px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 
 .demo-card{background:var(--white);border-radius:20px;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;box-shadow:0 2px 16px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);transition:transform .2s,box-shadow .2s;border:1px solid rgba(226,232,240,0.6)}
 .demo-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(56,189,248,.15),0 4px 12px rgba(0,0,0,.06)}
@@ -43,28 +40,29 @@ nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);bor
 .card-cover{height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .cover-a{background:linear-gradient(135deg,#E0F2FE,#BAE6FD)}
 .cover-b{background:linear-gradient(135deg,#F0FDF4,#BBF7D0)}
-.cover-c{background:linear-gradient(135deg,#F5F3FF,#DDD6FE)}
-.cover-d{background:linear-gradient(135deg,#FFF7ED,#FED7AA)}
+.cover-mystic{background:linear-gradient(135deg,#1a1a2e 0%,#2d1b69 50%,#3b0764 100%)}
 
 .cover-inner{text-align:center}
 .cover-emoji{font-size:52px;display:block;margin-bottom:8px}
 .cover-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;color:var(--text)}
+.cover-mystic .cover-label{color:#fff}
 
 .card-rank{position:absolute;top:14px;left:14px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);font-size:11px;font-weight:700;color:var(--blue-dark);padding:3px 10px;border-radius:20px;letter-spacing:.04em}
 .card-star{position:absolute;top:14px;right:14px;font-size:12px;color:#F59E0B}
 
 .card-body{padding:22px 24px 20px;flex:1;display:flex;flex-direction:column}
 .card-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-dark);background:rgba(56,189,248,.1);padding:3px 9px;border-radius:20px;margin-bottom:10px;width:fit-content}
+.card-tag.mystic-tag{color:#a78bfa;background:rgba(167,139,250,.12)}
 .card-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-.02em}
 .card-desc{font-size:14px;color:var(--soft);line-height:1.65;flex:1;margin-bottom:16px}
 .card-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
 .feat{font-size:11px;background:#F8FAFC;border:1px solid var(--line);border-radius:20px;padding:3px 10px;color:var(--soft)}
 .card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--line)}
 .card-cta{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--blue-dark);transition:gap .15s}
+.card-cta.mystic-cta{color:#7c3aed}
 .demo-card:hover .card-cta{gap:10px}
 .card-platform{font-size:11px;color:var(--muted);background:#F8FAFC;padding:3px 10px;border-radius:20px;border:1px solid var(--line)}
 
-/* BOTTOM */
 .bottom{text-align:center;padding:0 48px 60px;font-size:13px;color:var(--muted)}
 .back-link{color:var(--blue-dark);text-decoration:none;font-weight:500}
 .back-link:hover{text-decoration:underline}
@@ -85,7 +83,7 @@ nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);bor
 </nav>
 
 <div class="hero">
-  <div class="hero-badge">✦ PC Web MVP · 4 个核心功能</div>
+  <div class="hero-badge">✦ PC Web MVP · 3 个核心功能</div>
   <h1>旅行规划产品<br><span>Web 端功能 Demo</span></h1>
   <p>基于 PC 大屏优势设计的核心功能原型，每个 Demo 都是完整的交互 MVP，可直接用于产品提案与用户验证。</p>
   <div class="hero-note">纯前端实现 · 模拟数据 · 完整交互逻辑</div>
@@ -103,7 +101,7 @@ nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);bor
       </div>
     </div>
     <div class="card-body">
-      <div class="card-tag">⚡ 最推荐</div>
+      <div class="card-tag">⚡ 辅助决策</div>
       <div class="card-title">AI 多方案对比</div>
       <div class="card-desc">一次生成 A/B/C 三套方案，PC 大屏横向并排对比预算、路线、景点数量，支持混合优化生成最终版本。</div>
       <div class="card-features">
@@ -120,8 +118,8 @@ nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);bor
   </a>
 
   <a class="demo-card" href="/08/web/midpoint/">
-    <div class="card-cover cover-d">
-      <span class="card-rank">TOP 4</span>
+    <div class="card-cover cover-b">
+      <span class="card-rank">TOP 2</span>
       <span class="card-star">★★★★★</span>
       <div class="cover-inner">
         <span class="cover-emoji">📍</span>
@@ -129,7 +127,7 @@ nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);bor
       </div>
     </div>
     <div class="card-body">
-      <div class="card-tag">💡 最有趣</div>
+      <div class="card-tag">💡 地点整理</div>
       <div class="card-title">AI 中间点妥协规划</div>
       <div class="card-desc">多人从不同城市出发，AI 计算最优会合地点，综合机票价格、高铁时间、旅行体验多维评分，找到让所有人都满意的目的地。</div>
       <div class="card-features">
@@ -145,53 +143,27 @@ nav{height:60px;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);bor
     </div>
   </a>
 
-  <a class="demo-card" href="/08/web/recap/">
-    <div class="card-cover cover-b">
-      <span class="card-rank">TOP 2</span>
-      <span class="card-star">★★★★</span>
-      <div class="cover-inner">
-        <span class="cover-emoji">📊</span>
-        <span class="cover-label">Travel Recap</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-tag">🔄 闭环能力</div>
-      <div class="card-title">AI 行程复盘</div>
-      <div class="card-desc">旅行结束后自动生成 Travel Report，时间轴 + 路线地图 + 数据统计 + 偏好分析，可一键生成可分享到小红书的旅行长图。</div>
-      <div class="card-features">
-        <span class="feat">行程时间轴</span>
-        <span class="feat">数据可视化</span>
-        <span class="feat">偏好分析</span>
-        <span class="feat">生成分享长图</span>
-      </div>
-      <div class="card-footer">
-        <span class="card-cta">进入 Demo →</span>
-        <span class="card-platform">PC Web</span>
-      </div>
-    </div>
-  </a>
-
-  <a class="demo-card" href="/08/web/radar/">
-    <div class="card-cover cover-c">
+  <a class="demo-card" href="/08/web/tarot/">
+    <div class="card-cover cover-mystic">
       <span class="card-rank">TOP 3</span>
-      <span class="card-star">★★★★</span>
+      <span class="card-star" style="color:#a78bfa">✦✦✦✦✦</span>
       <div class="cover-inner">
-        <span class="cover-emoji">🛰️</span>
-        <span class="cover-label">Live Travel Radar</span>
+        <span class="cover-emoji">🔮</span>
+        <span class="cover-label" style="color:rgba(255,255,255,.5)">Tarot Journey</span>
       </div>
     </div>
     <div class="card-body">
-      <div class="card-tag">⚡ 动态规划</div>
-      <div class="card-title">AI 实时出行雷达</div>
-      <div class="card-desc">行程页面右侧常驻雷达模块，实时监测天气、人流热度、景区限流、交通拥堵，出现风险主动提醒并给出 AI 调整方案。</div>
+      <div class="card-tag mystic-tag">✨ 沉浸体验</div>
+      <div class="card-title">塔罗命运旅途</div>
+      <div class="card-desc">手势隔空抽牌 or 鼠标点击，两套交互自选。摄像头 + MediaPipe 手势识别，或纯鼠标完成占卜，解读旅行命运与目的地。</div>
       <div class="card-features">
-        <span class="feat">天气降雨预警</span>
-        <span class="feat">人流热度监测</span>
-        <span class="feat">AI 行程重排</span>
-        <span class="feat">风险等级仪表盘</span>
+        <span class="feat">手势模式</span>
+        <span class="feat">鼠标模式</span>
+        <span class="feat">3D 翻牌特效</span>
+        <span class="feat">旅行解读</span>
       </div>
       <div class="card-footer">
-        <span class="card-cta">进入 Demo →</span>
+        <span class="card-cta mystic-cta">开启占卜 →</span>
         <span class="card-platform">PC Web</span>
       </div>
     </div>
