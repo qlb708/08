@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>塔罗命运旅途 · 旅行规划产品</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d0d1a;--card-bg:#1a1a2e;--purple:#7c3aed;--purple-light:#a78bfa;
+  --gold:#f59e0b;--white:#fff;--soft:rgba(255,255,255,.6);--muted:rgba(255,255,255,.35);
+  --font:-apple-system,"PingFang SC","Inter","Helvetica Neue",sans-serif;
+}
+html{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden}
+
+/* ─── STARS BG ─── */
+#stars-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ─── NAV ─── */
+nav{position:fixed;top:0;inset-x:0;height:56px;background:rgba(13,13,26,.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(167,139,250,.15);display:flex;align-items:center;
+  padding:0 32px;gap:12px;z-index:200}
+.nav-back{font-size:13px;color:var(--purple-light);text-decoration:none;
+  padding:5px 12px;border-radius:16px;border:1px solid rgba(167,139,250,.25);
+  transition:all .2s;display:flex;align-items:center;gap:4px}
+.nav-back:hover{background:rgba(167,139,250,.1)}
+.nav-title{font-size:14px;font-weight:600;color:var(--white);margin-left:4px;letter-spacing:.02em}
+.nav-mode-badge{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.06em;
+  padding:4px 12px;border-radius:20px;border:1px solid rgba(167,139,250,.3);
+  color:var(--purple-light);background:rgba(124,58,237,.12);display:none}
+.nav-mode-badge.show{display:block}
+
+/* ─── MODE SELECT SCREEN ─── */
+#mode-screen{position:relative;z-index:10;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 40px}
+.mode-badge{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--purple-light);background:rgba(124,58,237,.2);border:1px solid rgba(167,139,250,.25);
+  padding:5px 16px;border-radius:20px;margin-bottom:24px}
+.mode-title{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-.03em;
+  text-align:center;line-height:1.15;margin-bottom:12px}
+.mode-title .gold{color:var(--gold)}
+.mode-sub{font-size:15px;color:var(--soft);text-align:center;margin-bottom:48px;line-height:1.7;max-width:480px}
+
+.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:720px;width:100%;margin-bottom:32px}
+.mode-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:32px 28px;cursor:pointer;transition:all .25s;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;
+  position:relative;overflow:hidden}
+.mode-card::before{content:'';position:absolute;inset:0;border-radius:20px;
+  background:linear-gradient(135deg,rgba(124,58,237,.15),transparent);opacity:0;transition:opacity .3s}
+.mode-card:hover{border-color:rgba(167,139,250,.5);transform:translateY(-4px);
+  box-shadow:0 16px 48px rgba(124,58,237,.25)}
+.mode-card:hover::before{opacity:1}
+.mode-card.selected{border-color:var(--purple-light);background:rgba(124,58,237,.2);
+  box-shadow:0 0 0 2px rgba(167,139,250,.3),0 16px 48px rgba(124,58,237,.3)}
+.mode-icon{font-size:48px;filter:drop-shadow(0 0 12px rgba(167,139,250,.5))}
+.mode-name{font-size:18px;font-weight:700;color:var(--white)}
+.mode-desc{font-size:13px;color:var(--soft);line-height:1.6}
+.mode-tag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;background:rgba(167,139,250,.15);color:var(--purple-light)}
+
+/* 摄像头可选项 */
+.cam-options{max-width:720px;width:100%;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 24px;
+  margin-bottom:28px;display:none}
+.cam-options.show{display:block}
+.cam-opts-title{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px}
+.cam-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cam-btn{font-size:12px;font-weight:600;padding:7px 16px;border-radius:20px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--soft);
+  transition:all .2s;display:flex;align-items:center;gap:6px}
+.cam-btn:hover{border-color:rgba(167,139,250,.4);color:var(--purple-light)}
+.cam-btn.active{border-color:var(--purple-light);background:rgba(124,58,237,.2);color:var(--purple-light)}
+.cam-hint{font-size:11px;color:var(--muted);margin-left:auto}
+
+.start-btn{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;
+  font-size:16px;font-weight:700;padding:16px 48px;border-radius:100px;border:none;
+  cursor:pointer;transition:all .25s;letter-spacing:.02em;
+  box-shadow:0 8px 32px rgba(124,58,237,.4);display:flex;align-items:center;gap:8px}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(124,58,237,.5)}
+.start-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ─── MAIN APP ─── */
+#app{display:none;position:relative;z-index:10;padding-top:56px;min-height:100vh}
+
+/* Loading */
+#loading-screen{position:fixed;inset:0;z-index:300;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+#loading-screen.hidden{display:none}
+.loading-orb{width:72px;height:72px;border-radius:50%;border:3px solid rgba(167,139,250,.2);
+  border-top-color:var(--purple-light);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:var(--soft);letter-spacing:.06em}
+
+/* Camera area */
+#cam-area{position:relative;width:100%;max-width:1200px;margin:0 auto;
+  padding:24px 32px 0;display:flex;gap:24px;align-items:flex-start}
+#cam-wrapper{position:relative;width:280px;flex-shrink:0;border-radius:16px;overflow:hidden;
+  background:#000;border:1px solid rgba(167,139,250,.2)}
+#cam-wrapper.hidden{display:none}
+#cam-video{width:100%;display:block;transform:scaleX(-1)}
+#cam-overlay{position:absolute;inset:0;pointer-events:none}
+.cam-controls{display:flex;gap:8px;padding:10px;background:rgba(0,0,0,.5);
+  border-top:1px solid rgba(255,255,255,.08)}
+.cam-ctrl-btn{flex:1;font-size:11px;font-weight:600;padding:6px 0;border-radius:10px;
+  border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);
+  color:var(--soft);cursor:pointer;transition:all .2s}
+.cam-ctrl-btn:hover{border-color:rgba(167,139,250,.4);color:var(--purple-light)}
+#gesture-status{padding:8px 12px;font-size:11px;color:var(--muted);text-align:center;
+  background:rgba(0,0,0,.3);border-top:1px solid rgba(255,255,255,.06)}
+
+/* 无摄像头 / 鼠标模式提示条 */
+#mouse-mode-bar{max-width:1200px;margin:24px auto 0;padding:0 32px;display:none}
+#mouse-mode-bar.show{display:block}
+.mode-bar-inner{background:rgba(124,58,237,.15);border:1px solid rgba(167,139,250,.25);
+  border-radius:12px;padding:12px 20px;font-size:13px;color:var(--purple-light);
+  display:flex;align-items:center;gap:8px}
+
+/* Stage - card carousel */
+#stage-area{flex:1;min-width:0}
+.stage-title{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:8px}
+.stage-sub{font-size:14px;color:var(--soft);margin-bottom:20px;line-height:1.6}
+#picked-slots{display:flex;gap:12px;margin-bottom:24px}
+.slot{width:70px;height:100px;border-radius:10px;border:2px dashed rgba(167,139,250,.3);
+  display:flex;align-items:center;justify-content:center;transition:all .3s;position:relative}
+.slot.filled{border-style:solid;border-color:var(--purple-light);background:rgba(124,58,237,.15)}
+.slot-label{position:absolute;bottom:-20px;font-size:10px;color:var(--muted);width:max-content;left:50%;transform:translateX(-50%)}
+.slot-emoji{font-size:28px}
+
+/* Carousel */
+#carousel-wrap{width:100%;overflow:hidden;position:relative;height:240px;perspective:800px}
+#carousel{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.tarot-card{position:absolute;width:110px;height:180px;border-radius:12px;
+  cursor:pointer;transform-style:preserve-3d;transition:all .4s;
+  top:50%;margin-top:-90px}
+.tarot-card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s}
+.tarot-card.flipped .tarot-card-inner{transform:rotateY(180deg)}
+.card-front,.card-back{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.card-back{background:linear-gradient(135deg,#1a1a2e,#2d1b69);
+  border:1px solid rgba(167,139,250,.3);font-size:28px}
+.card-back::after{content:'✦';position:absolute;font-size:60px;color:rgba(167,139,250,.06)}
+.card-front{background:linear-gradient(135deg,#16213e,#0f3460);
+  border:1px solid rgba(167,139,250,.5);transform:rotateY(180deg);padding:12px}
+.card-front .cf-name{font-size:11px;font-weight:700;color:var(--purple-light);text-align:center;line-height:1.3}
+.card-front .cf-emoji{font-size:32px}
+
+.tarot-card:hover .card-back{border-color:rgba(167,139,250,.7);
+  box-shadow:0 0 24px rgba(124,58,237,.4)}
+.tarot-card.selected-glow .card-back{border-color:var(--gold);
+  box-shadow:0 0 32px rgba(245,158,11,.5)}
+
+/* RESULT */
+#result-screen{display:none;max-width:1200px;margin:0 auto;padding:32px}
+#result-screen.show{display:block}
+.result-title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.result-quote{font-size:14px;color:var(--soft);margin-bottom:32px;line-height:1.7;max-width:500px}
+.result-cards{display:flex;gap:20px;margin-bottom:32px;flex-wrap:wrap}
+.result-card{flex:1;min-width:200px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(167,139,250,.2);border-radius:16px;padding:24px;text-align:center}
+.rc-pos{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px}
+.rc-emoji{font-size:40px;margin-bottom:8px;display:block}
+.rc-name{font-size:16px;font-weight:700;color:var(--purple-light);margin-bottom:6px}
+.rc-reading{font-size:13px;color:var(--soft);line-height:1.65}
+.result-dest{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(91,33,182,.1));
+  border:1px solid rgba(167,139,250,.3);border-radius:16px;padding:24px;margin-bottom:24px}
+.dest-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--purple-light);margin-bottom:8px}
+.dest-name{font-size:24px;font-weight:800;margin-bottom:6px}
+.dest-desc{font-size:13px;color:var(--soft);line-height:1.7}
+.result-actions{display:flex;gap:12px}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;
+  font-size:14px;font-weight:600;padding:12px 28px;border-radius:100px;border:none;cursor:pointer;transition:all .2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.4)}
+.btn-ghost{background:transparent;color:var(--soft);font-size:14px;font-weight:600;
+  padding:12px 28px;border-radius:100px;border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:all .2s}
+.btn-ghost:hover{border-color:rgba(167,139,250,.4);color:var(--purple-light)}
+
+/* Fullscreen carousel for mouse mode */
+#carousel-section{max-width:1200px;margin:0 auto;padding:0 32px}
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="/08/web/" class="nav-back">← Web Demo</a>
+  <span class="nav-title">🔮 塔罗命运旅途</span>
+  <span class="nav-mode-badge" id="nav-mode-badge"></span>
+</nav>
+
+<!-- LOADING -->
+<div id="loading-screen" class="hidden">
+  <div class="loading-orb"></div>
+  <div class="loading-text" id="loading-text">唤醒塔罗牌灵…</div>
+</div>
+
+<!-- ─── MODE SELECT ─── -->
+<div id="mode-screen">
+  <div class="mode-badge">✦ 选择你的占卜方式</div>
+  <h1 class="mode-title">命运<span class="gold">旅</span>途</h1>
+  <p class="mode-sub">三张牌，揭示你的旅行命运<br>选择你想要的交互方式，开始这场仪式</p>
+
+  <div class="mode-cards">
+    <div class="mode-card" id="card-gesture" onclick="selectMode('gesture')">
+      <div class="mode-icon">🖐️</div>
+      <div class="mode-tag">沉浸体验</div>
+      <div class="mode-name">手势模式</div>
+      <div class="mode-desc">摄像头 + MediaPipe 手势识别<br>握拳选牌，张手翻开命运</div>
+    </div>
+    <div class="mode-card" id="card-mouse" onclick="selectMode('mouse')">
+      <div class="mode-icon">🖱️</div>
+      <div class="mode-tag">快捷体验</div>
+      <div class="mode-name">鼠标模式</div>
+      <div class="mode-desc">无需摄像头授权<br>悬停高亮，点击即可抽牌</div>
+    </div>
+  </div>
+
+  <!-- 摄像头配置（仅手势模式显示） -->
+  <div class="cam-options" id="cam-options">
+    <div class="cam-opts-title">摄像头设置</div>
+    <div class="cam-row">
+      <button class="cam-btn active" id="btn-cam-front" onclick="setCamFacing('user')">📷 前置摄像头</button>
+      <button class="cam-btn" id="btn-cam-back" onclick="setCamFacing('environment')">📸 后置摄像头</button>
+      <span class="cam-hint">可在占卜中途切换</span>
+    </div>
+  </div>
+
+  <button class="start-btn" id="start-btn" onclick="startApp()" disabled>
+    <span>✦</span><span id="start-label">请先选择模式</span>
+  </button>
+</div>
+
+<!-- ─── MAIN APP ─── -->
+<div id="app">
+
+  <!-- 鼠标模式提示条 -->
+  <div id="mouse-mode-bar">
+    <div class="mode-bar-inner">🖱️ 鼠标模式 · 悬停卡牌高亮，点击抽取，共需选 3 张</div>
+  </div>
+
+  <!-- 摄像头 + 卡牌区 -->
+  <div id="cam-area">
+
+    <!-- 摄像头（手势模式） -->
+    <div id="cam-wrapper">
+      <video id="cam-video" autoplay playsinline muted></video>
+      <canvas id="cam-overlay"></canvas>
+      <div class="cam-controls">
+        <button class="cam-ctrl-btn" onclick="switchCamera()">🔄 切换摄像头</button>
+        <button class="cam-ctrl-btn" onclick="toggleCamera()">⏸ 暂停</button>
+      </div>
+      <div id="gesture-status">识别中…</div>
+    </div>
+
+    <!-- 抽取槽 + 指引 -->
+    <div id="stage-area">
+      <div class="stage-title">命运三牌阵</div>
+      <div class="stage-sub" id="stage-sub">从下方旋转木马中选取 3 张塔罗牌，揭示你的旅行命运</div>
+      <div id="picked-slots">
+        <div class="slot" id="slot-0"><span class="slot-emoji" style="display:none">✦</span><span class="slot-label">过去</span></div>
+        <div class="slot" id="slot-1"><span class="slot-emoji" style="display:none">✦</span><span class="slot-label">现在</span></div>
+        <div class="slot" id="slot-2"><span class="slot-emoji" style="display:none">✦</span><span class="slot-label">未来</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 轮播木马 -->
+  <div id="carousel-section">
+    <div id="carousel-wrap">
+      <div id="carousel"></div>
+    </div>
+    <!-- 鼠标模式导航 -->
+    <div id="mouse-nav" style="display:none;justify-content:center;gap:16px;margin-top:16px">
+      <button class="btn-ghost" style="padding:8px 20px;font-size:13px" onclick="rotatePrev()">← 上一张</button>
+      <button class="btn-ghost" style="padding:8px 20px;font-size:13px" onclick="rotateNext()">下一张 →</button>
+    </div>
+  </div>
+
+  <!-- 结果页 -->
+  <div id="result-screen">
+    <div class="result-title">✦ 命运已揭晓</div>
+    <div class="result-quote" id="result-quote"></div>
+    <div class="result-cards" id="result-cards"></div>
+    <div class="result-dest" id="result-dest"></div>
+    <div class="result-actions">
+      <button class="btn-primary" onclick="resetAll()">🔮 重新占卜</button>
+      <button class="btn-ghost" onclick="switchModeFromResult()">⇄ 换个模式</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── STARS ───
+(function(){
+  const c=document.getElementById('stars-canvas');
+  const ctx=c.getContext('2d');
+  let stars=[];
+  function resize(){c.width=window.innerWidth;c.height=window.innerHeight;init()}
+  function init(){stars=[];for(let i=0;i<180;i++)stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.2+.2,a:Math.random(),da:(Math.random()-.5)*.008})}
+  function draw(){ctx.clearRect(0,0,c.width,c.height);stars.forEach(s=>{s.a=Math.max(.05,Math.min(1,s.a+s.da));if(s.a<=.05||s.a>=1)s.da*=-1;ctx.globalAlpha=s.a;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;requestAnimationFrame(draw)}
+  window.addEventListener('resize',resize);resize();draw();
+})();
+
+// ─── TAROT DATA ───
+const CARDS=[
+  {id:1,emoji:'🌟',name:'星辰指引',reading:'命运之光为你照亮前路，此行必有意外之喜'},
+  {id:2,emoji:'🌙',name:'月光仪式',reading:'在静谧中感受内心的声音，旅途是一场自我对话'},
+  {id:3,emoji:'🔮',name:'命运之眼',reading:'你将遇见一个改变你旅行观的人或地方'},
+  {id:4,emoji:'⚡',name:'雷霆启示',reading:'大胆迈出第一步，命运为勇敢者预留惊喜'},
+  {id:5,emoji:'🌊',name:'潮汐之力',reading:'顺势而为，最美的风景总在计划之外'},
+  {id:6,emoji:'🦋',name:'蜕变之路',reading:'这段旅程将让你脱胎换骨，带着新的眼光归来'},
+  {id:7,emoji:'🌺',name:'繁花盛开',reading:'沿途的美好会超越你的想象，请放慢脚步'},
+  {id:8,emoji:'🗝️',name:'命运之钥',reading:'一扇意想不到的门将为你打开'},
+  {id:9,emoji:'🌈',name:'彩虹彼端',reading:'穿越迷雾之后，是属于你的璀璨时刻'},
+  {id:10,emoji:'🦅',name:'苍鹰翱翔',reading:'以更高的视角看世界，你会发现全新的自己'},
+  {id:11,emoji:'🌙',name:'圆月之夜',reading:'在异乡的月色下，你会找到久违的平静'},
+  {id:12,emoji:'🎴',name:'命定时刻',reading:'某个瞬间将永远留在你的记忆深处'},
+];
+
+const DESTINATIONS=[
+  {name:'🏔️ 西藏拉萨',desc:'星空之下，找到心灵的净土。这片高原为你准备了最纯粹的震撼。'},
+  {name:'🌊 三亚亚龙湾',desc:'碧海蓝天，洗去一切疲惫。阳光与海浪将为你的命运带来转机。'},
+  {name:'🌸 云南大理',desc:'苍山洱海，时光在此悄然放慢。你将在这里找到失落已久的悠然。'},
+  {name:'🏙️ 成都天府',desc:'慢生活的艺术在这里被发挥极致。烟火人间，正是你所缺少的温度。'},
+  {name:'🌿 贵州黔东南',desc:'古老的村寨与自然秘境等待着你。最真实的人间烟火藏于此处。'},
+  {name:'🗻 新疆北疆',desc:'壮阔的山川草原将重塑你对自由的定义。此行，你会爱上辽阔。'},
+];
+
+const SLOT_LABELS=['过去·根源','现在·当下','未来·命运'];
+const RESULT_QUOTES=[
+  '三张牌已定，你的旅途命运浮现于星光之中…',
+  '牌阵已铺开，过去滋养现在，现在孕育未来…',
+  '命运的线索已在手中，此行将是一次灵魂的旅程…',
+];
+
+// ─── STATE ───
+let currentMode='';       // 'gesture' | 'mouse'
+let camFacing='user';
+let stream=null;
+let camPaused=false;
+let carouselAngle=0;
+let TOTAL_CARDS=CARDS.length;
+let selectedCards=[];     // [{cardIdx, slotIdx}]
+let centerCardIdx=0;
+let gestureActive=false;
+let handDetector=null;
+let gestureFrame=null;
+
+// ─── MODE SELECT ───
+function selectMode(m){
+  currentMode=m;
+  document.getElementById('card-gesture').classList.toggle('selected',m==='gesture');
+  document.getElementById('card-mouse').classList.toggle('selected',m==='mouse');
+  document.getElementById('cam-options').classList.toggle('show',m==='gesture');
+  const btn=document.getElementById('start-btn');
+  btn.disabled=false;
+  document.getElementById('start-label').textContent=m==='gesture'?'🖐 开启手势占卜':'🖱 开启点击占卜';
+}
+
+function setCamFacing(f){
+  camFacing=f;
+  document.getElementById('btn-cam-front').classList.toggle('active',f==='user');
+  document.getElementById('btn-cam-back').classList.toggle('active',f==='environment');
+}
+
+async function startApp(){
+  document.getElementById('mode-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  const badge=document.getElementById('nav-mode-badge');
+  badge.textContent=currentMode==='gesture'?'🖐 手势模式':'🖱 鼠标模式';
+  badge.classList.add('show');
+  buildCarousel();
+  if(currentMode==='gesture'){
+    await initGestureMode();
+  } else {
+    initMouseMode();
+  }
+}
+
+// ─── CAROUSEL ───
+function buildCarousel(){
+  const c=document.getElementById('carousel');
+  c.innerHTML='';
+  const R=320;
+  CARDS.forEach((card,i)=>{
+    const el=document.createElement('div');
+    el.className='tarot-card';
+    el.dataset.idx=i;
+    el.innerHTML=`<div class="tarot-card-inner">
+      <div class="card-back">${card.emoji}</div>
+      <div class="card-front"><div class="cf-emoji">${card.emoji}</div><div class="cf-name">${card.name}</div></div>
+    </div>`;
+    el.addEventListener('click',()=>onCardClick(i));
+    c.appendChild(el);
+  });
+  updateCarousel();
+}
+
+function updateCarousel(){
+  const cards=document.querySelectorAll('.tarot-card');
+  const total=cards.length;
+  const R=260;
+  cards.forEach((card,i)=>{
+    const angle=(carouselAngle+(i/total)*360)*Math.PI/180;
+    const x=Math.sin(angle)*R;
+    const z=Math.cos(angle)*R;
+    const scale=0.55+0.45*((z+R)/(2*R));
+    const opacity=0.3+0.7*((z+R)/(2*R));
+    card.style.transform=`translateX(calc(50% - 55px + ${x}px)) scale(${scale})`;
+    card.style.zIndex=Math.round(scale*100);
+    card.style.opacity=opacity;
+    const isCenter=Math.abs(x)<60 && z>0;
+    card.classList.toggle('selected-glow',isCenter && !isSelected(i));
+    if(isCenter)centerCardIdx=i;
+  });
+}
+
+function isSelected(idx){return selectedCards.some(s=>s.cardIdx===idx)}
+
+function rotateTo(idx){
+  const total=CARDS.length;
+  const target=-(idx/total)*360;
+  carouselAngle=target;
+  updateCarousel();
+}
+
+function rotateNext(){carouselAngle-=360/CARDS.length;updateCarousel()}
+function rotatePrev(){carouselAngle+=360/CARDS.length;updateCarousel()}
+
+function onCardClick(idx){
+  if(isSelected(idx)||selectedCards.length>=3)return;
+  pickCard(idx);
+}
+
+function pickCard(idx){
+  if(isSelected(idx)||selectedCards.length>=3)return;
+  const slotIdx=selectedCards.length;
+  selectedCards.push({cardIdx:idx,slotIdx});
+  // flip card
+  const cardEl=document.querySelector(`.tarot-card[data-idx="${idx}"]`);
+  if(cardEl)cardEl.classList.add('flipped');
+  // fill slot
+  const slot=document.getElementById(`slot-${slotIdx}`);
+  slot.classList.add('filled');
+  slot.querySelector('.slot-emoji').style.display='block';
+  slot.querySelector('.slot-emoji').textContent=CARDS[idx].emoji;
+  // update sub
+  const subs=['选第 2 张：揭示你当下的状态','选第 3 张：看见你旅途的未来','三牌已定，正在解读命运…'];
+  if(selectedCards.length<3){
+    document.getElementById('stage-sub').textContent=subs[selectedCards.length-1];
+  } else {
+    setTimeout(showResult,1200);
+  }
+}
+
+// ─── MOUSE MODE ───
+function initMouseMode(){
+  document.getElementById('cam-wrapper').classList.add('hidden');
+  document.getElementById('mouse-mode-bar').classList.add('show');
+  document.getElementById('mouse-nav').style.display='flex';
+  // 让 cam-area 占满
+  document.getElementById('cam-area').style.flexDirection='column';
+  document.getElementById('stage-area').style.marginTop='16px';
+}
+
+// ─── GESTURE MODE ───
+async function initGestureMode(){
+  const loading=document.getElementById('loading-screen');
+  loading.classList.remove('hidden');
+  document.getElementById('loading-text').textContent='正在初始化摄像头…';
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing,width:{ideal:480},height:{ideal:360}}});
+    const video=document.getElementById('cam-video');
+    video.srcObject=stream;
+    await new Promise(r=>video.onloadedmetadata=r);
+    document.getElementById('loading-text').textContent='加载手势识别模型…';
+    // 尝试加载 MediaPipe（若失败则降级鼠标模式）
+    try{
+      await loadMediaPipe();
+      startGestureLoop();
+      document.getElementById('gesture-status').textContent='👋 张开手掌 → 高亮 | ✊ 握拳 → 抽牌';
+    }catch(e){
+      console.warn('MediaPipe 加载失败，降级为鼠标模式',e);
+      degradeToMouse();
+    }
+  }catch(e){
+    console.warn('摄像头授权失败，降级为鼠标模式',e);
+    degradeToMouse();
+  }
+  loading.classList.add('hidden');
+}
+
+function degradeToMouse(){
+  document.getElementById('cam-wrapper').classList.add('hidden');
+  const bar=document.getElementById('mouse-mode-bar');
+  bar.classList.add('show');
+  bar.querySelector('.mode-bar-inner').innerHTML='⚠️ 摄像头不可用，已自动切换为鼠标模式';
+  document.getElementById('mouse-nav').style.display='flex';
+  document.getElementById('gesture-status').textContent='已降级为鼠标模式';
+  currentMode='mouse';
+  document.getElementById('nav-mode-badge').textContent='🖱 鼠标模式（降级）';
+}
+
+async function loadMediaPipe(){
+  // 动态加载 MediaPipe Hands
+  await new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js';
+    s.onload=resolve; s.onerror=reject;
+    document.head.appendChild(s);
+  });
+  await new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js';
+    s.onload=resolve; s.onerror=reject;
+    document.head.appendChild(s);
+  });
+  handDetector=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+  handDetector.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:0.7,minTrackingConfidence:0.6});
+  await handDetector.initialize();
+}
+
+let lastGesture='';
+let gestureHoldFrames=0;
+const HOLD_THRESHOLD=12; // ~0.4s at 30fps
+
+function startGestureLoop(){
+  const video=document.getElementById('cam-video');
+  const overlay=document.getElementById('cam-overlay');
+  const ctx=overlay.getContext('2d');
+  gestureActive=true;
+  handDetector.onResults(results=>{
+    overlay.width=video.videoWidth||480;
+    overlay.height=video.videoHeight||360;
+    ctx.clearRect(0,0,overlay.width,overlay.height);
+    if(!results.multiHandLandmarks||results.multiHandLandmarks.length===0){
+      document.getElementById('gesture-status').textContent='👋 请将手放入画面';
+      lastGesture='';gestureHoldFrames=0;return;
+    }
+    const lm=results.multiHandLandmarks[0];
+    const gesture=classifyGesture(lm);
+    drawHand(ctx,lm,overlay.width,overlay.height,gesture);
+    if(gesture===lastGesture){gestureHoldFrames++}else{gestureHoldFrames=0;lastGesture=gesture}
+    if(gesture==='open'){
+      document.getElementById('gesture-status').textContent='🖐 张开 → 悬浮选牌，握拳确认';
+      // 用手掌位置控制旋转
+      const palmX=lm[0].x; // 0~1
+      const deltaAngle=(palmX-0.5)*4;
+      carouselAngle+=deltaAngle;
+      updateCarousel();
+    } else if(gesture==='fist' && gestureHoldFrames===HOLD_THRESHOLD){
+      document.getElementById('gesture-status').textContent='✊ 抽牌！';
+      pickCard(centerCardIdx);
+      gestureHoldFrames=0;
+    } else {
+      document.getElementById('gesture-status').textContent='手势识别中…';
+    }
+  });
+  (function loop(){
+    if(!gestureActive)return;
+    if(video.readyState>=2)handDetector.send({image:video});
+    gestureFrame=requestAnimationFrame(loop);
+  })();
+}
+
+function classifyGesture(lm){
+  // 简单判断：食指/中指/无名指/小指是否伸展
+  const tips=[8,12,16,20], bases=[6,10,14,18];
+  const extended=tips.filter((t,i)=>lm[t].y<lm[bases[i]].y).length;
+  if(extended>=3)return'open';
+  if(extended===0)return'fist';
+  return'other';
+}
+
+function drawHand(ctx,lm,w,h,gesture){
+  const connections=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]];
+  ctx.strokeStyle=gesture==='fist'?'#f59e0b':'#a78bfa';
+  ctx.lineWidth=2;
+  connections.forEach(([a,b])=>{
+    ctx.beginPath();ctx.moveTo(lm[a].x*w,lm[a].y*h);ctx.lineTo(lm[b].x*w,lm[b].y*h);ctx.stroke();
+  });
+  lm.forEach(p=>{ctx.beginPath();ctx.arc(p.x*w,p.y*h,3,0,Math.PI*2);ctx.fillStyle=gesture==='fist'?'#f59e0b':'#a78bfa';ctx.fill()});
+}
+
+async function switchCamera(){
+  camFacing=camFacing==='user'?'environment':'user';
+  if(stream){stream.getTracks().forEach(t=>t.stop())}
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing,width:{ideal:480},height:{ideal:360}}});
+    document.getElementById('cam-video').srcObject=stream;
+  }catch(e){console.warn('切换摄像头失败',e)}
+}
+
+function toggleCamera(){
+  const video=document.getElementById('cam-video');
+  const btn=event.target;
+  if(camPaused){video.play();btn.textContent='⏸ 暂停';camPaused=false}
+  else{video.pause();btn.textContent='▶ 继续';camPaused=true}
+}
+
+// ─── RESULT ───
+function showResult(){
+  document.getElementById('carousel-section').style.display='none';
+  document.getElementById('cam-area').style.display='none';
+  document.getElementById('mouse-mode-bar').classList.remove('show');
+  const rs=document.getElementById('result-screen');
+  rs.classList.add('show');
+  // quote
+  document.getElementById('result-quote').textContent=RESULT_QUOTES[Math.floor(Math.random()*RESULT_QUOTES.length)];
+  // cards
+  const rcEl=document.getElementById('result-cards');
+  rcEl.innerHTML=selectedCards.map((s,i)=>`
+    <div class="result-card">
+      <div class="rc-pos">${SLOT_LABELS[i]}</div>
+      <span class="rc-emoji">${CARDS[s.cardIdx].emoji}</span>
+      <div class="rc-name">${CARDS[s.cardIdx].name}</div>
+      <div class="rc-reading">${CARDS[s.cardIdx].reading}</div>
+    </div>`).join('');
+  // destination
+  const dest=DESTINATIONS[Math.floor(Math.random()*DESTINATIONS.length)];
+  document.getElementById('result-dest').innerHTML=`
+    <div class="dest-label">✦ 命定目的地</div>
+    <div class="dest-name">${dest.name}</div>
+    <div class="dest-desc">${dest.desc}</div>`;
+  // stop gesture
+  gestureActive=false;
+  if(gestureFrame)cancelAnimationFrame(gestureFrame);
+  if(stream)stream.getTracks().forEach(t=>t.stop());
+}
+
+function resetAll(){
+  selectedCards=[];
+  carouselAngle=0;
+  centerCardIdx=0;
+  document.getElementById('result-screen').classList.remove('show');
+  document.getElementById('carousel-section').style.display='block';
+  document.getElementById('cam-area').style.display='flex';
+  document.querySelectorAll('.tarot-card').forEach(c=>c.classList.remove('flipped','selected-glow'));
+  for(let i=0;i<3;i++){
+    const s=document.getElementById(`slot-${i}`);
+    s.classList.remove('filled');
+    s.querySelector('.slot-emoji').style.display='none';
+  }
+  document.getElementById('stage-sub').textContent='从下方旋转木马中选取 3 张塔罗牌，揭示你的旅行命运';
+  updateCarousel();
+  if(currentMode==='gesture')initGestureMode();
+}
+
+function switchModeFromResult(){
+  selectedCards=[];
+  carouselAngle=0;
+  // 停止摄像头
+  gestureActive=false;
+  if(stream)stream.getTracks().forEach(t=>t.stop());
+  document.getElementById('result-screen').classList.remove('show');
+  document.getElementById('app').style.display='none';
+  document.getElementById('mode-screen').style.display='flex';
+  document.getElementById('card-gesture').classList.remove('selected');
+  document.getElementById('card-mouse').classList.remove('selected');
+  document.getElementById('cam-options').classList.remove('show');
+  document.getElementById('start-btn').disabled=true;
+  document.getElementById('start-label').textContent='请先选择模式';
+  document.getElementById('nav-mode-badge').classList.remove('show');
+  currentMode='';
+}
+</script>
+</body>
+</html>
