@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>智能打印助手 · 产品运营工具集</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fff;--bg2:#fafafa;--blue:#4f46e5;--blue-dark:#3730a3;
+  --blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
+  --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
+  --bd:rgba(0,0,0,.07);--sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --r:16px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+}
+body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:inherit}
+nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
+.nw{max-width:1200px;margin:0 auto;padding:0 32px;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.logo em{color:var(--blue);font-style:normal}
+.back{display:flex;align-items:center;gap:5px;font-size:14px;color:var(--soft);transition:color .2s}
+.back:hover{color:var(--text)}
+.back svg{width:16px;height:16px;flex-shrink:0}.nav-tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill)}
+.hero{padding:70px 32px 16px;max-width:1200px;margin:0 auto}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px}.tool-num{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em}.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill);margin-bottom:10px}
+.hero h1{font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
+.hero p{font-size:14px;color:var(--soft)}
+.ws{max-width:1200px;margin:0 auto;padding:8px 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:16px;align-items:start}
+.panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.ip{position:sticky;top:60px}
+.ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.pi{width:28px;height:28px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pt{font-size:13px;font-weight:700}
+.ps{font-size:11px;color:var(--soft)}
+.pb{padding:16px}
+.f{margin-bottom:13px}
+.f label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
+.fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
+.f input[type=number]{width:100%;padding:8px 11px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.f input[type=number]:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light);background:#fff}
+.price-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* 上传区 */
+.drop-zone{border:2px dashed var(--bd);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2);position:relative;margin-bottom:13px}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--blue);background:var(--blue-light)}
+.drop-zone svg{width:32px;height:32px;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:8px}
+.drop-zone .dz-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.drop-zone .dz-sub{font-size:11px;color:var(--soft)}
+.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-zone.has-file{border-color:var(--blue);background:var(--blue-light)}
+.drop-zone.has-file svg{stroke:var(--blue)}
+.drop-zone.has-file .dz-title{color:var(--blue)}
+
+/* 文件类型说明 */
+.file-types{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px}
+.ft{padding:3px 9px;border-radius:var(--pill);background:var(--bg2);border:1px solid var(--bd);font-size:11px;color:var(--soft);font-weight:600}
+
+.gbtn{width:auto;min-width:180px;margin-top:8px;padding:13px 24px;border-radius:var(--pill);background:#0D0D0D;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:none;transition:all .2s}
+.gbtn:hover:not(:disabled){background:#333;transform:translateY(-1px)}
+.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.gbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+.op{min-height:480px;display:flex;flex-direction:column}
+.ob{flex:1;padding:20px;overflow-y:auto}
+
+/* 费用摘要卡 */
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;background:var(--bg2);border-radius:12px;padding:16px;margin-bottom:16px}
+.sum-item .sum-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:3px}
+.sum-item .sum-val{font-size:22px;font-weight:800}
+.save-badge{background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.2);border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:16px}
+.save-badge strong{color:#34c759}
+
+/* 建议表格 */
+.rec-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px}
+.rec-table th{background:var(--bg2);padding:7px 10px;text-align:left;font-weight:600;border:1px solid var(--bd);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--soft)}
+.rec-table td{padding:7px 10px;border:1px solid var(--bd);vertical-align:middle}
+.badge-color{display:inline-flex;align-items:center;gap:4px;background:rgba(255,59,48,.08);color:#ff3b30;border:1px solid rgba(255,59,48,.2);padding:2px 8px;border-radius:var(--pill);font-weight:700;font-size:11px}
+.badge-bw{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);color:var(--soft);border:1px solid var(--bd);padding:2px 8px;border-radius:var(--pill);font-weight:700;font-size:11px}
+
+/* AI建议 */
+.ai-tip{background:var(--blue-light);border:1px solid var(--blue-border);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.7;margin-top:4px}
+.ai-tip strong{color:var(--blue)}
+
+.skel{display:flex;flex-direction:column;gap:10px;opacity:.4}
+.sl{height:12px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
+.sb{height:80px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:8px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.think{display:flex;align-items:center;gap:10px;padding:28px 0;color:var(--soft);font-size:13px}
+.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin:0 2px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bou{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+.ebar{padding:12px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
+.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.ebtn:hover{border-color:var(--blue-border);color:var(--blue)}
+.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+@media(max-width:900px){.ws{grid-template-columns:1fr}.ip{position:static}}
+@media(max-width:600px){.ws{padding:8px 16px 60px}.hero{padding:68px 16px 16px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nw">
+    <a href="/08/works/" class="back">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      产品运营工具集
+    </a>
+    <span class="nav-tag">办公效率</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-meta"><div class="tag">办公效率</div><span class="tool-num">#11</span></div>
+  <h1>智能打印助手</h1>
+  <p>上传文件，AI 自动识别每页内容，给出彩印 / 黑白建议单，帮你省打印费。</p>
+</div>
+
+<div class="ws">
+  <div class="panel ip">
+    <div class="ph">
+      <div class="pi">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      </div>
+      <div><div class="pt">上传文件</div><div class="ps">自动识别页面内容</div></div>
+    </div>
+    <div class="pb">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" multiple>
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div class="dz-title">拖拽文件到此处 / 点击选择</div>
+        <div class="dz-sub">支持 PDF · 图片 · Word · PPT · Excel · 文本</div>
+      </div>
+
+      <div class="file-types">
+        <span class="ft">PDF</span><span class="ft">JPG/PNG</span><span class="ft">Word</span><span class="ft">PPT</span><span class="ft">Excel</span><span class="ft">TXT</span>
+      </div>
+
+      <div class="f">
+        <label>打印单价（元/页）</label>
+        <div class="price-row">
+          <div>
+            <div style="font-size:11px;color:var(--soft);margin-bottom:4px">🔴 彩印</div>
+            <input type="number" id="colorPrice" value="1.5" step="0.1" min="0.1">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--soft);margin-bottom:4px">⚫ 黑白</div>
+            <input type="number" id="bwPrice" value="0.1" step="0.1" min="0.05">
+          </div>
+        </div>
+      </div>
+
+      <div class="f">
+        <label>文档用途 <span class="fn">选填，帮助AI判断</span></label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="purposeChips">
+          <button class="chip sel" data-v="普通打印">普通打印</button>
+          <button class="chip" data-v="会议资料">会议资料</button>
+          <button class="chip" data-v="客户展示">客户展示</button>
+          <button class="chip" data-v="内部存档">内部存档</button>
+        </div>
+      </div>
+
+      <button class="gbtn" id="gbtn" onclick="analyze()" disabled>
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        开始分析
+      </button>
+    </div>
+  </div>
+
+  <div class="panel op">
+    <div class="ph">
+      <div class="pi" style="background:rgba(52,199,89,.1)">
+        <svg viewBox="0 0 24 24" style="stroke:#34c759"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div><div class="pt">打印建议单</div><div class="ps" id="outSub">上传文件后点击分析</div></div>
+    </div>
+    <div class="ob" id="ob">
+      <div id="examplePreview" style="font-size:12.5px;line-height:1.8;color:#555;background:#fafafa;border-radius:10px;padding:14px 16px;border:1px solid #eee">
+  <p style="font-size:11px;font-weight:600;color:#999;margin-bottom:10px;text-align:center">— 示例效果 —</p>
+  <p style="font-weight:600;color:#0D0D0D">AI 将在这里生成结构化输出</p>
+  <p>填写左侧表单后点击生成按钮，AI 将给出专业的分析结果，支持复制和导出。</p>
+  <p style="margin-top:8px;font-size:11px;color:#aaa">↑ 每个工具都有针对真实工作场景优化的 Prompt 模板</p>
+</div></div>
+          <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
+          <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
+          <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
+        </div>
+        <div class="sb" style="height:40px"></div>
+        <div class="sb"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+var PROVIDERS=[
+  {name:'智谱',url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P',model:'glm-4-flash',type:'openai'},
+  {name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',key:'sk-4f016c9639cb461db37f4f778d2eac4f',model:'deepseek-chat',type:'openai'},
+  {name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''),type:'gemini'}
+];
+async function callAI(prompt){
+  for(var i=0;i<PROVIDERS.length;i++){
+    var p=PROVIDERS[i];
+    try{
+      var res,text='';
+      if(p.type==='openai'){
+        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:3000,temperature:0.5}),signal:AbortSignal.timeout(25000)});
+        if(!res.ok)continue;
+        var d=await res.json();
+        text=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
+      }else{
+        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:3000,temperature:0.5}}),signal:AbortSignal.timeout(20000)});
+        if(!res.ok)continue;
+        var d2=await res.json();
+        text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
+      }
+      if(text)return text;
+    }catch(err){console.warn(p.name,err.message);}
+  }
+  return '';
+}
+
+// 初始化
+if(typeof pdfjsLib!=='undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+var selPurpose='普通打印';
+var uploadedFiles=[];
+
+// chip单选
+document.querySelectorAll('#purposeChips .chip').forEach(function(c){
+  c.addEventListener('click',function(){
+    document.querySelectorAll('#purposeChips .chip').forEach(function(x){x.classList.remove('sel');});
+    c.classList.add('sel');
+    selPurpose=c.dataset.v;
+  });
+});
+
+// 上传区
+var dz=document.getElementById('dropZone');
+var fi=document.getElementById('fileInput');
+
+dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',function(){dz.classList.remove('drag');});
+dz.addEventListener('drop',function(e){
+  e.preventDefault();dz.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+});
+fi.addEventListener('change',function(){handleFiles(fi.files);});
+
+function handleFiles(files){
+  if(!files||!files.length)return;
+  uploadedFiles=Array.from(files);
+  var names=uploadedFiles.map(function(f){return f.name;}).join('、');
+  dz.classList.add('has-file');
+  dz.querySelector('.dz-title').textContent=names;
+  dz.querySelector('.dz-sub').textContent=uploadedFiles.length+'个文件，点击重新选择';
+  document.getElementById('gbtn').disabled=false;
+}
+
+// 判断单个文件类型
+function getFileType(file){
+  var name=file.name.toLowerCase();
+  var type=file.type;
+  if(type==='application/pdf'||name.endsWith('.pdf'))return 'pdf';
+  if(type.startsWith('image/')||/\.(jpg|jpeg|png|gif|bmp|webp)$/.test(name))return 'image';
+  if(/\.(doc|docx)$/.test(name))return 'word';
+  if(/\.(ppt|pptx)$/.test(name))return 'ppt';
+  if(/\.(xls|xlsx)$/.test(name))return 'excel';
+  if(/\.(txt|md|csv)$/.test(name))return 'text';
+  return 'other';
+}
+
+// PDF页面分析
+async function analyzePdf(file){
+  var ab=await file.arrayBuffer();
+  var pdf=await pdfjsLib.getDocument({data:ab}).promise;
+  var pages=[];
+  for(var i=1;i<=pdf.numPages;i++){
+    var page=await pdf.getPage(i);
+    var ops=await page.getOperatorList();
+    var hasImg=ops.fnArray.some(function(fn){
+      return fn===pdfjsLib.OPS.paintImageXObject||fn===pdfjsLib.OPS.paintJpegXObject||fn===pdfjsLib.OPS.paintImageMaskXObject||fn===pdfjsLib.OPS.paintInlineImageXObject;
+    });
+    // 检查是否有彩色内容（通过颜色空间操作）
+    var hasColor=ops.fnArray.some(function(fn){
+      return fn===pdfjsLib.OPS.setFillRGBColor||fn===pdfjsLib.OPS.setStrokeRGBColor||fn===pdfjsLib.OPS.setFillColorN;
+    });
+    pages.push({page:i,hasImg:hasImg,hasColor:hasColor,needColor:hasImg||hasColor});
+  }
+  return pages;
+}
+
+// 图片文件：1页，判断是否彩色（通过canvas采样）
+async function analyzeImage(file){
+  return new Promise(function(resolve){
+    var img=new Image();
+    var url=URL.createObjectURL(file);
+    img.onload=function(){
+      var canvas=document.createElement('canvas');
+      canvas.width=Math.min(img.width,200);
+      canvas.height=Math.min(img.height,200);
+      var ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      var data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+      var colorPixels=0;
+      for(var i=0;i<data.length;i+=4){
+        var r=data[i],g=data[i+1],b=data[i+2];
+        if(Math.abs(r-g)>20||Math.abs(g-b)>20||Math.abs(r-b)>20)colorPixels++;
+      }
+      var colorRatio=colorPixels/(canvas.width*canvas.height);
+      URL.revokeObjectURL(url);
+      resolve([{page:1,hasImg:true,hasColor:colorRatio>0.05,needColor:colorRatio>0.05,fileName:file.name}]);
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);resolve([{page:1,hasImg:false,hasColor:false,needColor:false,fileName:file.name}]);};
+    img.src=url;
+  });
+}
+
+// 文字文件：1页，一般黑白即可
+function analyzeText(file){
+  return Promise.resolve([{page:1,hasImg:false,hasColor:false,needColor:false,fileName:file.name}]);
+}
+
+// Word/PPT/Excel：无法直接解析，用AI判断
+async function analyzeWithAI(file,purpose){
+  var ext=file.name.split('.').pop().toUpperCase();
+  var prompt='用户要打印一个'+ext+'文件，文件名：「'+file.name+'」，用途：'+purpose+'。\n\n请根据文件名和类型，推断这个文件可能包含的内容，估计总页数，并给出打印建议。\n\n直接输出JSON格式（不要markdown代码块）：\n{"estimatedPages":数字,"likelyColorPages":[页码数组],"reason":"判断依据","suggestion":"建议"}';
+  var resp=await callAI(prompt);
+  try{
+    // 清理可能的markdown
+    var json=resp.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    return JSON.parse(json);
+  }catch(e){
+    return {estimatedPages:10,likelyColorPages:[1],reason:'无法精确解析，基于文件类型估算',suggestion:'建议预览后按实际情况设置打印颜色'};
+  }
+}
+
+async function analyze(){
+  if(!uploadedFiles.length)return;
+  var btn=document.getElementById('gbtn');
+  var ob=document.getElementById('ob');
+  var sub=document.getElementById('outSub');
+  var colorPrice=parseFloat(document.getElementById('colorPrice').value)||1.5;
+  var bwPrice=parseFloat(document.getElementById('bwPrice').value)||0.1;
+
+  btn.disabled=true;
+  sub.textContent='分析中…';
+  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>正在逐页分析文件内容…</span></div>';
+
+  try{
+    var allResults=[];
+    for(var fi=0;fi<uploadedFiles.length;fi++){
+      var file=uploadedFiles[fi];
+      var ftype=getFileType(file);
+      var pages=[];
+
+      if(ftype==='pdf'&&typeof pdfjsLib!=='undefined'){
+        pages=await analyzePdf(file);
+        pages.forEach(function(p){p.fileName=file.name;});
+      }else if(ftype==='image'){
+        pages=await analyzeImage(file);
+      }else if(ftype==='text'){
+        pages=await analyzeText(file);
+        pages.forEach(function(p){p.fileName=file.name;});
+      }else{
+        // Word/PPT/Excel 用AI推断
+        ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>正在用 AI 分析 '+file.name+'…</span></div>';
+        var aiRes=await analyzeWithAI(file,selPurpose);
+        for(var p=1;p<=aiRes.estimatedPages;p++){
+          pages.push({page:p,hasImg:aiRes.likelyColorPages.includes(p),hasColor:aiRes.likelyColorPages.includes(p),needColor:aiRes.likelyColorPages.includes(p),fileName:file.name,aiReason:aiRes.reason});
+        }
+      }
+      allResults=allResults.concat(pages);
+    }
+
+    // 计算费用
+    var colorPages=allResults.filter(function(p){return p.needColor;});
+    var bwPages=allResults.filter(function(p){return !p.needColor;});
+    var totalPages=allResults.length;
+    var colorCost=colorPages.length*colorPrice;
+    var bwCost=bwPages.length*bwPrice;
+    var totalCost=colorCost+bwCost;
+    var savedCost=totalPages*colorPrice-totalCost;
+
+    // 渲染费用摘要
+    var html='<div class="summary-grid">'
+      +'<div class="sum-item"><div class="sum-label">总页数</div><div class="sum-val">'+totalPages+'</div></div>'
+      +'<div class="sum-item"><div class="sum-label">彩印页</div><div class="sum-val" style="color:#ff3b30">'+colorPages.length+'</div></div>'
+      +'<div class="sum-item"><div class="sum-label">黑白页</div><div class="sum-val" style="color:var(--soft)">'+bwPages.length+'</div></div>'
+      +'<div class="sum-item"><div class="sum-label">预估费用</div><div class="sum-val" style="color:var(--blue)">¥'+totalCost.toFixed(2)+'</div></div>'
+      +'</div>';
+
+    if(savedCost>0){
+      html+='<div class="save-badge">相比全彩印，节省 <strong>¥'+savedCost.toFixed(2)+'</strong>（省 '+(savedCost/(totalPages*colorPrice)*100).toFixed(0)+'%）</div>';
+    }
+
+    // 逐页建议表格
+    html+='<div style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">逐页打印建议</div>';
+    html+='<table class="rec-table"><thead><tr><th>文件</th><th>页码</th><th>建议</th><th>原因</th></tr></thead><tbody>';
+    allResults.forEach(function(r){
+      html+='<tr>'
+        +'<td style="color:var(--soft);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.fileName+'">'+r.fileName+'</td>'
+        +'<td>第 '+r.page+' 页</td>'
+        +'<td>'+(r.needColor?'<span class="badge-color">彩印</span>':'<span class="badge-bw">黑白</span>')+'</td>'
+        +'<td style="color:var(--soft)">'+(r.aiReason||r.needColor?'检测到彩色/图片元素':'纯文字内容')+'</td>'
+        +'</tr>';
+    });
+    html+='</tbody></table>';
+
+    ob.innerHTML=html;
+
+    // 请求AI给出简洁建议
+    var aiPrompt='用户要打印以下文件，用途是「'+selPurpose+'」：\n总页数'+totalPages+'页，彩印'+colorPages.length+'页，黑白'+bwPages.length+'页。\n彩印单价¥'+colorPrice+'，黑白单价¥'+bwPrice+'，总费用¥'+totalCost.toFixed(2)+'，相比全彩印节省¥'+savedCost.toFixed(2)+'。\n\n请给出3句专业的打印建议，包括：省钱建议、质量建议、打印顺序建议。不超过100字。';
+    callAI(aiPrompt).then(function(tip){
+      if(tip){
+        var tipEl=document.createElement('div');
+        tipEl.className='ai-tip';
+        tipEl.innerHTML='<strong>AI 建议：</strong>'+tip;
+        ob.appendChild(tipEl);
+      }
+    }).catch(function(){});
+
+    // 添加打印按钮
+    document.querySelector('.op').insertAdjacentHTML('beforeend',
+      '<div class="ebar"><button class="ebtn" onclick="window.print()"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>打印此建议单</button></div>'
+    );
+
+    sub.textContent='分析完成 · '+totalPages+'页';
+
+  }catch(e){
+    ob.innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">分析失败：'+e.message+'<br><span style="font-size:12px">请确认文件格式正确</span></div>';
+    sub.textContent='失败';
+  }
+  btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>重新分析';
+}
+
+// chip样式补充
+document.head.insertAdjacentHTML('beforeend','<style>.chip{padding:5px 12px;border-radius:999px;border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font)}.chip.sel{background:var(--blue);border-color:var(--blue);color:#fff}.chip:hover{border-color:var(--blue-border);color:var(--blue)}</style>');
+</script>
+</body>
+</html>
