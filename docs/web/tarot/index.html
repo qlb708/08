@@ -83,7 +83,7 @@
     padding:6px 14px;cursor:pointer;transition:all .2s;display:none;
   }
   #btn-back-ms{left:14px}
-  #btn-switch-cam-ms{right:60px}
+  #btn-switch-cam-ms{right:16px}
   #btn-back-ms.show,#btn-switch-cam-ms.show{display:block}
   #btn-back-ms:hover,#btn-switch-cam-ms:hover{color:#fff;background:rgba(255,255,255,.1)}
 
@@ -366,11 +366,11 @@ function msStart(){
   document.getElementById('btn-back-ms').classList.add('show');
 
   if(MS_MODE==='mouse'){
-    // 鼠标模式：隐藏摄像头，mock GestureEngine，直接走原版 App boot 跳过 MediaPipe
+    // 鼠标模式：不需要切换摄像头按钮
     document.getElementById('mouse-bar').classList.add('show');
     _bootMouseMode();
   } else {
-    // 手势模式：显示摄像头切换按钮，正常走 bootstrap.js
+    // 手势模式才显示切换摄像头
     document.getElementById('btn-switch-cam-ms').classList.add('show');
     var hint=document.getElementById('welcome-hint');
     if(hint) hint.textContent='📷 摄像头权限将在点击后请求';
