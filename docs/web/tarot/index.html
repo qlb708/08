@@ -384,55 +384,36 @@ function _bootGestureMode(){
   document.body.appendChild(s);
 }
 
-// ── 鼠标模式：mock 掉摄像头 + GestureEngine，直接 boot App ──
+// ── 鼠标模式：彻底跳过 MediaPipe + 摄像头，用鼠标拖拽/点击控制 ──
 function _bootMouseMode(){
-  // 1. 隐藏摄像头、手势提示
-  var vid=document.getElementById('camera');
-  var ov=document.getElementById('camera-overlay');
-  if(vid){ vid.style.display='none'; }
-  if(ov){ ov.style.display='none'; }
 
-  // 2. Mock GestureEngine（让 App.boot 不报错）
-  window._GestureEngineOriginal = window.GestureEngine;
-  window.GestureEngine = function(){
-    this.running=false; this.mirrored=false;
-    this.onGesture=null; this.onHandUpdate=null;
-    this.init=function(){ return Promise.resolve(); };
-    this.start=function(){ this.running=true; };
-    this.stop=function(){ this.running=false; };
-    this.getSwipeDelta=function(){ return 0; };
-    this.mirrored=false;
-  };
+  // 1. Patch App 原型，让 _initCameraAndGesture/_initCamera/_initGesture 直接 return
+  //    （必须在 App 实例化之前 patch 原型）
+  App.prototype._initCameraAndGesture = async function(){ return; };
+  App.prototype._initCamera           = async function(){ return; };
+  App.prototype._initGesture          = async function(){ return; };
 
-  // 3. Mock navigator.mediaDevices.getUserMedia（返回空 stream）
-  if(navigator.mediaDevices){
-    navigator.mediaDevices._origGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-    navigator.mediaDevices.getUserMedia = function(){
-      // 返回一个静默的空 MediaStream
-      try{
-        var ctx=new AudioContext();
-        var dest=ctx.createMediaStreamDestination();
-        return Promise.resolve(dest.stream);
-      }catch(e){
-        return Promise.resolve(new MediaStream());
-      }
-    };
+  // 2. 隐藏所有手势/摄像头相关 UI
+  function hideGestureUI(){
+    ['camera','camera-overlay','gesture-hint','toolbar'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.style.display='none';
+    });
+    // 屏蔽错误提示（boot 过程中可能残留）
+    var err=document.getElementById('cygame-tarot-global-error');
+    if(err) err.remove();
   }
 
-  // 4. 直接启动 App（不经过 bootstrap.js 的 MediaPipe 加载）
-  // 先显示欢迎页，修改提示文字，然后自动"点击"开始按钮
+  // 3. 欢迎页提示改文字
   var hint=document.getElementById('welcome-hint');
-  if(hint) hint.textContent='🖱 鼠标模式 · 点击卡牌即可抽取，无需摄像头';
+  if(hint) hint.textContent='🖱️ 鼠标模式 · 无需摄像头，鼠标拖动浏览，点击选牌';
 
-  // 触发 welcome-screen 里的「开启占卜仪式」流程
-  // 直接走 App 初始化（不经过 bootstrap 的 MediaPipe await）
+  // 4. 等用户点击欢迎页按钮，再走 App boot
   (async function(){
     try{
       var welcomeScreen=document.getElementById('welcome-screen');
       var startBtn=document.getElementById('btn-start-ritual');
       var loadingScreen=document.getElementById('loading-screen');
 
-      // 等待用户点击欢迎页按钮
       await new Promise(function(resolve){
         startBtn.addEventListener('click', resolve, {once:true});
       });
@@ -441,12 +422,54 @@ function _bootMouseMode(){
       loadingScreen.classList.remove('hidden');
       setTimeout(function(){ welcomeScreen.style.display='none'; }, 800);
 
-      // 启动 App（App 类在 tarot-main.js 里定义为 App）
       var app = new App();
-      await app.boot();
+      await app.boot();   // _initCameraAndGesture 已被 patch 为空，无报错
 
-      // boot 完成后注入鼠标点击逻辑
-      _injectMouseClick(app);
+      hideGestureUI();
+
+      // 5. 显示提问面板（原版 boot 后等手势触发，鼠标模式直接显示）
+      //    question-panel 本就已在 DOM 里，boot 后它会自动显示（逻辑在 tarot-main.js bindUI）
+      //    如果没有自动显示，手动触发
+      var qp=document.getElementById('question-panel');
+      if(qp && qp.classList.contains('hidden')){
+        qp.classList.remove('hidden');
+        qp.style.display='';
+        qp.style.opacity='1';
+      }
+      var appEl=document.getElementById('app');
+      if(appEl && appEl.classList.contains('hidden')){
+        appEl.classList.remove('hidden');
+        appEl.style.display='';
+      }
+      hideGestureUI(); // 再清一次（app show 后可能重置）
+
+      // 6. 等提问面板点完，再进入主界面，自动 summon 牌阵
+      var silentBtn=document.getElementById('btn-silent-start');
+      if(silentBtn){
+        silentBtn.addEventListener('click', function(){
+          setTimeout(function(){
+            hideGestureUI();
+            // 自动 summon（原版是握拳触发）
+            if(app.state==='idle'){ app._summonCards && app._summonCards(); }
+            // 再稍后展开卡牌（原版是张开手掌触发）
+            setTimeout(function(){
+              hideGestureUI();
+              if(app.state==='summoned'){ app._spreadCards && app._spreadCards(); }
+              _injectMouseControl(app);
+            }, 800);
+          }, 400);
+        }, {once:true});
+      } else {
+        // 降级：直接 summon + spread
+        setTimeout(function(){
+          hideGestureUI();
+          if(app.state==='idle'){ app._summonCards && app._summonCards(); }
+          setTimeout(function(){
+            if(app.state==='summoned'){ app._spreadCards && app._spreadCards(); }
+            _injectMouseControl(app);
+          }, 800);
+        }, 500);
+      }
 
     }catch(err){
       console.error('鼠标模式启动失败:', err);
@@ -454,79 +477,97 @@ function _bootMouseMode(){
   })();
 }
 
-// ── 在 App boot 完成后，为旋转木马卡牌绑定点击事件 ──
-function _injectMouseClick(app){
-  var bound=new WeakSet();
-  var observer=new MutationObserver(function(){
-    document.querySelectorAll('#carousel .tarot-card-el, #carousel [class*="tarot-card"]').forEach(function(el){
-      if(bound.has(el)) return;
-      bound.add(el);
-      el.classList.add('mc-clickable');
-      el.addEventListener('click', function(e){
-        e.stopPropagation();
-        _mousePickCard(app);
-      });
-    });
-  });
-  observer.observe(document.getElementById('carousel')||document.body,{childList:true,subtree:true});
+// ── 注入鼠标控制：拖动=旋转木马，点击=选牌 ──
+function _injectMouseControl(app){
+  var carousel = app.carousel;
+  if(!carousel){ console.warn('carousel not ready'); return; }
 
-  // 也绑定一次 carousel-stage 的点击（降级）
-  var stage=document.getElementById('carousel-stage');
-  if(stage){
-    stage.addEventListener('click', function(e){
-      var target=e.target;
-      // 找到最近的卡牌元素
-      var cardEl=target.closest('[class*="card"]')||target;
-      _mousePickCard(app);
-    });
-  }
+  var stage = document.getElementById('carousel-stage');
+  if(!stage) return;
+
+  // 拖动旋转
+  var dragging=false, startX=0;
+  stage.addEventListener('mousedown', function(e){
+    dragging=true; startX=e.clientX;
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', function(e){
+    if(!dragging) return;
+    var dx=e.clientX-startX; startX=e.clientX;
+    // 与原版 SWIPE_CONTINUOUS 等效：addVelocity
+    carousel.addVelocity && carousel.addVelocity(-dx*1.5);
+  });
+  window.addEventListener('mouseup', function(e){
+    if(!dragging) return;
+    dragging=false;
+  });
+
+  // 触摸滑动（移动端）
+  var touchX=0;
+  stage.addEventListener('touchstart', function(e){ touchX=e.touches[0].clientX; },{passive:true});
+  stage.addEventListener('touchmove', function(e){
+    var dx=e.touches[0].clientX-touchX; touchX=e.touches[0].clientX;
+    carousel.addVelocity && carousel.addVelocity(-dx*1.5);
+  },{passive:true});
+
+  // 点击选牌（click on carousel-stage 或 carousel 内元素）
+  stage.addEventListener('click', function(e){
+    if(Math.abs(e.clientX-startX)>8) return; // 拖动后不触发点击
+    _mousePickCard(app);
+  });
+
+  // 更新 hint 文字
+  app._updateHint && app._updateHint('🖱️', '左右拖动浏览 · 点击选牌（第1/3张）');
 }
 
-// ── 鼠标点击触发抽牌流程 ──
+// ── 点击触发抽牌：focus → hold → release → continueAfterRelease ──
 function _mousePickCard(app){
-  // 按照原版状态机：SUMMONED → focus → hold → release
-  var STATE_SUMMONED=1, STATE_FOCUSED=2, STATE_HOLDING=3;
   try{
-    if(app.state===STATE_SUMMONED||app.state===1){
-      // 先 focus 当前中心牌
-      app._focusCard && app._focusCard();
-      // 稍后自动确认（hold）
+    var st=app.state;
+    if(st==='summoned'){
+      app._focusCard();
       setTimeout(function(){
         try{
-          app._holdCard && app._holdCard();
-          // 再稍后自动释放
+          app._holdCard();
           setTimeout(function(){
-            try{ app._releaseCard && app._releaseCard(); }catch(e){}
-          }, 800);
+            try{
+              app._releaseCard();
+              // 释放后自动继续（原版需要张开手掌）
+              setTimeout(function(){
+                try{
+                  if(app.state==='released') app._continueAfterRelease();
+                  // 更新提示轮数
+                  var round=app.collectedCards?app.collectedCards.length+1:1;
+                  if(round<=3 && app._updateHint){
+                    app._updateHint('🖱️','左右拖动浏览 · 点击选牌（第'+round+'/3张）');
+                  }
+                }catch(e){}
+              }, 600);
+            }catch(e){}
+          }, 700);
         }catch(e){}
-      }, 300);
-    } else if(app.state===STATE_FOCUSED||app.state===2){
-      app._holdCard && app._holdCard();
+      }, 200);
+    } else if(st==='focused'){
+      app._holdCard();
       setTimeout(function(){
-        try{ app._releaseCard && app._releaseCard(); }catch(e){}
-      }, 800);
+        try{
+          app._releaseCard();
+          setTimeout(function(){
+            try{ if(app.state==='released') app._continueAfterRelease(); }catch(e){}
+          }, 600);
+        }catch(e){}
+      }, 700);
+    } else if(st==='released'){
+      app._continueAfterRelease();
     }
-  }catch(e){ console.warn('mousePickCard err', e); }
+  }catch(e){ console.warn('mousePickCard:', e); }
 }
 
-// ── 游戏内切换摄像头（手势模式） ──
+// ── 游戏内切换摄像头（手势模式专用） ──
 function msSwitchCam(){
   MS_CAM=MS_CAM==='user'?'environment':'user';
   window.dispatchEvent(new CustomEvent('ms-switch-cam',{detail:{facing:MS_CAM}}));
 }
-
-// ── 监听 app 显示后隐藏摄像头（鼠标模式） ──
-window.addEventListener('load', function(){
-  new MutationObserver(function(){
-    if(window.__MS_MODE!=='mouse') return;
-    var app=document.getElementById('app');
-    if(!app||app.classList.contains('hidden')) return;
-    var v=document.getElementById('camera');
-    var o=document.getElementById('camera-overlay');
-    if(v) v.style.display='none';
-    if(o) o.style.display='none';
-  }).observe(document.body,{attributes:true,subtree:true,attributeFilter:['class']});
-});
 </script>
 </body>
 </html>
