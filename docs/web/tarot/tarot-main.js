@@ -131,12 +131,21 @@ class App {
         this._skipCollected();
       }
     };
+
+    // 鼠标模式：自动 summon + spread，不需要握拳手势触发
+    if (window.__MS_MODE === 'mouse') {
+      this._injectMouseDrag();
+      setTimeout(() => { this._summonCards(); }, 300);
+      setTimeout(() => { this._spreadCards(); }, 900);
+    }
   }
 
   /**
    * 后台异步初始化摄像头 + 手势引擎
    */
   async _initCameraAndGesture() {
+    // 鼠标模式：完全跳过摄像头和手势初始化
+    if (window.__MS_MODE === 'mouse') return;
     try {
       await this._initCamera();
     } catch (e) {
@@ -349,11 +358,15 @@ class App {
       setTimeout(() => { qp.style.display = 'none'; }, 400);
     }
 
-    // 显示手势提示
-    this.els.gestureHint.classList.remove('hidden');
-    this.els.gestureHint.style.display = '';
-    this.els.gestureHint.style.opacity = '1';
-    this.els.gestureHint.style.pointerEvents = '';
+    // 显示手势提示（鼠标模式下不显示）
+    if (window.__MS_MODE !== 'mouse') {
+      this.els.gestureHint.classList.remove('hidden');
+      this.els.gestureHint.style.display = '';
+      this.els.gestureHint.style.opacity = '1';
+      this.els.gestureHint.style.pointerEvents = '';
+    } else {
+      this.els.gestureHint.style.display = 'none';
+    }
 
     // 显示状态标签和收集区
     this.els.stateBadge.classList.remove('hidden');
@@ -1153,8 +1166,67 @@ class App {
           ctx.arc(x, y, 3, 0, Math.PI * 2);
           ctx.fillStyle = [4, 8].includes(i) ? '#ff6baf' : '#00e5ff';
           ctx.fill();
-        }
-      }
-    }
-  }
-}
+        }}
+      }}
+    }}
+  }}
+
+  // 鼠标模式：拖动旋转木马 + 点击选牌
+  _injectMouseDrag() {
+    const stage = document.getElementById('carousel-stage');
+    if (!stage) return;
+    let dragging = false, startX = 0, lastX = 0;
+    stage.addEventListener('mousedown', (e) => {{
+      dragging = true; startX = e.clientX; lastX = e.clientX;
+      e.preventDefault();
+    }});
+    window.addEventListener('mousemove', (e) => {{
+      if (!dragging) return;
+      const dx = e.clientX - lastX; lastX = e.clientX;
+      if (this.carousel) this.carousel.addVelocity(-dx * 2);
+    }});
+    window.addEventListener('mouseup', (e) => {{
+      if (!dragging) return;
+      const moved = Math.abs(e.clientX - startX);
+      dragging = false;
+      if (moved < 8) this._mousePickCard();
+    }});
+    let touchStartX = 0;
+    stage.addEventListener('touchstart', (e) => {{ touchStartX = e.touches[0].clientX; }}, {{passive:true}});
+    stage.addEventListener('touchmove', (e) => {{
+      const dx = e.touches[0].clientX - touchStartX;
+      touchStartX = e.touches[0].clientX;
+      if (this.carousel) this.carousel.addVelocity(-dx * 2);
+    }}, {{passive:true}});
+    stage.addEventListener('touchend', (e) => {{
+      if (e.changedTouches[0] && Math.abs(e.changedTouches[0].clientX - touchStartX) < 12) this._mousePickCard();
+    }});
+  }}
+
+  _mousePickCard() {{
+    try {{
+      if (this.state === STATE.SUMMONED) {{
+        this._focusCard();
+        setTimeout(() => {{
+          try {{ this._holdCard(); }} catch(e) {{}}
+          setTimeout(() => {{
+            try {{
+              this._releaseCard();
+              setTimeout(() => {{ try {{ this._continueAfterRelease && this._continueAfterRelease(); }} catch(e) {{}} }}, 600);
+            }} catch(e) {{}}
+          }}, 700);
+        }}, 200);
+      }} else if (this.state === STATE.FOCUSED) {{
+        this._holdCard();
+        setTimeout(() => {{
+          try {{
+            this._releaseCard();
+            setTimeout(() => {{ try {{ this._continueAfterRelease && this._continueAfterRelease(); }} catch(e) {{}} }}, 600);
+          }} catch(e) {{}}
+        }}, 700);
+      }} else if (this.state === STATE.RELEASED) {{
+        this._continueAfterRelease && this._continueAfterRelease();
+      }}
+    }} catch(e) {{ console.warn('mousePickCard:', e); }}
+  }}
+}}
