@@ -3,1032 +3,1359 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 行程规划</title>
+<title>圆周旅迹 Web AI 功能原型 · Product Portfolio</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;background:#F7F8FA;color:#1A1A2E;line-height:1.5;min-height:100vh}
-a{text-decoration:none;color:inherit}
-button{font-family:inherit;cursor:pointer;border:none;background:none}
+  /* ===== Design Tokens ===== */
+  :root {
+    --brand: #1D6FEB;
+    --brand-light: #EFF6FF;
+    --brand-mid: #BFDBFE;
+    --neutral-50: #FAFAFA;
+    --neutral-100: #F5F5F5;
+    --neutral-200: #E8E8E8;
+    --neutral-300: #D4D4D4;
+    --neutral-400: #A3A3A3;
+    --neutral-500: #737373;
+    --neutral-600: #525252;
+    --neutral-700: #404040;
+    --neutral-800: #262626;
+    --neutral-900: #171717;
+    --ai-purple: #4F46E5;
+    --ai-purple-light: #EEF2FF;
+    --ai-blue: #0EA5E9;
+    --ai-blue-light: #F0F9FF;
+    --green: #16A34A;
+    --green-light: #F0FDF4;
+    --red: #DC2626;
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,.10), 0 4px 8px rgba(0,0,0,.06);
+  }
 
-/* ===== STATE MANAGEMENT ===== */
-.state-page{display:none;width:100%}
-.state-page.active{display:flex}
+  /* ===== Reset ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif; background: var(--neutral-100); color: var(--neutral-800); min-height: 100vh; }
 
-/* ===== STATE0: ENTRY PAGE ===== */
-#state0{flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px 16px;background:linear-gradient(180deg,#F7F8FA 0%,#F0F2F5 100%)}
-.entry-card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.06);max-width:560px;width:100%;padding:32px 28px;animation:slideUp .4s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.entry-title{font-size:24px;font-weight:700;text-align:center;margin-bottom:6px}
-.entry-subtitle{font-size:14px;color:#9CA3AF;text-align:center;margin-bottom:28px}
+  /* ===== Utility ===== */
+  .hidden { display: none !important; }
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .gap-4 { gap: 16px; }
+  .text-sm { font-size: 13px; }
+  .text-xs { font-size: 11px; }
+  .font-medium { font-weight: 500; }
+  .font-semibold { font-weight: 600; }
+  .text-muted { color: var(--neutral-500); }
+  .text-ai { color: var(--ai-purple); }
+  .text-brand { color: var(--brand); }
 
-/* Form Sections */
-.form-section{margin-bottom:20px}
-.form-label{font-size:14px;font-weight:600;margin-bottom:8px;display:block}
-.form-label .required{color:#FF6B6B;margin-right:2px}
+  /* ===== Home Screen ===== */
+  #home-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: white;
+  }
 
-/* Destination Input */
-.dest-input{width:100%;padding:12px 16px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:15px;outline:none;transition:border-color .15s,box-shadow .15s}
-.dest-input:focus{border-color:#00C48C;box-shadow:0 0 0 3px rgba(0,196,140,.12)}
-.dest-input::placeholder{color:#C4C4C4}
-.dest-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.dest-pill{padding:6px 14px;border-radius:20px;font-size:12px;color:#6B7280;background:#F3F4F6;cursor:pointer;transition:all .15s;user-select:none}
-.dest-pill:hover{background:#00C48C;color:#fff}
-.dest-pill.selected{background:#00C48C;color:#fff}
+  /* Top Nav */
+  .top-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 60px;
+    border-bottom: 1px solid var(--neutral-200);
+    background: white; position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; color: var(--brand); cursor: pointer; }
+  .nav-logo svg { width: 28px; height: 28px; }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab { padding: 6px 16px; border-radius: var(--radius-sm); font-size: 14px; cursor: pointer; color: var(--neutral-600); transition: all .15s; border: none; background: none; }
+  .nav-tab:hover { background: var(--neutral-100); color: var(--neutral-800); }
+  .nav-tab.active { background: var(--brand-light); color: var(--brand); font-weight: 500; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #1D6FEB, #0EA5E9); display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 600; }
 
-/* Date Row */
-.date-row{display:flex;gap:12px}
-.date-input{flex:1;padding:10px 14px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:14px;outline:none;transition:border-color .15s;color:#1A1A2E;background:#fff}
-.date-input:focus{border-color:#00C48C;box-shadow:0 0 0 3px rgba(0,196,140,.12)}
-.day-pills{display:flex;gap:8px;margin-top:10px}
-.day-pill{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;background:#F3F4F6;color:#6B7280;cursor:pointer;transition:all .15s;user-select:none;border:1.5px solid transparent}
-.day-pill:hover{border-color:#00C48C;color:#00C48C}
-.day-pill.selected{background:#00C48C;color:#fff;border-color:#00C48C}
+  /* Hero */
+  .hero {
+    display: flex; flex-direction: column; align-items: center; padding: 80px 40px 60px;
+    text-align: center;
+    background: linear-gradient(180deg, #F0F6FF 0%, white 100%);
+  }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--brand-light); border: 1px solid var(--brand-mid); border-radius: 20px; font-size: 12px; color: var(--brand); font-weight: 500; margin-bottom: 20px; }
+  .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.2; letter-spacing: -0.5px; color: var(--neutral-900); margin-bottom: 12px; }
+  .hero h1 span { color: var(--brand); }
+  .hero p { font-size: 16px; color: var(--neutral-500); max-width: 520px; line-height: 1.7; margin-bottom: 36px; }
+  .hero-actions { display: flex; gap: 12px; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--brand); color: white; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; box-shadow: 0 4px 12px rgba(29,111,235,.35); }
+  .btn-primary:hover { background: #1558c9; transform: translateY(-1px); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: white; color: var(--neutral-700); border-radius: var(--radius); font-size: 15px; font-weight: 500; cursor: pointer; border: 1px solid var(--neutral-200); transition: all .15s; }
+  .btn-secondary:hover { border-color: var(--neutral-300); background: var(--neutral-50); }
 
-/* People Stepper */
-.stepper{display:flex;align-items:center;gap:0;background:#F3F4F6;border-radius:12px;overflow:hidden;width:fit-content}
-.stepper-btn{width:44px;height:44px;font-size:20px;font-weight:600;color:#6B7280;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.stepper-btn:hover{background:#E5E7EB;color:#1A1A2E}
-.stepper-btn:active{background:#D1D5DB}
-.stepper-val{width:48px;text-align:center;font-size:18px;font-weight:700;color:#1A1A2E}
+  /* MVP Cards */
+  .section { padding: 60px 40px; }
+  .section-header { text-align: center; margin-bottom: 40px; }
+  .section-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--brand); font-weight: 600; margin-bottom: 8px; }
+  .section-title { font-size: 28px; font-weight: 700; color: var(--neutral-900); margin-bottom: 10px; }
+  .section-sub { font-size: 15px; color: var(--neutral-500); max-width: 500px; margin: 0 auto; line-height: 1.6; }
 
-/* Preference Pills */
-.pref-pills{display:flex;gap:8px;flex-wrap:wrap}
-.pref-pill{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;background:#F3F4F6;color:#6B7280;cursor:pointer;transition:all .15s;user-select:none;border:1.5px solid transparent}
-.pref-pill:hover{border-color:#00C48C}
-.pref-pill.selected{background:#00C48C;color:#fff;border-color:#00C48C}
+  .mvp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1100px; margin: 0 auto; }
+  .mvp-card {
+    background: white; border-radius: var(--radius-lg); border: 1.5px solid var(--neutral-200);
+    padding: 32px; cursor: pointer; transition: all .2s; position: relative; overflow: hidden;
+  }
+  .mvp-card:hover { border-color: var(--brand); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .mvp-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--brand); }
+  .mvp-card.blue::before { background: var(--ai-blue); }
+  .mvp-tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: .5px; margin-bottom: 16px; }
+  .mvp-tag.orange { background: var(--brand-light); color: var(--brand); }
+  .mvp-tag.blue { background: var(--ai-blue-light); color: var(--ai-blue); }
+  .mvp-card h3 { font-size: 20px; font-weight: 700; color: var(--neutral-900); margin-bottom: 10px; }
+  .mvp-card p { font-size: 14px; color: var(--neutral-500); line-height: 1.65; margin-bottom: 24px; }
+  .mvp-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+  .mvp-pill { padding: 4px 10px; background: var(--neutral-100); border-radius: 20px; font-size: 12px; color: var(--neutral-600); }
+  .mvp-cta { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--brand); }
+  .mvp-card.blue .mvp-cta { color: var(--ai-blue); }
+  .mvp-icon { font-size: 48px; margin-bottom: 16px; }
 
-/* Plan Count */
-.count-pills{display:flex;gap:8px}
-.count-pill{flex:1;padding:10px;text-align:center;border-radius:10px;font-size:14px;font-weight:600;background:#F3F4F6;color:#6B7280;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
-.count-pill:hover{border-color:#00C48C;color:#00C48C}
-.count-pill.selected{background:#00C48C;color:#fff;border-color:#00C48C}
+  /* Research pills */
+  .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+  .insight-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--neutral-200); padding: 24px; }
+  .insight-num { font-size: 32px; font-weight: 800; color: var(--brand); margin-bottom: 4px; }
+  .insight-label { font-size: 13px; font-weight: 600; color: var(--neutral-800); margin-bottom: 8px; }
+  .insight-desc { font-size: 13px; color: var(--neutral-500); line-height: 1.6; }
 
-/* Generate Button */
-.generate-btn{width:100%;padding:14px;background:#00C48C;color:#fff;border-radius:12px;font-size:16px;font-weight:600;transition:all .15s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.5px}
-.generate-btn:hover{background:#00b07e;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,196,140,.3)}
-.generate-btn:active{transform:translateY(0)}
-.generate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+  /* ===== Prototype Shell ===== */
+  .prototype-shell {
+    display: none; flex-direction: column; min-height: 100vh; background: var(--neutral-100);
+  }
+  .prototype-shell.active { display: flex; }
 
-/* ===== STATE1: LOADING ===== */
-#state1{flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(180deg,#F7F8FA 0%,#F0F2F5 100%)}
-.loader-card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.06);max-width:400px;width:90%;padding:48px 32px;text-align:center;animation:slideUp .4s ease}
-.spinner{width:56px;height:56px;margin:0 auto 24px;position:relative}
-.spinner-ring{width:56px;height:56px;border-radius:50%;border:3.5px solid #E5E7EB;border-top-color:#00C48C;animation:spin .9s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner-dot{position:absolute;width:8px;height:8px;background:#00C48C;border-radius:50%;top:-4px;left:50%;transform:translateX(-50%);animation:dotPulse .9s ease-in-out infinite}
-@keyframes dotPulse{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:.4;transform:translateX(-50%) scale(.6)}}
-.loader-title{font-size:16px;font-weight:600;margin-bottom:6px}
-.loader-sub{font-size:13px;color:#9CA3AF}
+  /* Prototype Nav */
+  .proto-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: 56px;
+    background: white; border-bottom: 1px solid var(--neutral-200);
+    position: sticky; top: 0; z-index: 200;
+  }
+  .proto-nav-left { display: flex; align-items: center; gap: 12px; }
+  .back-btn { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--neutral-600); cursor: pointer; padding: 6px 10px; border-radius: var(--radius-sm); transition: all .15s; border: none; background: none; }
+  .back-btn:hover { background: var(--neutral-100); color: var(--neutral-900); }
+  .proto-title { font-size: 15px; font-weight: 600; color: var(--neutral-800); }
+  .proto-badge { padding: 3px 10px; background: var(--ai-purple-light); color: var(--ai-purple); border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .proto-steps { display: flex; align-items: center; gap: 0; }
+  .proto-step { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius-sm); font-size: 13px; color: var(--neutral-400); transition: all .2s; position: relative; }
+  .proto-step.active { color: var(--brand); font-weight: 600; }
+  .proto-step.done { color: var(--green); }
+  .proto-step::after { content: '›'; position: absolute; right: -4px; color: var(--neutral-300); font-size: 16px; }
+  .proto-step:last-child::after { display: none; }
+  .step-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--neutral-200); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--neutral-500); flex-shrink: 0; }
+  .proto-step.active .step-dot { background: var(--brand); color: white; }
+  .proto-step.done .step-dot { background: var(--green); color: white; }
 
-/* ===== HEADER ===== */
-.header{position:fixed;top:0;left:0;right:0;height:52px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;padding:0 20px;z-index:100;gap:12px}
-.header-back{font-size:14px;color:#6B7280;white-space:nowrap;display:flex;align-items:center;gap:4px}
-.header-back:hover{color:#1A1A2E}
-.header-title{flex:1;text-align:center;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
-.header-title svg{width:16px;height:16px;fill:#6B7280;flex-shrink:0}
-.header-actions{display:flex;gap:8px;align-items:center}
-.btn-outline{padding:6px 14px;border:1.5px solid #00C48C;color:#00C48C;border-radius:8px;font-size:13px;font-weight:500;transition:all .15s}
-.btn-outline:hover{background:#00C48C;color:#fff}
-.btn-solid{padding:6px 14px;background:#00C48C;color:#fff;border-radius:8px;font-size:13px;font-weight:500;transition:all .15s}
-.btn-solid:hover{background:#00b07e}
+  /* ===== MVP 01 Screens ===== */
+  /* Screen: Import */
+  .import-screen { padding: 40px; max-width: 900px; margin: 0 auto; width: 100%; }
+  .import-header { margin-bottom: 32px; }
+  .import-header h2 { font-size: 26px; font-weight: 700; color: var(--neutral-900); margin-bottom: 8px; }
+  .import-header p { font-size: 15px; color: var(--neutral-500); line-height: 1.6; }
+  .import-container { display: flex; gap: 16px; margin-bottom: 24px; }
+  .import-slot {
+    flex: 1; background: white; border: 2px dashed var(--neutral-300);
+    border-radius: var(--radius-lg); padding: 28px; text-align: center;
+    cursor: pointer; transition: all .2s; position: relative;
+  }
+  .import-slot:hover, .import-slot.filled { border-style: solid; }
+  .import-slot.filled { border-color: var(--brand); background: var(--brand-light); }
+  .import-slot.filled-blue { border-color: var(--ai-blue); background: var(--ai-blue-light); }
+  .import-slot.filled-green { border-color: var(--green); background: var(--green-light); }
+  .slot-icon { font-size: 36px; margin-bottom: 12px; }
+  .slot-label { font-size: 13px; font-weight: 600; color: var(--neutral-700); margin-bottom: 6px; }
+  .slot-hint { font-size: 12px; color: var(--neutral-400); }
+  .slot-filled-content { display: none; }
+  .import-slot.filled .slot-filled-content,
+  .import-slot.filled-blue .slot-filled-content,
+  .import-slot.filled-green .slot-filled-content { display: block; }
+  .import-slot.filled .slot-empty,
+  .import-slot.filled-blue .slot-empty,
+  .import-slot.filled-green .slot-empty { display: none; }
+  .slot-empty { display: block; }
+  .slot-source-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-bottom: 10px; }
+  .slot-source-tag.xhs { background: #FFE4E4; color: #DC2626; }
+  .slot-source-tag.ai { background: var(--ai-purple-light); color: var(--ai-purple); }
+  .slot-source-tag.zhihu { background: #EEF2FF; color: #4F46E5; }
+  .slot-title { font-size: 14px; font-weight: 600; color: var(--neutral-800); margin-bottom: 6px; text-align: left; }
+  .slot-meta { font-size: 12px; color: var(--neutral-500); text-align: left; }
+  .slot-check { position: absolute; top: 12px; right: 12px; width: 22px; height: 22px; border-radius: 50%; background: var(--brand); display: none; align-items: center; justify-content: center; }
+  .import-slot.filled .slot-check { display: flex; }
+  .import-slot.filled-blue .slot-check { display: flex; background: var(--ai-blue); }
+  .import-slot.filled-green .slot-check { display: flex; background: var(--green); }
+  .slot-check svg { width: 12px; height: 12px; stroke: white; stroke-width: 2.5; fill: none; }
+  .import-tips { background: var(--ai-purple-light); border: 1px solid #DDD6FE; border-radius: var(--radius); padding: 16px; display: flex; gap: 12px; align-items: flex-start; }
+  .import-tips-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .import-tips h4 { font-size: 13px; font-weight: 600; color: var(--ai-purple); margin-bottom: 4px; }
+  .import-tips p { font-size: 12px; color: var(--neutral-600); line-height: 1.6; }
+  .import-action { margin-top: 28px; display: flex; align-items: center; justify-content: space-between; }
+  .btn-ai { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: linear-gradient(135deg, #1D6FEB, #0EA5E9); color: white; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; box-shadow: 0 4px 12px rgba(79,70,229,.35); }
+  .btn-ai:hover { opacity: .92; transform: translateY(-1px); }
 
-/* ===== MAIN LAYOUT ===== */
-.main{display:flex;margin-top:52px;margin-bottom:64px;min-height:calc(100vh - 52px - 64px)}
-.main-left{flex:1;padding:16px 20px;overflow-y:auto;min-width:0}
-.main-right{width:320px;flex-shrink:0;padding:16px 16px 16px 0;overflow-y:auto}
+  /* Screen: Analyzing */
+  .analyzing-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; padding: 40px; }
+  .analyzing-card { background: white; border-radius: var(--radius-xl); padding: 52px 64px; text-align: center; max-width: 480px; box-shadow: var(--shadow-lg); }
+  .ai-spinner { width: 72px; height: 72px; margin: 0 auto 28px; position: relative; }
+  .ai-spinner-ring { width: 72px; height: 72px; border-radius: 50%; border: 3px solid var(--neutral-100); border-top-color: #1D6FEB; animation: spin 1s linear infinite; position: absolute; }
+  .ai-spinner-ring:nth-child(2) { width: 56px; height: 56px; top: 8px; left: 8px; border-top-color: #0EA5E9; animation-duration: 1.5s; animation-direction: reverse; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ai-emoji { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; }
+  .analyzing-title { font-size: 20px; font-weight: 700; color: var(--neutral-900); margin-bottom: 8px; }
+  .analyzing-sub { font-size: 14px; color: var(--neutral-500); margin-bottom: 32px; line-height: 1.6; }
+  .analyzing-steps { text-align: left; display: flex; flex-direction: column; gap: 12px; }
+  .a-step { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--radius); background: var(--neutral-50); }
+  .a-step.done { background: var(--green-light); }
+  .a-step.active { background: var(--ai-purple-light); }
+  .a-step-icon { width: 24px; height: 24px; border-radius: 50%; background: var(--neutral-200); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+  .a-step.done .a-step-icon { background: var(--green); color: white; }
+  .a-step.active .a-step-icon { background: var(--ai-purple); animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
+  .a-step-text { font-size: 13px; color: var(--neutral-700); font-weight: 500; }
+  .a-step.done .a-step-text { color: var(--green); }
+  .a-step.active .a-step-text { color: var(--ai-purple); }
 
-/* ===== PLAN TABS ===== */
-.plan-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.plan-tab{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;background:#fff;color:#6B7280;border:1.5px solid #E5E7EB;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none}
-.plan-tab.active{background:#00C48C;color:#fff;border-color:#00C48C}
-.plan-tab:hover:not(.active){border-color:#00C48C;color:#00C48C}
-.plan-tab.add-plan{border-style:dashed;color:#9CA3AF}
-.plan-tab.add-plan:hover{border-color:#00C48C;color:#00C48C}
-.plan-tab .check{display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid #ccc;margin-right:4px;vertical-align:middle;position:relative;top:-1px}
-.plan-tab.active .check{border-color:#fff;background:rgba(255,255,255,.3)}
-.plan-tab.active .check::after{content:'✓';font-size:10px;color:#fff;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
-.plan-hint{font-size:11px;color:#9CA3AF;margin-left:auto;white-space:nowrap}
+  /* Screen: Compare Result */
+  .compare-screen { padding: 28px 40px; }
+  .compare-layout { display: grid; grid-template-columns: 260px 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
+  .compare-sidebar { position: sticky; top: 72px; height: fit-content; }
+  .ai-summary-card { background: linear-gradient(135deg, #4F46E5, #1D6FEB); border-radius: var(--radius-lg); padding: 24px; color: white; margin-bottom: 16px; }
+  .ai-summary-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; opacity: .75; margin-bottom: 8px; }
+  .ai-summary-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; line-height: 1.4; }
+  .ai-summary-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: rgba(255,255,255,.2); border-radius: 20px; font-size: 12px; margin-bottom: 8px; font-weight: 500; }
+  .ai-summary-body { font-size: 13px; opacity: .9; line-height: 1.65; }
+  .dim-list { display: flex; flex-direction: column; gap: 8px; }
+  .dim-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: white; border-radius: var(--radius); border: 1px solid var(--neutral-200); cursor: pointer; transition: all .15s; }
+  .dim-item:hover, .dim-item.active { border-color: var(--ai-purple); background: var(--ai-purple-light); }
+  .dim-item span { font-size: 13px; color: var(--neutral-700); font-weight: 500; }
+  .dim-item.active span { color: var(--ai-purple); }
 
-/* ===== PLAN GRID ===== */
-.plan-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.plan-grid.cols-1{grid-template-columns:1fr}
-.plan-grid.cols-2{grid-template-columns:1fr 1fr}
-.plan-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
-.plan-grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+  .compare-main {}
+  .compare-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .compare-meta h2 { font-size: 20px; font-weight: 700; color: var(--neutral-900); }
+  .plan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+  .plan-card { background: white; border-radius: var(--radius-lg); border: 2px solid var(--neutral-200); overflow: hidden; transition: all .2s; cursor: pointer; }
+  .plan-card:hover { border-color: var(--neutral-300); box-shadow: var(--shadow); }
+  .plan-card.selected { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-light); }
+  .plan-card.recommended { border-color: var(--ai-purple); }
+  .plan-header { padding: 16px 20px; border-bottom: 1px solid var(--neutral-100); }
+  .plan-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .plan-label { font-size: 12px; font-weight: 700; color: var(--neutral-500); letter-spacing: .5px; }
+  .plan-recommend-badge { display: flex; align-items: center; gap: 4px; padding: 2px 8px; background: var(--ai-purple-light); border-radius: 20px; font-size: 11px; color: var(--ai-purple); font-weight: 600; }
+  .plan-name { font-size: 15px; font-weight: 700; color: var(--neutral-900); margin-bottom: 4px; }
+  .plan-source { font-size: 11px; color: var(--neutral-400); }
+  .plan-body { padding: 16px 20px; }
+  .plan-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--neutral-100); }
+  .plan-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .plan-row-label { font-size: 12px; color: var(--neutral-400); font-weight: 500; }
+  .plan-row-value { font-size: 13px; color: var(--neutral-800); font-weight: 600; text-align: right; max-width: 110px; line-height: 1.4; }
+  .plan-row-value.highlight { color: var(--brand); }
+  .plan-row-value.ai { color: var(--ai-purple); }
+  .plan-select-btn { width: 100%; padding: 10px; border: none; background: var(--neutral-100); color: var(--neutral-600); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; border-top: 1px solid var(--neutral-100); }
+  .plan-card.selected .plan-select-btn { background: var(--brand); color: white; }
+  .plan-card.recommended .plan-select-btn { background: var(--ai-purple-light); color: var(--ai-purple); }
+  .plan-card.recommended.selected .plan-select-btn { background: var(--brand); color: white; }
+  .plan-select-btn:hover { opacity: .9; }
 
-/* ===== PLAN CARD ===== */
-.plan-card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;transition:transform .15s,box-shadow .15s}
-.plan-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.plan-card.accent-green .plan-header-top{background:#00C48C}
-.plan-card.accent-orange .plan-header-top{background:#FF9F43}
-.plan-card.accent-blue .plan-header-top{background:#5B8DEF}
-.plan-card.accent-red .plan-header-top{background:#FF6B6B}
-.plan-header-top{height:4px}
-.plan-body{padding:16px}
-.plan-name{font-size:16px;font-weight:700;margin-bottom:2px}
-.plan-desc{font-size:12px;color:#6B7280;margin-bottom:12px}
-.plan-metrics{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-.plan-metric{display:flex;align-items:center;gap:4px;font-size:12px;color:#6B7280}
-.plan-metric .val{font-weight:600;color:#1A1A2E}
-.plan-metric.price .val{color:#FF6B6B}
+  /* Compare table */
+  .compare-table-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--neutral-200); overflow: hidden; margin-bottom: 16px; }
+  .compare-table-header { padding: 16px 20px; border-bottom: 1px solid var(--neutral-100); font-size: 14px; font-weight: 700; color: var(--neutral-800); display: flex; align-items: center; gap: 8px; }
+  .compare-table { width: 100%; border-collapse: collapse; }
+  .compare-table th, .compare-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--neutral-100); font-size: 13px; }
+  .compare-table th { color: var(--neutral-500); font-weight: 600; font-size: 12px; background: var(--neutral-50); }
+  .compare-table td:first-child { color: var(--neutral-600); font-weight: 500; }
+  .compare-table td:not(:first-child) { color: var(--neutral-800); font-weight: 600; }
+  .compare-table tr.best td:not(:first-child):not(:empty) { color: var(--brand); }
+  .bar-wrapper { display: flex; align-items: center; gap: 8px; }
+  .bar { height: 6px; border-radius: 3px; background: var(--neutral-200); flex: 1; position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .bar-fill.brand { background: var(--brand); }
+  .bar-fill.blue { background: var(--ai-blue); }
+  .bar-fill.green { background: var(--green); }
+  .bar-fill.purple { background: var(--ai-purple); }
+  .bar-val { font-size: 12px; font-weight: 600; color: var(--neutral-700); min-width: 30px; }
 
-/* ===== DAY SECTION ===== */
-.day-section{margin-bottom:14px}
-.day-label{display:inline-flex;align-items:center;gap:4px;background:#00C48C;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;margin-bottom:8px}
-.day-spot-list{position:relative;padding-left:16px}
-.day-spot-list::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:#E5E7EB}
-.spot-item{position:relative;display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;transition:background .1s;cursor:default}
-.spot-item:hover{background:#F9FAFB}
-.spot-dot{width:8px;height:8px;border-radius:50%;background:#00C48C;flex-shrink:0;position:relative;z-index:1}
-.spot-dot.accent-orange{background:#FF9F43}
-.spot-dot.accent-blue{background:#5B8DEF}
-.spot-dot.accent-red{background:#FF6B6B}
-.spot-info{flex:1;min-width:0}
-.spot-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.spot-time{font-size:10px;color:#9CA3AF;margin-top:1px}
-.spot-tag{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:500;white-space:nowrap;flex-shrink:0}
-.spot-tag.play{background:#E8F5E9;color:#2E7D32}
-.spot-tag.food{background:#FFF3E0;color:#E65100}
-.spot-tag.shop{background:#E3F2FD;color:#1565C0}
-.spot-tag.culture{background:#F3E5F5;color:#7B1FA2}
-.spot-tag.transport{background:#ECEFF1;color:#546E7A}
-.spot-add{font-size:14px;color:#9CA3AF;padding:4px 6px;border-radius:4px;transition:all .1s;flex-shrink:0}
-.spot-add:hover{color:#00C48C;background:#F0FFF9}
+  .confirm-action { background: white; border-radius: var(--radius-lg); border: 1px solid var(--neutral-200); padding: 20px; display: flex; align-items: center; justify-content: space-between; }
+  .confirm-action-left h4 { font-size: 15px; font-weight: 700; color: var(--neutral-900); margin-bottom: 4px; }
+  .confirm-action-left p { font-size: 13px; color: var(--neutral-500); }
+  .btn-confirm { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--brand); color: white; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; box-shadow: 0 4px 12px rgba(29,111,235,.3); }
+  .btn-confirm:hover { background: #1558c9; }
 
-/* ===== RIGHT PANEL ===== */
-.right-map{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;margin-bottom:14px}
-.right-map-header{padding:12px 14px;font-size:14px;font-weight:600;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;gap:6px}
-.right-map-header svg{width:16px;height:16px;fill:#6B7280}
-.map-svg{width:100%;height:220px;background:#F0F2F5}
-.map-legend{padding:8px 14px;display:flex;gap:12px;font-size:11px;color:#6B7280}
-.map-legend span{display:flex;align-items:center;gap:4px}
-.map-legend i{width:12px;height:3px;border-radius:2px}
-.map-legend i.l-green{background:#00C48C}
-.map-legend i.l-orange{background:#FF9F43}
-.map-legend i.l-blue{background:#5B8DEF}
+  /* ===== MVP 02 Screens ===== */
+  .places-screen { padding: 28px 40px; max-width: 1200px; margin: 0 auto; }
+  .places-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
+  .places-header h2 { font-size: 22px; font-weight: 700; color: var(--neutral-900); margin-bottom: 6px; }
+  .places-header p { font-size: 14px; color: var(--neutral-500); }
+  .places-stats { display: flex; gap: 16px; }
+  .stat-pill { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: white; border-radius: var(--radius); border: 1px solid var(--neutral-200); font-size: 13px; color: var(--neutral-700); }
+  .stat-pill strong { color: var(--neutral-900); }
+  .places-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 28px; }
+  .place-item { background: white; border-radius: var(--radius-lg); border: 1.5px solid var(--neutral-200); padding: 14px; cursor: pointer; transition: all .15s; }
+  .place-item:hover { border-color: var(--neutral-300); box-shadow: var(--shadow-sm); }
+  .place-item.selected { border-color: var(--brand); background: var(--brand-light); }
+  .place-emoji { font-size: 28px; margin-bottom: 8px; display: block; }
+  .place-name { font-size: 13px; font-weight: 600; color: var(--neutral-800); margin-bottom: 4px; line-height: 1.3; }
+  .place-type { font-size: 11px; color: var(--neutral-400); margin-bottom: 8px; }
+  .place-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .place-tag { padding: 2px 7px; background: var(--neutral-100); border-radius: 10px; font-size: 10px; color: var(--neutral-600); }
+  .place-tag.hot { background: #FEF2F2; color: #DC2626; }
+  .place-tag.night { background: #1E1B4B; color: #A5B4FC; }
+  .places-action { text-align: center; margin-bottom: 24px; }
 
-/* ===== RECOMMEND SECTION ===== */
-.recommend{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
-.recommend-tabs{display:flex;border-bottom:1px solid #E5E7EB}
-.recommend-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;color:#6B7280;border-bottom:2px solid transparent;transition:all .15s}
-.recommend-tab.active{color:#00C48C;border-bottom-color:#00C48C}
-.recommend-tab:hover:not(.active){color:#1A1A2E}
-.recommend-scroll{display:flex;gap:10px;padding:12px 14px;overflow-x:auto;scrollbar-width:none}
-.recommend-scroll::-webkit-scrollbar{display:none}
-.rec-card{flex-shrink:0;width:130px;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:transform .1s}
-.rec-card:hover{transform:translateY(-1px)}
-.rec-img{height:72px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff}
-.rec-info{padding:6px 8px}
-.rec-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rec-type{font-size:10px;color:#9CA3AF;margin-top:2px}
+  /* AI Analysis */
+  .ai-analysis-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; align-items: center; justify-content: center; }
+  .ai-analysis-overlay.active { display: flex; }
+  .ai-analysis-card { background: white; border-radius: var(--radius-xl); width: 520px; overflow: hidden; box-shadow: var(--shadow-lg); }
+  .ai-card-header { padding: 24px; background: linear-gradient(135deg, #1D6FEB, #0EA5E9); color: white; }
+  .ai-card-header h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .ai-card-header p { font-size: 13px; opacity: .85; }
+  .ai-card-body { padding: 24px; }
+  .ai-progress-step { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--neutral-100); }
+  .ai-progress-step:last-child { border-bottom: none; }
+  .ai-step-status { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .ai-step-status.pending { background: var(--neutral-100); }
+  .ai-step-status.processing { background: var(--ai-purple-light); animation: pulse 1.2s ease-in-out infinite; }
+  .ai-step-status.done { background: var(--green-light); }
+  .ai-step-label { font-size: 14px; color: var(--neutral-700); font-weight: 500; }
+  .ai-step-label.active { color: var(--ai-purple); font-weight: 600; }
+  .ai-step-label.done { color: var(--green); }
 
-/* ===== BOTTOM BAR ===== */
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-top:1px solid #E5E7EB;z-index:100;padding:10px 20px}
-.bottom-inner{display:flex;align-items:center;gap:12px;max-width:1200px;margin:0 auto;overflow-x:auto}
-.bottom-label{font-size:12px;font-weight:600;color:#6B7280;white-space:nowrap;flex-shrink:0}
-.bottom-divider{width:1px;height:28px;background:#E5E7EB;flex-shrink:0}
-.bottom-plans{display:flex;gap:16px;flex:1;min-width:0}
-.bottom-plan{flex:1;min-width:0}
-.bottom-plan-name{font-size:11px;font-weight:600;color:#1A1A2E;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bottom-metrics{display:flex;gap:10px;flex-wrap:wrap}
-.bottom-metric{font-size:11px;color:#6B7280;display:flex;align-items:center;gap:2px}
-.bottom-metric .bm-val{font-weight:600}
-.bottom-metric.best .bm-val{color:#00C48C}
-.bottom-metric.best .bm-val::after{content:' ✓';font-weight:400}
-.bottom-metric.worst .bm-val{color:#9CA3AF}
+  /* Routes Screen */
+  .routes-screen { padding: 28px 40px; }
+  .routes-layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
+  .routes-sidebar {}
+  .routes-main {}
+  .route-card { background: white; border-radius: var(--radius-lg); border: 2px solid var(--neutral-200); margin-bottom: 14px; cursor: pointer; transition: all .2s; overflow: hidden; }
+  .route-card:hover { border-color: var(--neutral-300); box-shadow: var(--shadow); }
+  .route-card.active { border-color: var(--brand); }
+  .route-card-header { padding: 16px 20px; display: flex; align-items: center; gap: 12px; }
+  .route-icon { width: 40px; height: 40px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .route-icon.weekday { background: #EFF6FF; }
+  .route-icon.weekend { background: #EFF6FF; }
+  .route-icon.photo { background: #FDF4FF; }
+  .route-icon.food { background: #FFFBEB; }
+  .route-card-title { font-size: 15px; font-weight: 700; color: var(--neutral-900); margin-bottom: 2px; }
+  .route-card-meta { font-size: 12px; color: var(--neutral-400); }
+  .route-card-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .route-card-tag.ai { background: var(--ai-purple-light); color: var(--ai-purple); }
+  .route-places-preview { padding: 0 20px 16px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .mini-place { padding: 4px 10px; background: var(--neutral-100); border-radius: 20px; font-size: 12px; color: var(--neutral-600); display: flex; align-items: center; gap: 4px; }
+  .route-card.active .mini-place { background: var(--brand-light); color: var(--brand); }
 
-/* ===== RESPONSIVE ===== */
-@media(max-width:1024px){
-  .main-right{display:none}
-  .plan-grid.cols-4{grid-template-columns:1fr 1fr}
-}
-@media(max-width:768px){
-  .plan-grid.cols-2,.plan-grid.cols-3,.plan-grid.cols-4{grid-template-columns:1fr}
-  .header-title{font-size:14px}
-  .main-left{padding:12px}
-  .plan-tabs{gap:6px}
-  .plan-tab{padding:6px 12px;font-size:12px}
-  .plan-hint{display:none}
-  .bottom-bar{padding:8px 12px}
-  .entry-card{padding:24px 18px}
-  .date-row{flex-direction:column;gap:8px}
-  .generate-btn{font-size:15px}
-}
+  /* Map preview */
+  .map-preview { background: white; border-radius: var(--radius-lg); border: 1px solid var(--neutral-200); overflow: hidden; margin-bottom: 16px; }
+  .map-header { padding: 16px 20px; border-bottom: 1px solid var(--neutral-100); display: flex; align-items: center; justify-content: space-between; }
+  .map-header h3 { font-size: 14px; font-weight: 700; color: var(--neutral-800); }
+  .map-canvas { height: 320px; background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(148,163,184,.15) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.15) 1px, transparent 1px); background-size: 40px 40px; }
+  .map-pin { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+  .map-pin-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: var(--shadow); }
+  .map-pin-label { font-size: 11px; background: white; padding: 2px 6px; border-radius: 4px; box-shadow: var(--shadow-sm); white-space: nowrap; font-weight: 500; color: var(--neutral-700); }
+  .map-line { position: absolute; border: none; border-top: 2px dashed var(--brand); opacity: .6; transform-origin: left center; }
+  .route-detail-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--neutral-200); overflow: hidden; }
+  .route-detail-header { padding: 20px; border-bottom: 1px solid var(--neutral-100); display: flex; align-items: center; justify-content: space-between; }
+  .route-detail-title { font-size: 16px; font-weight: 700; color: var(--neutral-900); }
+  .route-steps { padding: 20px; }
+  .route-step { display: flex; gap: 16px; margin-bottom: 20px; }
+  .route-step:last-child { margin-bottom: 0; }
+  .route-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .route-step-body { flex: 1; }
+  .route-step-name { font-size: 14px; font-weight: 700; color: var(--neutral-900); margin-bottom: 4px; }
+  .route-step-meta { font-size: 12px; color: var(--neutral-500); margin-bottom: 6px; line-height: 1.5; }
+  .route-step-reason { display: flex; align-items: flex-start; gap: 6px; padding: 8px 12px; background: var(--ai-purple-light); border-radius: var(--radius-sm); font-size: 12px; color: var(--ai-purple); line-height: 1.5; }
+  .route-step-connector { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; margin-left: 13px; }
+  .route-step-connector .line { width: 2px; height: 20px; background: var(--neutral-200); }
+  .route-step-connector .transit { font-size: 11px; color: var(--neutral-400); padding: 2px 8px; background: var(--neutral-100); border-radius: 10px; }
+  .route-actions { padding: 16px 20px; border-top: 1px solid var(--neutral-100); display: flex; gap: 10px; }
+  .btn-outline { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border: 1.5px solid var(--neutral-300); background: white; color: var(--neutral-700); border-radius: var(--radius); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; }
+  .btn-outline:hover { border-color: var(--neutral-400); background: var(--neutral-50); }
 
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.plan-card{animation:fadeIn .3s ease}
+  /* Success screen */
+  .success-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; padding: 40px; text-align: center; }
+  .success-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 40px; }
+  .success-title { font-size: 26px; font-weight: 700; color: var(--neutral-900); margin-bottom: 10px; }
+  .success-sub { font-size: 15px; color: var(--neutral-500); max-width: 400px; line-height: 1.6; margin-bottom: 32px; }
+  .success-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--neutral-200); padding: 20px; max-width: 420px; margin: 0 auto 24px; text-align: left; }
+  .success-card h4 { font-size: 14px; font-weight: 700; color: var(--neutral-800); margin-bottom: 12px; }
+  .success-detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--neutral-100); }
+  .success-detail-row:last-child { border-bottom: none; }
+  .success-detail-row span:first-child { font-size: 13px; color: var(--neutral-500); }
+  .success-detail-row span:last-child { font-size: 13px; font-weight: 600; color: var(--neutral-800); }
+  .success-actions { display: flex; gap: 12px; justify-content: center; }
+  
+  /* Annotation badges */
+  .note-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 4px; font-size: 11px; color: #1558C9; font-weight: 500; }
+  
+  /* ===== Footer portfolio bar ===== */
+  .portfolio-bar { background: var(--neutral-900); color: white; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+  .portfolio-bar-left { opacity: .6; }
+  .portfolio-bar-right { display: flex; gap: 20px; }
+  .portfolio-bar-right a { color: rgba(255,255,255,.6); text-decoration: none; font-size: 12px; }
+  .portfolio-bar-right a:hover { color: white; }
 </style>
 </head>
 <body>
 
-<!-- ===== STATE0: ENTRY PAGE ===== -->
-<div id="state0" class="state-page active">
-  <div class="entry-card">
-    <h1 class="entry-title">✦ AI 行程规划</h1>
-    <p class="entry-subtitle">输入偏好，一次生成多套方案，横向对比选最优</p>
-
-    <!-- Destination -->
-    <div class="form-section">
-      <label class="form-label"><span class="required">*</span>目的地</label>
-      <input class="dest-input" id="destInput" type="text" placeholder="去哪儿？如：马德里、东京、巴黎" autocomplete="off">
-      <div class="dest-pills" id="destPills">
-        <span class="dest-pill" data-val="马德里">马德里</span>
-        <span class="dest-pill" data-val="东京">东京</span>
-        <span class="dest-pill" data-val="巴黎">巴黎</span>
-        <span class="dest-pill" data-val="京都">京都</span>
-        <span class="dest-pill" data-val="首尔">首尔</span>
-      </div>
-    </div>
-
-    <!-- Duration -->
-    <div class="form-section">
-      <label class="form-label">出行天数</label>
-      <div class="day-pills" id="dayPills">
-        <span class="day-pill" data-val="3">3天</span>
-        <span class="day-pill" data-val="5">5天</span>
-        <span class="day-pill selected" data-val="7">7天</span>
-        <span class="day-pill" data-val="10">10天</span>
-      </div>
-    </div>
-
-    <!-- People -->
-    <div class="form-section">
-      <label class="form-label">出行人数</label>
-      <div class="stepper">
-        <button class="stepper-btn" id="peopleMinus" type="button">−</button>
-        <span class="stepper-val" id="peopleVal">2</span>
-        <button class="stepper-btn" id="peoplePlus" type="button">+</button>
-      </div>
-    </div>
-
-    <!-- Preferences -->
-    <div class="form-section">
-      <label class="form-label">旅行偏好（可多选）</label>
-      <div class="pref-pills" id="prefPills">
-        <span class="pref-pill" data-val="文化历史">文化历史</span>
-        <span class="pref-pill" data-val="自然风光">自然风光</span>
-        <span class="pref-pill selected" data-val="美食探索">美食探索</span>
-        <span class="pref-pill" data-val="购物娱乐">购物娱乐</span>
-        <span class="pref-pill" data-val="轻松休闲">轻松休闲</span>
-      </div>
-    </div>
-
-    <!-- Plan Count -->
-    <div class="form-section">
-      <label class="form-label">生成几套方案？</label>
-      <div class="count-pills" id="countPills">
-        <span class="count-pill" data-val="2">2套</span>
-        <span class="count-pill selected" data-val="3">3套</span>
-        <span class="count-pill" data-val="4">4套</span>
-      </div>
-    </div>
-
-    <!-- Generate Button -->
-    <button class="generate-btn" id="generateBtn" type="button">
-      <span>✦</span> AI 生成方案
-    </button>
-  </div>
-</div>
-
-<!-- ===== STATE1: LOADING ===== -->
-<div id="state1" class="state-page">
-  <div class="loader-card">
-    <div class="spinner">
-      <div class="spinner-ring"></div>
-      <div class="spinner-dot"></div>
-    </div>
-    <div class="loader-title" id="loaderTitle">AI 正在为您生成3套马德里行程方案…</div>
-    <div class="loader-sub">通常需要 3-5 秒</div>
-  </div>
-</div>
-
-<!-- ===== STATE2: RESULT PAGE ===== -->
-<div id="state2" class="state-page" style="flex-direction:column;">
-
-<!-- ===== HEADER ===== -->
-<header class="header">
-  <a class="header-back" href="/08/works/">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    返回
-  </a>
-  <div class="header-title">
-    <svg viewBox="0 0 16 16"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm0 2v2h10V4H3zm0 4v5h10V8H3z"/></svg>
-    <span id="headerTitleText">马德里旅游 · 5天</span>
-  </div>
-  <div class="header-actions">
-    <button class="btn-outline" onclick="addNewPlan()">+ 添加方案</button>
-    <button class="btn-solid" onclick="exportPlans()">导出</button>
-  </div>
-</header>
-
-<!-- ===== MAIN ===== -->
-<div class="main">
-  <!-- LEFT: Plan Comparison -->
-  <div class="main-left">
-    <!-- Plan Tabs -->
-    <div class="plan-tabs" id="planTabs">
-      <button class="plan-tab active" data-plan="A" onclick="togglePlan(this,'A')">
-        <span class="check"></span>方案A 预算优先
-      </button>
-      <button class="plan-tab active" data-plan="B" onclick="togglePlan(this,'B')">
-        <span class="check"></span>方案B 效率优先
-      </button>
-      <button class="plan-tab active" data-plan="C" onclick="togglePlan(this,'C')">
-        <span class="check"></span>方案C 体验优先
-      </button>
-      <button class="plan-tab add-plan" data-plan="D" onclick="togglePlan(this,'D')">
-        <span class="check"></span>+ 新方案
-      </button>
-      <span class="plan-hint">Ctrl + 点击可多选</span>
-    </div>
-
-    <!-- Plan Grid -->
-    <div class="plan-grid cols-3" id="planGrid">
-      <!-- Plans will be rendered by JS -->
-    </div>
-  </div>
-
-  <!-- RIGHT: Map + Recommendations -->
-  <div class="main-right">
-    <!-- Map -->
-    <div class="right-map">
-      <div class="right-map-header">
-        <svg viewBox="0 0 16 16"><path d="M14 2L8 4.5 2 2v11l6 2.5L14 13V2z"/></svg>
-        地图
-      </div>
-      <svg class="map-svg" viewBox="0 0 320 220" id="mapSvg">
-        <!-- Background city grid -->
-        <rect x="0" y="0" width="320" height="220" fill="#F0F2F5"/>
-        <!-- Roads -->
-        <line x1="20" y1="60" x2="300" y2="60" stroke="#D1D5DB" stroke-width="1.5"/>
-        <line x1="20" y1="120" x2="300" y2="120" stroke="#D1D5DB" stroke-width="2"/>
-        <line x1="20" y1="180" x2="300" y2="180" stroke="#D1D5DB" stroke-width="1.5"/>
-        <line x1="60" y1="10" x2="60" y2="210" stroke="#D1D5DB" stroke-width="1.5"/>
-        <line x1="140" y1="10" x2="140" y2="210" stroke="#D1D5DB" stroke-width="2"/>
-        <line x1="220" y1="10" x2="220" y2="210" stroke="#D1D5DB" stroke-width="1.5"/>
-        <line x1="280" y1="10" x2="280" y2="210" stroke="#D1D5DB" stroke-width="1"/>
-        <!-- Diagonal road -->
-        <line x1="40" y1="30" x2="140" y2="150" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="4,4"/>
-        <line x1="160" y1="40" x2="260" y2="160" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="4,4"/>
-        <!-- Route lines for Plan A (green) -->
-        <g id="routeA" opacity="0.8">
-          <polyline points="80,50 120,80 160,65 200,100" fill="none" stroke="#00C48C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <polyline points="100,130 150,140 180,125" fill="none" stroke="#00C48C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        <!-- Route lines for Plan B (orange) -->
-        <g id="routeB" opacity="0.6">
-          <polyline points="90,55 130,90 170,70" fill="none" stroke="#FF9F43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <polyline points="110,135 160,150 190,130" fill="none" stroke="#FF9F43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        <!-- Route lines for Plan C (blue) -->
-        <g id="routeC" opacity="0.6">
-          <polyline points="70,45 140,75 210,55" fill="none" stroke="#5B8DEF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <polyline points="120,140 170,155" fill="none" stroke="#5B8DEF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        <!-- Attraction dots -->
-        <g id="attractions">
-          <!-- Prado -->
-          <circle cx="80" cy="50" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1" filter="url(#shadow)"/>
-          <text x="80" y="55" text-anchor="middle" font-size="12">🏛️</text>
-          <!-- Retiro -->
-          <circle cx="120" cy="80" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="120" y="85" text-anchor="middle" font-size="12">🌳</text>
-          <!-- Latin Quarter -->
-          <circle cx="160" cy="65" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="160" y="70" text-anchor="middle" font-size="12">🍷</text>
-          <!-- Palace -->
-          <circle cx="200" cy="100" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="200" y="105" text-anchor="middle" font-size="12">🏰</text>
-          <!-- Almudena -->
-          <circle cx="100" cy="130" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="100" y="135" text-anchor="middle" font-size="12">⛪</text>
-          <!-- Market -->
-          <circle cx="150" cy="140" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="150" y="145" text-anchor="middle" font-size="12">🛒</text>
-          <!-- Toledo -->
-          <circle cx="180" cy="125" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="180" y="130" text-anchor="middle" font-size="12">🏔️</text>
-          <!-- Gran Via -->
-          <circle cx="190" cy="130" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="190" y="135" text-anchor="middle" font-size="12">🛍️</text>
-          <!-- Reina Sofia -->
-          <circle cx="90" cy="55" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="90" y="60" text-anchor="middle" font-size="12">🎨</text>
-          <!-- Thyssen -->
-          <circle cx="130" cy="90" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="130" y="95" text-anchor="middle" font-size="12">🖼️</text>
-          <!-- Sorolla -->
-          <circle cx="170" cy="70" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="170" y="75" text-anchor="middle" font-size="12">🎭</text>
-          <!-- Helipad -->
-          <circle cx="70" cy="45" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="70" y="50" text-anchor="middle" font-size="12">🚁</text>
-          <!-- Star Restaurant -->
-          <circle cx="140" cy="75" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="140" y="80" text-anchor="middle" font-size="12">⭐</text>
-          <!-- Opera -->
-          <circle cx="210" cy="55" r="14" fill="#fff" stroke="#E5E7EB" stroke-width="1"/>
-          <text x="210" y="60" text-anchor="middle" font-size="12">🎶</text>
-        </g>
-        <!-- Shadow filter -->
-        <defs>
-          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="rgba(0,0,0,0.08)"/>
-          </filter>
-        </defs>
+<!-- ======================================================== -->
+<!--                     HOME SCREEN                          -->
+<!-- ======================================================== -->
+<div id="home-screen">
+  <!-- Top Nav -->
+  <nav class="top-nav">
+    <div class="nav-logo" onclick="showHome()">
+      <svg viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="13" fill="#1D6FEB" opacity=".15"/>
+        <path d="M14 6C10 6 7 9 7 13c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z" fill="#1D6FEB"/>
+        <circle cx="14" cy="13" r="3" fill="white"/>
       </svg>
-      <div class="map-legend">
-        <span><i class="l-green"></i>方案A</span>
-        <span><i class="l-orange"></i>方案B</span>
-        <span><i class="l-blue"></i>方案C</span>
+      圆周旅迹
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active">AI 功能探索</button>
+      <button class="nav-tab">我的行程</button>
+      <button class="nav-tab">地点收藏</button>
+    </div>
+    <div class="nav-right">
+      <span style="font-size:13px;color:var(--neutral-500);">Web AI 原型 v0.1</span>
+      <div class="avatar">ME</div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">✦ Product Portfolio · Web AI MVP</div>
+    <h1>旅行规划，从<span>反复比较</span><br>到一键决策</h1>
+    <p>基于 12 位用户访谈，针对 Web 端复杂旅行规划场景设计的两个 AI 功能 MVP，解决攻略决策与地点整理两大核心痛点。</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="startMVP('mvp01')">▶ 体验 MVP 01 · 多方案决策</button>
+      <button class="btn-secondary" onclick="startMVP('mvp02')">▶ 体验 MVP 02 · 地点归纳师</button>
+    </div>
+  </section>
+
+  <!-- Research Insights -->
+  <section class="section" style="padding-top: 20px;">
+    <div class="section-header">
+      <div class="section-label">用户研究结论</div>
+      <div class="section-title">12 位用户访谈的核心发现</div>
+      <div class="section-sub">访谈样本：20–45 岁，中高频旅行用户，深度规划型 3 人 / 效率规划型 6 人 / 即时决策型 3 人</div>
+    </div>
+    <div class="insight-grid">
+      <div class="insight-card">
+        <div class="insight-num">75%</div>
+        <div class="insight-label">用户同时参考 3+ 篇攻略</div>
+        <div class="insight-desc">大多数用户同时浏览小红书、地图、AI 问答等多个来源，方案选择成本极高。</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-num">83%</div>
+        <div class="insight-label">地点收藏后难以转化为路线</div>
+        <div class="insight-desc">「收藏了很多地方，真正出发前还是要重新整理」—— 收藏完成后仍需大量二次整理成本。</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-num">2</div>
+        <div class="insight-label">Web 场景核心价值</div>
+        <div class="insight-desc">复杂长程规划（多窗口深度编辑）+ 碎片时间整理（快速收藏 + 跨端同步），两类场景高度契合大屏 AI 能力。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MVP Cards -->
+  <section class="section" style="padding-top: 0; background: var(--neutral-50);">
+    <div class="section-header">
+      <div class="section-label">MVP 定义</div>
+      <div class="section-title">两个 P0 级 Web AI 功能</div>
+      <div class="section-sub">均采用 Human-in-the-loop 设计原则：AI 负责分析，用户保留最终决策权</div>
+    </div>
+    <div class="mvp-grid">
+      <div class="mvp-card" onclick="startMVP('mvp01')">
+        <div class="mvp-icon">⚖️</div>
+        <div class="mvp-tag orange">MVP 01 · P0</div>
+        <h3>AI 多方案决策</h3>
+        <p>帮助用户同时比较多篇攻略或多次 AI 规划结果，从时间、预算、路线、景点等维度快速完成方案决策，并选择其中一个方案继续编辑。</p>
+        <div class="mvp-pills">
+          <span class="mvp-pill">📋 攻略结构化</span>
+          <span class="mvp-pill">📊 多维度对比</span>
+          <span class="mvp-pill">💡 AI 推荐理由</span>
+          <span class="mvp-pill">✏️ 继续编辑</span>
+        </div>
+        <div class="mvp-cta">查看功能原型 →</div>
+      </div>
+      <div class="mvp-card blue" onclick="startMVP('mvp02')">
+        <div class="mvp-icon">🗺️</div>
+        <div class="mvp-tag blue">MVP 02 · P0</div>
+        <h3>AI 地点归纳师</h3>
+        <p>帮助用户将地点合集从"收藏资产"转化为"可执行路线"，基于距离、营业时间、热门程度及使用场景生成不同路线建议。</p>
+        <div class="mvp-pills">
+          <span class="mvp-pill">📍 地点聚类分析</span>
+          <span class="mvp-pill">🛣️ 多路线生成</span>
+          <span class="mvp-pill">⏰ 时间智能排序</span>
+          <span class="mvp-pill">🔧 手动可调整</span>
+        </div>
+        <div class="mvp-cta" style="color:var(--ai-blue)">查看功能原型 →</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="portfolio-bar">
+    <div class="portfolio-bar-left">圆周旅迹 Web AI 功能探索 · Product Portfolio 2024</div>
+    <div class="portfolio-bar-right">
+      <span style="color:rgba(255,255,255,.5)">用户研究 → 需求分析 → 产品设计 → 原型验证</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ======================================================== -->
+<!--                 MVP 01 · SCREEN 1: IMPORT               -->
+<!-- ======================================================== -->
+<div id="mvp01-import" class="prototype-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showHome()">← 返回</button>
+      <div class="proto-title">AI 多方案决策</div>
+      <div class="proto-badge">MVP 01</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step active"><div class="step-dot">1</div> 导入方案</div>
+      <div class="proto-step"><div class="step-dot">2</div> AI 分析</div>
+      <div class="proto-step"><div class="step-dot">3</div> 方案对比</div>
+      <div class="proto-step"><div class="step-dot">4</div> 完成决策</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+
+  <div class="import-screen">
+    <div class="import-header">
+      <h2>导入你想比较的旅行方案</h2>
+      <p>支持导入小红书攻略、AI 规划结果或自己整理的方案，最多同时比较 3 个。点击卡片体验导入效果。</p>
+    </div>
+
+    <div class="import-container">
+      <!-- Slot A -->
+      <div class="import-slot" id="slot-a" onclick="fillSlot('a')">
+        <div class="slot-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <div class="slot-empty">
+          <div class="slot-icon">📋</div>
+          <div class="slot-label">方案 A</div>
+          <div class="slot-hint">点击导入攻略或粘贴链接</div>
+        </div>
+        <div class="slot-filled-content">
+          <div class="slot-source-tag xhs">📕 小红书攻略</div>
+          <div class="slot-title">「北京 5 日经典路线」深度游攻略</div>
+          <div class="slot-meta">预算 ¥3,200 · 5 天 · 含长城+故宫+胡同<br>来源：@旅行探索官 · 1.2w 收藏</div>
+        </div>
+      </div>
+
+      <!-- Slot B -->
+      <div class="import-slot" id="slot-b" onclick="fillSlot('b')">
+        <div class="slot-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <div class="slot-empty">
+          <div class="slot-icon">🤖</div>
+          <div class="slot-label">方案 B</div>
+          <div class="slot-hint">点击导入 AI 生成的规划结果</div>
+        </div>
+        <div class="slot-filled-content">
+          <div class="slot-source-tag ai">✦ AI 规划</div>
+          <div class="slot-title">圆周 AI · 高效北京 4 日方案</div>
+          <div class="slot-meta">预算 ¥2,500 · 4 天 · 重点核心景点<br>包含地铁通勤优化 · 排队时间最短</div>
+        </div>
+      </div>
+
+      <!-- Slot C -->
+      <div class="import-slot" id="slot-c" onclick="fillSlot('c')">
+        <div class="slot-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+        <div class="slot-empty">
+          <div class="slot-icon">📝</div>
+          <div class="slot-label">方案 C</div>
+          <div class="slot-hint">点击导入第三个方案（可选）</div>
+        </div>
+        <div class="slot-filled-content">
+          <div class="slot-source-tag zhihu">📘 知乎攻略</div>
+          <div class="slot-title">北京亲子 5 日游超详细路书</div>
+          <div class="slot-meta">预算 ¥4,000 · 5 天 · 适合带孩子家庭<br>节奏较慢 · 包含科技馆+动物园</div>
+        </div>
       </div>
     </div>
 
-    <!-- Recommendations -->
-    <div class="recommend">
-      <div class="recommend-tabs">
-        <button class="recommend-tab active" onclick="switchRecTab(this,'rec')">推荐景点</button>
-        <button class="recommend-tab" onclick="switchRecTab(this,'pending')">待计划</button>
+    <div class="import-tips">
+      <div class="import-tips-icon">✦</div>
+      <div>
+        <h4>AI 将从以下维度自动对比方案</h4>
+        <p>旅行天数 · 每日预算 · 主要景点 · 住宿区域 · 通勤方式 · 适合人群 · 节奏快慢 · 覆盖范围</p>
       </div>
-      <div class="recommend-scroll" id="recScroll">
-        <!-- Rendered by JS -->
+    </div>
+
+    <div class="import-action">
+      <div>
+        <div class="note-badge">📝 原型说明</div>
+        <span style="font-size:12px;color:var(--neutral-400);margin-left:8px;">点击三个方案卡片体验"导入"效果，全部导入后开始 AI 分析</span>
+      </div>
+      <button class="btn-ai" id="analyze-btn" onclick="startAnalyzing()" style="opacity:.5;pointer-events:none;">
+        ✦ 开始 AI 分析
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ======================================================== -->
+<!--                 MVP 01 · SCREEN 2: ANALYZING            -->
+<!-- ======================================================== -->
+<div id="mvp01-analyzing" class="prototype-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showScreen('mvp01-import')">← 返回</button>
+      <div class="proto-title">AI 多方案决策</div>
+      <div class="proto-badge">MVP 01</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step done"><div class="step-dot">✓</div> 导入方案</div>
+      <div class="proto-step active"><div class="step-dot">2</div> AI 分析</div>
+      <div class="proto-step"><div class="step-dot">3</div> 方案对比</div>
+      <div class="proto-step"><div class="step-dot">4</div> 完成决策</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+
+  <div class="analyzing-screen">
+    <div class="analyzing-card">
+      <div class="ai-spinner">
+        <div class="ai-spinner-ring"></div>
+        <div class="ai-spinner-ring"></div>
+        <div class="ai-emoji">✦</div>
+      </div>
+      <div class="analyzing-title">AI 正在分析 3 个方案</div>
+      <div class="analyzing-sub">正在提取关键信息、比较差异并生成推荐理由，预计需要几秒钟</div>
+      <div class="analyzing-steps">
+        <div class="a-step done" id="as1">
+          <div class="a-step-icon">✓</div>
+          <div class="a-step-text">解析方案内容与结构</div>
+        </div>
+        <div class="a-step done" id="as2">
+          <div class="a-step-icon">✓</div>
+          <div class="a-step-text">提取预算、景点、住宿等关键信息</div>
+        </div>
+        <div class="a-step active" id="as3">
+          <div class="a-step-icon" style="color:white;font-size:10px;background:var(--ai-purple)">…</div>
+          <div class="a-step-text">识别方案间差异与优劣</div>
+        </div>
+        <div class="a-step" id="as4">
+          <div class="a-step-icon" style="color:var(--neutral-400);">4</div>
+          <div class="a-step-text">生成推荐理由与对比结论</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== BOTTOM BAR ===== -->
-<div class="bottom-bar" id="bottomBar">
-  <div class="bottom-inner">
-    <!-- Rendered by JS -->
+
+<!-- ======================================================== -->
+<!--               MVP 01 · SCREEN 3: COMPARE                -->
+<!-- ======================================================== -->
+<div id="mvp01-compare" class="prototype-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showHome()">← 返回首页</button>
+      <div class="proto-title">AI 多方案决策</div>
+      <div class="proto-badge">MVP 01</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step done"><div class="step-dot">✓</div> 导入方案</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> AI 分析</div>
+      <div class="proto-step active"><div class="step-dot">3</div> 方案对比</div>
+      <div class="proto-step"><div class="step-dot">4</div> 完成决策</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+
+  <div class="compare-screen">
+    <div class="compare-layout">
+      <!-- Sidebar -->
+      <div class="compare-sidebar">
+        <div class="ai-summary-card">
+          <div class="ai-summary-label">AI 综合推荐</div>
+          <div class="ai-summary-title">推荐选择方案 B，适合你的出行偏好</div>
+          <div class="ai-summary-tag">⚡ 通勤效率最高</div>
+          <div class="ai-summary-body">方案 B（圆周 AI · 4 日方案）预算最低，地铁可达比例 92%，景点密度高且排队时间最短，非常适合时间有限、追求效率的旅行者。</div>
+        </div>
+        <div class="dim-list">
+          <div style="font-size:11px;font-weight:700;color:var(--neutral-400);letter-spacing:.5px;padding:0 4px;margin-bottom:4px;">对比维度</div>
+          <div class="dim-item active" onclick="setDim(this)"><span>📊 综合对比</span><span style="font-size:11px;color:var(--ai-purple);">当前</span></div>
+          <div class="dim-item" onclick="setDim(this)"><span>💰 预算分析</span></div>
+          <div class="dim-item" onclick="setDim(this)"><span>🗺️ 路线效率</span></div>
+          <div class="dim-item" onclick="setDim(this)"><span>🏛️ 景点覆盖</span></div>
+          <div class="dim-item" onclick="setDim(this)"><span>🏨 住宿建议</span></div>
+          <div class="dim-item" onclick="setDim(this)"><span>👥 适合人群</span></div>
+        </div>
+      </div>
+
+      <!-- Main -->
+      <div class="compare-main">
+        <div class="compare-meta">
+          <h2>3 个方案对比结果</h2>
+          <span style="font-size:13px;color:var(--neutral-400);">点击方案卡片选择，确认后进入编辑</span>
+        </div>
+
+        <!-- Plan Cards -->
+        <div class="plan-cards">
+          <div class="plan-card" id="plan-a" onclick="selectPlan('a')">
+            <div class="plan-header">
+              <div class="plan-header-top">
+                <div class="plan-label">方案 A</div>
+                <div style="font-size:18px;">📕</div>
+              </div>
+              <div class="plan-name">北京 5 日经典路线</div>
+              <div class="plan-source">来源：小红书攻略 · @旅行探索官</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-row"><span class="plan-row-label">总预算</span><span class="plan-row-value">¥ 3,200</span></div>
+              <div class="plan-row"><span class="plan-row-label">天数</span><span class="plan-row-value">5 天</span></div>
+              <div class="plan-row"><span class="plan-row-label">主要景点</span><span class="plan-row-value">长城 故宫 胡同 颐和园 798</span></div>
+              <div class="plan-row"><span class="plan-row-label">节奏</span><span class="plan-row-value">中等</span></div>
+              <div class="plan-row"><span class="plan-row-label">适合</span><span class="plan-row-value">首次来京 深度游</span></div>
+            </div>
+            <button class="plan-select-btn" onclick="selectPlan('a')">选择此方案</button>
+          </div>
+
+          <div class="plan-card recommended" id="plan-b" onclick="selectPlan('b')">
+            <div class="plan-header">
+              <div class="plan-header-top">
+                <div class="plan-label">方案 B</div>
+                <div class="plan-recommend-badge">✦ AI 推荐</div>
+              </div>
+              <div class="plan-name">高效北京 4 日方案</div>
+              <div class="plan-source">来源：圆周 AI 规划</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-row"><span class="plan-row-label">总预算</span><span class="plan-row-value highlight">¥ 2,500</span></div>
+              <div class="plan-row"><span class="plan-row-label">天数</span><span class="plan-row-value">4 天</span></div>
+              <div class="plan-row"><span class="plan-row-label">主要景点</span><span class="plan-row-value">故宫 长城 南锣鼓巷 前门大街</span></div>
+              <div class="plan-row"><span class="plan-row-label">节奏</span><span class="plan-row-value ai">紧凑高效</span></div>
+              <div class="plan-row"><span class="plan-row-label">适合</span><span class="plan-row-value">时间有限 高效旅行</span></div>
+            </div>
+            <button class="plan-select-btn" onclick="selectPlan('b')">选择此方案</button>
+          </div>
+
+          <div class="plan-card" id="plan-c" onclick="selectPlan('c')">
+            <div class="plan-header">
+              <div class="plan-header-top">
+                <div class="plan-label">方案 C</div>
+                <div style="font-size:18px;">📘</div>
+              </div>
+              <div class="plan-name">北京亲子 5 日游</div>
+              <div class="plan-source">来源：知乎路书</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-row"><span class="plan-row-label">总预算</span><span class="plan-row-value">¥ 4,000</span></div>
+              <div class="plan-row"><span class="plan-row-label">天数</span><span class="plan-row-value">5 天</span></div>
+              <div class="plan-row"><span class="plan-row-label">主要景点</span><span class="plan-row-value">故宫 科技馆 动物园 颐和园 长城</span></div>
+              <div class="plan-row"><span class="plan-row-label">节奏</span><span class="plan-row-value">轻松慢游</span></div>
+              <div class="plan-row"><span class="plan-row-label">适合</span><span class="plan-row-value">亲子家庭 带老人</span></div>
+            </div>
+            <button class="plan-select-btn" onclick="selectPlan('c')">选择此方案</button>
+          </div>
+        </div>
+
+        <!-- Compare Table -->
+        <div class="compare-table-card">
+          <div class="compare-table-header">📊 关键维度横向对比</div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th style="width:120px;">维度</th>
+                <th>方案 A · 小红书</th>
+                <th>方案 B · AI 推荐</th>
+                <th>方案 C · 知乎</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>每日预算</td>
+                <td>¥ 640 / 天</td>
+                <td style="color:var(--brand);">¥ 625 / 天 ✓</td>
+                <td>¥ 800 / 天</td>
+              </tr>
+              <tr>
+                <td>通勤方式</td>
+                <td>地铁 + 打车</td>
+                <td style="color:var(--brand);">92% 地铁可达 ✓</td>
+                <td>打车为主</td>
+              </tr>
+              <tr>
+                <td>景点数量</td>
+                <td>18 个</td>
+                <td>12 个</td>
+                <td style="color:var(--brand);">16 个（适宜）✓</td>
+              </tr>
+              <tr>
+                <td>平均排队</td>
+                <td>45 分钟</td>
+                <td style="color:var(--brand);">20 分钟 ✓</td>
+                <td>38 分钟</td>
+              </tr>
+              <tr>
+                <td>旅行节奏</td>
+                <td>中等</td>
+                <td>紧凑</td>
+                <td style="color:var(--brand);">轻松 ✓</td>
+              </tr>
+              <tr>
+                <td>综合评分</td>
+                <td>
+                  <div class="bar-wrapper">
+                    <div class="bar"><div class="bar-fill brand" style="width:72%"></div></div>
+                    <span class="bar-val">7.2</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="bar-wrapper">
+                    <div class="bar"><div class="bar-fill purple" style="width:91%"></div></div>
+                    <span class="bar-val" style="color:var(--ai-purple);">9.1</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="bar-wrapper">
+                    <div class="bar"><div class="bar-fill blue" style="width:68%"></div></div>
+                    <span class="bar-val">6.8</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Confirm -->
+        <div class="confirm-action" id="confirm-action" style="opacity:.5;">
+          <div class="confirm-action-left">
+            <h4 id="confirm-title">请先选择一个方案</h4>
+            <p id="confirm-sub">点击上方方案卡片完成选择，选中后可进入编辑流程</p>
+          </div>
+          <button class="btn-confirm" id="confirm-btn" onclick="goSuccess01()" style="pointer-events:none;">
+            进入行程编辑 →
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-</div><!-- end state2 -->
+
+<!-- ======================================================== -->
+<!--               MVP 01 · SCREEN 4: SUCCESS                -->
+<!-- ======================================================== -->
+<div id="mvp01-success" class="prototype-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showHome()">← 返回首页</button>
+      <div class="proto-title">AI 多方案决策</div>
+      <div class="proto-badge">MVP 01</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step done"><div class="step-dot">✓</div> 导入方案</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> AI 分析</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> 方案对比</div>
+      <div class="proto-step active"><div class="step-dot">4</div> 完成决策</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+
+  <div class="success-screen">
+    <div class="success-icon">✅</div>
+    <div class="success-title">方案已确认，进入行程编辑</div>
+    <div class="success-sub">你选择了「高效北京 4 日方案」，已加载到圆周旅迹行程编辑器，可继续完善细节。</div>
+    <div class="success-card">
+      <h4>📋 已确认方案信息</h4>
+      <div class="success-detail-row"><span>方案名称</span><span>高效北京 4 日方案</span></div>
+      <div class="success-detail-row"><span>来源</span><span>圆周 AI 规划</span></div>
+      <div class="success-detail-row"><span>旅行天数</span><span>4 天</span></div>
+      <div class="success-detail-row"><span>参考预算</span><span>¥ 2,500</span></div>
+      <div class="success-detail-row"><span>AI 推荐理由</span><span style="color:var(--ai-purple)">预算低 · 效率高</span></div>
+    </div>
+    <div class="success-actions">
+      <button class="btn-primary" onclick="showHome()">← 返回首页</button>
+      <button class="btn-secondary" onclick="startMVP('mvp02')">体验 MVP 02 →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ======================================================== -->
+<!--             MVP 02 · SCREEN 1: PLACE LIST               -->
+<!-- ======================================================== -->
+<div id="mvp02-places" class="prototype-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showHome()">← 返回</button>
+      <div class="proto-title">AI 地点归纳师</div>
+      <div class="proto-badge">MVP 02</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step active"><div class="step-dot">1</div> 地点收藏</div>
+      <div class="proto-step"><div class="step-dot">2</div> AI 分析</div>
+      <div class="proto-step"><div class="step-dot">3</div> 路线建议</div>
+      <div class="proto-step"><div class="step-dot">4</div> 保存行程</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+
+  <div class="places-screen">
+    <div class="places-header">
+      <div>
+        <h2>我的北京地点收藏</h2>
+        <p>你已收藏了 15 个地点，点击「AI 帮我规划」将收藏转化为可执行路线</p>
+      </div>
+      <div class="places-stats">
+        <div class="stat-pill">📍 <strong>15</strong> 个地点</div>
+        <div class="stat-pill">🏛️ <strong>5</strong> 景点</div>
+        <div class="stat-pill">🍜 <strong>6</strong> 餐厅</div>
+        <div class="stat-pill">☕ <strong>4</strong> 咖啡</div>
+      </div>
+    </div>
+
+    <div class="places-grid">
+      <div class="place-item"><span class="place-emoji">🏯</span><div class="place-name">故宫博物院</div><div class="place-type">景点 · 东城区</div><div class="place-tags"><span class="place-tag hot">🔥 热门</span><span class="place-tag">早上去</span></div></div>
+      <div class="place-item"><span class="place-emoji">🧱</span><div class="place-name">八达岭长城</div><div class="place-type">景点 · 延庆区</div><div class="place-tags"><span class="place-tag hot">🔥 必打卡</span><span class="place-tag">半日游</span></div></div>
+      <div class="place-item"><span class="place-emoji">🌸</span><div class="place-name">颐和园</div><div class="place-type">景点 · 海淀区</div><div class="place-tags"><span class="place-tag">下午佳</span><span class="place-tag">摄影</span></div></div>
+      <div class="place-item"><span class="place-emoji">🎨</span><div class="place-name">798 艺术区</div><div class="place-type">景点 · 朝阳区</div><div class="place-tags"><span class="place-tag">拍照</span><span class="place-tag night">🌙 夜间</span></div></div>
+      <div class="place-item"><span class="place-emoji">🥢</span><div class="place-name">簋街麻小</div><div class="place-type">餐厅 · 东城区</div><div class="place-tags"><span class="place-tag hot">🔥 人气</span><span class="place-tag night">🌙 夜宵</span></div></div>
+      <div class="place-item"><span class="place-emoji">🍜</span><div class="place-name">张记炸酱面</div><div class="place-type">餐厅 · 西城区</div><div class="place-tags"><span class="place-tag">午餐</span><span class="place-tag">老北京</span></div></div>
+      <div class="place-item"><span class="place-emoji">☕</span><div class="place-name">胡同咖啡馆</div><div class="place-type">咖啡 · 东城区</div><div class="place-tags"><span class="place-tag">拍照</span><span class="place-tag">安静</span></div></div>
+      <div class="place-item"><span class="place-emoji">🛍️</span><div class="place-name">南锣鼓巷</div><div class="place-type">景点 · 东城区</div><div class="place-tags"><span class="place-tag">文艺</span><span class="place-tag">小吃</span></div></div>
+      <div class="place-item"><span class="place-emoji">🥩</span><div class="place-name">烤鸭老四季</div><div class="place-type">餐厅 · 西城区</div><div class="place-tags"><span class="place-tag hot">🔥 招牌</span><span class="place-tag">正餐</span></div></div>
+      <div class="place-item"><span class="place-emoji">☕</span><div class="place-name">前门大碗茶</div><div class="place-type">茶馆 · 西城区</div><div class="place-tags"><span class="place-tag">休闲</span><span class="place-tag">老北京</span></div></div>
+      <div class="place-item"><span class="place-emoji">🏛️</span><div class="place-name">国家博物馆</div><div class="place-type">景点 · 东城区</div><div class="place-tags"><span class="place-tag">半日</span><span class="place-tag">文化</span></div></div>
+      <div class="place-item"><span class="place-emoji">🍱</span><div class="place-name">护国寺小吃</div><div class="place-type">餐厅 · 西城区</div><div class="place-tags"><span class="place-tag">早点</span><span class="place-tag">传统</span></div></div>
+      <div class="place-item"><span class="place-emoji">🎭</span><div class="place-name">天桥剧场</div><div class="place-type">演出 · 西城区</div><div class="place-tags"><span class="place-tag night">🌙 夜间</span><span class="place-tag">体验</span></div></div>
+      <div class="place-item"><span class="place-emoji">☕</span><div class="place-name">MOViE MOViE</div><div class="place-type">咖啡 · 朝阳区</div><div class="place-tags"><span class="place-tag">下午茶</span><span class="place-tag">拍照</span></div></div>
+      <div class="place-item"><span class="place-emoji">🌃</span><div class="place-name">后海酒吧街</div><div class="place-type">休闲 · 西城区</div><div class="place-tags"><span class="place-tag night">🌙 必去</span><span class="place-tag">氛围</span></div></div>
+    </div>
+
+    <div class="places-action">
+      <div style="margin-bottom:12px;font-size:13px;color:var(--neutral-400);">
+        <div class="note-badge">📝 原型说明</div>
+        <span style="margin-left:8px;">点击按钮触发 AI 分析流程，AI 将自动分析地点关系并生成路线</span>
+      </div>
+      <button class="btn-ai" onclick="startPlaceAnalysis()">🗺️ AI 帮我规划路线</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ======================================================== -->
+<!--             MVP 02 · SCREEN 2: AI ANALYSIS              -->
+<!-- ======================================================== -->
+<div id="mvp02-analyzing" class="prototype-shell">
+  <div class="ai-analysis-overlay active" id="analysis-overlay">
+    <div class="ai-analysis-card">
+      <div class="ai-card-header">
+        <h3>✦ AI 地点归纳师 正在分析</h3>
+        <p>正在理解 15 个收藏地点的关系与最优组合</p>
+      </div>
+      <div class="ai-card-body">
+        <div class="ai-progress-step">
+          <div class="ai-step-status done">✓</div>
+          <div class="ai-step-label done">识别地点类型（景点/美食/咖啡/购物）</div>
+        </div>
+        <div class="ai-progress-step">
+          <div class="ai-step-status done">✓</div>
+          <div class="ai-step-label done">分析地理分布与区域聚类</div>
+        </div>
+        <div class="ai-progress-step">
+          <div class="ai-step-status processing">…</div>
+          <div class="ai-step-label active">计算通勤距离与营业时间匹配</div>
+        </div>
+        <div class="ai-progress-step">
+          <div class="ai-step-status pending">4</div>
+          <div class="ai-step-label">生成多条场景化路线建议</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ======================================================== -->
+<!--             MVP 02 · SCREEN 3: ROUTES                   -->
+<!-- ======================================================== -->
+<div id="mvp02-routes" class="prototype-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showHome()">← 返回首页</button>
+      <div class="proto-title">AI 地点归纳师</div>
+      <div class="proto-badge">MVP 02</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step done"><div class="step-dot">✓</div> 地点收藏</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> AI 分析</div>
+      <div class="proto-step active"><div class="step-dot">3</div> 路线建议</div>
+      <div class="proto-step"><div class="step-dot">4</div> 保存行程</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+
+  <div class="routes-screen">
+    <div class="routes-layout">
+      <!-- Sidebar: Route List -->
+      <div class="routes-sidebar">
+        <div style="font-size:14px;font-weight:700;color:var(--neutral-800);margin-bottom:14px;">AI 为你生成了 4 条路线</div>
+
+        <div class="route-card active" id="route-weekday" onclick="selectRoute('weekday')">
+          <div class="route-card-header">
+            <div class="route-icon weekday">🏃</div>
+            <div>
+              <div class="route-card-title">工作日高效路线</div>
+              <div class="route-card-meta">5 个地点 · 约 8 小时 · 地铁可达</div>
+            </div>
+            <div class="route-card-tag ai">推荐</div>
+          </div>
+          <div class="route-places-preview">
+            <div class="mini-place">🏯 故宫</div>
+            <div class="mini-place">🥢 张记炸酱面</div>
+            <div class="mini-place">🛍️ 南锣鼓巷</div>
+            <div class="mini-place">☕ 胡同咖啡</div>
+            <div class="mini-place">🥢 簋街</div>
+          </div>
+        </div>
+
+        <div class="route-card" id="route-weekend" onclick="selectRoute('weekend')">
+          <div class="route-card-header">
+            <div class="route-icon weekend">🌅</div>
+            <div>
+              <div class="route-card-title">周末全天深度游</div>
+              <div class="route-card-meta">7 个地点 · 全天 · 打车+步行</div>
+            </div>
+          </div>
+          <div class="route-places-preview">
+            <div class="mini-place">🧱 长城</div>
+            <div class="mini-place">🌸 颐和园</div>
+            <div class="mini-place">🥩 烤鸭</div>
+            <div class="mini-place">🌃 后海</div>
+          </div>
+        </div>
+
+        <div class="route-card" id="route-photo" onclick="selectRoute('photo')">
+          <div class="route-card-header">
+            <div class="route-icon photo">📸</div>
+            <div>
+              <div class="route-card-title">拍照出片路线</div>
+              <div class="route-card-meta">6 个地点 · 约 10 小时 · 黄昏最佳</div>
+            </div>
+          </div>
+          <div class="route-places-preview">
+            <div class="mini-place">🎨 798</div>
+            <div class="mini-place">☕ MOViE</div>
+            <div class="mini-place">🌸 颐和园</div>
+            <div class="mini-place">🌃 后海</div>
+          </div>
+        </div>
+
+        <div class="route-card" id="route-food" onclick="selectRoute('food')">
+          <div class="route-card-header">
+            <div class="route-icon food">🍜</div>
+            <div>
+              <div class="route-card-title">美食探店路线</div>
+              <div class="route-card-meta">6 个地点 · 全天 · 步行为主</div>
+            </div>
+          </div>
+          <div class="route-places-preview">
+            <div class="mini-place">🍱 护国寺</div>
+            <div class="mini-place">🍜 张记面</div>
+            <div class="mini-place">☕ 前门茶</div>
+            <div class="mini-place">🥢 簋街</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main: Map + Route Detail -->
+      <div class="routes-main">
+        <!-- Map -->
+        <div class="map-preview">
+          <div class="map-header">
+            <h3>🗺️ 路线地图预览</h3>
+            <span style="font-size:12px;color:var(--neutral-400);">工作日高效路线</span>
+          </div>
+          <div class="map-canvas">
+            <div class="map-grid"></div>
+            <!-- Pins positioned approximately -->
+            <div class="map-pin" style="top:22%;left:38%;">
+              <div class="map-pin-dot">1</div>
+              <div class="map-pin-label">故宫</div>
+            </div>
+            <div class="map-pin" style="top:35%;left:34%;">
+              <div class="map-pin-dot">2</div>
+              <div class="map-pin-label">张记炸酱面</div>
+            </div>
+            <div class="map-pin" style="top:30%;left:44%;">
+              <div class="map-pin-dot">3</div>
+              <div class="map-pin-label">南锣鼓巷</div>
+            </div>
+            <div class="map-pin" style="top:42%;left:48%;">
+              <div class="map-pin-dot">4</div>
+              <div class="map-pin-label">胡同咖啡</div>
+            </div>
+            <div class="map-pin" style="top:28%;left:55%;">
+              <div class="map-pin-dot">5</div>
+              <div class="map-pin-label">簋街</div>
+            </div>
+            <div style="position:absolute;bottom:12px;right:12px;font-size:11px;color:var(--neutral-400);background:rgba(255,255,255,.8);padding:4px 8px;border-radius:4px;">示意图 · 非真实地图</div>
+          </div>
+        </div>
+
+        <!-- Route Detail -->
+        <div class="route-detail-card">
+          <div class="route-detail-header">
+            <div>
+              <div class="route-detail-title">🏃 工作日高效路线</div>
+              <div style="font-size:13px;color:var(--neutral-500);margin-top:4px;">5 个地点 · 约 8 小时 · 全程地铁可达 · 排队时间最短</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <div class="note-badge">📝 可拖拽排序</div>
+            </div>
+          </div>
+          <div class="route-steps">
+            <div class="route-step">
+              <div class="route-step-num">1</div>
+              <div class="route-step-body">
+                <div class="route-step-name">🏯 故宫博物院</div>
+                <div class="route-step-meta">⏰ 建议 08:30 到达 · 预计游览 3h · 东城区</div>
+                <div class="route-step-reason">✦ 工作日早上排队最短，建议提前预约门票，9点前入园效率最高</div>
+              </div>
+            </div>
+            <div class="route-step-connector"><div class="line"></div><div class="transit">步行 8 分钟</div></div>
+            <div class="route-step">
+              <div class="route-step-num">2</div>
+              <div class="route-step-body">
+                <div class="route-step-name">🍜 张记炸酱面</div>
+                <div class="route-step-meta">⏰ 建议 12:00 · 午餐 · 西城区</div>
+                <div class="route-step-reason">✦ 与故宫步行可达，工作日午市不排队，老北京味道值得体验</div>
+              </div>
+            </div>
+            <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 2 站</div></div>
+            <div class="route-step">
+              <div class="route-step-num">3</div>
+              <div class="route-step-body">
+                <div class="route-step-name">🛍️ 南锣鼓巷</div>
+                <div class="route-step-meta">⏰ 建议 13:30 · 约 1.5h · 东城区</div>
+                <div class="route-step-reason">✦ 午后人流较少，文创小店和胡同拍照最佳时段</div>
+              </div>
+            </div>
+            <div class="route-step-connector"><div class="line"></div><div class="transit">步行 5 分钟</div></div>
+            <div class="route-step">
+              <div class="route-step-num">4</div>
+              <div class="route-step-body">
+                <div class="route-step-name">☕ 胡同咖啡馆</div>
+                <div class="route-step-meta">⏰ 建议 15:30 · 下午茶 · 东城区</div>
+                <div class="route-step-reason">✦ 南锣鼓巷附近，适合下午休息补能，光线适合拍照</div>
+              </div>
+            </div>
+            <div class="route-step-connector"><div class="line"></div><div class="transit">地铁 3 站</div></div>
+            <div class="route-step">
+              <div class="route-step-num">5</div>
+              <div class="route-step-body">
+                <div class="route-step-name">🥢 簋街麻小</div>
+                <div class="route-step-meta">⏰ 建议 18:30 · 晚餐夜宵 · 东城区</div>
+                <div class="route-step-reason">✦ 工作日晚间高峰前到达可避开排队，建议 18:30–19:00 入场</div>
+              </div>
+            </div>
+          </div>
+          <div class="route-actions">
+            <button class="btn-outline">🔄 重新生成</button>
+            <button class="btn-outline">✏️ 手动调整顺序</button>
+            <button class="btn-confirm" onclick="goSuccess02()">保存为行程 →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ======================================================== -->
+<!--             MVP 02 · SCREEN 4: SUCCESS                  -->
+<!-- ======================================================== -->
+<div id="mvp02-success" class="prototype-shell">
+  <nav class="proto-nav">
+    <div class="proto-nav-left">
+      <button class="back-btn" onclick="showHome()">← 返回首页</button>
+      <div class="proto-title">AI 地点归纳师</div>
+      <div class="proto-badge">MVP 02</div>
+    </div>
+    <div class="proto-steps">
+      <div class="proto-step done"><div class="step-dot">✓</div> 地点收藏</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> AI 分析</div>
+      <div class="proto-step done"><div class="step-dot">✓</div> 路线建议</div>
+      <div class="proto-step active"><div class="step-dot">4</div> 保存行程</div>
+    </div>
+    <div style="width:80px"></div>
+  </nav>
+
+  <div class="success-screen">
+    <div class="success-icon">🗺️</div>
+    <div class="success-title">路线已保存为行程</div>
+    <div class="success-sub">「工作日高效路线」已加入你的行程规划，可在行程编辑器中继续调整细节。</div>
+    <div class="success-card">
+      <h4>🗺️ 已保存路线信息</h4>
+      <div class="success-detail-row"><span>路线名称</span><span>工作日高效路线</span></div>
+      <div class="success-detail-row"><span>地点数量</span><span>5 个地点</span></div>
+      <div class="success-detail-row"><span>预计时长</span><span>约 8 小时</span></div>
+      <div class="success-detail-row"><span>通勤方式</span><span>全程地铁可达</span></div>
+      <div class="success-detail-row"><span>AI 优化依据</span><span style="color:var(--ai-purple)">排队最短 · 效率最高</span></div>
+    </div>
+    <div class="success-actions">
+      <button class="btn-primary" onclick="showHome()">← 返回首页</button>
+      <button class="btn-secondary" onclick="startMVP('mvp01')">体验 MVP 01 →</button>
+    </div>
+  </div>
+</div>
+
 
 <script>
-// ===== FORM STATE =====
-let formData = { destination: '', days: 7, people: 2, preferences: ['美食探索'], planCount: 3 };
+// ===== State =====
+let filledSlots = new Set();
+let selectedPlan = null;
 
-// ===== STATE0: FORM INTERACTIONS =====
-// Destination pills
-document.querySelectorAll('.dest-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('.dest-pill').forEach(p => p.classList.remove('selected'));
-    pill.classList.add('selected');
-    document.getElementById('destInput').value = pill.getAttribute('data-val');
-    formData.destination = pill.getAttribute('data-val');
-  });
-});
-
-document.getElementById('destInput').addEventListener('input', (e) => {
-  formData.destination = e.target.value.trim();
-  document.querySelectorAll('.dest-pill').forEach(p => p.classList.remove('selected'));
-});
-
-// Day pills
-document.querySelectorAll('.day-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('selected'));
-    pill.classList.add('selected');
-    formData.days = parseInt(pill.getAttribute('data-val'));
-  });
-});
-
-// People stepper
-document.getElementById('peopleMinus').addEventListener('click', () => {
-  if (formData.people > 1) {
-    formData.people--;
-    document.getElementById('peopleVal').textContent = formData.people;
+// ===== Navigation =====
+function showHome() {
+  document.querySelectorAll('.prototype-shell').forEach(el => el.classList.remove('active'));
+  document.getElementById('home-screen').style.display = 'flex';
+}
+function showScreen(id) {
+  document.querySelectorAll('.prototype-shell').forEach(el => el.classList.remove('active'));
+  document.getElementById('home-screen').style.display = 'none';
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function startMVP(mvp) {
+  if (mvp === 'mvp01') {
+    filledSlots.clear();
+    selectedPlan = null;
+    resetSlots();
+    showScreen('mvp01-import');
+  } else {
+    showScreen('mvp02-places');
   }
-});
-document.getElementById('peoplePlus').addEventListener('click', () => {
-  if (formData.people < 8) {
-    formData.people++;
-    document.getElementById('peopleVal').textContent = formData.people;
-  }
-});
-
-// Preference pills
-document.querySelectorAll('.pref-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    pill.classList.toggle('selected');
-    formData.preferences = [];
-    document.querySelectorAll('.pref-pill.selected').forEach(p => {
-      formData.preferences.push(p.getAttribute('data-val'));
-    });
-  });
-});
-
-// Plan count pills
-document.querySelectorAll('.count-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('.count-pill').forEach(p => p.classList.remove('selected'));
-    pill.classList.add('selected');
-    formData.planCount = parseInt(pill.getAttribute('data-val'));
-  });
-});
-
-// ===== STATE TRANSITIONS =====
-function goToState(state) {
-  document.querySelectorAll('.state-page').forEach(el => el.classList.remove('active'));
-  document.getElementById('state' + state).classList.add('active');
 }
 
-document.getElementById('generateBtn').addEventListener('click', () => {
-  const dest = document.getElementById('destInput').value.trim();
-  if (!dest) {
-    document.getElementById('destInput').style.borderColor = '#FF6B6B';
-    document.getElementById('destInput').focus();
-    setTimeout(() => { document.getElementById('destInput').style.borderColor = ''; }, 2000);
-    return;
+// ===== MVP 01 Logic =====
+function resetSlots() {
+  ['a','b','c'].forEach(s => {
+    const el = document.getElementById(`slot-${s}`);
+    el.className = 'import-slot';
+  });
+  document.getElementById('analyze-btn').style.opacity = '.5';
+  document.getElementById('analyze-btn').style.pointerEvents = 'none';
+}
+
+function fillSlot(slot) {
+  const el = document.getElementById(`slot-${slot}`);
+  const colorMap = { a: 'filled', b: 'filled-blue', c: 'filled-green' };
+  if (el.className.includes('filled')) {
+    el.className = 'import-slot';
+    filledSlots.delete(slot);
+  } else {
+    el.className = `import-slot ${colorMap[slot]}`;
+    filledSlots.add(slot);
   }
+  const btn = document.getElementById('analyze-btn');
+  if (filledSlots.size >= 2) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.style.opacity = '.5';
+    btn.style.pointerEvents = 'none';
+  }
+}
 
-  formData.destination = dest;
-  const count = formData.planCount;
-  document.getElementById('loaderTitle').textContent = `AI 正在为您生成${count}套${dest}行程方案…`;
-
-  // Go to loading state
-  goToState(1);
-
-  // Auto transition to result after 1.5s
+function startAnalyzing() {
+  showScreen('mvp01-analyzing');
+  // Simulate analysis progress
   setTimeout(() => {
-    updateResultPage();
-    goToState(2);
-  }, 1500);
-});
-
-function updateResultPage() {
-  const dest = formData.destination || '马德里';
-  const days = formData.days;
-  document.getElementById('headerTitleText').textContent = `${dest}旅游 · ${days}天`;
-  document.title = `AI 多方案对比 — ${dest}旅游`;
-
-  // Update plan count visibility
-  const tabs = document.querySelectorAll('.plan-tab[data-plan]');
-  const count = formData.planCount;
-  tabs.forEach(tab => {
-    const plan = tab.getAttribute('data-plan');
-    if (plan === 'D' && count >= 4) {
-      tab.style.display = '';
-    } else if (plan === 'D') {
-      tab.style.display = 'none';
-    }
-  });
-
-  render();
+    document.getElementById('as3').className = 'a-step done';
+    document.getElementById('as3').querySelector('.a-step-icon').textContent = '✓';
+    document.getElementById('as3').querySelector('.a-step-text').style.color = 'var(--green)';
+    document.getElementById('as4').className = 'a-step active';
+    document.getElementById('as4').querySelector('.a-step-icon').style.background = 'var(--ai-purple)';
+    document.getElementById('as4').querySelector('.a-step-icon').style.color = 'white';
+    document.getElementById('as4').querySelector('.a-step-icon').textContent = '…';
+    document.getElementById('as4').querySelector('.a-step-text').style.color = 'var(--ai-purple)';
+  }, 1200);
+  setTimeout(() => {
+    showScreen('mvp01-compare');
+  }, 2600);
 }
 
-// ===== DATA =====
-const plans = {
-  A: {
-    name: '方案A',
-    label: '预算优先',
-    desc: '高性价比选择，经济出行不妥协体验',
-    accent: 'green',
-    color: '#00C48C',
-    budget: 4200,
-    spots: 12,
-    days: 5,
-    walking: 8,
-    itinerary: [
-      {
-        day: 1,
-        spots: [
-          { name: '普拉多博物馆', time: '09:00-11:30', type: 'culture', tag: '游玩' },
-          { name: '丽池公园', time: '12:00-14:00', type: 'play', tag: '游玩' },
-          { name: '拉丁区美食街', time: '18:00-20:00', type: 'food', tag: '吃喝' },
-          { name: '马约尔广场', time: '20:30-21:30', type: 'play', tag: '游玩' }
-        ]
-      },
-      {
-        day: 2,
-        spots: [
-          { name: '马德里王宫', time: '09:00-11:00', type: 'culture', tag: '游玩' },
-          { name: '阿穆德纳大教堂', time: '11:30-12:30', type: 'culture', tag: '游玩' },
-          { name: '圣米格尔市场', time: '13:00-14:30', type: 'food', tag: '吃喝' },
-          { name: '太阳门广场', time: '15:00-16:00', type: 'play', tag: '游玩' }
-        ]
-      },
-      {
-        day: 3,
-        spots: [
-          { name: '托莱多古城', time: '08:00-12:00', type: 'culture', tag: '游玩' },
-          { name: '托莱多大教堂', time: '12:30-14:00', type: 'culture', tag: '游玩' },
-          { name: '阿尔卡萨城堡', time: '14:30-16:00', type: 'culture', tag: '游玩' }
-        ]
-      },
-      {
-        day: 4,
-        spots: [
-          { name: '格兰大道购物', time: '10:00-13:00', type: 'shop', tag: '购物' },
-          { name: '塞万提斯故居', time: '14:00-15:30', type: 'culture', tag: '游玩' },
-          { name: '弗拉明戈表演', time: '20:00-21:30', type: 'culture', tag: '玩乐' },
-          { name: '天台酒吧夜景', time: '22:00-23:30', type: 'food', tag: '吃喝' }
-        ]
-      },
-      {
-        day: 5,
-        spots: [
-          { name: '伯纳乌球场', time: '10:00-12:00', type: 'play', tag: '游玩' },
-          { name: '机场免税店', time: '14:00-15:30', type: 'shop', tag: '购物' }
-        ]
-      }
-    ]
-  },
-  B: {
-    name: '方案B',
-    label: '效率优先',
-    desc: '精简路线，最大化时间利用效率',
-    accent: 'orange',
-    color: '#FF9F43',
-    budget: 6800,
-    spots: 8,
-    days: 5,
-    walking: 5,
-    itinerary: [
-      {
-        day: 1,
-        spots: [
-          { name: '普拉多博物馆', time: '09:00-13:00', type: 'culture', tag: '游玩' },
-          { name: '丽池公园野餐', time: '13:30-15:00', type: 'play', tag: '游玩' },
-          { name: '雷蒂罗区晚餐', time: '19:00-21:00', type: 'food', tag: '吃喝' }
-        ]
-      },
-      {
-        day: 2,
-        spots: [
-          { name: '马德里王宫+大教堂', time: '09:00-12:00', type: 'culture', tag: '游玩' },
-          { name: '格兰大道漫步', time: '13:00-15:00', type: 'shop', tag: '游玩' },
-          { name: '马约尔广场', time: '16:00-17:30', type: 'play', tag: '游玩' }
-        ]
-      },
-      {
-        day: 3,
-        spots: [
-          { name: '托莱多半日精华游', time: '08:00-14:00', type: 'culture', tag: '游玩' },
-          { name: '塞哥维亚古罗马水道', time: '15:00-17:00', type: 'culture', tag: '游玩' }
-        ]
-      },
-      {
-        day: 4,
-        spots: [
-          { name: '索菲亚王后艺术中心', time: '10:00-13:00', type: 'culture', tag: '游玩' },
-          { name: '太阳门+市中心', time: '14:00-16:00', type: 'shop', tag: '游玩' }
-        ]
-      },
-      {
-        day: 5,
-        spots: [
-          { name: '伯纳乌球场VIP参观', time: '10:00-12:00', type: 'play', tag: '游玩' },
-          { name: '返程', time: '14:00', type: 'transport', tag: '交通' }
-        ]
-      }
-    ]
-  },
-  C: {
-    name: '方案C',
-    label: '体验优先',
-    desc: '豪华住宿+米其林，享受每一刻',
-    accent: 'blue',
-    color: '#5B8DEF',
-    budget: 12000,
-    spots: 6,
-    days: 5,
-    walking: 3,
-    itinerary: [
-      {
-        day: 1,
-        spots: [
-          { name: '普拉多私人导览', time: '10:00-13:00', type: 'culture', tag: '游玩' },
-          { name: '米其林三星午餐 DiverXO', time: '13:30-15:30', type: 'food', tag: '吃喝' },
-          { name: '丽池公园私人马车', time: '16:00-17:30', type: 'play', tag: '游玩' },
-          { name: '屋顶露台香槟晚餐', time: '19:30-22:00', type: 'food', tag: '吃喝' }
-        ]
-      },
-      {
-        day: 2,
-        spots: [
-          { name: '直升机俯瞰马德里', time: '09:00-10:00', type: 'play', tag: '玩乐' },
-          { name: '王宫VIP通道参观', time: '11:00-12:30', type: 'culture', tag: '游玩' },
-          { name: '米其林午餐 Ramonet', time: '13:00-15:00', type: 'food', tag: '吃喝' },
-          { name: '皇家歌剧院包厢演出', time: '20:00-22:30', type: 'culture', tag: '玩乐' }
-        ]
-      },
-      {
-        day: 3,
-        spots: [
-          { name: '私人酒庄品酒之旅', time: '09:00-15:00', type: 'food', tag: '体验' },
-          { name: '托莱多私人导游', time: '15:30-18:00', type: 'culture', tag: '游玩' }
-        ]
-      },
-      {
-        day: 4,
-        spots: [
-          { name: 'SPA酒店放松', time: '09:00-11:00', type: 'play', tag: '体验' },
-          { name: '格兰大道私人购物助手', time: '12:00-16:00', type: 'shop', tag: '购物' },
-          { name: '弗拉明戈VIP席位', time: '20:00-22:00', type: 'culture', tag: '玩乐' }
-        ]
-      },
-      {
-        day: 5,
-        spots: [
-          { name: 'Brunch at La Terraza', time: '10:00-12:00', type: 'food', tag: '吃喝' },
-          { name: '专车送机', time: '13:00', type: 'transport', tag: '交通' }
-        ]
-      }
-    ]
-  },
-  D: {
-    name: '方案D',
-    label: '深度文化',
-    desc: '博物馆主题线路，沉浸式艺术之旅',
-    accent: 'red',
-    color: '#FF6B6B',
-    budget: 8500,
-    spots: 10,
-    days: 5,
-    walking: 6,
-    itinerary: [
-      {
-        day: 1,
-        spots: [
-          { name: '普拉多博物馆全日', time: '09:00-16:00', type: 'culture', tag: '游玩' },
-          { name: '艺术大道晚餐', time: '18:00-20:00', type: 'food', tag: '吃喝' }
-        ]
-      },
-      {
-        day: 2,
-        spots: [
-          { name: '提森-博内米萨博物馆', time: '09:00-12:00', type: 'culture', tag: '游玩' },
-          { name: '索罗拉博物馆', time: '13:30-15:30', type: 'culture', tag: '游玩' },
-          { name: '国家考古博物馆', time: '16:00-18:00', type: 'culture', tag: '游玩' }
-        ]
-      },
-      {
-        day: 3,
-        spots: [
-          { name: '索菲亚王后艺术中心', time: '09:00-13:00', type: 'culture', tag: '游玩' },
-          { name: '马德里皇家织锦厂', time: '14:00-16:00', type: 'culture', tag: '游玩' },
-          { name: '弗拉门戈文化体验课', time: '19:00-21:00', type: 'culture', tag: '体验' }
-        ]
-      },
-      {
-        day: 4,
-        spots: [
-          { name: '王宫历史导览', time: '09:00-11:30', type: 'culture', tag: '游玩' },
-          { name: '阿穆德纳大教堂博物馆', time: '12:00-13:30', type: 'culture', tag: '游玩' },
-          { name: '西班牙广场', time: '14:30-15:30', type: 'play', tag: '游玩' },
-          { name: '圣安东市场晚餐', time: '19:00-21:00', type: 'food', tag: '吃喝' }
-        ]
-      },
-      {
-        day: 5,
-        spots: [
-          { name: '塞万提斯故居博物馆', time: '10:00-12:00', type: 'culture', tag: '游玩' },
-          { name: '格兰大道建筑漫步', time: '13:00-15:00', type: 'culture', tag: '游玩' }
-        ]
-      }
-    ]
-  }
-};
-
-const recSpots = {
-  rec: [
-    { name: '西班牙广场', type: '地标广场', emoji: '🇪🇸', bg: 'linear-gradient(135deg,#F97316,#EF4444)' },
-    { name: '圣安东市场', type: '美食市场', emoji: '🥘', bg: 'linear-gradient(135deg,#F59E0B,#F97316)' },
-    { name: '德波神庙', type: '埃及神庙', emoji: '🏛️', bg: 'linear-gradient(135deg,#8B5CF6,#6366F1)' },
-    { name: '马约尔广场', type: '历史广场', emoji: '⛲', bg: 'linear-gradient(135deg,#10B981,#059669)' },
-    { name: '太阳门', type: '城市中心', emoji: '☀️', bg: 'linear-gradient(135deg,#FBBF24,#F59E0B)' },
-    { name: '西贝莱斯广场', type: '地标', emoji: '🏰', bg: 'linear-gradient(135deg,#3B82F6,#1D4ED8)' },
-    { name: '水晶宫', type: '艺术展馆', emoji: '💎', bg: 'linear-gradient(135deg,#06B6D4,#0891B2)' },
-    { name: '阿尔穆德纳大教堂', type: '宗教建筑', emoji: '⛪', bg: 'linear-gradient(135deg,#A855F7,#7C3AED)' }
-  ],
-  pending: [
-    { name: '塞哥维亚城堡', type: '中世纪城堡', emoji: '🏯', bg: 'linear-gradient(135deg,#78716C,#57534E)' },
-    { name: '阿维拉古城墙', type: '世界遗产', emoji: '🧱', bg: 'linear-gradient(135deg,#92400E,#78350F)' },
-    { name: '马德里动物园', type: '亲子景点', emoji: '🦁', bg: 'linear-gradient(135deg,#16A34A,#15803D)' },
-    { name: '拉斯文塔斯斗牛场', type: '传统文化', emoji: '🐂', bg: 'linear-gradient(135deg,#DC2626,#B91C1C)' },
-    { name: '查马丁区探店', type: '本地体验', emoji: '🔍', bg: 'linear-gradient(135deg,#0D9488,#0F766E)' }
-  ]
-};
-
-// ===== STATE =====
-let activePlans = ['A', 'B', 'C'];
-let planDVisible = false;
-
-// ===== RENDER FUNCTIONS =====
-function getTagClass(type) {
-  const map = { play:'play', food:'food', shop:'shop', culture:'culture', transport:'transport' };
-  return map[type] || 'play';
+function setDim(el) {
+  document.querySelectorAll('.dim-item').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
 }
 
-function getDotClass(accent) {
-  const map = { green:'', orange:'accent-orange', blue:'accent-blue', red:'accent-red' };
-  return map[accent] || '';
+function selectPlan(plan) {
+  selectedPlan = plan;
+  ['a','b','c'].forEach(p => document.getElementById(`plan-${p}`).classList.remove('selected'));
+  document.getElementById(`plan-${plan}`).classList.add('selected');
+
+  const nameMap = { a: '北京 5 日经典路线', b: '高效北京 4 日方案', c: '北京亲子 5 日游' };
+  const confirm = document.getElementById('confirm-action');
+  const btn = document.getElementById('confirm-btn');
+  confirm.style.opacity = '1';
+  btn.style.pointerEvents = 'auto';
+  document.getElementById('confirm-title').textContent = `已选择：${nameMap[plan]}`;
+  document.getElementById('confirm-sub').textContent = '确认后将加载到行程编辑器，可继续调整细节';
 }
 
-function renderPlanCards() {
-  const grid = document.getElementById('planGrid');
-  grid.innerHTML = '';
-  const cols = activePlans.length;
-  grid.className = 'plan-grid cols-' + cols;
+function goSuccess01() {
+  if (!selectedPlan) return;
+  showScreen('mvp01-success');
+}
 
-  activePlans.forEach(key => {
-    const p = plans[key];
-    const card = document.createElement('div');
-    card.className = 'plan-card accent-' + p.accent;
-    card.setAttribute('data-plan', key);
-
-    let itineraryHtml = '';
-    p.itinerary.forEach(d => {
-      let spotsHtml = '';
-      d.spots.forEach(s => {
-        spotsHtml += `
-          <div class="spot-item">
-            <div class="spot-dot ${getDotClass(p.accent)}"></div>
-            <div class="spot-info">
-              <div class="spot-name">${s.name}</div>
-              <div class="spot-time">${s.time}</div>
-            </div>
-            <span class="spot-tag ${getTagClass(s.type)}">${s.tag}</span>
-            <button class="spot-add" title="添加到行程">+</button>
-          </div>`;
-      });
-      itineraryHtml += `
-        <div class="day-section">
-          <div class="day-label">DAY ${d.day}</div>
-          <div class="day-spot-list">${spotsHtml}</div>
-        </div>`;
+// ===== MVP 02 Logic =====
+function startPlaceAnalysis() {
+  showScreen('mvp02-analyzing');
+  setTimeout(() => {
+    document.querySelectorAll('.ai-step-status.processing').forEach(el => {
+      el.className = 'ai-step-status done';
+      el.textContent = '✓';
     });
-
-    card.innerHTML = `
-      <div class="plan-header-top"></div>
-      <div class="plan-body">
-        <div class="plan-name">${p.name} ${p.label}</div>
-        <div class="plan-desc">${p.desc}</div>
-        <div class="plan-metrics">
-          <div class="plan-metric price">💰 <span class="val">¥${p.budget.toLocaleString()}</span></div>
-          <div class="plan-metric">📍 <span class="val">${p.spots}个景点</span></div>
-          <div class="plan-metric">⏱️ <span class="val">${p.days}天</span></div>
-          <div class="plan-metric">🚶 <span class="val">${p.walking}km/天</span></div>
-        </div>
-        ${itineraryHtml}
-      </div>`;
-    grid.appendChild(card);
-  });
-}
-
-function renderBottomBar() {
-  const bar = document.getElementById('bottomBar');
-  if (activePlans.length === 0) {
-    bar.querySelector('.bottom-inner').innerHTML = '<span style="font-size:13px;color:#9CA3AF">请至少选择一个方案进行对比</span>';
-    return;
-  }
-
-  // Find best (min budget) and worst (max budget)
-  const budgets = activePlans.map(k => plans[k].budget);
-  const minBudget = Math.min(...budgets);
-  const maxBudget = Math.max(...budgets);
-
-  let html = '<div class="bottom-label">方案对比</div><div class="bottom-divider"></div><div class="bottom-plans">';
-
-  activePlans.forEach(key => {
-    const p = plans[key];
-    const isBest = p.budget === minBudget && activePlans.length > 1;
-    const isWorst = p.budget === maxBudget && activePlans.length > 1 && minBudget !== maxBudget;
-    let cls = '';
-    if (isBest) cls = 'best';
-    else if (isWorst) cls = 'worst';
-
-    html += `
-      <div class="bottom-plan">
-        <div class="bottom-plan-name" style="color:${p.color}">${p.name} ${p.label}</div>
-        <div class="bottom-metrics">
-          <div class="bottom-metric ${cls}">💰 <span class="bm-val">¥${p.budget.toLocaleString()}</span></div>
-          <div class="bottom-metric">📍 <span class="bm-val">${p.spots}</span></div>
-          <div class="bottom-metric">🚶 <span class="bm-val">${p.walking}km</span></div>
-        </div>
-      </div>`;
-  });
-
-  html += '</div>';
-  bar.querySelector('.bottom-inner').innerHTML = html;
-}
-
-function renderRecs() {
-  const scroll = document.getElementById('recScroll');
-  const activeTab = document.querySelector('.recommend-tab.active');
-  const type = activeTab && activeTab.textContent === '推荐景点' ? 'rec' : 'pending';
-  const spots = recSpots[type];
-  scroll.innerHTML = spots.map(s => `
-    <div class="rec-card">
-      <div class="rec-img" style="background:${s.bg}">${s.emoji}</div>
-      <div class="rec-info">
-        <div class="rec-name">${s.name}</div>
-        <div class="rec-type">${s.type}</div>
-      </div>
-    </div>`).join('');
-}
-
-function renderMap() {
-  // Highlight routes based on active plans
-  ['A','B','C'].forEach(key => {
-    const el = document.getElementById('route' + key);
-    if (el) {
-      el.setAttribute('opacity', activePlans.includes(key) ? '0.8' : '0.15');
+    document.querySelectorAll('.ai-step-label.active').forEach(el => {
+      el.className = 'ai-step-label done';
+    });
+    const steps = document.querySelectorAll('.ai-step-status.pending');
+    if (steps[0]) {
+      steps[0].className = 'ai-step-status processing';
+      steps[0].textContent = '…';
     }
-  });
+  }, 1200);
+  setTimeout(() => {
+    showScreen('mvp02-routes');
+  }, 2500);
 }
 
-// ===== INTERACTION =====
-function togglePlan(btn, key) {
-  if (key === 'D' && !planDVisible) {
-    planDVisible = true;
-    btn.classList.add('active');
-    if (!activePlans.includes('D')) activePlans.push('D');
-    render();
-    return;
+function selectRoute(route) {
+  document.querySelectorAll('.route-card').forEach(c => c.classList.remove('active'));
+  document.getElementById(`route-${route}`).classList.add('active');
+}
+
+function goSuccess02() {
+  showScreen('mvp02-success');
+}
+
+// 支持 ?start=mvp02 参数直接跳转到 MVP02
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('start') === 'mvp02') {
+    window.addEventListener('DOMContentLoaded', function(){
+      startMVP('mvp02');
+    });
   }
-
-  if (key === 'D' && planDVisible) {
-    // Toggle D off
-    if (activePlans.includes('D')) {
-      activePlans = activePlans.filter(k => k !== 'D');
-      btn.classList.remove('active');
-    } else {
-      activePlans.push('D');
-      btn.classList.add('active');
-    }
-    render();
-    return;
-  }
-
-  if (event && (event.ctrlKey || event.metaKey)) {
-    // Multi-select
-    if (activePlans.includes(key)) {
-      if (activePlans.length > 1) {
-        activePlans = activePlans.filter(k => k !== key);
-        btn.classList.remove('active');
-      }
-    } else {
-      activePlans.push(key);
-      btn.classList.add('active');
-    }
-  } else {
-    // Single select: toggle if already the only one, otherwise select only this one
-    if (activePlans.length === 1 && activePlans[0] === key) {
-      // Already only this one selected, keep it
-    } else if (activePlans.includes(key) && activePlans.length === 1) {
-      return;
-    } else {
-      // Deactivate all tabs and set only this one
-      document.querySelectorAll('.plan-tab[data-plan]').forEach(t => {
-        t.classList.remove('active');
-      });
-      btn.classList.add('active');
-      activePlans = [key];
-    }
-  }
-
-  render();
-}
-
-function addNewPlan() {
-  if (!planDVisible) {
-    planDVisible = true;
-    const tabD = document.querySelector('.plan-tab[data-plan="D"]');
-    if (tabD) {
-      tabD.classList.add('active');
-      if (!activePlans.includes('D')) activePlans.push('D');
-    }
-    render();
-  } else {
-    alert('已存在方案D，当前最多支持4个方案对比');
-  }
-}
-
-function exportPlans() {
-  alert('导出功能开发中...\n当前选中方案: ' + activePlans.map(k => plans[k].name + ' ' + plans[k].label).join(', '));
-}
-
-function switchRecTab(btn, type) {
-  document.querySelectorAll('.recommend-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderRecs();
-}
-
-function render() {
-  renderPlanCards();
-  renderBottomBar();
-  renderMap();
-  renderRecs();
-}
-
-// ===== INIT =====
-render();
+})();
 </script>
 </body>
 </html>
