@@ -132,11 +132,9 @@ class App {
       }
     };
 
-    // 鼠标模式：自动 summon + spread，不需要握拳手势触发
+    // 鼠标模式：注入拖拽/点击控制（summon+spread 等提问完成后触发）
     if (window.__MS_MODE === 'mouse') {
       this._injectMouseDrag();
-      setTimeout(() => { this._summonCards(); }, 300);
-      setTimeout(() => { this._spreadCards(); }, 900);
     }
   }
 
@@ -376,6 +374,12 @@ class App {
     this.els.tarotCollection.style.display = '';
     this.els.tarotCollection.style.opacity = '1';
     this.els.tarotCollection.style.pointerEvents = '';
+
+    // 鼠标模式：问题确认后自动 summon + spread（boot 时不做，等这里）
+    if (window.__MS_MODE === 'mouse') {
+      setTimeout(() => { if (this.state === 'idle') this._summonCards(); }, 300);
+      setTimeout(() => { if (this.state === 'summoned') this._spreadCards(); }, 900);
+    }
   }
 
   async _initCamera() {
