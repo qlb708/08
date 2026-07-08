@@ -385,97 +385,13 @@ function _bootGestureMode(){
   document.body.appendChild(s);
 }
 
-// ── 鼠标模式：彻底跳过 MediaPipe + 摄像头，用鼠标拖拽/点击控制 ──
+// ── 鼠标模式：注入 bootstrap-mouse.js，完全跳过 MediaPipe ──
+// bootstrap-mouse.js 会负责：欢迎页点击 → new App() → boot() → _injectMouseControl(app)
+// tarot-main.js 的 boot() 里检测 window.__MS_MODE==='mouse' 自动 summon+spread
 function _bootMouseMode(){
-
-  // 1. Patch App 原型，让 _initCameraAndGesture/_initCamera/_initGesture 直接 return
-  //    （必须在 App 实例化之前 patch 原型）
-  App.prototype._initCameraAndGesture = async function(){ return; };
-  App.prototype._initCamera           = async function(){ return; };
-  App.prototype._initGesture          = async function(){ return; };
-
-  // 2. 隐藏所有手势/摄像头相关 UI
-  function hideGestureUI(){
-    ['camera','camera-overlay','gesture-hint','toolbar'].forEach(function(id){
-      var el=document.getElementById(id); if(el) el.style.display='none';
-    });
-    // 屏蔽错误提示（boot 过程中可能残留）
-    var err=document.getElementById('cygame-tarot-global-error');
-    if(err) err.remove();
-  }
-
-  // 3. 欢迎页提示改文字
-  var hint=document.getElementById('welcome-hint');
-  if(hint) hint.textContent='🖱️ 鼠标模式 · 无需摄像头，鼠标拖动浏览，点击选牌';
-
-  // 4. 等用户点击欢迎页按钮，再走 App boot
-  (async function(){
-    try{
-      var welcomeScreen=document.getElementById('welcome-screen');
-      var startBtn=document.getElementById('btn-start-ritual');
-      var loadingScreen=document.getElementById('loading-screen');
-
-      await new Promise(function(resolve){
-        startBtn.addEventListener('click', resolve, {once:true});
-      });
-
-      welcomeScreen.classList.add('fading-out');
-      loadingScreen.classList.remove('hidden');
-      setTimeout(function(){ welcomeScreen.style.display='none'; }, 800);
-
-      var app = new App();
-      await app.boot();   // _initCameraAndGesture 已被 patch 为空，无报错
-
-      hideGestureUI();
-
-      // 5. 显示提问面板（原版 boot 后等手势触发，鼠标模式直接显示）
-      //    question-panel 本就已在 DOM 里，boot 后它会自动显示（逻辑在 tarot-main.js bindUI）
-      //    如果没有自动显示，手动触发
-      var qp=document.getElementById('question-panel');
-      if(qp && qp.classList.contains('hidden')){
-        qp.classList.remove('hidden');
-        qp.style.display='';
-        qp.style.opacity='1';
-      }
-      var appEl=document.getElementById('app');
-      if(appEl && appEl.classList.contains('hidden')){
-        appEl.classList.remove('hidden');
-        appEl.style.display='';
-      }
-      hideGestureUI(); // 再清一次（app show 后可能重置）
-
-      // 6. 等提问面板点完，再进入主界面，自动 summon 牌阵
-      var silentBtn=document.getElementById('btn-silent-start');
-      if(silentBtn){
-        silentBtn.addEventListener('click', function(){
-          setTimeout(function(){
-            hideGestureUI();
-            // 自动 summon（原版是握拳触发）
-            if(app.state==='idle'){ app._summonCards && app._summonCards(); }
-            // 再稍后展开卡牌（原版是张开手掌触发）
-            setTimeout(function(){
-              hideGestureUI();
-              if(app.state==='summoned'){ app._spreadCards && app._spreadCards(); }
-              _injectMouseControl(app);
-            }, 800);
-          }, 400);
-        }, {once:true});
-      } else {
-        // 降级：直接 summon + spread
-        setTimeout(function(){
-          hideGestureUI();
-          if(app.state==='idle'){ app._summonCards && app._summonCards(); }
-          setTimeout(function(){
-            if(app.state==='summoned'){ app._spreadCards && app._spreadCards(); }
-            _injectMouseControl(app);
-          }, 800);
-        }, 500);
-      }
-
-    }catch(err){
-      console.error('鼠标模式启动失败:', err);
-    }
-  })();
+  var s=document.createElement('script');
+  s.type='module'; s.src='bootstrap-mouse.js';
+  document.body.appendChild(s);
 }
 
 // ── 注入鼠标控制：拖动=旋转木马，点击=选牌 ──
