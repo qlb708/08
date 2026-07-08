@@ -1,0 +1,2620 @@
+/* ========================================
+   塔罗牌手势占卜系统
+   星空暗黑塔罗风格 v6 — 性能优化版
+   Safari/Chrome 双端流畅
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-dark: #050510;
+  --bg-card: #0f1123;
+  --gold: #d4af37;
+  --gold-dim: #997a00;
+  --gold-glow: rgba(212, 175, 55, 0.4);
+  --cyan: #00e5ff;
+  --card-w: 140px;
+  --card-h: 238px;
+  --carousel-scale: 1;
+  /* v6 新增配色 */
+  --text-primary: #f0ebe3;
+  --text-secondary: rgba(255, 255, 255, 0.55);
+  --text-muted: rgba(255, 255, 255, 0.35);
+  --accent-rose: #e8b4b8;
+  --accent-lavender: #b8a9c9;
+  --accent-ice: #a8c8d8;
+  /* 优化：使用更深的半透明背景代替高斯模糊 */
+  --glass-bg: rgba(8, 6, 22, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0%, #0a0a2e 0%, #050510 50%, #020208 100%);
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* 主游戏层允许 3D 牌环略超出子盒子，减少被父级裁切 */
+#app {
+  overflow: visible;
+}
+
+@media (max-width: 480px) {
+  :root {
+    --card-w: 118px;
+    --card-h: 200px;
+    --carousel-scale: 0.96;
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --card-w: 108px;
+    --card-h: 184px;
+    --carousel-scale: 0.94;
+  }
+}
+
+/* 星空背景画布 — GPU 加速 */
+#starfield-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  will-change: contents;
+  transform: translateZ(0);
+}
+
+.hidden { display: none !important; }
+
+/* ========================================
+   ✦ 开场欢迎页 — 魔法球/灵珠风格
+   ======================================== */
+#welcome-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, #0d0a2a 0%, #050510 60%, #020208 100%);
+  z-index: 10000;
+  overflow: hidden;
+}
+
+/* 背景微粒感 */
+.welcome-stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 70% 50%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 15% 85%, rgba(232,180,184,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 85% 25%, rgba(184,169,201,0.5), transparent);
+  animation: welcomeStarsTwinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes welcomeStarsTwinkle {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* === 魔法球容器 === */
+.crystal-ball-wrapper {
+  position: relative;
+  width: 240px;
+  height: 300px;
+  margin-bottom: 36px;
+  animation: crystalFloat 4s ease-in-out infinite;
+}
+
+@keyframes crystalFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 球体 */
+.crystal-ball {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(200, 180, 230, 0.15) 0%,
+    rgba(100, 70, 160, 0.08) 30%,
+    rgba(30, 20, 60, 0.6) 60%,
+    rgba(10, 5, 30, 0.85) 100%
+  );
+  border: 1.5px solid rgba(200, 180, 240, 0.25);
+  box-shadow:
+    0 0 60px rgba(180, 140, 220, 0.25),
+    0 0 120px rgba(140, 100, 200, 0.15),
+    inset 0 0 60px rgba(160, 120, 210, 0.1),
+    inset 0 -20px 40px rgba(100, 60, 160, 0.15);
+  overflow: hidden;
+}
+
+/* 内部柔光 */
+.crystal-glow {
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(200, 170, 255, 0.35) 0%,
+    rgba(180, 140, 230, 0.15) 40%,
+    transparent 70%
+  );
+  animation: crystalGlowPulse 3s ease-in-out infinite;
+}
+
+@keyframes crystalGlowPulse {
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* 烟雾/灵气 */
+.crystal-mist {
+  position: absolute;
+  inset: 15%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 40% 50%,
+    rgba(232, 180, 184, 0.3) 0%,
+    rgba(184, 169, 201, 0.15) 40%,
+    transparent 70%
+  );
+  animation: crystalMistDrift 6s ease-in-out infinite;
+  filter: blur(8px);
+}
+
+.crystal-mist.mist-2 {
+  background: radial-gradient(
+    ellipse at 60% 40%,
+    rgba(168, 200, 216, 0.25) 0%,
+    rgba(212, 175, 55, 0.1) 40%,
+    transparent 70%
+  );
+  animation: crystalMistDrift2 8s ease-in-out infinite;
+}
+
+@keyframes crystalMistDrift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
+  33% { transform: translate(10px, -8px) rotate(20deg); opacity: 0.8; }
+  66% { transform: translate(-8px, 5px) rotate(-15deg); opacity: 0.6; }
+}
+
+@keyframes crystalMistDrift2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.4; }
+  50% { transform: translate(-12px, -6px) rotate(-25deg); opacity: 0.7; }
+}
+
+/* 球内星火 */
+.crystal-sparkle {
+  position: absolute;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 0 6px currentColor;
+  animation: sparkleFloat 4s ease-in-out infinite;
+}
+
+.crystal-sparkle.s1 {
+  top: 25%; left: 30%;
+  color: rgba(232, 180, 184, 0.8);
+  animation-delay: 0s;
+}
+.crystal-sparkle.s2 {
+  top: 45%; left: 60%;
+  color: rgba(212, 175, 55, 0.7);
+  font-size: 10px;
+  animation-delay: 1s;
+}
+.crystal-sparkle.s3 {
+  top: 60%; left: 35%;
+  color: rgba(184, 169, 201, 0.8);
+  font-size: 14px;
+  animation-delay: 2s;
+}
+.crystal-sparkle.s4 {
+  top: 35%; left: 55%;
+  color: rgba(168, 200, 216, 0.7);
+  font-size: 8px;
+  animation-delay: 0.5s;
+}
+
+@keyframes sparkleFloat {
+  0%, 100% { opacity: 0.3; transform: translate(0, 0) scale(0.8); }
+  50% { opacity: 1; transform: translate(3px, -5px) scale(1.2); }
+}
+
+/* 高光 */
+.crystal-highlight {
+  position: absolute;
+  top: 12%;
+  left: 22%;
+  width: 50px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 70%
+  );
+  transform: rotate(-30deg);
+}
+
+/* 球体外圈光环 */
+.crystal-ring {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 180, 240, 0.15);
+  box-shadow: 0 0 30px rgba(180, 140, 220, 0.1);
+  animation: crystalRingSpin 15s linear infinite;
+}
+
+@keyframes crystalRingSpin {
+  to { transform: translateX(-50%) rotate(360deg); }
+}
+
+/* 底座 */
+.crystal-base {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 50px;
+  background: linear-gradient(180deg,
+    rgba(60, 40, 90, 0.6) 0%,
+    rgba(30, 20, 50, 0.8) 50%,
+    rgba(15, 10, 30, 0.9) 100%
+  );
+  border-radius: 50% / 40%;
+  border: 1px solid rgba(200, 180, 240, 0.15);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    inset 0 2px 10px rgba(180, 140, 220, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.base-rune {
+  font-size: 16px;
+  color: rgba(212, 175, 55, 0.5);
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+  animation: baseRunePulse 2s ease-in-out infinite;
+}
+
+@keyframes baseRunePulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* === 标题 === */
+.welcome-title {
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--text-primary);
+  letter-spacing: 14px;
+  margin-bottom: 12px;
+  text-shadow: 0 0 20px rgba(180, 140, 220, 0.3), 0 0 40px rgba(180, 140, 220, 0.1);
+  animation: welcomeFadeUp 1s ease 0.3s both;
+}
+
+.welcome-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  letter-spacing: 4px;
+  font-weight: 300;
+  margin-bottom: 48px;
+  animation: welcomeFadeUp 1s ease 0.6s both;
+}
+
+@keyframes welcomeFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === 开始按钮 === */
+.welcome-start-btn {
+  position: relative;
+  padding: 16px 48px;
+  border: 2px solid rgba(180, 140, 220, 0.5);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 18px;
+  letter-spacing: 6px;
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  animation: welcomeFadeUp 1s ease 0.9s both;
+}
+
+.welcome-start-btn:hover {
+  background: rgba(180, 140, 220, 0.1);
+  border-color: rgba(200, 170, 255, 0.6);
+  box-shadow:
+    0 0 30px rgba(180, 140, 220, 0.3),
+    0 0 60px rgba(180, 140, 220, 0.15);
+  transform: translateY(-2px);
+}
+
+.welcome-start-btn:active {
+  transform: scale(0.97);
+}
+
+.welcome-start-btn .btn-glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50px;
+  background: linear-gradient(45deg,
+    transparent 30%,
+    rgba(180, 140, 220, 0.3) 50%,
+    transparent 70%);
+  animation: btnGlowSweep 3s ease-in-out infinite;
+}
+
+@keyframes btnGlowSweep {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.welcome-start-btn .btn-text {
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-hint {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  animation: welcomeFadeUp 1s ease 1.2s both;
+}
+
+/* 欢迎页淡出动画 */
+#welcome-screen.fading-out {
+  animation: welcomeFadeOut 0.8s ease forwards;
+}
+
+@keyframes welcomeFadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
+/* ===== 加载画面 ===== */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+  z-index: 9999;
+}
+
+.magic-circle-loader {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.magic-circle-loader .circle {
+  position: absolute;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+
+.magic-circle-loader .outer {
+  inset: 0;
+  border-top-color: var(--accent-rose);
+  border-right-color: rgba(255,255,255,0.12);
+  animation: spin 3s linear infinite;
+}
+
+.magic-circle-loader .inner {
+  inset: 15px;
+  border-bottom-color: var(--accent-lavender);
+  border-left-color: rgba(255,255,255,0.08);
+  animation: spin 2s linear infinite reverse;
+}
+
+.magic-circle-loader .star {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: var(--text-primary);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } }
+
+.loading-text {
+  margin-top: 24px;
+  font-size: 17px;
+  color: var(--text-primary);
+  letter-spacing: 3px;
+  font-weight: 300;
+}
+
+.loading-sub {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===== 占卜提问面板 ===== */
+#question-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 420px);
+  padding: 40px 28px 36px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 150;
+  text-align: center;
+  transition: opacity 0.4s ease;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.question-title {
+  font-size: 18px;
+  color: var(--text-primary);
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+.question-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin-bottom: 12px;
+  font-weight: 300;
+}
+
+.question-examples {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+}
+
+.question-silent-btn {
+  display: inline-block;
+  padding: 14px 36px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--text-primary);
+  font-size: 15px;
+  letter-spacing: 2px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 300;
+  font-family: inherit;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: rgba(232, 180, 184, 0.3);
+}
+
+.question-silent-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--accent-rose);
+  box-shadow: 0 0 16px rgba(232, 180, 184, 0.15);
+}
+
+.question-silent-btn:active {
+  transform: scale(0.97);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== 摄像头：全屏不可见（保证指尖坐标与画面一致，供食指点选牌）===== */
+#camera {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#camera-overlay {
+  display: none;
+}
+
+/* ===== 手势提示 — 毛玻璃胶囊（降低blur提升Safari性能） ===== */
+#gesture-hint {
+  position: fixed;
+  bottom: max(48px, calc(env(safe-area-inset-bottom, 0px) + 36px));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 40px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+#gesture-hint .hint-icon {
+  font-size: 20px;
+  animation: hintBounce 1.5s ease-in-out infinite;
+}
+
+#gesture-hint .hint-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* ===== 状态标签 — 简约标签 移到左上角避免遮挡 ===== */
+#state-badge {
+  position: fixed;
+  top: max(16px, calc(env(safe-area-inset-top, 0px) + 12px));
+  left: max(16px, env(safe-area-inset-left, 0px));
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  z-index: 100;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ===== 占卜收集区域 — 顶部居中 ===== */
+#tarot-collection {
+  position: fixed;
+  top: max(44px, calc(env(safe-area-inset-top, 0px) + 32px));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  z-index: 100;
+  transition: opacity 0.3s ease;
+}
+
+.collection-slot {
+  width: 54px;
+  height: 82px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s;
+}
+
+.collection-slot .slot-label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.collection-slot.filled {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
+}
+
+.collection-slot .slot-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+/* ===== 魔法阵背景 ===== */
+#magic-circle-bg {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(80vw, 80vh);
+  height: min(80vw, 80vh);
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  pointer-events: none;
+  animation: magicCircleSpin 40s linear infinite;
+  filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.1));
+}
+
+#magic-circle-bg svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes magicCircleSpin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+#magic-circle-bg.summoning {
+  animation: magicCircleAppear 1.5s ease-out forwards, magicCircleSpin 40s linear 1.5s infinite;
+}
+
+@keyframes magicCircleAppear {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(0deg); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(45deg); }
+}
+
+
+/* ========================================
+   3D 立体底盘平台 — 小樱魔法阵风格
+   ======================================== */
+#platform-3d {
+  position: fixed;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 240px;
+  z-index: 8;
+  pointer-events: none;
+  perspective: 600px;
+}
+
+@media (max-width: 480px) {
+  #platform-3d {
+    transform: translateX(-50%) scale(0.68);
+    transform-origin: center bottom;
+  }
+}
+
+.platform-layers {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(55deg);
+}
+
+.platform-glow-surface {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 520px;
+  height: 520px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(255,182,193,0.2) 0%, rgba(255,215,0,0.08) 40%, transparent 70%);
+  pointer-events: none;
+}
+
+.platform-sakura-circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 500px;
+  height: 500px;
+  transform: translate(-50%, -50%);
+  animation: magicCircleSpin 40s linear infinite;
+}
+
+.sakura-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.sakura-ring-outer {
+  width: 500px;
+  height: 500px;
+  border: 2.5px solid rgba(255, 182, 193, 0.55);
+  box-shadow:
+    0 0 60px rgba(255, 182, 193, 0.35),
+    inset 0 0 80px rgba(255, 215, 0, 0.1);
+  animation: platformPulse 4s ease-in-out infinite alternate;
+}
+
+.sakura-ring-mid {
+  width: 380px;
+  height: 380px;
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.25);
+  animation: platformPulse 4s ease-in-out 0.5s infinite alternate;
+}
+
+.sakura-ring-inner {
+  width: 240px;
+  height: 240px;
+  border: 1.5px solid rgba(255, 182, 193, 0.6);
+  box-shadow: 0 0 35px rgba(255, 182, 193, 0.4);
+  animation: platformPulse 4s ease-in-out 1s infinite alternate;
+}
+
+.sakura-star-12-platform {
+  position: absolute;
+  inset: 0;
+  animation: magicCircleSpin 30s linear infinite reverse;
+}
+
+.sakura-star-12-platform::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg, rgba(255,182,193,0.55) 0.8deg, rgba(255,182,193,0.3) 1.5deg, transparent 2.5deg,
+      transparent 30deg, rgba(255,215,0,0.45) 30.8deg, rgba(255,215,0,0.2) 31.5deg, transparent 32.5deg,
+      transparent 60deg, rgba(255,182,193,0.55) 60.8deg, rgba(255,182,193,0.3) 61.5deg, transparent 62.5deg,
+      transparent 90deg, rgba(255,215,0,0.45) 90.8deg, rgba(255,215,0,0.2) 91.5deg, transparent 92.5deg,
+      transparent 120deg, rgba(255,182,193,0.55) 120.8deg, rgba(255,182,193,0.3) 121.5deg, transparent 122.5deg,
+      transparent 150deg, rgba(255,215,0,0.45) 150.8deg, rgba(255,215,0,0.2) 151.5deg, transparent 152.5deg,
+      transparent 180deg, rgba(255,182,193,0.55) 180.8deg, rgba(255,182,193,0.3) 181.5deg, transparent 182.5deg,
+      transparent 210deg, rgba(255,215,0,0.45) 210.8deg, rgba(255,215,0,0.2) 211.5deg, transparent 212.5deg,
+      transparent 240deg, rgba(255,182,193,0.55) 240.8deg, rgba(255,182,193,0.3) 241.5deg, transparent 242.5deg,
+      transparent 270deg, rgba(255,215,0,0.45) 270.8deg, rgba(255,215,0,0.2) 271.5deg, transparent 272.5deg,
+      transparent 300deg, rgba(255,182,193,0.55) 300.8deg, rgba(255,182,193,0.3) 301.5deg, transparent 302.5deg,
+      transparent 330deg, rgba(255,215,0,0.45) 330.8deg, rgba(255,215,0,0.2) 331.5deg, transparent 332.5deg
+    );
+  -webkit-mask: radial-gradient(circle, transparent 12%, white 13%, white 96%, transparent 97%);
+  mask: radial-gradient(circle, transparent 12%, white 13%, white 96%, transparent 97%);
+}
+
+.sakura-inner-ring-platform {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160px;
+  height: 160px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 182, 193, 0.35);
+  animation: magicCircleSpin 15s linear infinite;
+}
+
+.sakura-inner-ring-platform::before {
+  content: '';
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: radial-gradient(circle, rgba(255, 182, 193, 0.1) 0%, transparent 70%);
+}
+
+.sakura-symbols-platform {
+  position: absolute;
+  inset: 0;
+  animation: magicCircleSpin 50s linear infinite reverse;
+}
+
+.sakura-symbols-platform .sakura-sun {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: rgba(255, 215, 0, 0.85);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.3);
+}
+
+.sakura-symbols-platform .sakura-moon {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: rgba(200, 200, 255, 0.8);
+  text-shadow: 0 0 20px rgba(200, 200, 255, 0.6), 0 0 40px rgba(200, 200, 255, 0.2);
+}
+
+.sakura-symbols-platform .sakura-star-sym {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: rgba(255, 182, 193, 0.8);
+  text-shadow: 0 0 15px rgba(255, 182, 193, 0.6), 0 0 30px rgba(255, 182, 193, 0.3);
+}
+
+.sakura-symbols-platform .sakura-star-sym.s2 {
+  left: auto;
+  right: 5%;
+}
+
+.sakura-cross-platform {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.sakura-cross-platform .cross-h {
+  position: absolute;
+  width: 480px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,182,193,0.2) 30%, rgba(255,182,193,0.2) 70%, transparent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.sakura-cross-platform .cross-v {
+  position: absolute;
+  width: 1px;
+  height: 480px;
+  background: linear-gradient(180deg, transparent, rgba(255,215,0,0.2) 30%, rgba(255,215,0,0.2) 70%, transparent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.sakura-cross-platform .cross-d1 {
+  position: absolute;
+  width: 1px;
+  height: 450px;
+  background: linear-gradient(180deg, transparent, rgba(255,182,193,0.12) 30%, rgba(255,182,193,0.12) 70%, transparent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.sakura-cross-platform .cross-d2 {
+  position: absolute;
+  width: 1px;
+  height: 450px;
+  background: linear-gradient(180deg, transparent, rgba(255,215,0,0.12) 30%, rgba(255,215,0,0.12) 70%, transparent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.platform-runes {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 440px;
+  height: 440px;
+  transform: translate(-50%, -50%);
+  animation: spin 60s linear infinite;
+}
+
+.platform-runes .rune-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffb6c1;
+  box-shadow: 0 0 12px rgba(255, 182, 193, 1), 0 0 24px rgba(255, 182, 193, 0.5);
+  opacity: 0.85;
+  animation: runeDotPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes runeDotPulse {
+  0% { opacity: 0.6; box-shadow: 0 0 8px rgba(255, 182, 193, 0.8); }
+  100% { opacity: 1; box-shadow: 0 0 16px rgba(255, 182, 193, 1), 0 0 32px rgba(255, 215, 0, 0.3); }
+}
+
+@keyframes platformPulse {
+  0% { opacity: 0.7; }
+  100% { opacity: 1; box-shadow: 0 0 60px rgba(255,182,193,0.35), 0 0 100px rgba(255,215,0,0.1); }
+}
+
+
+/* ========================================
+   3D 环形旋转木马 (Carousel)
+   ======================================== */
+#carousel-stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+  overflow: visible;
+}
+
+#carousel-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+  overflow: visible;
+  transform: scale(var(--carousel-scale));
+  transform-origin: 50% 48%;
+}
+
+@media (max-width: 520px) {
+  #carousel-wrapper {
+    perspective: 1180px;
+  }
+}
+
+#carousel {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.carousel-card {
+  position: absolute;
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: 8px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: filter 0.4s, opacity 0.4s;
+  will-change: transform;
+  /* Safari 3D 合成层提升 */
+  -webkit-transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.carousel-card .card-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.carousel-card.flipped .card-flipper {
+  transform: rotateY(180deg);
+}
+
+.carousel-card .card-front {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  display: none;
+}
+
+.carousel-card .card-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8);
+  backface-visibility: hidden;
+  background: var(--bg-card);
+}
+
+.card-back-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 正对用户的牌 — 增强发光效果 */
+.carousel-card.front-card .card-back {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 0 25px rgba(255, 255, 255, 0.2),
+    0 0 50px rgba(212, 175, 55, 0.15),
+    0 10px 40px rgba(0,0,0,0.7);
+  /* 轻微高亮 */
+  filter: brightness(1.1);
+}
+
+/* 食指选中高亮 — 与小樱类似：更亮 + 略向前突出（具体位移由 JS transform 叠加） */
+.carousel-card.focused-card {
+  z-index: 30;
+  box-shadow:
+    0 0 28px var(--accent-rose),
+    0 0 56px rgba(232, 180, 184, 0.55),
+    0 0 90px rgba(212, 175, 55, 0.2);
+  filter: brightness(1.22) saturate(1.08);
+}
+
+/* 粉色发光边框 — 覆盖在整张卡牌上方 */
+.carousel-card.focused-card::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 12px;
+  border: 3px solid var(--accent-rose);
+  box-shadow:
+    0 0 20px var(--accent-rose),
+    0 0 40px rgba(232, 180, 184, 0.6),
+    inset 0 0 15px var(--accent-rose);
+  pointer-events: none;
+  z-index: 10;
+  animation: focusedPinkPulse 1.2s ease-in-out infinite alternate;
+}
+
+/* 底部粉色光晕 */
+.carousel-card.focused-card::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  border-radius: 20px;
+  background: radial-gradient(ellipse at center,
+    rgba(232, 180, 184, 0.6) 0%,
+    rgba(232, 180, 184, 0.2) 40%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  animation: focusedPinkPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes focusedPinkPulse {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+#carousel.entering .carousel-card {
+  animation: carouselCardEnter 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes carouselCardEnter {
+  0% { opacity: 0; transform: scale(0.8) translateY(50px); }
+  100% { opacity: 1; }
+}
+
+
+/* ========================================
+   选定卡牌特效展示 (带翻转) — 名字不被遮挡
+   ======================================== */
+#card-selected-view {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  /* 用深色半透明替代 backdrop-filter blur — Safari 全屏 blur 极慢 */
+  background: rgba(3, 2, 12, 0.88);
+}
+
+.selected-magic-circle {
+  position: absolute;
+  width: min(60vw, 60vh);
+  height: min(60vw, 60vh);
+  border-radius: 50%;
+  animation: magicCircleSpin 20s linear infinite;
+  border: 1.5px solid rgba(255, 182, 193, 0.15);
+  box-shadow:
+    0 0 30px rgba(255, 182, 193, 0.06),
+    inset 0 0 40px rgba(255, 215, 0, 0.03);
+}
+
+.selected-magic-circle::before {
+  content: '';
+  position: absolute;
+  inset: 15%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.selected-magic-circle::after {
+  content: '';
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 182, 193, 0.1);
+}
+
+.selected-glow {
+  position: absolute;
+  width: 300px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+  animation: magicGlow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes magicGlow {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.1); opacity: 1; }
+}
+
+/* 选中卡牌翻转容器 — 上移避免名字被底部元素遮挡 */
+.selected-card-wrapper {
+  position: relative;
+  width: 200px;
+  height: 340px;
+  z-index: 2;
+  perspective: 800px;
+  margin-top: -40px;
+}
+
+.selected-card-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 1s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.selected-card-flipper.flipped {
+  transform: rotateY(180deg);
+}
+
+.selected-card-wrapper .flip-burst {
+  position: absolute;
+  inset: -60px;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.selected-card-wrapper .flip-burst.active {
+  animation: flipBurstAnim 1.2s ease-out forwards;
+}
+
+@keyframes flipBurstAnim {
+  0% { opacity: 0; transform: scale(0.3); }
+  15% { opacity: 1; transform: scale(1.2); }
+  40% { opacity: 0.8; transform: scale(1.0); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+.selected-card-wrapper .flip-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9;
+  opacity: 0;
+}
+
+.selected-card-wrapper .flip-ring.active {
+  animation: flipRingExpand 0.8s ease-out forwards;
+}
+
+@keyframes flipRingExpand {
+  0% { width: 0; height: 0; opacity: 0.8; border: 3px solid var(--gold); box-shadow: 0 0 30px var(--gold-glow); }
+  100% { width: 400px; height: 400px; opacity: 0; border: 1px solid transparent; box-shadow: none; }
+}
+
+.selected-card-wrapper .flip-sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 0;
+  transform-origin: center bottom;
+  pointer-events: none;
+  z-index: 11;
+  opacity: 0;
+}
+
+.selected-card-wrapper .flip-sparkle.active {
+  animation: flipSparkleShoot 0.6s ease-out forwards;
+}
+
+@keyframes flipSparkleShoot {
+  0% { height: 0; opacity: 1; }
+  50% { height: 80px; opacity: 0.8; }
+  100% { height: 120px; opacity: 0; }
+}
+
+.selected-card-front,
+.selected-card-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+
+.selected-card-back {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.8);
+  background: var(--bg-card);
+  animation: selectedCardEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  overflow: hidden;
+}
+
+.selected-card-back .selected-back-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.selected-card-front {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.8);
+  background-color: var(--bg-card);
+  transform: rotateY(180deg);
+}
+
+@keyframes selectedCardEnter {
+  0% { opacity: 0; transform: scale(0.6) translateY(40px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 卡牌名字 — 确保不被遮挡 */
+.selected-card-name {
+  margin-top: 24px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--text-primary);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  z-index: 65;
+  opacity: 0;
+  transition: opacity 0.5s 0.8s;
+  position: relative;
+}
+
+.selected-card-name.show {
+  opacity: 1;
+}
+
+/* 捏合释放提示 */
+.release-hint {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  z-index: 65;
+  position: relative;
+  animation: hintBounce 1.5s ease-in-out infinite;
+}
+
+
+/* ========================================
+   占卜结果页 — 分布对齐 games/sakura #sakura-result-view
+   ======================================== */
+@keyframes trSrFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes trSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#tarot-result-view {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  background: linear-gradient(180deg, #06061a 0%, #0c0a22 40%, #080818 100%);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  /* 不再整屏垂直居中：刘海/安全区下再留 36px，内层从顶部起排 */
+  padding-top: calc(36px + env(safe-area-inset-top, 0px));
+  box-sizing: border-box;
+  overflow: hidden;
+  animation: trSrFadeIn 0.55s ease forwards;
+  --result-card-img-w: 92px;
+  --result-card-img-h: 156px;
+  --result-row-gap: 8px;
+  --result-text-row-max: calc(3 * var(--result-card-img-w) + 2 * var(--result-row-gap));
+}
+
+@media (min-width: 601px) {
+  #tarot-result-view {
+    --result-card-img-w: 140px;
+    --result-card-img-h: 238px;
+    --result-row-gap: 12px;
+  }
+}
+
+#tarot-result-view .tarot-result-inner {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  max-height: calc(100vh - 36px - env(safe-area-inset-top, 0px));
+  max-height: calc(100dvh - 36px - env(safe-area-inset-top, 0px));
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 20px max(24px, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  position: relative;
+  margin: auto;
+}
+#tarot-result-view .tarot-result-inner::-webkit-scrollbar { display: none; }
+
+#tarot-result-view .tr-header {
+  text-align: center;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+  animation: trSlideUp 0.55s ease 0.08s both;
+}
+#tarot-result-view .tr-title {
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--text-primary, #f0ebe3);
+  letter-spacing: 4px;
+  font-family: inherit;
+}
+
+#tarot-result-view .tr-cards-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+  animation: trSlideUp 0.55s ease 0.15s both;
+}
+#tarot-result-view .result-showcase {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  text-align: center;
+}
+#tarot-result-view .result-showcase .showcase-question {
+  font-size: 13px;
+  color: var(--accent-lavender);
+  margin-bottom: 10px;
+  letter-spacing: 0.06em;
+  font-style: italic;
+  font-weight: 300;
+  padding: 0 4px;
+}
+
+#tarot-result-view .tr-quote {
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  font-size: clamp(15px, 4vw, 18px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: rgba(255, 223, 120, 0.95);
+  text-shadow: 0 0 26px rgba(255, 215, 0, 0.35), 0 2px 0 rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+  padding: 0 8px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: trSlideUp 0.55s ease 0.28s both;
+}
+
+#tarot-result-view .tr-destiny-card {
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  padding: 0 8px;
+  border-radius: 0;
+  background: none;
+  border: none;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  animation: trSlideUp 0.55s ease 0.36s both;
+}
+#tarot-result-view .tr-destiny-body {
+  font-size: 15px;
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  text-align: left;
+}
+
+#tarot-result-view .tr-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 380px;
+  flex-shrink: 0;
+  animation: trSlideUp 0.55s ease 0.44s both;
+}
+#tarot-result-view .tr-btn {
+  flex: 1;
+  padding: 11px 0;
+  border-radius: 40px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+#tarot-result-view .tr-btn-save {
+  background: rgba(20, 15, 5, 0.6);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.12), inset 0 0 8px rgba(255, 215, 0, 0.08);
+}
+#tarot-result-view .tr-btn-save:active {
+  transform: scale(0.97);
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.8);
+}
+#tarot-result-view .tr-btn-retry {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+#tarot-result-view .tr-btn-retry:active {
+  transform: scale(0.97);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+#tarot-result-view .tr-upcoming {
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+  animation: trSlideUp 0.55s ease 0.5s both;
+}
+#tarot-result-view .tr-upcoming-text {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.28);
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 与游戏内 .cyou-watermark 同角同尺度，不占结果列 flex 高度 */
+#tarot-result-view .tr-brand.result-brand {
+  position: fixed;
+  right: max(12px, env(safe-area-inset-right, 0px));
+  bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  left: auto;
+  top: auto;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.06em;
+  font-family: 'Outfit', 'PingFang SC', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  opacity: 0.35;
+  pointer-events: none;
+  user-select: none;
+  z-index: 260;
+}
+
+/* 桌面：须放在本节各 #tarot-result-view 基础规则之后，否则 max-width:360/340 会覆盖掉桌面放宽 */
+@media (min-width: 601px) {
+  #tarot-result-view .tarot-result-inner {
+    max-width: min(520px, calc(100vw - 32px), 100%);
+  }
+  #tarot-result-view .tr-quote {
+    max-width: min(500px, calc(100vw - 40px), 100%);
+  }
+  #tarot-result-view .tr-destiny-card {
+    max-width: min(500px, calc(100vw - 40px), 100%);
+  }
+  #tarot-result-view .tr-actions {
+    max-width: min(480px, calc(100vw - 40px), 100%);
+  }
+  #tarot-result-view .tr-upcoming {
+    max-width: min(500px, calc(100vw - 40px), 100%);
+  }
+}
+
+@media (max-width: 380px) {
+  #tarot-result-view .tr-destiny-body {
+    font-size: 12px;
+  }
+}
+
+/* 结果页标题（其它流程占位，塔罗结果已用 .tr-header） */
+.result-header {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: resultFadeIn 1s ease forwards;
+}
+
+.result-title {
+  font-size: 26px;
+  font-weight: 300;
+  color: var(--text-primary);
+  letter-spacing: 8px;
+  margin-bottom: 12px;
+}
+
+.result-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  font-weight: 300;
+}
+
+@keyframes resultFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 三张牌居中大图截图区 */
+.result-showcase {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 28px;
+  padding: 16px 0 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+  border-radius: 16px;
+  animation: resultFadeIn 0.8s ease forwards;
+}
+
+.showcase-question {
+  font-size: 15px;
+  color: var(--accent-lavender);
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+  font-style: italic;
+  font-weight: 300;
+}
+
+.showcase-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--result-row-gap, 14px);
+  flex-wrap: nowrap;
+}
+
+.showcase-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: resultCardEnter 0.8s ease backwards;
+}
+
+.showcase-card .showcase-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+/* 与分享卡约 92×156 同比例略放大，避免结果页三张牌过大、文字显小 */
+.showcase-card img {
+  width: var(--result-card-img-w, 152px);
+  height: var(--result-card-img-h, 258px);
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55);
+}
+
+.showcase-card .showcase-name {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--text-primary);
+  letter-spacing: 2px;
+  font-weight: 400;
+}
+
+/* 三张牌展示 */
+.result-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 48px;
+}
+
+.result-card-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+  flex-shrink: 0;
+  animation: resultCardEnter 0.8s ease backwards;
+}
+
+@keyframes resultCardEnter {
+  from { opacity: 0; transform: translateY(30px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.result-card-item .rc-position {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  letter-spacing: 4px;
+  font-weight: 400;
+}
+
+.result-card-item .rc-card {
+  width: 130px;
+  height: 221px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: var(--bg-card);
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  transition: transform 0.3s;
+}
+
+.result-card-item .rc-name {
+  margin-top: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+}
+
+.result-card-item .rc-name-en {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  font-family: 'Georgia', serif;
+}
+
+.result-card-item .rc-interpretation {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.9;
+  padding: 0 4px;
+  font-weight: 300;
+}
+
+/* 结果段落区块 — 精致卡片风格（移除 backdrop-filter 提升滚动流畅度） */
+.result-section {
+  width: 100%;
+  padding: 28px;
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  animation: resultFadeIn 0.8s ease backwards;
+}
+
+.result-section:nth-child(5) { animation-delay: 0.6s; }
+.result-section:nth-child(6) { animation-delay: 0.8s; }
+.result-section:nth-child(7) { animation-delay: 1.0s; }
+
+.result-section .section-icon {
+  font-size: 18px;
+  color: var(--accent-lavender);
+  text-align: center;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.result-section .section-title {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-primary);
+  text-align: center;
+  letter-spacing: 3px;
+  margin-bottom: 18px;
+}
+
+.result-section .section-content {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 2;
+  text-align: center;
+  font-weight: 300;
+}
+
+.result-section .section-content p {
+  margin: 0 0 16px;
+}
+
+.result-section .section-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* 行动建议列表 */
+.advice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.advice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  border-left: 2px solid rgba(184, 169, 201, 0.3);
+  font-weight: 300;
+}
+
+.advice-bullet {
+  color: var(--accent-lavender);
+  font-size: 18px;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+
+/* 智慧提示 */
+.result-wisdom {
+  width: 100%;
+  text-align: center;
+  padding: 24px 20px;
+  margin: 16px 0 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  animation: resultFadeIn 1s ease 1.2s backwards;
+}
+
+.wisdom-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.8;
+  letter-spacing: 0.5px;
+  font-weight: 300;
+}
+
+/* ===== 特效层 — GPU 加速 ===== */
+#fx-canvas, #particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 85;
+  will-change: contents;
+  transform: translateZ(0);
+}
+
+#particle-canvas {
+  z-index: 45;
+}
+
+/* ===== 全屏魔法释放特效覆盖层 ===== */
+.spell-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  pointer-events: none;
+  animation: spellOverlayFade 4s ease-in-out forwards;
+}
+
+.spell-overlay .spell-name {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 8px;
+  color: inherit;
+  text-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
+  animation: spellNameAppear 1.5s ease-out forwards;
+  opacity: 0;
+}
+
+.spell-overlay .spell-subtitle {
+  font-size: 16px;
+  font-family: serif;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 12px;
+  animation: spellNameAppear 1.5s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+@keyframes spellOverlayFade {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes spellNameAppear {
+  0% { opacity: 0; transform: translateY(20px) scale(0.8); }
+  50% { opacity: 1; transform: translateY(0) scale(1.05); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ===== 调试面板 ===== */
+#debug-panel {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 330px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 300;
+}
+
+.debug-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.debug-header button {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#debug-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+#debug-info {
+  padding: 8px 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+#debug-info span {
+  color: var(--cyan);
+  font-family: monospace;
+}
+
+/* ===== 底部工具栏 ===== */
+#toolbar {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 150;
+}
+
+#toolbar button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+#toolbar button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-secondary);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 600px) {
+  :root {
+    --card-w: 100px;
+    --card-h: 170px;
+  }
+  #state-badge {
+    top: max(12px, calc(env(safe-area-inset-top, 0px) + 8px));
+    left: max(12px, env(safe-area-inset-left, 0px));
+  }
+  #tarot-collection {
+    gap: 10px;
+    top: max(40px, calc(env(safe-area-inset-top, 0px) + 24px));
+  }
+  .collection-slot {
+    width: 42px;
+    height: 64px;
+  }
+  #gesture-hint {
+    bottom: max(36px, calc(env(safe-area-inset-bottom, 0px) + 28px));
+    padding: 8px 16px;
+  }
+  #gesture-hint .hint-text {
+    font-size: 12px;
+  }
+  #platform-3d {
+    width: 360px;
+    height: 160px;
+  }
+  .sakura-ring-outer { width: 300px !important; height: 300px !important; }
+  .sakura-ring-mid { width: 220px !important; height: 220px !important; }
+  .sakura-ring-inner { width: 140px !important; height: 140px !important; }
+  .sakura-cross-platform .cross-h { width: 280px !important; }
+  .sakura-cross-platform .cross-v { height: 280px !important; }
+  .sakura-cross-platform .cross-d1,
+  .sakura-cross-platform .cross-d2 { height: 260px !important; }
+  .platform-runes { width: 260px !important; height: 260px !important; }
+  .platform-glow-surface { width: 320px !important; height: 320px !important; }
+  .platform-sakura-circle { width: 300px !important; height: 300px !important; }
+
+  .result-cards {
+    gap: 12px;
+  }
+  .result-card-item {
+    width: 160px;
+  }
+  .result-card-item .rc-card {
+    width: 100px;
+    height: 170px;
+  }
+  #tarot-result-view .tr-btn {
+    min-height: 42px;
+    padding: 10px 0;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  #question-panel {
+    padding: 24px 20px;
+  }
+  .question-title {
+    font-size: 16px;
+  }
+}
+
+/* ── CYou Games 品牌水印（游戏中固定右下角） ── */
+.cyou-watermark {
+  position: fixed;
+  right: 12px;
+  bottom: 10px;
+  z-index: 200;
+  font-family: 'Outfit', 'PingFang SC', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.35;
+  display: flex;
+  align-items: baseline;
+  gap: 0.06em;
+}
+.cyou-watermark .wm-cyou {
+  background: linear-gradient(135deg, #e0bfb8, #b76e79);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.cyou-watermark .wm-games {
+  color: rgba(168, 168, 173, 0.8);
+  font-weight: 800;
+  font-size: 0.72em;
+  margin-left: 0.12em;
+  letter-spacing: 0.06em;
+}
+
+/* ── 欢迎页品牌署名 ── */
+.cyou-brand-start {
+  margin-top: 28px;
+  font-family: 'Outfit', 'PingFang SC', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.06em;
+  justify-content: center;
+  opacity: 0.3;
+  animation: welcomeFadeUp 1s ease 1.1s both;
+}
+.cyou-brand-start .wm-cyou {
+  background: linear-gradient(135deg, #e0bfb8, #b76e79);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.cyou-brand-start .wm-games {
+  color: rgba(168, 168, 173, 0.8);
+  font-weight: 800;
+  font-size: 0.72em;
+  margin-left: 0.12em;
+  letter-spacing: 0.06em;
+}
+
+/* ── 结果页品牌署名 ── */
+.result-brand {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.06em;
+  margin: 24px 0 4px;
+  font-family: 'Outfit', 'PingFang SC', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  opacity: 0.4;
+  animation: resultFadeIn 0.8s ease 1.6s backwards;
+}
+.result-brand .wm-cyou {
+  background: linear-gradient(135deg, #e0bfb8, #b76e79);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.result-brand .wm-games {
+  color: rgba(168, 168, 173, 0.8);
+  font-weight: 800;
+  font-size: 0.72em;
+  margin-left: 0.12em;
+  letter-spacing: 0.06em;
+}
+.result-brand .wm-site {
+  color: rgba(168, 168, 173, 0.5);
+  font-weight: 400;
+  font-size: 0.68em;
+  margin-left: 0.6em;
+  letter-spacing: 0.05em;
+}
+
+/* ── 离屏分享卡 360×640（games/sakura/result.html #share-card 同款度量）── */
+.tarot-share-root {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 360px;
+  height: 640px;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+.tarot-share-root .share-card {
+  width: 360px;
+  height: 640px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #08061a 0%, #0f0b28 50%, #0a0818 100%);
+  box-shadow: 0 12px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 42px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  position: relative;
+  box-sizing: border-box;
+}
+.tarot-share-root .share-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.tarot-share-root .sc-header {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+  flex-shrink: 0;
+}
+.tarot-share-root .sc-title {
+  font-size: 24px;
+  font-weight: 300;
+  color: #f0ebe3;
+  letter-spacing: 3px;
+}
+.tarot-share-root .sc-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.28);
+  letter-spacing: 3px;
+  margin-top: 14px;
+}
+.tarot-share-root .sc-cards-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 28px;
+  flex-shrink: 0;
+}
+.tarot-share-root .sc-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 98px;
+}
+.tarot-share-root .sc-mini .lbl {
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.32);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.tarot-share-root .sc-mini .imgw {
+  width: 92px;
+  height: 156px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  background: #1a1530;
+}
+.tarot-share-root .sc-mini .imgw img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.tarot-share-root .sc-mini .nm {
+  font-size: 9px;
+  color: #f0ebe3;
+  margin-top: 4px;
+  letter-spacing: 1px;
+  text-align: center;
+  line-height: 1.2;
+}
+.tarot-share-root .sc-quote {
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: rgba(255, 223, 120, 0.98);
+  text-shadow: 0 0 22px rgba(255, 215, 0, 0.4), 0 2px 0 rgba(0, 0, 0, 0.35);
+  margin-top: 13px;
+  margin-bottom: 14px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tarot-share-root .sc-destiny-card {
+  width: 100%;
+  height: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 13px;
+  padding: 0 10px;
+  border-radius: 0;
+  background: none;
+  border: none;
+  box-sizing: border-box;
+  overflow: visible;
+  display: flex;
+  align-items: flex-start;
+}
+.tarot-share-root .sc-destiny-body {
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 400;
+  text-align: left;
+}
+.tarot-share-root .sc-footer-block {
+  width: 100%;
+  flex-shrink: 0;
+  text-align: center;
+  padding-top: 12px;
+}
+.tarot-share-root .sc-divider {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+  margin: 0 auto 6px;
+}
+.tarot-share-root .sc-cta {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.tarot-share-root .sc-url {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.22);
+  letter-spacing: 0.4px;
+  margin-top: 7px;
+  line-height: 1.25;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/* ========================================================================
+   手机端轻量翻牌（html.perf-flip-lite）：减少 filter/blur/多层 box-shadow 动画与时长
+   ======================================================================== */
+html.perf-flip-lite .carousel-card,
+html.perf-flip-lite #carousel {
+  will-change: auto;
+}
+
+html.perf-flip-lite .carousel-card .card-flipper {
+  transition: transform 0.38s cubic-bezier(0.25, 0.82, 0.25, 1) !important;
+}
+
+html.perf-flip-lite .selected-card-flipper {
+  transition: transform 0.45s cubic-bezier(0.25, 0.82, 0.25, 1) !important;
+}
+
+html.perf-flip-lite .selected-card-wrapper .flip-burst,
+html.perf-flip-lite .selected-card-wrapper .flip-ring,
+html.perf-flip-lite .selected-card-wrapper .flip-sparkle {
+  display: none !important;
+}
+
+html.perf-flip-lite .selected-card-back {
+  animation: none !important;
+  opacity: 1;
+  transform: none !important;
+}
+
+html.perf-flip-lite .selected-magic-circle,
+html.perf-flip-lite .selected-glow {
+  animation: none !important;
+}
+
+html.perf-flip-lite .selected-card-name {
+  transition: opacity 0.35s 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selected-card-flipper {
+    transition: transform 0.35s ease !important;
+  }
+
+  .carousel-card .card-flipper {
+    transition: transform 0.3s ease !important;
+  }
+
+  .selected-card-wrapper .flip-burst,
+  .selected-card-wrapper .flip-ring,
+  .selected-card-wrapper .flip-sparkle {
+    display: none !important;
+  }
+}
+
+/* Vivo/国产内置浏览器：关星空画布 + 去掉毛玻璃（合成更省） */
+html.perf-tarot-vivo #starfield-canvas {
+  display: none !important;
+  pointer-events: none;
+}
+
+html.perf-tarot-vivo #gesture-hint {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Android perf-flip-lite：去掉常驻元素的 backdrop-filter + 底盘动画 */
+html.perf-flip-lite #gesture-hint,
+html.perf-flip-lite #state-badge {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.perf-flip-lite .rune-dot {
+  animation: none !important;
+}
+
+html.perf-flip-lite .sakura-ring-outer,
+html.perf-flip-lite .sakura-ring-mid,
+html.perf-flip-lite .sakura-ring-inner {
+  animation: none !important;
+}
+
+html.perf-flip-lite .carousel-card.focused-card::after,
+html.perf-flip-lite .carousel-card.focused-card::before {
+  animation: none !important;
+}
+
+/* ===================================================
+   圆周旅迹景点推荐区域样式
+   =================================================== */
+
+/* 主题选择 */
+.question-theme-label {
+  font-size: 12px;
+  color: #c9a0dc;
+  letter-spacing: 2px;
+  margin: 18px 0 10px;
+  text-align: center;
+}
+
+.question-themes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 0 16px;
+}
+
+.theme-btn {
+  flex: 1;
+  background: rgba(120, 60, 180, 0.2);
+  border: 1px solid rgba(180, 120, 255, 0.35);
+  color: #c9a0dc;
+  border-radius: 22px;
+  padding: 10px 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.theme-btn:hover {
+  background: rgba(180, 100, 255, 0.3);
+  border-color: rgba(220, 160, 255, 0.6);
+  color: #fff;
+}
+
+.theme-btn.active {
+  background: linear-gradient(135deg, #7b3fa0, #4a1a80);
+  border-color: #c47fff;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(196, 127, 255, 0.45);
+}
+
+/* 景点推荐区块 */
+#travel-recommend-section {
+  width: 100%;
+  max-width: 480px;
+  padding: 0 0 24px;
+  animation: fadeInUp 0.6s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tr-travel-header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.tr-travel-icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.tr-travel-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f0d080;
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+
+.tr-travel-sub {
+  font-size: 11px;
+  color: #a080c0;
+  letter-spacing: 1px;
+}
+
+/* 景点卡片容器 */
+.tr-travel-cards {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 6px 2px 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tr-travel-cards::-webkit-scrollbar { display: none; }
+
+/* 单张景点卡片 */
+.tr-spot-card {
+  flex: 0 0 160px;
+  min-width: 160px;
+  scroll-snap-align: start;
+  background: rgba(30, 12, 60, 0.85);
+  border: 1px solid rgba(180, 100, 255, 0.25);
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  display: block;
+}
+
+.tr-spot-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(150, 60, 220, 0.35);
+}
+
+/* 最推荐徽章 */
+.tr-spot-card.top-pick {
+  border-color: rgba(240, 180, 60, 0.6);
+  box-shadow: 0 0 16px rgba(240, 180, 60, 0.2);
+  flex: 0 0 180px;
+  min-width: 180px;
+}
+
+.top-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #d4a020, #f0c840);
+  color: #2a1000;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  z-index: 2;
+  letter-spacing: 0.5px;
+}
+
+/* 图片区 */
+.spot-img-wrap {
+  position: relative;
+  height: 110px;
+  overflow: hidden;
+  background: rgba(60, 20, 100, 0.5);
+}
+
+.spot-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.tr-spot-card:hover .spot-img-wrap img {
+  transform: scale(1.05);
+}
+
+.spot-region {
+  position: absolute;
+  bottom: 5px;
+  right: 7px;
+  background: rgba(0,0,0,0.55);
+  color: #d0c0ff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+/* 文字区 */
+.spot-info {
+  padding: 10px 12px 12px;
+}
+
+.spot-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e8d8ff;
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+
+.spot-desc {
+  font-size: 12px;
+  color: #9080b0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 底部提示 */
+.tr-travel-tip {
+  text-align: center;
+  font-size: 11px;
+  color: #6a5a8a;
+  margin-top: 10px;
+  letter-spacing: 0.5px;
+}
+
+/* 响应式：大屏横向展开 */
+@media (min-width: 480px) {
+  .tr-travel-cards {
+    gap: 12px;
+  }
+  .tr-spot-card {
+    flex: 0 0 160px;
+    min-width: 160px;
+  }
+  .tr-spot-card.top-pick {
+    flex: 0 0 175px;
+    min-width: 175px;
+  }
+  .spot-img-wrap {
+    height: 108px;
+  }
+}
+/* v1.0.5-20260706 */
+
+/* 逆位标签 */
+.showcase-reversed {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 10px;
+  color: #c080ff;
+  border: 1px solid rgba(180,80,255,0.4);
+  border-radius: 6px;
+  padding: 1px 5px;
+  vertical-align: middle;
+}
