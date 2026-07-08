@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>增长实验模拟器 · 产品运营工具集</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fff;--bg2:#fafafa;--blue:#4f46e5;--blue-dark:#3730a3;
+  --blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
+  --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
+  --bd:rgba(0,0,0,.07);--sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --r:16px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+}
+body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:inherit}
+nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
+.nw{max-width:1200px;margin:0 auto;padding:0 32px;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--text)}.logo em{color:var(--blue);font-style:normal}
+.back{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:var(--soft);transition:color .2s}.back:hover{color:var(--blue)}.nav-tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill)}
+.back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.hero{padding:70px 32px 16px;max-width:1200px;margin:0 auto}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px}.tool-num{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em}.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill);margin-bottom:10px}
+.hero h1{font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
+.hero p{font-size:14px;color:var(--soft);max-width:540px}
+.ws{max-width:1200px;margin:0 auto;padding:8px 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:16px;align-items:start}
+.panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.ip{position:sticky;top:60px}
+.ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.pi{width:28px;height:28px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pt{font-size:13px;font-weight:700}.ps{font-size:11px;color:var(--soft)}
+.pb{padding:16px}
+.f{margin-bottom:13px}.f label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
+.fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
+.f input,.f textarea{width:100%;padding:8px 11px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.f input:focus,.f textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light);background:#fff}
+.f textarea{resize:vertical;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font);user-select:none}
+.chip:hover{border-color:var(--blue-border);color:var(--blue)}.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}.chip.act{background:var(--blue-light);border-color:var(--blue-border);color:var(--blue)}
+.gbtn{width:auto;min-width:180px;margin-top:8px;padding:13px 24px;border-radius:var(--pill);background:#0D0D0D;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:none;transition:all .2s}
+.gbtn:hover:not(:disabled){background:#333;transform:translateY(-1px)}.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.gbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.op{min-height:480px;display:flex;flex-direction:column}
+.ob{flex:1;padding:20px;overflow-y:auto;max-height:72vh}
+.skel{display:flex;flex-direction:column;gap:10px;opacity:.4}
+.sl{height:12px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
+.sb{height:72px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:8px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.think{display:flex;align-items:center;gap:10px;padding:28px 0;color:var(--soft);font-size:13px}
+.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin:0 2px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bou{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+.md{font-size:13px;line-height:1.8;color:var(--text)}
+.md h1{font-size:17px;font-weight:800;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.md h2{font-size:14px;font-weight:700;margin:16px 0 7px;color:var(--blue)}.md h3{font-size:13px;font-weight:700;margin:13px 0 5px}
+.md p{margin-bottom:10px}.md ul,.md ol{margin:6px 0 10px 16px}.md li{margin-bottom:4px}.md strong{font-weight:700}
+.md blockquote{border-left:3px solid var(--blue);padding:8px 12px;margin:12px 0;background:var(--blue-light);border-radius:0 8px 8px 0;color:var(--soft);font-size:12px}
+.md table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.md th,.md td{padding:7px 10px;border:1px solid var(--bd);text-align:left;vertical-align:top}
+.md th{background:var(--bg2);font-weight:600}.md code{background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:11px}
+.ebar{padding:12px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
+.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.ebtn:hover{border-color:var(--blue-border);color:var(--blue)}.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+#toast{position:fixed;bottom:24px;right:24px;background:#1d1d1f;color:#fff;padding:9px 16px;border-radius:var(--pill);font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+@media(max-width:900px){.ws{grid-template-columns:1fr}.ip{position:static}}
+@media(max-width:600px){.ws{padding:8px 16px 60px}.hero{padding:68px 16px 16px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nw">
+    <a href="/08/works/" class="back">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      产品运营工具集
+    </a>
+    <span class="nav-tag">策略研究</span>
+  </div>
+</nav>
+<div class="hero"><span class="tag">增长产品</span><h1>增长实验模拟器</h1><p>描述增长瓶颈，AI给出A/B实验方案。</p></div>
+<div class="ws">
+  <div class="panel ip">
+    <div class="ph"><div class="pi"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="pt">实验参数</div><div class="ps">描述问题后生成方案</div></div></div>
+    <div class="pb">
+      <div class="f"><label>产品名称</label><input type="text" id="pname" placeholder="例：XXApp"></div>
+      <div class="f"><label>增长瓶颈</label><textarea id="problem" rows="4" placeholder="描述当前遇到的增长问题，例：注册页面转化率只有8%，大量用户在手机号验证环节流失..."></textarea></div>
+      <div class="f"><label>优化指标</label>
+        <div class="chips" id="metricChips">
+          <span class="chip on" data-v="注册转化率">注册转化率</span>
+          <span class="chip" data-v="次日留存">次日留存</span>
+          <span class="chip" data-v="7日留存">7日留存</span>
+          <span class="chip" data-v="付费转化">付费转化</span>
+          <span class="chip" data-v="DAU">DAU</span>
+          <span class="chip" data-v="ARPU">ARPU</span>
+        </div>
+      </div>
+      <div class="f"><label>当前数据 <span class="fn">可选</span></label><input type="text" id="currentData" placeholder="例：注册转化率8%，行业均值15%"></div>
+      <button class="gbtn" id="genBtn" onclick="gen()"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>生成实验方案</button>
+    </div>
+  </div>
+  <div class="panel op">
+    <div class="ph"><div class="pi"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="pt">A/B实验方案</div><div class="ps">实验设计与预期效果</div></div></div>
+    <div class="ob" id="ob"><div id="examplePreview" style="font-size:12.5px;line-height:1.8;color:#555;background:#fafafa;border-radius:10px;padding:14px 16px;border:1px solid #eee">
+  <p style="font-size:11px;font-weight:600;color:#999;margin-bottom:10px;text-align:center">— 示例效果 —</p>
+  <p style="font-weight:600;color:#0D0D0D">AI 将在这里生成结构化输出</p>
+  <p>填写左侧表单后点击生成按钮，AI 将给出专业的分析结果，支持复制和导出。</p>
+  <p style="margin-top:8px;font-size:11px;color:#aaa">↑ 每个工具都有针对真实工作场景优化的 Prompt 模板</p>
+</div></div></div>
+    <div class="ebar"><button class="ebtn" onclick="copyOut()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button><button class="ebtn" onclick="doExport('增长实验方案')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button></div>
+  </div>
+</div>
+<div id="toast">已复制到剪贴板</div>
+<script>
+var PROVIDERS=[
+  {name:'智谱',url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P',model:'glm-4-flash',type:'openai'},
+  {name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',key:'sk-4f016c9639cb461db37f4f778d2eac4f',model:'deepseek-chat',type:'openai'},
+  {name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''),type:'gemini'}
+];
+async function callAI(prompt,maxTok){
+  maxTok=maxTok||5000;
+  for(var i=0;i<PROVIDERS.length;i++){
+    var p=PROVIDERS[i];
+    try{
+      var res,text='';
+      if(p.type==='openai'){
+        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:maxTok,temperature:0.7}),signal:AbortSignal.timeout(25000)});
+        if(!res.ok){var er=await res.json();console.warn(p.name,er.error&&er.error.message);continue;}
+        var d=await res.json();
+        text=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
+      }else{
+        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:maxTok,temperature:0.7}}),signal:AbortSignal.timeout(20000)});
+        if(!res.ok)continue;
+        var d2=await res.json();
+        text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
+      }
+      if(text){console.log('[OK]',p.name);return text;}
+    }catch(err){console.warn('[FAIL]',p.name,err.message);}
+  }
+  throw new Error('所有AI服务均不可用');
+}
+var _last='';
+function typeOut(text,el,done){
+  _last=text;
+  var i=0;
+  el.innerHTML='<div class="md"></div>';
+  var md=el.querySelector('.md');
+  var iv=setInterval(function(){
+    i=Math.min(i+10,text.length);
+    md.innerHTML=marked.parse(text.slice(0,i));
+    if(i>=text.length){clearInterval(iv);if(done)done();}
+  },20);
+}
+function doExport(name){
+  if(!_last)return;
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([_last],{type:'text/markdown'}));
+  a.download=(name||'output')+'.md';a.click();
+}
+function copyOut(){
+  if(!_last)return;
+  navigator.clipboard.writeText(_last).then(function(){
+    var t=document.getElementById('toast');
+    if(t){t.style.opacity='1';setTimeout(function(){t.style.opacity='0';},2000);}
+  });
+}
+document.getElementById('metricChips').addEventListener('click',function(e){
+  var c=e.target.closest('.chip');
+  if(!c)return;
+  this.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});
+  c.classList.add('on');
+});
+function getChipVal(id){
+  var s=document.getElementById(id).querySelector('.chip.on');
+  return s?s.getAttribute('data-v'):'';
+}
+async function gen(){
+  var problem=document.getElementById('problem').value.trim();
+  if(!problem){alert('请描述增长瓶颈');return;}
+  var pname=document.getElementById('pname').value.trim();
+  var metric=getChipVal('metricChips');
+  var currentData=document.getElementById('currentData').value.trim();
+  var prompt='你是一个资深增长产品经理，专注于数据驱动的产品增长实验。\n\n';
+  prompt+='产品：'+(pname||'未指定')+'\n';
+  prompt+='优化指标：'+(metric||'注册转化率')+'\n';
+  prompt+='当前数据：'+(currentData||'未提供')+'\n\n';
+  prompt+='增长瓶颈描述：\n'+problem+'\n\n';
+  prompt+='请设计一套完整的A/B实验方案：\n\n';
+  prompt+='## 问题分析\n用增长漏斗框架分析问题根因（2-3个假设）\n\n';
+  prompt+='## 实验方案\n\n### 实验1（高优先级）\n**假设：** [具体假设]\n**实验组 A（对照）：** 现有方案描述\n**实验组 B（变体）：** 具体变化内容\n**核心指标：** 主要指标+次要指标\n**样本量：** 建议最小样本量和依据\n**实验周期：** 建议时间和原因\n**成功标准：** 指标提升X%以上\n**风险提示：** 注意事项\n\n### 实验2（中优先级）\n[同上格式]\n\n### 实验3（低优先级）\n[同上格式]\n\n## 实验优先级矩阵\n| 实验 | 预期提升 | 实现成本 | 风险 | 推荐优先级 |\n|-----|---------|---------|------|----------|\n\n## 数据收集方案\n需要埋点的关键事件和指标定义\n\n## 上线策略\n灰度放量计划（5%→20%→50%→100%）\n\n## 结果评估框架\n如何判断实验成功或失败，以及后续决策流程\n\n请给出专业、可落地的实验方案。';
+  var btn=document.getElementById('genBtn');
+  var ob=document.getElementById('ob');
+  btn.disabled=true;
+  btn.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="30" stroke-dashoffset="10"><animate attributeName="stroke-dashoffset" values="30;0" dur="1s" repeatCount="indefinite"/></circle></svg>AI设计中...';
+  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div>AI正在设计实验方案...</div>';
+  try{
+    var result=await callAI(prompt,5000);
+    typeOut(result,ob);
+  }catch(err){
+    ob.innerHTML='<div class="think">⚠️ '+err.message+'</div>';
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>生成实验方案';
+  }
+}
+</script>
+</body>
+</html>
