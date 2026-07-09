@@ -1839,6 +1839,32 @@ function goArchive(){
   showScreen('s-archive');
   runHeichaGenerate();
 }
+function goDirectPlan(){
+  // 跳过人格测试，直接展示三套方案（不走 phaseReveal）
+  var city = (document.getElementById('city-input') && document.getElementById('city-input').value || heichaState.city || '大理').trim();
+  var days = parseInt(document.getElementById('days-input') && document.getElementById('days-input').value) || heichaState.days || 3;
+  heichaState.city = city;
+  heichaState.days = days;
+  // 从 HEICHA_COMBO_TABLE 中取前3个不同组合
+  haPlans = [];
+  var used = {};
+  if(typeof HEICHA_COMBO_TABLE !== 'undefined'){
+    for(var i=0;i<HEICHA_COMBO_TABLE.length && haPlans.length<3;i++){
+      var row = HEICHA_COMBO_TABLE[i];
+      var key = row.keys[0]+'+'+row.keys[1];
+      if(!used[key]){
+        used[key]=true;
+        haPlans.push({p1:row.keys[0], p2:row.keys[1], combo:row.combo});
+      }
+    }
+  }
+  // 补足至3个
+  while(haPlans.length<3){
+    haPlans.push({p1:'soldier',p2:'foodie',combo:{name:'探索者',slogan:'随心所欲',budget:'¥3000+'}});
+  }
+  showScreen('s-archive');
+  haShowCardDeck();
+}
 function skipQuiz(){
   SLIDERS.forEach(function(sl){sl.val=50});
   updateQuizRadar();
@@ -2605,7 +2631,7 @@ function entryGoQuiz(){
 function entrySkip(){
   if(!state.city){ showToast('请先输入目的地'); return; }
   _syncEntryToCity();
-  skipQuiz();
+  goDirectPlan();
 }
 // 初始化天数默认值
 setEntryDays(3);
