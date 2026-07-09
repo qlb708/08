@@ -3,364 +3,547 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>08. AI 工具集</title>
+<title>08. Qin · AI 工具集</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#F7F8FC;
+  --bg:#F0F4FF;
   --white:#fff;
-  --blue:#3B6EF5;--blue-dk:#2952D3;
+  --blue:#4A7BFF;--blue-dk:#2952D3;
   --blue-lt:#EEF3FF;
-  --text:#0F1523;--sub:#374151;--soft:#6B7280;--muted:#9CA3AF;--line:#EAECF0;
-  --r:16px;--rp:100px;
+  --text:#1a1f36;--sub:#374151;--soft:#6B7280;--muted:#9CA3AF;--line:rgba(0,0,0,.08);
+  --r:18px;--rp:100px;
   --ff:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
-  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);
-  --shadow-h:0 8px 32px rgba(59,110,245,.14),0 2px 8px rgba(0,0,0,.06);
+  --glass:rgba(255,255,255,.72);
+  --shadow:0 2px 16px rgba(74,123,255,.08),0 1px 3px rgba(0,0,0,.04);
+  --shadow-h:0 8px 40px rgba(74,123,255,.18),0 2px 8px rgba(0,0,0,.06);
+  --gblue:linear-gradient(135deg,#4A7BFF 0%,#7B5EF8 100%);
+  --gbg:linear-gradient(160deg,#E8EFFF 0%,#F0F4FF 40%,#EDF2FF 100%);
 }
-html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
-body{font-family:var(--ff);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff);background:var(--gbg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh}
 a{text-decoration:none;color:inherit}
 
-/* ══════════════════════════════
-   TOP BANNER — 铺满一整行
-══════════════════════════════ */
-.top-banner{
-  position:fixed;top:0;inset-x:0;z-index:300;
-  background:var(--white);border-bottom:1px solid var(--line);
-  display:flex;align-items:center;height:52px;padding:0 32px;
+/* ══════ BANNER ══════ */
+.banner{
+  width:100%;background:var(--white);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;height:54px;padding:0 40px;
+  position:sticky;top:0;z-index:200;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(255,255,255,.92);
 }
-.tb-left{display:flex;align-items:center;gap:10px}
-.tb-logo{font-size:17px;font-weight:900;letter-spacing:-.04em;color:var(--text)}
-.tb-logo span{color:var(--blue)}
-.tb-sep{width:1px;height:14px;background:var(--line)}
-.tb-name{font-size:13px;font-weight:600;color:var(--sub)}
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
-.tb-email{font-size:12px;color:var(--soft);letter-spacing:.01em}
-.tb-gh{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+.bn-logo{font-size:18px;font-weight:900;letter-spacing:-.04em;color:var(--text);flex-shrink:0}
+.bn-logo span{color:var(--blue)}
+.bn-center{flex:1;display:flex;align-items:center;justify-content:center;gap:32px}
+.bn-nav{font-size:13px;font-weight:600;color:var(--soft);cursor:pointer;transition:color .18s;white-space:nowrap}
+.bn-nav:hover{color:var(--blue)}
+.bn-right{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.bn-email{font-size:12px;color:var(--soft);letter-spacing:.01em}
+.bn-gh{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
   color:var(--soft);padding:5px 14px;border-radius:var(--rp);
-  border:1px solid var(--line);background:var(--white);transition:all .18s}
-.tb-gh:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
-.tb-gh svg{width:14px;height:14px;fill:currentColor}
+  border:1px solid var(--line);background:transparent;transition:all .18s}
+.bn-gh:hover{border-color:var(--blue);color:var(--blue)}
+.bn-gh svg{width:14px;height:14px;fill:currentColor}
 
-/* ══════════════════════════════
-   PAGE 1 — 全屏自我介绍
-══════════════════════════════ */
-.page-intro{
-  min-height:100vh;padding-top:52px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-  background:linear-gradient(160deg,#F0F4FF 0%,#F7F8FC 50%,#F0F4FF 100%);
-  scroll-snap-align:start;
-}
-/* 背景装饰圆 */
-.page-intro::before{
-  content:'';position:absolute;top:-120px;right:-80px;
-  width:480px;height:480px;border-radius:50%;
-  background:radial-gradient(circle,rgba(59,110,245,.08) 0%,transparent 70%);
-  pointer-events:none;
-}
-.page-intro::after{
-  content:'';position:absolute;bottom:-100px;left:-60px;
-  width:360px;height:360px;border-radius:50%;
-  background:radial-gradient(circle,rgba(123,94,248,.06) 0%,transparent 70%);
-  pointer-events:none;
-}
+/* ══════ PAGE 1: HERO ══════ */
+.hero{min-height:calc(100vh - 54px);padding:40px 40px 32px;display:flex;flex-direction:column;justify-content:center;max-width:1200px;margin:0 auto}
 
-.intro-inner{
-  max-width:900px;width:100%;padding:0 32px;
-  display:flex;flex-direction:column;align-items:center;text-align:center;gap:32px;
-  position:relative;z-index:1;
-}
+/* top row: left content + right avatar+tags */
+.hero-top{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:start;margin-bottom:28px}
 
-/* 主标题 */
-.intro-title{
-  font-size:clamp(36px,6vw,72px);font-weight:900;letter-spacing:-.05em;
-  line-height:1.05;color:var(--text);
-}
-.intro-title .hl{
-  background:linear-gradient(135deg,#3B6EF5 0%,#7B5EF8 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+/* left */
+.hero-left{}
+.hero-greeting{font-size:clamp(36px,5vw,62px);font-weight:900;letter-spacing:-.05em;line-height:1.05;margin-bottom:14px}
+.hero-greeting .name{background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-role{font-size:20px;font-weight:700;color:var(--sub);margin-bottom:18px;letter-spacing:-.01em}
+.hero-desc{font-size:15px;color:var(--soft);line-height:1.9;max-width:440px;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);font-weight:500}
+.meta-item span{font-size:15px}
 
-/* 副标题 */
-.intro-sub{font-size:16px;color:var(--soft);line-height:1.8;max-width:480px}
+/* right: avatar card + tag card stacked */
+.hero-right{display:flex;flex-direction:column;gap:16px}
 
-/* 喜茶风标签云 */
-.tag-cloud{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:700px;
+/* avatar card */
+.avatar-card{
+  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:24px;border:1px solid rgba(255,255,255,.8);
+  box-shadow:var(--shadow);padding:24px;
+  display:flex;gap:20px;align-items:flex-end;position:relative;overflow:hidden;
 }
-.tag{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 16px;border-radius:var(--rp);
-  font-size:13px;font-weight:600;line-height:1;
-  transition:transform .2s;cursor:default;
-  border:1.5px solid transparent;
+.avatar-card::before{
+  content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(74,123,255,.12),transparent 70%);pointer-events:none;
 }
-.tag:hover{transform:translateY(-2px) rotate(-1deg)}
-.tag-blue{background:#EEF3FF;color:#3B6EF5;border-color:#D6E2FF}
-.tag-purple{background:#F3F0FF;color:#7B5EF8;border-color:#DDD6FE}
-.tag-green{background:#ECFDF5;color:#059669;border-color:#A7F3D0}
-.tag-orange{background:#FFF7ED;color:#EA580C;border-color:#FED7AA}
-.tag-pink{background:#FFF0F6;color:#DB2777;border-color:#FBCFE8}
-.tag-slate{background:#F1F5F9;color:#475569;border-color:#CBD5E1}
-.tag-yellow{background:#FFFBEB;color:#D97706;border-color:#FDE68A}
-.tag-red{background:#FFF1F2;color:#E11D48;border-color:#FECDD3}
+.avatar-fig{
+  width:120px;height:150px;flex-shrink:0;
+  display:flex;align-items:flex-end;justify-content:center;
+  position:relative;
+}
+/* SVG anime girl figure */
+.avatar-fig svg{width:100%;height:100%}
+.avatar-info{flex:1}
+.av-name{font-size:22px;font-weight:900;letter-spacing:-.04em;margin-bottom:4px}
+.av-name .hl{color:var(--blue)}
+.av-role{font-size:13px;font-weight:600;color:var(--soft);margin-bottom:14px}
+.av-tags{display:flex;flex-wrap:wrap;gap:6px}
+.av-tag{font-size:11px;font-weight:700;padding:4px 12px;border-radius:var(--rp);
+  background:var(--blue-lt);color:var(--blue)}
+.av-quote{font-size:12px;color:var(--soft);margin-top:12px;line-height:1.7;font-style:italic}
+.av-meta-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.av-meta{font-size:11px;color:var(--soft);display:flex;align-items:center;gap:4px}
 
-/* 向下箭头 */
-.scroll-down{
-  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  cursor:pointer;opacity:.5;transition:opacity .2s;
+/* tag cloud card */
+.tag-card{
+  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:20px;border:1px solid rgba(255,255,255,.8);
+  box-shadow:var(--shadow);padding:20px 22px;
 }
-.scroll-down:hover{opacity:.9}
-.scroll-down span{font-size:11px;color:var(--soft);letter-spacing:.08em;font-weight:600;text-transform:uppercase}
-.scroll-down svg{width:20px;height:20px;stroke:var(--soft);fill:none;stroke-width:1.8;
-  stroke-linecap:round;stroke-linejoin:round;animation:bounce 2s infinite}
+.tag-card-title{font-size:13px;font-weight:700;color:var(--sub);margin-bottom:14px;
+  display:flex;align-items:center;gap:6px}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:8px}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border-radius:var(--rp);
+  font-size:12px;font-weight:600;cursor:default;transition:transform .2s;border:1px solid transparent}
+.tag:hover{transform:translateY(-2px)}
+.tag-b{background:#EEF3FF;color:#3B6EF5;border-color:#D6E2FF}
+.tag-p{background:#F3F0FF;color:#7B5EF8;border-color:#DDD6FE}
+.tag-g{background:#ECFDF5;color:#059669;border-color:#A7F3D0}
+.tag-o{background:#FFF7ED;color:#EA580C;border-color:#FED7AA}
+.tag-pk{background:#FFF0F6;color:#DB2777;border-color:#FBCFE8}
+.tag-s{background:#F1F5F9;color:#475569;border-color:#CBD5E1}
+.tag-y{background:#FFFBEB;color:#D97706;border-color:#FDE68A}
+
+/* quote card */
+.quote-card{
+  background:linear-gradient(135deg,rgba(74,123,255,.08),rgba(123,94,248,.06));
+  border:1px solid rgba(74,123,255,.15);
+  border-radius:20px;padding:20px 22px;
+}
+.quote-text{font-size:16px;font-weight:700;color:var(--text);line-height:1.7;letter-spacing:-.01em}
+.quote-text::before{content:'" ';color:var(--blue);font-size:20px;font-weight:900}
+.quote-text::after{content:' "';color:var(--blue);font-size:20px;font-weight:900}
+
+/* bottom 3 cards */
+.hero-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.info-card{
+  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:20px;border:1px solid rgba(255,255,255,.8);
+  box-shadow:var(--shadow);padding:22px;transition:all .22s;
+}
+.info-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
+.ic-header{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.ic-icon{font-size:18px}
+.ic-title{font-size:14px;font-weight:800;color:var(--text)}
+
+/* exp card */
+.exp-item{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.06)}
+.exp-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.exp-company{display:flex;align-items:center;gap:8px}
+.exp-logo{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.exp-name{font-size:12px;font-weight:700;color:var(--text)}
+.exp-period{font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-lt);padding:2px 8px;border-radius:var(--rp);margin-left:auto;white-space:nowrap}
+.exp-role{font-size:11px;color:var(--soft);margin-top:2px}
+.exp-desc{font-size:11px;color:var(--muted);line-height:1.65;margin-top:4px}
+
+/* skill card */
+.skill-item{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.skill-item:last-child{margin-bottom:0}
+.skill-dot{width:28px;height:28px;border-radius:8px;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.skill-body{}
+.skill-name{font-size:12px;font-weight:700;color:var(--text)}
+.skill-desc{font-size:11px;color:var(--soft);line-height:1.55}
+
+/* life card */
+.life-item{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.life-item:last-child{margin-bottom:0}
+.life-icon{font-size:18px;width:28px;text-align:center;flex-shrink:0}
+.life-body{}
+.life-name{font-size:12px;font-weight:700;color:var(--text)}
+.life-desc{font-size:11px;color:var(--soft);line-height:1.55}
+
+/* scroll hint */
+.scroll-hint{text-align:center;margin-top:24px;cursor:pointer;opacity:.5;transition:opacity .2s}
+.scroll-hint:hover{opacity:.9}
+.scroll-hint span{font-size:11px;color:var(--soft);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.scroll-hint svg{display:block;margin:6px auto 0;width:18px;height:18px;stroke:var(--soft);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:bounce 2s infinite}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 
-/* ══════════════════════════════
-   PAGE 2 — 工具内容区
-══════════════════════════════ */
-.page-content{
-  min-height:100vh;padding-top:52px;
-  scroll-snap-align:start;
-}
+/* ══════ PAGE 2: TOOLS ══════ */
+.page-tools{padding-top:0}
 
-/* TAB BAR */
 .tabs-wrap{
-  background:rgba(247,248,252,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line);padding:12px 32px;
-  position:sticky;top:52px;z-index:100;
+  background:rgba(240,244,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);padding:12px 40px;
+  position:sticky;top:54px;z-index:100;
 }
-.tabs-wrap-inner{max-width:1120px;margin:0 auto}
-.tab-row{display:inline-flex;background:var(--white);border-radius:var(--rp);padding:4px;gap:2px;
-  box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.tb-btn{font-size:13px;font-weight:600;color:var(--soft);padding:7px 20px;border-radius:var(--rp);
-  cursor:pointer;border:none;background:transparent;font-family:var(--ff);transition:all .18s;white-space:nowrap}
+.tab-row{display:inline-flex;background:var(--white);border-radius:var(--rp);padding:4px;gap:2px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.tb-btn{font-size:13px;font-weight:600;color:var(--soft);padding:7px 20px;border-radius:var(--rp);cursor:pointer;border:none;background:transparent;font-family:var(--ff);transition:all .18s;white-space:nowrap}
 .tb-btn:hover{color:var(--text)}
-.tb-btn.on{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(59,110,245,.32)}
+.tb-btn.on{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(74,123,255,.32)}
 .tc{display:none}.tc.show{display:block}
 
-/* CONTENT WRAPPER */
-.cw{max-width:1120px;margin:0 auto;padding:28px 32px 80px}
+.cw{max-width:1200px;margin:0 auto;padding:28px 40px 80px}
 
-/* section label */
 .sl{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .sl-dot{width:7px;height:7px;border-radius:50%}
-.sl-name{font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.01em}
+.sl-name{font-size:15px;font-weight:800;color:var(--text)}
 .sl-count{font-size:11px;font-weight:700;padding:2px 10px;border-radius:var(--rp)}
 .sl-line{flex:1;height:1px;background:var(--line)}
 
-/* TOOL GRID */
+/* tool grid */
 .grid{display:grid;gap:14px}
 .g3{grid-template-columns:repeat(3,1fr)}
 @media(max-width:860px){.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.g3{grid-template-columns:1fr}}
 
-/* tool card */
-.card{background:var(--white);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;
-  box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.04);transition:all .22s;cursor:pointer;min-height:160px}
+.card{
+  background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:var(--r);padding:22px;display:flex;flex-direction:column;
+  border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow);transition:all .22s;cursor:pointer;min-height:160px;
+}
 .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
 .card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
 .card-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .card-ic svg{width:18px;height:18px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .card-arr{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .card-arr svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.card-t{font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.01em}
+.card-t{font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px}
 .card-d{font-size:12px;color:var(--soft);line-height:1.75;flex:1}
-.card-foot{display:flex;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid #F3F4F6}
+.card-foot{margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.06)}
 .card-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:var(--rp)}
 
-/* empty */
-.card-empty{background:repeating-linear-gradient(135deg,#FAFAFA,#FAFAFA 10px,#F4F5F7 10px,#F4F5F7 20px);
-  border:1.5px dashed var(--line);border-radius:var(--r);padding:32px 20px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:160px}
+.card-empty{
+  background:rgba(255,255,255,.4);border:1.5px dashed rgba(0,0,0,.12);
+  border-radius:var(--r);padding:32px 20px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:160px;
+}
 .card-empty-em{font-size:28px;opacity:.25}
 .card-empty-t{font-size:12px;font-weight:700;color:var(--muted)}
-.card-empty-d{font-size:11px;color:var(--muted);opacity:.7}
 
-/* ACTIVITY */
+/* activity */
 .act-row{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
 @media(max-width:720px){.act-row{grid-template-columns:1fr}}
-.act-col-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:14px}
+.act-col-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
 
-/* App cards */
 .app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .acard{display:flex;flex-direction:column;background:var(--white);border-radius:18px;overflow:hidden;
-  box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06);aspect-ratio:9/16;
-  transition:all .22s;cursor:pointer;position:relative}
+  box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06);aspect-ratio:9/16;transition:all .22s;cursor:pointer;position:relative}
 .acard:hover{transform:translateY(-4px) scale(1.01);box-shadow:var(--shadow-h)}
-.acard-chrome{position:absolute;top:0;inset-x:0;height:28px;z-index:2;
-  display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
+.acard-chrome{position:absolute;top:0;inset-x:0;height:28px;z-index:2;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
 .acard-notch{width:60px;height:5px;background:rgba(255,255,255,.18);border-radius:3px}
-.acard-cover{flex:1;display:flex;align-items:center;justify-content:center;
-  font-size:40px;padding-top:28px;position:relative;overflow:hidden}
+.acard-cover{flex:1;display:flex;align-items:center;justify-content:center;font-size:40px;padding-top:28px;overflow:hidden}
 .acard-body{padding:10px 12px 14px;background:var(--white);flex-shrink:0}
-.acard-badge{display:inline-block;font-size:8px;font-weight:700;padding:2px 8px;
-  border-radius:var(--rp);margin-bottom:5px}
+.acard-badge{display:inline-block;font-size:8px;font-weight:700;padding:2px 8px;border-radius:var(--rp);margin-bottom:5px}
 .acard-t{font-size:11px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:2px}
 .acard-d{font-size:9px;color:var(--soft);line-height:1.5}
 .acard-go{margin-top:8px;display:flex;justify-content:flex-end}
-.acard-dot{width:20px;height:20px;border-radius:50%;background:var(--blue);
-  display:flex;align-items:center;justify-content:center}
+.acard-dot{width:20px;height:20px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center}
 .acard-dot svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-/* Web cards */
-.wcard{display:flex;align-items:center;gap:16px;background:var(--white);
-  border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.04);
-  transition:all .22s;cursor:pointer;margin-bottom:12px}
+.wcard{display:flex;align-items:center;gap:16px;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.8);transition:all .22s;cursor:pointer;margin-bottom:12px}
 .wcard:hover{transform:translateY(-2px);box-shadow:var(--shadow-h)}
-.wcard-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;
-  justify-content:center;font-size:22px;flex-shrink:0}
+.wcard-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
 .wcard-body{flex:1;min-width:0}
-.wcard-t{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px;letter-spacing:-.01em}
+.wcard-t{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px}
 .wcard-d{font-size:12px;color:var(--soft);line-height:1.6}
-.wcard-arr{width:28px;height:28px;border-radius:50%;background:var(--blue);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 2px 8px rgba(59,110,245,.3)}
+.wcard-arr{width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(74,123,255,.3)}
 .wcard-arr svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-/* FOOTER */
-footer{background:var(--white);border-top:1px solid var(--line);
-  padding:24px 32px;text-align:center;font-size:12px;color:var(--muted)}
+footer{background:rgba(255,255,255,.6);border-top:1px solid var(--line);padding:24px 40px;text-align:center;font-size:12px;color:var(--muted)}
 footer a{color:var(--blue);font-weight:600}
 
+@media(max-width:900px){
+  .hero-top{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .hero-bottom{grid-template-columns:1fr}
+  .bn-center{display:none}
+}
 @media(max-width:600px){
-  .top-banner{padding:0 16px}
-  .tb-email{display:none}
-  .tabs-wrap{padding:10px 16px}
-  .cw{padding:20px 16px 60px}
+  .banner,.tabs-wrap,.cw,.hero{padding-left:20px;padding-right:20px}
+  .bn-email{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- TOP BANNER -->
-<header class="top-banner">
-  <div class="tb-left">
-    <div class="tb-logo">08<span>.</span></div>
-    <div class="tb-sep"></div>
-    <div class="tb-name">AI 工具集</div>
+<!-- BANNER -->
+<header class="banner">
+  <div class="bn-logo">08<span>.</span></div>
+  <div class="bn-center">
+    <span class="bn-nav" onclick="document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">自我介绍</span>
+    <span class="bn-nav" onclick="goContent(0)">日常提效</span>
+    <span class="bn-nav" onclick="goContent(1)">数据洞察</span>
+    <span class="bn-nav" onclick="goContent(2)">活动 Demo</span>
   </div>
-  <div class="tb-right">
-    <span class="tb-email">qinlinbo5@gmail.com</span>
-    <a href="https://github.com/qlb708/08" target="_blank" class="tb-gh">
+  <div class="bn-right">
+    <span class="bn-email">qinlinbo5@gmail.com</span>
+    <a href="https://github.com/qlb708/08" target="_blank" class="bn-gh">
       <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
       GitHub
     </a>
   </div>
 </header>
 
-<!-- PAGE 1: 全屏自我介绍 -->
-<section class="page-intro" id="page-intro">
-  <div class="intro-inner">
-    <h1 class="intro-title">
-      把重复动作<br>
-      变成<span class="hl">可复用的能力</span>
-    </h1>
-
-    <p class="intro-sub">
-      旅行规划产品方向 · Vibe Coding 实践<br>
-      产品运营日常工具 + 数据洞察分析 + 活动互动 Demo
-    </p>
-
-    <!-- 喜茶风标签云 -->
-    <div class="tag-cloud">
-      <span class="tag tag-blue">🗺️ 旅行规划产品</span>
-      <span class="tag tag-purple">✦ Vibe Coding</span>
-      <span class="tag tag-green">⚡ AI 效率工具</span>
-      <span class="tag tag-orange">📊 数据洞察</span>
-      <span class="tag tag-pink">🎪 互动活动 Demo</span>
-      <span class="tag tag-slate">🖱️ 手势 / 鼠标交互</span>
-      <span class="tag tag-yellow">🔮 塔罗占卜</span>
-      <span class="tag tag-blue">👥 人群圈选</span>
-      <span class="tag tag-purple">🧪 A/B 实验</span>
-      <span class="tag tag-red">🌍 足迹地图</span>
-      <span class="tag tag-green">📝 会议纪要</span>
-      <span class="tag tag-slate">💬 邮件润色</span>
+<!-- PAGE 1: HERO -->
+<section class="hero" id="hero">
+  <div class="hero-top">
+    <!-- left -->
+    <div class="hero-left">
+      <h1 class="hero-greeting">你好，我是<br><span class="name">Qin !</span></h1>
+      <div class="hero-role">AI 产品运营实习生</div>
+      <p class="hero-desc">
+        喜欢用数据和内容<br>
+        让好产品被更多人看见，<br>
+        也让用户的每一次使用更有价值。
+      </p>
+      <div class="hero-meta">
+        <div class="meta-item"><span>📍</span>上海</div>
+        <div class="meta-item"><span>🎓</span>在读研究生</div>
+        <div class="meta-item"><span>❤️</span>热爱旅行 · 足球 · 运营</div>
+      </div>
     </div>
 
-    <!-- 三块快捷入口 -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:700px">
-      <div onclick="goContent(0)" style="background:var(--white);border-radius:16px;padding:20px 18px;cursor:pointer;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.04);transition:all .22s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--shadow-h)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
-        <div style="font-size:22px;margin-bottom:10px">⚡</div>
-        <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px">日常提效</div>
-        <div style="font-size:11px;color:var(--soft)">6 个工具</div>
+    <!-- right -->
+    <div class="hero-right">
+      <!-- avatar card -->
+      <div class="avatar-card">
+        <div class="avatar-fig">
+          <!-- 动漫人物 SVG: 长黑发 蓝色系女生持杯 -->
+          <svg viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- body/clothes -->
+            <ellipse cx="60" cy="130" rx="28" ry="22" fill="#4A7BFF" opacity=".15"/>
+            <!-- torso -->
+            <rect x="42" y="90" width="36" height="48" rx="8" fill="#3B5FC0"/>
+            <!-- collar -->
+            <path d="M52 90 L60 100 L68 90" stroke="white" stroke-width="1.5" fill="none"/>
+            <!-- arms -->
+            <path d="M42 95 Q30 105 32 120" stroke="#3B5FC0" stroke-width="9" stroke-linecap="round"/>
+            <path d="M78 95 Q90 105 88 120" stroke="#3B5FC0" stroke-width="9" stroke-linecap="round"/>
+            <!-- cup in right hand -->
+            <rect x="82" y="112" width="12" height="16" rx="3" fill="#F0F4FF" stroke="#4A7BFF" stroke-width="1.2"/>
+            <ellipse cx="88" cy="112" rx="6" ry="2.5" fill="#4A7BFF" opacity=".4"/>
+            <line x1="88" y1="109" x2="88" y2="105" stroke="#4A7BFF" stroke-width="1.2" stroke-linecap="round"/>
+            <!-- neck -->
+            <rect x="55" y="82" width="10" height="12" rx="4" fill="#FDDBB0"/>
+            <!-- head -->
+            <ellipse cx="60" cy="64" rx="24" ry="26" fill="#FDDBB0"/>
+            <!-- hair back -->
+            <ellipse cx="60" cy="56" rx="25" ry="28" fill="#2a2a2a"/>
+            <!-- face -->
+            <ellipse cx="60" cy="66" rx="21" ry="22" fill="#FDDBB0"/>
+            <!-- hair front/top -->
+            <ellipse cx="60" cy="45" rx="23" ry="14" fill="#2a2a2a"/>
+            <!-- bangs -->
+            <path d="M38 52 Q45 36 60 34 Q75 36 82 52" fill="#2a2a2a"/>
+            <path d="M38 54 Q36 64 38 72" fill="#2a2a2a" opacity=".9"/>
+            <path d="M82 54 Q84 64 82 72" fill="#2a2a2a" opacity=".9"/>
+            <!-- long hair sides -->
+            <path d="M37 60 Q30 85 34 110" stroke="#2a2a2a" stroke-width="10" stroke-linecap="round" fill="none"/>
+            <path d="M83 60 Q90 85 86 110" stroke="#2a2a2a" stroke-width="10" stroke-linecap="round" fill="none"/>
+            <!-- glasses on head -->
+            <path d="M47 40 Q52 37 57 40" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M63 40 Q68 37 73 40" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <line x1="57" y1="39" x2="63" y2="39" stroke="#888" stroke-width="1.2"/>
+            <!-- eyes -->
+            <ellipse cx="52" cy="62" rx="5" ry="5.5" fill="white"/>
+            <ellipse cx="68" cy="62" rx="5" ry="5.5" fill="white"/>
+            <ellipse cx="52" cy="63" rx="3.5" ry="4" fill="#2a2a2a"/>
+            <ellipse cx="68" cy="63" rx="3.5" ry="4" fill="#2a2a2a"/>
+            <circle cx="53.5" cy="61.5" r="1.2" fill="white"/>
+            <circle cx="69.5" cy="61.5" r="1.2" fill="white"/>
+            <!-- eyelashes -->
+            <path d="M47 59 Q49 57 52 58" stroke="#2a2a2a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            <path d="M63 59 Q65 57 68 58" stroke="#2a2a2a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            <!-- blush -->
+            <ellipse cx="44" cy="70" rx="5" ry="3" fill="#FFB6C1" opacity=".5"/>
+            <ellipse cx="76" cy="70" rx="5" ry="3" fill="#FFB6C1" opacity=".5"/>
+            <!-- nose -->
+            <path d="M59 72 Q60 74 61 72" stroke="#E8B89A" stroke-width="1" fill="none" stroke-linecap="round"/>
+            <!-- smile -->
+            <path d="M54 77 Q60 82 66 77" stroke="#E8A080" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- necklace -->
+            <path d="M52 90 Q60 96 68 90" stroke="#B0C4FF" stroke-width="1.2" fill="none"/>
+            <circle cx="60" cy="97" r="2.5" fill="#4A7BFF" opacity=".7"/>
+            <!-- sparkles -->
+            <text x="92" y="50" font-size="10" fill="#4A7BFF" opacity=".6">✦</text>
+            <text x="15" y="80" font-size="8" fill="#7B5EF8" opacity=".5">✦</text>
+          </svg>
+        </div>
+        <div class="avatar-info">
+          <div class="av-name">你好，我是 <span class="hl">Qin.</span></div>
+          <div class="av-role">AI 产品运营实习生</div>
+          <div class="av-tags">
+            <span class="av-tag">AI 产品运营</span>
+            <span class="av-tag">数据分析</span>
+            <span class="av-tag">用户增长</span>
+          </div>
+          <div class="av-meta-row">
+            <span class="av-meta">📍 上海</span>
+            <span class="av-meta">❤️ 旅行</span>
+            <span class="av-meta">⚽ 足球迷</span>
+          </div>
+        </div>
       </div>
-      <div onclick="goContent(1)" style="background:var(--white);border-radius:16px;padding:20px 18px;cursor:pointer;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.04);transition:all .22s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--shadow-h)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
-        <div style="font-size:22px;margin-bottom:10px">📊</div>
-        <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px">数据洞察</div>
-        <div style="font-size:11px;color:var(--soft)">5 个工具</div>
+
+      <!-- tag card -->
+      <div class="tag-card">
+        <div class="tag-card-title">我的标签 <span style="color:var(--blue)">#</span></div>
+        <div class="tag-cloud">
+          <span class="tag tag-b">AI 产品运营</span>
+          <span class="tag tag-p">内容增长</span>
+          <span class="tag tag-g">数据分析</span>
+          <span class="tag tag-o">用户增长</span>
+          <span class="tag tag-pk">达人运营</span>
+          <span class="tag tag-s">旅行爱好者</span>
+          <span class="tag tag-y">足球迷</span>
+          <span class="tag tag-b">Vibe Coding</span>
+        </div>
       </div>
-      <div onclick="goContent(2)" style="background:var(--white);border-radius:16px;padding:20px 18px;cursor:pointer;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.04);transition:all .22s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--shadow-h)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
-        <div style="font-size:22px;margin-bottom:10px">🎪</div>
-        <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px">活动 Demo</div>
-        <div style="font-size:11px;color:var(--soft)">6 个</div>
+
+      <!-- quote card -->
+      <div class="quote-card">
+        <div class="quote-text">用内容连接用户，用数据驱动增长。</div>
       </div>
     </div>
   </div>
 
-  <!-- 向下滚动提示 -->
-  <div class="scroll-down" onclick="goContent(0)">
-    <span>向下探索</span>
+  <!-- bottom 3 cards -->
+  <div class="hero-bottom">
+    <!-- 实习经历 -->
+    <div class="info-card">
+      <div class="ic-header">
+        <span class="ic-icon">🏢</span>
+        <span class="ic-title">实习经历</span>
+      </div>
+      <div class="exp-item">
+        <div class="exp-company">
+          <div class="exp-logo" style="background:#FF2442;color:white;font-size:10px;font-weight:700">书</div>
+          <div>
+            <div class="exp-name">小红书 · AI 产品运营实习生</div>
+            <div class="exp-role">圆周旅途（旅行规划类产品）</div>
+          </div>
+          <span class="exp-period">2025.04 — 至今</span>
+        </div>
+        <div class="exp-desc">· 负责地点合集新功能上线运营，设计冷启动与内容供给策略<br>· 参与世界杯、暑期等重点场景增长项目，搭建内容到 AI 规划的转化链路</div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-company">
+          <div class="exp-logo" style="background:#1a1a2e;color:white;font-size:9px;font-weight:700">T</div>
+          <div>
+            <div class="exp-name">传音控股 · AI 产品运营实习生</div>
+            <div class="exp-role">Ella AI 手机助手</div>
+          </div>
+          <span class="exp-period">2025.03—06</span>
+        </div>
+        <div class="exp-desc">· 负责足球世界杯场景运营，搭建赛事互动链路与端内运营阵地<br>· 设计 AIGC 图生视频玩法，结合热点本地化运营提升用户活跃</div>
+      </div>
+    </div>
+
+    <!-- 我擅长的事 -->
+    <div class="info-card">
+      <div class="ic-header">
+        <span class="ic-icon">👍</span>
+        <span class="ic-title">我擅长的事</span>
+      </div>
+      <div class="skill-item">
+        <div class="skill-dot">💡</div>
+        <div class="skill-body">
+          <div class="skill-name">产品思维</div>
+          <div class="skill-desc">从用户需求出发，拆解问题，找到增长机会点</div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-dot">📊</div>
+        <div class="skill-body">
+          <div class="skill-name">数据分析</div>
+          <div class="skill-desc">关注核心指标，用数据驱动策略优化</div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-dot">✍️</div>
+        <div class="skill-body">
+          <div class="skill-name">内容策略</div>
+          <div class="skill-desc">设计内容供给与分发机制，提升内容效率</div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-dot">🚀</div>
+        <div class="skill-body">
+          <div class="skill-name">项目执行</div>
+          <div class="skill-desc">推动跨团队协作，把想法落地验证效果</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 生活里的我 -->
+    <div class="info-card">
+      <div class="ic-header">
+        <span class="ic-icon">🌟</span>
+        <span class="ic-title">生活里的我</span>
+      </div>
+      <div class="life-item">
+        <div class="life-icon">✈️</div>
+        <div class="life-body">
+          <div class="life-name">旅行探索</div>
+          <div class="life-desc">热爱探索不同城市，收集美好体验</div>
+        </div>
+      </div>
+      <div class="life-item">
+        <div class="life-icon">⚽</div>
+        <div class="life-body">
+          <div class="life-name">足球爱好者</div>
+          <div class="life-desc">看球、写内容、做账号，运营自己的足球自媒体</div>
+        </div>
+      </div>
+      <div class="life-item">
+        <div class="life-icon">💻</div>
+        <div class="life-body">
+          <div class="life-name">Vibe Coding</div>
+          <div class="life-desc">用 AI 把想法快速变成可以用的工具和页面</div>
+        </div>
+      </div>
+      <div class="life-item">
+        <div class="life-icon">📚</div>
+        <div class="life-body">
+          <div class="life-name">持续学习</div>
+          <div class="life-desc">关注 AI、产品、市场，保持好奇与成长</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint" onclick="goContent(0)">
+    <span>查看 AI 工具集</span>
     <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
   </div>
 </section>
 
-<!-- PAGE 2: 工具内容区 -->
-<section class="page-content" id="page-content">
-
-  <!-- TAB BAR -->
+<!-- PAGE 2: TOOLS -->
+<section class="page-tools" id="page-tools">
   <div class="tabs-wrap">
-    <div class="tabs-wrap-inner">
-      <div class="tab-row">
-        <button class="tb-btn on" id="tb0" onclick="switchTab(0)">⚡ 日常提效</button>
-        <button class="tb-btn"    id="tb1" onclick="switchTab(1)">📊 数据洞察</button>
-        <button class="tb-btn"    id="tb2" onclick="switchTab(2)">🎪 活动 Demo</button>
-      </div>
+    <div class="tab-row">
+      <button class="tb-btn on" id="tb0" onclick="switchTab(0)">⚡ 日常提效</button>
+      <button class="tb-btn"    id="tb1" onclick="switchTab(1)">📊 数据洞察</button>
+      <button class="tb-btn"    id="tb2" onclick="switchTab(2)">🎪 活动 Demo</button>
     </div>
   </div>
 
-  <!-- TAB 0 -->
   <div class="tc show cw" id="tc0">
-    <div class="sl">
-      <div class="sl-dot" style="background:#3B6EF5"></div>
-      <span class="sl-name">日常提效</span>
-      <span class="sl-count" style="background:#EEF3FF;color:#3B6EF5">6 个</span>
-      <div class="sl-line"></div>
-    </div>
+    <div class="sl"><div class="sl-dot" style="background:#4A7BFF"></div><span class="sl-name">日常提效</span><span class="sl-count" style="background:#EEF3FF;color:#4A7BFF">6 个</span><div class="sl-line"></div></div>
     <div class="grid g3" id="g-daily"></div>
   </div>
 
-  <!-- TAB 1 -->
   <div class="tc cw" id="tc1">
-    <div class="sl">
-      <div class="sl-dot" style="background:#7B5EF8"></div>
-      <span class="sl-name">数据洞察</span>
-      <span class="sl-count" style="background:#F3F0FF;color:#7B5EF8">5 个</span>
-      <div class="sl-line"></div>
-    </div>
+    <div class="sl"><div class="sl-dot" style="background:#7B5EF8"></div><span class="sl-name">数据洞察</span><span class="sl-count" style="background:#F3F0FF;color:#7B5EF8">5 个</span><div class="sl-line"></div></div>
     <div class="grid g3" id="g-data"></div>
   </div>
 
-  <!-- TAB 2 -->
   <div class="tc cw" id="tc2">
-    <div class="sl">
-      <div class="sl-dot" style="background:#E11D48"></div>
-      <span class="sl-name">活动 Demo</span>
-      <span class="sl-count" style="background:#FFF0F3;color:#E11D48">6 个</span>
-      <div class="sl-line"></div>
-    </div>
+    <div class="sl"><div class="sl-dot" style="background:#E11D48"></div><span class="sl-name">活动 Demo</span><span class="sl-count" style="background:#FFF0F3;color:#E11D48">6 个</span><div class="sl-line"></div></div>
     <div class="act-row">
-      <div>
-        <div class="act-col-lbl">📱 App 端</div>
-        <div class="app-grid" id="g-app"></div>
-      </div>
-      <div>
-        <div class="act-col-lbl">💻 Web 端</div>
-        <div id="g-web"></div>
-      </div>
+      <div><div class="act-col-lbl">📱 App 端</div><div class="app-grid" id="g-app"></div></div>
+      <div><div class="act-col-lbl">💻 Web 端</div><div id="g-web"></div></div>
     </div>
   </div>
 
@@ -369,91 +552,40 @@ footer a{color:var(--blue);font-weight:600}
 
 <script>
 var ARR='<svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
-
 var DAILY=[
-  {t:'会议纪要拆解器',d:'粘贴会议记录，AI 提炼结论、待办、决策与风险，五象限结构化输出。',url:'/08/works/meeting-parser/',tag:'会议',color:'#3B6EF5',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'},
+  {t:'会议纪要拆解器',d:'粘贴会议记录，AI 提炼结论、待办、决策与风险，五象限结构化输出。',url:'/08/works/meeting-parser/',tag:'会议',color:'#4A7BFF',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'},
   {t:'邮件 / 消息润色',d:'口语想法变专业表达，四种语气，自动生成多个备选版本。',url:'/08/works/email-polisher/',tag:'润色',color:'#F59E0B',icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'},
   {t:'每日复盘',d:'引导式复盘问题，三分钟记录当天亮点、问题和明日计划。',url:'/08/works/daily-review/',tag:'复盘',color:'#8B5CF6',icon:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
   {t:'打印机识别黑白',d:'上传图片/PDF，AI 识别可以黑白打印的内容，节省彩色耗材。',url:'/08/works/print-detect/',tag:'工具',color:'#6B7280',icon:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'},
   {t:'人群圈选助手',d:'描述目标人群，AI 生成标签组合与圈选策略，支持导出标签包。',url:'/08/works/audience-select/',tag:'圈选',color:'#10B981',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'},
-  null,
+  null
 ];
-
 var DATA=[
-  {t:'数据解读助手',d:'粘贴产品数据，AI 健康诊断 + 根因分析 + 实验方案，读懂数字背后信号。',url:'/08/works/data-insight/',tag:'诊断',color:'#3B6EF5',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+  {t:'数据解读助手',d:'粘贴产品数据，AI 健康诊断 + 根因分析 + 实验方案，读懂数字背后信号。',url:'/08/works/data-insight/',tag:'诊断',color:'#4A7BFF',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
   {t:'周报生成器',d:'输入核心数据和达成情况，AI 生成结构化周报，含亮点、问题和下周计划。',url:'/08/works/weekly-report/',tag:'周报',color:'#8B5CF6',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>'},
   {t:'竞品洞察',d:'粘贴竞品文章/功能描述，AI 提炼差异点、优劣势对比，输出洞察报告。',url:'/08/works/competitor/',tag:'竞品',color:'#EF4444',icon:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>'},
   {t:'A/B 实验方案',d:'描述问题与假设，AI 生成实验变量、评估指标和显著性检验方案。',url:'/08/works/ab-plan/',tag:'实验',color:'#F59E0B',icon:'<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/>'},
-  {t:'人群筛选器',d:'上传名单，过滤低活跃、商业号、负向处置账号，导出干净人群包。',url:'/08/works/audience-filter/',tag:'筛选',color:'#10B981',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'},
+  {t:'人群筛选器',d:'上传名单，过滤低活跃、商业号、负向处置账号，导出干净人群包。',url:'/08/works/audience-filter/',tag:'筛选',color:'#10B981',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'}
 ];
-
 var APP_DEMOS=[
-  {cover:'🔮',badge:'玄学占卜',t:'命运之地 × 问天机',d:'城市命运测定 + 三式问卜仪式。',url:'/08/activity/fortune/',bg:'linear-gradient(160deg,#1a1a2e 0%,#2d1b69 55%,#3b0764 100%)',bc:'rgba(167,139,250,.18)',bct:'#a78bfa'},
-  {cover:'🎒',badge:'角色鉴定',t:'旅行达人鉴定',d:'最多4人测出旅行角色和默契值。',url:'/08/activity/traveler/',bg:'linear-gradient(135deg,#E8F5E9 0%,#A5D6A7 100%)',bc:'rgba(22,163,74,.12)',bct:'#15803d'},
-  {cover:'🌍',badge:'UGC足迹',t:'我的旅行足迹',d:'标记城市，生成专属旅行卡片。',url:'/08/activity/footprint/',bg:'linear-gradient(135deg,#FFF8E1 0%,#FFD54F 100%)',bc:'rgba(245,158,11,.12)',bct:'#b45309'},
+  {cover:'🔮',badge:'玄学占卜',t:'命运之地 × 问天机',d:'城市命运测定 + 三式问卜仪式。',url:'/08/activity/fortune/',bg:'linear-gradient(160deg,#1a1a2e,#2d1b69,#3b0764)',bc:'rgba(167,139,250,.18)',bct:'#a78bfa'},
+  {cover:'🎒',badge:'角色鉴定',t:'旅行达人鉴定',d:'最多4人测出旅行角色和默契值。',url:'/08/activity/traveler/',bg:'linear-gradient(135deg,#E8F5E9,#A5D6A7)',bc:'rgba(22,163,74,.12)',bct:'#15803d'},
+  {cover:'🌍',badge:'UGC足迹',t:'我的旅行足迹',d:'标记城市，生成专属旅行卡片。',url:'/08/activity/footprint/',bg:'linear-gradient(135deg,#FFF8E1,#FFD54F)',bc:'rgba(245,158,11,.12)',bct:'#b45309'}
 ];
-
 var WEB_DEMOS=[
   {em:'🗺️',t:'AI 多方案对比',d:'A/B/C 三套方案横向对比，预算/效率/体验一次生成。',url:'/08/web/compare/',bg:'#EEF3FF'},
   {em:'📍',t:'AI 地点整理助手',d:'多人不同城市出发，AI 计算最优会合城市。',url:'/08/web/midpoint/',bg:'#F3F0FF'},
-  {em:'🔮',t:'塔罗命运旅途',d:'手势 or 鼠标两种模式抽牌，三张牌解读命运旅途。',url:'/08/web/tarot/',bg:'#1a1a2e'},
+  {em:'🔮',t:'塔罗命运旅途',d:'手势 or 鼠标两种模式抽牌，三张牌解读命运旅途。',url:'/08/web/tarot/',bg:'#1a1a2e'}
 ];
-
-function renderTools(list,el){
-  el.innerHTML=list.map(function(t){
-    if(!t) return '<div class="card-empty"><div class="card-empty-em">✦</div><div class="card-empty-t">即将上线</div><div class="card-empty-d">正在开发中</div></div>';
-    return '<a href="'+t.url+'" class="card">'
-      +'<div class="card-top">'
-      +'<div class="card-ic" style="background:'+t.color+'14"><svg viewBox="0 0 24 24" style="stroke:'+t.color+'">'+t.icon+'</svg></div>'
-      +'<span class="card-arr" style="background:'+t.color+'">'+ARR+'</span>'
-      +'</div>'
-      +'<div class="card-t">'+t.t+'</div>'
-      +'<div class="card-d">'+t.d+'</div>'
-      +'<div class="card-foot"><span class="card-tag" style="background:'+t.color+'12;color:'+t.color+'">'+t.tag+'</span></div>'
-      +'</a>';
-  }).join('');
-}
-
-function renderApp(list,el){
-  el.innerHTML=list.map(function(a){
-    return '<a href="'+a.url+'" class="acard">'
-      +'<div class="acard-chrome"><div class="acard-notch"></div></div>'
-      +'<div class="acard-cover" style="background:'+a.bg+'">'+a.cover+'</div>'
-      +'<div class="acard-body">'
-      +'<span class="acard-badge" style="background:'+a.bc+';color:'+a.bct+'">'+a.badge+'</span>'
-      +'<div class="acard-t">'+a.t+'</div>'
-      +'<div class="acard-d">'+a.d+'</div>'
-      +'<div class="acard-go"><span class="acard-dot">'+ARR+'</span></div>'
-      +'</div></a>';
-  }).join('');
-}
-
-function renderWeb(list,el){
-  el.innerHTML=list.map(function(w){
-    return '<a href="'+w.url+'" class="wcard">'
-      +'<div class="wcard-ic" style="background:'+w.bg+'">'+w.em+'</div>'
-      +'<div class="wcard-body"><div class="wcard-t">'+w.t+'</div><div class="wcard-d">'+w.d+'</div></div>'
-      +'<span class="wcard-arr">'+ARR+'</span>'
-      +'</a>';
-  }).join('');
-}
-
+function renderTools(list,el){el.innerHTML=list.map(function(t){if(!t)return '<div class="card-empty"><div class="card-empty-em">✦</div><div class="card-empty-t">即将上线</div></div>';return '<a href="'+t.url+'" class="card"><div class="card-top"><div class="card-ic" style="background:'+t.color+'14"><svg viewBox="0 0 24 24" style="stroke:'+t.color+'">'+t.icon+'</svg></div><span class="card-arr" style="background:'+t.color+'">'+ARR+'</span></div><div class="card-t">'+t.t+'</div><div class="card-d">'+t.d+'</div><div class="card-foot"><span class="card-tag" style="background:'+t.color+'12;color:'+t.color+'">'+t.tag+'</span></div></a>';}).join('');}
+function renderApp(list,el){el.innerHTML=list.map(function(a){return '<a href="'+a.url+'" class="acard"><div class="acard-chrome"><div class="acard-notch"></div></div><div class="acard-cover" style="background:'+a.bg+'">'+a.cover+'</div><div class="acard-body"><span class="acard-badge" style="background:'+a.bc+';color:'+a.bct+'">'+a.badge+'</span><div class="acard-t">'+a.t+'</div><div class="acard-d">'+a.d+'</div><div class="acard-go"><span class="acard-dot">'+ARR+'</span></div></div></a>';}).join('');}
+function renderWeb(list,el){el.innerHTML=list.map(function(w){return '<a href="'+w.url+'" class="wcard"><div class="wcard-ic" style="background:'+w.bg+'">'+w.em+'</div><div class="wcard-body"><div class="wcard-t">'+w.t+'</div><div class="wcard-d">'+w.d+'</div></div><span class="wcard-arr">'+ARR+'</span></a>';}).join('');}
 renderTools(DAILY,document.getElementById('g-daily'));
 renderTools(DATA,document.getElementById('g-data'));
 renderApp(APP_DEMOS,document.getElementById('g-app'));
 renderWeb(WEB_DEMOS,document.getElementById('g-web'));
-
-function switchTab(i){
-  [0,1,2].forEach(function(j){
-    document.getElementById('tc'+j).classList.toggle('show',j===i);
-    document.getElementById('tb'+j).classList.toggle('on',j===i);
-  });
-}
-
-function goContent(tabIdx){
-  switchTab(tabIdx);
-  document.getElementById('page-content').scrollIntoView({behavior:'smooth'});
-}
+function switchTab(i){[0,1,2].forEach(function(j){document.getElementById('tc'+j).classList.toggle('show',j===i);document.getElementById('tb'+j).classList.toggle('on',j===i);});}
+function goContent(i){switchTab(i);document.getElementById('page-tools').scrollIntoView({behavior:'smooth'});}
 </script>
 </body>
 </html>
