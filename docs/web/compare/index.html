@@ -453,105 +453,72 @@ body{
 <div id="toast" class="toast"></div>
 
 <!-- ========================================================
-     SCREEN 0 · 翻牌选城市
+     SCREEN 0 · 入口（蓝色波浪，先选城市天数）
      ======================================================== -->
-<div id="s-flip" class="screen active" style="background:#f0ebe0;position:relative;overflow:hidden">
+<div id="s-flip" class="screen active" style="background:linear-gradient(160deg,#E6F1FF 0%,#c8deff 100%);position:relative;overflow:hidden">
 
-  <!-- 背景：水彩山脉 -->
-  <div style="position:absolute;inset:0;pointer-events:none;z-index:0">
-    <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;bottom:0;left:0;width:100%;height:55%;opacity:0.22">
-      <path d="M0,600 L0,360 Q100,260 200,310 Q300,200 400,270 Q500,160 600,220 Q700,120 800,190 Q900,80 1000,150 Q1100,60 1200,120 L1200,600 Z" fill="#9fb5a0"></path>
-      <path d="M0,600 L0,420 Q120,340 240,390 Q360,290 480,350 Q600,250 720,320 Q840,220 960,290 Q1080,200 1200,260 L1200,600 Z" fill="#b8c9a8"></path>
-      <path d="M0,600 L0,480 Q150,410 300,460 Q450,380 600,440 Q750,360 900,420 Q1050,360 1200,400 L1200,600 Z" fill="#cdd8bc"></path>
+  <!-- 背景：蓝色波浪 -->
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden">
+    <svg viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;bottom:0;left:0;width:100%;height:60%">
+      <path d="M0,600 L0,380 Q120,300 240,350 Q360,280 480,320 Q600,240 720,300 Q840,220 960,280 Q1080,200 1200,260 Q1320,200 1440,240 L1440,600 Z" fill="rgba(64,150,255,0.10)"></path>
+      <path d="M0,600 L0,440 Q180,370 360,420 Q540,350 720,400 Q900,330 1080,390 Q1260,330 1440,370 L1440,600 Z" fill="rgba(64,150,255,0.14)"></path>
+      <path d="M0,600 L0,500 Q180,450 360,480 Q540,430 720,470 Q900,420 1080,460 Q1260,420 1440,450 L1440,600 Z" fill="rgba(64,150,255,0.18)"></path>
+      <path d="M0,600 L0,540 Q360,510 720,530 Q1080,510 1440,525 L1440,600 Z" fill="rgba(64,150,255,0.22)"></path>
     </svg>
   </div>
 
-  <!-- 内容区 -->
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:40px 32px 32px;gap:32px">
+  <!-- 入口表单（蓝色波浪） -->
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:40px 32px 60px">
 
-    <!-- 顶部标题 -->
-    <div style="text-align:center">
-      <div style="font-size:11px;font-weight:700;letter-spacing:3px;color:#a08060;margin-bottom:12px;font-style:italic">✦ 2026 旅行规划</div>
-      <h1 style="font-size:clamp(28px,4vw,52px);font-weight:900;color:#3a2810;line-height:1.15;margin-bottom:10px">
-        你的下一站<br/><em style="font-style:normal;color:#c87840">让城市来找你</em>
+    <!-- logo bar -->
+    <div style="margin-bottom:32px;text-align:center">
+      <div style="font-size:11px;font-weight:700;letter-spacing:3px;color:var(--blue);margin-bottom:14px">✈ AI 旅行规划 · 多方案对比</div>
+      <h1 style="font-size:clamp(30px,4.5vw,56px);font-weight:900;color:#1a1f36;line-height:1.1;margin-bottom:10px">
+        你的下一站<br/><em style="font-style:normal;color:var(--blue)">让 AI 量身规划</em>
       </h1>
-      <p style="font-size:14px;color:#9a7a50;margin:0">先测一测你是哪种旅行人，再让 AI 量身规划</p>
+      <p style="font-size:14px;color:var(--gray)">选好目的地和天数，3 套专属方案一次生成 · 可选测试你的旅行人格</p>
     </div>
 
-    <!-- 点阵地图 + 宝丽来照片 主视觉区 -->
-    <div style="width:100%;max-width:860px;background:rgba(255,252,245,0.9);border-radius:20px;border:1.5px solid #d8cbb8;box-shadow:0 8px 40px rgba(120,90,50,0.12);overflow:hidden">
+    <!-- 卡片表单 -->
+    <div style="width:100%;max-width:480px;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);border-radius:24px;border:1.5px solid rgba(255,255,255,0.95);box-shadow:0 8px 40px rgba(64,150,255,0.14);padding:32px 36px">
 
-      <!-- 地图区 -->
-      <div style="padding:20px 24px 0;border-bottom:1px solid #e8dcc8">
-        <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#b09070;margin-bottom:12px;font-style:italic">My Travel Map</div>
-        <!-- 点阵地图 SVG -->
-        <div style="position:relative;width:100%;height:180px;overflow:hidden">
-          <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
-            <defs>
-              <pattern id="dotp" x="0" y="0" width="9" height="9" patternUnits="userSpaceOnUse">
-                <circle cx="4.5" cy="4.5" r="1.6" fill="#c8b89a" opacity="0.5"></circle>
-              </pattern>
-              <clipPath id="wc">
-                <path d="M30,50 L180,35 L230,65 L255,120 L220,165 L170,185 L110,170 L60,145 L30,100 Z"></path>
-                <path d="M120,195 L195,185 L215,230 L205,295 L180,330 L150,315 L128,270 L115,225 Z"></path>
-                <path d="M270,38 L390,28 L420,55 L415,105 L385,118 L345,108 L298,85 L268,65 Z"></path>
-                <path d="M278,125 L370,115 L398,148 L402,215 L388,278 L355,305 L318,290 L292,245 L272,185 L270,148 Z"></path>
-                <path d="M395,25 L590,15 L628,52 L638,108 L612,148 L572,162 L525,155 L488,128 L455,98 L412,72 Z"></path>
-                <path d="M540,160 L598,150 L632,185 L618,225 L582,218 L548,198 Z"></path>
-                <path d="M598,225 L708,215 L736,248 L730,298 L700,318 L658,308 L628,278 L610,248 Z"></path>
-                <path d="M638,60 L720,52 L748,78 L752,118 L728,138 L695,132 L660,108 L635,82 Z"></path>
-              </clipPath>
-            </defs>
-            <rect width="800" height="280" fill="url(#dotp)" clip-path="url(#wc)"></rect>
-            <!-- 中国热门城市 pin -->
-            <g id="city-pins">
-              <g transform="translate(530,78)"><circle r="5" fill="#e05030" opacity="0.9"></circle><circle r="2.5" fill="#fff"></circle><line x1="0" y1="-5" x2="0" y2="-18" stroke="#e05030" stroke-width="1.5"></line><rect x="-18" y="-30" width="36" height="14" rx="3" fill="#e05030"></rect><text x="0" y="-20" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">成都</text></g>
-              <g transform="translate(558,95)"><circle r="4" fill="#e05030" opacity="0.7"></circle><circle r="2" fill="#fff"></circle></g>
-              <g transform="translate(575,85)"><circle r="5" fill="#e05030" opacity="0.9"></circle><circle r="2.5" fill="#fff"></circle><line x1="0" y1="-5" x2="0" y2="-18" stroke="#e05030" stroke-width="1.5"></line><rect x="-18" y="-30" width="36" height="14" rx="3" fill="#c04020"></rect><text x="0" y="-20" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">西安</text></g>
-              <g transform="translate(590,110)"><circle r="4" fill="#e05030" opacity="0.7"></circle><circle r="2" fill="#fff"></circle></g>
-              <g transform="translate(604,102)"><circle r="5" fill="#e05030" opacity="0.9"></circle><circle r="2.5" fill="#fff"></circle><line x1="0" y1="-5" x2="0" y2="-18" stroke="#e05030" stroke-width="1.5"></line><rect x="-18" y="-30" width="36" height="14" rx="3" fill="#e05030"></rect><text x="0" y="-20" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">大理</text></g>
-              <g transform="translate(622,118)"><circle r="5" fill="#e05030" opacity="0.9"></circle><circle r="2.5" fill="#fff"></circle><line x1="0" y1="-5" x2="0" y2="-18" stroke="#e05030" stroke-width="1.5"></line><rect x="-18" y="-30" width="36" height="14" rx="3" fill="#c04020"></rect><text x="0" y="-20" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">厦门</text></g>
-            </g>
-          </svg>
+      <!-- 目的地 -->
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--blue);text-transform:uppercase;margin-bottom:8px">目的地</label>
+        <input id="city-input-entry" type="text" placeholder="输入城市名，如：成都、京都、巴黎…" style="width:100%;padding:14px 18px;border-radius:14px;border:1.5px solid var(--border);font-size:15px;outline:none;transition:border-color .2s;background:#fff;box-sizing:border-box" onfocus="this.style.borderColor=&#39;var(--blue)&#39;" onblur="this.style.borderColor=&#39;var(--border)&#39;" oninput="onEntryInput(this.value)"/>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+          <span style="font-size:11px;color:#aaa;align-self:center">热门：</span>
+          <span class="pill" style="font-size:12px;padding:4px 12px" onclick="setEntryCity(&#39;成都&#39;)">🐼 成都</span>
+          <span class="pill" style="font-size:12px;padding:4px 12px" onclick="setEntryCity(&#39;西安&#39;)">🏺 西安</span>
+          <span class="pill" style="font-size:12px;padding:4px 12px" onclick="setEntryCity(&#39;厦门&#39;)">🌊 厦门</span>
+          <span class="pill" style="font-size:12px;padding:4px 12px" onclick="setEntryCity(&#39;大理&#39;)">🌸 大理</span>
+          <span class="pill" style="font-size:12px;padding:4px 12px" onclick="setEntryCity(&#39;丽江&#39;)">🎵 丽江</span>
+          <span class="pill" style="font-size:12px;padding:4px 12px" onclick="setEntryCity(&#39;杭州&#39;)">☕ 杭州</span>
         </div>
       </div>
 
-      <!-- 宝丽来照片横排 -->
-      <div style="padding:16px 20px;display:flex;gap:12px;overflow-x:auto;scrollbar-width:none">
-        <!-- 照片卡1 -->
-        <div style="flex-shrink:0;width:130px;background:#fff;border-radius:4px;padding:8px 8px 28px;box-shadow:2px 3px 10px rgba(0,0,0,0.13);transform:rotate(-2deg)">
-          <div style="width:100%;height:90px;background:linear-gradient(135deg,#a8c090,#6a9060);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:28px">🏔️</div>
-          <div style="margin-top:8px;font-size:9px;color:#7a6a50;font-style:italic;text-align:center;line-height:1.5">大理<br/><span style="color:#b0a090">Mar 2026</span></div>
-        </div>
-        <!-- 照片卡2（居中高亮） -->
-        <div style="flex-shrink:0;width:140px;background:#fff;border-radius:4px;padding:8px 8px 28px;box-shadow:4px 6px 18px rgba(0,0,0,0.18);transform:rotate(1deg);margin-top:-8px;position:relative">
-          <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:10px;height:10px;background:#e05030;border-radius:50%;box-shadow:0 2px 6px rgba(224,80,48,0.4)"></div>
-          <div style="width:100%;height:100px;background:linear-gradient(135deg,#f0c080,#e08040);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:32px">🏛️</div>
-          <div style="margin-top:8px;font-size:10px;color:#5a3a10;font-style:italic;font-weight:700;text-align:center;line-height:1.5">成都<br/><span style="font-size:9px;color:#b0a090;font-weight:400">Apr 2026</span></div>
-        </div>
-        <!-- 照片卡3 -->
-        <div style="flex-shrink:0;width:130px;background:#fff;border-radius:4px;padding:8px 8px 28px;box-shadow:2px 3px 10px rgba(0,0,0,0.13);transform:rotate(2.5deg)">
-          <div style="width:100%;height:90px;background:linear-gradient(135deg,#90c0d8,#4080b0);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:28px">🌊</div>
-          <div style="margin-top:8px;font-size:9px;color:#7a6a50;font-style:italic;text-align:center;line-height:1.5">厦门<br/><span style="color:#b0a090">May 2026</span></div>
-        </div>
-        <!-- 照片卡4 -->
-        <div style="flex-shrink:0;width:130px;background:#fff;border-radius:4px;padding:8px 8px 28px;box-shadow:2px 3px 10px rgba(0,0,0,0.13);transform:rotate(-1.5deg)">
-          <div style="width:100%;height:90px;background:linear-gradient(135deg,#d0b080,#a07840);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:28px">🏯</div>
-          <div style="margin-top:8px;font-size:9px;color:#7a6a50;font-style:italic;text-align:center;line-height:1.5">西安<br/><span style="color:#b0a090">Jun 2026</span></div>
-        </div>
-        <!-- 照片卡5（半遮） -->
-        <div style="flex-shrink:0;width:100px;background:#fff;border-radius:4px;padding:8px 8px 28px;box-shadow:2px 3px 10px rgba(0,0,0,0.10);transform:rotate(3deg);opacity:0.7">
-          <div style="width:100%;height:90px;background:linear-gradient(135deg,#c0d0a0,#80a060);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:24px">🌿</div>
-          <div style="margin-top:8px;font-size:9px;color:#7a6a50;font-style:italic;text-align:center">???</div>
+      <!-- 天数 -->
+      <div style="margin-bottom:24px">
+        <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--blue);text-transform:uppercase;margin-bottom:8px">行程天数</label>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span id="entry-days-display" style="font-size:28px;font-weight:800;color:var(--blue);min-width:32px">3</span>
+          <span style="color:#aaa;font-size:14px">天</span>
+          <div style="display:flex;gap:6px;margin-left:8px">
+            <span class="pill entry-days-btn active" id="edb3" style="padding:6px 14px;font-size:13px" onclick="setEntryDays(3)">3天</span>
+            <span class="pill entry-days-btn" id="edb5" style="padding:6px 14px;font-size:13px" onclick="setEntryDays(5)">5天</span>
+            <span class="pill entry-days-btn" id="edb7" style="padding:6px 14px;font-size:13px" onclick="setEntryDays(7)">7天</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- CTA 按钮 -->
-    <button onclick="showScreen(&#39;s-quiz&#39;);initPersonaGrid();initSliders();" style="padding:16px 48px;font-size:15px;font-weight:800;border:none;border-radius:14px;background:linear-gradient(135deg,#c87840,#a05020);color:#fff;cursor:pointer;letter-spacing:1px;box-shadow:0 6px 24px rgba(160,80,32,0.35);transition:transform 0.15s,box-shadow 0.15s" onmouseover="this.style.transform=&#39;translateY(-3px)&#39;;this.style.boxShadow=&#39;0 10px 32px rgba(160,80,32,0.45)&#39;" onmouseout="this.style.transform=&#39;&#39;;this.style.boxShadow=&#39;0 6px 24px rgba(160,80,32,0.35)&#39;">
-      开始测测你的旅行性格 →
-    </button>
-    <div style="font-size:11px;color:#b09878">已有目的地？<span onclick="showScreen(&#39;s-city&#39;)" style="color:#c87840;cursor:pointer;text-decoration:underline">跳过测试，直接规划 →</span></div>
+      <!-- 两个按钮 -->
+      <button id="entry-go-btn" onclick="entryGoQuiz()" style="width:100%;padding:14px;font-size:14px;font-weight:800;border:none;border-radius:14px;background:linear-gradient(135deg,var(--blue),#2060cc);color:#fff;cursor:pointer;font-family:inherit;margin-bottom:10px;opacity:.45;transition:all .2s;box-shadow:0 4px 20px rgba(64,150,255,0.3)" disabled="">
+        先测测旅行人格，再规划 ✨
+      </button>
+      <button id="entry-skip-btn" onclick="entrySkip()" style="width:100%;padding:14px;font-size:14px;font-weight:700;border:1.5px solid var(--border);border-radius:14px;background:#fff;color:var(--blue);cursor:pointer;font-family:inherit;opacity:.45;transition:all .2s" disabled="">
+        跳过测试，直接规划 →
+      </button>
+    </div>
   </div>
 </div>
 
@@ -559,8 +526,8 @@ body{
      SCREEN 1 · 行程设置（城市 + 天数 + 预算）
      ======================================================== -->
 <div id="s-setup" class="screen">
-  <nav class="top-nav" style="background:rgba(255,252,245,0.92);border-bottom:1.5px solid #d8cbb8;backdrop-filter:blur(8px)">
-    <div style="font-weight:700;color:#7a5a30;font-size:15px;font-style:italic">✈ AI 旅行规划</div>
+  <nav class="top-nav" style="background:rgba(255,255,255,0.92);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)">
+    <div style="font-weight:700;color:var(--blue);font-size:15px">✈ AI 旅行规划</div>
     <div class="nav-steps">
       <div class="nav-step active" id="ns1"><div class="nav-step-dot">1</div><span class="nav-step-label" style="margin-left:6px">行程设置</span></div>
       <div class="nav-step-line"></div>
@@ -640,7 +607,7 @@ body{
 <!-- ========================================================
      SCREEN 2 · 旅行偏好滑块（一屏版）
      ======================================================== -->
-<div id="s-quiz" class="screen" style="background:#f0ebe0;background-image:linear-gradient(rgba(180,160,130,0.12) 1px,transparent 1px),linear-gradient(90deg,rgba(180,160,130,0.12) 1px,transparent 1px);background-size:4px 4px;overflow:hidden;position:relative">
+<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#E6F1FF,#c8deff);overflow:hidden;position:relative">
 
   <!-- 顶部导航 -->
   <nav style="display:flex;align-items:center;padding:0 24px;height:56px;background:rgba(245,240,232,0.95);border-bottom:1px solid #d8cfc0;flex-shrink:0;gap:16px">
@@ -711,7 +678,7 @@ body{
 <!-- ========================================================
      SCREEN · 选城市 + 天数
      ======================================================== -->
-<div id="s-city" class="screen" style="background:#f5f0e8;display:flex;align-items:center;justify-content:center">
+<div id="s-city" class="screen" style="background:var(--blue-l);display:flex;align-items:center;justify-content:center">
   <div style="width:100%;max-width:640px;background:#fefcf7;border-radius:16px;padding:36px 40px;box-shadow:0 3px 0 #d4c9a8,0 6px 28px rgba(100,80,40,0.10);border:1px solid rgba(180,160,120,0.22);position:relative">
     <!-- 邮戳 -->
     <div style="position:absolute;top:24px;right:24px;width:68px;height:68px;border:3px solid rgba(58,107,53,0.28);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:rgba(58,107,53,0.38);letter-spacing:1px;transform:rotate(14deg);line-height:1.6;text-align:center;font-family:monospace;pointer-events:none">TRAVEL<br/>PLAN<br/>2026</div>
@@ -2534,4 +2501,59 @@ function goChooseCity(){ showScreen("s-flip"); if(typeof initFlip==="function") 
 </script>
 
 
+<script>
+// ═══ 入口屏辅助函数 ═══
+var _entryDays = 3;
+function onEntryInput(val){
+  state.city = val.trim();
+  // 同步 s-setup 里的 city-input
+  var ci = document.getElementById('city-input');
+  if(ci) ci.value = val.trim();
+  checkEntryReady();
+}
+function setEntryCity(c){
+  state.city = c;
+  var inp = document.getElementById('city-input-entry');
+  if(inp) inp.value = c;
+  var ci = document.getElementById('city-input');
+  if(ci) ci.value = c;
+  checkEntryReady();
+}
+function setEntryDays(d){
+  _entryDays = d;
+  state.days = d;
+  var dsp = document.getElementById('entry-days-display');
+  if(dsp) dsp.textContent = d;
+  var dd = document.getElementById('days-display');
+  if(dd) dd.textContent = d;
+  document.querySelectorAll('.entry-days-btn').forEach(function(b){
+    b.classList.toggle('active', +b.id.replace('edb','') === d);
+  });
+  // 同步 s-setup 天数按钮
+  document.querySelectorAll('.days-btn').forEach(function(b){
+    b.classList.toggle('active', +b.dataset.d === d);
+  });
+}
+function checkEntryReady(){
+  var go = document.getElementById('entry-go-btn');
+  var sk = document.getElementById('entry-skip-btn');
+  var ok = !!state.city;
+  if(go){ go.disabled = !ok; go.style.opacity = ok ? '1' : '.45'; }
+  if(sk){ sk.disabled = !ok; sk.style.opacity = ok ? '1' : '.45'; }
+}
+function entryGoQuiz(){
+  if(!state.city){ showToast('请先输入目的地'); return; }
+  state.days = _entryDays;
+  state.answers = [];
+  showScreen('s-quiz');
+  setTimeout(function(){ initPersonaGrid(); initSliders(); }, 100);
+}
+function entrySkip(){
+  if(!state.city){ showToast('请先输入目的地'); return; }
+  state.days = _entryDays;
+  skipQuiz(); // 直接跳过测试，走 goArchive
+}
+// 初始化天数默认值
+setEntryDays(3);
+</script>
 </body></html>
