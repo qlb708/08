@@ -3,784 +3,678 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>08. Qin · AI 工具集</title>
+<title>Qin's Portfolio · AI 工具集</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#F0F4FF;
+  --bg:#F2F5FF;
   --white:#fff;
-  --blue:#4A7BFF;--blue-dk:#2952D3;
+  --blue:#4A7BFF;
+  --blue-dk:#2952D3;
   --blue-lt:#EEF3FF;
-  --text:#1a1f36;--sub:#374151;--soft:#6B7280;--muted:#9CA3AF;--line:rgba(0,0,0,.08);
-  --r:18px;--rp:100px;
+  --text:#1a1f36;
+  --sub:#374151;
+  --soft:#6B7280;
+  --muted:#9CA3AF;
+  --line:rgba(0,0,0,.07);
+  --r:20px;
+  --rp:100px;
   --ff:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
-  --glass:rgba(255,255,255,.72);
-  --shadow:0 2px 16px rgba(74,123,255,.08),0 1px 3px rgba(0,0,0,.04);
-  --shadow-h:0 8px 40px rgba(74,123,255,.18),0 2px 8px rgba(0,0,0,.06);
+  --shadow:0 2px 20px rgba(74,123,255,.07),0 1px 4px rgba(0,0,0,.04);
+  --shadow-h:0 8px 40px rgba(74,123,255,.16),0 2px 8px rgba(0,0,0,.06);
   --gblue:linear-gradient(135deg,#4A7BFF 0%,#7B5EF8 100%);
-  --gbg:linear-gradient(160deg,#E8EFFF 0%,#F0F4FF 40%,#EDF2FF 100%);
 }
 html{scroll-behavior:smooth}
-body{font-family:var(--ff);background:var(--gbg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh}
+body{font-family:var(--ff);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
 a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
 
-/* ══════ BANNER ══════ */
-.banner{
-  width:100%;background:var(--white);border-bottom:1px solid var(--line);
-  display:flex;align-items:center;height:54px;padding:0 40px;
+/* ══ NAV ══ */
+nav{
   position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;gap:0;
+  padding:0 32px;height:60px;
+  background:rgba(242,245,255,.88);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  background:rgba(255,255,255,.92);
+  border-bottom:1px solid var(--line);
 }
-.bn-logo{font-size:18px;font-weight:900;letter-spacing:-.04em;color:var(--text);flex-shrink:0}
-.bn-logo span{color:var(--blue)}
-.bn-center{flex:1;display:flex;align-items:center;justify-content:center;gap:32px}
-.bn-nav{font-size:13px;font-weight:600;color:var(--soft);cursor:pointer;transition:color .18s;white-space:nowrap}
-.bn-nav:hover{color:var(--blue)}
-.bn-right{display:flex;align-items:center;gap:16px;flex-shrink:0}
-.bn-email{font-size:12px;color:var(--soft);letter-spacing:.01em}
-.bn-gh{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
-  color:var(--soft);padding:5px 14px;border-radius:var(--rp);
-  border:1px solid var(--line);background:transparent;transition:all .18s}
-.bn-gh:hover{border-color:var(--blue);color:var(--blue)}
-.bn-gh svg{width:14px;height:14px;fill:currentColor}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-right:auto}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#B9CFFF,#7B5EF8);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.nav-avatar svg{width:32px;height:32px}
+.nav-links{display:flex;align-items:center;gap:4px;margin-right:24px}
+.nav-link{font-size:13px;font-weight:600;color:var(--soft);padding:6px 14px;border-radius:var(--rp);cursor:pointer;transition:all .18s;white-space:nowrap;border:none;background:none;font-family:var(--ff)}
+.nav-link:hover,.nav-link.on{color:var(--blue);background:var(--blue-lt)}
+.nav-link.on{color:var(--blue)}
+.nav-contact{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:8px 18px;border-radius:var(--rp);background:var(--blue);color:#fff;border:none;cursor:pointer;font-family:var(--ff);transition:all .18s}
+.nav-contact:hover{background:var(--blue-dk);transform:translateY(-1px)}
+.nav-contact svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-/* ══════ PAGE 1: HERO ══════ */
-.hero{min-height:calc(100vh - 54px);padding:40px 40px 32px;display:flex;flex-direction:column;justify-content:center;max-width:1200px;margin:0 auto}
+/* ══ SECTION HERO ══ */
+#sec-home{
+  min-height:calc(100vh - 60px);
+  padding:48px 48px 32px;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  max-width:1280px;margin:0 auto;
+}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(74,123,255,.1);border:1px solid rgba(74,123,255,.2);border-radius:var(--rp);padding:5px 14px;font-size:12px;font-weight:700;color:var(--blue);margin-bottom:24px}
 
-/* top row: left content + right avatar+tags */
-.hero-top{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:start;margin-bottom:28px}
+.hero-main{display:grid;grid-template-columns:1fr 340px 280px;gap:32px;align-items:start}
 
 /* left */
 .hero-left{}
-.hero-greeting{font-size:clamp(36px,5vw,62px);font-weight:900;letter-spacing:-.05em;line-height:1.05;margin-bottom:14px}
-.hero-greeting .name{background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-role{font-size:20px;font-weight:700;color:var(--sub);margin-bottom:18px;letter-spacing:-.01em}
-.hero-desc{font-size:15px;color:var(--soft);line-height:1.9;max-width:440px;margin-bottom:28px}
-.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
-.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);font-weight:500}
-.meta-item span{font-size:15px}
+.hero-h1{font-size:clamp(36px,4.5vw,58px);font-weight:900;letter-spacing:-.05em;line-height:1.08;margin-bottom:16px;color:var(--text)}
+.hero-h1 .hl{background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:15px;color:var(--soft);margin-bottom:24px;letter-spacing:-.01em}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.hero-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--sub);padding:6px 14px;border-radius:var(--rp);background:rgba(255,255,255,.7);border:1px solid var(--line)}
+.hero-chip span{color:var(--blue)}
+.hero-meta-row{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:32px}
+.hero-meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--soft);font-weight:500}
 
-/* right: avatar card + tag card stacked */
-.hero-right{display:flex;flex-direction:column;gap:16px}
+/* center: character */
+.hero-char{display:flex;align-items:flex-end;justify-content:center;position:relative}
+.hero-char svg{width:100%;max-width:280px;filter:drop-shadow(0 16px 48px rgba(74,123,255,.15))}
+/* floating cards around character */
+.float-card{position:absolute;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-radius:14px;border:1px solid rgba(255,255,255,.9);box-shadow:0 4px 20px rgba(0,0,0,.08);padding:10px 14px;font-size:11px;font-weight:600;color:var(--text)}
+.fc-insight{top:20px;left:-20px;min-width:120px}
+.fc-insight .fc-val{font-size:20px;font-weight:900;color:var(--blue)}
+.fc-insight .fc-label{font-size:10px;color:var(--soft);margin-top:2px}
+.fc-travel{top:30px;right:-10px;min-width:100px}
+.fc-travel .fc-dest{font-size:13px;font-weight:800;color:var(--text)}
+.fc-travel .fc-label{font-size:10px;color:var(--soft)}
+.fc-ideas{bottom:80px;right:-20px;min-width:110px}
+.fc-ideas .fc-item{font-size:10px;color:var(--soft);padding:2px 0;display:flex;align-items:center;gap:4px}
+.fc-ideas .fc-item::before{content:"✓";color:var(--blue);font-weight:700}
 
-/* avatar card */
-.avatar-card{
-  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-radius:24px;border:1px solid rgba(255,255,255,.8);
-  box-shadow:var(--shadow);padding:24px;
-  display:flex;gap:20px;align-items:flex-end;position:relative;overflow:hidden;
+/* right: tag + quote */
+.hero-right{display:flex;flex-direction:column;gap:14px}
+.glass-card{background:rgba(255,255,255,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;border:1px solid rgba(255,255,255,.85);box-shadow:var(--shadow);padding:20px}
+.gc-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.gc-title .gc-hash{color:var(--blue)}
+.tag-wrap{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.badge{font-size:11px;font-weight:700;padding:6px 12px;border-radius:var(--rp);border:1px solid transparent;text-align:center}
+.bd-b{background:#EEF3FF;color:#3B6EF5;border-color:#D6E2FF}
+.bd-p{background:#F3F0FF;color:#7B5EF8;border-color:#DDD6FE}
+.bd-g{background:#ECFDF5;color:#059669;border-color:#A7F3D0}
+.bd-o{background:#FFF7ED;color:#EA580C;border-color:#FED7AA}
+.bd-pk{background:#FFF0F6;color:#DB2777;border-color:#FBCFE8}
+.bd-s{background:#F1F5F9;color:#475569;border-color:#CBD5E1}
+.bd-y{background:#FFFBEB;color:#D97706;border-color:#FDE68A}
+.bd-c{background:#F0FDFA;color:#0D9488;border-color:#99F6E4}
+.quote-box{background:linear-gradient(135deg,rgba(74,123,255,.06),rgba(123,94,248,.04));border:1px solid rgba(74,123,255,.15);border-radius:18px;padding:18px 20px}
+.quote-text{font-size:14px;font-weight:700;color:var(--text);line-height:1.8;letter-spacing:-.01em}
+.quote-mark{color:var(--blue);font-size:20px;font-weight:900;line-height:1}
+
+/* stats row */
+.hero-stats{display:flex;gap:0;margin-top:24px}
+.stat-item{flex:1;padding:18px 20px;background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.85);border-radius:16px;margin-right:12px;text-align:center;box-shadow:var(--shadow)}
+.stat-item:last-child{margin-right:0}
+.stat-val{font-size:24px;font-weight:900;color:var(--blue);letter-spacing:-.04em}
+.stat-lbl{font-size:11px;color:var(--soft);font-weight:600;margin-top:2px}
+
+/* ══ SECTION TOOLS: 三块卡片横滑 ══ */
+#sec-tools{padding:64px 48px;max-width:1280px;margin:0 auto}
+.sec-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px}
+.sec-h2{font-size:36px;font-weight:900;letter-spacing:-.04em;color:var(--text)}
+.sec-h2 .hl{color:var(--blue)}
+.sec-sub{font-size:14px;color:var(--soft);margin-top:6px}
+.sec-more{font-size:13px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;opacity:.8}
+.sec-more:hover{opacity:1}
+
+/* 三块大卡 slider */
+.big-slider-wrap{position:relative}
+.big-slider{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:20px;cursor:grab}
+.big-slider::-webkit-scrollbar{display:none}
+.big-slider.grabbing{cursor:grabbing}
+.big-card{
+  flex-shrink:0;width:calc(33.333% - 14px);min-width:280px;
+  border-radius:24px;padding:28px;scroll-snap-align:start;
+  display:flex;flex-direction:column;min-height:360px;
+  position:relative;overflow:hidden;transition:transform .22s;
 }
-.avatar-card::before{
-  content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;
-  background:radial-gradient(circle,rgba(74,123,255,.12),transparent 70%);pointer-events:none;
-}
-.avatar-fig{
-  width:120px;height:150px;flex-shrink:0;
-  display:flex;align-items:flex-end;justify-content:center;
-  position:relative;
-}
-/* SVG anime girl figure */
-.avatar-fig svg{width:100%;height:100%}
-.avatar-info{flex:1}
-.av-name{font-size:22px;font-weight:900;letter-spacing:-.04em;margin-bottom:4px}
-.av-name .hl{color:var(--blue)}
-.av-role{font-size:13px;font-weight:600;color:var(--soft);margin-bottom:14px}
-.av-tags{display:flex;flex-wrap:wrap;gap:6px}
-.av-tag{font-size:11px;font-weight:700;padding:4px 12px;border-radius:var(--rp);
-  background:var(--blue-lt);color:var(--blue)}
-.av-quote{font-size:12px;color:var(--soft);margin-top:12px;line-height:1.7;font-style:italic}
-.av-meta-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
-.av-meta{font-size:11px;color:var(--soft);display:flex;align-items:center;gap:4px}
+.big-card:hover{transform:translateY(-4px)}
+.bc-blue{background:linear-gradient(145deg,#E8F0FF 0%,#F5F8FF 100%);border:1px solid rgba(74,123,255,.15)}
+.bc-green{background:linear-gradient(145deg,#E8F7EF 0%,#F5FBF8 100%);border:1px solid rgba(5,150,105,.15)}
+.bc-orange{background:linear-gradient(145deg,#FEF3E8 0%,#FFF9F4 100%);border:1px solid rgba(234,88,12,.12)}
+.bc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.bc-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.bc-icon-b{background:#EEF3FF}
+.bc-icon-g{background:#ECFDF5}
+.bc-icon-o{background:#FFF7ED}
+.bc-title{font-size:22px;font-weight:900;letter-spacing:-.03em;margin-bottom:4px}
+.bc-count{font-size:13px;font-weight:600;margin-bottom:8px}
+.bc-count-b{color:#4A7BFF}.bc-count-g{color:#059669}.bc-count-o{color:#EA580C}
+.bc-desc{font-size:13px;color:var(--soft);margin-bottom:20px;line-height:1.7}
+.bc-list{flex:1;display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.bc-item{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--sub)}
+.bc-item-icon{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.bc-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:10px 20px;border-radius:var(--rp);border:none;cursor:pointer;font-family:var(--ff);transition:all .18s;align-self:flex-start}
+.bc-btn-b{background:#4A7BFF;color:#fff}.bc-btn-b:hover{background:#2952D3}
+.bc-btn-g{background:#059669;color:#fff}.bc-btn-g:hover{background:#047857}
+.bc-btn-o{background:#EA580C;color:#fff}.bc-btn-o:hover{background:#C2410C}
+.bc-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+/* deco shapes inside big cards */
+.bc-deco{position:absolute;bottom:-20px;right:-20px;opacity:.12;pointer-events:none;font-size:100px;line-height:1}
 
-/* tag cloud card */
-.tag-card{
-  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-radius:20px;border:1px solid rgba(255,255,255,.8);
-  box-shadow:var(--shadow);padding:20px 22px;
-}
-.tag-card-title{font-size:13px;font-weight:700;color:var(--sub);margin-bottom:14px;
-  display:flex;align-items:center;gap:6px}
-.tag-cloud{display:flex;flex-wrap:wrap;gap:8px}
-.tag{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border-radius:var(--rp);
-  font-size:12px;font-weight:600;cursor:default;transition:transform .2s;border:1px solid transparent}
-.tag:hover{transform:translateY(-2px)}
-.tag-b{background:#EEF3FF;color:#3B6EF5;border-color:#D6E2FF}
-.tag-p{background:#F3F0FF;color:#7B5EF8;border-color:#DDD6FE}
-.tag-g{background:#ECFDF5;color:#059669;border-color:#A7F3D0}
-.tag-o{background:#FFF7ED;color:#EA580C;border-color:#FED7AA}
-.tag-pk{background:#FFF0F6;color:#DB2777;border-color:#FBCFE8}
-.tag-s{background:#F1F5F9;color:#475569;border-color:#CBD5E1}
-.tag-y{background:#FFFBEB;color:#D97706;border-color:#FDE68A}
+/* dots */
+.slider-dots{display:flex;justify-content:center;gap:6px;margin-top:8px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:all .2s;cursor:pointer}
+.dot.on{background:var(--blue);width:20px;border-radius:4px}
+.slider-hint{text-align:center;font-size:11px;color:var(--muted);font-weight:600;margin-top:8px;letter-spacing:.05em}
 
-/* quote card */
-.quote-card{
-  background:linear-gradient(135deg,rgba(74,123,255,.08),rgba(123,94,248,.06));
-  border:1px solid rgba(74,123,255,.15);
-  border-radius:20px;padding:20px 22px;
-}
-.quote-text{font-size:16px;font-weight:700;color:var(--text);line-height:1.7;letter-spacing:-.01em}
-.quote-text::before{content:'" ';color:var(--blue);font-size:20px;font-weight:900}
-.quote-text::after{content:' "';color:var(--blue);font-size:20px;font-weight:900}
+/* ══ SECTION ABOUT ══ */
+#sec-about{background:rgba(255,255,255,.5);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:64px 48px}
+.about-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center}
+.about-avatar{width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:var(--shadow);flex-shrink:0;background:linear-gradient(135deg,#B9CFFF,#7B5EF8)}
+.about-avatar svg{width:80px;height:80px}
+.about-left{display:flex;align-items:center;gap:20px}
+.about-intro .about-name{font-size:18px;font-weight:900;letter-spacing:-.03em;margin-bottom:4px}
+.about-intro .about-name span{font-size:20px}
+.about-intro p{font-size:13px;color:var(--soft);line-height:1.7;max-width:280px}
+.about-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--blue);margin-top:12px;cursor:pointer}
+.about-btn svg{width:12px;height:12px;stroke:var(--blue);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.about-right{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.skill-col{}
+.skill-col-title{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--text);margin-bottom:10px}
+.skill-col-title span{font-size:16px}
+.skill-col ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.skill-col ul li{font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px}
+.skill-col ul li::before{content:"→";color:var(--blue);font-size:10px;font-weight:700}
 
-/* bottom 3 cards */
-.hero-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.info-card{
-  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-radius:20px;border:1px solid rgba(255,255,255,.8);
-  box-shadow:var(--shadow);padding:22px;transition:all .22s;
-}
-.info-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
-.ic-header{display:flex;align-items:center;gap:8px;margin-bottom:16px}
-.ic-icon{font-size:18px}
-.ic-title{font-size:14px;font-weight:800;color:var(--text)}
+/* ══ FOOTER ══ */
+footer{background:rgba(255,255,255,.6);border-top:1px solid var(--line);padding:20px 48px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:11px;color:var(--muted)}
+.footer-links{display:flex;gap:20px;align-items:center}
+.footer-link{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--soft);transition:color .15s}
+.footer-link:hover{color:var(--blue)}
+.footer-link svg{width:14px;height:14px;fill:currentColor}
+.footer-center{font-size:13px;color:var(--soft);font-style:italic}
 
-/* exp card */
-.exp-item{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.06)}
-.exp-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.exp-company{display:flex;align-items:center;gap:8px}
-.exp-logo{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.exp-name{font-size:12px;font-weight:700;color:var(--text)}
-.exp-period{font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-lt);padding:2px 8px;border-radius:var(--rp);margin-left:auto;white-space:nowrap}
-.exp-role{font-size:11px;color:var(--soft);margin-top:2px}
-.exp-desc{font-size:11px;color:var(--muted);line-height:1.65;margin-top:4px}
+/* ══ TOOL DETAIL TAB ══ */
+#sec-detail{padding:64px 48px;max-width:1280px;margin:0 auto}
+.detail-tabs{display:flex;gap:8px;margin-bottom:28px}
+.dtab{font-size:13px;font-weight:700;padding:8px 20px;border-radius:var(--rp);border:none;cursor:pointer;font-family:var(--ff);background:rgba(255,255,255,.7);color:var(--soft);transition:all .18s}
+.dtab.on{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(74,123,255,.3)}
+.dtab-panel{display:none}.dtab-panel.show{display:block}
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:860px){.tool-grid{grid-template-columns:repeat(2,1fr)}}
+.tool-card{background:rgba(255,255,255,.8);border-radius:var(--r);padding:22px;border:1px solid rgba(255,255,255,.85);box-shadow:var(--shadow);transition:all .22s;cursor:pointer;display:flex;flex-direction:column;min-height:150px}
+.tool-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
+.tc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.tc-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center}
+.tc-icon svg{width:17px;height:17px;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.tc-arr{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.tc-arr svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.tc-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:5px}
+.tc-desc{font-size:12px;color:var(--soft);line-height:1.7;flex:1}
+.tc-foot{margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,.05)}
+.tc-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:var(--rp)}
+.tool-empty{border:1.5px dashed rgba(0,0,0,.1);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:150px;gap:6px}
+.tool-empty .em{font-size:26px;opacity:.2}
+.tool-empty .et{font-size:12px;font-weight:700;color:var(--muted)}
 
-/* skill card */
-.skill-item{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
-.skill-item:last-child{margin-bottom:0}
-.skill-dot{width:28px;height:28px;border-radius:8px;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
-.skill-body{}
-.skill-name{font-size:12px;font-weight:700;color:var(--text)}
-.skill-desc{font-size:11px;color:var(--soft);line-height:1.55}
+/* ══ ACTIVITY SLIDER ══ */
+.act-wrap{margin-top:40px}
+.act-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+/* App cards: phone ratio */
+.act-slider{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:12px;cursor:grab}
+.act-slider::-webkit-scrollbar{display:none}
+.act-slider.grabbing{cursor:grabbing}
+.app-card{flex-shrink:0;width:150px;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06);aspect-ratio:9/16;display:flex;flex-direction:column;scroll-snap-align:start;transition:all .22s;cursor:pointer}
+.app-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:var(--shadow-h)}
+.app-notch{height:24px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;flex-shrink:0}
+.app-notch-bar{width:50px;height:4px;border-radius:2px;background:rgba(255,255,255,.2)}
+.app-cover{flex:1;display:flex;align-items:center;justify-content:center;font-size:36px}
+.app-body{background:#fff;padding:10px 12px 14px;flex-shrink:0}
+.app-badge{font-size:8px;font-weight:700;padding:2px 8px;border-radius:var(--rp);display:inline-block;margin-bottom:4px}
+.app-name{font-size:11px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:2px}
+.app-desc{font-size:9px;color:var(--soft);line-height:1.5}
+.app-go{display:flex;justify-content:flex-end;margin-top:6px}
+.app-dot{width:18px;height:18px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center}
+.app-dot svg{width:8px;height:8px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+/* Web cards */
+.web-slider{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:12px;cursor:grab;margin-top:32px}
+.web-slider::-webkit-scrollbar{display:none}
+.web-slider.grabbing{cursor:grabbing}
+.web-card{flex-shrink:0;width:300px;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.8);border-radius:16px;padding:16px 18px;border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow);transition:all .22s;scroll-snap-align:start;cursor:pointer}
+.web-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-h)}
+.web-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.web-body{flex:1;min-width:0}
+.web-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px}
+.web-desc{font-size:12px;color:var(--soft);line-height:1.6}
+.web-arr{width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(74,123,255,.3)}
+.web-arr svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-/* life card */
-.life-item{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
-.life-item:last-child{margin-bottom:0}
-.life-icon{font-size:18px;width:28px;text-align:center;flex-shrink:0}
-.life-body{}
-.life-name{font-size:12px;font-weight:700;color:var(--text)}
-.life-desc{font-size:11px;color:var(--soft);line-height:1.55}
-
-/* scroll hint */
-.scroll-hint{text-align:center;margin-top:24px;cursor:pointer;opacity:.5;transition:opacity .2s}
-.scroll-hint:hover{opacity:.9}
-.scroll-hint span{font-size:11px;color:var(--soft);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
-.scroll-hint svg{display:block;margin:6px auto 0;width:18px;height:18px;stroke:var(--soft);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:bounce 2s infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
-
-/* ══════ PAGE 2: TOOLS ══════ */
-.page-tools{padding-top:0}
-
-.tabs-wrap{
-  background:rgba(240,244,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line);padding:12px 40px;
-  position:sticky;top:54px;z-index:100;
-}
-.tab-row{display:inline-flex;background:var(--white);border-radius:var(--rp);padding:4px;gap:2px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.tb-btn{font-size:13px;font-weight:600;color:var(--soft);padding:7px 20px;border-radius:var(--rp);cursor:pointer;border:none;background:transparent;font-family:var(--ff);transition:all .18s;white-space:nowrap}
-.tb-btn:hover{color:var(--text)}
-.tb-btn.on{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(74,123,255,.32)}
-.tc{display:none}.tc.show{display:block}
-
-.cw{max-width:1200px;margin:0 auto;padding:28px 40px 80px}
-
-.sl{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-.sl-dot{width:7px;height:7px;border-radius:50%}
-.sl-name{font-size:15px;font-weight:800;color:var(--text)}
-.sl-count{font-size:11px;font-weight:700;padding:2px 10px;border-radius:var(--rp)}
-.sl-line{flex:1;height:1px;background:var(--line)}
-
-/* tool grid */
-.grid{display:grid;gap:14px}
-.g3{grid-template-columns:repeat(3,1fr)}
-@media(max-width:860px){.g3{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.g3{grid-template-columns:1fr}}
-
-.card{
-  background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-radius:var(--r);padding:22px;display:flex;flex-direction:column;
-  border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow);transition:all .22s;cursor:pointer;min-height:160px;
-}
-.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
-.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
-.card-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.card-ic svg{width:18px;height:18px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.card-arr{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.card-arr svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.card-t{font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px}
-.card-d{font-size:12px;color:var(--soft);line-height:1.75;flex:1}
-.card-foot{margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.06)}
-.card-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:var(--rp)}
-
-.card-empty{
-  background:rgba(255,255,255,.4);border:1.5px dashed rgba(0,0,0,.12);
-  border-radius:var(--r);padding:32px 20px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:160px;
-}
-.card-empty-em{font-size:28px;opacity:.25}
-.card-empty-t{font-size:12px;font-weight:700;color:var(--muted)}
-
-/* activity */
-.act-row{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
-@media(max-width:720px){.act-row{grid-template-columns:1fr}}
-.act-col-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-
-.app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.acard{display:flex;flex-direction:column;background:var(--white);border-radius:18px;overflow:hidden;
-  box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06);aspect-ratio:9/16;transition:all .22s;cursor:pointer;position:relative}
-.acard:hover{transform:translateY(-4px) scale(1.01);box-shadow:var(--shadow-h)}
-.acard-chrome{position:absolute;top:0;inset-x:0;height:28px;z-index:2;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
-.acard-notch{width:60px;height:5px;background:rgba(255,255,255,.18);border-radius:3px}
-.acard-cover{flex:1;display:flex;align-items:center;justify-content:center;font-size:40px;padding-top:28px;overflow:hidden}
-.acard-body{padding:10px 12px 14px;background:var(--white);flex-shrink:0}
-.acard-badge{display:inline-block;font-size:8px;font-weight:700;padding:2px 8px;border-radius:var(--rp);margin-bottom:5px}
-.acard-t{font-size:11px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:2px}
-.acard-d{font-size:9px;color:var(--soft);line-height:1.5}
-.acard-go{margin-top:8px;display:flex;justify-content:flex-end}
-.acard-dot{width:20px;height:20px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center}
-.acard-dot svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-
-.wcard{display:flex;align-items:center;gap:16px;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.8);transition:all .22s;cursor:pointer;margin-bottom:12px}
-.wcard:hover{transform:translateY(-2px);box-shadow:var(--shadow-h)}
-.wcard-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.wcard-body{flex:1;min-width:0}
-.wcard-t{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px}
-.wcard-d{font-size:12px;color:var(--soft);line-height:1.6}
-.wcard-arr{width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(74,123,255,.3)}
-.wcard-arr svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-
-footer{background:rgba(255,255,255,.6);border-top:1px solid var(--line);padding:24px 40px;text-align:center;font-size:12px;color:var(--muted)}
-footer a{color:var(--blue);font-weight:600}
-
-@media(max-width:900px){
-  .hero-top{grid-template-columns:1fr}
+@media(max-width:1000px){
+  .hero-main{grid-template-columns:1fr 240px}
   .hero-right{display:none}
-  .hero-bottom{grid-template-columns:1fr}
-  .bn-center{display:none}
+  .big-card{min-width:260px;width:80vw}
 }
-@media(max-width:600px){
-  .banner,.tabs-wrap,.cw,.hero{padding-left:20px;padding-right:20px}
-  .bn-email{display:none}
+@media(max-width:700px){
+  #sec-home,#sec-tools,#sec-detail,#sec-about,footer{padding-left:20px;padding-right:20px}
+  nav{padding:0 16px}
+  .hero-main{grid-template-columns:1fr}
+  .hero-char{display:none}
+  .about-right{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
 <body>
 
-<!-- BANNER -->
-<header class="banner">
-  <div class="bn-logo">08<span>.</span></div>
-  <div class="bn-center">
-    <span class="bn-nav" onclick="document.getElementById('page-about').scrollIntoView({behavior:'smooth'})">自我介绍</span>
-    <span class="bn-nav" onclick="goContent(0)">日常提效</span>
-    <span class="bn-nav" onclick="goContent(1)">数据洞察</span>
-    <span class="bn-nav" onclick="goContent(2)">活动 Demo</span>
-  </div>
-  <div class="bn-right">
-    <span class="bn-email">qinlinbo5@gmail.com</span>
-    <a href="https://github.com/qlb708/08" target="_blank" class="bn-gh">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
-      GitHub
-    </a>
-  </div>
-</header>
-
-<!-- PAGE 1: HERO -->
-<section class="hero" id="hero">
-  <div class="hero-top">
-    <!-- left -->
-    <div class="hero-left">
-      <h1 class="hero-greeting">你好，我是<br><span class="name">Qin !</span></h1>
-      <div class="hero-role">AI 产品运营实习生</div>
-      <p class="hero-desc">
-        喜欢用数据和内容<br>
-        让好产品被更多人看见，<br>
-        也让用户的每一次使用更有价值。
-      </p>
-      <div class="hero-meta">
-        <div class="meta-item"><span>📍</span>上海</div>
-        <div class="meta-item"><span>🎓</span>在读研究生</div>
-        <div class="meta-item"><span>❤️</span>热爱旅行 · 足球 · 运营</div>
-      </div>
+<!-- NAV -->
+<nav id="topnav">
+  <div class="nav-brand">
+    <div class="nav-avatar">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="16" fill="url(#navGrad)"/>
+        <ellipse cx="16" cy="13" rx="7" ry="7.5" fill="#FDDBB0"/>
+        <path d="M9 13 Q9.5 5 16 5 Q22.5 5 23 13" fill="#2a2a2a"/>
+        <ellipse cx="16" cy="13.5" rx="6.5" ry="7" fill="#FDDBB0"/>
+        <ellipse cx="16" cy="9" rx="7" ry="5" fill="#2a2a2a"/>
+        <circle cx="13" cy="14" r="1.5" fill="#2a2a2a"/>
+        <circle cx="19" cy="14" r="1.5" fill="#2a2a2a"/>
+        <path d="M13.5 18 Q16 20 18.5 18" stroke="#E8A080" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="20" width="10" height="12" rx="3" fill="#3B5FC0"/>
+        <defs><linearGradient id="navGrad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#B9CFFF"/><stop offset="1" stop-color="#7B5EF8"/></linearGradient></defs>
+      </svg>
     </div>
-
-    <!-- right -->
-    <div class="hero-right">
-      <!-- avatar card -->
-      <div class="avatar-card">
-        <div class="avatar-fig">
-          <!-- 动漫人物 SVG: 长黑发 蓝色系女生持杯 -->
-          <svg viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- body/clothes -->
-            <ellipse cx="60" cy="130" rx="28" ry="22" fill="#4A7BFF" opacity=".15"/>
-            <!-- torso -->
-            <rect x="42" y="90" width="36" height="48" rx="8" fill="#3B5FC0"/>
-            <!-- collar -->
-            <path d="M52 90 L60 100 L68 90" stroke="white" stroke-width="1.5" fill="none"/>
-            <!-- arms -->
-            <path d="M42 95 Q30 105 32 120" stroke="#3B5FC0" stroke-width="9" stroke-linecap="round"/>
-            <path d="M78 95 Q90 105 88 120" stroke="#3B5FC0" stroke-width="9" stroke-linecap="round"/>
-            <!-- cup in right hand -->
-            <rect x="82" y="112" width="12" height="16" rx="3" fill="#F0F4FF" stroke="#4A7BFF" stroke-width="1.2"/>
-            <ellipse cx="88" cy="112" rx="6" ry="2.5" fill="#4A7BFF" opacity=".4"/>
-            <line x1="88" y1="109" x2="88" y2="105" stroke="#4A7BFF" stroke-width="1.2" stroke-linecap="round"/>
-            <!-- neck -->
-            <rect x="55" y="82" width="10" height="12" rx="4" fill="#FDDBB0"/>
-            <!-- head -->
-            <ellipse cx="60" cy="64" rx="24" ry="26" fill="#FDDBB0"/>
-            <!-- hair back -->
-            <ellipse cx="60" cy="56" rx="25" ry="28" fill="#2a2a2a"/>
-            <!-- face -->
-            <ellipse cx="60" cy="66" rx="21" ry="22" fill="#FDDBB0"/>
-            <!-- hair front/top -->
-            <ellipse cx="60" cy="45" rx="23" ry="14" fill="#2a2a2a"/>
-            <!-- bangs -->
-            <path d="M38 52 Q45 36 60 34 Q75 36 82 52" fill="#2a2a2a"/>
-            <path d="M38 54 Q36 64 38 72" fill="#2a2a2a" opacity=".9"/>
-            <path d="M82 54 Q84 64 82 72" fill="#2a2a2a" opacity=".9"/>
-            <!-- long hair sides -->
-            <path d="M37 60 Q30 85 34 110" stroke="#2a2a2a" stroke-width="10" stroke-linecap="round" fill="none"/>
-            <path d="M83 60 Q90 85 86 110" stroke="#2a2a2a" stroke-width="10" stroke-linecap="round" fill="none"/>
-            <!-- glasses on head -->
-            <path d="M47 40 Q52 37 57 40" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <path d="M63 40 Q68 37 73 40" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <line x1="57" y1="39" x2="63" y2="39" stroke="#888" stroke-width="1.2"/>
-            <!-- eyes -->
-            <ellipse cx="52" cy="62" rx="5" ry="5.5" fill="white"/>
-            <ellipse cx="68" cy="62" rx="5" ry="5.5" fill="white"/>
-            <ellipse cx="52" cy="63" rx="3.5" ry="4" fill="#2a2a2a"/>
-            <ellipse cx="68" cy="63" rx="3.5" ry="4" fill="#2a2a2a"/>
-            <circle cx="53.5" cy="61.5" r="1.2" fill="white"/>
-            <circle cx="69.5" cy="61.5" r="1.2" fill="white"/>
-            <!-- eyelashes -->
-            <path d="M47 59 Q49 57 52 58" stroke="#2a2a2a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-            <path d="M63 59 Q65 57 68 58" stroke="#2a2a2a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-            <!-- blush -->
-            <ellipse cx="44" cy="70" rx="5" ry="3" fill="#FFB6C1" opacity=".5"/>
-            <ellipse cx="76" cy="70" rx="5" ry="3" fill="#FFB6C1" opacity=".5"/>
-            <!-- nose -->
-            <path d="M59 72 Q60 74 61 72" stroke="#E8B89A" stroke-width="1" fill="none" stroke-linecap="round"/>
-            <!-- smile -->
-            <path d="M54 77 Q60 82 66 77" stroke="#E8A080" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <!-- necklace -->
-            <path d="M52 90 Q60 96 68 90" stroke="#B0C4FF" stroke-width="1.2" fill="none"/>
-            <circle cx="60" cy="97" r="2.5" fill="#4A7BFF" opacity=".7"/>
-            <!-- sparkles -->
-            <text x="92" y="50" font-size="10" fill="#4A7BFF" opacity=".6">✦</text>
-            <text x="15" y="80" font-size="8" fill="#7B5EF8" opacity=".5">✦</text>
-          </svg>
-        </div>
-        <div class="avatar-info">
-          <div class="av-name">你好，我是 <span class="hl">Qin.</span></div>
-          <div class="av-role">AI 产品运营实习生</div>
-          <div class="av-tags">
-            <span class="av-tag">AI 产品运营</span>
-            <span class="av-tag">数据分析</span>
-            <span class="av-tag">用户增长</span>
-          </div>
-          <div class="av-meta-row">
-            <span class="av-meta">📍 上海</span>
-            <span class="av-meta">❤️ 旅行</span>
-            <span class="av-meta">⚽ 足球迷</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- tag card -->
-      <div class="tag-card">
-        <div class="tag-card-title">我的标签 <span style="color:var(--blue)">#</span></div>
-        <div class="tag-cloud">
-          <span class="tag tag-b">AI 产品运营</span>
-          <span class="tag tag-p">内容增长</span>
-          <span class="tag tag-g">数据分析</span>
-          <span class="tag tag-o">用户增长</span>
-          <span class="tag tag-pk">达人运营</span>
-          <span class="tag tag-s">旅行爱好者</span>
-          <span class="tag tag-y">足球迷</span>
-          <span class="tag tag-b">Vibe Coding</span>
-        </div>
-      </div>
-
-      <!-- quote card -->
-      <div class="quote-card">
-        <div class="quote-text">用内容连接用户，用数据驱动增长。</div>
-      </div>
-    </div>
+    Qin's Portfolio
   </div>
-
-  <!-- bottom 3 cards -->
-  <div class="hero-bottom">
-    <!-- 实习经历 -->
-    <div class="info-card">
-      <div class="ic-header">
-        <span class="ic-icon">🏢</span>
-        <span class="ic-title">实习经历</span>
-      </div>
-      <div class="exp-item">
-        <div class="exp-company">
-          <div class="exp-logo" style="background:#FF2442;color:white;font-size:10px;font-weight:700">书</div>
-          <div>
-            <div class="exp-name">小红书 · AI 产品运营实习生</div>
-            <div class="exp-role">圆周旅途（旅行规划类产品）</div>
-          </div>
-          <span class="exp-period">2025.04 — 至今</span>
-        </div>
-        <div class="exp-desc">· 负责地点合集新功能上线运营，设计冷启动与内容供给策略<br>· 参与世界杯、暑期等重点场景增长项目，搭建内容到 AI 规划的转化链路</div>
-      </div>
-      <div class="exp-item">
-        <div class="exp-company">
-          <div class="exp-logo" style="background:#1a1a2e;color:white;font-size:9px;font-weight:700">T</div>
-          <div>
-            <div class="exp-name">传音控股 · AI 产品运营实习生</div>
-            <div class="exp-role">Ella AI 手机助手</div>
-          </div>
-          <span class="exp-period">2025.03—06</span>
-        </div>
-        <div class="exp-desc">· 负责足球世界杯场景运营，搭建赛事互动链路与端内运营阵地<br>· 设计 AIGC 图生视频玩法，结合热点本地化运营提升用户活跃</div>
-      </div>
-    </div>
-
-    <!-- 我擅长的事 -->
-    <div class="info-card">
-      <div class="ic-header">
-        <span class="ic-icon">👍</span>
-        <span class="ic-title">我擅长的事</span>
-      </div>
-      <div class="skill-item">
-        <div class="skill-dot">💡</div>
-        <div class="skill-body">
-          <div class="skill-name">产品思维</div>
-          <div class="skill-desc">从用户需求出发，拆解问题，找到增长机会点</div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-dot">📊</div>
-        <div class="skill-body">
-          <div class="skill-name">数据分析</div>
-          <div class="skill-desc">关注核心指标，用数据驱动策略优化</div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-dot">✍️</div>
-        <div class="skill-body">
-          <div class="skill-name">内容策略</div>
-          <div class="skill-desc">设计内容供给与分发机制，提升内容效率</div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-dot">🚀</div>
-        <div class="skill-body">
-          <div class="skill-name">项目执行</div>
-          <div class="skill-desc">推动跨团队协作，把想法落地验证效果</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 生活里的我 -->
-    <div class="info-card">
-      <div class="ic-header">
-        <span class="ic-icon">🌟</span>
-        <span class="ic-title">生活里的我</span>
-      </div>
-      <div class="life-item">
-        <div class="life-icon">✈️</div>
-        <div class="life-body">
-          <div class="life-name">旅行探索</div>
-          <div class="life-desc">热爱探索不同城市，收集美好体验</div>
-        </div>
-      </div>
-      <div class="life-item">
-        <div class="life-icon">⚽</div>
-        <div class="life-body">
-          <div class="life-name">足球爱好者</div>
-          <div class="life-desc">看球、写内容、做账号，运营自己的足球自媒体</div>
-        </div>
-      </div>
-      <div class="life-item">
-        <div class="life-icon">💻</div>
-        <div class="life-body">
-          <div class="life-name">Vibe Coding</div>
-          <div class="life-desc">用 AI 把想法快速变成可以用的工具和页面</div>
-        </div>
-      </div>
-      <div class="life-item">
-        <div class="life-icon">📚</div>
-        <div class="life-body">
-          <div class="life-name">持续学习</div>
-          <div class="life-desc">关注 AI、产品、市场，保持好奇与成长</div>
-        </div>
-      </div>
-    </div>
+  <div class="nav-links">
+    <button class="nav-link on" onclick="scrollTo('sec-home',this)">首页</button>
+    <button class="nav-link" onclick="scrollTo('sec-tools',this)">AI 工具集</button>
+    <button class="nav-link" onclick="scrollTo('sec-detail',this)">数据洞察</button>
+    <button class="nav-link" onclick="scrollTo('sec-detail',this)">活动 Demo</button>
+    <button class="nav-link" onclick="scrollTo('sec-about',this)">关于我</button>
   </div>
+  <a href="mailto:qinlinbo5@gmail.com" class="nav-contact">
+    联系我
+    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+  </a>
+</nav>
 
-  <div class="scroll-hint" onclick="document.getElementById('page-about').scrollIntoView({behavior:'smooth'})">
-    <span>了解我</span>
-    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-</section>
-
-<!-- PAGE 2: ABOUT ME -->
-<section id="page-about" style="min-height:100vh;padding:60px 40px 60px;background:var(--gbg)">
-  <div style="max-width:1200px;margin:0 auto">
-
-    <!-- TOP: 左侧介绍 + 中间人物 + 右侧标签&金句 -->
-    <div style="display:grid;grid-template-columns:1fr 220px 360px;gap:32px;align-items:start;margin-bottom:32px">
-
-      <!-- 左：文字介绍 -->
-      <div>
-        <h2 style="font-size:clamp(32px,4.5vw,54px);font-weight:900;letter-spacing:-.05em;line-height:1.05;margin-bottom:14px;color:var(--text)">
-          你好，我是<br>
-          <span style="background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Qin !</span>
-        </h2>
-        <div style="font-size:18px;font-weight:700;color:var(--sub);margin-bottom:20px">AI 产品运营实习生</div>
-        <p style="font-size:15px;color:var(--soft);line-height:2;margin-bottom:32px">
-          喜欢用数据和内容<br>
-          让好产品被更多人看见，<br>
-          也让用户的每一次使用更有价值。
-        </p>
-        <div style="display:flex;gap:24px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);font-weight:500"><span>📍</span>上海</div>
-          <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);font-weight:500"><span>🎓</span>硕士在读</div>
-          <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);font-weight:500"><span>❤️</span>热爱旅行 · 足球 &amp; 运营</div>
+<!-- ══ SEC 1: HOME ══ -->
+<div id="sec-home" style="max-width:100%;padding:0">
+  <div style="max-width:1280px;margin:0 auto;padding:48px 48px 32px">
+    <div class="hero-eyebrow">✦ AI Product Ops &amp; Travel Tech Builder</div>
+    <div class="hero-main">
+      <!-- left -->
+      <div class="hero-left">
+        <h1 class="hero-h1">把重复动作，<br>变成<span class="hl">可复用的能力</span></h1>
+        <p class="hero-sub">旅行规划产品方向 · Vibe Coding 实践</p>
+        <div class="hero-chips">
+          <span class="hero-chip"><span>⚡</span> AI Ops</span>
+          <span class="hero-chip"><span>📊</span> Data Insight</span>
+          <span class="hero-chip"><span>&lt;/&gt;</span> Vibe Coding</span>
+          <span class="hero-chip"><span>✈️</span> Travel Tech</span>
+        </div>
+        <div class="hero-meta-row">
+          <span class="hero-meta-item">📍 上海</span>
+          <span class="hero-meta-item">🎓 生物医学工程 · 硕士在读</span>
+          <span class="hero-meta-item">❤️ 热爱旅行</span>
+          <span class="hero-meta-item">⚽ 足球迷</span>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item"><div class="stat-val">17+</div><div class="stat-lbl">实验工具</div></div>
+          <div class="stat-item"><div class="stat-val">200+</div><div class="stat-lbl">运营场景沉淀</div></div>
+          <div class="stat-item"><div class="stat-val">∞</div><div class="stat-lbl">持续迭代中</div></div>
         </div>
       </div>
 
-      <!-- 中：SVG 人物 -->
-      <div style="display:flex;align-items:flex-end;justify-content:center">
-        <svg viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px">
-          <!-- body -->
-          <rect x="40" y="110" width="40" height="60" rx="8" fill="#3B5FC0"/>
-          <path d="M54 110 L60 122 L66 110" stroke="white" stroke-width="1.5" fill="none"/>
-          <!-- arms -->
-          <path d="M40 116 Q26 128 28 148" stroke="#3B5FC0" stroke-width="10" stroke-linecap="round"/>
-          <path d="M80 116 Q94 128 92 148" stroke="#3B5FC0" stroke-width="10" stroke-linecap="round"/>
-          <!-- cup -->
-          <rect x="86" y="138" width="13" height="18" rx="3" fill="#F0F4FF" stroke="#4A7BFF" stroke-width="1.2"/>
-          <ellipse cx="92" cy="138" rx="6.5" ry="2.5" fill="#4A7BFF" opacity=".4"/>
-          <line x1="92" y1="135" x2="92" y2="130" stroke="#4A7BFF" stroke-width="1.2" stroke-linecap="round"/>
-          <!-- legs -->
-          <rect x="44" y="165" width="13" height="28" rx="6" fill="#2a2a2a"/>
-          <rect x="63" y="165" width="13" height="28" rx="6" fill="#2a2a2a"/>
-          <ellipse cx="50" cy="192" rx="9" ry="4" fill="white"/>
-          <ellipse cx="69" cy="192" rx="9" ry="4" fill="white"/>
+      <!-- center: character illustration -->
+      <div class="hero-char" style="position:relative;padding:0 20px">
+        <svg viewBox="0 0 260 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- desk/laptop shadow -->
+          <ellipse cx="130" cy="295" rx="90" ry="12" fill="#4A7BFF" opacity=".06"/>
+          <!-- laptop body -->
+          <rect x="60" y="220" width="140" height="8" rx="4" fill="#d1d9f0"/>
+          <rect x="70" y="170" width="120" height="52" rx="6" fill="#e8ecf8"/>
+          <rect x="73" y="173" width="114" height="46" rx="4" fill="#c8d2f0"/>
+          <!-- apple logo on laptop -->
+          <text x="120" y="202" font-size="14" fill="white" opacity=".4" text-anchor="middle">⌘</text>
+          <!-- table -->
+          <rect x="30" y="226" width="200" height="10" rx="5" fill="#d4d9ee"/>
+          <!-- items on desk: soccer ball -->
+          <circle cx="195" cy="218" r="16" fill="white" stroke="#ddd" stroke-width="1"/>
+          <path d="M190 208 Q195 205 200 208" stroke="#333" stroke-width="1.2" fill="none"/>
+          <path d="M185 215 Q188 212 192 215" stroke="#333" stroke-width="1.2" fill="none"/>
+          <path d="M198 215 Q202 212 206 215" stroke="#333" stroke-width="1.2" fill="none"/>
+          <!-- camera -->
+          <rect x="45" y="208" width="26" height="18" rx="5" fill="#555"/>
+          <circle cx="58" cy="217" r="6" fill="#333"/>
+          <circle cx="58" cy="217" r="4" fill="#222"/>
+          <circle cx="58" cy="217" r="2" fill="#111"/>
+          <rect x="67" y="205" width="4" height="6" rx="2" fill="#555"/>
+          <!-- plan notebook -->
+          <rect x="100" y="240" width="55" height="40" rx="5" fill="#fff" stroke="#ddd" stroke-width="1"/>
+          <text x="127" y="257" font-size="9" fill="#888" text-anchor="middle" font-weight="600">Plan</text>
+          <line x1="108" y1="263" x2="148" y2="263" stroke="#eee" stroke-width="1"/>
+          <line x1="108" y1="268" x2="148" y2="268" stroke="#eee" stroke-width="1"/>
+          <line x1="108" y1="273" x2="140" y2="273" stroke="#eee" stroke-width="1"/>
+          <!-- map pin -->
+          <path d="M162 250 Q162 240 170 240 Q178 240 178 250 Q178 258 170 268 Q162 258 162 250Z" fill="#EA580C" opacity=".8"/>
+          <circle cx="170" cy="249" r="3.5" fill="white"/>
+          <!-- body legs -->
+          <rect x="108" y="268" width="16" height="30" rx="7" fill="#2a2a2a"/>
+          <rect x="133" y="268" width="16" height="30" rx="7" fill="#2a2a2a"/>
+          <ellipse cx="116" cy="298" rx="10" ry="5" fill="white"/>
+          <ellipse cx="141" cy="298" rx="10" ry="5" fill="white"/>
+          <!-- body/clothes -->
+          <path d="M95 200 Q95 160 130 158 Q165 160 165 200 L162 268 L98 268Z" fill="#3B5FC0"/>
+          <path d="M110 160 L130 178 L150 160" stroke="white" stroke-width="1.5" fill="none"/>
+          <!-- left arm pointing at laptop -->
+          <path d="M95 180 Q75 190 72 205" stroke="#3B5FC0" stroke-width="12" stroke-linecap="round"/>
+          <ellipse cx="70" cy="208" rx="8" ry="9" fill="#FDDBB0"/>
+          <!-- right arm: cup -->
+          <path d="M165 180 Q185 185 190 195" stroke="#3B5FC0" stroke-width="12" stroke-linecap="round"/>
+          <rect x="183" y="190" width="14" height="20" rx="3" fill="#F0F4FF" stroke="#4A7BFF" stroke-width="1.2"/>
+          <ellipse cx="190" cy="190" rx="7" ry="2.5" fill="#4A7BFF" opacity=".4"/>
+          <line x1="190" y1="187" x2="190" y2="182" stroke="#4A7BFF" stroke-width="1.2" stroke-linecap="round"/>
           <!-- neck -->
-          <rect x="54" y="100" width="12" height="14" rx="5" fill="#FDDBB0"/>
+          <rect x="122" y="148" width="16" height="14" rx="6" fill="#FDDBB0"/>
           <!-- head -->
-          <ellipse cx="60" cy="78" rx="26" ry="28" fill="#2a2a2a"/>
-          <ellipse cx="60" cy="82" rx="22" ry="23" fill="#FDDBB0"/>
-          <!-- hair front -->
-          <ellipse cx="60" cy="57" rx="24" ry="14" fill="#2a2a2a"/>
-          <path d="M36 66 Q34 80 36 95" fill="#2a2a2a"/>
-          <path d="M84 66 Q86 80 84 95" fill="#2a2a2a"/>
-          <!-- long hair -->
-          <path d="M36 72 Q28 100 32 130" stroke="#2a2a2a" stroke-width="11" stroke-linecap="round" fill="none"/>
-          <path d="M84 72 Q92 100 88 130" stroke="#2a2a2a" stroke-width="11" stroke-linecap="round" fill="none"/>
+          <ellipse cx="130" cy="105" rx="38" ry="42" fill="#2a2a2a"/>
+          <ellipse cx="130" cy="112" rx="32" ry="34" fill="#FDDBB0"/>
+          <!-- hair -->
+          <ellipse cx="130" cy="72" rx="36" ry="22" fill="#2a2a2a"/>
+          <path d="M92 100 Q84 130 88 170" stroke="#2a2a2a" stroke-width="16" stroke-linecap="round" fill="none"/>
+          <path d="M168 100 Q176 130 172 170" stroke="#2a2a2a" stroke-width="16" stroke-linecap="round" fill="none"/>
           <!-- glasses on head -->
-          <path d="M46 53 Q51 50 56 53" stroke="#aaa" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <path d="M64 53 Q69 50 74 53" stroke="#aaa" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <line x1="56" y1="52" x2="64" y2="52" stroke="#aaa" stroke-width="1.2"/>
+          <path d="M112 68 Q120 64 128 68" stroke="#aaa" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M132 68 Q140 64 148 68" stroke="#aaa" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <line x1="128" y1="66" x2="132" y2="66" stroke="#aaa" stroke-width="1.5"/>
           <!-- eyes -->
-          <ellipse cx="51" cy="78" rx="5.5" ry="6" fill="white"/>
-          <ellipse cx="69" cy="78" rx="5.5" ry="6" fill="white"/>
-          <ellipse cx="51" cy="79" rx="4" rx2="4" ry="4.5" fill="#2a2a2a"/>
-          <ellipse cx="69" cy="79" rx="4" ry="4.5" fill="#2a2a2a"/>
-          <circle cx="52.5" cy="77" r="1.3" fill="white"/>
-          <circle cx="70.5" cy="77" r="1.3" fill="white"/>
+          <ellipse cx="118" cy="110" rx="7" ry="8" fill="white"/>
+          <ellipse cx="142" cy="110" rx="7" ry="8" fill="white"/>
+          <ellipse cx="118" cy="111" rx="5" ry="6" fill="#2a2a2a"/>
+          <ellipse cx="142" cy="111" rx="5" ry="6" fill="#2a2a2a"/>
+          <circle cx="120" cy="108" r="1.8" fill="white"/>
+          <circle cx="144" cy="108" r="1.8" fill="white"/>
+          <!-- eyelash -->
+          <path d="M111 106 Q114 103 118 105" stroke="#2a2a2a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M136 106 Q139 103 143 105" stroke="#2a2a2a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
           <!-- blush -->
-          <ellipse cx="43" cy="85" rx="5" ry="3" fill="#FFB6C1" opacity=".5"/>
-          <ellipse cx="77" cy="85" rx="5" ry="3" fill="#FFB6C1" opacity=".5"/>
+          <ellipse cx="108" cy="120" rx="7" ry="4" fill="#FFB6C1" opacity=".45"/>
+          <ellipse cx="152" cy="120" rx="7" ry="4" fill="#FFB6C1" opacity=".45"/>
+          <!-- nose -->
+          <path d="M128 124 Q130 127 132 124" stroke="#E8B89A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
           <!-- mouth -->
-          <path d="M54 92 Q60 97 66 92" stroke="#E8A080" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M122 131 Q130 137 138 131" stroke="#E8A080" stroke-width="2" fill="none" stroke-linecap="round"/>
           <!-- necklace -->
-          <path d="M50 110 Q60 118 70 110" stroke="#B0C4FF" stroke-width="1.2" fill="none"/>
-          <circle cx="60" cy="118" r="3" fill="#4A7BFF" opacity=".7"/>
-          <!-- hand on cheek -->
-          <ellipse cx="35" cy="88" rx="9" ry="10" fill="#FDDBB0"/>
-          <path d="M30 82 Q26 88 30 95" stroke="#FDDBB0" stroke-width="5" stroke-linecap="round"/>
+          <path d="M112 158 Q130 165 148 158" stroke="#B0C4FF" stroke-width="1.5" fill="none"/>
+          <circle cx="130" cy="166" r="4" fill="#4A7BFF" opacity=".7"/>
+          <!-- earring -->
+          <circle cx="91" cy="118" r="3" fill="#4A7BFF" opacity=".6"/>
           <!-- sparkles -->
-          <text x="96" y="65" font-size="12" fill="#4A7BFF" opacity=".7">✦</text>
-          <text x="10" y="100" font-size="9" fill="#7B5EF8" opacity=".5">✦</text>
-          <text x="88" y="100" font-size="8" fill="#4A7BFF" opacity=".4">·</text>
+          <text x="200" y="90" font-size="14" fill="#4A7BFF" opacity=".6">✦</text>
+          <text x="50" y="140" font-size="10" fill="#7B5EF8" opacity=".5">✦</text>
+          <text x="210" y="155" font-size="8" fill="#4A7BFF" opacity=".4">·</text>
         </svg>
-      </div>
 
-      <!-- 右：标签卡 + 金句卡 -->
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <!-- 标签卡 -->
-        <div style="background:rgba(255,255,255,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow);padding:22px">
-          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:16px">我的标签 <span style="color:var(--blue)">#</span></div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <span style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;background:#EEF3FF;color:#4A7BFF;border:1px solid #D6E2FF">AI 产品运营</span>
-            <span style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;background:#F3F0FF;color:#7B5EF8;border:1px solid #DDD6FE">内容增长</span>
-            <span style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;background:#ECFDF5;color:#059669;border:1px solid #A7F3D0">数据分析</span>
-            <span style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;background:#FFF7ED;color:#EA580C;border:1px solid #FED7AA">用户增长</span>
-            <span style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;background:#FFF0F6;color:#DB2777;border:1px solid #FBCFE8">达人运营</span>
-            <span style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;background:#F1F5F9;color:#475569;border:1px solid #CBD5E1">旅行爱好者</span>
-            <span style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;background:#FFFBEB;color:#D97706;border:1px solid #FDE68A">足球迷</span>
+        <!-- floating cards -->
+        <div class="float-card fc-insight" style="top:10px;left:0">
+          <div style="font-size:9px;color:var(--soft);font-weight:600;margin-bottom:4px">Data Insight</div>
+          <div class="fc-val">98</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:4px">
+            <span style="font-size:10px;color:#059669;font-weight:700">+23.5%</span>
           </div>
         </div>
-        <!-- 金句卡 -->
-        <div style="background:linear-gradient(135deg,rgba(74,123,255,.08),rgba(123,94,248,.06));border:1px solid rgba(74,123,255,.18);border-radius:20px;padding:22px 24px">
-          <div style="font-size:15px;font-weight:700;color:var(--text);line-height:1.8;letter-spacing:-.01em">
-            <span style="color:var(--blue);font-size:22px;font-weight:900;line-height:1">&ldquo;&nbsp;</span>
+        <div class="float-card fc-travel" style="top:15px;right:0">
+          <div style="font-size:9px;color:var(--soft);font-weight:600">下一站</div>
+          <div class="fc-dest">北海道</div>
+          <div style="font-size:9px;color:var(--blue);background:var(--blue-lt);border-radius:4px;padding:2px 6px;margin-top:4px;display:inline-block">Travel Plan</div>
+        </div>
+        <div class="float-card fc-ideas" style="bottom:100px;right:0">
+          <div style="font-size:9px;font-weight:800;color:var(--text);margin-bottom:4px">Ideas</div>
+          <div class="fc-item">AI 自动化</div>
+          <div class="fc-item">数据分析</div>
+          <div class="fc-item">产品优化</div>
+        </div>
+      </div>
+
+      <!-- right: tags + quote -->
+      <div class="hero-right">
+        <div class="glass-card">
+          <div class="gc-title">我的标签 <span class="gc-hash">#</span></div>
+          <div class="tag-wrap">
+            <span class="badge bd-b">AI 产品运营</span>
+            <span class="badge bd-p">内容增长</span>
+            <span class="badge bd-g">数据分析</span>
+            <span class="badge bd-o">用户增长</span>
+            <span class="badge bd-pk">达人运营</span>
+            <span class="badge bd-s">海外社媒</span>
+            <span class="badge bd-y">旅行爱好者</span>
+            <span class="badge bd-c">足球迷</span>
+          </div>
+        </div>
+        <div class="quote-box">
+          <div class="quote-text">
+            <span class="quote-mark">"</span>
             用内容连接用户，<br>用数据驱动增长。
-            <span style="color:var(--blue);font-size:22px;font-weight:900;line-height:1">&nbsp;&rdquo;</span>
+            <span class="quote-mark">"</span>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BOTTOM 3 CARDS -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-
-      <!-- 实习经历 -->
-      <div style="background:rgba(255,255,255,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow);padding:24px;transition:all .22s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--shadow-h)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
-          <span style="font-size:18px">🏢</span>
-          <span style="font-size:15px;font-weight:800;color:var(--text)">实习经历</span>
-        </div>
-        <!-- 小红书 -->
-        <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,.06)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <div style="width:30px;height:30px;border-radius:8px;background:#FF2442;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:700;flex-shrink:0">书</div>
-            <div style="flex:1;min-width:0">
-              <div style="font-size:12px;font-weight:700;color:var(--text)">小红书 · AI 产品运营实习生</div>
-              <div style="font-size:11px;color:var(--soft)">圆周旅途（旅行规划类产品）</div>
+          <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:10px;gap:6px">
+            <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;border:2px solid var(--blue-lt)">
+              <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="14" fill="url(#qg)"/><ellipse cx="14" cy="12" rx="6" ry="6.5" fill="#FDDBB0"/><path d="M8 12 Q8.5 5 14 5 Q19.5 5 20 12" fill="#2a2a2a"/><defs><linearGradient id="qg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#B9CFFF"/><stop offset="1" stop-color="#7B5EF8"/></linearGradient></defs></svg>
             </div>
-            <span style="font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-lt);padding:2px 8px;border-radius:100px;white-space:nowrap;flex-shrink:0">2025.04 — 至今</span>
-          </div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.7;padding-left:38px">
-            · 负责地点合集新功能上线运营，设计冷启动与内容供给策略<br>
-            · 参与世界杯、暑期等重点场景增长项目，搭建内容到 AI 规划的转化链路
-          </div>
-        </div>
-        <!-- 传音 -->
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <div style="width:30px;height:30px;border-radius:8px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;flex-shrink:0">T</div>
-            <div style="flex:1;min-width:0">
-              <div style="font-size:12px;font-weight:700;color:var(--text)">传音控股 · AI 产品运营实习生</div>
-              <div style="font-size:11px;color:var(--soft)">Ella AI 手机助手</div>
-            </div>
-            <span style="font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-lt);padding:2px 8px;border-radius:100px;white-space:nowrap;flex-shrink:0">2025.03—06</span>
-          </div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.7;padding-left:38px">
-            · 负责足球世界杯场景运营，搭建赛事互动链路与端内运营阵地<br>
-            · 设计 AIGC 图生视频玩法，结合热点本地化运营提升用户活跃
+            <span style="font-size:11px;color:var(--soft);font-weight:600">Qin · AI产品运营</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- 我擅长的事 -->
-      <div style="background:rgba(255,255,255,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow);padding:24px;transition:all .22s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--shadow-h)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
-          <span style="font-size:18px">👍</span>
-          <span style="font-size:15px;font-weight:800;color:var(--text)">我擅长的事</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="width:30px;height:30px;border-radius:8px;background:#EEF3FF;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">💡</div>
-            <div><div style="font-size:12px;font-weight:700;color:var(--text)">产品思维</div><div style="font-size:11px;color:var(--soft);line-height:1.6">从用户需求出发，拆解问题，找到增长机会点</div></div>
-          </div>
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="width:30px;height:30px;border-radius:8px;background:#F3F0FF;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📊</div>
-            <div><div style="font-size:12px;font-weight:700;color:var(--text)">数据分析</div><div style="font-size:11px;color:var(--soft);line-height:1.6">关注核心指标，用数据驱动策略优化</div></div>
-          </div>
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="width:30px;height:30px;border-radius:8px;background:#ECFDF5;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">✍️</div>
-            <div><div style="font-size:12px;font-weight:700;color:var(--text)">内容策略</div><div style="font-size:11px;color:var(--soft);line-height:1.6">设计内容供给与分发机制，提升内容效率</div></div>
-          </div>
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="width:30px;height:30px;border-radius:8px;background:#FFF7ED;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🚀</div>
-            <div><div style="font-size:12px;font-weight:700;color:var(--text)">项目执行</div><div style="font-size:11px;color:var(--soft);line-height:1.6">推动跨团队协作，把想法落地验证效果</div></div>
-          </div>
-        </div>
+    <!-- scroll hint -->
+    <div style="text-align:center;margin-top:32px;opacity:.5;cursor:pointer" onclick="document.getElementById('sec-tools').scrollIntoView({behavior:'smooth'})">
+      <span style="font-size:11px;color:var(--soft);letter-spacing:.1em;font-weight:600">EXPLORE</span>
+      <svg style="display:block;margin:6px auto 0;width:18px;height:18px;stroke:var(--soft);fill:none;stroke-width:1.8;stroke-linecap:round;animation:bounce 2s infinite" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SEC 2: THREE BIG CARDS ══ -->
+<div id="sec-tools" style="background:var(--bg)">
+  <div style="max-width:1280px;margin:0 auto;padding:64px 48px">
+    <div class="sec-header">
+      <div>
+        <h2 class="sec-h2">三块工具 <span style="font-size:20px">✨</span></h2>
+        <p class="sec-sub">从真实问题出发，把工具做成可复用能力。</p>
       </div>
+    </div>
 
-      <!-- 生活里的我 -->
-      <div style="background:rgba(255,255,255,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow);padding:24px;transition:all .22s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='var(--shadow-h)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
-          <span style="font-size:18px">🌟</span>
-          <span style="font-size:15px;font-weight:800;color:var(--text)">生活里的我</span>
+    <div class="big-slider-wrap">
+      <div class="big-slider" id="bigSlider">
+
+        <!-- 日常提效 -->
+        <div class="big-card bc-blue" onclick="switchDetail(0)">
+          <div class="bc-top">
+            <div class="bc-icon bc-icon-b">⚡</div>
+          </div>
+          <div class="bc-title" style="color:#1a1f36">日常提效</div>
+          <div class="bc-count bc-count-b">6 个实验工具</div>
+          <div class="bc-desc">解决高频日常场景，提升个人与团队效率。</div>
+          <div class="bc-list">
+            <div class="bc-item"><div class="bc-item-icon" style="background:#EEF3FF">📋</div>会议纪要拆解器</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#EEF3FF">✉️</div>邮件润色</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#EEF3FF">📅</div>每日复盘</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#EEF3FF">🖨️</div>打印机识别黑白</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#EEF3FF">👥</div>人群圈选助手</div>
+            <div style="font-size:12px;color:var(--muted);padding-left:32px">…</div>
+          </div>
+          <button class="bc-btn bc-btn-b" onclick="event.stopPropagation();switchDetail(0)">探索工具 →</button>
+          <div class="bc-deco">⚡</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="font-size:22px;width:30px;text-align:center;flex-shrink:0">✈️</div>
-            <div><div style="font-size:12px;font-weight:700;color:var(--text)">旅行探索</div><div style="font-size:11px;color:var(--soft);line-height:1.6">热爱探索不同城市，收集美好体验</div></div>
+
+        <!-- 数据洞察 -->
+        <div class="big-card bc-green" onclick="switchDetail(1)">
+          <div class="bc-top">
+            <div class="bc-icon bc-icon-g">📊</div>
           </div>
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="font-size:22px;width:30px;text-align:center;flex-shrink:0">⚽</div>
-            <div><div style="font-size:12px;font-weight:700;color:var(--text)">足球爱好者</div><div style="font-size:11px;color:var(--soft);line-height:1.6">看球、写内容、做账号，运营自己的足球自媒体</div></div>
+          <div class="bc-title" style="color:#1a1f36">数据洞察</div>
+          <div class="bc-count bc-count-g">5 个数据分析工具</div>
+          <div class="bc-desc">从数据中发现机会，用洞察驱动决策。</div>
+          <div class="bc-list">
+            <div class="bc-item"><div class="bc-item-icon" style="background:#ECFDF5">📈</div>数据解读助手</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#ECFDF5">📝</div>周报生成器</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#ECFDF5">🔍</div>竞品洞察</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#ECFDF5">🔬</div>A/B 实验方案</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#ECFDF5">🎯</div>人群筛选器</div>
           </div>
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="font-size:22px;width:30px;text-align:center;flex-shrink:0">💻</div>
-            <div><div style="font-size:12px;font-weight:700;color:var(--text)">Vibe Coding</div><div style="font-size:11px;color:var(--soft);line-height:1.6">用 AI 把想法快速变成可以用的工具和页面</div></div>
-          </div>
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="font-size:22px;width:30px;text-align:center;flex-shrink:0">📚</div>
-            <div><div style="font-size:12px;font-weight:700;color:var(--text)">持续学习</div><div style="font-size:11px;color:var(--soft);line-height:1.6">关注 AI、产品、市场，保持好奇与成长</div></div>
-          </div>
+          <button class="bc-btn bc-btn-g" onclick="event.stopPropagation();switchDetail(1)">查看洞察 →</button>
+          <div class="bc-deco">📊</div>
         </div>
+
+        <!-- 活动 Demo -->
+        <div class="big-card bc-orange" onclick="switchDetail(2)">
+          <div class="bc-top">
+            <div class="bc-icon bc-icon-o">🎁</div>
+          </div>
+          <div class="bc-title" style="color:#1a1f36">活动 Demo</div>
+          <div class="bc-count bc-count-o">6 个创意项目</div>
+          <div class="bc-desc">从想法到落地，探索有趣的产品实验。</div>
+          <div class="bc-list">
+            <div class="bc-item"><div class="bc-item-icon" style="background:#FFF7ED">🗺️</div>AI 多方案对比</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#FFF7ED">📍</div>AI 地点整理助手</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#FFF7ED">🔮</div>塔罗命运旅途</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#FFF7ED">🌍</div>我的旅行足迹</div>
+            <div class="bc-item"><div class="bc-item-icon" style="background:#FFF7ED">👑</div>旅行达人鉴定</div>
+            <div style="font-size:12px;color:var(--muted);padding-left:32px">…</div>
+          </div>
+          <button class="bc-btn bc-btn-o" onclick="event.stopPropagation();switchDetail(2)">查看 Demo →</button>
+          <div class="bc-deco">🪐</div>
+        </div>
+
       </div>
-
-    </div><!-- end bottom 3 -->
-
-    <!-- scroll down -->
-    <div style="text-align:center;margin-top:32px;cursor:pointer;opacity:.5" onclick="goContent(0)" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='.5'">
-      <span style="font-size:11px;color:var(--soft);letter-spacing:.1em;text-transform:uppercase;font-weight:600">查看 AI 工具集</span>
-      <svg style="display:block;margin:6px auto 0;width:18px;height:18px;stroke:var(--soft);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:bounce 2s infinite" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-
-  </div>
-</section>
-
-<!-- PAGE 3: TOOLS -->
-<section class="page-tools" id="page-tools">
-  <div class="tabs-wrap">
-    <div class="tab-row">
-      <button class="tb-btn on" id="tb0" onclick="switchTab(0)">⚡ 日常提效</button>
-      <button class="tb-btn"    id="tb1" onclick="switchTab(1)">📊 数据洞察</button>
-      <button class="tb-btn"    id="tb2" onclick="switchTab(2)">🎪 活动 Demo</button>
+      <div class="slider-dots" id="bigDots">
+        <div class="dot on" onclick="slideTo(0)"></div>
+        <div class="dot" onclick="slideTo(1)"></div>
+        <div class="dot" onclick="slideTo(2)"></div>
+      </div>
+      <div class="slider-hint">← 左右滑动或点击卡片切换 →</div>
     </div>
   </div>
+</div>
 
-  <div class="tc show cw" id="tc0">
-    <div class="sl"><div class="sl-dot" style="background:#4A7BFF"></div><span class="sl-name">日常提效</span><span class="sl-count" style="background:#EEF3FF;color:#4A7BFF">6 个</span><div class="sl-line"></div></div>
-    <div class="grid g3" id="g-daily"></div>
-  </div>
+<!-- ══ SEC 3: TOOL DETAIL ══ -->
+<div id="sec-detail" style="background:rgba(255,255,255,.4);border-top:1px solid var(--line)">
+  <div style="max-width:1280px;margin:0 auto;padding:64px 48px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px">
+      <div>
+        <h2 class="sec-h2" style="font-size:28px">精选工具</h2>
+        <p class="sec-sub">从实际场景中构建的 AI 工具集合</p>
+      </div>
+      <div class="sec-more">查看全部工具 →</div>
+    </div>
+    <div class="detail-tabs">
+      <button class="dtab on" id="dt0" onclick="switchDetail(0)">⚡ 日常提效</button>
+      <button class="dtab" id="dt1" onclick="switchDetail(1)">📊 数据洞察</button>
+      <button class="dtab" id="dt2" onclick="switchDetail(2)">🎁 活动 Demo</button>
+    </div>
 
-  <div class="tc cw" id="tc1">
-    <div class="sl"><div class="sl-dot" style="background:#7B5EF8"></div><span class="sl-name">数据洞察</span><span class="sl-count" style="background:#F3F0FF;color:#7B5EF8">5 个</span><div class="sl-line"></div></div>
-    <div class="grid g3" id="g-data"></div>
-  </div>
+    <!-- 日常提效 -->
+    <div class="dtab-panel show" id="dp0">
+      <div class="tool-grid" id="tg-daily"></div>
+    </div>
 
-  <div class="tc cw" id="tc2">
-    <div class="sl"><div class="sl-dot" style="background:#E11D48"></div><span class="sl-name">活动 Demo</span><span class="sl-count" style="background:#FFF0F3;color:#E11D48">6 个</span><div class="sl-line"></div></div>
-    <div class="act-row">
-      <div><div class="act-col-lbl">📱 App 端</div><div class="app-grid" id="g-app"></div></div>
-      <div><div class="act-col-lbl">💻 Web 端</div><div id="g-web"></div></div>
+    <!-- 数据洞察 -->
+    <div class="dtab-panel" id="dp1">
+      <div class="tool-grid" id="tg-data"></div>
+    </div>
+
+    <!-- 活动 Demo -->
+    <div class="dtab-panel" id="dp2">
+      <div class="act-label">📱 App 端</div>
+      <div class="act-slider" id="appSlider"></div>
+      <div class="act-label" style="margin-top:28px">💻 Web 端</div>
+      <div class="web-slider" id="webSlider"></div>
     </div>
   </div>
+</div>
 
-  <footer>08 Studio &nbsp;·&nbsp; AI 工具集 &nbsp;·&nbsp; <a href="mailto:qinlinbo5@gmail.com">qinlinbo5@gmail.com</a> &nbsp;·&nbsp; <a href="https://github.com/qlb708/08" target="_blank">GitHub</a></footer>
-</section>
+<!-- ══ SEC 4: ABOUT ══ -->
+<div id="sec-about" style="background:rgba(255,255,255,.5);border-top:1px solid var(--line)">
+  <div style="max-width:1280px;margin:0 auto;padding:48px;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center">
+    <div style="display:flex;align-items:center;gap:20px;flex-shrink:0">
+      <div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:var(--shadow)">
+        <svg viewBox="0 0 72 72" fill="none"><circle cx="36" cy="36" r="36" fill="url(#ag)"/><ellipse cx="36" cy="30" rx="16" ry="17" fill="#FDDBB0"/><path d="M20 30 Q21 12 36 12 Q51 12 52 30" fill="#2a2a2a"/><ellipse cx="36" cy="31" rx="15" ry="16" fill="#FDDBB0"/><ellipse cx="36" cy="18" rx="17" ry="10" fill="#2a2a2a"/><circle cx="30" cy="31" r="3.5" fill="#2a2a2a"/><circle cx="42" cy="31" r="3.5" fill="#2a2a2a"/><path d="M30 40 Q36 44 42 40" stroke="#E8A080" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="27" y="46" width="18" height="26" rx="6" fill="#3B5FC0"/><defs><linearGradient id="ag" x1="0" y1="0" x2="72" y2="72"><stop stop-color="#B9CFFF"/><stop offset="1" stop-color="#7B5EF8"/></linearGradient></defs></svg>
+      </div>
+      <div>
+        <div style="font-size:17px;font-weight:900;letter-spacing:-.03em;margin-bottom:4px">Hi，我是 Qin 👋</div>
+        <p style="font-size:12px;color:var(--soft);line-height:1.75;max-width:240px">产品运营背景，擅长从实际问题出发，用 AI 和数据解决复杂场景，持续构建可复用的工具与方法。</p>
+        <a href="mailto:qinlinbo5@gmail.com" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--blue);margin-top:10px;cursor:pointer">
+          了解更多关于我 →
+        </a>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--text);margin-bottom:10px">⭐ 产品运营</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>用户增长</li>
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>活动策划</li>
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>数据驱动决策</li>
+        </ul>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--text);margin-bottom:10px">📊 数据分析</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>用户行为分析</li>
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>数据可视化</li>
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>洞察输出</li>
+        </ul>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--text);margin-bottom:10px">🤖 AI &amp; 自动化</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>AI 工具实践</li>
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>Prompt 优化</li>
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>流程自动化</li>
+        </ul>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--text);margin-bottom:10px">✈️ 旅行 &amp; 生活</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>旅行规划</li>
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>足迹记录</li>
+          <li style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:5px"><span style="color:var(--blue);font-size:10px;font-weight:700">→</span>生活探索</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- FOOTER -->
+<footer style="background:rgba(255,255,255,.6);border-top:1px solid var(--line);padding:20px 48px;display:flex;align-items:center;justify-content:space-between">
+  <span style="font-size:11px;color:var(--muted)">© 2025 Qin's Portfolio. All rights reserved.</span>
+  <span style="font-size:13px;color:var(--soft);font-style:italic">Keep learning, keep exploring. ♡</span>
+  <div style="display:flex;gap:18px;align-items:center">
+    <a href="#" style="font-size:11px;font-weight:700;color:var(--soft);display:flex;align-items:center;gap:4px">小红书</a>
+    <a href="#" style="font-size:11px;font-weight:700;color:var(--soft);display:flex;align-items:center;gap:4px">知 乎</a>
+    <a href="#" style="font-size:11px;font-weight:700;color:var(--soft);display:flex;align-items:center;gap:4px">B 站</a>
+    <a href="mailto:qinlinbo5@gmail.com" style="font-size:11px;font-weight:700;color:var(--soft);display:flex;align-items:center;gap:4px">邮箱</a>
+  </div>
+</footer>
+
+<style>
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+</style>
 <script>
-var ARR='<svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
+var ARR='<svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
+
 var DAILY=[
-  {t:'会议纪要拆解器',d:'粘贴会议记录，AI 提炼结论、待办、决策与风险，五象限结构化输出。',url:'/08/works/meeting-parser/',tag:'会议',color:'#4A7BFF',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'},
-  {t:'邮件 / 消息润色',d:'口语想法变专业表达，四种语气，自动生成多个备选版本。',url:'/08/works/email-polisher/',tag:'润色',color:'#F59E0B',icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'},
-  {t:'每日复盘',d:'引导式复盘问题，三分钟记录当天亮点、问题和明日计划。',url:'/08/works/daily-review/',tag:'复盘',color:'#8B5CF6',icon:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
-  {t:'打印机识别黑白',d:'上传图片/PDF，AI 识别可以黑白打印的内容，节省彩色耗材。',url:'/08/works/print-detect/',tag:'工具',color:'#6B7280',icon:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'},
-  {t:'人群圈选助手',d:'描述目标人群，AI 生成标签组合与圈选策略，支持导出标签包。',url:'/08/works/audience-select/',tag:'圈选',color:'#10B981',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'},
+  {t:'会议纪要拆解器',d:'粘贴会议记录，AI 提炼结论、待办、决策与风险，五象限结构化输出。',url:'#',tag:'会议',color:'#4A7BFF',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'},
+  {t:'邮件 / 消息润色',d:'口语想法变专业表达，四种语气，自动生成多个备选版本。',url:'#',tag:'润色',color:'#F59E0B',icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'},
+  {t:'每日复盘',d:'引导式复盘问题，三分钟记录当天亮点、问题和明日计划。',url:'#',tag:'复盘',color:'#8B5CF6',icon:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
+  {t:'打印机识别黑白',d:'上传图片/PDF，AI 识别可以黑白打印的内容，节省彩色耗材。',url:'#',tag:'工具',color:'#6B7280',icon:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'},
+  {t:'人群圈选助手',d:'描述目标人群，AI 生成标签组合与圈选策略，支持导出标签包。',url:'#',tag:'圈选',color:'#10B981',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'},
   null
 ];
 var DATA=[
-  {t:'数据解读助手',d:'粘贴产品数据，AI 健康诊断 + 根因分析 + 实验方案，读懂数字背后信号。',url:'/08/works/data-insight/',tag:'诊断',color:'#4A7BFF',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
-  {t:'周报生成器',d:'输入核心数据和达成情况，AI 生成结构化周报，含亮点、问题和下周计划。',url:'/08/works/weekly-report/',tag:'周报',color:'#8B5CF6',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>'},
-  {t:'竞品洞察',d:'粘贴竞品文章/功能描述，AI 提炼差异点、优劣势对比，输出洞察报告。',url:'/08/works/competitor/',tag:'竞品',color:'#EF4444',icon:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>'},
-  {t:'A/B 实验方案',d:'描述问题与假设，AI 生成实验变量、评估指标和显著性检验方案。',url:'/08/works/ab-plan/',tag:'实验',color:'#F59E0B',icon:'<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/>'},
-  {t:'人群筛选器',d:'上传名单，过滤低活跃、商业号、负向处置账号，导出干净人群包。',url:'/08/works/audience-filter/',tag:'筛选',color:'#10B981',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'}
+  {t:'数据解读助手',d:'粘贴产品数据，AI 健康诊断 + 根因分析 + 实验方案，读懂数字背后信号。',url:'#',tag:'诊断',color:'#4A7BFF',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+  {t:'周报生成器',d:'输入核心数据和达成情况，AI 生成结构化周报，含亮点、问题和下周计划。',url:'#',tag:'周报',color:'#8B5CF6',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/>'},
+  {t:'竞品洞察',d:'粘贴竞品文章/功能描述，AI 提炼差异点、优劣势对比，输出洞察报告。',url:'#',tag:'竞品',color:'#EF4444',icon:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>'},
+  {t:'A/B 实验方案',d:'描述问题与假设，AI 生成实验变量、评估指标和显著性检验方案。',url:'#',tag:'实验',color:'#F59E0B',icon:'<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/>'},
+  {t:'人群筛选器',d:'上传名单，过滤低活跃、商业号、负向处置账号，导出干净人群包。',url:'#',tag:'筛选',color:'#10B981',icon:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'}
 ];
 var APP_DEMOS=[
   {cover:'🔮',badge:'玄学占卜',t:'命运之地 × 问天机',d:'城市命运测定 + 三式问卜仪式。',url:'/08/activity/fortune/',bg:'linear-gradient(160deg,#1a1a2e,#2d1b69,#3b0764)',bc:'rgba(167,139,250,.18)',bct:'#a78bfa'},
@@ -792,15 +686,85 @@ var WEB_DEMOS=[
   {em:'📍',t:'AI 地点整理助手',d:'多人不同城市出发，AI 计算最优会合城市。',url:'/08/web/midpoint/',bg:'#F3F0FF'},
   {em:'🔮',t:'塔罗命运旅途',d:'手势 or 鼠标两种模式抽牌，三张牌解读命运旅途。',url:'/08/web/tarot/',bg:'#1a1a2e'}
 ];
-function renderTools(list,el){el.innerHTML=list.map(function(t){if(!t)return '<div class="card-empty"><div class="card-empty-em">✦</div><div class="card-empty-t">即将上线</div></div>';return '<a href="'+t.url+'" class="card"><div class="card-top"><div class="card-ic" style="background:'+t.color+'14"><svg viewBox="0 0 24 24" style="stroke:'+t.color+'">'+t.icon+'</svg></div><span class="card-arr" style="background:'+t.color+'">'+ARR+'</span></div><div class="card-t">'+t.t+'</div><div class="card-d">'+t.d+'</div><div class="card-foot"><span class="card-tag" style="background:'+t.color+'12;color:'+t.color+'">'+t.tag+'</span></div></a>';}).join('');}
-function renderApp(list,el){el.innerHTML=list.map(function(a){return '<a href="'+a.url+'" class="acard"><div class="acard-chrome"><div class="acard-notch"></div></div><div class="acard-cover" style="background:'+a.bg+'">'+a.cover+'</div><div class="acard-body"><span class="acard-badge" style="background:'+a.bc+';color:'+a.bct+'">'+a.badge+'</span><div class="acard-t">'+a.t+'</div><div class="acard-d">'+a.d+'</div><div class="acard-go"><span class="acard-dot">'+ARR+'</span></div></div></a>';}).join('');}
-function renderWeb(list,el){el.innerHTML=list.map(function(w){return '<a href="'+w.url+'" class="wcard"><div class="wcard-ic" style="background:'+w.bg+'">'+w.em+'</div><div class="wcard-body"><div class="wcard-t">'+w.t+'</div><div class="wcard-d">'+w.d+'</div></div><span class="wcard-arr">'+ARR+'</span></a>';}).join('');}
-renderTools(DAILY,document.getElementById('g-daily'));
-renderTools(DATA,document.getElementById('g-data'));
-renderApp(APP_DEMOS,document.getElementById('g-app'));
-renderWeb(WEB_DEMOS,document.getElementById('g-web'));
-function switchTab(i){[0,1,2].forEach(function(j){document.getElementById('tc'+j).classList.toggle('show',j===i);document.getElementById('tb'+j).classList.toggle('on',j===i);});}
-function goContent(i){switchTab(i);document.getElementById('page-tools').scrollIntoView({behavior:'smooth'});}
+
+function renderDaily(){
+  var el=document.getElementById('tg-daily');
+  el.innerHTML=DAILY.map(function(t){
+    if(!t)return '<div class="tool-empty"><div class="em">✦</div><div class="et">即将上线</div></div>';
+    return '<a href="'+t.url+'" class="tool-card"><div class="tc-top"><div class="tc-icon" style="background:'+t.color+'14"><svg viewBox="0 0 24 24" style="stroke:'+t.color+'">'+t.icon+'</svg></div><span class="tc-arr" style="background:'+t.color+'">'+ARR+'</span></div><div class="tc-name">'+t.t+'</div><div class="tc-desc">'+t.d+'</div><div class="tc-foot"><span class="tc-tag" style="background:'+t.color+'12;color:'+t.color+'">'+t.tag+'</span></div></a>';
+  }).join('');
+}
+function renderData(){
+  var el=document.getElementById('tg-data');
+  el.innerHTML=DATA.map(function(t){
+    return '<a href="'+t.url+'" class="tool-card"><div class="tc-top"><div class="tc-icon" style="background:'+t.color+'14"><svg viewBox="0 0 24 24" style="stroke:'+t.color+'">'+t.icon+'</svg></div><span class="tc-arr" style="background:'+t.color+'">'+ARR+'</span></div><div class="tc-name">'+t.t+'</div><div class="tc-desc">'+t.d+'</div><div class="tc-foot"><span class="tc-tag" style="background:'+t.color+'12;color:'+t.color+'">'+t.tag+'</span></div></a>';
+  }).join('');
+}
+function renderActivity(){
+  var appEl=document.getElementById('appSlider');
+  appEl.innerHTML=APP_DEMOS.map(function(a){
+    return '<a href="'+a.url+'" class="app-card"><div class="app-notch" style="background:'+a.bg+'"><div class="app-notch-bar"></div></div><div class="app-cover" style="background:'+a.bg+'">'+a.cover+'</div><div class="app-body"><span class="app-badge" style="background:'+a.bc+';color:'+a.bct+'">'+a.badge+'</span><div class="app-name">'+a.t+'</div><div class="app-desc">'+a.d+'</div><div class="app-go"><div class="app-dot">'+ARR+'</div></div></div></a>';
+  }).join('');
+  var webEl=document.getElementById('webSlider');
+  webEl.innerHTML=WEB_DEMOS.map(function(w){
+    return '<a href="'+w.url+'" class="web-card"><div class="web-icon" style="background:'+w.bg+'">'+w.em+'</div><div class="web-body"><div class="web-name">'+w.t+'</div><div class="web-desc">'+w.d+'</div></div><div class="web-arr">'+ARR+'</div></a>';
+  }).join('');
+  // make web-icon dark emoji light for tarot
+  initDragSlider(appEl);
+  initDragSlider(webEl);
+}
+renderDaily();renderData();renderActivity();
+
+function switchDetail(i){
+  [0,1,2].forEach(function(j){
+    document.getElementById('dp'+j).classList.toggle('show',j===i);
+    document.getElementById('dt'+j).classList.toggle('on',j===i);
+  });
+  document.getElementById('sec-detail').scrollIntoView({behavior:'smooth'});
+}
+
+// big card slider dots sync
+var bigSlider=document.getElementById('bigSlider');
+var dots=document.querySelectorAll('#bigDots .dot');
+function slideTo(i){
+  var cards=bigSlider.querySelectorAll('.big-card');
+  bigSlider.scrollTo({left:cards[i].offsetLeft-20,behavior:'smooth'});
+  dots.forEach(function(d,j){d.classList.toggle('on',j===i);});
+}
+bigSlider.addEventListener('scroll',function(){
+  var cards=bigSlider.querySelectorAll('.big-card');
+  var sl=bigSlider.scrollLeft;
+  var idx=0;var minD=Infinity;
+  cards.forEach(function(c,i){var d=Math.abs(c.offsetLeft-sl-20);if(d<minD){minD=d;idx=i;}});
+  dots.forEach(function(d,j){d.classList.toggle('on',j===idx);});
+});
+initDragSlider(bigSlider);
+
+function initDragSlider(el){
+  var isDown=false,startX=0,scrollLeft=0;
+  el.addEventListener('mousedown',function(e){isDown=true;el.classList.add('grabbing');startX=e.pageX-el.offsetLeft;scrollLeft=el.scrollLeft;});
+  el.addEventListener('mouseleave',function(){isDown=false;el.classList.remove('grabbing');});
+  el.addEventListener('mouseup',function(){isDown=false;el.classList.remove('grabbing');});
+  el.addEventListener('mousemove',function(e){if(!isDown)return;e.preventDefault();var x=e.pageX-el.offsetLeft;el.scrollLeft=scrollLeft-(x-startX);});
+}
+
+function scrollTo(id,btn){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+}
+
+// nav active on scroll
+window.addEventListener('scroll',function(){
+  var secs=['sec-home','sec-tools','sec-detail','sec-about'];
+  var links=document.querySelectorAll('.nav-link');
+  var current=0;
+  secs.forEach(function(id,i){
+    var el=document.getElementById(id);
+    if(el&&window.scrollY>=el.offsetTop-80)current=i;
+  });
+  links.forEach(function(l,i){l.classList.toggle('on',i===current);});
+});
 </script>
 </body>
 </html>
