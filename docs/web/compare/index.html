@@ -650,7 +650,7 @@ body{
 <!-- ========================================================
      SCREEN 2 · 旅行偏好滑块（一屏版）
      ======================================================== -->
-<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#d5e8ff,#bbd4f8;overflow:hidden;position:relative">
+<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#d5e8ff,#bbd4f8);overflow:hidden;position:relative">
 
   <!-- 顶部导航 -->
   <nav style="display:flex;align-items:center;padding:0 24px;height:56px;background:rgba(245,240,232,0.95);border-bottom:1px solid #d8cfc0;flex-shrink:0;gap:16px">
@@ -721,7 +721,7 @@ body{
 <!-- ========================================================
      SCREEN · 选城市 + 天数
      ======================================================== -->
-<div id="s-city" class="screen" style="background:var(--blue-l);display:flex;align-items:center;justify-content:center">
+<div id="s-city" class="screen" style="background:var(--blue-l);align-items:center;justify-content:center">
   <div style="width:100%;max-width:640px;background:#fefcf7;border-radius:16px;padding:36px 40px;box-shadow:0 3px 0 #d4c9a8,0 6px 28px rgba(100,80,40,0.10);border:1px solid rgba(180,160,120,0.22);position:relative">
     <!-- 邮戳 -->
     <div style="position:absolute;top:24px;right:24px;width:68px;height:68px;border:3px solid rgba(58,107,53,0.28);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:rgba(58,107,53,0.38);letter-spacing:1px;transform:rotate(14deg);line-height:1.6;text-align:center;font-family:monospace;pointer-events:none">TRAVEL<br/>PLAN<br/>2026</div>
@@ -1830,8 +1830,8 @@ function changeDays(delta){
   inp.value = Math.max(1, Math.min(14, v+delta));
 }
 function goArchive(){
-  var city = (document.getElementById('city-input').value||'大理').trim();
-  var days = parseInt(document.getElementById('days-input').value)||3;
+  var city = (document.getElementById('city-input') && document.getElementById('city-input').value || heichaState.city || '大理').trim();
+  var days = parseInt(document.getElementById('days-input') && document.getElementById('days-input').value) || heichaState.days || 3;
   heichaState.city = city;
   heichaState.days = days;
   var bannerEl = document.getElementById('archive-banner');
@@ -2584,17 +2584,28 @@ function checkEntryReady(){
   if(go){ go.disabled = !ok; go.style.opacity = ok ? '1' : '.45'; }
   if(sk){ sk.disabled = !ok; sk.style.opacity = ok ? '1' : '.45'; }
 }
+function _syncEntryToCity(){
+  // 把首屏的城市/天数同步到 s-city 的 input，供 goArchive() 读取
+  var ci = document.getElementById('city-input');
+  var di = document.getElementById('days-input');
+  if(ci) ci.value = state.city;
+  if(di) di.value = _entryDays;
+  // 同步天数到 state
+  state.days = _entryDays;
+  heichaState.city = state.city;
+  heichaState.days = _entryDays;
+}
 function entryGoQuiz(){
   if(!state.city){ showToast('请先输入目的地'); return; }
-  state.days = _entryDays;
+  _syncEntryToCity();
   state.answers = [];
   showScreen('s-quiz');
   setTimeout(function(){ initPersonaGrid(); initSliders(); }, 100);
 }
 function entrySkip(){
   if(!state.city){ showToast('请先输入目的地'); return; }
-  state.days = _entryDays;
-  skipQuiz(); // 直接跳过测试，走 goArchive
+  _syncEntryToCity();
+  skipQuiz();
 }
 // 初始化天数默认值
 setEntryDays(3);
