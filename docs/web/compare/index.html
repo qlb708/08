@@ -220,7 +220,7 @@ body{
 /* 左右双栏 */
 .itinerary-split-layout{display:flex;gap:22px;align-items:flex-start;margin-top:0;}
 /* 三方案并排 */
-.three-plans-wrap{display:flex;gap:18px;align-items:flex-start;margin-top:0;}
+.three-plans-wrap{display:flex;gap:16px;overflow-x:auto;padding:24px 60px 40px;max-width:1200px;margin:0 auto;}
 .plan-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:0;}
 .plan-col-header{background:var(--green);color:#fff;border-radius:10px 10px 0 0;padding:10px 14px 8px;display:flex;flex-direction:column;gap:3px;}
 .plan-col-title{font-family:var(--font-title);font-size:0.92em;letter-spacing:1px;}
@@ -800,8 +800,40 @@ body{
         <div class="envelope-origin" id="ha-envelopeOrigin"></div>
         <div class="collage-select-hint">✦ 翻开手帐，查看完整行程 ✦</div>
       </div>
-      <div id="ha-itineraryArea" style="display:none;margin-top:24px">
-        <div class="selected-banner" id="ha-selectedBanner"></div>
+      <div id="ha-itineraryArea" style="display:none;margin-top:0;background:linear-gradient(180deg,#c8e8ff 0%,#e0f2ff 40%,#f0f9ff 100%);position:relative;overflow:hidden">
+        <!-- 插画背景装饰 -->
+      <div style="position:relative;overflow:hidden">
+        <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:80px;margin-bottom:-2px">
+          <!-- 天空到绿植过渡 -->
+          <defs>
+            <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c8e8ff"/><stop offset="100%" stop-color="#d4f0c8"/></linearGradient>
+          </defs>
+          <rect width="1440" height="120" fill="url(#skyGrad)"/>
+          <!-- 远山 -->
+          <path d="M0,120 L0,60 Q200,20 400,50 Q600,10 800,45 Q1000,15 1200,40 Q1340,20 1440,35 L1440,120Z" fill="rgba(100,180,120,0.25)"/>
+          <!-- 绿植树丛左 -->
+          <ellipse cx="80" cy="95" rx="60" ry="40" fill="#5ba65b" opacity=".7"/>
+          <ellipse cx="130" cy="85" rx="45" ry="35" fill="#4a9e4a" opacity=".8"/>
+          <ellipse cx="50" cy="100" rx="40" ry="30" fill="#6bbf6b" opacity=".6"/>
+          <!-- 绿植树丛右 -->
+          <ellipse cx="1360" cy="95" rx="60" ry="40" fill="#5ba65b" opacity=".7"/>
+          <ellipse cx="1310" cy="85" rx="45" ry="35" fill="#4a9e4a" opacity=".8"/>
+          <ellipse cx="1390" cy="100" rx="40" ry="30" fill="#6bbf6b" opacity=".6"/>
+          <!-- 湖水波纹 -->
+          <path d="M600,115 Q720,105 840,115 Q960,125 1080,115" fill="none" stroke="rgba(100,180,240,0.4)" stroke-width="2"/>
+          <!-- 小屋轮廓 -->
+          <polygon points="700,90 740,60 780,90" fill="rgba(255,255,255,0.5)" stroke="rgba(200,230,255,0.6)" stroke-width="1"/>
+          <rect x="710" y="90" width="60" height="30" fill="rgba(255,255,255,0.4)" stroke="rgba(200,230,255,0.5)" stroke-width="1"/>
+          <rect x="725" y="97" width="15" height="23" fill="rgba(100,180,240,0.3)"/>
+          <rect x="750" y="97" width="15" height="23" fill="rgba(100,180,240,0.3)"/>
+          <!-- 白云 -->
+          <ellipse cx="300" cy="30" rx="70" ry="22" fill="rgba(255,255,255,0.7)"/>
+          <ellipse cx="350" cy="22" rx="55" ry="20" fill="rgba(255,255,255,0.7)"/>
+          <ellipse cx="1100" cy="25" rx="60" ry="20" fill="rgba(255,255,255,0.6)"/>
+          <ellipse cx="1150" cy="18" rx="45" ry="18" fill="rgba(255,255,255,0.6)"/>
+        </svg>
+      </div>
+      <div class="selected-banner" id="ha-selectedBanner"></div>
         <div class="three-plans-wrap" id="ha-threePlansWrap"></div>
       </div>
     </div>
@@ -2280,6 +2312,69 @@ var HEICHA_PERSONA_TIPS = {
   night:['白天睡好觉，晚上才有精神','夜市从晚上8点后才热闹'],
   adventure:['提前查好路线，一秒都不浪费','精选路线，效率第一']
 };
+
+// ═══ 景点一句话详细介绍 ═══
+var SPOT_DETAIL = {
+  // 北京
+  '天安门广场':'中国最大的城市广场，毛主席纪念堂和人民英雄纪念碑矗立其中，每天清晨升国旗仪式庄严壮观。',
+  '故宫博物院':'明清两朝皇宫，世界上最大的宫殿建筑群，珍藏180余万件文物，一天根本逛不完。',
+  '长城（慕田峪）':'北京最险峻的长城段之一，游客相对少，植被茂密，秋季红叶尤为壮观。',
+  '颐和园':'皇家园林典范，昆明湖与万寿山相映成趣，御道悠悠，最适合慢慢走。',
+  '南锣鼓巷':'700年历史的胡同，现在汇聚了各色小店和街头食物，逛一圈大约需要1.5小时。',
+  '798艺术区':'工业遗址改造的当代艺术园区，随处可见装置艺术和涂鸦，适合下午前往。',
+  '胡同骑行':'租辆自行车穿梭北京老胡同，感受四合院背后真实的老北京生活。',
+  // 成都
+  '武侯祠':'三国文化圣地，供奉诸葛亮和刘备，锦里古街就在隔壁，参观完直接去吃串。',
+  '锦里古街':'成都最热闹的仿古街区，小吃密集，三大炮、冰粉、兔头一条街全有。',
+  '宽窄巷子':'清朝遗留街道，宽巷子喝茶、窄巷子吃饭、井巷子买文创，各有各的味道。',
+  '老码头火锅':'网红九宫格老火锅，锅底浓郁，毛肚建议点半份，新鲜烫几秒就好吃。',
+  '大熊猫繁育基地':'早上8点前到最容易看到熊猫进食，错过喂食时间大多数都在睡觉。',
+  '青城山':'道教名山，云雾缭绕，前山有古观，后山更幽静，适合爬完都江堰同游。',
+  '都江堰':'两千年前修建的水利工程至今运转，让成都平原成为天府之国。',
+  '东郊记忆':'工业遗址改造的文创园区，成都版798，夜晚有演出，周末热闹。',
+  // 西安
+  '兵马俑':'秦始皇陵的地下军队，八千余件陶俑无一雷同，1号坑规模最宏大，建议请讲解员。',
+  '西安城墙':'全国保存最完整的古城墙，骑车一圈约一小时，俯瞰城内外风景不同。',
+  '大雁塔':'唐代高僧玄奘译经之地，广场音乐喷泉是西安最大的免费景点，夜晚尤为壮观。',
+  '华清宫':'唐玄宗与杨贵妃的温泉行宫，《长恨歌》实景演出在这里，建议买晚场票。',
+  '回民街':'西安最有烟火气的街区，羊肉泡馍、肉夹馍、凉皮是必吃三件套。',
+  '大唐不夜城':'仿唐建筑步行街，夜晚有街头表演和汉服快闪，不倒翁小姐姐就在这里。',
+  '城墙骑行':'城墙上租车骑行，顺时针方向风景最好，南门出发全程约14公里。',
+  // 厦门
+  '鼓浪屿':'无车岛屿，有钢琴博物馆和百年老别墅，渡轮10分钟到达，建议早去避开人潮。',
+  '南普陀寺':'千年古刹，背靠五老峰，寺院斋菜远近闻名，素菜馆需要提前排队。',
+  '厦门大学':'被称为中国最美大学，芙蓉湖畔白鹭飞翔，建南大礼堂是必拍打卡点。',
+  '曾厝垵':'文艺渔村，小清新民宿和海景咖啡馆密集，黄昏时分最美。',
+  '沙坡尾咖啡':'避风坞旁的文艺街区，保留了老渔港气息，各色独立咖啡馆值得慢慢探。',
+  // 大理
+  '崇圣寺三塔':'大理的标志性建筑，三塔倒影在水中如明信片，早晨和傍晚光线最美。',
+  '大理古城':'保存完好的明代古城，洋人街咖啡馆林立，每天下午有集市，节奏极慢。',
+  '洱海':'高原淡水湖，骑车环湖一圈约100公里，可以只骑一段，西岸景色最佳。',
+  '喜洲古镇':'白族传统古镇，建筑精美，喜洲粑粑是当地特色，不输大理古城又少很多人。',
+  '苍山':'洱海边的雪山，缆车可上，山顶看洱海全景如画，秋冬更壮观。',
+  '洱海日落':'在双廊或才村码头看夕阳落入洱海，天空往往会出现金红橙三色渐变。',
+  '双廊古镇':'洱海东岸的艺术小镇，民宿设计精美，很多有水景无边泳池，值得住一晚。',
+  '古城咖啡':'大理古城里的独立咖啡馆，很多有院子可以晒太阳发呆，点一杯静坐半日。',
+  // 上海
+  '外滩':'黄浦江畔的万国建筑博览群，白天看历史，夜晚看对岸陆家嘴灯光最壮观。',
+  '东方明珠':'上海地标，468米高观光塔，玻璃球廊可俯瞰全城，傍晚光线最好。',
+  '豫园':'明清风格江南古典园林，内有城隍庙和上海最著名的南翔馒头店。',
+  '田子坊':'老弄堂改造的创意园区，小店密集，适合傍晚前往，边逛边吃。',
+  '武康路':'法租界历史风貌道路，梧桐树下的百年洋房，武康大楼是最著名的打卡点。',
+  // 重庆
+  '磁器口古镇':'千年古镇，麻花、香辣鸡、陈麻花都是必买特产，周末非常拥挤。',
+  '洪崖洞':'吊脚楼建筑依山而建，夜晚灯火通明被誉为"千与千寻"原型地之一。',
+  '火锅':'重庆火锅以牛油浓香著称，跳水蛙和毛肚必点，记得搭配冰凉的冰粉解辣。',
+  // 三亚
+  '南山文化旅游区':'世界最高海上观音像所在地，也是三亚最重要的佛教圣地，适合早晨参观。',
+  '天涯海角':'三亚著名景区，海边有"天涯"和"海角"巨石，沿海岸走走风景不错。',
+  '大东海海滩':'三亚市区最近的海滩，清晨海水呈现最纯净的蓝色，适合早起看日出。',
+  '蜈支洲岛':'三亚最美的岛屿之一，可以潜水、冲浪和帆船，海水透明度极高。',
+};
+function getSpotDetail(spotName){
+  return SPOT_DETAIL[spotName] || (spotName + '：当地知名打卡地，建议提前做好攻略，高峰期需要排队入场。');
+}
+
 function heichaCalcPersonas(v){
   return {
     soldier:Math.round(v.popular*0.3+v.morning*0.4+(100-v.crowd)*0.15+(100-v.night)*0.15),
@@ -2543,10 +2638,14 @@ function haShowItinerary(idx) {
       daySpots.forEach(function(item,si){
         var tips=HEICHA_PERSONA_TIPS[item.tipKey]||HEICHA_PERSONA_TIPS.soldier;
         var tip=tips[si%tips.length];
-        bodyHtml+='<div class="spot-row" style="display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px dashed #B8A880;">'
-          +'<span class="spot-time" style="color:#777;font-size:0.72em;white-space:nowrap;min-width:36px;padding-top:2px;">'+item.spot.t+'</span>'
-          +'<div><div class="spot-name" style="font-size:0.82em;margin-bottom:3px;">'+item.spot.n+'</div>'
-          +'<div class="spot-tip" style="font-size:0.7em;color:#5A8F54;background:rgba(90,143,84,0.08);border-radius:3px;padding:2px 6px;border-left:2px solid #B8A880;">'+tip+'</div></div></div>';
+        var spotId='spot-'+pi+'-'+d+'-'+si;
+        var safeN=item.spot.n.replace(/"/g,'&quot;');
+        bodyHtml+='<div class="spot-row expand-row" id="'+spotId+'" data-spot="'+safeN+'" style="display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px dashed #93c5fd;cursor:pointer;transition:background .15s;border-radius:4px;">'
+          +'<span class="spot-time" style="color:#6B8ECF;font-size:0.72em;white-space:nowrap;min-width:36px;padding-top:2px;">'+item.spot.t+'</span>'
+          +'<div style="flex:1;min-width:0"><div class="spot-name" style="font-size:0.82em;margin-bottom:3px;display:flex;align-items:center;gap:4px;">'+item.spot.n+'<span class="spot-expand-icon" style="font-size:9px;color:#93c5fd;transition:transform .2s;flex-shrink:0">&#9656;</span></div>'
+          +'<div class="spot-tip" style="font-size:0.7em;color:#2563EB;background:rgba(37,99,235,0.06);border-radius:3px;padding:2px 6px;border-left:2px solid #93c5fd;">'+tip+'</div>'
+          +'<div class="spot-detail-text" style="display:none;font-size:0.72em;color:#475569;line-height:1.7;margin-top:5px;padding:6px 8px;background:rgba(219,234,254,0.5);border-radius:5px;border:1px dashed #bfdbfe;"></div>'
+          +'</div></div>';
       });
       bodyHtml+='</div>';
     }
@@ -2563,6 +2662,29 @@ function haShowItinerary(idx) {
   
   document.getElementById('ha-itineraryArea').style.display='block';
   document.getElementById('ha-itineraryArea').scrollIntoView({behavior:'smooth',block:'start'});
+  // 地点卡片展开：事件委托
+  var wrapEl = document.getElementById('ha-threePlansWrap');
+  // 给每个 expand-row 单独绑定点击展开事件
+  wrapEl.querySelectorAll('.expand-row').forEach(function(row){
+    row.addEventListener('click', function(e){
+      e.stopPropagation(); // 阻止冒泡到 col.onclick
+      var detail = row.querySelector('.spot-detail-text');
+      var icon = row.querySelector('.spot-expand-icon');
+      if(!detail) return;
+      var isOpen = detail.style.display !== 'none';
+      if(isOpen){
+        detail.style.display='none';
+        row.style.background='';
+        if(icon) icon.style.transform='';
+      } else {
+        var spotName = row.getAttribute('data-spot');
+        detail.textContent = getSpotDetail(spotName);
+        detail.style.display='block';
+        row.style.background='rgba(219,234,254,0.25)';
+        if(icon) icon.style.transform='rotate(90deg)';
+      }
+    });
+  });
 }
 // ========== 黑茶手账复刻结束 ==========
 
@@ -2635,5 +2757,26 @@ function entrySkip(){
 }
 // 初始化天数默认值
 setEntryDays(3);
+
+function toggleSpotDetail(rowId, spotName, e){
+  e.stopPropagation();
+  var row = document.getElementById(rowId);
+  if(!row) return;
+  var detail = row.querySelector('.spot-detail-text');
+  var icon = row.querySelector('.spot-expand-icon');
+  if(!detail) return;
+  var isOpen = detail.style.display !== 'none';
+  if(isOpen){
+    detail.style.display = 'none';
+    if(icon) icon.style.transform = '';
+    row.style.background = '';
+  } else {
+    detail.textContent = getSpotDetail(spotName);
+    detail.style.display = 'block';
+    if(icon) icon.style.transform = 'rotate(90deg)';
+    row.style.background = 'rgba(219,234,254,0.25)';
+  }
+}
+
 </script>
 </body></html>
