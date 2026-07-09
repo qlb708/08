@@ -455,15 +455,58 @@ body{
 <!-- ========================================================
      SCREEN 0 · 入口（蓝色波浪，先选城市天数）
      ======================================================== -->
-<div id="s-flip" class="screen active" style="background:linear-gradient(160deg,#E6F1FF 0%,#c8deff 100%);position:relative;overflow:hidden">
+<div id="s-flip" class="screen active" style="background:linear-gradient(180deg,#c8dff8 0%,#d8ebff 35%,#e8f4ff 65%,#f0f8ff 100%);position:relative;overflow:hidden">
 
-  <!-- 背景：蓝色波浪 -->
+  <!-- 背景：水彩蓝天 -->
   <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden">
-    <svg viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;bottom:0;left:0;width:100%;height:60%">
-      <path d="M0,600 L0,380 Q120,300 240,350 Q360,280 480,320 Q600,240 720,300 Q840,220 960,280 Q1080,200 1200,260 Q1320,200 1440,240 L1440,600 Z" fill="rgba(64,150,255,0.10)"></path>
-      <path d="M0,600 L0,440 Q180,370 360,420 Q540,350 720,400 Q900,330 1080,390 Q1260,330 1440,370 L1440,600 Z" fill="rgba(64,150,255,0.14)"></path>
-      <path d="M0,600 L0,500 Q180,450 360,480 Q540,430 720,470 Q900,420 1080,460 Q1260,420 1440,450 L1440,600 Z" fill="rgba(64,150,255,0.18)"></path>
-      <path d="M0,600 L0,540 Q360,510 720,530 Q1080,510 1440,525 L1440,600 Z" fill="rgba(64,150,255,0.22)"></path>
+    <!-- 远山（左） -->
+    <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMax slice" style="position:absolute;bottom:0;left:0;width:55%;height:65%;opacity:.32">
+      <path d="M0,500 L0,280 Q60,200 130,240 Q200,160 280,200 Q340,130 420,175 Q480,110 560,155 Q620,100 700,145 Q750,105 800,130 L800,500 Z" fill="#8eb8d8"/>
+      <path d="M0,500 L0,320 Q80,260 160,295 Q240,220 330,265 Q400,200 480,245 Q560,185 640,230 Q720,175 800,210 L800,500 Z" fill="#a8cce4" opacity=".7"/>
+    </svg>
+    <!-- 远山（右） -->
+    <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMaxYMax slice" style="position:absolute;bottom:0;right:0;width:55%;height:65%;opacity:.28">
+      <path d="M0,500 L0,200 Q100,130 200,170 Q300,100 400,145 Q480,80 560,125 Q640,70 720,105 Q760,85 800,100 L800,500 Z" fill="#7aaecf"/>
+      <path d="M0,500 L0,270 Q120,210 240,255 Q360,185 480,230 Q600,165 720,210 Q760,180 800,200 L800,500 Z" fill="#9dc3dc" opacity=".65"/>
+    </svg>
+    <!-- 大云朵（水彩风格） -->
+    <svg viewBox="0 0 1440 300" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:5%;left:0;width:100%;opacity:.55">
+      <ellipse cx="200" cy="80" rx="140" ry="55" fill="white"/>
+      <ellipse cx="310" cy="60" rx="110" ry="48" fill="white"/>
+      <ellipse cx="150" cy="90" rx="100" ry="42" fill="white"/>
+      <ellipse cx="260" cy="100" rx="120" ry="40" fill="rgba(255,255,255,.8)"/>
+      <!-- 云朵内阴影 -->
+      <ellipse cx="240" cy="95" rx="90" ry="30" fill="rgba(160,200,240,.18)"/>
+    </svg>
+    <svg viewBox="0 0 1440 300" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:8%;left:0;width:100%;opacity:.45">
+      <ellipse cx="900" cy="70" rx="160" ry="58" fill="white"/>
+      <ellipse cx="1020" cy="52" rx="120" ry="50" fill="white"/>
+      <ellipse cx="850" cy="82" rx="110" ry="44" fill="white"/>
+      <ellipse cx="970" cy="90" rx="130" ry="38" fill="rgba(255,255,255,.8)"/>
+      <ellipse cx="950" cy="85" rx="100" ry="28" fill="rgba(160,200,240,.15)"/>
+    </svg>
+    <!-- 小云朵 -->
+    <svg viewBox="0 0 1440 200" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:2%;left:0;width:100%;opacity:.35">
+      <ellipse cx="550" cy="55" rx="80" ry="32" fill="white"/>
+      <ellipse cx="620" cy="42" rx="65" ry="28" fill="white"/>
+      <ellipse cx="500" cy="62" rx="60" ry="26" fill="white"/>
+      <ellipse cx="1200" cy="40" rx="70" ry="28" fill="white"/>
+      <ellipse cx="1265" cy="30" rx="55" ry="24" fill="white"/>
+    </svg>
+    <!-- 蕾丝波浪底边 -->
+    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;width:100%;height:90px">
+      <!-- 主波浪 -->
+      <path d="M0,80 Q60,40 120,70 Q180,30 240,65 Q300,25 360,60 Q420,20 480,58 Q540,18 600,55 Q660,15 720,52 Q780,12 840,50 Q900,10 960,48 Q1020,8 1080,46 Q1140,6 1200,44 Q1260,4 1320,42 Q1380,2 1440,40 L1440,120 L0,120 Z" fill="rgba(255,255,255,0.9)"/>
+      <!-- 蕾丝小扇形 -->
+      <path d="M0,80 Q60,40 120,70 Q180,30 240,65 Q300,25 360,60 Q420,20 480,58 Q540,18 600,55 Q660,15 720,52 Q780,12 840,50 Q900,10 960,48 Q1020,8 1080,46 Q1140,6 1200,44 Q1260,4 1320,42 Q1380,2 1440,40" fill="none" stroke="rgba(180,210,240,.6)" stroke-width="1.5"/>
+    </svg>
+    <!-- 左下角花朵装饰 -->
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="position:absolute;bottom:20px;left:20px;width:100px;opacity:.35">
+      <circle cx="60" cy="40" r="14" fill="#a8d4f0"/><circle cx="80" cy="55" r="14" fill="#a8d4f0"/><circle cx="75" cy="78" r="14" fill="#a8d4f0"/><circle cx="52" cy="85" r="14" fill="#a8d4f0"/><circle cx="36" cy="68" r="14" fill="#a8d4f0"/><circle cx="40" cy="46" r="14" fill="#a8d4f0"/><circle cx="58" cy="62" r="12" fill="#d8ecf8"/>
+    </svg>
+    <!-- 右上角花朵装饰 -->
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:30px;right:30px;width:80px;opacity:.3">
+      <circle cx="60" cy="40" r="14" fill="#b8ddf5"/><circle cx="80" cy="55" r="14" fill="#b8ddf5"/><circle cx="75" cy="78" r="14" fill="#b8ddf5"/><circle cx="52" cy="85" r="14" fill="#b8ddf5"/><circle cx="36" cy="68" r="14" fill="#b8ddf5"/><circle cx="40" cy="46" r="14" fill="#b8ddf5"/><circle cx="58" cy="62" r="12" fill="#e0f0ff"/>
     </svg>
   </div>
 
@@ -607,7 +650,7 @@ body{
 <!-- ========================================================
      SCREEN 2 · 旅行偏好滑块（一屏版）
      ======================================================== -->
-<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#E6F1FF,#c8deff);overflow:hidden;position:relative">
+<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#d5e8ff,#bbd4f8;overflow:hidden;position:relative">
 
   <!-- 顶部导航 -->
   <nav style="display:flex;align-items:center;padding:0 24px;height:56px;background:rgba(245,240,232,0.95);border-bottom:1px solid #d8cfc0;flex-shrink:0;gap:16px">
@@ -1799,7 +1842,7 @@ function goArchive(){
 function skipQuiz(){
   SLIDERS.forEach(function(sl){sl.val=50});
   updateQuizRadar();
-  showScreen('s-city');
+  goArchive();
 }
 
 function renderQuizQ(){} // 保留空函数防止其他地方调用报错
