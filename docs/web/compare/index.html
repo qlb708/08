@@ -204,8 +204,8 @@ body{
 :root{--bg:#e8f0fe;--card:#FEFCF7;--green:#3A6B35;--green-mid:#5A8F54;--dash:#B8A880;--text:#2D3A2A;--font-title:"Arial Black",Impact,sans-serif;--font-mono:"Courier New","SF Mono",monospace;}
 @keyframes fadeIn{to{opacity:1}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
-.back-btn{background:none;border:1px dashed var(--blue-m);color:var(--blue);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:var(--font-mono);font-size:0.85em;margin-bottom:20px;}
-.back-btn:hover{background:var(--blue);color:#fff;}
+.back-btn{background:none;border:1px dashed var(--dash);color:var(--green);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:var(--font-mono);font-size:0.85em;margin-bottom:20px;}
+.back-btn:hover{background:var(--green);color:#fff;}
 /* ===== 手帐全局升级 ===== */
 #step1,#step2,#step3{background:#FEFCF7;border-radius:14px;padding:32px 36px;box-shadow:0 3px 0 #bfdbfe,0 6px 28px rgba(37,99,235,0.10);border:1px solid rgba(180,160,120,0.22);position:relative;}
 /* 装订孔 */
@@ -340,21 +340,107 @@ body{
 .reveal-desc{font-size:1em;color:#5a6b54;max-width:400px;min-height:2em;line-height:1.6;margin-bottom:30px;}
 .reveal-continue-btn{padding:14px 40px;background:var(--green);color:#fff;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;font-family:var(--font-mono);display:none;}
 .reveal-continue-btn:hover{opacity:0.85;}
-.collage-stage{width:100%;padding:0 0 20px 0;display:flex;flex-direction:column;align-items:center}
-.collage-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.78em;color:#4096FF;margin-bottom:20px;letter-spacing:0.5px}
-.collage-hint-dot{width:5px;height:5px;border-radius:50%;background:#4096FF;display:inline-block}
-.envelope-origin{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:1100px;margin:0 auto;padding:0}
-.collage-card{position:relative;width:100%;background:#fff;border:none;border-radius:16px;padding:0;font-family:var(--font-mono);cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.08);user-select:none;transition:transform 0.18s,box-shadow 0.18s;opacity:0;overflow:hidden;display:flex;flex-direction:column}
-.collage-card:nth-child(1){background:#EFF6FF}
-.collage-card:nth-child(2){background:#F0F9FF}
-.collage-card:nth-child(3){background:#F5F3FF}
-.collage-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.13)}
-.collage-card.selected-card{box-shadow:0 0 0 2.5px #3A6B35,0 6px 24px rgba(58,107,53,0.18)}
-.collage-card.card-fly-1{animation:fadeSlideIn 0.45s ease 0.05s 1 forwards}
-.collage-card.card-fly-2{animation:fadeSlideIn 0.45s ease 0.18s 1 forwards}
-.collage-card.card-fly-3{animation:fadeSlideIn 0.45s ease 0.31s 1 forwards}
-.collage-card.landed-1,.collage-card.landed-2,.collage-card.landed-3{opacity:1}
-@keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* 手帐拼贴 */
+.collage-stage{
+  position:relative;display:flex;flex-direction:column;align-items:center;padding:20px 0 28px;
+  background:linear-gradient(to bottom,rgba(212,228,200,0.55) 0%,rgba(212,228,200,0.2) 60%,transparent 100%),
+  url("https://picsum.photos/seed/mountain/1200/600") center top/cover no-repeat;
+  border-radius:20px;overflow:hidden;
+  height:380px;
+}
+.collage-hint{font-size:0.88em;color:#3A6B35;letter-spacing:1px;margin-bottom:24px;text-align:center;display:flex;align-items:center;gap:8px;position:relative;z-index:1;font-weight:bold;}
+.collage-hint-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1s infinite;}
+.envelope-origin{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-start;height:300px;}
+.collage-card{position:absolute;width:200px;background:#FEFCE8;border:none;border-radius:4px 4px 8px 8px;padding:0;font-family:var(--font-mono);cursor:pointer;box-shadow:2px 4px 0 #d4c48a,4px 6px 24px rgba(0,0,0,0.28);user-select:none;transition:transform 0.3s,box-shadow 0.3s;opacity:0;}
+.collage-card:nth-child(1){background:#FEFCE8;}
+.collage-card:nth-child(2){background:#F0FDF4;}
+.collage-card:nth-child(3){background:#EFF6FF;}
+.collage-card:hover{z-index:10;}
+.collage-card.selected-card{z-index:20;}
+.collage-card.landed-1{opacity:1;transform:translateX(-235px) translateY(0) rotate(-4deg) scale(1);}
+.collage-card.landed-2{opacity:1;transform:translateX(0px) translateY(20px) rotate(1deg) scale(1);}
+.collage-card.landed-3{opacity:1;transform:translateX(235px) translateY(10px) rotate(3.5deg) scale(1);}
+.collage-card.landed-1:hover{transform:translateX(-235px) translateY(-10px) rotate(-3deg) scale(1.03);box-shadow:2px 6px 0 #d4c48a,6px 16px 36px rgba(0,0,0,0.35);}
+.collage-card.landed-2:hover{transform:translateX(0) translateY(12px) rotate(0.5deg) scale(1.03);box-shadow:2px 6px 0 #90c090,6px 16px 36px rgba(0,0,0,0.35);}
+.collage-card.landed-3:hover{transform:translateX(235px) translateY(3px) rotate(2.5deg) scale(1.03);box-shadow:2px 6px 0 #90a8e0,6px 16px 36px rgba(0,0,0,0.35);}
+.collage-card.landed-1.selected-card{transform:translateX(-235px) translateY(-15px) rotate(-2deg) scale(1.06);box-shadow:4px 8px 0 #d4c48a,8px 16px 40px rgba(0,0,0,0.38);}
+.collage-card.landed-2.selected-card{transform:translateX(0) translateY(5px) rotate(0deg) scale(1.06);box-shadow:4px 8px 0 #90c090,8px 16px 40px rgba(0,0,0,0.38);}
+.collage-card.landed-3.selected-card{transform:translateX(235px) translateY(-5px) rotate(2deg) scale(1.06);box-shadow:4px 8px 0 #90a8e0,8px 16px 40px rgba(0,0,0,0.38);}
+@keyframes flyIn1{0%{opacity:0;transform:translateX(0) translateY(120px) rotate(-15deg) scale(0.5);}50%{opacity:1;transform:translateX(-235px) translateY(-20px) rotate(-5deg) scale(1.05);}70%{transform:translateX(-235px) translateY(5px) rotate(-3deg) scale(0.98);}100%{opacity:1;transform:translateX(-235px) translateY(0) rotate(-4deg) scale(1);}}
+@keyframes flyIn2{0%{opacity:0;transform:translateX(0) translateY(100px) rotate(5deg) scale(0.5);}50%{opacity:1;transform:translateX(0) translateY(-15px) rotate(2deg) scale(1.05);}70%{transform:translateX(0) translateY(5px) rotate(0.5deg) scale(0.98);}100%{opacity:1;transform:translateX(0) translateY(20px) rotate(1deg) scale(1);}}
+@keyframes flyIn3{0%{opacity:0;transform:translateX(0) translateY(130px) rotate(12deg) scale(0.5);}50%{opacity:1;transform:translateX(235px) translateY(-25px) rotate(5deg) scale(1.05);}70%{transform:translateX(235px) translateY(5px) rotate(4deg) scale(0.98);}100%{opacity:1;transform:translateX(235px) translateY(10px) rotate(3.5deg) scale(1);}}
+.collage-card.card-fly-1{animation:flyIn1 0.85s cubic-bezier(0.34,1.4,0.64,1) 0.1s forwards;}
+.collage-card.card-fly-2{animation:flyIn2 0.85s cubic-bezier(0.34,1.4,0.64,1) 0.35s forwards;}
+.collage-card.card-fly-3{animation:flyIn3 0.85s cubic-bezier(0.34,1.4,0.64,1) 0.6s forwards;}
+.tape{position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-3deg);width:72px;height:28px;background:rgba(255,200,100,0.7);border-radius:2px;z-index:2;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.18) 0px,rgba(255,255,255,0.18) 2px,transparent 2px,transparent 8px);}
+.tape-2{background:rgba(140,220,150,0.7);transform:translateX(-50%) rotate(2deg);background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.18) 0px,rgba(255,255,255,0.18) 2px,transparent 2px,transparent 8px);}
+.tape-3{background:rgba(150,180,255,0.65);transform:translateX(-50%) rotate(-1deg);background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.18) 0px,rgba(255,255,255,0.18) 2px,transparent 2px,transparent 8px);}
+.card-num-badge{position:absolute;top:-10px;right:-10px;width:28px;height:28px;background:var(--green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-title);font-size:0.8em;font-weight:bold;z-index:3;box-shadow:0 2px 6px rgba(37,99,235,0.4);}
+.card-inner{padding:14px 14px 12px;}
+.collage-select-hint{margin-top:300px;font-size:0.82em;color:rgba(255,255,255,0.9);text-align:center;opacity:0;animation:fadeIn 0.5s ease 1.2s forwards;letter-spacing:1px;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
+/* Receipt */
+.receipt-title{font-family:var(--font-title);font-size:1.05em;text-align:center;color:var(--green);letter-spacing:4px;margin-bottom:10px;}
+.receipt-line{border-top:1px dashed var(--dash);margin:8px 0;}
+.receipt-row{display:flex;justify-content:space-between;font-size:0.78em;padding:3px 0;}
+.receipt-row .label{color:#777;font-size:0.9em;}
+.receipt-plan-name{font-family:var(--font-title);font-size:0.95em;text-align:center;margin:8px 0 4px;color:var(--text);}
+.receipt-slogan{text-align:center;font-size:0.75em;color:var(--green);margin-bottom:8px;}
+.barcode{display:flex;justify-content:center;gap:2px;margin:10px 0 4px;height:26px;align-items:flex-end;}
+.barcode span{display:inline-block;width:2px;background:var(--text);}
+.barcode-num{text-align:center;font-size:0.65em;color:#999;letter-spacing:2px;}
+/* 结果区 */
+.result-right{flex:1;min-width:300px;}
+.selected-banner{background:var(--green);color:#fff;padding:12px 20px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.banner-name{font-family:var(--font-title);font-size:1.1em;margin-bottom:4px;}
+.banner-meta{font-size:0.85em;opacity:0.9;}
+/* 路线图 */
+.route-map{background:var(--card);border:2px dashed var(--dash);border-radius:10px;padding:16px;margin-bottom:14px;}
+.route-map-title{font-family:var(--font-title);font-size:0.85em;color:var(--green);letter-spacing:2px;margin-bottom:12px;text-align:center;}
+.route-days-wrap{display:flex;flex-direction:column;gap:12px;}
+.route-day-row{display:flex;align-items:center;overflow-x:auto;}
+.route-day-tag{font-size:0.7em;color:var(--green);font-weight:bold;white-space:nowrap;margin-right:8px;min-width:36px;}
+.route-stop{display:flex;flex-direction:column;align-items:center;min-width:72px;}
+.route-dot{width:12px;height:12px;border-radius:50%;background:var(--green);border:2px solid #fff;box-shadow:0 0 0 2px var(--green);flex-shrink:0;}
+.route-dot.start{background:#fff;}
+.route-connector{height:2px;flex:1;min-width:16px;background:repeating-linear-gradient(90deg,var(--green) 0,var(--green) 5px,transparent 5px,transparent 10px);margin-top:4px;align-self:flex-start;}
+.route-label{font-size:0.68em;color:var(--text);text-align:center;margin-top:5px;max-width:70px;line-height:1.3;}
+.route-time{font-size:0.62em;color:#888;text-align:center;}
+/* 行程卡 */
+.itinerary-header{font-family:var(--font-title);font-size:1em;color:var(--green);letter-spacing:2px;margin-bottom:16px;padding-bottom:8px;border-bottom:2px dashed var(--dash);text-align:center;}
+.day-card{background:var(--card);border:2px dashed var(--dash);border-radius:10px;padding:16px;margin-bottom:14px;}
+.day-header{font-family:var(--font-title);font-size:1.1em;color:var(--green);text-align:center;letter-spacing:3px;margin-bottom:8px;}
+.spot-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px dashed var(--dash);}
+.spot-row:last-child{border-bottom:none;}
+.spot-time{color:#777;font-size:0.82em;white-space:nowrap;padding-top:2px;min-width:44px;}
+.spot-info{flex:1;}
+.spot-name{font-size:0.92em;margin-bottom:4px;}
+.spot-tip{font-size:0.78em;color:var(--green-mid);line-height:1.5;background:rgba(90,143,84,0.08);border-radius:4px;padding:3px 8px;border-left:2px solid var(--dash);}
+/* AI */
+.ai-fab{position:fixed;bottom:28px;right:28px;width:52px;height:52px;background:var(--green);color:#fff;border-radius:50%;align-items:center;justify-content:center;font-size:1.4em;cursor:pointer;box-shadow:0 4px 18px rgba(37,99,235,0.4);z-index:9999;transition:transform 0.2s;user-select:none;display:none;}
+.ai-fab:hover{transform:scale(1.1);}
+.ai-panel{position:fixed;bottom:92px;right:28px;width:310px;background:#fff;border:2px dashed var(--dash);border-radius:16px;box-shadow:0 8px 32px rgba(37,99,235,0.18);z-index:9998;flex-direction:column;overflow:hidden;display:none;}
+.ai-panel-head{background:var(--green);color:#fff;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-family:var(--font-title);font-size:0.85em;}
+.ai-panel-close{cursor:pointer;font-size:1.1em;}
+.ai-msgs{max-height:260px;overflow-y:auto;padding:12px 12px 6px;display:flex;flex-direction:column;gap:8px;}
+.ai-msg{max-width:90%;padding:8px 11px;border-radius:12px;font-size:0.8em;line-height:1.55;}
+.ai-msg.bot{background:var(--bg);border:1px solid var(--dash);align-self:flex-start;border-radius:4px 12px 12px 12px;}
+.ai-msg.user{background:var(--green);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px;}
+.ai-quick-btns{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 8px;}
+.ai-quick-btn{padding:4px 9px;background:var(--bg);border:1px dashed var(--dash);border-radius:14px;font-size:0.72em;cursor:pointer;color:var(--green);transition:all 0.2s;}
+.ai-quick-btn:hover{background:var(--green);color:#fff;}
+.ai-input-row{display:flex;gap:7px;padding:9px 12px;border-top:1px dashed var(--dash);}
+.ai-input{flex:1;border:1px dashed var(--dash);border-radius:18px;padding:6px 11px;font-family:var(--font-mono);font-size:0.78em;outline:none;background:var(--bg);color:var(--text);}
+.ai-send{width:30px;height:30px;background:var(--green);color:#fff;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+@media(max-width:640px){.sliders-grid{grid-template-columns:1fr;}.radar-section{flex-direction:column;}.collage-card{width:170px;}
+@keyframes flyIn1{0%{opacity:0;transform:translateX(0) translateY(60px) rotate(-8deg) scale(0.7)}100%{opacity:1;transform:translateX(-175px) translateY(0) rotate(-4deg) scale(1)}}
+@keyframes flyIn3{0%{opacity:0;transform:translateX(0) translateY(60px) rotate(8deg) scale(0.7)}100%{opacity:1;transform:translateX(175px) translateY(10px) rotate(3.5deg) scale(1)}}
+.collage-card.landed-1{transform:translateX(-175px) translateY(0) rotate(-4deg);}
+.collage-card.landed-3{transform:translateX(175px) translateY(10px) rotate(3.5deg);}
+.collage-card.landed-1:hover{transform:translateX(-175px) translateY(-6px) rotate(-2deg) scale(1.03);}
+.collage-card.landed-3:hover{transform:translateX(175px) translateY(4px) rotate(2deg) scale(1.03);}
+.collage-card.landed-1.selected-card{transform:translateX(-175px) translateY(-3px) rotate(-3deg) scale(1.04);}
+.collage-card.landed-3.selected-card{transform:translateX(175px) translateY(7px) rotate(2.5deg) scale(1.04);}
+}
 .leaflet-map-wrap{border-radius:12px;overflow:hidden;border:2px dashed var(--dash);}
 .leaflet-map-wrap .route-map-title{font-family:var(--font-title);font-size:0.82em;color:var(--green);letter-spacing:3px;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px dashed var(--dash);}
 .leaflet-popup-content-wrapper{border-radius:8px!important;font-family:var(--font-mono)!important;font-size:12px!important;}
@@ -564,50 +650,50 @@ body{
 <!-- ========================================================
      SCREEN 2 · 旅行偏好滑块（一屏版）
      ======================================================== -->
-<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#d5e8ff,#bbd4f8);overflow:hidden;position:relative;height:100vh;flex-direction:column">
+<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#d5e8ff,#bbd4f8);overflow:hidden;position:relative">
 
   <!-- 顶部导航 -->
-  <nav style="display:flex;align-items:center;padding:0 24px;height:56px;background:rgba(230,241,255,0.97);border-bottom:1px solid var(--blue-m);flex-shrink:0;gap:16px">
+  <nav style="display:flex;align-items:center;padding:0 24px;height:56px;background:rgba(245,240,232,0.95);border-bottom:1px solid #d8cfc0;flex-shrink:0;gap:16px">
     <span style="font-size:13px;font-weight:800;color:#2563EB">✈ AI旅行规划</span>
     <div style="flex:1;display:flex;justify-content:center;gap:0;align-items:center;font-size:12px">
       <span style="display:flex;align-items:center;gap:6px;color:#22c55e;font-weight:700">
         <span style="width:22px;height:22px;border-radius:50%;background:#22c55e;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px">✓</span>行程设置
       </span>
-      <span style="width:32px;height:2px;background:var(--blue-m);margin:0 4px"></span>
+      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
       <span style="display:flex;align-items:center;gap:6px;color:#3b82f6;font-weight:800">
         <span style="width:22px;height:22px;border-radius:50%;background:#3b82f6;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900">2</span>旅行偏好
       </span>
-      <span style="width:32px;height:2px;background:var(--blue-m);margin:0 4px"></span>
+      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
       <span style="color:#b0a090;display:flex;align-items:center;gap:6px">
-        <span style="width:22px;height:22px;border-radius:50%;border:2px solid var(--blue-m);color:var(--gray);display:inline-flex;align-items:center;justify-content:center;font-size:11px">3</span>AI 规划
+        <span style="width:22px;height:22px;border-radius:50%;border:2px solid #c8b898;color:#b0a090;display:inline-flex;align-items:center;justify-content:center;font-size:11px">3</span>AI 规划
       </span>
-      <span style="width:32px;height:2px;background:var(--blue-m);margin:0 4px"></span>
+      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
       <span style="color:#b0a090;display:flex;align-items:center;gap:6px">
-        <span style="width:22px;height:22px;border-radius:50%;border:2px solid var(--blue-m);color:var(--gray);display:inline-flex;align-items:center;justify-content:center;font-size:11px">4</span>方案对比
+        <span style="width:22px;height:22px;border-radius:50%;border:2px solid #c8b898;color:#b0a090;display:inline-flex;align-items:center;justify-content:center;font-size:11px">4</span>方案对比
       </span>
     </div>
-    <button onclick="showScreen(&#39;s-flip&#39;)" style="font-size:12px;background:rgba(64,150,255,0.08);border:1px solid var(--blue-m);border-radius:8px;padding:6px 14px;color:var(--blue);cursor:pointer">← 返回</button>
+    <button onclick="showScreen(&#39;s-flip&#39;)" style="font-size:12px;background:rgba(200,184,152,0.3);border:1px solid #c8b898;border-radius:8px;padding:6px 14px;color:#4b6baa;cursor:pointer">← 返回</button>
   </nav>
 
   <!-- 主体：居中白色大容器 -->
-  <div style="flex:1;overflow:hidden;display:flex;align-items:stretch;justify-content:center;padding:8px 12px;min-height:0">
-    <div style="width:100%;max-width:640px;background:#fff;border-radius:20px;padding:12px 16px;box-shadow:0 4px 32px rgba(0,0,0,0.08);display:flex;flex-direction:column;flex:1;min-height:0">
+  <div style="flex:1;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:12px">
+    <div style="width:100%;max-width:640px;background:#fff;border-radius:20px;padding:12px 16px;box-shadow:0 4px 32px rgba(0,0,0,0.08)">
 
       <!-- 标题 -->
-      <div style="text-align:center;margin-bottom:8px;flex-shrink:0">
+      <div style="text-align:center;margin-bottom:12px">
         <div style="display:flex;align-items:center;justify-content:center;gap:12px">
-          <div style="font-size:20px;font-weight:900;color:var(--blue);letter-spacing:3px;font-family:monospace,sans-serif;line-height:1.4;text-shadow:none">🎚️ 拨一拨</div>
-          <button onclick="skipQuiz()" style="font-size:11px;font-family:monospace;font-weight:800;color:#2563EB;background:#fff;border:2px solid #1e3a8a;border-radius:4px;padding:4px 12px;cursor:pointer;letter-spacing:1px;box-shadow:3px 3px 0 #1e3a8a;white-space:nowrap" onmouseover="this.style.transform=&#39;translate(1px,1px)&#39;;this.style.boxShadow=&#39;2px 2px 0 #1e3a8a&#39;" onmouseout="this.style.transform=&#39;&#39;;this.style.boxShadow=&#39;3px 3px 0 #1e3a8a&#39;">跳过测试</button>
+          <div style="font-size:13px;font-weight:900;color:#1e3a8a;letter-spacing:2px;font-family:monospace,sans-serif;line-height:1.8;text-shadow:-1px -1px 0 #c8a070,-1px 1px 0 #c8a070,1px -1px 0 #c8a070">⬛ 拨一拨 ⬛</div>
+          <button onclick="skipQuiz()" style="font-size:12px;font-weight:600;color:#4096FF;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.background='#DBEAFE'" onmouseout="this.style.background='#EFF6FF'">跳过 →</button>
         </div>
         <div style="font-size:9px;color:#5a4030;font-family:monospace;font-weight:700;line-height:2;margin-top:4px;letter-spacing:1px">[ 告诉 AI 你是哪种旅行人 ]</div>
-        <div id="stack-hint" style="font-size:8px;color:var(--blue);margin-top:2px;font-family:monospace;font-weight:600;letter-spacing:1px;line-height:2">▶ 拨动滑块，解锁你的旅行人格拼图 ◀</div>
+        <div id="stack-hint" style="font-size:8px;color:#a08060;margin-top:4px;font-family:monospace;font-weight:600;letter-spacing:1px;line-height:2">▶ 拨动滑块，解锁你的旅行人格拼图 ◀</div>
       </div>
 
       <!-- 3×3 卡片网格（aspect-ratio:1 实现1:1）-->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;flex:1;min-height:0;align-content:stretch" id="sliders-wrap"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="sliders-wrap"></div>
 
       <!-- 底部按钮 -->
-      <button onclick="goArchive()" style="width:100%;padding:10px;font-size:13px;font-weight:700;border:none;border-radius:4px;background:linear-gradient(135deg,#3b82f6,#2563EB);color:#fff;cursor:pointer;letter-spacing:2px;box-shadow:4px 4px 0 #1e3a8a;font-family:monospace;transition:transform 0.15s,box-shadow 0.15s" onmouseover="this.style.transform=&#39;translateY(-2px)&#39;;this.style.boxShadow=&#39;6px 6px 0 #1e3a8a&#39;" onmouseout="this.style.transform=&#39;&#39;;this.style.boxShadow=&#39;4px 4px 0 #1e3a8a&#39;">
+      <button onclick="goArchive()" style="width:100%;padding:12px;font-size:14px;font-weight:700;border:none;border-radius:50px;background:linear-gradient(135deg,#4096FF,#1D4ED8);color:#fff;cursor:pointer;letter-spacing:0.5px;box-shadow:0 4px 16px rgba(29,78,216,0.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;transition:all 0.2s;flex-shrink:0" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(29,78,216,0.40)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(29,78,216,0.30)'">
         好了，去规划行程 →
       </button>
 
@@ -673,7 +759,7 @@ body{
 <!-- ========================================================
      SCREEN · 行程规划结果（archive iframe）
      ======================================================== -->
-<div id="s-archive" class="screen" style="background:#E6F1FF;overflow-y:auto;padding:0 0 40px 0">
+<div id="s-archive" class="screen" style="background:#e8f0fe;overflow-y:auto">
   <div class="container">
     <button class="back-btn" onclick="showScreen(&#39;s-flip&#39;)">← 返回</button>
     <!-- Phase 1: Loading -->
@@ -703,9 +789,9 @@ body{
     </div>
     <!-- Phase 3: Cards + Itinerary -->
     <div id="ha-phaseCards" style="display:none">
-      <div style="text-align:center;margin-bottom:24px;padding-top:12px">
+      <div style="text-align:center;margin-bottom:16px">
         <h2 style="margin-bottom:6px">✨ 为你定制的旅行方案</h2>
-        <div style="font-size:0.85em;color:#4096FF" id="ha-deckSubtitle"></div>
+        <div style="font-size:0.85em;color:#5a6b54" id="ha-deckSubtitle"></div>
       </div>
       <div class="collage-stage">
         <div class="collage-hint">
@@ -756,39 +842,6 @@ body{
 
 <div id="s-heicha" class="screen" style="padding:0;overflow:hidden">
   <iframe src="about:blank" style="width:100%;height:100%;border:none;display:block" allow="fullscreen"></iframe>
-</div>
-
-<!-- 方案详情页（全新布局） -->
-<div id="s-planDetail" class="screen" style="background:rgb(240,235,225);overflow:hidden">
-  <nav style="display:flex;align-items:center;padding:0 20px;height:52px;background:#2C2416;flex-shrink:0;gap:16px">
-    <button onclick="showScreen('s-archive')" style="font-size:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:5px 12px;color:#D4C4A0;cursor:pointer">← 返回</button>
-    <span style="font-size:14px;font-weight:800;color:#F0D880;letter-spacing:1px" id="planDetailTitle">方案详情</span>
-    <div id="planDetailBadges" style="margin-left:auto;display:flex;gap:6px"></div>
-  </nav>
-  <div style="display:flex;height:calc(100vh - 52px);overflow:hidden">
-    <!-- 左栏：地图 (45%) -->
-    <div style="width:45%;position:relative;flex-shrink:0;border-right:3px solid #2C2416">
-      <div id="planDetailMap" style="width:100%;height:100%;min-height:400px"></div>
-    </div>
-    <!-- 右栏：甘特图 + 推荐 (55%) -->
-    <div style="width:55%;overflow-y:auto;background:#FAF7F0">
-      <div style="padding:20px 20px 0">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-          <div style="width:4px;height:20px;background:#2C2416;border-radius:2px"></div>
-          <span style="font-size:14px;font-weight:800;color:#2C2416">行程甘特图</span>
-        </div>
-        <div id="planDetailGantt"></div>
-      </div>
-      <div style="margin:20px;border-top:2px dashed #C8B898"></div>
-      <div style="padding:0 20px 20px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-          <div style="width:4px;height:20px;background:#2C2416;border-radius:2px"></div>
-          <span style="font-size:14px;font-weight:800;color:#2C2416">推荐住宿 &amp; 美食</span>
-        </div>
-        <div id="planDetailRecommend"></div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <div id="s-compare" class="screen">
@@ -870,8 +923,6 @@ body{
 </div>
 
 <!-- Chart.js CDN -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 /* ============================================================
@@ -1470,105 +1521,143 @@ function initSliders(){
   if(!wrap)return;
   wrap.innerHTML='';
 
-  SLIDERS.forEach(function(sl, idx){
-    var theme=SLIDER_THEMES[sl.id];
-    var dots=SLIDER_DOTS[sl.id];
+  // 每个维度主题色
+  var ACCENT={
+    popular:'#F97316', crowd:'#F43F5E', morning:'#F59E0B',
+    night:'#8B5CF6',  social:'#22C55E', photo:'#EC4899',
+    budget:'#16A34A', transport:'#D97706', stay:'#9333EA'
+  };
 
-    // 外层容器：支持 CSS 3D 翻转，1:1 比例由 grid 行列决定
+  SLIDERS.forEach(function(sl, idx){
+    var ac = ACCENT[sl.id] || '#4096FF';
+
+    // ── 外层 3D 翻转容器 ──
     var outer=document.createElement('div');
     outer.id='flip-outer-'+sl.id;
-    outer.style.cssText='perspective:800px;position:relative;aspect-ratio:1/1;min-width:0;';;
+    outer.style.cssText='perspective:900px;position:relative;';
 
-    // 翻转内层（包含正反两面）
     var inner=document.createElement('div');
     inner.id='flip-inner-'+sl.id;
-    inner.style.cssText=[
-      'position:relative;width:100%;height:100%;',
-      'transform-style:preserve-3d;',
-      'transition:transform 0.6s cubic-bezier(.4,0,.2,1);',
-    ].join('');
+    inner.style.cssText='position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 0.55s cubic-bezier(.4,0,.2,1);';
 
-    // ── 正面：进度条卡片 ──────────────────────────────
+    // ────────────────────────────────────────────────────────
+    // 正面：现代清爽滑块卡片
+    // ────────────────────────────────────────────────────────
     var front=document.createElement('div');
+    front.id='slider-card-'+sl.id;
     front.style.cssText=[
-      'position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;',
-      'background:rgba(255,252,245,0.97);',
-      'border-radius:4px;',
-      'border:2.5px solid #1e3a8a;',
-      'box-shadow:3px 3px 0 rgba(26,10,0,0.15);',
-      'padding:8px 10px;',
-      'display:flex;flex-direction:column;justify-content:space-between;',
+      'position:absolute;inset:0;',
+      'backface-visibility:hidden;-webkit-backface-visibility:hidden;',
+      'background:#fff;',
+      'border-radius:14px;',
+      'border:1.5px solid #E6F1FF;',
+      'box-shadow:0 2px 10px rgba(64,150,255,0.08);',
+      'padding:10px 12px 8px;',
+      'display:flex;flex-direction:column;gap:6px;',
       'overflow:hidden;',
     ].join('');
-    front.id='slider-card-'+sl.id;
 
+    // 顶部彩色条（3px，符合维度主题色）
+    var topBar='<div style="height:3px;border-radius:3px 3px 0 0;background:'+ac+';position:absolute;top:0;left:0;right:0;"></div>';
+
+    // 标题行：维度名 + 当前 emoji（emoji 16px，不遮字）
     var header=
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'+
-        '<div>'+
-          '<div style="font-size:14px;font-weight:900;color:#1e3a8a;font-family:monospace;line-height:1.3;letter-spacing:0.5px">'+sl.desc+'</div>'+
-        '</div>'+
-        '<div id="emoji-'+sl.id+'" style="font-size:22px;line-height:1;transition:transform .15s;flex-shrink:0;margin-left:4px">'+getSliderEmoji(sl,sl.val)+'</div>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">'+
+        '<span style="font-size:12px;font-weight:700;color:#1a1a1a;line-height:1.2">'+sl.desc+'</span>'+
+        '<span id="emoji-'+sl.id+'" style="font-size:16px;line-height:1;flex-shrink:0;margin-left:4px">'+getSliderEmoji(sl,sl.val)+'</span>'+
       '</div>';
 
+    // 左右标签（pill 样式，单行，文字足够小不遮挡）
     var labels=
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'+
-        '<div style="font-size:10px;color:'+theme.accent+';font-weight:700;line-height:1.5">'+sl.left.e+'<br>'+sl.left.l+'</div>'+
-        '<div style="font-size:10px;color:'+theme.accent+';font-weight:700;line-height:1.5;text-align:right">'+sl.right.l+'<br>'+sl.right.e+'</div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:4px">'+
+        '<span style="font-size:9px;color:'+ac+';background:'+ac+'15;padding:2px 6px;border-radius:10px;font-weight:600;max-width:46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.6">'+sl.left.l+'</span>'+
+        '<span style="font-size:9px;color:'+ac+';background:'+ac+'15;padding:2px 6px;border-radius:10px;font-weight:600;max-width:46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;line-height:1.6">'+sl.right.l+'</span>'+
       '</div>';
 
-    var trackPct=sl.val+'%';
-    var filledBlocks=Math.round(sl.val/10);
-    var pixelBlocks='';
-    for(var qi=0;qi<10;qi++){
-      var lit=qi<filledBlocks;
-      // 当前位置（filledBlocks-1）显示emoji角标
-      var isCurrent=(qi===filledBlocks-1)&&filledBlocks>0;
-      pixelBlocks+='<div style="position:relative;width:calc(10% - 2px);margin:0 1px;height:18px;background:'+(lit?theme.accent:'rgba(0,0,0,0.08)')+';border:2px solid '+(lit?'rgba(0,0,0,0.2)':'rgba(0,0,0,0.12)')+';border-radius:2px;flex-shrink:0">'+
-        (isCurrent?'<div style="position:absolute;bottom:110%;left:50%;transform:translateX(-50%);font-size:14px;line-height:1;pointer-events:none" id="pixel-cursor-'+sl.id+'">'+theme.char+'</div>':'')+'</div>';
-    }
-    var customTrack=
-      '<div style="position:relative;margin-bottom:4px" id="track-wrap-'+sl.id+'">'+
-        '<div id="pixel-bar-'+sl.id+'" style="display:flex;align-items:flex-end;width:100%;height:28px;align-items:center">'+pixelBlocks+'</div>'+
-        '<input type="range" min="0" max="100" value="'+sl.val+'"'+
-          ' style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:3;"'+
-        '>'+
+    // 进度轨道：现代渐变条 + 圆形滑点
+    var pct=sl.val+'%';
+    var track=
+      '<div style="position:relative;height:28px;display:flex;align-items:center;">'+
+        // 轨道背景
+        '<div style="position:absolute;left:0;right:0;height:5px;background:#F0F4FF;border-radius:3px;overflow:hidden;">'+
+          '<div id="track-fill-'+sl.id+'" style="height:100%;width:'+pct+';background:'+ac+';border-radius:3px;transition:width .1s ease;"></div>'+
+        '</div>'+
+        // 滑点（小圆 + emoji）
+        '<div id="track-dot-'+sl.id+'" style="position:absolute;left:'+pct+';transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:#fff;border:2.5px solid '+ac+';box-shadow:0 2px 8px '+ac+'55;transition:left .1s ease;pointer-events:none;display:flex;align-items:center;justify-content:center;font-size:11px;">'+
+          getSliderEmoji(sl,sl.val)+
+        '</div>'+
+        // 透明滑块覆盖
+        '<input type="range" min="0" max="100" value="'+sl.val+'" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:3;">'+
       '</div>';
 
-    var dotHtml='<div style="display:flex;justify-content:space-between;padding:0 1px;margin-top:2px">';
-    if(dots){dots.forEach(function(d,di){
-      var pct=di*(100/(dots.length-1));
-      var lit=sl.val>=pct;
-      dotHtml+='<span style="font-size:12px;transition:filter .15s,transform .15s;filter:'+(lit?'none':'grayscale(1) opacity(.25)')+';transform:'+(lit?'scale(1.15)':'scale(0.85)')+'">'+d+'</span>';
-    });}
-    dotHtml+='</div>';
+    // 底部左右端点 emoji（小一点）
+    var ends=
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:0 2px">'+
+        '<span style="font-size:14px">'+sl.left.e+'</span>'+
+        '<span style="font-size:14px">'+sl.right.e+'</span>'+
+      '</div>';
 
-    front.innerHTML=header+labels+customTrack+dotHtml;
+    front.innerHTML=topBar+header+labels+track+ends;
 
-    // ── 背面：像素图 ──────────────────────────────────
+    // ────────────────────────────────────────────────────────
+    // 背面：像素拼豆艺术（填满卡片）+ 底部标签条
+    // ────────────────────────────────────────────────────────
     var back=document.createElement('div');
+    back.id='slider-back-'+sl.id;
     back.style.cssText=[
-      'position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;',
+      'position:absolute;inset:0;',
+      'backface-visibility:hidden;-webkit-backface-visibility:hidden;',
       'transform:rotateY(180deg);',
-      'border-radius:4px;overflow:hidden;border:2.5px solid #1e3a8a;',
+      'border-radius:14px;',
+      'overflow:hidden;',
+      'border:1.5px solid '+ac+'44;',
+      'box-shadow:0 2px 10px '+ac+'22;',
+      'cursor:pointer;',
     ].join('');
-    // 拼豆像素SVG
-    var pixelHtml = PIXEL_ARTS[sl.id] || '<div style="width:100%;height:100%;background:'+CARD_THEMES[idx].bg+';display:flex;align-items:center;justify-content:center;font-size:32px">'+sl.right.e+'</div>';
-    back.innerHTML='<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden">'+pixelHtml+'</div>'+
-      '<div style="position:absolute;bottom:0;left:0;right:0;padding:5px 2px;background:rgba(26,10,0,0.8);font-size:5.5px;color:#fff;text-align:center;font-family:monospace;font-weight:900;letter-spacing:1px;text-shadow:1px 1px 0 rgba(0,0,0,0.5)">'+sl.desc+' ✓</div>';
+
+    // 像素画全屏展示
+    var pixelSvg=PIXEL_ARTS[sl.id]||('<div style="width:100%;height:100%;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:40px">'+sl.right.e+'</div>');
+
+    // 底部信息条（半透明黑，叠在像素画上）
+    back.innerHTML=
+      '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;">'+pixelSvg+'</div>'+
+      '<div style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px;background:rgba(0,0,0,0.65);backdrop-filter:blur(2px);">'+
+        '<div style="font-size:10px;color:#fff;font-weight:700;letter-spacing:0.5px">'+sl.desc+'</div>'+
+        '<div id="back-choice-'+sl.id+'" style="font-size:9px;color:rgba(255,255,255,0.8);margin-top:1px">'+
+          (sl.val<40?sl.left.l:sl.val>60?sl.right.l:'灵活随心')+' '+getSliderEmoji(sl,sl.val)+
+        '</div>'+
+      '</div>';
 
     inner.appendChild(front);
     inner.appendChild(back);
     outer.appendChild(inner);
 
-    // 事件：拨动进度条 → 更新进度条视觉 → 翻转
+    // ── 事件：滑动 → 更新正面视觉 → 翻转到背面 ──
     var rangeEl=front.querySelector('input[type=range]');
     if(rangeEl) rangeEl.addEventListener('input',function(){
-      onSliderChange(sl.id,this.value);
-      // 翻转！只要拨过就翻
+      var val=+this.value, pct2=val+'%';
+      onSliderChange(sl.id,val);
+      // 更新正面
+      var fill=document.getElementById('track-fill-'+sl.id);
+      var dot =document.getElementById('track-dot-'+sl.id);
+      var emo =document.getElementById('emoji-'+sl.id);
+      if(fill) fill.style.width=pct2;
+      if(dot){dot.style.left=pct2;dot.textContent=getSliderEmoji(sl,val);}
+      if(emo) emo.textContent=getSliderEmoji(sl,val);
+      // 更新背面文字
+      var bc=document.getElementById('back-choice-'+sl.id);
+      if(bc) bc.textContent=(val<40?sl.left.l:val>60?sl.right.l:'灵活随心')+' '+getSliderEmoji(sl,val);
+      // 翻转到背面
       if(!inner.dataset.flipped){
         inner.dataset.flipped='1';
         inner.style.transform='rotateY(180deg)';
       }
+    });
+
+    // 点击背面 → 翻回正面（让用户可以重新调）
+    back.addEventListener('click',function(){
+      inner.dataset.flipped='';
+      inner.style.transform='';
     });
 
     wrap.appendChild(outer);
@@ -2244,7 +2333,7 @@ var HEICHA_CITY_SPOTS = {
   '北京':{culture:[{n:'天安门广场',t:'08:00'},{n:'故宫博物院',t:'09:00'},{n:'长城（慕田峪）',t:'08:30'},{n:'颐和园',t:'09:00'}],food:[{n:'全聚德烤鸭',t:'12:00'},{n:'庆丰包子铺',t:'08:00'},{n:'护国寺小吃',t:'10:00'},{n:'簋街小龙虾',t:'19:30'}],photo:[{n:'南锣鼓巷',t:'10:00'},{n:'798艺术区',t:'14:00'},{n:'后海夕照',t:'17:30'}],family:[{n:'北京动物园',t:'09:30'},{n:'科技馆',t:'10:00'}],local:[{n:'胡同骑行',t:'09:00'},{n:'鼓楼早市',t:'07:00'}],nature:[{n:'香山公园',t:'08:00'},{n:'奥森公园',t:'09:00'}],chill:[{n:'三里屯咖啡',t:'10:00'}],night:[{n:'簋街夜宵',t:'20:00'},{n:'后海酒吧',t:'21:00'}],adventure:[{n:'天安门广场',t:'08:00'},{n:'故宫博物院',t:'09:00'},{n:'长城（慕田峪）',t:'08:30'}]},
   '成都':{culture:[{n:'武侯祠',t:'09:00'},{n:'锦里古街',t:'10:00'},{n:'宽窄巷子',t:'11:00'}],food:[{n:'老码头火锅',t:'19:30'},{n:'龙抄手总店',t:'08:00'},{n:'夫妻肺片',t:'12:00'}],photo:[{n:'东郊记忆',t:'14:00'},{n:'锦江夜游',t:'19:00'}],family:[{n:'大熊猫繁育基地',t:'08:00'}],local:[{n:'玉林路社区',t:'10:00'}],nature:[{n:'青城山',t:'08:00'},{n:'都江堰',t:'09:00'}],chill:[{n:'太古里咖啡',t:'10:00'}],night:[{n:'锦江夜游',t:'19:00'},{n:'春熙路夜市',t:'20:00'}],adventure:[{n:'武侯祠',t:'09:00'},{n:'青城山',t:'08:00'},{n:'都江堰',t:'09:00'}]},
   '西安':{culture:[{n:'兵马俑',t:'08:30'},{n:'西安城墙',t:'09:00'},{n:'大雁塔',t:'10:00'},{n:'华清宫',t:'09:00'}],food:[{n:'回民街',t:'10:00'},{n:'肉夹馍',t:'08:00'},{n:'羊肉泡馍',t:'08:30'}],photo:[{n:'城墙骑行',t:'09:00'},{n:'大唐不夜城',t:'19:00'}],family:[{n:'西安博物院',t:'10:00'}],local:[{n:'顺城巷',t:'15:00'},{n:'永兴坊',t:'11:00'}],nature:[{n:'翠华山',t:'08:30'}],chill:[{n:'钟鼓楼广场',t:'16:00'}],night:[{n:'大唐不夜城',t:'19:00'},{n:'回民街夜市',t:'20:00'}],adventure:[{n:'兵马俑',t:'08:30'},{n:'西安城墙',t:'09:00'},{n:'华清宫',t:'09:00'}]},
-  '厦门':{culture:[{n:'鼓浪屿',t:'09:00',tag:'最美小岛',tc:'#1677FF'},{n:'南普陀寺',t:'08:30',tag:'闽南佛教圣地',tc:'#13C2C2'},{n:'厦门大学',t:'10:00',tag:'最美高校',tc:'#7C3AED'}],food:[{n:'沙茶面',t:'08:00',tag:'闽南必吃',tc:'#E07A20'},{n:'海蛎煎',t:'12:00',tag:'海鲜特色',tc:'#E07A20'},{n:'土笋冻',t:'10:00',tag:'地道小吃',tc:'#E07A20'},{n:'花生汤',t:'09:00'},{n:'沙坡尾咖啡',t:'15:00'}],photo:[{n:'曾厝垵',t:'10:00',tag:'出片圣地',tc:'#1677FF'},{n:'环岛路骑行',t:'09:00',tag:'海景骑行',tc:'#13C2C2'},{n:'白城沙滩',t:'16:00',tag:'日落绝美',tc:'#7C3AED'}],family:[{n:'厦门动植物园',t:'09:30',tag:'亲子首选',tc:'#52C41A'},{n:'海底世界',t:'10:00',tag:'孩子必去',tc:'#52C41A'}],local:[{n:'思明区老街',t:'10:00',tag:'本地文化',tc:'#1677FF'},{n:'第八菜市场',t:'08:00',tag:'市井烟火',tc:'#13C2C2'}],nature:[{n:'植物园',t:'09:00',tag:'自然氧吧',tc:'#52C41A'},{n:'海滩日落',t:'17:00',tag:'绝美日落',tc:'#F5A623'},{n:'大屿岛',t:'10:00',tag:'候鸟天堂',tc:'#13C2C2'}],chill:[{n:'沙坡尾咖啡',t:'10:00',tag:'文艺打卡',tc:'#9B72F5'},{n:'鼓浪屿发呆',t:'14:00',tag:'慢生活',tc:'#13C2C2'}],night:[{n:'中山路夜市',t:'19:30',tag:'夜间必逛',tc:'#F5A623'},{n:'八市海鲜',t:'18:00',tag:'新鲜直达',tc:'#E05C5C'}],adventure:[{n:'环岛路骑行',t:'09:00',tag:'挑战海风',tc:'#1677FF'},{n:'鼓浪屿徒步',t:'10:00',tag:'小岛探险',tc:'#7C3AED'}]},
+  '厦门':{culture:[{n:'鼓浪屿',t:'09:00'},{n:'南普陀寺',t:'08:30'},{n:'厦门大学',t:'10:00'}],food:[{n:'沙茶面',t:'08:00'},{n:'海蛎煎',t:'12:00'},{n:'土笋冻',t:'10:00'}],photo:[{n:'曾厝垵',t:'10:00'},{n:'环岛路骑行',t:'09:00'}],family:[{n:'厦门动植物园',t:'09:30'}],local:[{n:'思明区老街',t:'10:00'}],nature:[{n:'植物园',t:'09:00'},{n:'海滩日落',t:'17:00'}],chill:[{n:'沙坡尾咖啡',t:'10:00'}],night:[{n:'中山路夜市',t:'19:30'}],adventure:[{n:'鼓浪屿',t:'09:00'},{n:'环岛路骑行',t:'09:00'}]},
   '大理':{culture:[{n:'崇圣寺三塔',t:'09:00'},{n:'大理古城',t:'10:00'},{n:'洱海',t:'09:30'},{n:'喜洲古镇',t:'10:00'}],food:[{n:'鲜花饼',t:'09:00'},{n:'乳扇',t:'10:00'},{n:'砂锅鱼',t:'12:00'}],photo:[{n:'洱海日落',t:'17:00'},{n:'双廊古镇',t:'10:00'},{n:'苍山雪景',t:'08:00'}],family:[{n:'蝴蝶泉',t:'09:30'}],local:[{n:'古城老街',t:'10:00'},{n:'洱海骑行',t:'09:00'}],nature:[{n:'苍山',t:'08:00'},{n:'茈碧湖',t:'10:00'}],chill:[{n:'古城咖啡',t:'10:00'},{n:'洱海边发呆',t:'14:00'}],night:[{n:'古城夜市',t:'19:00'},{n:'人民路酒吧',t:'21:00'}],adventure:[{n:'崇圣寺三塔',t:'09:00'},{n:'苍山',t:'08:00'},{n:'洱海',t:'09:30'}]},
   '上海':{culture:[{n:'外滩',t:'09:00'},{n:'东方明珠',t:'10:00'},{n:'豫园',t:'09:30'}],food:[{n:'小笼包（南翔）',t:'08:30'},{n:'生煎',t:'08:00'},{n:'蟹粉豆腐',t:'12:00'}],photo:[{n:'田子坊',t:'10:00'},{n:'武康路',t:'14:00'},{n:'外滩夜景',t:'19:30'}],family:[{n:'上海迪士尼',t:'09:00'}],local:[{n:'安福路',t:'10:00'}],nature:[{n:'辰山植物园',t:'09:00'}],chill:[{n:'新天地',t:'14:00'}],night:[{n:'外滩夜景',t:'19:30'},{n:'衡山路酒吧',t:'21:00'}],adventure:[{n:'外滩',t:'09:00'},{n:'东方明珠',t:'10:00'},{n:'豫园',t:'09:30'}]},
   '重庆':{culture:[{n:'磁器口古镇',t:'09:30'},{n:'洪崖洞',t:'10:00'},{n:'解放碑',t:'14:00'}],food:[{n:'火锅',t:'12:00'},{n:'酸辣粉',t:'08:30'},{n:'重庆小面',t:'08:00'}],photo:[{n:'洪崖洞夜景',t:'19:00'},{n:'鹅岭公园',t:'09:00'}],family:[{n:'重庆动物园',t:'09:30'}],local:[{n:'十八梯',t:'10:00'}],nature:[{n:'缙云山',t:'08:30'}],chill:[{n:'观音桥步行街',t:'14:00'}],night:[{n:'洪崖洞夜景',t:'19:00'},{n:'火锅宵夜',t:'21:00'}],adventure:[{n:'磁器口古镇',t:'09:30'},{n:'洪崖洞',t:'10:00'},{n:'缙云山',t:'08:30'}]},
@@ -2491,155 +2580,53 @@ function haShowCardDeck() {
 function haBuildCollageCards() {
   var origin = document.getElementById('ha-envelopeOrigin');
   if(!origin) return;
-  origin.innerHTML = '';
-
-  var GRAD  = ['linear-gradient(120deg,#4096FF,#60BFFF)','linear-gradient(120deg,#36CFC9,#4096FF)','linear-gradient(120deg,#9B72F5,#C0A3FF)'];
-  var EMOJIS = ['🏃','📸','🌿'];
-  var LABELS = ['全力打卡','出片优先','深度探索'];
-  var ACCENT = ['#1677FF','#13C2C2','#7C3AED'];
-
+  origin.innerHTML='';
+  var COLORS=['#FEFCE8','#F0FDF4','#EFF6FF'];
+  var TAPES=['tape','tape tape-2','tape tape-3'];
+  var PLAN_NAMES = haPlans.length ? haPlans.map(function(p){ return p.combo.name; }) : ['干饭急行军','出片敢死队','硬核遛娃团'];
+  var PLAN_META = haPlans.length ? haPlans.map(function(p){ return HEICHA_PERSONAS[p.p1].emoji+HEICHA_PERSONAS[p.p1].name+' × '+HEICHA_PERSONAS[p.p2].name; }) : ['','',''];
+  var PLAN_SLOGAN = haPlans.length ? haPlans.map(function(p){ return p.combo.slogan; }) : ['','',''];
+  var PLAN_BUDGET = haPlans.length ? haPlans.map(function(p){ return p.combo.budget; }) : ['¥3000+','¥3500+','¥3500+'];
   var days = heichaState.days, city = heichaState.city;
-  var citySpots = HEICHA_CITY_SPOTS[city] || {};
-
-  function getPlanUniqueSpots(planIdx) {
-    var p = haPlans[planIdx];
-    var p1Style = HEICHA_PERSONAS[p.p1].style;
-    var p2Style = HEICHA_PERSONAS[p.p2].style;
-    var ALL_C = ['adventure','photo','family','local','nature','culture','food','chill','night'];
-    var exclCat = ALL_C.filter(function(c){return c!==p1Style&&c!==p2Style;})[planIdx%6]||'nature';
-    var myNames = {};
-    [p1Style, p2Style, exclCat, 'culture'].forEach(function(cat) {
-      (citySpots[cat] || []).forEach(function(s){ if(!myNames[s.n]) myNames[s.n] = s; });
-    });
-    var otherNames = {};
-    [0,1,2].forEach(function(i) {
-      if(i === planIdx) return;
-      var op = haPlans[i];
-      var oExcl = ALL_C.filter(function(c){
-        var op1s=HEICHA_PERSONAS[op.p1].style, op2s=HEICHA_PERSONAS[op.p2].style;
-        return c!==op1s&&c!==op2s;
-      })[i%6]||'nature';
-      [HEICHA_PERSONAS[op.p1].style, HEICHA_PERSONAS[op.p2].style, oExcl, 'culture'].forEach(function(cat) {
-        (citySpots[cat] || []).forEach(function(s){ otherNames[s.n] = true; });
-      });
-    });
-    var unique = [];
-    Object.keys(myNames).forEach(function(name) {
-      if(!otherNames[name]) unique.push(myNames[name]);
-    });
-    return unique;
-  }
-
-  var BENEFIT_TEXT = {
-    'adventure+food':    '3天打卡最高效路线，顺带吃遍当地特色',
-    'adventure+photo':   '特种兵速度 + 拍照眼光，打卡出片两不误',
-    'adventure+family':  '行程紧凑不拖沫，孩子全程不无聊',
-    'adventure+local':   '高效打卡主流景点，还有本地隐藏宝藏',
-    'adventure+nature':  '山水全都刷到，效率拉满不留遗憾',
-    'photo+food':        '每一张出片，每一顿探店，发小红书必爆',
-    'photo+local':       '镜头里全是冷门秘境，绝对不撞款',
-    'photo+nature':      '自然光最美的地方，拍出来不需要滤镜',
-    'photo+family':      '拍到孩子最自然的笑容，全家福都是大片',
-    'local+food':        '跟着本地人吃喝，省錢省时间又地道',
-    'local+nature':      '远离游客堆，在山水里找到真正松弛感',
-    'local+family':      '轻松慢游，大人放松孩子开心不赶路',
-    'nature+family':     '带孩子亲近自然，长知识长见识',
-    'food+family':       '一家人吃地道美食，旅行最有件式感',
-    'chill+local':       '慢下来感受这座城市的温度',
-    'default':           '专属你的旅行方案，按你的节奏来'
-  };
-
-  function getBenefit(p1s, p2s) {
-    return BENEFIT_TEXT[p1s+'+'+p2s] || BENEFIT_TEXT[p2s+'+'+p1s] || BENEFIT_TEXT['default'];
-  }
-
-  [0,1,2].forEach(function(i) {
-    var p = haPlans[i];
-    var p1Style = HEICHA_PERSONAS[p.p1].style;
-    var p2Style = HEICHA_PERSONAS[p.p2].style;
-    var uniqueSpots = getPlanUniqueSpots(i);
-    var benefit = getBenefit(p1Style, p2Style);
-
-    var spotObjs = uniqueSpots.slice(0,2);
-    if(!spotObjs.length) {
-      var _p1s = HEICHA_PERSONAS[p.p1].style, _p2s = HEICHA_PERSONAS[p.p2].style;
-      var _ALL = ['adventure','photo','family','local','nature','food','chill'];
-      var _ec = _ALL.filter(function(c){return c!==_p1s&&c!==_p2s;})[i%6]||'nature';
-      spotObjs = (citySpots[_ec]||[]).slice(0,2);
-    }
-    var spotHtml = spotObjs.map(function(s, si) {
-      var name = typeof s === 'string' ? s : s.n;
-      var tag = (s && s.tag) ? s.tag : '';
-      var tagText = tag.replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}\s]+/u,'').trim();
-      var dotColor = [ACCENT[0],ACCENT[1],ACCENT[2]][i];
-      return '<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px dashed rgba(0,0,0,0.06)">'
-        +'<span style="width:6px;height:6px;border-radius:50%;background:'+dotColor+';flex-shrink:0"></span>'
-        +'<span style="font-size:12px;font-weight:700;color:#1a1a1a">'+name+'</span>'
-        +(tagText ? '<span style="font-size:10px;color:'+dotColor+';font-weight:600;margin-left:auto;white-space:nowrap">'+tagText+'</span>' : '')
-        +'</div>';
-    }).join('');
-
-    var allFoods = (citySpots['food'] || []).filter(function(s){
-      return spotObjs.every(function(s2){ return (typeof s2==='string'?s2:s2.n) !== s.n; });
-    });
-    var foodStartIdx = i * 2;
-    var foodCount = (p1Style === 'food' || p1Style === 'foodie' || p2Style === 'food' || p2Style === 'foodie') ? 2 : 1;
-    var foods = allFoods.slice(foodStartIdx, foodStartIdx + foodCount);
-    if(!foods.length) foods = allFoods.slice(0, foodCount);
-    var foodHtml = foods.map(function(s){
-      var n = typeof s === 'string' ? s : s.n;
-      return '<span style="background:rgba(0,0,0,0.06);color:#444;font-size:11px;padding:2px 8px;border-radius:20px;white-space:nowrap">'+n+'</span>';
-    }).join('');
-
+  
+  [0,1,2].forEach(function(i){
     var card = document.createElement('div');
-    card.className = 'collage-card'; card.style.position='relative'; card.style.overflow='hidden';
-
-    card.innerHTML =
-      '<div style="position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:16px 0 0 16px;background:'+GRAD[i]+'"></div>'
-      +'<div style="padding:16px 18px 18px 22px;flex:1;display:flex;flex-direction:column">'
-        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
-          +'<div style="display:flex;align-items:center;gap:10px">'
-            +'<div style="width:28px;height:28px;border-radius:8px;background:'+GRAD[i]+';display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">'+EMOJIS[i]+'</div>'
-            +'<div>'
-              +'<div style="font-size:15px;font-weight:800;color:#1a1a1a;letter-spacing:-0.2px">'+p.combo.name+'</div>'
-              +'<div style="font-size:11px;color:#888;margin-top:1px">'+LABELS[i]+'</div>'
-            +'</div>'
-          +'</div>'
-          +'<div style="font-size:22px;line-height:1">'+EMOJIS[i]+'</div>'
+    card.className='collage-card';
+    card.style.background=COLORS[i];
+    card.innerHTML=
+      '<div class="'+TAPES[i]+'"></div>'
+      +'<div class="card-num-badge">'+(i+1)+'</div>'
+      +'<div class="card-inner">'
+        +'<div style="font-size:0.62em;color:#9a8870;letter-spacing:1px;margin-bottom:6px;">'+city+'</div>'
+        +'<div style="width:100%;height:90px;background:#e8e0d0;border-radius:4px;margin-bottom:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:2em;">'
+          +['\u{1F3D4}\uFE0F','\u{1F305}','\u{1F30A}'][i]
         +'</div>'
-        +'<div style="height:1px;background:rgba(0,0,0,0.06);margin:10px 0"></div>'
-        +(spotHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:6px;text-transform:uppercase">✶ 特色景点</div><div>'+spotHtml+'</div></div>' : '')
-        +(foodHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:5px;text-transform:uppercase">特色美食</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+foodHtml+'</div></div>' : '')
-        +'<div style="background:rgba(0,0,0,0.03);border-radius:8px;padding:8px 10px;font-size:12px;color:#555;line-height:1.5;margin-bottom:12px">'
-          +'<span style="color:'+ACCENT[i]+';font-weight:700">✶</span> '+benefit
+        +'<div style="font-family:Arial Black,Impact,sans-serif;font-size:0.92em;color:#2D3A2A;margin-bottom:4px;">'+PLAN_NAMES[i]+'</div>'
+        +'<div style="font-size:0.72em;color:#5a6b54;margin-bottom:8px;">'+PLAN_SLOGAN[i]+'</div>'
+        +'<div style="font-size:0.7em;color:#777;">'
+          +'<span>'+city+'</span> <span style="margin:0 4px">·</span>'
+          +'<span>'+days+'天</span> <span style="margin:0 4px">·</span>'
+          +'<span>'+PLAN_META[i]+'</span>'
         +'</div>'
-        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
-          +'<div style="display:flex;align-items:center;gap:6px">'
-            +'<span style="font-size:10px;color:#999">💰 预算</span>'
-            +'<span style="font-size:14px;font-weight:800;color:'+ACCENT[i]+'">'+p.combo.budget+'</span>'
-          +'</div>'
-          +'<span style="font-size:11px;color:#bbb">'+days+'天</span>'
-        +'</div>'
-        +'<div style="font-size:11px;color:#ccc;border-top:1px solid #f0f0f0;padding-top:8px">'
-          +HEICHA_PERSONAS[p.p1].emoji+' '+HEICHA_PERSONAS[p.p1].name+' × '+HEICHA_PERSONAS[p.p2].name
+        +'<div style="border-top:1px dashed #B8A880;margin-top:8px;padding-top:6px;display:flex;justify-content:space-between;font-size:0.7em;color:#9a8870;">'
+          +'<span>50% 匹配</span><span>'+PLAN_BUDGET[i]+'</span>'
         +'</div>'
       +'</div>';
-
     card.onclick = (function(idx){ return function(){ haSelectCard(idx); }; })(i);
     origin.appendChild(card);
   });
-
+  
+  // 触发飞入动画
   setTimeout(function(){
     var cards = origin.querySelectorAll('.collage-card');
     cards.forEach(function(c,i){
       setTimeout(function(){
         c.classList.add('card-fly-'+(i+1));
         c.classList.add('landed-'+(i+1));
-      }, i*120);
+      }, i*100);
     });
   }, 50);
 }
-
 
 function haSelectCard(idx) {
   haSelectedPlanIdx = idx;
@@ -2647,7 +2634,7 @@ function haSelectCard(idx) {
   cards.forEach(function(c,i){
     c.classList.toggle('selected-card', i===idx);
   });
-  haShowPlanDetail(idx);
+  haShowItinerary(idx);
 }
 
 function haShowItinerary(idx) {
@@ -2827,407 +2814,6 @@ function toggleSpotDetail(rowId, spotName, e){
     if(icon) icon.style.transform = 'rotate(90deg)';
     row.style.background = 'rgba(219,234,254,0.25)';
   }
-}
-
-
-
-/* ============================================================
-   COWORK v1.1.49 - 方案详情页完整实现
-   ============================================================ */
-var haSelectedPlanIdx = 0;
-
-var SPOT_COORDS = {
-  '北京': {
-    '天安门广场':[39.9042,116.3974],'故宫博物院':[39.9163,116.3972],'长城（慕田峪）':[40.4320,116.5698],
-    '颐和园':[39.9996,116.2751],'全聚德烤鸭':[39.8542,116.3950],'庆丰包子铺':[39.9139,116.3689],
-    '护国寺小吃':[39.9357,116.3653],'簋街小龙虾':[39.9398,116.4260],'南锣鼓巷':[39.9372,116.4030],
-    '798艺术区':[39.9843,116.4950],'后海夕照':[39.9406,116.3880],'北京动物园':[39.9407,116.3356],
-    '科技馆':[39.9890,116.3950],'胡同骑行':[39.9340,116.4030],'鼓楼早市':[39.9402,116.4030],
-    '香山公园':[39.9935,116.1880],'奥森公园':[40.0214,116.3850],'三里屯咖啡':[39.9329,116.4537],
-    '簋街夜宵':[39.9398,116.4260],'后海酒吧':[39.9406,116.3880]
-  },
-  '成都': {
-    '武侯祠':[30.6453,104.0489],'锦里古街':[30.6462,104.0498],'宽窄巷子':[30.6699,104.0551],
-    '老码头火锅':[30.6513,104.0834],'龙抄手总店':[30.6574,104.0820],'夫妻肺片':[30.6574,104.0654],
-    '东郊记忆':[30.6534,104.1250],'锦江夜游':[30.6510,104.0770],'大熊猫繁育基地':[30.7345,104.1458],
-    '玉林路社区':[30.6320,104.0610],'青城山':[30.9006,103.5705],'都江堰':[30.9983,103.6103],
-    '太古里咖啡':[30.6574,104.0850],'春熙路夜市':[30.6574,104.0820]
-  },
-  '西安': {
-    '兵马俑':[34.3841,109.2785],'西安城墙':[34.2588,108.9443],'大雁塔':[34.2193,108.9593],
-    '华清宫':[34.3657,109.2135],'回民街':[34.2657,108.9443],'肉夹馍':[34.2620,108.9400],
-    '羊肉泡馍':[34.2640,108.9380],'城墙骑行':[34.2620,108.9443],'大唐不夜城':[34.2193,108.9370],
-    '西安博物院':[34.2551,108.9336],'顺城巷':[34.2610,108.9450],'永兴坊':[34.2640,108.9550],
-    '翠华山':[34.0580,108.9350],'钟鼓楼广场':[34.2610,108.9424]
-  },
-  '厦门': {
-    '鼓浪屿':[24.4484,118.0648],'南普陀寺':[24.4460,118.0894],'厦门大学':[24.4368,118.0980],
-    '沙茶面':[24.4535,118.0894],'海蛎煎':[24.4484,118.0748],'土笋冻':[24.4510,118.0830],
-    '曾厝垵':[24.4378,118.0894],'环岛路骑行':[24.4320,118.0950],'厦门动植物园':[24.4868,118.0980],
-    '思明区老街':[24.4510,118.0824],'植物园':[24.4560,118.0894],'海滩日落':[24.4320,118.0310],
-    '沙坡尾咖啡':[24.4420,118.0870],'中山路夜市':[24.4535,118.0824]
-  },
-  '大理': {
-    '崇圣寺三塔':[25.6915,100.1720],'大理古城':[25.6900,100.1550],'洱海':[25.7100,100.1950],
-    '喜洲古镇':[25.7920,100.1780],'鲜花饼':[25.6900,100.1550],'乳扇':[25.6900,100.1550],
-    '砂锅鱼':[25.6900,100.1550],'洱海日落':[25.7100,100.1700],'双廊古镇':[25.7500,100.2000],
-    '苍山雪景':[25.6917,100.1333],'蝴蝶泉':[25.7970,100.1770],'古城老街':[25.6900,100.1550],
-    '洱海骑行':[25.7100,100.1950],'苍山':[25.6917,100.1333],'茈碧湖':[25.7400,100.1600],
-    '古城咖啡':[25.6900,100.1550],'古城夜市':[25.6900,100.1550],'人民路酒吧':[25.6900,100.1550]
-  },
-  '上海': {
-    '外滩':[31.2304,121.4737],'东方明珠':[31.2397,121.4997],'豫园':[31.2273,121.4913],
-    '小笼包（南翔）':[31.2273,121.4913],'生煎':[31.2350,121.4750],'蟹粉豆腐':[31.2320,121.4730],
-    '田子坊':[31.2154,121.4682],'武康路':[31.2130,121.4370],'外滩夜景':[31.2304,121.4737],
-    '上海迪士尼':[31.1440,121.6570],'安福路':[31.2130,121.4420],'辰山植物园':[31.0850,121.2100],
-    '新天地':[31.2214,121.4717]
-  },
-  '重庆': {
-    '磁器口古镇':[29.5833,106.4450],'洪崖洞':[29.5580,106.5760],'解放碑':[29.5580,106.5770],
-    '火锅':[29.5580,106.5770],'酸辣粉':[29.5580,106.5770],'重庆小面':[29.5580,106.5770],
-    '洪崖洞夜景':[29.5580,106.5760],'鹅岭公园':[29.5490,106.5410],'重庆动物园':[29.5530,106.4950],
-    '十八梯':[29.5520,106.5740],'缙云山':[29.8180,106.4000],'观音桥步行街':[29.5750,106.5380]
-  },
-  '三亚': {
-    '南山文化旅游区':[18.2900,109.1700],'天涯海角':[18.2833,109.3833],'清补凉':[18.2528,109.5050],
-    '海鲜大排档':[18.2528,109.5050],'椰子饭':[18.2528,109.5050],'大东海海滩':[18.2250,109.4930],
-    '三亚湾日落':[18.2500,109.4200],'蜈支洲岛':[18.3133,109.7073],'海底世界':[18.3133,109.7073],
-    '解放路夜市':[18.2528,109.5050],'呀诺达雨林':[18.4300,109.6300],'鹿回头':[18.2200,109.5050],
-    '亚龙湾沙滩':[18.1933,109.6360],'三亚湾夜景':[18.2500,109.4200]
-  }
-};
-
-var CITY_HOTEL_FOOD = {
-  '大理': {
-    hotels: [
-      {name:'洱海景度假酒店',type:'scenic',stars:5,price:'¥580/晚',latlng:[25.7833,100.17]},
-      {name:'古城青庐民宿',type:'budget',stars:4,price:'¥320/晚',latlng:[25.69,100.155]},
-      {name:'苍山半间房',type:'network',stars:4,price:'¥450/晚',latlng:[25.6917,100.1333]},
-      {name:'双廊海誓客栈',type:'family',stars:5,price:'¥680/晚',latlng:[25.8933,100.2333]}
-    ],
-    foods: [
-      {name:'再回首凉鸡米线',type:'小吃',price:'¥15',latlng:[25.69,100.155]},
-      {name:'段公子餐厅',type:'白族菜',price:'¥80/人',latlng:[25.70,100.15]},
-      {name:'杨记喜洲粑',type:'小吃',price:'¥10',latlng:[25.7920,100.1780]},
-      {name:'石井私房菜',type:'白族菜',price:'¥65/人',latlng:[25.69,100.155]},
-      {name:'色了咖啡',type:'咖啡',price:'¥35',latlng:[25.7833,100.16]}
-    ]
-  },
-  '北京': {
-    hotels: [
-      {name:'王府井大酒店',type:'scenic',stars:5,price:'¥680/晚',latlng:[39.91,116.41]},
-      {name:'南锣鼓巷四合院',type:'network',stars:4,price:'¥420/晚',latlng:[39.9372,116.4030]},
-      {name:'三里屯精品酒店',type:'budget',stars:4,price:'¥550/晚',latlng:[39.9329,116.4537]},
-      {name:'后海客栈',type:'family',stars:3,price:'¥280/晚',latlng:[39.9406,116.3880]}
-    ],
-    foods: [
-      {name:'全聚德烤鸭',type:'烤鸭',price:'¥180/人',latlng:[39.8542,116.3950]},
-      {name:'庆丰包子铺',type:'小吃',price:'¥25',latlng:[39.9139,116.3689]},
-      {name:'护国寺小吃',type:'小吃',price:'¥30',latlng:[39.9357,116.3653]},
-      {name:'簋街小龙虾',type:'夜宵',price:'¥120/人',latlng:[39.9398,116.4260]},
-      {name:'老北京炸酱面',type:'面食',price:'¥20',latlng:[39.9340,116.4030]}
-    ]
-  },
-  '成都': {
-    hotels: [
-      {name:'宽窄巷子院子',type:'network',stars:4,price:'¥380/晚',latlng:[30.6699,104.0551]},
-      {name:'春熙路商务酒店',type:'budget',stars:4,price:'¥320/晚',latlng:[30.6574,104.0820]},
-      {name:'锦里古街民宿',type:'family',stars:3,price:'¥260/晚',latlng:[30.6462,104.0498]},
-      {name:'太古里精品酒店',type:'scenic',stars:5,price:'¥620/晚',latlng:[30.6574,104.0850]}
-    ],
-    foods: [
-      {name:'老码头火锅',type:'火锅',price:'¥100/人',latlng:[30.6513,104.0834]},
-      {name:'龙抄手总店',type:'小吃',price:'¥20',latlng:[30.6574,104.0820]},
-      {name:'夫妻肺片',type:'凉菜',price:'¥45',latlng:[30.6574,104.0654]},
-      {name:'玉林路烧烤',type:'烧烤',price:'¥60/人',latlng:[30.6320,104.0610]},
-      {name:'春熙路夜市小吃',type:'小吃',price:'¥30',latlng:[30.6574,104.0820]}
-    ]
-  },
-  '西安': {
-    hotels: [
-      {name:'钟楼古城酒店',type:'budget',stars:4,price:'¥350/晚',latlng:[34.2610,108.9424]},
-      {name:'大雁塔禅意民宿',type:'network',stars:4,price:'¥380/晚',latlng:[34.2193,108.9593]},
-      {name:'城墙根客栈',type:'budget',stars:3,price:'¥220/晚',latlng:[34.2620,108.9443]},
-      {name:'曲江精品酒店',type:'family',stars:5,price:'¥580/晚',latlng:[34.2193,108.9370]}
-    ],
-    foods: [
-      {name:'回民街肉夹馍',type:'小吃',price:'¥15',latlng:[34.2620,108.9400]},
-      {name:'老孙家羊肉泡馍',type:'正餐',price:'¥40',latlng:[34.2640,108.9380]},
-      {name:'永兴坊摔碗酒',type:'小吃',price:'¥25',latlng:[34.2640,108.9550]},
-      {name:'biangbiang面',type:'面食',price:'¥18',latlng:[34.2610,108.9450]},
-      {name:'镜糕甑糕',type:'小吃',price:'¥8',latlng:[34.2657,108.9443]}
-    ]
-  },
-  '厦门': {
-    hotels: [
-      {name:'鼓浪屿海景民宿',type:'scenic',stars:4,price:'¥450/晚',latlng:[24.4484,118.0648]},
-      {name:'曾厝垵文艺客栈',type:'network',stars:3,price:'¥280/晚',latlng:[24.4378,118.0894]},
-      {name:'环岛路度假酒店',type:'family',stars:5,price:'¥680/晚',latlng:[24.4320,118.0950]},
-      {name:'中山路商务酒店',type:'budget',stars:3,price:'¥260/晚',latlng:[24.4535,118.0824]}
-    ],
-    foods: [
-      {name:'沙茶面',type:'面食',price:'¥20',latlng:[24.4535,118.0894]},
-      {name:'海蛎煎',type:'小吃',price:'¥25',latlng:[24.4484,118.0748]},
-      {name:'土笋冻',type:'小吃',price:'¥15',latlng:[24.4510,118.0830]},
-      {name:'花生汤',type:'甜品',price:'¥12',latlng:[24.4535,118.0824]},
-      {name:'沙坡尾咖啡',type:'咖啡',price:'¥30',latlng:[24.4420,118.0870]}
-    ]
-  },
-  '上海': {
-    hotels: [
-      {name:'外滩和平饭店',type:'scenic',stars:5,price:'¥1280/晚',latlng:[31.2304,121.4737]},
-      {name:'武康路精品民宿',type:'network',stars:4,price:'¥520/晚',latlng:[31.2130,121.4370]},
-      {name:'田子坊艺术酒店',type:'network',stars:4,price:'¥450/晚',latlng:[31.2154,121.4682]},
-      {name:'南京路商务酒店',type:'budget',stars:3,price:'¥350/晚',latlng:[31.2304,121.4737]}
-    ],
-    foods: [
-      {name:'南翔小笼包',type:'小吃',price:'¥35',latlng:[31.2273,121.4913]},
-      {name:'生煎馒头',type:'小吃',price:'¥18',latlng:[31.2350,121.4750]},
-      {name:'蟹粉豆腐',type:'本帮菜',price:'¥88',latlng:[31.2320,121.4730]},
-      {name:'排骨年糕',type:'小吃',price:'¥22',latlng:[31.2214,121.4717]},
-      {name:'安福路面包店',type:'咖啡',price:'¥45',latlng:[31.2130,116.4420]}
-    ]
-  },
-  '重庆': {
-    hotels: [
-      {name:'洪崖洞江景酒店',type:'scenic',stars:4,price:'¥420/晚',latlng:[29.5580,106.5760]},
-      {name:'解放碑商务酒店',type:'budget',stars:4,price:'¥380/晚',latlng:[29.5580,106.5770]},
-      {name:'磁器口古镇民宿',type:'network',stars:3,price:'¥260/晚',latlng:[29.5833,106.4450]},
-      {name:'观音桥精品酒店',type:'family',stars:5,price:'¥580/晚',latlng:[29.5750,106.5380]}
-    ],
-    foods: [
-      {name:'九宫格火锅',type:'火锅',price:'¥90/人',latlng:[29.5580,106.5770]},
-      {name:'重庆小面',type:'面食',price:'¥12',latlng:[29.5580,106.5770]},
-      {name:'酸辣粉',type:'小吃',price:'¥10',latlng:[29.5580,106.5770]},
-      {name:'毛血旺',type:'川菜',price:'¥48',latlng:[29.5580,106.5760]},
-      {name:'十八梯老火锅',type:'火锅',price:'¥85/人',latlng:[29.5520,106.5740]}
-    ]
-  },
-  '三亚': {
-    hotels: [
-      {name:'亚龙湾度假酒店',type:'scenic',stars:5,price:'¥880/晚',latlng:[18.1933,109.6360]},
-      {name:'三亚湾海景公寓',type:'scenic',stars:4,price:'¥480/晚',latlng:[18.2500,109.4200]},
-      {name:'大东海民宿',type:'budget',stars:3,price:'¥280/晚',latlng:[18.2250,109.4930]},
-      {name:'海棠湾奢华酒店',type:'family',stars:5,price:'¥1280/晚',latlng:[18.3133,109.7073]}
-    ],
-    foods: [
-      {name:'海鲜大排档',type:'海鲜',price:'¥150/人',latlng:[18.2528,109.5050]},
-      {name:'清补凉',type:'甜品',price:'¥12',latlng:[18.2528,109.5050]},
-      {name:'椰子饭',type:'特色',price:'¥25',latlng:[18.2528,109.5050]},
-      {name:'椰子鸡',type:'火锅',price:'¥80/人',latlng:[18.2528,109.5050]},
-      {name:'烧烤海鲜',type:'烧烤',price:'¥100/人',latlng:[18.2500,109.4200]}
-    ]
-  }
-};
-
-function haShowPlanDetail(idx) {
-  var plan = haPlans[idx];
-  if(!plan) return;
-  var city = heichaState.city || '大理';
-  var days = heichaState.days || 3;
-  var spots = HEICHA_CITY_SPOTS[city] || HEICHA_CITY_SPOTS['大理'];
-  document.getElementById('planDetailTitle').textContent = plan.combo.name;
-  window._planDetail = {plan: plan, city: city, days: days, spots: spots, planIndex: (window.haSelectedPlanIdx||0)};
-  window.userAddedItems = window.userAddedItems || [];
-  showScreen('s-planDetail');
-  renderItineraryWithUserItems();
-  renderPlanDetailRecommend();
-  setTimeout(function() { renderPlanDetailMap(); }, 200);
-}
-
-function getDayItems(day) {
-  var pd = window._planDetail;
-  if(!pd) return [];
-  var plan = pd.plan;
-  var spots = pd.spots;
-  var cityCoords = SPOT_COORDS[pd.city] || {};
-  var p1Style = HEICHA_PERSONAS[plan.p1].style;
-  var p2Style = HEICHA_PERSONAS[plan.p2].style;
-  var seen = {};
-  var bySlot = {morning:[], afternoon:[], evening:[]};
-  var ALL_CATS = ['adventure','photo','family','local','nature','culture','food','chill','night'];
-  var exclusiveCat = pd._exclusiveCat;
-  if(!exclusiveCat) {
-    var planIdx = pd.planIndex || 0;
-    var candidates = ALL_CATS.filter(function(c){ return c !== p1Style && c !== p2Style; });
-    exclusiveCat = candidates[planIdx % candidates.length] || 'nature';
-    pd._exclusiveCat = exclusiveCat;
-  }
-  [p1Style, p2Style].forEach(function(cat) {
-    (spots[cat] || []).forEach(function(s) {
-      if(seen[s.n]) return;
-      seen[s.n] = true;
-      var sl = s.slot === 'night' ? 'evening' : (s.slot || 'morning');
-      if(bySlot[sl]) bySlot[sl].push({name:s.n, time:s.t, slot:sl, type:'spot', cat:cat, latlng:cityCoords[s.n]||null, tag:s.tag||null, tc:s.tc||null});
-    });
-  });
-  var exclusivePool = [];
-  (spots[exclusiveCat] || []).forEach(function(s) {
-    if(!seen[s.n]) exclusivePool.push({name:s.n, time:s.t, slot:'afternoon', type:'spot', cat:exclusiveCat, latlng:cityCoords[s.n]||null, exclusive:true, tag:s.tag||null, tc:s.tc||null});
-  });
-  bySlot.afternoon = exclusivePool.concat(bySlot.afternoon);
-  exclusivePool.forEach(function(s){ seen[s.name]=true; });
-  if(!pd._globalSeen) pd._globalSeen = {};
-  var result = [];
-  ['morning','afternoon','evening'].forEach(function(sl) {
-    var arr = bySlot[sl];
-    var picked = null;
-    for(var k=0; k<arr.length; k++) {
-      if(!pd._globalSeen[arr[k].name]) { picked = arr[k]; break; }
-    }
-    if(!picked && arr.length) picked = arr[(day-1) % arr.length];
-    if(picked) { pd._globalSeen[picked.name] = true; result.push(picked); }
-  });
-  (window.userAddedItems || []).filter(function(i){ return i.day===day; }).forEach(function(i){ result.push(i); });
-  return result;
-}
-
-function renderItineraryWithUserItems() {
-  var pd = window._planDetail;
-  if(!pd) return;
-  pd._globalSeen = {};
-  var days = pd.days;
-  var plan = pd.plan;
-  var currentIdx = window.haSelectedPlanIdx || 0;
-  var SLOTS = [
-    {label:'上午', color:'#FFF3E0', border:'#F4A835', hours:'08:00-12:00'},
-    {label:'下午', color:'#E3F2FD', border:'#42A5F5', hours:'12:00-17:00'},
-    {label:'傍晚', color:'#FFF8E1', border:'#FFCA28', hours:'17:00-20:00'},
-    {label:'夜晚', color:'#F3E5F5', border:'#AB47BC', hours:'20:00-23:00'}
-  ];
-  function getSlotItems(day, slotIdx) {
-    var slotMap = ['morning','afternoon','evening','night'];
-    var slotKey = slotMap[slotIdx];
-    if(slotKey === 'night') {
-      var sp = pd.spots;
-      if(sp && sp.night && sp.night.length) {
-        var ni = (day-1) % sp.night.length;
-        var n = sp.night[ni];
-        return [{name:n.n, time:n.t, type:'spot', cat:'night', slot:'night'}];
-      }
-      return [];
-    }
-    return getDayItems(day).filter(function(i){ return i.type==='spot' && i.slot===slotKey; });
-  }
-  var html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;min-width:300px">';
-  html += '<thead><tr><th style="width:44px;padding:5px 2px;background:#2C2416;color:#F0D880;font-size:10px;font-weight:700;border:1px solid #555;text-align:center">时段</th>';
-  for(var d=1;d<=days;d++) html += '<th style="padding:5px 4px;background:#2C2416;color:#F0D880;font-size:11px;font-weight:700;border:1px solid #555;text-align:center">DAY ' + d + '</th>';
-  html += '</tr></thead><tbody>';
-  SLOTS.forEach(function(slot, si) {
-    html += '<tr><td style="padding:3px 2px;background:' + slot.border + ';color:#fff;font-size:9px;font-weight:700;border:1px solid #ddd;text-align:center;vertical-align:middle;line-height:1.3">' + slot.label + '<br><span style="font-size:7px;opacity:0.85">' + slot.hours + '</span></td>';
-    for(var d2=1;d2<=days;d2++) {
-      var items = getSlotItems(d2, si);
-      html += '<td style="padding:4px;background:' + slot.color + ';border:1px solid #e0d8c8;vertical-align:top">';
-      if(items.length) {
-        items.forEach(function(item) {
-          html += '<div style="background:#fff;border-radius:5px;padding:4px 5px;margin-bottom:3px;border-left:3px solid ' + slot.border + '">';
-          html += '<div style="font-weight:700;font-size:11px;color:#2C2416">' + item.name + '</div>';
-          if(item.time) html += '<div style="font-size:9px;color:#aaa;margin-top:1px">' + item.time + '</div>';
-          html += '</div>';
-        });
-      } else if(si === 0 && d2 === 1) {
-        html += '<div style="padding:3px;text-align:center;color:#ccc;font-size:9px;font-style:italic">抵达</div>';
-      }
-      html += '</td>';
-    }
-    html += '</tr>';
-  });
-  // 住宿行
-  html += '<tr><td style="padding:3px 2px;background:#4E342E;color:#fff;font-size:9px;font-weight:700;border:1px solid #ddd;text-align:center;vertical-align:middle">🏨<br>住宿</td>';
-  var ganttPOI = CITY_HOTEL_FOOD && CITY_HOTEL_FOOD[pd.city];
-  var ganttHotels = (ganttPOI && ganttPOI.hotels) ? ganttPOI.hotels.slice() : [];
-  for(var _r=0;_r<currentIdx;_r++) ganttHotels.push(ganttHotels.shift());
-  for(var d3=1;d3<=days;d3++) {
-    var hotel = ganttHotels[(d3-1) % (ganttHotels.length||1)];
-    html += '<td style="padding:4px;background:#EFEBE9;border:1px solid #e0d8c8;vertical-align:middle;text-align:center">';
-    if(hotel) html += '<div style="font-size:10px;font-weight:700;color:#4E342E">' + hotel.name + '</div><div style="font-size:9px;color:#888;margin-top:1px">' + hotel.price + '</div>';
-    html += '</td>';
-  }
-  html += '</tr></tbody></table></div>';
-  document.getElementById('planDetailGantt').innerHTML = html;
-}
-
-function renderPlanDetailRecommend() {
-  var pd = window._planDetail;
-  if(!pd) return;
-  var el = document.getElementById('planDetailRecommend');
-  if(!el) return;
-  var cityPOI = CITY_HOTEL_FOOD[pd.city] || CITY_HOTEL_FOOD['大理'];
-  var html = '';
-  // 住宿
-  html += '<div style="margin-bottom:16px">';
-  html += '<div style="font-size:12px;font-weight:700;color:#8B6000;letter-spacing:1px;margin-bottom:10px"><span style="background:#F0A500;color:#fff;border-radius:4px;padding:2px 7px;font-size:10px">🏨 住宿推荐</span></div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
-  (cityPOI.hotels||[]).slice(0,4).forEach(function(h){
-    var starsStr = '★'.repeat(h.stars)+'☆'.repeat(5-h.stars);
-    html += '<div style="background:#fff;border:1.5px solid #E8D8A0;border-radius:10px;padding:10px">';
-    html += '<div style="font-size:11px;font-weight:700;color:#2C2416;margin-bottom:4px">'+h.name+'</div>';
-    html += '<div style="font-size:10px;color:#F0A500;margin-bottom:4px">'+starsStr+'</div>';
-    html += '<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:#888">每晚</span><span style="font-size:13px;font-weight:800;color:#C87000">'+h.price+'</span></div>';
-    html += '</div>';
-  });
-  html += '</div></div>';
-  // 美食
-  html += '<div><div style="font-size:12px;font-weight:700;color:#8B2020;margin-bottom:10px"><span style="background:#E05C5C;color:#fff;border-radius:4px;padding:2px 7px;font-size:10px">🍜 必吃美食</span></div>';
-  html += '<div style="display:flex;flex-direction:column;gap:6px">';
-  var badgeColors = ['#E05C5C','#F07820','#8B50A0','#3A8F4A','#3A70C0'];
-  (cityPOI.foods||[]).slice(0,5).forEach(function(f,i){
-    html += '<div style="background:#fff;border:1.5px solid #F0D8D8;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px">';
-    html += '<div style="width:36px;height:36px;background:'+badgeColors[i%5]+';border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🍜</div>';
-    html += '<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#2C2416">'+f.name+'</div><div style="font-size:10px;color:#888;margin-top:2px">'+f.type+'</div></div>';
-    html += '<div style="font-size:13px;font-weight:800;color:'+badgeColors[i%5]+'">'+f.price+'</div>';
-    html += '</div>';
-  });
-  html += '</div></div>';
-  el.innerHTML = html;
-}
-
-function renderPlanDetailMap() {
-  var pd = window._planDetail;
-  var mapEl = document.getElementById('planDetailMap');
-  if(!mapEl || !pd || typeof L === 'undefined') return;
-  var dayColors = ['#E74C3C','#3498DB','#27AE60','#9B59B6','#F39C12'];
-  var cityCoords = SPOT_COORDS[pd.city] || {};
-  var CITY_CENTER = {
-    '大理':[25.70,100.18],'北京':[39.91,116.40],'成都':[30.66,104.07],
-    '西安':[34.27,108.95],'厦门':[24.45,118.09],'上海':[31.22,121.47],
-    '重庆':[29.56,106.55],'三亚':[18.25,109.52]
-  };
-  var allPoints = [];
-  pd._globalSeen = {};
-  for(var d=1; d<=pd.days; d++) {
-    getDayItems(d).filter(function(i){return i.type==='spot';}).forEach(function(item) {
-      var ll = item.latlng || cityCoords[item.name];
-      if(ll) allPoints.push({latlng:ll, day:d, name:item.name});
-    });
-  }
-  var center = CITY_CENTER[pd.city] || [25.70,100.18];
-  if(allPoints.length) {
-    var lats=allPoints.map(function(p){return p.latlng[0];}).sort(function(a,b){return a-b;});
-    var lngs=allPoints.map(function(p){return p.latlng[1];}).sort(function(a,b){return a-b;});
-    center=[lats[Math.floor(lats.length/2)],lngs[Math.floor(lngs.length/2)]];
-  }
-  if(mapEl._leaflet_id) { try{ mapEl._leafletMap.remove(); }catch(e){} mapEl._leaflet_id=null; }
-  mapEl.innerHTML = '';
-  var map = L.map(mapEl, {zoomControl:true,attributionControl:false,scrollWheelZoom:false}).setView(center, 13);
-  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234',maxZoom:18}).addTo(map);
-  mapEl._leafletMap = map;
-  allPoints.forEach(function(p) {
-    var color = dayColors[(p.day-1)%dayColors.length];
-    var icon = L.divIcon({className:'',html:'<div style="background:'+color+';color:#fff;font-size:11px;font-weight:800;width:24px;height:24px;border-radius:50%;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.4)">'+p.day+'</div>',iconSize:[24,24],iconAnchor:[12,12]});
-    L.marker(p.latlng,{icon:icon}).addTo(map).bindPopup('<b>DAY'+p.day+'</b>  '+p.name,{maxWidth:120});
-  });
-  for(var d2=1;d2<=pd.days;d2++) {
-    var dayPts=allPoints.filter(function(p){return p.day===d2;});
-    if(dayPts.length>1) L.polyline(dayPts.map(function(p){return p.latlng;}),{color:dayColors[(d2-1)%dayColors.length],weight:3,dashArray:'6,4',opacity:0.8}).addTo(map);
-  }
-  if(allPoints.length) map.fitBounds(allPoints.map(function(p){return p.latlng;}),{padding:[24,24],maxZoom:14});
-}
-
-function removeUserItem(name, day) {
-  window.userAddedItems = (window.userAddedItems||[]).filter(function(item){ return !(item.name===name && item.day===day); });
-  renderItineraryWithUserItems();
-  renderPlanDetailMap();
 }
 
 </script>
