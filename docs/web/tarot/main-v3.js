@@ -1184,7 +1184,7 @@ class App {
       else if (text.includes('左右滑动') || text.includes('食指选定')) {
         const m = text.match(/第(\d+)\/3张/);
         const round = m ? m[1] : '?';
-        icon='🖱️'; text=`滚轮旋转牌阵 · 点击选牌 (第${round}/3张)`;
+        icon='🖱️'; text=`滑动旋转牌阵 · 点击选牌 (第${round}/3张)`;
       }
       else if (text.includes('捏合确认')) {
         const m = text.match(/第(\d+)\/3张/);
@@ -1370,10 +1370,36 @@ class App {
       if (self.state === STATE.RESULT) return; // 结果页不拦截
       e.preventDefault();
       if (self.carousel && (self.state === STATE.SUMMONED || self.state === STATE.FOCUSED)) {
-        self.carousel.addVelocity(e.deltaY * 0.008);
+        // 滚轮：deltaY 纵向滚动旋转，deltaX 支持 trackpad 横向滑动
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        self.carousel.addVelocity(delta * 0.008);
       }
     };
     app.addEventListener('wheel', this._wheelHandler, { passive: false });
+
+    // Touch 左右滑动旋转牌阵（触屏 / 触控板手势）
+    let _touchStartX = 0;
+    let _touchLastX = 0;
+    let _touchActive = false;
+    app.addEventListener('touchstart', function(e) {
+      if (self.state === STATE.RESULT) return;
+      _touchStartX = e.touches[0].clientX;
+      _touchLastX = _touchStartX;
+      _touchActive = true;
+    }, { passive: true });
+    app.addEventListener('touchmove', function(e) {
+      if (!_touchActive) return;
+      if (self.state === STATE.RESULT) return;
+      const x = e.touches[0].clientX;
+      const dx = _touchLastX - x; // 向左滑 dx>0 → 正向旋转
+      _touchLastX = x;
+      if (self.carousel && (self.state === STATE.SUMMONED || self.state === STATE.FOCUSED)) {
+        self.carousel.addVelocity(dx * 0.012);
+      }
+    }, { passive: true });
+    app.addEventListener('touchend', function() {
+      _touchActive = false;
+    }, { passive: true });
 
     // 点击选牌（结果页不拦截）
     app.addEventListener('click', function(e) {
