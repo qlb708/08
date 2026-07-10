@@ -87,10 +87,12 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: safe center;
   background: radial-gradient(ellipse at 50% 40%, #0d0a2a 0%, #050510 60%, #020208 100%);
   z-index: 10000;
   overflow: hidden;
+  padding: 16px 0;
+  box-sizing: border-box;
 }
 
 /* 背景微粒感 */
@@ -116,10 +118,11 @@ html, body {
 /* === 魔法球容器 === */
 .crystal-ball-wrapper {
   position: relative;
-  width: 240px;
-  height: 300px;
-  margin-bottom: 36px;
+  width: 200px;
+  height: 260px;
+  margin-bottom: 24px;
   animation: crystalFloat 4s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 @keyframes crystalFloat {
@@ -130,11 +133,11 @@ html, body {
 /* 球体 */
 .crystal-ball {
   position: absolute;
-  top: 0;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 200px;
-  height: 200px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
   background: radial-gradient(
     circle at 35% 30%,
@@ -265,11 +268,11 @@ html, body {
 /* 球体外圈光环 */
 .crystal-ring {
   position: absolute;
-  top: -10px;
+  top: 0px;
   left: 50%;
   transform: translateX(-50%);
-  width: 220px;
-  height: 220px;
+  width: 190px;
+  height: 190px;
   border-radius: 50%;
   border: 1px solid rgba(200, 180, 240, 0.15);
   box-shadow: 0 0 30px rgba(180, 140, 220, 0.1);
@@ -283,11 +286,11 @@ html, body {
 /* 底座 */
 .crystal-base {
   position: absolute;
-  bottom: 20px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  width: 130px;
-  height: 50px;
+  width: 110px;
+  height: 42px;
   background: linear-gradient(180deg,
     rgba(60, 40, 90, 0.6) 0%,
     rgba(30, 20, 50, 0.8) 50%,
@@ -391,7 +394,44 @@ html, body {
   z-index: 1;
 }
 
-.welcome-hint {
+.mode-btns {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.welcome-start-btn .btn-sub {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 4px;
+}
+
+.mode-btn-gesture {
+  border-color: rgba(180,140,220,0.5);
+  padding: 14px 32px;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.mode-btn-mouse {
+  border-color: rgba(100,180,255,0.5);
+  padding: 14px 32px;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.mode-btn-mouse:hover {
+  background: rgba(100,180,255,0.1);
+  border-color: rgba(130,200,255,0.6);
+  box-shadow: 0 0 30px rgba(100,180,255,0.3), 0 0 60px rgba(100,180,255,0.15);
+  transform: translateY(-2px);
+}
+
+
   margin-top: 20px;
   font-size: 12px;
   color: var(--text-muted);
@@ -1354,7 +1394,7 @@ html, body {
   /* 不再整屏垂直居中：刘海/安全区下再留 36px，内层从顶部起排 */
   padding-top: calc(36px + env(safe-area-inset-top, 0px));
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-y: auto;
   animation: trSrFadeIn 0.55s ease forwards;
   --result-card-img-w: 92px;
   --result-card-img-h: 156px;
@@ -1464,11 +1504,12 @@ html, body {
   animation: trSlideUp 0.55s ease 0.36s both;
 }
 #tarot-result-view .tr-destiny-body {
-  font-size: 15px;
-  line-height: 2;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.75);
   font-weight: 400;
   text-align: left;
+  word-break: break-word;
 }
 
 #tarot-result-view .tr-actions {
@@ -2617,4 +2658,259 @@ html.perf-flip-lite .carousel-card.focused-card::before {
   border-radius: 6px;
   padding: 1px 5px;
   vertical-align: middle;
+}
+
+/* ── 圆周旅迹推荐卡片 ── */
+#travel-recommend-section {
+  width: 100%;
+  padding: 12px 0 20px;
+  box-sizing: border-box;
+}
+.destiny-header { margin-bottom: 12px; }
+.destiny-title {
+  font-size: 14px;
+  color: #d4af37;
+  letter-spacing: 1px;
+}
+.destiny-best-card {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(212,175,55,0.25);
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.destiny-best-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+.destiny-best-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.destiny-best-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(212,175,55,0.85);
+  color: #1a1030;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.destiny-best-info {
+  padding: 10px 14px 12px;
+}
+.destiny-scene {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+.destiny-location {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  margin: 2px 0 4px;
+}
+.destiny-tagline {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+.destiny-cta {
+  font-size: 12px;
+  color: #d4af37;
+  margin-top: 6px;
+}
+.destiny-other-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.destiny-other-card {
+  flex: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(212,175,55,0.15);
+  cursor: pointer;
+}
+.destiny-other-card img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  display: block;
+}
+.destiny-other-info {
+  padding: 6px 8px 8px;
+}
+.destiny-other-scene {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+.destiny-other-loc {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  margin: 1px 0 3px;
+}
+.destiny-other-tagline {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.4;
+}
+
+/* === 命运旅途 — 展开解读样式 === */
+#tarot-result-view .tr-insight-short {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.55);
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+.tr-insight-expand-wrap {
+  text-align: center;
+  margin: 6px 0 2px;
+}
+
+.tr-insight-expand-btn {
+  background: none;
+  border: 1px solid rgba(180, 100, 255, 0.3);
+  color: #b080e0;
+  font-size: 12px;
+  padding: 5px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+
+.tr-insight-expand-btn:hover {
+  background: rgba(180, 100, 255, 0.15);
+  border-color: rgba(200, 130, 255, 0.6);
+  color: #d0a0ff;
+}
+
+.tr-insight-full {
+  font-size: 14px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: left;
+  margin-top: 8px;
+}
+
+/* ── 详细解读分段样式 ── */
+#result-doc-insight-full {
+  text-align: left;
+  padding: 0 4px;
+}
+.reading-intro {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  font-style: italic;
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+.reading-card-block {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.04);
+  border-left: 2px solid rgba(212,175,55,0.45);
+  border-radius: 0 8px 8px 0;
+}
+.reading-card-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.reading-pos {
+  font-size: 11px;
+  color: #d4af37;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+.reading-name {
+  font-size: 13px;
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+}
+.tag-up {
+  font-size: 10px;
+  color: #a8e6cf;
+  background: rgba(168,230,207,0.12);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.tag-rev {
+  font-size: 10px;
+  color: #ffb3b3;
+  background: rgba(255,179,179,0.12);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.reading-card-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.8;
+  margin: 0;
+}
+.reading-advice {
+  font-size: 13px;
+  color: rgba(212,175,55,0.85);
+  font-style: italic;
+  line-height: 1.7;
+  margin: 4px 0 0;
+  text-align: center;
+}
+
+/* ===== 摄像头预览小窗 ===== */
+#cam-preview-wrap {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  width: 280px;
+  height: 210px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px solid rgba(212,175,55,0.5);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.7);
+  background: rgba(10,5,30,0.85);
+  z-index: 200;
+  display: none; /* JS 控制显示 */
+  flex-direction: column;
+}
+#cam-preview {
+  width: 100%;
+  flex: 1;
+  display: block;
+  transform: scaleX(-1); /* 镜像 */
+}
+#cam-preview-hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,220,80,1);
+  padding: 4px 0 5px;
+  background: rgba(0,0,0,0.65);
+  letter-spacing: 0.8px;
+  font-weight: 500;
+}
+/* 有手时边框发光 */
+#cam-preview-wrap.hand-detected {
+  border-color: rgba(212,175,55,1);
+  box-shadow: 0 0 18px rgba(212,175,55,0.6), 0 4px 24px rgba(0,0,0,0.7);
 }
