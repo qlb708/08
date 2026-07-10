@@ -1534,7 +1534,7 @@ function initSliders(){
     // ── 外层 3D 翻转容器 ──
     var outer=document.createElement('div');
     outer.id='flip-outer-'+sl.id;
-    outer.style.cssText='perspective:900px;position:relative;';
+    outer.style.cssText='perspective:900px;position:relative;aspect-ratio:1;min-width:0;';
 
     var inner=document.createElement('div');
     inner.id='flip-inner-'+sl.id;
