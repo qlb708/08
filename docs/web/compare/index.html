@@ -844,6 +844,39 @@ body{
   <iframe src="about:blank" style="width:100%;height:100%;border:none;display:block" allow="fullscreen"></iframe>
 </div>
 
+<!-- 方案详情页（全新布局） -->
+<div id="s-planDetail" class="screen" style="background:rgb(240,235,225);overflow:hidden">
+  <nav style="display:flex;align-items:center;padding:0 20px;height:52px;background:#2C2416;flex-shrink:0;gap:16px">
+    <button onclick="showScreen('s-archive')" style="font-size:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:5px 12px;color:#D4C4A0;cursor:pointer">← 返回</button>
+    <span style="font-size:14px;font-weight:800;color:#F0D880;letter-spacing:1px" id="planDetailTitle">方案详情</span>
+    <div id="planDetailBadges" style="margin-left:auto;display:flex;gap:6px"></div>
+  </nav>
+  <div style="display:flex;height:calc(100vh - 52px);overflow:hidden">
+    <!-- 左栏：地图 (45%) -->
+    <div style="width:45%;position:relative;flex-shrink:0;border-right:3px solid #2C2416">
+      <div id="planDetailMap" style="width:100%;height:100%;min-height:400px"></div>
+    </div>
+    <!-- 右栏：甘特图 + 推荐 (55%) -->
+    <div style="width:55%;overflow-y:auto;background:#FAF7F0">
+      <div style="padding:20px 20px 0">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div style="width:4px;height:20px;background:#2C2416;border-radius:2px"></div>
+          <span style="font-size:14px;font-weight:800;color:#2C2416">行程甘特图</span>
+        </div>
+        <div id="planDetailGantt"></div>
+      </div>
+      <div style="margin:20px;border-top:2px dashed #C8B898"></div>
+      <div style="padding:0 20px 20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div style="width:4px;height:20px;background:#2C2416;border-radius:2px"></div>
+          <span style="font-size:14px;font-weight:800;color:#2C2416">推荐住宿 &amp; 美食</span>
+        </div>
+        <div id="planDetailRecommend"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="s-compare" class="screen">
   <nav class="top-nav">
     <div style="font-weight:700;color:var(--blue);font-size:15px">✈ AI 旅行规划</div>
@@ -2698,7 +2731,7 @@ function haSelectCard(idx) {
   cards.forEach(function(c,i){
     c.classList.toggle('selected-card', i===idx);
   });
-  haShowItinerary(idx);
+  haShowPlanDetail(idx);
 }
 
 function haShowItinerary(idx) {
@@ -2878,6 +2911,407 @@ function toggleSpotDetail(rowId, spotName, e){
     if(icon) icon.style.transform = 'rotate(90deg)';
     row.style.background = 'rgba(219,234,254,0.25)';
   }
+}
+
+
+
+/* ============================================================
+   COWORK v1.1.49 - 方案详情页完整实现
+   ============================================================ */
+var haSelectedPlanIdx = 0;
+
+var SPOT_COORDS = {
+  '北京': {
+    '天安门广场':[39.9042,116.3974],'故宫博物院':[39.9163,116.3972],'长城（慕田峪）':[40.4320,116.5698],
+    '颐和园':[39.9996,116.2751],'全聚德烤鸭':[39.8542,116.3950],'庆丰包子铺':[39.9139,116.3689],
+    '护国寺小吃':[39.9357,116.3653],'簋街小龙虾':[39.9398,116.4260],'南锣鼓巷':[39.9372,116.4030],
+    '798艺术区':[39.9843,116.4950],'后海夕照':[39.9406,116.3880],'北京动物园':[39.9407,116.3356],
+    '科技馆':[39.9890,116.3950],'胡同骑行':[39.9340,116.4030],'鼓楼早市':[39.9402,116.4030],
+    '香山公园':[39.9935,116.1880],'奥森公园':[40.0214,116.3850],'三里屯咖啡':[39.9329,116.4537],
+    '簋街夜宵':[39.9398,116.4260],'后海酒吧':[39.9406,116.3880]
+  },
+  '成都': {
+    '武侯祠':[30.6453,104.0489],'锦里古街':[30.6462,104.0498],'宽窄巷子':[30.6699,104.0551],
+    '老码头火锅':[30.6513,104.0834],'龙抄手总店':[30.6574,104.0820],'夫妻肺片':[30.6574,104.0654],
+    '东郊记忆':[30.6534,104.1250],'锦江夜游':[30.6510,104.0770],'大熊猫繁育基地':[30.7345,104.1458],
+    '玉林路社区':[30.6320,104.0610],'青城山':[30.9006,103.5705],'都江堰':[30.9983,103.6103],
+    '太古里咖啡':[30.6574,104.0850],'春熙路夜市':[30.6574,104.0820]
+  },
+  '西安': {
+    '兵马俑':[34.3841,109.2785],'西安城墙':[34.2588,108.9443],'大雁塔':[34.2193,108.9593],
+    '华清宫':[34.3657,109.2135],'回民街':[34.2657,108.9443],'肉夹馍':[34.2620,108.9400],
+    '羊肉泡馍':[34.2640,108.9380],'城墙骑行':[34.2620,108.9443],'大唐不夜城':[34.2193,108.9370],
+    '西安博物院':[34.2551,108.9336],'顺城巷':[34.2610,108.9450],'永兴坊':[34.2640,108.9550],
+    '翠华山':[34.0580,108.9350],'钟鼓楼广场':[34.2610,108.9424]
+  },
+  '厦门': {
+    '鼓浪屿':[24.4484,118.0648],'南普陀寺':[24.4460,118.0894],'厦门大学':[24.4368,118.0980],
+    '沙茶面':[24.4535,118.0894],'海蛎煎':[24.4484,118.0748],'土笋冻':[24.4510,118.0830],
+    '曾厝垵':[24.4378,118.0894],'环岛路骑行':[24.4320,118.0950],'厦门动植物园':[24.4868,118.0980],
+    '思明区老街':[24.4510,118.0824],'植物园':[24.4560,118.0894],'海滩日落':[24.4320,118.0310],
+    '沙坡尾咖啡':[24.4420,118.0870],'中山路夜市':[24.4535,118.0824]
+  },
+  '大理': {
+    '崇圣寺三塔':[25.6915,100.1720],'大理古城':[25.6900,100.1550],'洱海':[25.7100,100.1950],
+    '喜洲古镇':[25.7920,100.1780],'鲜花饼':[25.6900,100.1550],'乳扇':[25.6900,100.1550],
+    '砂锅鱼':[25.6900,100.1550],'洱海日落':[25.7100,100.1700],'双廊古镇':[25.7500,100.2000],
+    '苍山雪景':[25.6917,100.1333],'蝴蝶泉':[25.7970,100.1770],'古城老街':[25.6900,100.1550],
+    '洱海骑行':[25.7100,100.1950],'苍山':[25.6917,100.1333],'茈碧湖':[25.7400,100.1600],
+    '古城咖啡':[25.6900,100.1550],'古城夜市':[25.6900,100.1550],'人民路酒吧':[25.6900,100.1550]
+  },
+  '上海': {
+    '外滩':[31.2304,121.4737],'东方明珠':[31.2397,121.4997],'豫园':[31.2273,121.4913],
+    '小笼包（南翔）':[31.2273,121.4913],'生煎':[31.2350,121.4750],'蟹粉豆腐':[31.2320,121.4730],
+    '田子坊':[31.2154,121.4682],'武康路':[31.2130,121.4370],'外滩夜景':[31.2304,121.4737],
+    '上海迪士尼':[31.1440,121.6570],'安福路':[31.2130,121.4420],'辰山植物园':[31.0850,121.2100],
+    '新天地':[31.2214,121.4717]
+  },
+  '重庆': {
+    '磁器口古镇':[29.5833,106.4450],'洪崖洞':[29.5580,106.5760],'解放碑':[29.5580,106.5770],
+    '火锅':[29.5580,106.5770],'酸辣粉':[29.5580,106.5770],'重庆小面':[29.5580,106.5770],
+    '洪崖洞夜景':[29.5580,106.5760],'鹅岭公园':[29.5490,106.5410],'重庆动物园':[29.5530,106.4950],
+    '十八梯':[29.5520,106.5740],'缙云山':[29.8180,106.4000],'观音桥步行街':[29.5750,106.5380]
+  },
+  '三亚': {
+    '南山文化旅游区':[18.2900,109.1700],'天涯海角':[18.2833,109.3833],'清补凉':[18.2528,109.5050],
+    '海鲜大排档':[18.2528,109.5050],'椰子饭':[18.2528,109.5050],'大东海海滩':[18.2250,109.4930],
+    '三亚湾日落':[18.2500,109.4200],'蜈支洲岛':[18.3133,109.7073],'海底世界':[18.3133,109.7073],
+    '解放路夜市':[18.2528,109.5050],'呀诺达雨林':[18.4300,109.6300],'鹿回头':[18.2200,109.5050],
+    '亚龙湾沙滩':[18.1933,109.6360],'三亚湾夜景':[18.2500,109.4200]
+  }
+};
+
+var CITY_HOTEL_FOOD = {
+  '大理': {
+    hotels: [
+      {name:'洱海景度假酒店',type:'scenic',stars:5,price:'¥580/晚',latlng:[25.7833,100.17]},
+      {name:'古城青庐民宿',type:'budget',stars:4,price:'¥320/晚',latlng:[25.69,100.155]},
+      {name:'苍山半间房',type:'network',stars:4,price:'¥450/晚',latlng:[25.6917,100.1333]},
+      {name:'双廊海誓客栈',type:'family',stars:5,price:'¥680/晚',latlng:[25.8933,100.2333]}
+    ],
+    foods: [
+      {name:'再回首凉鸡米线',type:'小吃',price:'¥15',latlng:[25.69,100.155]},
+      {name:'段公子餐厅',type:'白族菜',price:'¥80/人',latlng:[25.70,100.15]},
+      {name:'杨记喜洲粑',type:'小吃',price:'¥10',latlng:[25.7920,100.1780]},
+      {name:'石井私房菜',type:'白族菜',price:'¥65/人',latlng:[25.69,100.155]},
+      {name:'色了咖啡',type:'咖啡',price:'¥35',latlng:[25.7833,100.16]}
+    ]
+  },
+  '北京': {
+    hotels: [
+      {name:'王府井大酒店',type:'scenic',stars:5,price:'¥680/晚',latlng:[39.91,116.41]},
+      {name:'南锣鼓巷四合院',type:'network',stars:4,price:'¥420/晚',latlng:[39.9372,116.4030]},
+      {name:'三里屯精品酒店',type:'budget',stars:4,price:'¥550/晚',latlng:[39.9329,116.4537]},
+      {name:'后海客栈',type:'family',stars:3,price:'¥280/晚',latlng:[39.9406,116.3880]}
+    ],
+    foods: [
+      {name:'全聚德烤鸭',type:'烤鸭',price:'¥180/人',latlng:[39.8542,116.3950]},
+      {name:'庆丰包子铺',type:'小吃',price:'¥25',latlng:[39.9139,116.3689]},
+      {name:'护国寺小吃',type:'小吃',price:'¥30',latlng:[39.9357,116.3653]},
+      {name:'簋街小龙虾',type:'夜宵',price:'¥120/人',latlng:[39.9398,116.4260]},
+      {name:'老北京炸酱面',type:'面食',price:'¥20',latlng:[39.9340,116.4030]}
+    ]
+  },
+  '成都': {
+    hotels: [
+      {name:'宽窄巷子院子',type:'network',stars:4,price:'¥380/晚',latlng:[30.6699,104.0551]},
+      {name:'春熙路商务酒店',type:'budget',stars:4,price:'¥320/晚',latlng:[30.6574,104.0820]},
+      {name:'锦里古街民宿',type:'family',stars:3,price:'¥260/晚',latlng:[30.6462,104.0498]},
+      {name:'太古里精品酒店',type:'scenic',stars:5,price:'¥620/晚',latlng:[30.6574,104.0850]}
+    ],
+    foods: [
+      {name:'老码头火锅',type:'火锅',price:'¥100/人',latlng:[30.6513,104.0834]},
+      {name:'龙抄手总店',type:'小吃',price:'¥20',latlng:[30.6574,104.0820]},
+      {name:'夫妻肺片',type:'凉菜',price:'¥45',latlng:[30.6574,104.0654]},
+      {name:'玉林路烧烤',type:'烧烤',price:'¥60/人',latlng:[30.6320,104.0610]},
+      {name:'春熙路夜市小吃',type:'小吃',price:'¥30',latlng:[30.6574,104.0820]}
+    ]
+  },
+  '西安': {
+    hotels: [
+      {name:'钟楼古城酒店',type:'budget',stars:4,price:'¥350/晚',latlng:[34.2610,108.9424]},
+      {name:'大雁塔禅意民宿',type:'network',stars:4,price:'¥380/晚',latlng:[34.2193,108.9593]},
+      {name:'城墙根客栈',type:'budget',stars:3,price:'¥220/晚',latlng:[34.2620,108.9443]},
+      {name:'曲江精品酒店',type:'family',stars:5,price:'¥580/晚',latlng:[34.2193,108.9370]}
+    ],
+    foods: [
+      {name:'回民街肉夹馍',type:'小吃',price:'¥15',latlng:[34.2620,108.9400]},
+      {name:'老孙家羊肉泡馍',type:'正餐',price:'¥40',latlng:[34.2640,108.9380]},
+      {name:'永兴坊摔碗酒',type:'小吃',price:'¥25',latlng:[34.2640,108.9550]},
+      {name:'biangbiang面',type:'面食',price:'¥18',latlng:[34.2610,108.9450]},
+      {name:'镜糕甑糕',type:'小吃',price:'¥8',latlng:[34.2657,108.9443]}
+    ]
+  },
+  '厦门': {
+    hotels: [
+      {name:'鼓浪屿海景民宿',type:'scenic',stars:4,price:'¥450/晚',latlng:[24.4484,118.0648]},
+      {name:'曾厝垵文艺客栈',type:'network',stars:3,price:'¥280/晚',latlng:[24.4378,118.0894]},
+      {name:'环岛路度假酒店',type:'family',stars:5,price:'¥680/晚',latlng:[24.4320,118.0950]},
+      {name:'中山路商务酒店',type:'budget',stars:3,price:'¥260/晚',latlng:[24.4535,118.0824]}
+    ],
+    foods: [
+      {name:'沙茶面',type:'面食',price:'¥20',latlng:[24.4535,118.0894]},
+      {name:'海蛎煎',type:'小吃',price:'¥25',latlng:[24.4484,118.0748]},
+      {name:'土笋冻',type:'小吃',price:'¥15',latlng:[24.4510,118.0830]},
+      {name:'花生汤',type:'甜品',price:'¥12',latlng:[24.4535,118.0824]},
+      {name:'沙坡尾咖啡',type:'咖啡',price:'¥30',latlng:[24.4420,118.0870]}
+    ]
+  },
+  '上海': {
+    hotels: [
+      {name:'外滩和平饭店',type:'scenic',stars:5,price:'¥1280/晚',latlng:[31.2304,121.4737]},
+      {name:'武康路精品民宿',type:'network',stars:4,price:'¥520/晚',latlng:[31.2130,121.4370]},
+      {name:'田子坊艺术酒店',type:'network',stars:4,price:'¥450/晚',latlng:[31.2154,121.4682]},
+      {name:'南京路商务酒店',type:'budget',stars:3,price:'¥350/晚',latlng:[31.2304,121.4737]}
+    ],
+    foods: [
+      {name:'南翔小笼包',type:'小吃',price:'¥35',latlng:[31.2273,121.4913]},
+      {name:'生煎馒头',type:'小吃',price:'¥18',latlng:[31.2350,121.4750]},
+      {name:'蟹粉豆腐',type:'本帮菜',price:'¥88',latlng:[31.2320,121.4730]},
+      {name:'排骨年糕',type:'小吃',price:'¥22',latlng:[31.2214,121.4717]},
+      {name:'安福路面包店',type:'咖啡',price:'¥45',latlng:[31.2130,116.4420]}
+    ]
+  },
+  '重庆': {
+    hotels: [
+      {name:'洪崖洞江景酒店',type:'scenic',stars:4,price:'¥420/晚',latlng:[29.5580,106.5760]},
+      {name:'解放碑商务酒店',type:'budget',stars:4,price:'¥380/晚',latlng:[29.5580,106.5770]},
+      {name:'磁器口古镇民宿',type:'network',stars:3,price:'¥260/晚',latlng:[29.5833,106.4450]},
+      {name:'观音桥精品酒店',type:'family',stars:5,price:'¥580/晚',latlng:[29.5750,106.5380]}
+    ],
+    foods: [
+      {name:'九宫格火锅',type:'火锅',price:'¥90/人',latlng:[29.5580,106.5770]},
+      {name:'重庆小面',type:'面食',price:'¥12',latlng:[29.5580,106.5770]},
+      {name:'酸辣粉',type:'小吃',price:'¥10',latlng:[29.5580,106.5770]},
+      {name:'毛血旺',type:'川菜',price:'¥48',latlng:[29.5580,106.5760]},
+      {name:'十八梯老火锅',type:'火锅',price:'¥85/人',latlng:[29.5520,106.5740]}
+    ]
+  },
+  '三亚': {
+    hotels: [
+      {name:'亚龙湾度假酒店',type:'scenic',stars:5,price:'¥880/晚',latlng:[18.1933,109.6360]},
+      {name:'三亚湾海景公寓',type:'scenic',stars:4,price:'¥480/晚',latlng:[18.2500,109.4200]},
+      {name:'大东海民宿',type:'budget',stars:3,price:'¥280/晚',latlng:[18.2250,109.4930]},
+      {name:'海棠湾奢华酒店',type:'family',stars:5,price:'¥1280/晚',latlng:[18.3133,109.7073]}
+    ],
+    foods: [
+      {name:'海鲜大排档',type:'海鲜',price:'¥150/人',latlng:[18.2528,109.5050]},
+      {name:'清补凉',type:'甜品',price:'¥12',latlng:[18.2528,109.5050]},
+      {name:'椰子饭',type:'特色',price:'¥25',latlng:[18.2528,109.5050]},
+      {name:'椰子鸡',type:'火锅',price:'¥80/人',latlng:[18.2528,109.5050]},
+      {name:'烧烤海鲜',type:'烧烤',price:'¥100/人',latlng:[18.2500,109.4200]}
+    ]
+  }
+};
+
+function haShowPlanDetail(idx) {
+  var plan = haPlans[idx];
+  if(!plan) return;
+  var city = heichaState.city || '大理';
+  var days = heichaState.days || 3;
+  var spots = HEICHA_CITY_SPOTS[city] || HEICHA_CITY_SPOTS['大理'];
+  document.getElementById('planDetailTitle').textContent = plan.combo.name;
+  window._planDetail = {plan: plan, city: city, days: days, spots: spots, planIndex: (window.haSelectedPlanIdx||0)};
+  window.userAddedItems = window.userAddedItems || [];
+  showScreen('s-planDetail');
+  renderItineraryWithUserItems();
+  renderPlanDetailRecommend();
+  setTimeout(function() { renderPlanDetailMap(); }, 200);
+}
+
+function getDayItems(day) {
+  var pd = window._planDetail;
+  if(!pd) return [];
+  var plan = pd.plan;
+  var spots = pd.spots;
+  var cityCoords = SPOT_COORDS[pd.city] || {};
+  var p1Style = HEICHA_PERSONAS[plan.p1].style;
+  var p2Style = HEICHA_PERSONAS[plan.p2].style;
+  var seen = {};
+  var bySlot = {morning:[], afternoon:[], evening:[]};
+  var ALL_CATS = ['adventure','photo','family','local','nature','culture','food','chill','night'];
+  var exclusiveCat = pd._exclusiveCat;
+  if(!exclusiveCat) {
+    var planIdx = pd.planIndex || 0;
+    var candidates = ALL_CATS.filter(function(c){ return c !== p1Style && c !== p2Style; });
+    exclusiveCat = candidates[planIdx % candidates.length] || 'nature';
+    pd._exclusiveCat = exclusiveCat;
+  }
+  [p1Style, p2Style].forEach(function(cat) {
+    (spots[cat] || []).forEach(function(s) {
+      if(seen[s.n]) return;
+      seen[s.n] = true;
+      var sl = s.slot === 'night' ? 'evening' : (s.slot || 'morning');
+      if(bySlot[sl]) bySlot[sl].push({name:s.n, time:s.t, slot:sl, type:'spot', cat:cat, latlng:cityCoords[s.n]||null, tag:s.tag||null, tc:s.tc||null});
+    });
+  });
+  var exclusivePool = [];
+  (spots[exclusiveCat] || []).forEach(function(s) {
+    if(!seen[s.n]) exclusivePool.push({name:s.n, time:s.t, slot:'afternoon', type:'spot', cat:exclusiveCat, latlng:cityCoords[s.n]||null, exclusive:true, tag:s.tag||null, tc:s.tc||null});
+  });
+  bySlot.afternoon = exclusivePool.concat(bySlot.afternoon);
+  exclusivePool.forEach(function(s){ seen[s.name]=true; });
+  if(!pd._globalSeen) pd._globalSeen = {};
+  var result = [];
+  ['morning','afternoon','evening'].forEach(function(sl) {
+    var arr = bySlot[sl];
+    var picked = null;
+    for(var k=0; k<arr.length; k++) {
+      if(!pd._globalSeen[arr[k].name]) { picked = arr[k]; break; }
+    }
+    if(!picked && arr.length) picked = arr[(day-1) % arr.length];
+    if(picked) { pd._globalSeen[picked.name] = true; result.push(picked); }
+  });
+  (window.userAddedItems || []).filter(function(i){ return i.day===day; }).forEach(function(i){ result.push(i); });
+  return result;
+}
+
+function renderItineraryWithUserItems() {
+  var pd = window._planDetail;
+  if(!pd) return;
+  pd._globalSeen = {};
+  var days = pd.days;
+  var plan = pd.plan;
+  var currentIdx = window.haSelectedPlanIdx || 0;
+  var SLOTS = [
+    {label:'上午', color:'#FFF3E0', border:'#F4A835', hours:'08:00-12:00'},
+    {label:'下午', color:'#E3F2FD', border:'#42A5F5', hours:'12:00-17:00'},
+    {label:'傍晚', color:'#FFF8E1', border:'#FFCA28', hours:'17:00-20:00'},
+    {label:'夜晚', color:'#F3E5F5', border:'#AB47BC', hours:'20:00-23:00'}
+  ];
+  function getSlotItems(day, slotIdx) {
+    var slotMap = ['morning','afternoon','evening','night'];
+    var slotKey = slotMap[slotIdx];
+    if(slotKey === 'night') {
+      var sp = pd.spots;
+      if(sp && sp.night && sp.night.length) {
+        var ni = (day-1) % sp.night.length;
+        var n = sp.night[ni];
+        return [{name:n.n, time:n.t, type:'spot', cat:'night', slot:'night'}];
+      }
+      return [];
+    }
+    return getDayItems(day).filter(function(i){ return i.type==='spot' && i.slot===slotKey; });
+  }
+  var html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;min-width:300px">';
+  html += '<thead><tr><th style="width:44px;padding:5px 2px;background:#2C2416;color:#F0D880;font-size:10px;font-weight:700;border:1px solid #555;text-align:center">时段</th>';
+  for(var d=1;d<=days;d++) html += '<th style="padding:5px 4px;background:#2C2416;color:#F0D880;font-size:11px;font-weight:700;border:1px solid #555;text-align:center">DAY ' + d + '</th>';
+  html += '</tr></thead><tbody>';
+  SLOTS.forEach(function(slot, si) {
+    html += '<tr><td style="padding:3px 2px;background:' + slot.border + ';color:#fff;font-size:9px;font-weight:700;border:1px solid #ddd;text-align:center;vertical-align:middle;line-height:1.3">' + slot.label + '<br><span style="font-size:7px;opacity:0.85">' + slot.hours + '</span></td>';
+    for(var d2=1;d2<=days;d2++) {
+      var items = getSlotItems(d2, si);
+      html += '<td style="padding:4px;background:' + slot.color + ';border:1px solid #e0d8c8;vertical-align:top">';
+      if(items.length) {
+        items.forEach(function(item) {
+          html += '<div style="background:#fff;border-radius:5px;padding:4px 5px;margin-bottom:3px;border-left:3px solid ' + slot.border + '">';
+          html += '<div style="font-weight:700;font-size:11px;color:#2C2416">' + item.name + '</div>';
+          if(item.time) html += '<div style="font-size:9px;color:#aaa;margin-top:1px">' + item.time + '</div>';
+          html += '</div>';
+        });
+      } else if(si === 0 && d2 === 1) {
+        html += '<div style="padding:3px;text-align:center;color:#ccc;font-size:9px;font-style:italic">抵达</div>';
+      }
+      html += '</td>';
+    }
+    html += '</tr>';
+  });
+  // 住宿行
+  html += '<tr><td style="padding:3px 2px;background:#4E342E;color:#fff;font-size:9px;font-weight:700;border:1px solid #ddd;text-align:center;vertical-align:middle">🏨<br>住宿</td>';
+  var ganttPOI = CITY_HOTEL_FOOD && CITY_HOTEL_FOOD[pd.city];
+  var ganttHotels = (ganttPOI && ganttPOI.hotels) ? ganttPOI.hotels.slice() : [];
+  for(var _r=0;_r<currentIdx;_r++) ganttHotels.push(ganttHotels.shift());
+  for(var d3=1;d3<=days;d3++) {
+    var hotel = ganttHotels[(d3-1) % (ganttHotels.length||1)];
+    html += '<td style="padding:4px;background:#EFEBE9;border:1px solid #e0d8c8;vertical-align:middle;text-align:center">';
+    if(hotel) html += '<div style="font-size:10px;font-weight:700;color:#4E342E">' + hotel.name + '</div><div style="font-size:9px;color:#888;margin-top:1px">' + hotel.price + '</div>';
+    html += '</td>';
+  }
+  html += '</tr></tbody></table></div>';
+  document.getElementById('planDetailGantt').innerHTML = html;
+}
+
+function renderPlanDetailRecommend() {
+  var pd = window._planDetail;
+  if(!pd) return;
+  var el = document.getElementById('planDetailRecommend');
+  if(!el) return;
+  var cityPOI = CITY_HOTEL_FOOD[pd.city] || CITY_HOTEL_FOOD['大理'];
+  var html = '';
+  // 住宿
+  html += '<div style="margin-bottom:16px">';
+  html += '<div style="font-size:12px;font-weight:700;color:#8B6000;letter-spacing:1px;margin-bottom:10px"><span style="background:#F0A500;color:#fff;border-radius:4px;padding:2px 7px;font-size:10px">🏨 住宿推荐</span></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  (cityPOI.hotels||[]).slice(0,4).forEach(function(h){
+    var starsStr = '★'.repeat(h.stars)+'☆'.repeat(5-h.stars);
+    html += '<div style="background:#fff;border:1.5px solid #E8D8A0;border-radius:10px;padding:10px">';
+    html += '<div style="font-size:11px;font-weight:700;color:#2C2416;margin-bottom:4px">'+h.name+'</div>';
+    html += '<div style="font-size:10px;color:#F0A500;margin-bottom:4px">'+starsStr+'</div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:#888">每晚</span><span style="font-size:13px;font-weight:800;color:#C87000">'+h.price+'</span></div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+  // 美食
+  html += '<div><div style="font-size:12px;font-weight:700;color:#8B2020;margin-bottom:10px"><span style="background:#E05C5C;color:#fff;border-radius:4px;padding:2px 7px;font-size:10px">🍜 必吃美食</span></div>';
+  html += '<div style="display:flex;flex-direction:column;gap:6px">';
+  var badgeColors = ['#E05C5C','#F07820','#8B50A0','#3A8F4A','#3A70C0'];
+  (cityPOI.foods||[]).slice(0,5).forEach(function(f,i){
+    html += '<div style="background:#fff;border:1.5px solid #F0D8D8;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px">';
+    html += '<div style="width:36px;height:36px;background:'+badgeColors[i%5]+';border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🍜</div>';
+    html += '<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#2C2416">'+f.name+'</div><div style="font-size:10px;color:#888;margin-top:2px">'+f.type+'</div></div>';
+    html += '<div style="font-size:13px;font-weight:800;color:'+badgeColors[i%5]+'">'+f.price+'</div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+  el.innerHTML = html;
+}
+
+function renderPlanDetailMap() {
+  var pd = window._planDetail;
+  var mapEl = document.getElementById('planDetailMap');
+  if(!mapEl || !pd || typeof L === 'undefined') return;
+  var dayColors = ['#E74C3C','#3498DB','#27AE60','#9B59B6','#F39C12'];
+  var cityCoords = SPOT_COORDS[pd.city] || {};
+  var CITY_CENTER = {
+    '大理':[25.70,100.18],'北京':[39.91,116.40],'成都':[30.66,104.07],
+    '西安':[34.27,108.95],'厦门':[24.45,118.09],'上海':[31.22,121.47],
+    '重庆':[29.56,106.55],'三亚':[18.25,109.52]
+  };
+  var allPoints = [];
+  pd._globalSeen = {};
+  for(var d=1; d<=pd.days; d++) {
+    getDayItems(d).filter(function(i){return i.type==='spot';}).forEach(function(item) {
+      var ll = item.latlng || cityCoords[item.name];
+      if(ll) allPoints.push({latlng:ll, day:d, name:item.name});
+    });
+  }
+  var center = CITY_CENTER[pd.city] || [25.70,100.18];
+  if(allPoints.length) {
+    var lats=allPoints.map(function(p){return p.latlng[0];}).sort(function(a,b){return a-b;});
+    var lngs=allPoints.map(function(p){return p.latlng[1];}).sort(function(a,b){return a-b;});
+    center=[lats[Math.floor(lats.length/2)],lngs[Math.floor(lngs.length/2)]];
+  }
+  if(mapEl._leaflet_id) { try{ mapEl._leafletMap.remove(); }catch(e){} mapEl._leaflet_id=null; }
+  mapEl.innerHTML = '';
+  var map = L.map(mapEl, {zoomControl:true,attributionControl:false,scrollWheelZoom:false}).setView(center, 13);
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234',maxZoom:18}).addTo(map);
+  mapEl._leafletMap = map;
+  allPoints.forEach(function(p) {
+    var color = dayColors[(p.day-1)%dayColors.length];
+    var icon = L.divIcon({className:'',html:'<div style="background:'+color+';color:#fff;font-size:11px;font-weight:800;width:24px;height:24px;border-radius:50%;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.4)">'+p.day+'</div>',iconSize:[24,24],iconAnchor:[12,12]});
+    L.marker(p.latlng,{icon:icon}).addTo(map).bindPopup('<b>DAY'+p.day+'</b>  '+p.name,{maxWidth:120});
+  });
+  for(var d2=1;d2<=pd.days;d2++) {
+    var dayPts=allPoints.filter(function(p){return p.day===d2;});
+    if(dayPts.length>1) L.polyline(dayPts.map(function(p){return p.latlng;}),{color:dayColors[(d2-1)%dayColors.length],weight:3,dashArray:'6,4',opacity:0.8}).addTo(map);
+  }
+  if(allPoints.length) map.fitBounds(allPoints.map(function(p){return p.latlng;}),{padding:[24,24],maxZoom:14});
+}
+
+function removeUserItem(name, day) {
+  window.userAddedItems = (window.userAddedItems||[]).filter(function(item){ return !(item.name===name && item.day===day); });
+  renderItineraryWithUserItems();
+  renderPlanDetailMap();
 }
 
 </script>
