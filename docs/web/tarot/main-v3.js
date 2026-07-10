@@ -1401,6 +1401,32 @@ class App {
       _touchActive = false;
     }, { passive: true });
 
+    // 鼠标左右拖拽旋转牌阵
+    let _dragActive = false;
+    let _dragLastX = 0;
+    app.addEventListener('mousedown', function(e) {
+      if (self.state === STATE.RESULT) return;
+      if (e.button !== 0) return; // 只响应左键
+      _dragActive = true;
+      _dragLastX = e.clientX;
+      app.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mousemove', function(e) {
+      if (!_dragActive) return;
+      if (self.state === STATE.RESULT) return;
+      const dx = _dragLastX - e.clientX; // 向左拖 dx>0 → 正向旋转
+      _dragLastX = e.clientX;
+      if (self.carousel && (self.state === STATE.SUMMONED || self.state === STATE.FOCUSED)) {
+        self.carousel.addVelocity(dx * 0.01);
+      }
+    });
+    window.addEventListener('mouseup', function() {
+      if (_dragActive) {
+        _dragActive = false;
+        app.style.cursor = '';
+      }
+    });
+
     // 点击选牌（结果页不拦截）
     app.addEventListener('click', function(e) {
       if (self.state === STATE.RESULT) return;
