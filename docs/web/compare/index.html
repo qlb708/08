@@ -340,107 +340,21 @@ body{
 .reveal-desc{font-size:1em;color:#5a6b54;max-width:400px;min-height:2em;line-height:1.6;margin-bottom:30px;}
 .reveal-continue-btn{padding:14px 40px;background:var(--green);color:#fff;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;font-family:var(--font-mono);display:none;}
 .reveal-continue-btn:hover{opacity:0.85;}
-/* 手帐拼贴 */
-.collage-stage{
-  position:relative;display:flex;flex-direction:column;align-items:center;padding:20px 0 28px;
-  background:linear-gradient(to bottom,rgba(212,228,200,0.55) 0%,rgba(212,228,200,0.2) 60%,transparent 100%),
-  url("https://picsum.photos/seed/mountain/1200/600") center top/cover no-repeat;
-  border-radius:20px;overflow:hidden;
-  height:380px;
-}
-.collage-hint{font-size:0.88em;color:#3A6B35;letter-spacing:1px;margin-bottom:24px;text-align:center;display:flex;align-items:center;gap:8px;position:relative;z-index:1;font-weight:bold;}
-.collage-hint-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1s infinite;}
-.envelope-origin{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-start;height:300px;}
-.collage-card{position:absolute;width:200px;background:#FEFCE8;border:none;border-radius:4px 4px 8px 8px;padding:0;font-family:var(--font-mono);cursor:pointer;box-shadow:2px 4px 0 #d4c48a,4px 6px 24px rgba(0,0,0,0.28);user-select:none;transition:transform 0.3s,box-shadow 0.3s;opacity:0;}
-.collage-card:nth-child(1){background:#FEFCE8;}
-.collage-card:nth-child(2){background:#F0FDF4;}
-.collage-card:nth-child(3){background:#EFF6FF;}
-.collage-card:hover{z-index:10;}
-.collage-card.selected-card{z-index:20;}
-.collage-card.landed-1{opacity:1;transform:translateX(-235px) translateY(0) rotate(-4deg) scale(1);}
-.collage-card.landed-2{opacity:1;transform:translateX(0px) translateY(20px) rotate(1deg) scale(1);}
-.collage-card.landed-3{opacity:1;transform:translateX(235px) translateY(10px) rotate(3.5deg) scale(1);}
-.collage-card.landed-1:hover{transform:translateX(-235px) translateY(-10px) rotate(-3deg) scale(1.03);box-shadow:2px 6px 0 #d4c48a,6px 16px 36px rgba(0,0,0,0.35);}
-.collage-card.landed-2:hover{transform:translateX(0) translateY(12px) rotate(0.5deg) scale(1.03);box-shadow:2px 6px 0 #90c090,6px 16px 36px rgba(0,0,0,0.35);}
-.collage-card.landed-3:hover{transform:translateX(235px) translateY(3px) rotate(2.5deg) scale(1.03);box-shadow:2px 6px 0 #90a8e0,6px 16px 36px rgba(0,0,0,0.35);}
-.collage-card.landed-1.selected-card{transform:translateX(-235px) translateY(-15px) rotate(-2deg) scale(1.06);box-shadow:4px 8px 0 #d4c48a,8px 16px 40px rgba(0,0,0,0.38);}
-.collage-card.landed-2.selected-card{transform:translateX(0) translateY(5px) rotate(0deg) scale(1.06);box-shadow:4px 8px 0 #90c090,8px 16px 40px rgba(0,0,0,0.38);}
-.collage-card.landed-3.selected-card{transform:translateX(235px) translateY(-5px) rotate(2deg) scale(1.06);box-shadow:4px 8px 0 #90a8e0,8px 16px 40px rgba(0,0,0,0.38);}
-@keyframes flyIn1{0%{opacity:0;transform:translateX(0) translateY(120px) rotate(-15deg) scale(0.5);}50%{opacity:1;transform:translateX(-235px) translateY(-20px) rotate(-5deg) scale(1.05);}70%{transform:translateX(-235px) translateY(5px) rotate(-3deg) scale(0.98);}100%{opacity:1;transform:translateX(-235px) translateY(0) rotate(-4deg) scale(1);}}
-@keyframes flyIn2{0%{opacity:0;transform:translateX(0) translateY(100px) rotate(5deg) scale(0.5);}50%{opacity:1;transform:translateX(0) translateY(-15px) rotate(2deg) scale(1.05);}70%{transform:translateX(0) translateY(5px) rotate(0.5deg) scale(0.98);}100%{opacity:1;transform:translateX(0) translateY(20px) rotate(1deg) scale(1);}}
-@keyframes flyIn3{0%{opacity:0;transform:translateX(0) translateY(130px) rotate(12deg) scale(0.5);}50%{opacity:1;transform:translateX(235px) translateY(-25px) rotate(5deg) scale(1.05);}70%{transform:translateX(235px) translateY(5px) rotate(4deg) scale(0.98);}100%{opacity:1;transform:translateX(235px) translateY(10px) rotate(3.5deg) scale(1);}}
-.collage-card.card-fly-1{animation:flyIn1 0.85s cubic-bezier(0.34,1.4,0.64,1) 0.1s forwards;}
-.collage-card.card-fly-2{animation:flyIn2 0.85s cubic-bezier(0.34,1.4,0.64,1) 0.35s forwards;}
-.collage-card.card-fly-3{animation:flyIn3 0.85s cubic-bezier(0.34,1.4,0.64,1) 0.6s forwards;}
-.tape{position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-3deg);width:72px;height:28px;background:rgba(255,200,100,0.7);border-radius:2px;z-index:2;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.18) 0px,rgba(255,255,255,0.18) 2px,transparent 2px,transparent 8px);}
-.tape-2{background:rgba(140,220,150,0.7);transform:translateX(-50%) rotate(2deg);background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.18) 0px,rgba(255,255,255,0.18) 2px,transparent 2px,transparent 8px);}
-.tape-3{background:rgba(150,180,255,0.65);transform:translateX(-50%) rotate(-1deg);background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.18) 0px,rgba(255,255,255,0.18) 2px,transparent 2px,transparent 8px);}
-.card-num-badge{position:absolute;top:-10px;right:-10px;width:28px;height:28px;background:var(--green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-title);font-size:0.8em;font-weight:bold;z-index:3;box-shadow:0 2px 6px rgba(37,99,235,0.4);}
-.card-inner{padding:14px 14px 12px;}
-.collage-select-hint{margin-top:300px;font-size:0.82em;color:rgba(255,255,255,0.9);text-align:center;opacity:0;animation:fadeIn 0.5s ease 1.2s forwards;letter-spacing:1px;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
-/* Receipt */
-.receipt-title{font-family:var(--font-title);font-size:1.05em;text-align:center;color:var(--green);letter-spacing:4px;margin-bottom:10px;}
-.receipt-line{border-top:1px dashed var(--dash);margin:8px 0;}
-.receipt-row{display:flex;justify-content:space-between;font-size:0.78em;padding:3px 0;}
-.receipt-row .label{color:#777;font-size:0.9em;}
-.receipt-plan-name{font-family:var(--font-title);font-size:0.95em;text-align:center;margin:8px 0 4px;color:var(--text);}
-.receipt-slogan{text-align:center;font-size:0.75em;color:var(--green);margin-bottom:8px;}
-.barcode{display:flex;justify-content:center;gap:2px;margin:10px 0 4px;height:26px;align-items:flex-end;}
-.barcode span{display:inline-block;width:2px;background:var(--text);}
-.barcode-num{text-align:center;font-size:0.65em;color:#999;letter-spacing:2px;}
-/* 结果区 */
-.result-right{flex:1;min-width:300px;}
-.selected-banner{background:var(--green);color:#fff;padding:12px 20px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.banner-name{font-family:var(--font-title);font-size:1.1em;margin-bottom:4px;}
-.banner-meta{font-size:0.85em;opacity:0.9;}
-/* 路线图 */
-.route-map{background:var(--card);border:2px dashed var(--dash);border-radius:10px;padding:16px;margin-bottom:14px;}
-.route-map-title{font-family:var(--font-title);font-size:0.85em;color:var(--green);letter-spacing:2px;margin-bottom:12px;text-align:center;}
-.route-days-wrap{display:flex;flex-direction:column;gap:12px;}
-.route-day-row{display:flex;align-items:center;overflow-x:auto;}
-.route-day-tag{font-size:0.7em;color:var(--green);font-weight:bold;white-space:nowrap;margin-right:8px;min-width:36px;}
-.route-stop{display:flex;flex-direction:column;align-items:center;min-width:72px;}
-.route-dot{width:12px;height:12px;border-radius:50%;background:var(--green);border:2px solid #fff;box-shadow:0 0 0 2px var(--green);flex-shrink:0;}
-.route-dot.start{background:#fff;}
-.route-connector{height:2px;flex:1;min-width:16px;background:repeating-linear-gradient(90deg,var(--green) 0,var(--green) 5px,transparent 5px,transparent 10px);margin-top:4px;align-self:flex-start;}
-.route-label{font-size:0.68em;color:var(--text);text-align:center;margin-top:5px;max-width:70px;line-height:1.3;}
-.route-time{font-size:0.62em;color:#888;text-align:center;}
-/* 行程卡 */
-.itinerary-header{font-family:var(--font-title);font-size:1em;color:var(--green);letter-spacing:2px;margin-bottom:16px;padding-bottom:8px;border-bottom:2px dashed var(--dash);text-align:center;}
-.day-card{background:var(--card);border:2px dashed var(--dash);border-radius:10px;padding:16px;margin-bottom:14px;}
-.day-header{font-family:var(--font-title);font-size:1.1em;color:var(--green);text-align:center;letter-spacing:3px;margin-bottom:8px;}
-.spot-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px dashed var(--dash);}
-.spot-row:last-child{border-bottom:none;}
-.spot-time{color:#777;font-size:0.82em;white-space:nowrap;padding-top:2px;min-width:44px;}
-.spot-info{flex:1;}
-.spot-name{font-size:0.92em;margin-bottom:4px;}
-.spot-tip{font-size:0.78em;color:var(--green-mid);line-height:1.5;background:rgba(90,143,84,0.08);border-radius:4px;padding:3px 8px;border-left:2px solid var(--dash);}
-/* AI */
-.ai-fab{position:fixed;bottom:28px;right:28px;width:52px;height:52px;background:var(--green);color:#fff;border-radius:50%;align-items:center;justify-content:center;font-size:1.4em;cursor:pointer;box-shadow:0 4px 18px rgba(37,99,235,0.4);z-index:9999;transition:transform 0.2s;user-select:none;display:none;}
-.ai-fab:hover{transform:scale(1.1);}
-.ai-panel{position:fixed;bottom:92px;right:28px;width:310px;background:#fff;border:2px dashed var(--dash);border-radius:16px;box-shadow:0 8px 32px rgba(37,99,235,0.18);z-index:9998;flex-direction:column;overflow:hidden;display:none;}
-.ai-panel-head{background:var(--green);color:#fff;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-family:var(--font-title);font-size:0.85em;}
-.ai-panel-close{cursor:pointer;font-size:1.1em;}
-.ai-msgs{max-height:260px;overflow-y:auto;padding:12px 12px 6px;display:flex;flex-direction:column;gap:8px;}
-.ai-msg{max-width:90%;padding:8px 11px;border-radius:12px;font-size:0.8em;line-height:1.55;}
-.ai-msg.bot{background:var(--bg);border:1px solid var(--dash);align-self:flex-start;border-radius:4px 12px 12px 12px;}
-.ai-msg.user{background:var(--green);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px;}
-.ai-quick-btns{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 8px;}
-.ai-quick-btn{padding:4px 9px;background:var(--bg);border:1px dashed var(--dash);border-radius:14px;font-size:0.72em;cursor:pointer;color:var(--green);transition:all 0.2s;}
-.ai-quick-btn:hover{background:var(--green);color:#fff;}
-.ai-input-row{display:flex;gap:7px;padding:9px 12px;border-top:1px dashed var(--dash);}
-.ai-input{flex:1;border:1px dashed var(--dash);border-radius:18px;padding:6px 11px;font-family:var(--font-mono);font-size:0.78em;outline:none;background:var(--bg);color:var(--text);}
-.ai-send{width:30px;height:30px;background:var(--green);color:#fff;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-@media(max-width:640px){.sliders-grid{grid-template-columns:1fr;}.radar-section{flex-direction:column;}.collage-card{width:170px;}
-@keyframes flyIn1{0%{opacity:0;transform:translateX(0) translateY(60px) rotate(-8deg) scale(0.7)}100%{opacity:1;transform:translateX(-175px) translateY(0) rotate(-4deg) scale(1)}}
-@keyframes flyIn3{0%{opacity:0;transform:translateX(0) translateY(60px) rotate(8deg) scale(0.7)}100%{opacity:1;transform:translateX(175px) translateY(10px) rotate(3.5deg) scale(1)}}
-.collage-card.landed-1{transform:translateX(-175px) translateY(0) rotate(-4deg);}
-.collage-card.landed-3{transform:translateX(175px) translateY(10px) rotate(3.5deg);}
-.collage-card.landed-1:hover{transform:translateX(-175px) translateY(-6px) rotate(-2deg) scale(1.03);}
-.collage-card.landed-3:hover{transform:translateX(175px) translateY(4px) rotate(2deg) scale(1.03);}
-.collage-card.landed-1.selected-card{transform:translateX(-175px) translateY(-3px) rotate(-3deg) scale(1.04);}
-.collage-card.landed-3.selected-card{transform:translateX(175px) translateY(7px) rotate(2.5deg) scale(1.04);}
-}
+.collage-stage{width:100%;padding:0}
+.collage-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.78em;color:#8a7a60;margin-bottom:16px;letter-spacing:0.5px}
+.collage-hint-dot{width:5px;height:5px;border-radius:50%;background:#b8a880;display:inline-block}
+.envelope-origin{display:flex;flex-direction:column;gap:14px;width:100%;padding:0}
+.collage-card{position:relative;width:100%;background:#fff;border:none;border-radius:16px;padding:0;font-family:var(--font-mono);cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.08);user-select:none;transition:transform 0.18s,box-shadow 0.18s;opacity:0;overflow:hidden}
+.collage-card:nth-child(1){background:#FFFDF5}
+.collage-card:nth-child(2){background:#F6FBF4}
+.collage-card:nth-child(3){background:#F5F8FF}
+.collage-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.13)}
+.collage-card.selected-card{box-shadow:0 0 0 2.5px #3A6B35,0 6px 24px rgba(58,107,53,0.18)}
+.collage-card.card-fly-1{animation:fadeSlideIn 0.45s ease 0.05s 1 forwards}
+.collage-card.card-fly-2{animation:fadeSlideIn 0.45s ease 0.18s 1 forwards}
+.collage-card.card-fly-3{animation:fadeSlideIn 0.45s ease 0.31s 1 forwards}
+.collage-card.landed-1,.collage-card.landed-2,.collage-card.landed-3{opacity:1}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .leaflet-map-wrap{border-radius:12px;overflow:hidden;border:2px dashed var(--dash);}
 .leaflet-map-wrap .route-map-title{font-family:var(--font-title);font-size:0.82em;color:var(--green);letter-spacing:3px;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px dashed var(--dash);}
 .leaflet-popup-content-wrapper{border-radius:8px!important;font-family:var(--font-mono)!important;font-size:12px!important;}
@@ -2578,8 +2492,8 @@ function haBuildCollageCards() {
   origin.innerHTML = '';
 
   var GRAD  = ['linear-gradient(120deg,#FF8C42,#FFD166)','linear-gradient(120deg,#5DBEA3,#4D9DE0)','linear-gradient(120deg,#A78BFA,#F472B6)'];
-  var EMOJIS = ['\U0001f3c3','\U0001f4f8','\U0001f33f'];
-  var LABELS = ['\u5168\u529b\u6253\u5361','\u51fa\u7247\u4f18\u5148','\u6df1\u5ea6\u63a2\u7d22'];
+  var EMOJIS = ['🏃','📸','🌿'];
+  var LABELS = ['全力打卡','出片优先','深度探索'];
   var ACCENT = ['#E07A20','#2A7A6A','#7C3AED'];
 
   var days = heichaState.days, city = heichaState.city;
@@ -2615,22 +2529,22 @@ function haBuildCollageCards() {
   }
 
   var BENEFIT_TEXT = {
-    'adventure+food':    '3\u5929\u6253\u5361\u6700\u9ad8\u6548\u8def\u7ebf\uff0c\u987a\u5e26\u5403\u904d\u5f53\u5730\u7279\u8272',
-    'adventure+photo':   '\u7279\u79cd\u5175\u901f\u5ea6 + \u62cd\u7167\u773c\u5149\uff0c\u6253\u5361\u51fa\u7247\u4e24\u4e0d\u8bef',
-    'adventure+family':  '\u884c\u7a0b\u7d27\u51d1\u4e0d\u62d6\u6cab\uff0c\u5b69\u5b50\u5168\u7a0b\u4e0d\u65e0\u804a',
-    'adventure+local':   '\u9ad8\u6548\u6253\u5361\u4e3b\u6d41\u666f\u70b9\uff0c\u8fd8\u6709\u672c\u5730\u9690\u85cf\u5b9d\u85cf',
-    'adventure+nature':  '\u5c71\u6c34\u5168\u90fd\u5237\u5230\uff0c\u6548\u7387\u62c9\u6ee1\u4e0d\u7559\u9057\u61be',
-    'photo+food':        '\u6bcf\u4e00\u5f20\u51fa\u7247\uff0c\u6bcf\u4e00\u987f\u63a2\u5e97\uff0c\u53d1\u5c0f\u7ea2\u4e66\u5fc5\u7206',
-    'photo+local':       '\u955c\u5934\u91cc\u5168\u662f\u51b7\u95e8\u79d8\u5883\uff0c\u7edd\u5bf9\u4e0d\u649e\u6b3e',
-    'photo+nature':      '\u81ea\u7136\u5149\u6700\u7f8e\u7684\u5730\u65b9\uff0c\u62cd\u51fa\u6765\u4e0d\u9700\u8981\u6ee4\u955c',
-    'photo+family':      '\u62cd\u5230\u5b69\u5b50\u6700\u81ea\u7136\u7684\u7b11\u5bb9\uff0c\u5168\u5bb6\u798f\u90fd\u662f\u5927\u7247',
-    'local+food':        '\u8ddf\u7740\u672c\u5730\u4eba\u5403\u559d\uff0c\u7701\u9322\u7701\u65f6\u95f4\u53c8\u5730\u9053',
-    'local+nature':      '\u8fdc\u79bb\u6e38\u5ba2\u5806\uff0c\u5728\u5c71\u6c34\u91cc\u627e\u5230\u771f\u6b63\u677e\u5f1b\u611f',
-    'local+family':      '\u8f7b\u677e\u6162\u6e38\uff0c\u5927\u4eba\u653e\u677e\u5b69\u5b50\u5f00\u5fc3\u4e0d\u8d76\u8def',
-    'nature+family':     '\u5e26\u5b69\u5b50\u4eb2\u8fd1\u81ea\u7136\uff0c\u957f\u77e5\u8bc6\u957f\u89c1\u8bc6',
-    'food+family':       '\u4e00\u5bb6\u4eba\u5403\u5730\u9053\u7f8e\u98df\uff0c\u65c5\u884c\u6700\u6709\u4ef6\u5f0f\u611f',
-    'chill+local':       '\u6162\u4e0b\u6765\u611f\u53d7\u8fd9\u5ea7\u57ce\u5e02\u7684\u6e29\u5ea6',
-    'default':           '\u4e13\u5c5e\u4f60\u7684\u65c5\u884c\u65b9\u6848\uff0c\u6309\u4f60\u7684\u8282\u594f\u6765'
+    'adventure+food':    '3天打卡最高效路线，顺带吃遍当地特色',
+    'adventure+photo':   '特种兵速度 + 拍照眼光，打卡出片两不误',
+    'adventure+family':  '行程紧凑不拖沫，孩子全程不无聊',
+    'adventure+local':   '高效打卡主流景点，还有本地隐藏宝藏',
+    'adventure+nature':  '山水全都刷到，效率拉满不留遗憾',
+    'photo+food':        '每一张出片，每一顿探店，发小红书必爆',
+    'photo+local':       '镜头里全是冷门秘境，绝对不撞款',
+    'photo+nature':      '自然光最美的地方，拍出来不需要滤镜',
+    'photo+family':      '拍到孩子最自然的笑容，全家福都是大片',
+    'local+food':        '跟着本地人吃喝，省錢省时间又地道',
+    'local+nature':      '远离游客堆，在山水里找到真正松弛感',
+    'local+family':      '轻松慢游，大人放松孩子开心不赶路',
+    'nature+family':     '带孩子亲近自然，长知识长见识',
+    'food+family':       '一家人吃地道美食，旅行最有件式感',
+    'chill+local':       '慢下来感受这座城市的温度',
+    'default':           '专属你的旅行方案，按你的节奏来'
   };
 
   function getBenefit(p1s, p2s) {
@@ -2692,20 +2606,20 @@ function haBuildCollageCards() {
           +'<div style="font-size:22px;line-height:1">'+EMOJIS[i]+'</div>'
         +'</div>'
         +'<div style="height:1px;background:rgba(0,0,0,0.06);margin:10px 0"></div>'
-        +(spotHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:6px;text-transform:uppercase">\u2736 \u7279\u8272\u666f\u70b9</div><div>'+spotHtml+'</div></div>' : '')
-        +(foodHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:5px;text-transform:uppercase">\u7279\u8272\u7f8e\u98df</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+foodHtml+'</div></div>' : '')
+        +(spotHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:6px;text-transform:uppercase">✶ 特色景点</div><div>'+spotHtml+'</div></div>' : '')
+        +(foodHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:5px;text-transform:uppercase">特色美食</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+foodHtml+'</div></div>' : '')
         +'<div style="background:rgba(0,0,0,0.03);border-radius:8px;padding:8px 10px;font-size:12px;color:#555;line-height:1.5;margin-bottom:12px">'
-          +'<span style="color:'+ACCENT[i]+';font-weight:700">\u2736</span> '+benefit
+          +'<span style="color:'+ACCENT[i]+';font-weight:700">✶</span> '+benefit
         +'</div>'
         +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
           +'<div style="display:flex;align-items:center;gap:6px">'
-            +'<span style="font-size:10px;color:#999">\U0001f4b0 \u9884\u7b97</span>'
+            +'<span style="font-size:10px;color:#999">💰 预算</span>'
             +'<span style="font-size:14px;font-weight:800;color:'+ACCENT[i]+'">'+p.combo.budget+'</span>'
           +'</div>'
-          +'<span style="font-size:11px;color:#bbb">'+days+'\u5929</span>'
+          +'<span style="font-size:11px;color:#bbb">'+days+'天</span>'
         +'</div>'
         +'<div style="font-size:11px;color:#ccc;border-top:1px solid #f0f0f0;padding-top:8px">'
-          +HEICHA_PERSONAS[p.p1].emoji+' '+HEICHA_PERSONAS[p.p1].name+' \u00d7 '+HEICHA_PERSONAS[p.p2].name
+          +HEICHA_PERSONAS[p.p1].emoji+' '+HEICHA_PERSONAS[p.p1].name+' × '+HEICHA_PERSONAS[p.p2].name
         +'</div>'
       +'</div>';
 
