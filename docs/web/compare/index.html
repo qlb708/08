@@ -564,47 +564,47 @@ body{
 <!-- ========================================================
      SCREEN 2 · 旅行偏好滑块（一屏版）
      ======================================================== -->
-<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#d5e8ff,#bbd4f8);overflow:hidden;position:relative">
+<div id="s-quiz" class="screen" style="background:linear-gradient(160deg,#d5e8ff,#bbd4f8);overflow:hidden;position:relative;height:100vh;flex-direction:column">
 
   <!-- 顶部导航 -->
-  <nav style="display:flex;align-items:center;padding:0 24px;height:56px;background:rgba(245,240,232,0.95);border-bottom:1px solid #d8cfc0;flex-shrink:0;gap:16px">
+  <nav style="display:flex;align-items:center;padding:0 24px;height:56px;background:rgba(230,241,255,0.97);border-bottom:1px solid var(--blue-m);flex-shrink:0;gap:16px">
     <span style="font-size:13px;font-weight:800;color:#2563EB">✈ AI旅行规划</span>
     <div style="flex:1;display:flex;justify-content:center;gap:0;align-items:center;font-size:12px">
       <span style="display:flex;align-items:center;gap:6px;color:#22c55e;font-weight:700">
         <span style="width:22px;height:22px;border-radius:50%;background:#22c55e;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px">✓</span>行程设置
       </span>
-      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
+      <span style="width:32px;height:2px;background:var(--blue-m);margin:0 4px"></span>
       <span style="display:flex;align-items:center;gap:6px;color:#3b82f6;font-weight:800">
         <span style="width:22px;height:22px;border-radius:50%;background:#3b82f6;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900">2</span>旅行偏好
       </span>
-      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
+      <span style="width:32px;height:2px;background:var(--blue-m);margin:0 4px"></span>
       <span style="color:#b0a090;display:flex;align-items:center;gap:6px">
-        <span style="width:22px;height:22px;border-radius:50%;border:2px solid #c8b898;color:#b0a090;display:inline-flex;align-items:center;justify-content:center;font-size:11px">3</span>AI 规划
+        <span style="width:22px;height:22px;border-radius:50%;border:2px solid var(--blue-m);color:var(--gray);display:inline-flex;align-items:center;justify-content:center;font-size:11px">3</span>AI 规划
       </span>
-      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
+      <span style="width:32px;height:2px;background:var(--blue-m);margin:0 4px"></span>
       <span style="color:#b0a090;display:flex;align-items:center;gap:6px">
-        <span style="width:22px;height:22px;border-radius:50%;border:2px solid #c8b898;color:#b0a090;display:inline-flex;align-items:center;justify-content:center;font-size:11px">4</span>方案对比
+        <span style="width:22px;height:22px;border-radius:50%;border:2px solid var(--blue-m);color:var(--gray);display:inline-flex;align-items:center;justify-content:center;font-size:11px">4</span>方案对比
       </span>
     </div>
-    <button onclick="showScreen(&#39;s-flip&#39;)" style="font-size:12px;background:rgba(200,184,152,0.3);border:1px solid #c8b898;border-radius:8px;padding:6px 14px;color:#4b6baa;cursor:pointer">← 返回</button>
+    <button onclick="showScreen(&#39;s-flip&#39;)" style="font-size:12px;background:rgba(64,150,255,0.08);border:1px solid var(--blue-m);border-radius:8px;padding:6px 14px;color:var(--blue);cursor:pointer">← 返回</button>
   </nav>
 
   <!-- 主体：居中白色大容器 -->
-  <div style="flex:1;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:12px">
-    <div style="width:100%;max-width:640px;background:#fff;border-radius:20px;padding:12px 16px;box-shadow:0 4px 32px rgba(0,0,0,0.08)">
+  <div style="flex:1;overflow:hidden;display:flex;align-items:stretch;justify-content:center;padding:8px 12px;min-height:0">
+    <div style="width:100%;max-width:640px;background:#fff;border-radius:20px;padding:12px 16px;box-shadow:0 4px 32px rgba(0,0,0,0.08);display:flex;flex-direction:column;flex:1;min-height:0">
 
       <!-- 标题 -->
-      <div style="text-align:center;margin-bottom:12px">
+      <div style="text-align:center;margin-bottom:8px;flex-shrink:0">
         <div style="display:flex;align-items:center;justify-content:center;gap:12px">
-          <div style="font-size:13px;font-weight:900;color:#1e3a8a;letter-spacing:2px;font-family:monospace,sans-serif;line-height:1.8;text-shadow:-1px -1px 0 #c8a070,-1px 1px 0 #c8a070,1px -1px 0 #c8a070">⬛ 拨一拨 ⬛</div>
+          <div style="font-size:20px;font-weight:900;color:var(--blue);letter-spacing:3px;font-family:monospace,sans-serif;line-height:1.4;text-shadow:none">🎚️ 拨一拨</div>
           <button onclick="skipQuiz()" style="font-size:11px;font-family:monospace;font-weight:800;color:#2563EB;background:#fff;border:2px solid #1e3a8a;border-radius:4px;padding:4px 12px;cursor:pointer;letter-spacing:1px;box-shadow:3px 3px 0 #1e3a8a;white-space:nowrap" onmouseover="this.style.transform=&#39;translate(1px,1px)&#39;;this.style.boxShadow=&#39;2px 2px 0 #1e3a8a&#39;" onmouseout="this.style.transform=&#39;&#39;;this.style.boxShadow=&#39;3px 3px 0 #1e3a8a&#39;">跳过测试</button>
         </div>
         <div style="font-size:9px;color:#5a4030;font-family:monospace;font-weight:700;line-height:2;margin-top:4px;letter-spacing:1px">[ 告诉 AI 你是哪种旅行人 ]</div>
-        <div id="stack-hint" style="font-size:8px;color:#a08060;margin-top:4px;font-family:monospace;font-weight:600;letter-spacing:1px;line-height:2">▶ 拨动滑块，解锁你的旅行人格拼图 ◀</div>
+        <div id="stack-hint" style="font-size:8px;color:var(--blue);margin-top:2px;font-family:monospace;font-weight:600;letter-spacing:1px;line-height:2">▶ 拨动滑块，解锁你的旅行人格拼图 ◀</div>
       </div>
 
       <!-- 3×3 卡片网格（aspect-ratio:1 实现1:1）-->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="sliders-wrap"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;flex:1;min-height:0;align-content:stretch" id="sliders-wrap"></div>
 
       <!-- 底部按钮 -->
       <button onclick="goArchive()" style="width:100%;padding:10px;font-size:13px;font-weight:700;border:none;border-radius:4px;background:linear-gradient(135deg,#3b82f6,#2563EB);color:#fff;cursor:pointer;letter-spacing:2px;box-shadow:4px 4px 0 #1e3a8a;font-family:monospace;transition:transform 0.15s,box-shadow 0.15s" onmouseover="this.style.transform=&#39;translateY(-2px)&#39;;this.style.boxShadow=&#39;6px 6px 0 #1e3a8a&#39;" onmouseout="this.style.transform=&#39;&#39;;this.style.boxShadow=&#39;4px 4px 0 #1e3a8a&#39;">
@@ -1477,7 +1477,7 @@ function initSliders(){
     // 外层容器：支持 CSS 3D 翻转，1:1 比例由 grid 行列决定
     var outer=document.createElement('div');
     outer.id='flip-outer-'+sl.id;
-    outer.style.cssText='perspective:800px;position:relative;aspect-ratio:1;';
+    outer.style.cssText='perspective:800px;position:relative;aspect-ratio:1/1;min-width:0;';;
 
     // 翻转内层（包含正反两面）
     var inner=document.createElement('div');
