@@ -26,7 +26,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 .cat-btn{display:inline-flex;align-items:center;gap:6px;margin-top:4px;padding:9px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.8);background:rgba(255,255,255,.5);cursor:pointer;font-size:13px;text-decoration:none;color:inherit;transition:.2s;align-self:flex-start}.cat-btn:hover{background:rgba(255,255,255,.8)}.slider-arrow{position:absolute;z-index:4;top:48%;width:48px;height:48px;border-radius:50%;border:1px solid #dbe5f3;background:rgba(255,255,255,.88);box-shadow:var(--shadow);cursor:pointer;font-size:22px;color:var(--blue)}.slider-arrow.prev{left:-14px}.slider-arrow.next{right:-14px}.dots{display:flex;justify-content:center;gap:7px;margin-top:3px}.dots button{width:8px;height:8px;border:0;border-radius:50%;padding:0;background:#d2daea;cursor:pointer}.dots button.on{width:24px;border-radius:99px;background:var(--blue)}
 .details{min-height:auto}.detail-tabs{display:flex;gap:10px;margin:24px 0 18px}.detail-tabs button{padding:10px 17px;border-radius:999px;border:1px solid #e1e8f3;background:rgba(255,255,255,.65);cursor:pointer}.detail-tabs button.on{background:var(--tone);color:#fff;border-color:transparent}.project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:4px 0 8px}
 /* demo dual-col layout */
-.demo-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:4px 0 8px;align-items:start}
+.demo-layout{display:grid;grid-template-columns:58% 42%;gap:20px;padding:4px 0 8px;align-items:start}
 .demo-col-label{font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.45;margin-bottom:10px;text-transform:uppercase}
 /* web side: flat horizontal cards */
 .demo-web-col{display:flex;flex-direction:column;gap:12px}
@@ -38,7 +38,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 .project-card.flat .p-foot{margin-top:0;margin-left:auto;flex-shrink:0;padding-left:12px}
 .project-card.flat .p-num{display:none}
 /* app side: phone-ratio portrait cards */
-.demo-app-col{display:flex;flex-direction:column;gap:12px}
+.demo-app-col{display:flex;flex-direction:column;gap:12px}.demo-app-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:start}
 .project-card.portrait{min-height:0;aspect-ratio:9/14;padding:20px;justify-content:flex-end;position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(255,240,232,.9))}
 .project-card.portrait .p-icon{position:absolute;top:20px;left:20px;width:38px;height:38px;border-radius:11px;font-size:16px}
 .project-card.portrait small{font-size:11px;margin:0 0 4px}
@@ -73,7 +73,7 @@ function renderProjects(i){activeGroup=i;const g=groups[i];projectTrack.style.se
 if(g.key==='demo'){
   const web=g.items.slice(0,3),app=g.items.slice(3);
   const webCards=web.map((x,n)=>`<a class="project-card flat" href="${x[2]}" style="--tone:${g.tone};--tint:${g.tint}"><span class="p-icon">${x[3]}</span><div><small>${g.title}</small><h3>${x[0]}</h3><p>${x[1]}</p></div><div class="p-foot"><span class="go">→</span></div></a>`).join('');
-  const appCards=app.map((x,n)=>`<div class="portrait-wrap"><div class="portrait-notch"></div><a class="project-card portrait" href="${x[2]}" style="--tone:${g.tone};--tint:${g.tint}"><span class="p-icon">${x[3]}</span><small>${g.title}</small><h3>${x[0]}</h3><p>${x[1]}</p><div class="p-foot"><span class="p-num">PROJECT ${String(n+4).padStart(2,'0')}</span><span class="go">→</span></div></a></div>`).join('');
+  const appCards=`<div class="demo-app-cards">${app.map((x,n)=>`<div class="portrait-wrap"><div class="portrait-notch"></div><a class="project-card portrait" href="${x[2]}" style="--tone:${g.tone};--tint:${g.tint}"><span class="p-icon">${x[3]}</span><small>${g.title}</small><h3>${x[0]}</h3><p>${x[1]}</p><div class="p-foot"><span class="p-num">PROJECT ${String(n+4).padStart(2,'0')}</span><span class="go">→</span></div></a></div>`).join('')}</div>`;
   projectTrack.innerHTML=`<div class="demo-layout"><div class="demo-web-col"><div class="demo-col-label">🌐 Web 端</div>${webCards}</div><div class="demo-app-col"><div class="demo-col-label">📱 App 端</div>${appCards}</div></div>`;
 }else{
   projectTrack.innerHTML=g.items.map((x,n)=>`<a class="project-card" href="${x[2]}" style="--tone:${g.tone};--tint:${g.tint}"><span class="p-icon">${x[3]}</span><small>${g.title}</small><h3>${x[0]}</h3><p>${x[1]}</p><div class="p-foot"><span>PROJECT ${String(n+1).padStart(2,'0')}</span><span class="go">→</span></div></a>`).join('');
