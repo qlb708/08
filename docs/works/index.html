@@ -51,8 +51,10 @@ if(g.key==='demo'){
   const web=g.items.slice(0,3),app=g.items.slice(3);
   const webCards=web.map((x,n)=>`<a class="project-card flat" href="${x[2]}" style="--tone:${g.tone};--tint:${g.tint}"><span class="p-icon">${x[3]}</span><div class="flat-text"><small>${g.title}</small><h3>${x[0]}</h3><p>${x[1]}</p></div><div class="p-foot"><span class="go">→</span></div></a>`).join('');
   const appCards=`<div class="demo-app-cards">${app.map((x,n)=>`<div class="portrait-wrap"><div class="portrait-notch"></div><a class="project-card portrait" href="${x[2]}" style="--tone:${g.tone};--tint:${g.tint}"><span class="p-icon">${x[3]}</span><small>${g.title}</small><h3>${x[0]}</h3><p>${x[1]}</p><div class="p-foot"><span class="p-num">PROJECT ${String(n+4).padStart(2,'0')}</span><span class="go">→</span></div></a></div>`).join('')}</div>`;
+  projectTrack.className='demo-wrap';
   projectTrack.innerHTML=`<div class="demo-layout"><div class="demo-web-col"><div class="demo-col-label">🌐 Web 端</div>${webCards}</div><div class="demo-app-col"><div class="demo-col-label">📱 App 端</div>${appCards}</div></div>`;
 }else{
+  projectTrack.className='project-grid';
   projectTrack.innerHTML=g.items.map((x,n)=>`<a class="project-card" href="${x[2]}" style="--tone:${g.tone};--tint:${g.tint}"><span class="p-icon">${x[3]}</span><small>${g.title}</small><h3>${x[0]}</h3><p>${x[1]}</p><div class="p-foot"><span>PROJECT ${String(n+1).padStart(2,'0')}</span><span class="go">→</span></div></a>`).join('');
   projectTrack.className='project-grid';
 }
