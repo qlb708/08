@@ -340,7 +340,7 @@ body{
 .reveal-desc{font-size:1em;color:#5a6b54;max-width:400px;min-height:2em;line-height:1.6;margin-bottom:30px;}
 .reveal-continue-btn{padding:14px 40px;background:var(--green);color:#fff;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;font-family:var(--font-mono);display:none;}
 .reveal-continue-btn:hover{opacity:0.85;}
-.collage-stage{width:100%;padding:0}
+.collage-stage{width:100%;padding:0 0 20px 0}
 .collage-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.78em;color:#8a7a60;margin-bottom:16px;letter-spacing:0.5px}
 .collage-hint-dot{width:5px;height:5px;border-radius:50%;background:#b8a880;display:inline-block}
 .envelope-origin{display:flex;flex-direction:column;gap:14px;width:100%;padding:0}
@@ -673,7 +673,7 @@ body{
 <!-- ========================================================
      SCREEN · 行程规划结果（archive iframe）
      ======================================================== -->
-<div id="s-archive" class="screen" style="background:#e8f0fe;overflow-y:auto">
+<div id="s-archive" class="screen" style="background:#F5F0E8;overflow-y:auto">
   <div class="container">
     <button class="back-btn" onclick="showScreen(&#39;s-flip&#39;)">← 返回</button>
     <!-- Phase 1: Loading -->
@@ -703,7 +703,7 @@ body{
     </div>
     <!-- Phase 3: Cards + Itinerary -->
     <div id="ha-phaseCards" style="display:none">
-      <div style="text-align:center;margin-bottom:16px">
+      <div style="text-align:center;margin-bottom:20px;padding-top:8px">
         <h2 style="margin-bottom:6px">✨ 为你定制的旅行方案</h2>
         <div style="font-size:0.85em;color:#5a6b54" id="ha-deckSubtitle"></div>
       </div>
@@ -870,6 +870,8 @@ body{
 </div>
 
 <!-- Chart.js CDN -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 /* ============================================================
