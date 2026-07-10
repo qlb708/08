@@ -2597,50 +2597,151 @@ function haShowCardDeck() {
 function haBuildCollageCards() {
   var origin = document.getElementById('ha-envelopeOrigin');
   if(!origin) return;
-  origin.innerHTML='';
-  var COLORS=['#FEFCE8','#F0FDF4','#EFF6FF'];
-  var TAPES=['tape','tape tape-2','tape tape-3'];
-  var PLAN_NAMES = haPlans.length ? haPlans.map(function(p){ return p.combo.name; }) : ['干饭急行军','出片敢死队','硬核遛娃团'];
-  var PLAN_META = haPlans.length ? haPlans.map(function(p){ return HEICHA_PERSONAS[p.p1].emoji+HEICHA_PERSONAS[p.p1].name+' × '+HEICHA_PERSONAS[p.p2].name; }) : ['','',''];
-  var PLAN_SLOGAN = haPlans.length ? haPlans.map(function(p){ return p.combo.slogan; }) : ['','',''];
-  var PLAN_BUDGET = haPlans.length ? haPlans.map(function(p){ return p.combo.budget; }) : ['¥3000+','¥3500+','¥3500+'];
+  origin.innerHTML = '';
+
+  var GRAD  = ['linear-gradient(120deg,#FF8C42,#FFD166)','linear-gradient(120deg,#5DBEA3,#4D9DE0)','linear-gradient(120deg,#A78BFA,#F472B6)'];
+  var EMOJIS = ['🏃','📸','🌿'];
+  var LABELS = ['全力打卡','出片优先','深度探索'];
+  var ACCENT = ['#E07A20','#2A7A6A','#7C3AED'];
+
   var days = heichaState.days, city = heichaState.city;
-  
-  [0,1,2].forEach(function(i){
+  var citySpots = HEICHA_CITY_SPOTS[city] || {};
+
+  function getPlanUniqueSpots(planIdx) {
+    var p = haPlans[planIdx];
+    var p1Style = HEICHA_PERSONAS[p.p1].style;
+    var p2Style = HEICHA_PERSONAS[p.p2].style;
+    var ALL_C = ['adventure','photo','family','local','nature','culture','food','chill','night'];
+    var exclCat = ALL_C.filter(function(c){return c!==p1Style&&c!==p2Style;})[planIdx%6]||'nature';
+    var myNames = {};
+    [p1Style, p2Style, exclCat, 'culture'].forEach(function(cat) {
+      (citySpots[cat] || []).forEach(function(s){ if(!myNames[s.n]) myNames[s.n] = s; });
+    });
+    var otherNames = {};
+    [0,1,2].forEach(function(i) {
+      if(i === planIdx) return;
+      var op = haPlans[i];
+      var oExcl = ALL_C.filter(function(c){
+        var op1s=HEICHA_PERSONAS[op.p1].style, op2s=HEICHA_PERSONAS[op.p2].style;
+        return c!==op1s&&c!==op2s;
+      })[i%6]||'nature';
+      [HEICHA_PERSONAS[op.p1].style, HEICHA_PERSONAS[op.p2].style, oExcl, 'culture'].forEach(function(cat) {
+        (citySpots[cat] || []).forEach(function(s){ otherNames[s.n] = true; });
+      });
+    });
+    var unique = [];
+    Object.keys(myNames).forEach(function(name) {
+      if(!otherNames[name]) unique.push(myNames[name]);
+    });
+    return unique;
+  }
+
+  var BENEFIT_TEXT = {
+    'adventure+food':    '3天打卡最高效路线，顺带吃遍当地特色',
+    'adventure+photo':   '特种兵速度 + 拍照眼光，打卡出片两不误',
+    'adventure+family':  '行程紧凑不拖沓，孩子全程不无聊',
+    'adventure+local':   '高效打卡主流景点，还有本地隐藏宝藏',
+    'adventure+nature':  '山水全都刷到，效率拉满不留遗憾',
+    'photo+food':        '每一张出片，每一顿探店，发小红书必爆',
+    'photo+local':       '镜头里全是冷门秘境，绝对不撞款',
+    'photo+nature':      '自然光最美的地方，拍出来不需要滤镜',
+    'photo+family':      '拍到孩子最自然的笑容，全家福都是大片',
+    'local+food':        '跟着本地人吃喝，省钱省时间又地道',
+    'local+nature':      '远离游客堆，在山水里找到真正松弛感',
+    'local+family':      '轻松慢游，大人放松孩子开心不赶路',
+    'nature+family':     '带孩子亲近自然，长知识长见识',
+    'food+family':       '一家人吃地道美食，旅行最有仪式感',
+    'chill+local':       '慢下来感受这座城市的温度',
+    'default':           '专属你的旅行方案，按你的节奏来'
+  };
+
+  function getBenefit(p1s, p2s) {
+    return BENEFIT_TEXT[p1s+'+'+p2s] || BENEFIT_TEXT[p2s+'+'+p1s] || BENEFIT_TEXT['default'];
+  }
+
+  [0,1,2].forEach(function(i) {
+    var p = haPlans[i];
+    var p1Style = HEICHA_PERSONAS[p.p1].style;
+    var p2Style = HEICHA_PERSONAS[p.p2].style;
+    var uniqueSpots = getPlanUniqueSpots(i);
+    var benefit = getBenefit(p1Style, p2Style);
+
+    var spotObjs = uniqueSpots.slice(0,2);
+    if(!spotObjs.length) {
+      var _p1s = HEICHA_PERSONAS[p.p1].style, _p2s = HEICHA_PERSONAS[p.p2].style;
+      var _ALL = ['adventure','photo','family','local','nature','food','chill'];
+      var _ec = _ALL.filter(function(c){return c!==_p1s&&c!==_p2s;})[i%6]||'nature';
+      spotObjs = (citySpots[_ec]||[]).slice(0,2);
+    }
+    var spotHtml = spotObjs.map(function(s, si) {
+      var name = typeof s === 'string' ? s : s.n;
+      var tag = (s && s.tag) ? s.tag : '';
+      var tagText = tag.replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}\s]+/u,'').trim();
+      var dotColor = [ACCENT[0],ACCENT[1],ACCENT[2]][i];
+      return '<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px dashed rgba(0,0,0,0.06)">'
+        +'<span style="width:6px;height:6px;border-radius:50%;background:'+dotColor+';flex-shrink:0"></span>'
+        +'<span style="font-size:12px;font-weight:700;color:#1a1a1a">'+name+'</span>'
+        +(tagText ? '<span style="font-size:10px;color:'+dotColor+';font-weight:600;margin-left:auto;white-space:nowrap">'+tagText+'</span>' : '')
+        +'</div>';
+    }).join('');
+
+    var allFoods = (citySpots['food'] || []).filter(function(s){
+      return spotObjs.every(function(s2){ return (typeof s2==='string'?s2:s2.n) !== s.n; });
+    });
+    var foodStartIdx = i * 2;
+    var foodCount = (p1Style === 'food' || p1Style === 'foodie' || p2Style === 'food' || p2Style === 'foodie') ? 2 : 1;
+    var foods = allFoods.slice(foodStartIdx, foodStartIdx + foodCount);
+    if(!foods.length) foods = allFoods.slice(0, foodCount);
+    var foodHtml = foods.map(function(s){
+      var n = typeof s === 'string' ? s : s.n;
+      return '<span style="background:rgba(0,0,0,0.06);color:#444;font-size:11px;padding:2px 8px;border-radius:20px;white-space:nowrap">'+n+'</span>';
+    }).join('');
+
     var card = document.createElement('div');
-    card.className='collage-card';
-    card.style.background=COLORS[i];
-    card.innerHTML=
-      '<div class="'+TAPES[i]+'"></div>'
-      +'<div class="card-num-badge">'+(i+1)+'</div>'
-      +'<div class="card-inner">'
-        +'<div style="font-size:0.62em;color:#9a8870;letter-spacing:1px;margin-bottom:6px;">'+city+'</div>'
-        +'<div style="width:100%;height:90px;background:#e8e0d0;border-radius:4px;margin-bottom:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:2em;">'
-          +['\u{1F3D4}\uFE0F','\u{1F305}','\u{1F30A}'][i]
+    card.className = 'collage-card'; card.style.position='relative'; card.style.overflow='hidden';
+
+    card.innerHTML =
+      '<div style="position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:16px 0 0 16px;background:'+GRAD[i]+'"></div>'
+      +'<div style="padding:16px 18px 18px 22px">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
+          +'<div style="display:flex;align-items:center;gap:10px">'
+            +'<div style="width:28px;height:28px;border-radius:8px;background:'+GRAD[i]+';display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">'+EMOJIS[i]+'</div>'
+            +'<div>'
+              +'<div style="font-size:15px;font-weight:800;color:#1a1a1a;letter-spacing:-0.2px">'+p.combo.name+'</div>'
+              +'<div style="font-size:11px;color:#888;margin-top:1px">'+LABELS[i]+'</div>'
+            +'</div>'
+          +'</div>'
+          +'<div style="font-size:22px;line-height:1">'+EMOJIS[i]+'</div>'
         +'</div>'
-        +'<div style="font-family:Arial Black,Impact,sans-serif;font-size:0.92em;color:#2D3A2A;margin-bottom:4px;">'+PLAN_NAMES[i]+'</div>'
-        +'<div style="font-size:0.72em;color:#5a6b54;margin-bottom:8px;">'+PLAN_SLOGAN[i]+'</div>'
-        +'<div style="font-size:0.7em;color:#777;">'
-          +'<span>'+city+'</span> <span style="margin:0 4px">·</span>'
-          +'<span>'+days+'天</span> <span style="margin:0 4px">·</span>'
-          +'<span>'+PLAN_META[i]+'</span>'
+        +'<div style="height:1px;background:rgba(0,0,0,0.06);margin:10px 0"></div>'
+        +(spotHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:6px;text-transform:uppercase">✦ 特色景点</div><div>'+spotHtml+'</div></div>' : '')
+        +(foodHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:5px;text-transform:uppercase">特色美食</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+foodHtml+'</div></div>' : '')
+        +'<div style="background:rgba(0,0,0,0.03);border-radius:8px;padding:8px 10px;font-size:12px;color:#555;line-height:1.5;margin-bottom:12px">'
+          +'<span style="color:'+ACCENT[i]+';font-weight:700">✦</span> '+benefit
         +'</div>'
-        +'<div style="border-top:1px dashed #B8A880;margin-top:8px;padding-top:6px;display:flex;justify-content:space-between;font-size:0.7em;color:#9a8870;">'
-          +'<span>50% 匹配</span><span>'+PLAN_BUDGET[i]+'</span>'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+          +'<div style="display:flex;align-items:center;gap:6px">'
+            +'<span style="font-size:10px;color:#999">💰 预算</span>'
+            +'<span style="font-size:14px;font-weight:800;color:'+ACCENT[i]+'">'+p.combo.budget+'</span>'
+          +'</div>'
+          +'<span style="font-size:11px;color:#bbb">'+days+'天</span>'
+        +'</div>'
+        +'<div style="font-size:11px;color:#ccc;border-top:1px solid #f0f0f0;padding-top:8px">'
+          +HEICHA_PERSONAS[p.p1].emoji+' '+HEICHA_PERSONAS[p.p1].name+' × '+HEICHA_PERSONAS[p.p2].name
         +'</div>'
       +'</div>';
+
     card.onclick = (function(idx){ return function(){ haSelectCard(idx); }; })(i);
     origin.appendChild(card);
   });
-  
-  // 触发飞入动画
+
   setTimeout(function(){
     var cards = origin.querySelectorAll('.collage-card');
     cards.forEach(function(c,i){
       setTimeout(function(){
         c.classList.add('card-fly-'+(i+1));
         c.classList.add('landed-'+(i+1));
-      }, i*100);
+      }, i*120);
     });
   }, 50);
 }
