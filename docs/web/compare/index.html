@@ -3029,7 +3029,7 @@ function renderPlanDetailRecommend() {
   }
   sortedHotels.slice(0,4).forEach(function(h,i){
     var starsStr = '★'.repeat(h.stars||3)+'☆'.repeat(5-(h.stars||3));
-    html += '<div style="background:#fff;border:1.5px solid #E8D8A0;border-radius:10px;padding:10px;cursor:pointer" onmouseover="this.style.borderColor='#F0A500';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#E8D8A0';this.style.transform=''">';
+    html += '<div style="background:#fff;border:1.5px solid #E8D8A0;border-radius:10px;padding:10px;cursor:pointer" onmouseover="this.style.borderColor=\x27#F0A500\x27;this.style.transform=\x27translateY(-2px)\x27" onmouseout="this.style.borderColor=\x27#E8D8A0\x27;this.style.transform=\x27\x27">';
     html += '<div style="font-size:11px;font-weight:700;color:#2C2416;margin-bottom:4px">'+h.name+'</div>';
     html += '<div style="font-size:10px;color:#F0A500;margin-bottom:4px">'+starsStr+'</div>';
     html += '<div style="display:flex;justify-content:space-between;align-items:center">';
