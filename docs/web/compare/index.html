@@ -1583,18 +1583,23 @@ function initSliders(){
       '</div>';
 
     // 底部左右端点 emoji（小一点）
+    // 中央大 emoji（当前滑块位置对应的 emoji）
+    var curEmoji = sl.emojis[Math.round(sl.val/25)*25] || sl.emojis[50] || '😊';
+    var bigEmoji=
+      '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:2px 0">'+
+        '<span style="font-size:38px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.12));transition:all 0.3s" id="big-emoji-'+sl.id+'">'+curEmoji+'</span>'+
+      '</div>';
+    // 底部：左emoji + 右emoji 两端
     var ends=
-      '<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end">'+
-        '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 2px 2px">'+
-          '<span style="font-size:18px">'+sl.left.e+'</span>'+
-          '<span style="font-size:10px;color:'+ac+';font-weight:600;background:'+ac+'18;padding:2px 6px;border-radius:8px">'+sl.desc+'</span>'+
-          '<span style="font-size:18px">'+sl.right.e+'</span>'+
-        '</div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:0 2px 2px">'+
+        '<span style="font-size:16px">'+sl.left.e+'</span>'+
+        '<span style="font-size:9px;color:'+ac+';font-weight:600;background:'+ac+'15;padding:2px 7px;border-radius:8px">'+sl.desc+'</span>'+
+        '<span style="font-size:16px">'+sl.right.e+'</span>'+
       '</div>';
 
     front.style.display='flex';
     front.style.flexDirection='column';
-    front.innerHTML=topBar+header+labels+track+ends;
+    front.innerHTML=topBar+header+bigEmoji+track+ends;
 
     // ────────────────────────────────────────────────────────
     // 背面：像素拼豆艺术（填满卡片）+ 底部标签条
@@ -1641,6 +1646,7 @@ function initSliders(){
       if(fill) fill.style.width=pct2;
       if(dot){dot.style.left=pct2;dot.textContent=getSliderEmoji(sl,val);}
       if(emo) emo.textContent=getSliderEmoji(sl,val);
+      var bemo=document.getElementById('big-emoji-'+sl.id); if(bemo) bemo.textContent=getSliderEmoji(sl,val);
       // 更新背面文字
       var bc=document.getElementById('back-choice-'+sl.id);
       if(bc) bc.textContent=(val<40?sl.left.l:val>60?sl.right.l:'灵活随心')+' '+getSliderEmoji(sl,val);
