@@ -2630,36 +2630,10 @@ function runHeichaGenerate() {
     if(el) sv[k]=parseInt(el.value)||50;
   });
   
-  // 重置到 loading 阶段
-  haShowPhase('phaseLoading');
-  ['ha-ls1','ha-ls2','ha-ls3'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el){el.className='load-step';el.firstElementChild.style.background='#ccc';}
-  });
-  
-  function setDone(id){
-    var el=document.getElementById(id);
-    if(el){el.className='load-step done';el.firstElementChild.style.background='#3A6B35';}
-  }
-  function setRunning(id){
-    var el=document.getElementById(id);
-    if(el){el.className='load-step running';el.firstElementChild.style.background='#3A6B35';}
-  }
-  
-  setRunning('ha-ls1');
-  setTimeout(function(){
-    setDone('ha-ls1'); setRunning('ha-ls2');
-  }, 600);
-  setTimeout(function(){
-    setDone('ha-ls2'); setRunning('ha-ls3');
-  }, 1200);
-  setTimeout(function(){
-    setDone('ha-ls3');
-    haPlans = haCalcPlans();
-    // Show persona card for p1 (top persona)
-    var p1Key = haPlans.length ? haPlans[0].p1 : 'soldier';
-    haShowPersonaCard(p1Key, function(){ haSelectedPlanIdx=0; haShowPlanDetail(0); });
-  }, 1800);
+  // 直接计算人格，弹出像素卡片
+  haPlans = haCalcPlans();
+  var p1Key = haPlans.length ? haPlans[0].p1 : 'soldier';
+  haShowPersonaCard(p1Key, function(){ haSelectedPlanIdx=0; haShowPlanDetail(0); });
 }
 
 function haCalcPlans() {
