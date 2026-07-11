@@ -340,8 +340,8 @@ body{
 .collage-stage{width:100%;padding:0;}
 .collage-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.78em;color:#8a7a60;margin-bottom:16px;letter-spacing:0.5px;}
 .collage-hint-dot{width:5px;height:5px;border-radius:50%;background:#B8A880;display:inline-block;}
-.envelope-origin{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;padding:0;align-items:stretch;}
-.collage-card{position:relative;width:100%;background:#fff;border:none;border-radius:16px;padding:0;font-family:var(--font-mono);cursor:pointer;box-shadow:0 2px 12px rgba(64,150,255,0.12);user-select:none;transition:transform 0.18s,box-shadow 0.18s;opacity:0;overflow:hidden;}
+.envelope-origin{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;padding:0 48px;box-sizing:border-box;align-items:stretch;min-height:420px;}
+.collage-card{position:relative;width:100%;background:#fff;border:none;border-radius:16px;padding:0;font-family:var(--font-mono);cursor:pointer;box-shadow:0 2px 12px rgba(64,150,255,0.12);user-select:none;transition:transform 0.18s,box-shadow 0.18s;opacity:0;overflow:hidden;display:flex;flex-direction:column;}
 .collage-card:nth-child(1){background:#EFF6FF;}
 .collage-card:nth-child(2){background:#EFF6FF;}
 .collage-card:nth-child(3){background:#EFF6FF;}
@@ -420,9 +420,145 @@ body{
 .leaflet-map-wrap .route-map-title{font-family:var(--font-title);font-size:0.82em;color:var(--green);letter-spacing:3px;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px dashed var(--dash);}
 .leaflet-popup-content-wrapper{border-radius:8px!important;font-family:var(--font-mono)!important;font-size:12px!important;}
 
+
+/* ===== Step Progress Bar ===== */
+.step-bar-wrap{
+  width:100%;
+  padding:12px 60px 0;
+  box-sizing:border-box;
+  position:relative;
+  z-index:10;
+}
+.step-bar{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  max-width:720px;
+  margin:0 auto;
+  background:rgba(255,255,255,0.6);
+  border-radius:40px;
+  padding:6px 8px;
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.9);
+  box-shadow:0 2px 12px rgba(37,99,235,0.10);
+}
+.step-item{
+  display:flex;
+  align-items:center;
+  gap:0;
+  flex:1;
+  cursor:pointer;
+  position:relative;
+}
+.step-item:last-child .step-line{display:none;}
+.step-dot-wrap{
+  display:flex;
+  align-items:center;
+  flex-direction:column;
+  gap:3px;
+  padding:4px 10px;
+  border-radius:24px;
+  transition:background 0.2s;
+  flex-shrink:0;
+}
+.step-item:hover .step-dot-wrap{background:rgba(37,99,235,0.08);}
+.step-dot{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:700;
+  transition:all 0.2s;
+  border:2px solid #BFDBFE;
+  background:#fff;
+  color:#93C5FD;
+}
+.step-label{
+  font-size:10px;
+  color:#94A3B8;
+  white-space:nowrap;
+  transition:color 0.2s;
+  font-family:var(--font-mono,'monospace');
+}
+.step-line{
+  flex:1;
+  height:2px;
+  background:#DBEAFE;
+  border-radius:1px;
+  margin:0 2px;
+  position:relative;
+  overflow:hidden;
+}
+.step-line::after{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  background:#2563EB;
+  border-radius:1px;
+  width:0%;
+  transition:width 0.4s;
+}
+/* Active step */
+.step-item.active .step-dot{
+  background:linear-gradient(135deg,#3B82F6,#2563EB);
+  border-color:#2563EB;
+  color:#fff;
+  box-shadow:0 2px 8px rgba(37,99,235,0.35);
+}
+.step-item.active .step-label{color:#2563EB;font-weight:600;}
+/* Done step */
+.step-item.done .step-dot{
+  background:linear-gradient(135deg,#60A5FA,#3B82F6);
+  border-color:#3B82F6;
+  color:#fff;
+}
+.step-item.done .step-label{color:#3B82F6;}
+.step-item.done .step-line::after{width:100%;}
+
 </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js">
+function goToStep(step) {
+  if (step === 0) {
+    // 返回首页
+    showScreen('s-home');
+  } else if (step === 1) {
+    // 返回测试页
+    showScreen('s-quiz');
+  } else if (step === 2) {
+    // 当前页，不跳
+    showScreen('s-archive');
+  } else if (step === 3) {
+    // 如果有选中方案则跳详情，否则提示
+    var selected = document.querySelector('.collage-card.selected-card');
+    if (selected) {
+      var idx = parseInt(selected.getAttribute('data-idx') || 0);
+      haShowPlanDetail(idx);
+    }
+  }
+}
+
+function updateStepBar(activeStep) {
+  var items = document.querySelectorAll('#archiveStepBar .step-item');
+  items.forEach(function(item, i) {
+    item.classList.remove('active','done');
+    if (i < activeStep) {
+      item.classList.add('done');
+      item.querySelector('.step-dot').textContent = '✓';
+    } else if (i === activeStep) {
+      item.classList.add('active');
+      item.querySelector('.step-dot').textContent = (i+1).toString();
+    } else {
+      item.querySelector('.step-dot').textContent = (i+1).toString();
+    }
+  });
+}
+
+</script>
 </head>
 <body>
 
@@ -736,6 +872,37 @@ body{
      SCREEN · 行程规划结果（archive iframe）
      ======================================================== -->
 <div id="s-archive" class="screen" style="background:linear-gradient(180deg,#DBEAFE 0%,#EFF6FF 100%);overflow-y:auto">
+<div class="step-bar-wrap" id="archiveStepBar">
+  <div class="step-bar">
+    <div class="step-item done" data-step="0" onclick="goToStep(0)">
+      <div class="step-dot-wrap">
+        <div class="step-dot">✓</div>
+        <div class="step-label">目的地</div>
+      </div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-item done" data-step="1" onclick="goToStep(1)">
+      <div class="step-dot-wrap">
+        <div class="step-dot">✓</div>
+        <div class="step-label">旅行人格</div>
+      </div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-item active" data-step="2" onclick="goToStep(2)">
+      <div class="step-dot-wrap">
+        <div class="step-dot">3</div>
+        <div class="step-label">选择方案</div>
+      </div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-item" data-step="3" onclick="goToStep(3)">
+      <div class="step-dot-wrap">
+        <div class="step-dot">4</div>
+        <div class="step-label">行程详情</div>
+      </div>
+    </div>
+  </div>
+</div>
   <div class="container">
     <button class="back-btn" onclick="showScreen(&#39;s-flip&#39;)">← 返回</button>
     <!-- Phase 1: Loading -->
@@ -2793,9 +2960,30 @@ function haBuildCollageCards() {
     var card = document.createElement('div');
     card.className = 'collage-card'; card.style.position='relative'; card.style.overflow='hidden';
 
+    // 计划标签数据
+    var TAG_SETS = [
+      ['🏃 高效打卡','📍 景点全覆盖','🍜 本地美食'],
+      ['📸 出片必备','🎨 网红打卡','✨ 轻松节奏'],
+      ['🌿 深度慢游','💎 隐藏宝藏','🧘 松弛感满分']
+    ];
+    var tagsHtml = TAG_SETS[i].map(function(t){
+      return '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(37,99,235,0.07);color:#2563EB;font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid rgba(37,99,235,0.15);white-space:nowrap">'+t+'</span>';
+    }).join('');
+
+    // 每日行程摘要（简单按天分配）
+    var dayItems = [];
+    for(var d=1; d<=Math.min(days,3); d++){
+      var daySpots = spotObjs.map(function(s,si){ return si===d-1 ? (typeof s==='string'?s:s.n) : null; }).filter(Boolean);
+      dayItems.push('Day'+d+'：'+(daySpots[0]||(['休闲散步','深度探索','城区漫游'][d-1])));
+    }
+    var dayHtml = dayItems.map(function(t){
+      return '<div style="font-size:11px;color:#64748B;line-height:1.8;display:flex;align-items:center;gap:5px">'
+        +'<span style="width:4px;height:4px;border-radius:50%;background:#93C5FD;flex-shrink:0;display:inline-block"></span>'+t+'</div>';
+    }).join('');
+
     card.innerHTML =
       '<div style="position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:16px 0 0 16px;background:'+GRAD[i]+'"></div>'
-      +'<div style="padding:16px 18px 18px 22px">'
+      +'<div style="padding:16px 18px 0 22px;flex:1;display:flex;flex-direction:column;">'
         +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
           +'<div style="display:flex;align-items:center;gap:10px">'
             +'<div style="width:28px;height:28px;border-radius:8px;background:'+GRAD[i]+';display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">'+EMOJIS[i]+'</div>'
@@ -2806,20 +2994,24 @@ function haBuildCollageCards() {
           +'</div>'
           +'<div style="font-size:22px;line-height:1">'+EMOJIS[i]+'</div>'
         +'</div>'
-        +'<div style="height:1px;background:rgba(0,0,0,0.06);margin:10px 0"></div>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">'+tagsHtml+'</div>'
+        +'<div style="height:1px;background:rgba(0,0,0,0.06);margin-bottom:10px"></div>'
         +(spotHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:6px;text-transform:uppercase">✦ 特色景点</div><div>'+spotHtml+'</div></div>' : '')
         +(foodHtml ? '<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:5px;text-transform:uppercase">特色美食</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+foodHtml+'</div></div>' : '')
-        +'<div style="background:rgba(0,0,0,0.03);border-radius:8px;padding:8px 10px;font-size:12px;color:#555;line-height:1.5;margin-bottom:12px">'
+        +'<div style="background:rgba(37,99,235,0.04);border-radius:8px;padding:8px 10px;font-size:12px;color:#555;line-height:1.5;margin-bottom:10px">'
           +'<span style="color:'+ACCENT[i]+';font-weight:700">✦</span> '+benefit
         +'</div>'
-        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+        +'<div style="flex:1;margin-bottom:10px;">'
+          +'<div style="font-size:10px;color:#999;font-weight:600;letter-spacing:0.5px;margin-bottom:4px;text-transform:uppercase">📅 行程预览</div>'
+          +dayHtml
+        +'</div>'
+        +'<div style="border-top:1px solid rgba(0,0,0,0.06);padding:10px 0;display:flex;align-items:center;justify-content:space-between;">'
           +'<div style="display:flex;align-items:center;gap:6px">'
             +'<span style="font-size:10px;color:#999">💰 预算</span>'
             +'<span style="font-size:14px;font-weight:800;color:'+ACCENT[i]+'">'+p.combo.budget+'</span>'
           +'</div>'
-          +'<span style="font-size:11px;color:#bbb">'+days+'天</span>'
+          +'<span style="font-size:11px;background:rgba(37,99,235,0.08);color:#2563EB;padding:2px 8px;border-radius:10px;font-weight:600">'+days+'天行程</span>'
         +'</div>'
-        
       +'</div>';
 
     card.onclick = (function(idx){ return function(){ haSelectCard(idx); }; })(i);
