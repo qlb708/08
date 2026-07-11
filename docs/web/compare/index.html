@@ -2658,7 +2658,7 @@ function runHeichaGenerate() {
     haPlans = haCalcPlans();
     // Show persona card for p1 (top persona)
     var p1Key = haPlans.length ? haPlans[0].p1 : 'soldier';
-    haShowPersonaCard(p1Key, function(){ haShowCardDeck(); });
+    haShowPersonaCard(p1Key, function(){ haSelectedPlanIdx=0; haShowPlanDetail(0); });
   }, 1800);
 }
 
