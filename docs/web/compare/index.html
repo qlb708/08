@@ -666,7 +666,7 @@ body{
       </div>
 
       <!-- 3×3 卡片网格（aspect-ratio:1 实现1:1）-->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;min-height:0;align-content:start" id="sliders-wrap"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:7px;flex:1;min-height:0" id="sliders-wrap"></div>
 
       <!-- 底部按钮 -->
       <button onclick="goArchive()" style="width:100%;padding:10px;font-size:14px;font-weight:700;border:none;border-radius:50px;background:linear-gradient(135deg,#4096FF,#1D4ED8);color:#fff;cursor:pointer;letter-spacing:0.5px;box-shadow:0 4px 16px rgba(29,78,216,0.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;transition:all 0.2s;flex-shrink:0;margin-top:6px" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(29,78,216,0.40)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(29,78,216,0.30)'">
@@ -1526,7 +1526,7 @@ function initSliders(){
     // ── 外层 3D 翻转容器 ──
     var outer=document.createElement('div');
     outer.id='flip-outer-'+sl.id;
-    outer.style.cssText='perspective:900px;position:relative;min-width:0;aspect-ratio:1;';
+    outer.style.cssText='perspective:900px;position:relative;min-width:0;height:100%;';
 
     var inner=document.createElement('div');
     inner.id='flip-inner-'+sl.id;
