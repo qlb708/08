@@ -750,23 +750,10 @@ body{
       </div>
     </div>
     <!-- Phase 2: Reveal -->
-    <div id="ha-phaseReveal" style="display:none">
-      <div class="reveal-stage">
-        <div class="reveal-emoji-row">
-          <span class="reveal-emoji" id="ha-revealE1">🪖</span>
-          <span class="reveal-plus">+</span>
-          <span class="reveal-emoji" id="ha-revealE2">🍜</span>
-        </div>
-        <div class="reveal-result-emoji" id="ha-revealResultEmoji">✨</div>
-        <div class="reveal-name" id="ha-revealName"></div>
-        <div class="reveal-desc" id="ha-revealDesc"></div>
-        <button class="reveal-continue-btn" id="ha-revealContinueBtn" onclick="haShowCardDeck()">翻开我的旅行方案 →</button>
-      </div>
-    </div>
-    <!-- Phase 3: Cards + Itinerary -->
     <div id="ha-phaseCards" style="display:none">
-      <div style="text-align:center;margin-bottom:16px">
-        <h2 style="margin-bottom:6px">✨ 为你定制的旅行方案</h2>
+      <div style="text-align:center;margin-bottom:12px">
+        <div id="ha-persona-badge" style="display:none;align-items:center;justify-content:center;gap:6px;margin-bottom:8px;background:#f5f0e8;border-radius:20px;padding:6px 14px;display:inline-flex"></div>
+        <h2 style="margin-bottom:4px">✨ 为你定制的旅行方案</h2>
         <div style="font-size:0.85em;color:#5a6b54" id="ha-deckSubtitle"></div>
       </div>
       <div class="collage-stage">
@@ -2577,6 +2564,18 @@ function haShowCardDeck() {
   haShowPhase('phaseCards');
   var city = heichaState.city, days = heichaState.days;
   document.getElementById('ha-deckSubtitle').textContent = city + ' · ' + days + '天 · 3套专属定制方案已准备好';
+  // 在方案卡片上方展示人格身份（已计算）
+  var personaBadge = document.getElementById('ha-persona-badge');
+  if(personaBadge && haPlans.length) {
+    var best = haPlans[0];
+    var P = HEICHA_PERSONAS;
+    personaBadge.style.display = 'flex';
+    personaBadge.innerHTML =
+      '<span style="font-size:22px">' + P[best.p1].emoji + '</span>' +
+      '<span style="font-size:13px;color:#666">+</span>' +
+      '<span style="font-size:22px">' + P[best.p2].emoji + '</span>' +
+      '<span style="font-size:13px;font-weight:700;color:#2C4A1E;margin-left:4px">'+P[best.p1].name+'×'+P[best.p2].name+'</span>';
+  }
   haBuildCollageCards();
 }
 
