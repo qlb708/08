@@ -3605,7 +3605,7 @@ function toggleSpotDetail(rowId, spotName, e){
 </script>
 
   <!-- s-planDetail -->
-  <div id="s-planDetail" class="screen" style="background:#EFF6FF;overflow:hidden;display:flex;flex-direction:column;">
+  <div id="s-planDetail" class="screen" style="background:#EFF6FF;overflow:hidden;">
     <div class="step-bar-wrap" id="planDetailStepBar" style="background:rgba(255,255,255,0.96);padding:8px 60px;border-bottom:1px solid rgba(37,99,235,0.10);">
       <button onclick="showScreen('s-archive')" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);font-size:12px;background:rgba(255,255,255,0.9);border:1px solid rgba(37,99,235,0.25);border-radius:8px;padding:5px 14px;color:#2563EB;cursor:pointer;font-weight:600;white-space:nowrap">← 返回</button>
       <div class="step-bar" style="max-width:600px;">
@@ -3627,7 +3627,7 @@ function toggleSpotDetail(rowId, spotName, e){
       </div>
       <span style="position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:800;color:#1E3A8A;letter-spacing:0.5px" id="planDetailTitle">方案详情</span>
     </div>
-    <div style="display:flex;flex:1;overflow:hidden;min-height:0">
+    <div style="display:flex;height:calc(100vh - 52px);overflow:hidden">
       <!-- 左栏：地图 (45%) -->
       <div style="width:45%;position:relative;flex-shrink:0;border-right:3px solid #1E3A8A">
         <div id="planDetailMap" style="width:100%;height:100%;min-height:400px"></div>
