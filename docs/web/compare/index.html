@@ -2632,8 +2632,7 @@ function runHeichaGenerate() {
   
   // 直接计算人格，弹出像素卡片
   haPlans = haCalcPlans();
-  var p1Key = haPlans.length ? haPlans[0].p1 : 'soldier';
-  haShowPersonaCard(p1Key, function(){ haShowCardDeck(); });
+  haShowCardDeck();
 }
 
 function haCalcPlans() {
