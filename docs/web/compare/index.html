@@ -197,13 +197,13 @@ body{
 
 /* ===== 黑茶手账复刻 CSS ===== */
 
-:root{--bg:#e8f0fe;--card:#FEFCF7;--green:#3A6B35;--green-mid:#5A8F54;--dash:#B8A880;--text:#2D3A2A;--font-title:"Arial Black",Impact,sans-serif;--font-mono:"Courier New","SF Mono",monospace;}
+:root{--bg:#DBEAFE;--card:#F0F7FF;--green:#1D5BC8;--green-mid:#4A90D9;--dash:#93C5FD;--text:#1E3A6E;--font-title:"Arial Black",Impact,sans-serif;--font-mono:"Courier New","SF Mono",monospace;}
 @keyframes fadeIn{to{opacity:1}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
 .back-btn{background:none;border:1px dashed var(--dash);color:var(--green);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:var(--font-mono);font-size:0.85em;margin-bottom:20px;}
 .back-btn:hover{background:var(--green);color:#fff;}
 /* ===== 手帐全局升级 ===== */
-#step1,#step2,#step3{background:#FEFCF7;border-radius:14px;padding:32px 36px;box-shadow:0 3px 0 #bfdbfe,0 6px 28px rgba(37,99,235,0.10);border:1px solid rgba(180,160,120,0.22);position:relative;}
+#step1,#step2,#step3{background:#FEFCF7;border-radius:14px;padding:32px 36px;box-shadow:0 3px 0 #93C5FD,0 6px 28px rgba(37,99,235,0.15);border:1px solid rgba(180,160,120,0.22);position:relative;}
 /* 装订孔 */
 #step1::before,#step2::before,#step3::before{content:'';position:absolute;left:-14px;top:50%;transform:translateY(-50%);width:10px;height:72px;background:repeating-linear-gradient(to bottom,#bfdbfe 0,#bfdbfe 10px,transparent 10px,transparent 24px);border-radius:5px;}
 /* Step1 邮戳 */
@@ -223,9 +223,9 @@ body{
 .plan-col-meta{font-size:0.72em;opacity:0.85;font-family:var(--font-mono);}
 .plan-map-container{height:240px;}
 .share-bar{display:flex;justify-content:center;gap:16px;margin-top:28px;padding:0 0 8px;}
-.btn-share{display:flex;align-items:center;gap:8px;background:var(--green);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-family:var(--font-title);font-size:0.88em;letter-spacing:1px;cursor:pointer;box-shadow:0 3px 0 #1e40af,0 4px 14px rgba(37,99,235,0.25);transition:all 0.15s;}
+.btn-share{display:flex;align-items:center;gap:8px;background:var(--green);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-family:var(--font-title);font-size:0.88em;letter-spacing:1px;cursor:pointer;box-shadow:0 3px 0 #1e40af,0 4px 14px rgba(37,99,235,0.30);transition:all 0.15s;}
 .btn-share:hover{background:#1d4ed8;transform:translateY(-2px);}
-.btn-share-alt{background:#FEFCF7;color:var(--green);border:1.5px solid var(--green);}
+.btn-share-alt{background:#F0F7FF;color:var(--green);border:1.5px solid var(--green);}
 .btn-share-alt:hover{background:#EEF7EC;}
 .archive-header{background:var(--green);color:#fff;border-radius:12px 12px 0 0;padding:18px 24px 14px;display:flex;flex-direction:column;gap:4px;}
 .archive-title{font-family:var(--font-title);font-size:1em;letter-spacing:3px;}
@@ -238,13 +238,13 @@ body{
 .plan-col-body .spot-time{font-size:0.68em;min-width:36px;}
 .plan-col-body .spot-name{font-size:0.8em;}
 .plan-col-body .spot-tip{font-size:0.68em;}
-@media(max-width:900px){.three-plans-wrap{flex-direction:column;}.plan-col{width:100%;}}
+@media(max-width:900px){.three-plans-wrap{flex-direction:column;}.plan-col{width:100%;}} @media(max-width:768px){.envelope-origin{grid-template-columns:1fr;} .collage-card{width:100%;}}
 .itin-left{flex:0 0 45%;max-width:45%;}
 .itin-right{flex:1;position:sticky;top:20px;max-height:85vh;overflow-y:auto;}
 @media(max-width:768px){.itinerary-split-layout{flex-direction:column;}.itin-left{max-width:100%;}.itin-right{position:static;max-height:none;}}
 /* 行程卡手帐升级 */
 .day-card{background:#FEFCF7;border:none;border-radius:8px;padding:16px 16px 12px;margin-bottom:14px;position:relative;box-shadow:1px 2px 8px rgba(37,99,235,0.08),0 0 0 1px rgba(180,160,120,0.2);}
-.day-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:8px 0 0 8px;background:var(--green);opacity:0.65;}
+.day-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:8px 0 0 8px;background:#2563EB;opacity:0.75;}
 .day-header{font-family:var(--font-title);font-size:0.85em;color:var(--green);text-align:left;letter-spacing:3px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px dashed var(--dash);display:flex;align-items:center;gap:8px;}
 .itinerary-header{font-family:var(--font-title);font-size:0.9em;color:var(--green);letter-spacing:3px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px dashed var(--dash);text-align:left;display:flex;align-items:center;gap:10px;}
 .itinerary-header::before{content:'✦';font-size:0.8em;}
@@ -340,13 +340,13 @@ body{
 .collage-stage{width:100%;padding:0;}
 .collage-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.78em;color:#8a7a60;margin-bottom:16px;letter-spacing:0.5px;}
 .collage-hint-dot{width:5px;height:5px;border-radius:50%;background:#B8A880;display:inline-block;}
-.envelope-origin{display:flex;flex-direction:column;gap:14px;width:100%;padding:0;}
-.collage-card{position:relative;width:100%;background:#fff;border:none;border-radius:16px;padding:0;font-family:var(--font-mono);cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.08);user-select:none;transition:transform 0.18s,box-shadow 0.18s;opacity:0;overflow:hidden;}
-.collage-card:nth-child(1){background:#FFFDF5;}
-.collage-card:nth-child(2){background:#F6FBF4;}
-.collage-card:nth-child(3){background:#F5F8FF;}
+.envelope-origin{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;padding:0;align-items:stretch;}
+.collage-card{position:relative;width:100%;background:#fff;border:none;border-radius:16px;padding:0;font-family:var(--font-mono);cursor:pointer;box-shadow:0 2px 12px rgba(64,150,255,0.12);user-select:none;transition:transform 0.18s,box-shadow 0.18s;opacity:0;overflow:hidden;}
+.collage-card:nth-child(1){background:#EFF6FF;}
+.collage-card:nth-child(2){background:#EFF6FF;}
+.collage-card:nth-child(3){background:#EFF6FF;}
 .collage-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.13);}
-.collage-card.selected-card{box-shadow:0 0 0 2.5px #3A6B35,0 6px 24px rgba(58,107,53,0.18);}
+.collage-card.selected-card{box-shadow:0 0 0 2.5px #2563EB,0 6px 24px rgba(37,99,235,0.25);}
 .collage-card.card-fly-1{animation:fadeSlideIn 0.45s ease 0.05s forwards;}
 .collage-card.card-fly-2{animation:fadeSlideIn 0.45s ease 0.18s forwards;}
 .collage-card.card-fly-3{animation:fadeSlideIn 0.45s ease 0.31s forwards;}
@@ -390,7 +390,7 @@ body{
 .spot-time{color:#777;font-size:0.82em;white-space:nowrap;padding-top:2px;min-width:44px;}
 .spot-info{flex:1;}
 .spot-name{font-size:0.92em;margin-bottom:4px;}
-.spot-tip{font-size:0.78em;color:var(--green-mid);line-height:1.5;background:rgba(90,143,84,0.08);border-radius:4px;padding:3px 8px;border-left:2px solid var(--dash);}
+.spot-tip{font-size:0.78em;color:var(--green-mid);line-height:1.5;background:rgba(37,99,235,0.06);border-radius:4px;padding:3px 8px;border-left:2px solid var(--dash);}
 /* AI */
 .ai-fab{position:fixed;bottom:28px;right:28px;width:52px;height:52px;background:var(--green);color:#fff;border-radius:50%;align-items:center;justify-content:center;font-size:1.4em;cursor:pointer;box-shadow:0 4px 18px rgba(37,99,235,0.4);z-index:9999;transition:transform 0.2s;user-select:none;display:none;}
 .ai-fab:hover{transform:scale(1.1);}
@@ -409,12 +409,12 @@ body{
 .ai-send{width:30px;height:30px;background:var(--green);color:#fff;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 @media(max-width:640px){.sliders-grid{grid-template-columns:1fr;}.radar-section{flex-direction:column;}.collage-card{width:170px;}
 
-.collage-card.landed-1{transform:translateX(-175px) translateY(0) rotate(-4deg);}
-.collage-card.landed-3{transform:translateX(175px) translateY(10px) rotate(3.5deg);}
-.collage-card.landed-1:hover{transform:translateX(-175px) translateY(-6px) rotate(-2deg) scale(1.03);}
-.collage-card.landed-3:hover{transform:translateX(175px) translateY(4px) rotate(2deg) scale(1.03);}
-.collage-card.landed-1.selected-card{transform:translateX(-175px) translateY(-3px) rotate(-3deg) scale(1.04);}
-.collage-card.landed-3.selected-card{transform:translateX(175px) translateY(7px) rotate(2.5deg) scale(1.04);}
+.collage-card.landed-1{transform:none;}
+.collage-card.landed-3{transform:none;}
+.collage-card.landed-1:hover{transform:translateY(-2px) scale(1.03);}
+.collage-card.landed-3:hover{transform:translateY(-2px) scale(1.03);}
+.collage-card.landed-1.selected-card{transform:scale(1.02);}
+.collage-card.landed-3.selected-card{transform:scale(1.02);}
 }
 .leaflet-map-wrap{border-radius:12px;overflow:hidden;border:2px dashed var(--dash);}
 .leaflet-map-wrap .route-map-title{font-family:var(--font-title);font-size:0.82em;color:var(--green);letter-spacing:3px;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px dashed var(--dash);}
@@ -698,7 +698,7 @@ body{
      SCREEN · 选城市 + 天数
      ======================================================== -->
 <div id="s-city" class="screen" style="background:#e8f0fe;align-items:center;justify-content:center">
-  <div style="width:100%;max-width:640px;background:#f0f7ff;border-radius:16px;padding:36px 40px;box-shadow:0 3px 0 #bfdbfe,0 6px 28px rgba(37,99,235,0.10);border:1px solid rgba(180,160,120,0.22);position:relative">
+  <div style="width:100%;max-width:640px;background:#f0f7ff;border-radius:16px;padding:36px 40px;box-shadow:0 3px 0 #93C5FD,0 6px 28px rgba(37,99,235,0.15);border:1px solid rgba(180,160,120,0.22);position:relative">
     <!-- 邮戳 -->
     <div style="position:absolute;top:24px;right:24px;width:68px;height:68px;border:3px solid rgba(37,99,235,0.28);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:rgba(37,99,235,0.38);letter-spacing:1px;transform:rotate(14deg);line-height:1.6;text-align:center;font-family:monospace;pointer-events:none">TRAVEL<br/>PLAN<br/>2026</div>
     <!-- 标题 -->
@@ -735,7 +735,7 @@ body{
 <!-- ========================================================
      SCREEN · 行程规划结果（archive iframe）
      ======================================================== -->
-<div id="s-archive" class="screen" style="background:#F5F0E8;overflow-y:auto">
+<div id="s-archive" class="screen" style="background:linear-gradient(180deg,#DBEAFE 0%,#EFF6FF 100%);overflow-y:auto">
   <div class="container">
     <button class="back-btn" onclick="showScreen(&#39;s-flip&#39;)">← 返回</button>
     <!-- Phase 1: Loading -->
@@ -2447,7 +2447,7 @@ function heichaBuildItinHtml(p,spots,days){
       html+='<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px dashed #B8A880;">'
         +'<span style="color:#777;font-size:0.82em;white-space:nowrap;padding-top:2px;min-width:44px;">'+item.spot.t+'</span>'
         +'<div style="flex:1"><div style="font-size:0.92em;margin-bottom:4px;">'+item.spot.n+'</div>'
-        +'<div style="font-size:0.78em;color:#5A8F54;line-height:1.5;background:rgba(90,143,84,0.08);border-radius:4px;padding:3px 8px;border-left:2px solid #B8A880;">'+tip+'</div></div></div>';
+        +'<div style="font-size:0.78em;color:#2563EB;line-height:1.5;background:rgba(37,99,235,0.06);border-radius:4px;padding:3px 8px;border-left:2px solid #93C5FD;">'+tip+'</div></div></div>';
     });
     html+='</div>';
   }
@@ -3377,31 +3377,31 @@ function toggleSpotDetail(rowId, spotName, e){
 </script>
 
   <!-- s-planDetail -->
-  <div id="s-planDetail" class="screen" style="background:#F0EBE1;overflow:hidden">
-    <nav style="display:flex;align-items:center;padding:0 20px;height:52px;background:#2C2416;flex-shrink:0;gap:16px">
-      <button onclick="showScreen('s-archive')" style="font-size:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:5px 12px;color:#D4C4A0;cursor:pointer">← 返回</button>
-      <span style="font-size:14px;font-weight:800;color:#F0D880;letter-spacing:1px" id="planDetailTitle">方案详情</span>
+  <div id="s-planDetail" class="screen" style="background:#EFF6FF;overflow:hidden">
+    <nav style="display:flex;align-items:center;padding:0 20px;height:52px;background:#1E3A8A;flex-shrink:0;gap:16px">
+      <button onclick="showScreen('s-archive')" style="font-size:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:5px 12px;color:#BFD9FF;cursor:pointer">← 返回</button>
+      <span style="font-size:14px;font-weight:800;color:#93C5FD;letter-spacing:1px" id="planDetailTitle">方案详情</span>
       <div id="planDetailBadges" style="margin-left:auto;display:flex;gap:6px"></div>
     </nav>
     <div style="display:flex;height:calc(100vh - 52px);overflow:hidden">
       <!-- 左栏：地图 (45%) -->
-      <div style="width:45%;position:relative;flex-shrink:0;border-right:3px solid #2C2416">
+      <div style="width:45%;position:relative;flex-shrink:0;border-right:3px solid #1E3A8A">
         <div id="planDetailMap" style="width:100%;height:100%;min-height:400px"></div>
       </div>
       <!-- 右栏：甘特图 + 推荐 (55%) -->
-      <div style="width:55%;overflow-y:auto;background:#FAF7F0">
+      <div style="width:55%;overflow-y:auto;background:#F0F7FF">
         <div style="padding:20px 20px 0">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-            <div style="width:4px;height:20px;background:#2C2416;border-radius:2px"></div>
-            <span style="font-size:14px;font-weight:800;color:#2C2416">行程甘特图</span>
+            <div style="width:4px;height:20px;background:#1D5BC8;border-radius:2px"></div>
+            <span style="font-size:14px;font-weight:800;color:#1E3A8A">行程甘特图</span>
           </div>
           <div id="planDetailGantt"></div>
         </div>
-        <div style="margin:20px;border-top:2px dashed #C8B898"></div>
+        <div style="margin:20px;border-top:2px dashed #93C5FD"></div>
         <div style="padding:0 20px 20px">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-            <div style="width:4px;height:20px;background:#2C2416;border-radius:2px"></div>
-            <span style="font-size:14px;font-weight:800;color:#2C2416">推荐住宿 &amp; 美食</span>
+            <div style="width:4px;height:20px;background:#1D5BC8;border-radius:2px"></div>
+            <span style="font-size:14px;font-weight:800;color:#1E3A8A">推荐住宿 &amp; 美食</span>
           </div>
           <div id="planDetailRecommend"></div>
         </div>
