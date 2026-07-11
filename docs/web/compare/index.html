@@ -2476,6 +2476,152 @@ function haTypewriter(el, text, speed, cb) {
   tick();
 }
 
+
+var PERSONA_SVGS = {
+  soldier: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#4A7C59"/><rect x="12" y="2" width="8" height="2" fill="#3D5A3E"/><rect x="11" y="4" width="10" height="2" fill="#6B8C5A"/><rect x="11" y="6" width="10" height="8" fill="#F5C99B"/><rect x="10" y="7" width="2" height="4" fill="#F5C99B"/><rect x="20" y="7" width="2" height="4" fill="#F5C99B"/><rect x="12" y="8" width="2" height="2" fill="#3A2A1A"/><rect x="18" y="8" width="2" height="2" fill="#3A2A1A"/><rect x="13" y="11" width="6" height="2" fill="#E8956D"/><rect x="10" y="14" width="12" height="10" fill="#4A6741"/><rect x="8" y="14" width="4" height="8" fill="#3D5A3E"/><rect x="20" y="14" width="4" height="8" fill="#3D5A3E"/><rect x="10" y="24" width="4" height="6" fill="#3A2A1A"/><rect x="18" y="24" width="4" height="6" fill="#3A2A1A"/><rect x="14" y="4" width="4" height="2" fill="#8B7355"/></svg>',
+  foodie: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#FF8C42"/><rect x="12" y="4" width="8" height="8" fill="#F5C99B"/><rect x="10" y="5" width="2" height="4" fill="#F5C99B"/><rect x="20" y="5" width="2" height="4" fill="#F5C99B"/><rect x="12" y="6" width="2" height="2" fill="#3A2A1A"/><rect x="18" y="6" width="2" height="2" fill="#3A2A1A"/><rect x="13" y="9" width="6" height="2" fill="#E8956D"/><rect x="10" y="12" width="12" height="10" fill="#FF5733"/><rect x="8" y="12" width="4" height="8" fill="#CC4426"/><rect x="20" y="12" width="4" height="8" fill="#CC4426"/><rect x="14" y="16" width="4" height="3" fill="#FFD700"/><rect x="10" y="22" width="4" height="6" fill="#4A3728"/><rect x="18" y="22" width="4" height="6" fill="#4A3728"/><rect x="8" y="8" width="6" height="4" fill="#8B4513"/><rect x="6" y="10" width="4" height="6" fill="#CC6600"/></svg>',
+  photo: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#2C3E50"/><rect x="12" y="3" width="8" height="8" fill="#F5C99B"/><rect x="10" y="4" width="2" height="4" fill="#F5C99B"/><rect x="20" y="4" width="2" height="4" fill="#F5C99B"/><rect x="12" y="5" width="2" height="2" fill="#3A2A1A"/><rect x="18" y="5" width="2" height="2" fill="#3A2A1A"/><rect x="13" y="8" width="6" height="2" fill="#E8956D"/><rect x="10" y="11" width="12" height="10" fill="#34495E"/><rect x="8" y="11" width="4" height="8" fill="#2C3E50"/><rect x="20" y="11" width="4" height="8" fill="#2C3E50"/><rect x="20" y="8" width="8" height="6" fill="#555"/><rect x="22" y="9" width="4" height="4" fill="#333"/><rect x="23" y="10" width="2" height="2" fill="#7FB3D3"/><rect x="10" y="21" width="4" height="7" fill="#2C3E50"/><rect x="18" y="21" width="4" height="7" fill="#2C3E50"/></svg>',
+  family: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#E91E8C"/><rect x="4" y="6" width="6" height="6" fill="#F5C99B"/><rect x="4" y="8" width="1" height="3" fill="#F5C99B"/><rect x="10" y="8" width="1" height="3" fill="#F5C99B"/><rect x="5" y="9" width="2" height="1" fill="#3A2A1A"/><rect x="8" y="9" width="2" height="1" fill="#3A2A1A"/><rect x="4" y="12" width="8" height="8" fill="#3498DB"/><rect x="3" y="12" width="2" height="6" fill="#2980B9"/><rect x="9" y="12" width="2" height="6" fill="#2980B9"/><rect x="4" y="20" width="3" height="5" fill="#2C3E50"/><rect x="8" y="20" width="3" height="5" fill="#2C3E50"/><rect x="18" y="4" width="6" height="6" fill="#F5C99B"/><rect x="17" y="6" width="1" height="3" fill="#F5C99B"/><rect x="24" y="6" width="1" height="3" fill="#F5C99B"/><rect x="19" y="7" width="2" height="1" fill="#3A2A1A"/><rect x="22" y="7" width="2" height="1" fill="#3A2A1A"/><rect x="19" y="5" width="4" height="2" fill="#E74C3C"/><rect x="18" y="10" width="8" height="8" fill="#E74C3C"/><rect x="17" y="10" width="2" height="6" fill="#C0392B"/><rect x="24" y="10" width="2" height="6" fill="#C0392B"/><rect x="18" y="18" width="3" height="5" fill="#2C3E50"/><rect x="22" y="18" width="3" height="5" fill="#2C3E50"/><rect x="13" y="18" width="4" height="4" fill="#F5C99B"/><rect x="13" y="20" width="1" height="2" fill="#F5C99B"/><rect x="17" y="20" width="1" height="2" fill="#F5C99B"/><rect x="14" y="20" width="2" height="1" fill="#3A2A1A"/><rect x="13" y="22" width="4" height="4" fill="#2ECC71"/></svg>',
+  local: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#795548"/><rect x="12" y="3" width="8" height="8" fill="#F5C99B"/><rect x="10" y="4" width="2" height="4" fill="#F5C99B"/><rect x="20" y="4" width="2" height="4" fill="#F5C99B"/><rect x="12" y="5" width="2" height="2" fill="#3A2A1A"/><rect x="18" y="5" width="2" height="2" fill="#3A2A1A"/><rect x="13" y="8" width="6" height="2" fill="#E8956D"/><rect x="11" y="2" width="10" height="3" fill="#5D4037"/><rect x="10" y="11" width="12" height="10" fill="#8D6E63"/><rect x="8" y="11" width="4" height="8" fill="#795548"/><rect x="20" y="11" width="4" height="8" fill="#795548"/><rect x="14" y="13" width="4" height="5" fill="#BCAAA4"/><rect x="10" y="21" width="4" height="7" fill="#5D4037"/><rect x="18" y="21" width="4" height="7" fill="#5D4037"/><rect x="20" y="15" width="6" height="4" fill="#FF8F00"/><rect x="22" y="16" width="2" height="2" fill="#FFD54F"/></svg>',
+  nature: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#33691E"/><rect x="12" y="4" width="8" height="8" fill="#F5C99B"/><rect x="10" y="5" width="2" height="4" fill="#F5C99B"/><rect x="20" y="5" width="2" height="4" fill="#F5C99B"/><rect x="12" y="6" width="2" height="2" fill="#3A2A1A"/><rect x="18" y="6" width="2" height="2" fill="#3A2A1A"/><rect x="13" y="9" width="6" height="2" fill="#E8956D"/><rect x="11" y="3" width="10" height="3" fill="#558B2F"/><rect x="10" y="12" width="12" height="10" fill="#558B2F"/><rect x="8" y="12" width="4" height="8" fill="#33691E"/><rect x="20" y="12" width="4" height="8" fill="#33691E"/><rect x="10" y="22" width="4" height="6" fill="#4E342E"/><rect x="18" y="22" width="4" height="6" fill="#4E342E"/><rect x="24" y="8" width="4" height="8" fill="#2E7D32"/><rect x="22" y="6" width="8" height="6" fill="#388E3C"/><rect x="24" y="4" width="4" height="4" fill="#43A047"/></svg>',
+  relax: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#9C27B0"/><rect x="12" y="5" width="8" height="8" fill="#F5C99B"/><rect x="10" y="6" width="2" height="4" fill="#F5C99B"/><rect x="20" y="6" width="2" height="4" fill="#F5C99B"/><rect x="12" y="7" width="2" height="2" fill="#3A2A1A"/><rect x="18" y="7" width="2" height="2" fill="#3A2A1A"/><rect x="14" y="10" width="4" height="2" fill="#E8956D"/><rect x="10" y="13" width="12" height="8" fill="#CE93D8"/><rect x="8" y="13" width="4" height="6" fill="#BA68C8"/><rect x="20" y="13" width="4" height="6" fill="#BA68C8"/><rect x="10" y="21" width="12" height="4" fill="#9575CD"/><rect x="10" y="25" width="4" height="5" fill="#5E35B1"/><rect x="18" y="25" width="4" height="5" fill="#5E35B1"/><rect x="13" y="3" width="6" height="3" fill="#F48FB1"/><rect x="4" y="16" width="5" height="3" fill="#FFD54F"/></svg>',
+  night: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#1A237E"/><rect x="12" y="4" width="8" height="8" fill="#F5C99B"/><rect x="10" y="5" width="2" height="4" fill="#F5C99B"/><rect x="20" y="5" width="2" height="4" fill="#F5C99B"/><rect x="12" y="6" width="2" height="2" fill="#3A2A1A"/><rect x="18" y="6" width="2" height="2" fill="#3A2A1A"/><rect x="13" y="9" width="6" height="2" fill="#E8956D"/><rect x="10" y="12" width="12" height="10" fill="#283593"/><rect x="8" y="12" width="4" height="8" fill="#1A237E"/><rect x="20" y="12" width="4" height="8" fill="#1A237E"/><rect x="10" y="22" width="4" height="6" fill="#212121"/><rect x="18" y="22" width="4" height="6" fill="#212121"/><rect x="4" y="8" width="4" height="4" fill="#FDD835"/><rect x="2" y="6" width="6" height="6" fill="#FFEE58" fill-opacity="0.4"/><rect x="22" y="2" width="3" height="3" fill="#FDD835"/><rect x="26" y="5" width="2" height="2" fill="#FDD835"/></svg>',
+};
+var PERSONA_TRAITS = {
+  soldier: {STAMINA:95,SOCIAL:60,POPULAR:75,PHOTO:50,WILD:85},
+  foodie: {STAMINA:70,SOCIAL:80,POPULAR:70,PHOTO:65,WILD:40},
+  photo: {STAMINA:65,SOCIAL:45,POPULAR:80,PHOTO:95,WILD:55},
+  family: {STAMINA:55,SOCIAL:90,POPULAR:80,PHOTO:60,WILD:25},
+  local: {STAMINA:60,SOCIAL:70,POPULAR:30,PHOTO:50,WILD:65},
+  nature: {STAMINA:80,SOCIAL:35,POPULAR:25,PHOTO:70,WILD:95},
+  relax: {STAMINA:30,SOCIAL:55,POPULAR:50,PHOTO:45,WILD:30},
+  night: {STAMINA:75,SOCIAL:85,POPULAR:65,PHOTO:55,WILD:70},
+};
+var PERSONA_RARITY = {
+  soldier: 'RARE · 8%',
+  foodie: 'COMMON · 18%',
+  photo: 'UNCOMMON · 12%',
+  family: 'COMMON · 15%',
+  local: 'UNCOMMON · 13%',
+  nature: 'RARE · 10%',
+  relax: 'EPIC · 5%',
+  night: 'UNCOMMON · 11%',
+};
+var PERSONA_TAGS = {
+  soldier: ['极速打卡', '体力全开', '景点刷满'],
+  foodie: ['美食优先', '人均预算高', '餐厅控'],
+  photo: ['出片至上', '光线敏感', '构图强迫症'],
+  family: ['亲子游', '安全第一', '热闹优先', '全家出动'],
+  local: ['避开人群', '街巷探索', '反向旅游'],
+  nature: ['山野户外', '清晨出发', '自然治愈'],
+  relax: ['佛系旅行', '随遇而安', '慢慢来'],
+  night: ['夜生活', '宵夜必吃', '晚睡晚起'],
+};
+var PERSONA_COLORS = {
+  soldier: '#4A7C59',
+  foodie: '#FF6B35',
+  photo: '#2C3E50',
+  family: '#E91E8C',
+  local: '#795548',
+  nature: '#33691E',
+  relax: '#7B1FA2',
+  night: '#1A237E',
+};
+var PERSONA_BAR_COLORS = {
+  STAMINA: '#E74C3C',
+  SOCIAL: '#9B59B6',
+  POPULAR: '#F39C12',
+  PHOTO: '#3498DB',
+  WILD: '#27AE60',
+};
+
+function haShowPersonaCard(personaKey, onConfirm) {
+  var P = HEICHA_PERSONAS[personaKey];
+  var svg = PERSONA_SVGS[personaKey] || '';
+  var traits = PERSONA_TRAITS[personaKey] || {};
+  var rarity = PERSONA_RARITY[personaKey] || 'COMMON';
+  var tags = PERSONA_TAGS[personaKey] || [];
+  var color = PERSONA_COLORS[personaKey] || '#4A7C59';
+  var today = new Date();
+  var dateStr = today.getFullYear()+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getDate()).padStart(2,'0');
+  var noNum = Math.floor(Math.random()*9000)+1000;
+
+  // Trait bars
+  var barsHtml = Object.keys(traits).map(function(k){
+    var val = traits[k];
+    var bc = PERSONA_BAR_COLORS[k] || '#888';
+    return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'
+      +'<div style="width:56px;font-size:9px;letter-spacing:1px;color:#888;font-family:monospace">'+k+'</div>'
+      +'<div style="flex:1;height:7px;background:#eee;border-radius:2px;overflow:hidden">'
+      +'<div style="width:'+val+'%;height:100%;background:'+bc+';border-radius:2px"></div></div>'
+      +'<div style="width:24px;text-align:right;font-size:9px;color:#555;font-family:monospace">'+val+'</div>'
+      +'</div>';
+  }).join('');
+
+  var tagsHtml = tags.map(function(t){
+    return '<span style="font-size:9px;color:#666;border:1px solid #ccc;border-radius:3px;padding:1px 5px">'+t+'</span>';
+  }).join('');
+
+  // Barcode SVG
+  var bcHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="28" viewBox="0 0 120 28">';
+  var x=0;
+  var pat=[2,1,3,1,2,2,1,3,2,1,1,2,3,1,2,1,3,2,1,1,2,1,2,3,1,2,1,1,3,2];
+  var fill=true;
+  for(var i=0;i<pat.length;i++){bcHtml+='<rect x="'+x+'" y="0" width="'+pat[i]+'" height="28" fill="'+(fill?'#000':'#fff')+'"/>';x+=pat[i];fill=!fill;}
+  bcHtml+='</svg>';
+
+  var overlay = document.createElement('div');
+  overlay.id = 'persona-card-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(4px)';
+  overlay.innerHTML =
+    '<div style="width:300px;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);font-family:-apple-system,BlinkMacSystemFont,sans-serif">'
+    // Top colored header
+    +'<div style="background:'+color+';padding:14px 16px 10px;text-align:center">'
+    +'<div style="font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.7);font-family:monospace;margin-bottom:8px">TRAVEL PERSONA</div>'
+    // Pixel art frame
+    +'<div style="width:120px;height:120px;margin:0 auto;background:#fff;border-radius:6px;padding:6px;display:flex;align-items:center;justify-content:center;image-rendering:pixelated">'
+    +svg
+    +'</div>'
+    +'<div style="margin-top:10px;font-size:20px;font-weight:900;color:#fff;letter-spacing:1px">'+P.name+'</div>'
+    +'</div>'
+    // Ticket tear line
+    +'<div style="background:#fff;position:relative;height:14px;display:flex;align-items:center">'
+    +'<div style="position:absolute;left:-10px;width:20px;height:20px;background:#f0ece6;border-radius:50%"></div>'
+    +'<div style="flex:1;border-top:2px dashed #ddd;margin:0 14px"></div>'
+    +'<div style="position:absolute;right:-10px;width:20px;height:20px;background:#f0ece6;border-radius:50%"></div>'
+    +'</div>'
+    // Card body
+    +'<div style="background:#fff;padding:12px 16px">'
+    // Meta info
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:10px;font-size:9px;font-family:monospace">'
+    +'<div style="color:#aaa">TRAVELER</div><div style="text-align:right;color:#444">旅行人格持有者</div>'
+    +'<div style="color:#aaa">DATE</div><div style="text-align:right;color:#444">'+dateStr+'</div>'
+    +'<div style="color:#aaa">NO.</div><div style="text-align:right;color:#444">#'+noNum+'</div>'
+    +'</div>'
+    +'<div style="border-top:1px dashed #eee;margin-bottom:8px"></div>'
+    // Type & Rarity
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:10px;font-size:9px;font-family:monospace">'
+    +'<div style="color:#aaa">TYPE</div><div style="text-align:right;font-size:11px;font-weight:700;color:#333">'+P.name+'</div>'
+    +'<div style="color:#aaa">RARITY</div><div style="text-align:right;color:'+color+';font-weight:600">'+rarity+'</div>'
+    +'</div>'
+    +'<div style="border-top:1px dashed #eee;margin-bottom:8px"></div>'
+    // Traits
+    +'<div style="font-size:9px;letter-spacing:1px;color:#aaa;font-family:monospace;margin-bottom:6px">TRAVEL TRAITS</div>'
+    +barsHtml
+    +'<div style="border-top:1px dashed #eee;margin:8px 0 6px"></div>'
+    // Tags
+    +'<div style="font-size:9px;color:#aaa;font-family:monospace;margin-bottom:5px">TAG: </div>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">'+tagsHtml+'</div>'
+    // Barcode
+    +'<div style="text-align:center;margin-bottom:10px">'+bcHtml+'</div>'
+    // CTA Button
+    +'<button onclick="document.getElementById(\'persona-card-overlay\').remove();('+onConfirm+')()" '
+    +'style="width:100%;padding:11px;font-size:13px;font-weight:900;background:'+color+';color:#fff;border:none;border-radius:6px;cursor:pointer;letter-spacing:1px;font-family:monospace">&#9658; 开始规划行程</button>'
+    +'</div>'
+    +'</div>';
+  document.body.appendChild(overlay);
+}
+
 function runHeichaGenerate() {
   // 读取 quiz 滑块值
   var sv = heichaState.sliderVals;
@@ -2510,7 +2656,9 @@ function runHeichaGenerate() {
   setTimeout(function(){
     setDone('ha-ls3');
     haPlans = haCalcPlans();
-    haShowCardDeck();
+    // Show persona card for p1 (top persona)
+    var p1Key = haPlans.length ? haPlans[0].p1 : 'soldier';
+    haShowPersonaCard(p1Key, function(){ haShowCardDeck(); });
   }, 1800);
 }
 
