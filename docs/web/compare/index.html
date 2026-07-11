@@ -672,7 +672,7 @@ body{
       </div>
 
       <!-- 3×3 卡片网格（aspect-ratio:1 实现1:1）-->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:6px;flex:1;min-height:0" id="sliders-wrap"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,minmax(0,140px));gap:6px;flex:1;min-height:0;align-content:stretch" id="sliders-wrap"></div>
 
       <!-- 底部按钮 -->
       <button onclick="goArchive()" style="width:100%;padding:10px;font-size:14px;font-weight:700;border:none;border-radius:50px;background:linear-gradient(135deg,#4096FF,#1D4ED8);color:#fff;cursor:pointer;letter-spacing:0.5px;box-shadow:0 4px 16px rgba(29,78,216,0.30);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;transition:all 0.2s;flex-shrink:0;margin-top:6px" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(29,78,216,0.40)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(29,78,216,0.30)'">
@@ -1556,7 +1556,7 @@ function initSliders(){
       'border-radius:14px;',
       'border:1.5px solid '+sl.color+';',
       'box-shadow:0 2px 10px rgba(64,150,255,0.08);',
-      'padding:10px 12px 8px;',
+      'padding:8px 10px 6px;',
       'display:flex;flex-direction:column;gap:6px;',
       'overflow:hidden;',
     ].join('');
