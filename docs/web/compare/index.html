@@ -3423,11 +3423,25 @@ function renderPlanDetailMap() {
     L.marker(p.latlng, {icon:icon}).addTo(map)
       .bindPopup('<b>DAY'+p.day+'</b>  '+p.name, {maxWidth:120});
   });
+  // 先画整体路线（淡色，连接所有点）
+  if(allPoints.length>1) {
+    L.polyline(allPoints.map(function(p){return p.latlng;}), {
+      color:'#93C5FD', weight:2, dashArray:'4,6', opacity:0.4
+    }).addTo(map);
+  }
+  // 再按天画彩色路线（每天一种颜色）
   for(var d2=1;d2<=pd.days;d2++) {
     var dayPts=allPoints.filter(function(p){return p.day===d2;});
+    // 如果当天只有1个点，从前一天最后一个点引一条线过来
+    if(dayPts.length===1 && d2>1) {
+      var prevDayPts=allPoints.filter(function(p){return p.day===d2-1;});
+      if(prevDayPts.length>0) {
+        dayPts=[prevDayPts[prevDayPts.length-1]].concat(dayPts);
+      }
+    }
     if(dayPts.length>1) {
       L.polyline(dayPts.map(function(p){return p.latlng;}), {
-        color:dayColors[(d2-1)%dayColors.length], weight:3, dashArray:'6,4', opacity:0.8
+        color:dayColors[(d2-1)%dayColors.length], weight:3.5, dashArray:'7,4', opacity:0.85
       }).addTo(map);
     }
   }
