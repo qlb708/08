@@ -524,20 +524,22 @@ body{
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js">
 function goToStep(step) {
   if (step === 0) {
-    // 返回首页
+    // 返回首页（目的地）
     showScreen('s-home');
   } else if (step === 1) {
-    // 返回测试页
+    // 旅行人格测试
     showScreen('s-quiz');
   } else if (step === 2) {
-    // 当前页，不跳
+    // 选择方案
     showScreen('s-archive');
   } else if (step === 3) {
-    // 如果有选中方案则跳详情，否则提示
+    // 行程详情：如果有选中方案则跳，否则跳到方案选择
     var selected = document.querySelector('.collage-card.selected-card');
     if (selected) {
       var idx = parseInt(selected.getAttribute('data-idx') || 0);
       haShowPlanDetail(idx);
+    } else {
+      showScreen('s-archive');
     }
   }
 }
@@ -766,27 +768,38 @@ function updateStepBar(activeStep) {
 <div id="s-quiz" class="screen" style="background:#EBF1FF;position:relative;overflow:hidden;position:relative">
 
   <!-- 顶部导航 -->
-  <nav style="display:flex;align-items:center;padding:0 24px;height:52px;background:linear-gradient(90deg,#3b82f6,#60a5fa);box-shadow:0 2px 8px rgba(59,130,246,0.25);flex-shrink:0;gap:16px">
-    <span style="font-size:13px;font-weight:800;color:#ffffff">✈ AI旅行规划</span>
-    <div style="flex:1;display:flex;justify-content:center;gap:0;align-items:center;font-size:12px">
-      <span style="display:flex;align-items:center;gap:6px;color:#86efac;font-weight:700">
-        <span style="width:22px;height:22px;border-radius:50%;background:#22c55e;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px">✓</span>行程设置
-      </span>
-      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
-      <span style="display:flex;align-items:center;gap:6px;color:#3b82f6;font-weight:800">
-        <span style="width:22px;height:22px;border-radius:50%;background:#3b82f6;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900">2</span>旅行偏好
-      </span>
-      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
-      <span style="color:#b0a090;display:flex;align-items:center;gap:6px">
-        <span style="width:22px;height:22px;border-radius:50%;border:2px solid #c8b898;color:#b0a090;display:inline-flex;align-items:center;justify-content:center;font-size:11px">3</span>AI 规划
-      </span>
-      <span style="width:32px;height:2px;background:#c8b898;margin:0 4px"></span>
-      <span style="color:#b0a090;display:flex;align-items:center;gap:6px">
-        <span style="width:22px;height:22px;border-radius:50%;border:2px solid #c8b898;color:#b0a090;display:inline-flex;align-items:center;justify-content:center;font-size:11px">4</span>方案对比
-      </span>
+  <div class="step-bar-wrap" id="quizStepBar" style="background:transparent;padding-top:10px;">
+  <div class="step-bar">
+    <div class="step-item done" data-step="0" onclick="goToStep(0)">
+      <div class="step-dot-wrap">
+        <div class="step-dot">✓</div>
+        <div class="step-label">目的地</div>
+      </div>
+      <div class="step-line"></div>
     </div>
-    <button onclick="showScreen('s-flip')" style="font-size:12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);border-radius:8px;padding:5px 12px;color:#ffffff;cursor:pointer">← 返回</button>
-  </nav>
+    <div class="step-item active" data-step="1" onclick="goToStep(1)">
+      <div class="step-dot-wrap">
+        <div class="step-dot">2</div>
+        <div class="step-label">旅行人格</div>
+      </div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-item" data-step="2" onclick="goToStep(2)">
+      <div class="step-dot-wrap">
+        <div class="step-dot">3</div>
+        <div class="step-label">选择方案</div>
+      </div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-item" data-step="3" onclick="goToStep(3)">
+      <div class="step-dot-wrap">
+        <div class="step-dot">4</div>
+        <div class="step-label">行程详情</div>
+      </div>
+    </div>
+  </div>
+  <button onclick="goToStep(0)" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);font-size:12px;background:rgba(255,255,255,0.8);border:1px solid rgba(37,99,235,0.2);border-radius:8px;padding:5px 12px;color:#2563EB;cursor:pointer;font-weight:600">← 返回</button>
+</div>
   <!-- 主体：居中白色大容器 -->
   <div style="flex:1;overflow:hidden;display:flex;align-items:stretch;justify-content:center;padding:10px 16px;position:relative;z-index:1;min-height:0">
     <div style="width:100%;max-width:700px;background:#fff;border-radius:20px;padding:8px 14px 10px;box-shadow:0 4px 32px rgba(0,0,0,0.08);display:flex;flex-direction:column;overflow:hidden;flex:1;min-height:0">
@@ -873,6 +886,7 @@ function updateStepBar(activeStep) {
      ======================================================== -->
 <div id="s-archive" class="screen" style="background:linear-gradient(180deg,#DBEAFE 0%,#EFF6FF 100%);overflow-y:auto">
 <div class="step-bar-wrap" id="archiveStepBar">
+  <button onclick="goToStep(1)" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);font-size:12px;background:rgba(255,255,255,0.8);border:1px solid rgba(37,99,235,0.2);border-radius:8px;padding:5px 12px;color:#2563EB;cursor:pointer;font-weight:600">← 返回</button>
   <div class="step-bar">
     <div class="step-item done" data-step="0" onclick="goToStep(0)">
       <div class="step-dot-wrap">
@@ -3591,13 +3605,29 @@ function toggleSpotDetail(rowId, spotName, e){
 </script>
 
   <!-- s-planDetail -->
-  <div id="s-planDetail" class="screen" style="background:#EFF6FF;overflow:hidden">
-    <nav style="display:flex;align-items:center;padding:0 20px;height:52px;background:#1E3A8A;flex-shrink:0;gap:16px">
-      <button onclick="showScreen('s-archive')" style="font-size:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:5px 12px;color:#BFD9FF;cursor:pointer">← 返回</button>
-      <span style="font-size:14px;font-weight:800;color:#93C5FD;letter-spacing:1px" id="planDetailTitle">方案详情</span>
-      <div id="planDetailBadges" style="margin-left:auto;display:flex;gap:6px"></div>
-    </nav>
-    <div style="display:flex;height:calc(100vh - 52px);overflow:hidden">
+  <div id="s-planDetail" class="screen" style="background:#EFF6FF;overflow:hidden;display:flex;flex-direction:column;">
+    <div class="step-bar-wrap" id="planDetailStepBar" style="background:rgba(255,255,255,0.96);padding:8px 60px;border-bottom:1px solid rgba(37,99,235,0.10);">
+      <button onclick="showScreen('s-archive')" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);font-size:12px;background:rgba(255,255,255,0.9);border:1px solid rgba(37,99,235,0.25);border-radius:8px;padding:5px 14px;color:#2563EB;cursor:pointer;font-weight:600;white-space:nowrap">← 返回</button>
+      <div class="step-bar" style="max-width:600px;">
+        <div class="step-item done" data-step="0" onclick="goToStep(0)">
+          <div class="step-dot-wrap"><div class="step-dot">✓</div><div class="step-label">目的地</div></div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item done" data-step="1" onclick="goToStep(1)">
+          <div class="step-dot-wrap"><div class="step-dot">✓</div><div class="step-label">旅行人格</div></div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item done" data-step="2" onclick="goToStep(2)">
+          <div class="step-dot-wrap"><div class="step-dot">✓</div><div class="step-label">选择方案</div></div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item active" data-step="3" onclick="goToStep(3)">
+          <div class="step-dot-wrap"><div class="step-dot">4</div><div class="step-label">行程详情</div></div>
+        </div>
+      </div>
+      <span style="position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:800;color:#1E3A8A;letter-spacing:0.5px" id="planDetailTitle">方案详情</span>
+    </div>
+    <div style="display:flex;flex:1;overflow:hidden;min-height:0">
       <!-- 左栏：地图 (45%) -->
       <div style="width:45%;position:relative;flex-shrink:0;border-right:3px solid #1E3A8A">
         <div id="planDetailMap" style="width:100%;height:100%;min-height:400px"></div>
