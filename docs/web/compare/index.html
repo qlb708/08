@@ -2250,6 +2250,21 @@ function onSliderChange(id,val){
     },600);
   }
 
+  // ── 翻转到背面，显示像素画 ──
+  var _inner2 = document.getElementById('flip-inner-'+id);
+  if(_inner2 && !_inner2.dataset.flipped){
+    _inner2.dataset.flipped='1';
+    _inner2.style.transform='rotateY(180deg)';
+  }
+  // 实时更新背面像素画（根据当前档位）
+  var _pa2 = PIXEL_ARTS[id];
+  if(_pa2 && typeof _pa2==='object' && _pa2.low){
+    var _v2=+val;
+    var _svg2=(_v2<33)?_pa2.low:(_v2<67)?_pa2.mid:_pa2.hi;
+    var _back2 = document.getElementById('slider-back-'+id);
+    if(_back2){ var _bw2=_back2.querySelector('.pixel-svg-wrap'); if(_bw2) _bw2.innerHTML=_svg2; }
+  }
+
   updateQuizRadar();
 }
 
