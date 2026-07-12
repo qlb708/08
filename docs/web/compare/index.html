@@ -1739,11 +1739,12 @@ function revealFinalCard(label, desc){
     card.style.cssText =
       'position:absolute;top:50%;left:50%;z-index:30;'+
       'transform:translate(-50%,-50%) scale(0.75);'+
-      'opacity:0;transition:opacity 0.45s,transform 0.45s cubic-bezier(.34,1.56,.64,1);'+
-      'width:min(300px,86%);'+
-      'background:#fffef8;'+
-      'border:2px solid #2c2c2c;'+
-      'box-shadow:5px 5px 0 #2c2c2c;'+
+      'opacity:0;transition:opacity 0.5s,transform 0.5s cubic-bezier(.34,1.56,.64,1);'+
+      'width:min(300px,88%);'+
+      'background:linear-gradient(180deg,#fffef8,#f9f6ee);'+
+      'border-radius:18px;overflow:hidden;'+
+      'border:1.5px solid rgba(0,0,0,0.12);'+
+      'box-shadow:0 20px 60px rgba(0,0,0,0.35),0 8px 20px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.8);'+
       'font-family:monospace;';
 
     // 今日日期
@@ -1754,90 +1755,218 @@ function revealFinalCard(label, desc){
     // ── 上半部分：彩色顶部 + 人格专属像素IP小人 ──
     var personaKey = traits.key || 'trooper';
     var personaSvg = PERSONA_PIXEL_ARTS[personaKey] || '';
+    // ═══ 精致人格卡片：集换式卡牌风格 ═══
+
+    // ── 上半：多层渐变+光晕+粒子+像素人 ──
+    var sparkles = (function(){
+      var pos=[[8,10],[88,8],[20,60],[76,52],[48,18],[30,40],[65,30],[15,80],[82,72]];
+      return pos.map(function(p,i){
+        var s=i%3===0?3:i%3===1?4:2;
+        var op=i%2===0?0.9:0.6;
+        return '<div style="position:absolute;left:'+p[0]+'%;top:'+p[1]+'%;width:'+s+'px;height:'+s+'px;'+
+          'background:#fff;border-radius:50%;opacity:'+op+';'+
+          'box-shadow:0 0 '+s*2+'px '+s+'px rgba(255,255,255,0.6);'+
+          'animation:twinkle '+(2.5+i*0.4).toFixed(1)+'s ease-in-out infinite '+(i*0.3).toFixed(1)+'s">'+
+        '</div>';
+      }).join('');
+    })();
+
+    var rarityColors = {
+      'LEGENDARY':'linear-gradient(90deg,#FF6B6B,#FFD166,#06D6A0,#118AB2,#9B59B6)',
+      'EPIC':'linear-gradient(90deg,#A78BFA,#EC4899)',
+      'RARE':'linear-gradient(90deg,#60A5FA,#34D399)',
+      'UNCOMMON':'linear-gradient(90deg,#F59E0B,#F97316)',
+      'COMMON':'linear-gradient(90deg,#94A3B8,#64748B)'
+    };
+    var rarityBadge = traits.rarity ? traits.rarity.split('·')[0].trim() : 'COMMON';
+    var rarityGrad = rarityColors[rarityBadge] || rarityColors['COMMON'];
+
     var topSection =
-      '<div style="background:linear-gradient(135deg,'+col.from+','+col.to+');padding:12px 12px 8px;text-align:center;position:relative">'+
-        '<div style="font-size:7px;letter-spacing:2px;color:rgba(255,255,255,0.85);margin-bottom:8px;font-family:monospace">TRAVEL PERSONA</div>'+
-        '<div style="display:inline-block;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.5);border-radius:4px;padding:8px;image-rendering:pixelated">'+
-          personaSvg+
+      // 外层光泽叠加
+      '<div style="position:relative;overflow:hidden;'+
+        'background:linear-gradient(160deg,'+col.from+' 0%,'+col.to+' 60%,rgba(0,0,0,0.15) 100%);'+
+        'padding:0 0 14px">'+
+
+        // 全息光泽层
+        '<div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,0.08) 100%);pointer-events:none"></div>'+
+        // 右下角光晕
+        '<div style="position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%);pointer-events:none"></div>'+
+        // 左上角光晕
+        '<div style="position:absolute;left:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.12),transparent 70%);pointer-events:none"></div>'+
+
+        // 粒子光点
+        '<div style="position:absolute;inset:0;pointer-events:none">'+sparkles+'</div>'+
+
+        // TRAVEL PERSONA 顶部标题栏
+        '<div style="padding:10px 14px 6px;display:flex;align-items:center;justify-content:space-between">'+
+          '<div style="font-size:6px;letter-spacing:3px;color:rgba(255,255,255,0.7);font-family:monospace;font-weight:700">TRAVEL PERSONA</div>'+
+          '<div style="padding:2px 8px;border-radius:20px;font-size:6px;font-weight:800;letter-spacing:1px;color:#fff;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4)">'+
+            traits.emoji+' '+shortName+
+          '</div>'+
         '</div>'+
-        '<div style="font-size:18px;font-weight:900;color:#fff;margin-top:8px;letter-spacing:1px;text-shadow:2px 2px 0 rgba(0,0,0,0.3)">'+shortName+'</div>'+
+
+        // 像素人物（带发光描边 + 精致边框）
+        '<div style="display:flex;justify-content:center;margin:4px 0 10px">'+
+          '<div style="position:relative;display:inline-block">'+
+            // 外发光
+            '<div style="position:absolute;inset:-4px;border-radius:16px;background:rgba(255,255,255,0.15);filter:blur(6px)"></div>'+
+            // 主边框（双层）
+            '<div style="position:relative;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.6);border-radius:12px;padding:2px;'+
+              'box-shadow:0 0 0 1px rgba(255,255,255,0.25),0 4px 20px rgba(0,0,0,0.3)">'+
+              '<div style="border-radius:8px;overflow:hidden;image-rendering:pixelated;background:rgba(255,255,255,0.08)">'+
+                personaSvg+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
+        // 人格名称（大字+阴影+发光）
+        '<div style="text-align:center;padding:0 12px 4px">'+
+          '<div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:2px;'+
+            'text-shadow:0 2px 0 rgba(0,0,0,0.3),0 0 20px rgba(255,255,255,0.5)">'+shortName+'</div>'+
+          '<div style="font-size:8px;color:rgba(255,255,255,0.75);letter-spacing:2px;margin-top:3px;font-family:monospace">'+
+            (traits.slogan||'TRAVEL PERSONA')+'</div>'+
+        '</div>'+
+
+        // RARITY 彩虹徽章
+        '<div style="display:flex;justify-content:center;margin-top:6px">'+
+          '<div style="position:relative;height:16px;padding:0 12px;border-radius:20px;overflow:hidden;'+
+            'box-shadow:0 2px 8px rgba(0,0,0,0.3)">'+
+            '<div style="position:absolute;inset:0;background:'+rarityGrad+'"></div>'+
+            '<div style="position:relative;font-size:7px;font-weight:800;color:#fff;letter-spacing:2px;'+
+              'line-height:16px;font-family:monospace;text-shadow:0 1px 3px rgba(0,0,0,0.4)">'+
+              '✦ '+(traits.rarity||'COMMON')+' ✦'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
       '</div>';
 
-    // ── 撕票虚线 ──
+    // ── 撕票穿孔线（精致版） ──
     var perfLine =
-      '<div style="position:relative;height:16px;background:#fffef8;display:flex;align-items:center">'+
-        '<div style="position:absolute;left:-10px;width:20px;height:20px;background:#f0ebe0;border-radius:50%"></div>'+
-        '<div style="flex:1;border-top:2px dashed #bbb;margin:0 12px"></div>'+
-        '<div style="position:absolute;right:-10px;width:20px;height:20px;background:#f0ebe0;border-radius:50%"></div>'+
+      '<div style="position:relative;height:20px;background:linear-gradient(90deg,#f8f6f0,#fffef8 50%,#f8f6f0);display:flex;align-items:center">'+
+        // 左半圆缺口
+        '<div style="position:absolute;left:-12px;width:24px;height:24px;border-radius:50%;background:#e8e0d0;z-index:1"></div>'+
+        // 右半圆缺口
+        '<div style="position:absolute;right:-12px;width:24px;height:24px;border-radius:50%;background:#e8e0d0;z-index:1"></div>'+
+        // 虚线（细点）
+        '<div style="flex:1;margin:0 16px;border-top:1.5px dashed rgba(0,0,0,0.15)"></div>'+
+        // 中央文字
+        '<div style="position:absolute;left:50%;transform:translateX(-50%);background:#fffef8;padding:0 8px;'+
+          'font-size:6px;color:#bbb;letter-spacing:2px;font-family:monospace">✂ TEAR HERE ✂</div>'+
       '</div>';
 
-    // ── 下半部分：票根信息 ──
+    // ── 下半：票根信息（精致版）──
     var infoSection =
-      '<div style="padding:10px 16px 12px">'+
-        // 头部信息行
-        '<div style="display:flex;justify-content:space-between;margin-bottom:2px">'+
-          '<span style="font-size:7px;color:#888;letter-spacing:1px">TRAVELER</span>'+
-          '<span style="font-size:7px;color:#333;font-weight:700">旅行人格持有者</span>'+
+      '<div style="padding:8px 16px 14px;background:linear-gradient(180deg,#fffef8,#f9f6ee)">'+
+
+        // 信息头（三行）
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:6px">'+
+          '<tr>'+
+            '<td style="font-size:6px;color:#aaa;letter-spacing:1.5px;font-family:monospace;padding:1px 0">TRAVELER</td>'+
+            '<td style="font-size:7px;color:#333;font-weight:700;text-align:right">旅行人格持有者</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<td style="font-size:6px;color:#aaa;letter-spacing:1.5px;font-family:monospace;padding:1px 0">DATE</td>'+
+            '<td style="font-size:7px;color:#555;text-align:right">'+dateStr+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<td style="font-size:6px;color:#aaa;letter-spacing:1.5px;font-family:monospace;padding:1px 0">ID No.</td>'+
+            '<td style="font-size:7px;color:#555;text-align:right;font-family:monospace">'+noStr+'</td>'+
+          '</tr>'+
+        '</table>'+
+
+        // 分割线（实线）
+        '<div style="border-top:1.5px solid #2c2c2c;margin:6px 0"></div>'+
+
+        // TYPE + RARITY 大标题区
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'+
+          '<div>'+
+            '<div style="font-size:6px;color:#aaa;letter-spacing:1.5px;font-family:monospace;margin-bottom:2px">TYPE</div>'+
+            '<div style="font-size:16px;font-weight:900;color:#1e3a8a;letter-spacing:0.5px">'+shortName+'</div>'+
+          '</div>'+
+          '<div style="text-align:right">'+
+            '<div style="font-size:6px;color:#aaa;letter-spacing:1.5px;font-family:monospace;margin-bottom:3px">RARITY</div>'+
+            '<div style="position:relative;height:14px;padding:0 10px;border-radius:20px;overflow:hidden;display:inline-block">'+
+              '<div style="position:absolute;inset:0;background:'+rarityGrad+'"></div>'+
+              '<div style="position:relative;font-size:6px;font-weight:800;color:#fff;line-height:14px;font-family:monospace;white-space:nowrap">'+
+                (traits.rarity||'COMMON')+
+              '</div>'+
+            '</div>'+
+          '</div>'+
         '</div>'+
-        '<div style="display:flex;justify-content:space-between;margin-bottom:2px">'+
-          '<span style="font-size:7px;color:#888;letter-spacing:1px">DATE</span>'+
-          '<span style="font-size:7px;color:#333">'+dateStr+'</span>'+
+
+        // TRAVEL TRAITS
+        '<div style="border-top:1px dashed #d0c8b8;padding-top:6px;margin-bottom:6px">'+
+          '<div style="font-size:6px;color:#aaa;letter-spacing:1.5px;font-family:monospace;margin-bottom:5px">TRAVEL TRAITS</div>'+
+          [
+            ['STAMINA', traits.stamina, col.from, '💪'],
+            ['SOCIAL',  traits.social,  '#60A5FA', '🤝'],
+            ['POPULAR', traits.popular, '#F59E0B', '🔥'],
+            ['PHOTO',   traits.photo,   '#A78BFA', '📸'],
+            ['WILD',    traits.wild,    '#34D399', '🌿'],
+          ].map(function(row){
+            var val=row[1]||0;
+            return '<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">'+
+              '<div style="font-size:6px;color:#888;letter-spacing:1px;font-family:monospace;width:44px">'+row[0]+'</div>'+
+              '<div style="flex:1;height:6px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden">'+
+                '<div style="height:100%;width:'+val+'%;background:linear-gradient(90deg,'+row[2]+','+row[2]+'cc);'+
+                  'border-radius:3px;box-shadow:0 0 4px '+row[2]+'88;transition:width 0.8s ease"></div>'+
+              '</div>'+
+              '<div style="font-size:7px;font-weight:700;color:#555;width:18px;text-align:right">'+val+'</div>'+
+            '</div>';
+          }).join('')+
         '</div>'+
-        '<div style="display:flex;justify-content:space-between;margin-bottom:6px">'+
-          '<span style="font-size:7px;color:#888;letter-spacing:1px">NO.</span>'+
-          '<span style="font-size:7px;color:#333">'+noStr+'</span>'+
+
+        // TAGS
+        '<div style="border-top:1px dashed #d0c8b8;padding-top:6px;margin-bottom:8px;display:flex;flex-wrap:wrap;gap:3px">'+
+          (traits.tags||'').split('·').map(function(t){
+            return t.trim() ? '<span style="padding:2px 7px;background:rgba(30,58,138,0.08);color:#1e3a8a;border-radius:20px;font-size:6px;font-weight:700;border:1px solid rgba(30,58,138,0.15)">'+t.trim()+'</span>' : '';
+          }).join('')+
         '</div>'+
-        '<div style="border-top:1.5px solid #2c2c2c;margin-bottom:6px"></div>'+
-        '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">'+
-          '<span style="font-size:7px;color:#888;letter-spacing:1px">TYPE</span>'+
-          '<span style="font-size:14px;font-weight:900;color:#1e3a8a">'+shortName+'</span>'+
-        '</div>'+
-        '<div style="display:flex;justify-content:space-between;margin-bottom:8px">'+
-          '<span style="font-size:7px;color:#888;letter-spacing:1px">RARITY</span>'+
-          '<span style="font-size:7px;font-weight:700;color:#3b82f6">'+traits.rarity+'</span>'+
-        '</div>'+
-        '<div style="border-top:1px dashed #bbb;padding-top:6px;margin-bottom:6px">'+
-          '<div style="font-size:7px;color:#888;letter-spacing:1px;margin-bottom:4px">TRAVEL TRAITS</div>'+
-          traitBar('STAMINA', traits.stamina, col.from)+
-          traitBar('SOCIAL',  traits.social,  '#60A5FA')+
-          traitBar('POPULAR', traits.popular, '#F59E0B')+
-          traitBar('PHOTO',   traits.photo,   '#A78BFA')+
-          traitBar('WILD',    traits.wild,    '#34D399')+
-        '</div>'+
-        '<div style="border-top:1px dashed #bbb;padding-top:6px;margin-bottom:8px">'+
-          '<span style="font-size:7px;color:#888;letter-spacing:1px">TAG: </span>'+
-          '<span style="font-size:7px;color:#4a5568">'+traits.tags+'</span>'+
-        '</div>'+
-        // 条形码（CSS模拟）
-        '<div style="text-align:center;margin-bottom:6px">'+
-          '<div style="display:inline-flex;gap:1px;height:28px;align-items:flex-end">'+
+
+        // 条形码（更精致：宽窄条交替+数字）
+        '<div style="text-align:center;margin-bottom:10px">'+
+          '<div style="display:inline-flex;gap:1px;height:24px;align-items:flex-end">'+
           (function(){
             var bars='';
-            var widths=[2,1,3,1,2,1,1,2,3,1,2,1,3,2,1,1,2,1,3,1,2,1,1,3,2,1,2,1,3,1];
-            widths.forEach(function(w,i){
-              bars+='<div style="width:'+w+'px;height:'+(i%3===0?28:i%3===1?22:25)+'px;background:#1e3a8a"></div>';
+            var pattern=[2,1,3,1,2,1,1,2,3,1,2,1,3,2,1,1,2,1,3,1,2,1,1,3,2,1,2,1,2,1,1,3];
+            pattern.forEach(function(w,i){
+              var h = i%4===0?24:i%4===1?18:i%4===2?22:20;
+              bars+='<div style="width:'+w+'px;height:'+h+'px;background:'+(i%5===0?'#1e3a8a':'#111')+'"></div>';
             });
             return bars;
           })()+
           '</div>'+
+          '<div style="font-size:5px;color:#aaa;letter-spacing:2px;font-family:monospace;margin-top:2px">'+noStr+'</div>'+
         '</div>'+
-        // 继续按钮
+
+        // 开始按钮（更精致：光泽渐变+悬停动画）
         '<div id="persona-go-btn" style="'+
-          'background:linear-gradient(135deg,'+col.from+','+col.to+');color:#fff;'+
-          'font-size:11px;font-weight:700;letter-spacing:2px;text-align:center;'+
-          'padding:9px;border:2px solid #1e3a8a;box-shadow:3px 3px 0 #1e3a8a;cursor:pointer;'+
-        '">▶ 开始规划行程</div>'+
+          'background:linear-gradient(135deg,'+col.from+' 0%,'+col.to+' 100%);'+
+          'color:#fff;font-size:11px;font-weight:800;letter-spacing:2px;text-align:center;'+
+          'padding:11px;border-radius:6px;cursor:pointer;position:relative;overflow:hidden;'+
+          'box-shadow:0 4px 15px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.2);'+
+          'transition:transform 0.1s,box-shadow 0.1s">'+
+          '<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent);pointer-events:none"></div>'+
+          '<span style="position:relative">▶ 开始规划行程</span>'+
+        '</div>'+
+
       '</div>';
 
     card.innerHTML = topSection + perfLine + infoSection;
+
+        card.innerHTML = topSection + perfLine + infoSection;
     quiz.appendChild(card);
 
     // 事件
     var goBtn = document.getElementById('persona-go-btn');
     if(goBtn){
       goBtn.addEventListener('click', function(){ goArchive(); });
-      goBtn.addEventListener('mousedown', function(){ this.style.transform='translate(2px,2px)'; this.style.boxShadow='1px 1px 0 #1e3a8a'; });
-      goBtn.addEventListener('mouseup',   function(){ this.style.transform=''; this.style.boxShadow='3px 3px 0 #1e3a8a'; });
+      goBtn.addEventListener('mouseover', function(){ this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2)'; });
+      goBtn.addEventListener('mouseout',  function(){ this.style.filter=''; this.style.transform=''; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.2)'; });
+      goBtn.addEventListener('mousedown', function(){ this.style.transform='translateY(1px)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.2)'; });
+      goBtn.addEventListener('mouseup',   function(){ this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2)'; });
     }
     backdrop.addEventListener('click', function(){
       card.style.opacity='0'; card.style.transform='translate(-50%,-50%) scale(0.9)';
