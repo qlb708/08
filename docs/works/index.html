@@ -83,8 +83,8 @@ function navTo(id){
   const el=document.getElementById(id);
   if(el&&sc) sc.scrollTo({top:el.offsetTop,behavior:'instant'});
   // 更新 nav active
-  document.querySelectorAll('.nav-tabs button').forEach(b=>{
-    b.classList.toggle('on',b.dataset.section===id);
+  document.querySelectorAll('.navlinks button').forEach(b=>{
+    b.classList.toggle('on',b.dataset.target===id);
   });
   // 如果是 details 页，渲染 coverflow
   if(id==='details') setTimeout(renderAllCards,50);
@@ -104,8 +104,8 @@ function navTo(id){
     });
     if(best!==activeSection){
       activeSection=best;
-      document.querySelectorAll('.nav-tabs button').forEach(b=>{
-        b.classList.toggle('on',b.dataset.section===best);
+      document.querySelectorAll('.navlinks button').forEach(b=>{
+        b.classList.toggle('on',b.dataset.target===best);
       });
       if(best==='details') setTimeout(renderAllCards,50);
     }
@@ -113,8 +113,8 @@ function navTo(id){
 })();
 
 // ── Nav 绑定
-document.querySelectorAll('.nav-tabs button[data-section]').forEach(b=>{
-  b.onclick=()=>navTo(b.dataset.section);
+document.querySelectorAll('.navlinks button[data-target]').forEach(b=>{
+  b.onclick=()=>navTo(b.dataset.target);
 });
 document.querySelectorAll('[data-goto]').forEach(el=>{
   el.onclick=()=>navTo(el.dataset.goto);
