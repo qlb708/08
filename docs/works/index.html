@@ -76,11 +76,20 @@ groups.forEach((_,i)=>{
     const b=e.target.closest('[data-slide]');
     if(b)e.stopPropagation();
   });
-});document.querySelector('#tools .prev').onclick=()=>go(categoryTrack,'.category-card',-1);document.querySelector('#tools .next').onclick=()=>go(categoryTrack,'.category-card',1);categoryTrack.addEventListener('click',e=>{const c=e.target.closest('.category-card');if(c){renderProjects(+c.dataset.index);(function(){var el=document.getElementById('details');var nav=document.querySelector('.nav');var navBottom=nav?nav.offsetTop+nav.offsetHeight+12:106;window.scrollTo({top:el.offsetTop-navBottom,behavior:'instant'});})()}});detailTabs.onclick=e=>{const b=e.target.closest('[data-group]');if(b)renderProjects(+b.dataset.group)};document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>{
+});document.querySelector('#tools .prev').onclick=()=>go(categoryTrack,'.category-card',-1);document.querySelector('#tools .next').onclick=()=>go(categoryTrack,'.category-card',1);categoryTrack.addEventListener('click',e=>{const c=e.target.closest('.category-card');if(c){renderProjects(+c.dataset.index);(function(){var el=document.getElementById('details');var estTop=el.offsetTop-106;window.scrollTo({top:estTop,behavior:'instant'});requestAnimationFrame(function(){var nav=document.querySelector('.nav');var navBottom=nav?nav.getBoundingClientRect().bottom:106;var elTop=el.getBoundingClientRect().top;if(Math.abs(elTop-navBottom)>2)window.scrollBy({top:elTop-navBottom,behavior:'instant'});});})()}});detailTabs.onclick=e=>{const b=e.target.closest('[data-group]');if(b)renderProjects(+b.dataset.group)};document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>{
   var el=document.getElementById(b.dataset.target);
   if(!el)return;
-  var nav=document.querySelector('.nav');
-  var navBottom=nav?nav.offsetTop+nav.offsetHeight+12:106;
-  window.scrollTo({top:el.offsetTop-navBottom,behavior:'instant'});
+  // 先滚到目标附近，让 nav sticky 位置稳定，再精确计算
+  var estTop=el.offsetTop - 106;
+  window.scrollTo({top:estTop,behavior:'instant'});
+  // 用 rAF 等 DOM 稳定后微调
+  requestAnimationFrame(function(){
+    var nav=document.querySelector('.nav');
+    var navBottom=nav?nav.getBoundingClientRect().bottom:106;
+    var elTop=el.getBoundingClientRect().top;
+    if(Math.abs(elTop-navBottom)>2){
+      window.scrollBy({top:elTop-navBottom,behavior:'instant'});
+    }
+  });
 });const sections=['home','about','tools','details','summary'];addEventListener('scroll',()=>{let cur=0;sections.forEach((id,i)=>{if(scrollY>=document.getElementById(id).offsetTop-150)cur=i});document.querySelectorAll('.navlinks button').forEach((b,i)=>b.classList.toggle('on',i===cur))});renderProjects(0);
 </script></body></html>
