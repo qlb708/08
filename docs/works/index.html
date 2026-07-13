@@ -9,11 +9,11 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 .tools-page{padding-top:0}.stack-stage{position:relative;margin-top:10px}.category-track{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 10px 24px;cursor:grab;scrollbar-width:none}.category-track::-webkit-scrollbar,.card-track::-webkit-scrollbar{display:none}.category-card{flex:0 0 calc(50% - 12px);min-height:420px;border-radius:36px;padding:30px 30px 24px;scroll-snap-align:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.92);box-shadow:0 20px 48px rgba(63,91,135,.1);transition:.3s;display:flex;flex-direction:column}.category-card:hover{transform:translateY(-3px);box-shadow:0 26px 56px rgba(63,91,135,.16)}.c-blue{background:linear-gradient(140deg,#d8e9f7,#eff8f8 72%,#deebf5);color:#274566}.c-green{background:linear-gradient(140deg,#deeee7,#f4f8ef 72%,#d8e6dd);color:#315a4d}.c-peach{background:linear-gradient(140deg,#fde8db,#fff6eb 62%,#e5d9f5);color:#744937}.category-card h3{font-size:24px;margin:0 0 4px;display:flex;align-items:center;gap:10px}.category-card .count{font-size:13px;opacity:.7;margin-bottom:16px}
 /* mini tool cards inside category card */
 .mini-carousel-wrap{flex:1;position:relative;overflow:hidden}
-.mini-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;cursor:grab}
-.mini-track::-webkit-scrollbar{display:none}.mini-track{scrollbar-width:none}
-.mini-track.dragging{cursor:grabbing;user-select:none}
-.mini-card{flex:0 0 calc(100% - 28px);scroll-snap-align:center;border-radius:24px;padding:24px 22px 20px;background:rgba(255,255,255,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);box-shadow:0 8px 28px rgba(63,91,135,.12);display:flex;flex-direction:column;gap:10px;min-height:180px;text-decoration:none;color:inherit;transition:.25s;position:relative}
-.mini-card:hover{background:rgba(255,255,255,.88);box-shadow:0 12px 36px rgba(63,91,135,.18);transform:translateY(-2px)}
+.mini-track{position:relative;height:210px;cursor:pointer}
+.mini-card{position:absolute;inset:0;border-radius:24px;background:#fff;border:1px solid rgba(255,255,255,.9);box-shadow:0 8px 28px rgba(63,91,135,.14);display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .35s,box-shadow .35s;overflow:hidden;transform-origin:bottom center}
+.mini-card:hover{box-shadow:0 14px 38px rgba(63,91,135,.22)}
+.mini-card-cover{height:88px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.mini-card-body{padding:12px 18px 14px;flex:1;display:flex;flex-direction:column;gap:6px}
 .mini-card-icon{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);display:grid;place-items:center;font-size:20px;flex-shrink:0}
 .mini-card-title{font-size:16px;font-weight:700;margin:0}
 .mini-card-desc{font-size:13px;color:#6f7e98;margin:0;line-height:1.5}
@@ -44,7 +44,8 @@ const groups=[{key:'daily',title:'日常提效',icon:'▦',count:'5 个实验工
 const categoryTrack=document.getElementById('categoryTrack'),categoryDots=document.getElementById('categoryDots'),projectTrack=document.getElementById('projectTrack'),detailTabs=document.getElementById('detailTabs');let activeGroup=0;
 categoryTrack.innerHTML=groups.map((g,i)=>{
   const miniId=`mini-track-${i}`,dotId=`mini-dots-${i}`;
-  const cards=g.items.map((x,n)=>`<a class="mini-card" href="${x[2]}" style="--tone:${g.tone}"><div class="mini-card-icon">${x[3]}</div><div class="mini-card-title">${x[0]}</div><div class="mini-card-desc">${x[1]}</div><div class="mini-card-foot"><span class="mini-card-num">${String(n+1).padStart(2,'0')} / ${g.items.length}</span><span class="mini-card-arrow">→</span></div></a>`).join('');
+  const coverGrads=['linear-gradient(135deg,#e8f1ff,#c5d8ff)','linear-gradient(135deg,#e8f7f0,#b8ecd5)','linear-gradient(135deg,#fff0e8,#ffd4b8)','linear-gradient(135deg,#f0e8ff,#d5b8ff)','linear-gradient(135deg,#e8f9ff,#b8e8ff)','linear-gradient(135deg,#fff8e8,#ffe4b8)'];
+  const cards=g.items.map((x,n)=>`<a class="mini-card" href="${x[2]}" data-idx="${n}"><div class="mini-card-cover" style="background:${coverGrads[n%coverGrads.length]}"><span style="font-size:32px;opacity:.9">${x[3]}</span></div><div class="mini-card-body"><div class="mini-card-title">${x[0]}</div><div class="mini-card-desc">${x[1]}</div><div class="mini-card-foot"><span class="mini-card-num">${String(n+1).padStart(2,'0')} / ${g.items.length}</span><span class="mini-card-arrow">→</span></div></div></a>`).join('');
   const dots=g.items.map((_,n)=>`<button class="${n===0?'on':''}" data-slide="${n}"></button>`).join('');
   return`<article class="category-card ${g.cls}" data-index="${i}" style="--tone:${g.tone}"><h3>${g.icon}　${g.title}</h3><div class="count">${g.count}</div><div class="mini-carousel-wrap"><div class="mini-track" id="${miniId}">${cards}</div></div><div class="mini-dots" id="${dotId}">${dots}</div><a class="cat-btn" href="#details" data-group="${i}">查看全部${g.key==='demo'?'项目':'工具'}　→</a></article>`;
 }).join('');categoryDots.innerHTML=groups.map((_,i)=>`<button class="${i===0?'on':''}" data-slide="${i}" aria-label="第${i+1}张"></button>`).join('');detailTabs.innerHTML=groups.map((g,i)=>`<button class="${i===0?'on':''}" data-group="${i}" style="--tone:${g.tone}">${g.icon} ${g.title}</button>`).join('');
@@ -61,21 +62,49 @@ if(g.key==='demo'){
   projectTrack.className='project-grid';
 }
 detailTabs.querySelectorAll('button').forEach((b,n)=>b.classList.toggle('on',n===i));}
-function nearest(track,selector){const cards=[...track.querySelectorAll(selector)];let idx=0,min=Infinity;cards.forEach((c,i)=>{const d=Math.abs(c.offsetLeft-track.scrollLeft);if(d<min){min=d;idx=i}});return idx}function go(track,selector,delta,index){const cards=[...track.querySelectorAll(selector)];let i=index??Math.max(0,Math.min(cards.length-1,nearest(track,selector)+delta));track.scrollTo({left:cards[i].offsetLeft-4,behavior:'smooth'});return i}function updateDots(dots,i){dots.querySelectorAll('button').forEach((b,n)=>b.classList.toggle('on',n===i))}function bindDots(track,dots,selector){dots.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>go(track,selector,0,i));track.onscroll=()=>updateDots(dots,nearest(track,selector))}function drag(track){let down=false,moved=false,start=0,startY=0,left=0,pid=null;track.addEventListener('pointerdown',e=>{down=true;moved=false;start=e.clientX;startY=e.clientY;left=track.scrollLeft;pid=e.pointerId});track.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-start;const dy=e.clientY-startY;if(!moved&&Math.abs(dx)<8&&Math.abs(dy)<8)return;if(!moved){moved=true;track.setPointerCapture(pid);track.classList.add('dragging')}track.scrollLeft=left-dx});['pointerup','pointercancel'].forEach(ev=>track.addEventListener(ev,e=>{down=false;moved=false;track.classList.remove('dragging')}))}
-bindDots(categoryTrack,categoryDots,'.category-card');drag(categoryTrack);
-// init mini carousels inside each category card
+function initStackCarousel(trackEl){
+  const cards=[...trackEl.querySelectorAll('.mini-card')];
+  const total=cards.length;
+  let cur=0;
+  function layout(){
+    cards.forEach((c,i)=>{
+      const rel=(i-cur+total)%total;
+      if(rel===0){c.style.transform='translateY(0) scale(1)';c.style.zIndex=total+2;c.style.opacity='1';c.style.pointerEvents='auto';}
+      else if(rel===1){c.style.transform='translateY(12px) scale(.94)';c.style.zIndex=total+1;c.style.opacity='.82';c.style.pointerEvents='none';}
+      else if(rel===2){c.style.transform='translateY(22px) scale(.88)';c.style.zIndex=total;c.style.opacity='.55';c.style.pointerEvents='none';}
+      else{c.style.transform='translateY(28px) scale(.84)';c.style.zIndex=0;c.style.opacity='0';c.style.pointerEvents='none';}
+    });
+    const dotWrap=trackEl.parentElement?.nextElementSibling;
+    if(dotWrap) dotWrap.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===cur));
+  }
+  // 点击顶牌 → 跟随 href；点击非顶牌 → 切换到该卡片
+  trackEl.addEventListener('click',e=>{
+    const card=e.target.closest('.mini-card');
+    if(!card)return;
+    const idx=+card.dataset.idx;
+    if(idx===cur)return; // 顶牌 → 正常跳链接
+    e.preventDefault();e.stopPropagation();
+    cur=idx;layout();
+  });
+  // 拖拽 swipe
+  let sx=0,dragging=false;
+  trackEl.addEventListener('pointerdown',e=>{sx=e.clientX;dragging=false;});
+  trackEl.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10)dragging=true;});
+  trackEl.addEventListener('pointerup',e=>{
+    if(dragging){e.preventDefault();e.stopPropagation();
+      if(e.clientX-sx<-30)cur=(cur+1)%total;
+      else if(e.clientX-sx>30)cur=(cur-1+total)%total;
+      layout();}
+    dragging=false;
+  });
+  // dots 点击
+  const dotWrap=trackEl.parentElement?.nextElementSibling;
+  if(dotWrap)dotWrap.querySelectorAll('button').forEach((b,i)=>b.onclick=e=>{e.stopPropagation();cur=i;layout();});
+  layout();
+}
 groups.forEach((_,i)=>{
   const mt=document.getElementById(`mini-track-${i}`);
-  const md=document.getElementById(`mini-dots-${i}`);
-  if(!mt||!md)return;
-  drag(mt);
-  bindDots(mt,md,'.mini-card');
-  // stop clicks on mini-card from bubbling to category-card
-  mt.addEventListener('click',e=>{
-    const a=e.target.closest('.mini-card');
-    if(a)e.stopPropagation();
-    const b=e.target.closest('[data-slide]');
-    if(b)e.stopPropagation();
-  });
+  if(!mt)return;
+  initStackCarousel(mt);
 });document.querySelector('#tools .prev').onclick=()=>go(categoryTrack,'.category-card',-1);document.querySelector('#tools .next').onclick=()=>go(categoryTrack,'.category-card',1);categoryTrack.addEventListener('click',e=>{const c=e.target.closest('.category-card');if(c){renderProjects(+c.dataset.index);document.getElementById('details').scrollIntoView({behavior:'instant',block:'start'})}});detailTabs.onclick=e=>{const b=e.target.closest('[data-group]');if(b)renderProjects(+b.dataset.group)};document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>{var sc=document.getElementById('sc');var el=document.getElementById(b.dataset.target);if(sc&&el)sc.scrollTo({top:el.offsetTop,behavior:'instant'});});const sections=['home','about','tools','details','summary'];document.getElementById('sc').addEventListener('scroll',()=>{let cur=0;sections.forEach((id,i)=>{if(document.getElementById('sc').scrollTop>=document.getElementById(id).offsetTop-150)cur=i});document.querySelectorAll('.navlinks button').forEach((b,i)=>b.classList.toggle('on',i===cur))});renderProjects(0);
 </script></div></body></html>
