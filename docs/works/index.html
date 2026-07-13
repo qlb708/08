@@ -66,38 +66,43 @@ function initStackCarousel(trackEl){
   const cards=[...trackEl.querySelectorAll('.mini-card')];
   const total=cards.length;
   let cur=0;
+  const offsets=[
+    {x:0,y:0,rot:0,scale:1,z:10,op:1},
+    {x:10,y:-12,rot:4,scale:.96,z:9,op:1},
+    {x:20,y:-22,rot:7,scale:.92,z:8,op:.95},
+    {x:28,y:-30,rot:9,scale:.88,z:7,op:0},
+  ];
   function layout(){
     cards.forEach((c,i)=>{
       const rel=(i-cur+total)%total;
-      if(rel===0){c.style.transform='rotate(0deg)';c.style.zIndex=total+2;c.style.opacity='1';c.style.boxShadow='0 12px 28px rgba(63,91,135,.22)';c.style.pointerEvents='auto';}
-      else if(rel===1){c.style.transform='rotate(8deg)';c.style.zIndex=total+1;c.style.opacity='1';c.style.boxShadow='0 8px 18px rgba(63,91,135,.15)';c.style.pointerEvents='auto';}
-      else if(rel===2){c.style.transform='rotate(-6deg)';c.style.zIndex=total;c.style.opacity='1';c.style.boxShadow='0 6px 14px rgba(63,91,135,.12)';c.style.pointerEvents='auto';}
-      else{c.style.transform='rotate(0deg) scale(.8)';c.style.zIndex=0;c.style.opacity='0';c.style.pointerEvents='none';}
+      const o=offsets[Math.min(rel,offsets.length-1)];
+      c.style.transform=`translate(${o.x}px,${o.y}px) rotate(${o.rot}deg) scale(${o.scale})`;
+      c.style.zIndex=o.z;
+      c.style.opacity=o.op;
+      c.style.pointerEvents=(rel<3&&o.op>0)?'auto':'none';
+      c.style.boxShadow=rel===0?'0 12px 28px rgba(63,91,135,.22)':'0 6px 16px rgba(63,91,135,.13)';
     });
     const dotWrap=trackEl.parentElement?.nextElementSibling;
-    if(dotWrap) dotWrap.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===cur));
+    if(dotWrap)dotWrap.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===cur));
   }
-  // 点击顶牌 → 跟随 href；点击非顶牌 → 切换到该卡片
   trackEl.addEventListener('click',e=>{
     const card=e.target.closest('.mini-card');
     if(!card)return;
     const idx=+card.dataset.idx;
-    if(idx===cur)return; // 顶牌 → 跟随链接
+    if(idx===cur)return;
     e.preventDefault();e.stopPropagation();
     cur=idx;layout();
   });
-  // 拖拽 swipe
-  let sx=0,dragging=false;
-  trackEl.addEventListener('pointerdown',e=>{sx=e.clientX;dragging=false;});
-  trackEl.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10)dragging=true;});
+  let sx=0,drag=false;
+  trackEl.addEventListener('pointerdown',e=>{sx=e.clientX;drag=false;trackEl.setPointerCapture(e.pointerId);});
+  trackEl.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>8)drag=true;});
   trackEl.addEventListener('pointerup',e=>{
-    if(dragging){e.preventDefault();e.stopPropagation();
+    if(drag){e.preventDefault();
       if(e.clientX-sx<-30)cur=(cur+1)%total;
       else if(e.clientX-sx>30)cur=(cur-1+total)%total;
       layout();}
-    dragging=false;
+    drag=false;
   });
-  // dots 点击
   const dotWrap=trackEl.parentElement?.nextElementSibling;
   if(dotWrap)dotWrap.querySelectorAll('button').forEach((b,i)=>b.onclick=e=>{e.stopPropagation();cur=i;layout();});
   layout();
