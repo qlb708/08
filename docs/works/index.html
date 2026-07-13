@@ -8,11 +8,11 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 .about{display:grid;grid-template-rows:auto 1fr;gap:20px}.page-head{display:flex;justify-content:space-between;align-items:flex-end}.page-head h2{font-size:clamp(26px,3vw,44px);letter-spacing:-.05em;margin:0 0 6px}.page-head h2 em{font-style:normal;color:var(--blue)}.page-head p{color:var(--muted);margin:6px 0 0}.about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;align-content:start}.profile{display:grid;grid-template-columns:1fr 48%;padding:14px 18px;border-radius:28px;background:linear-gradient(135deg,rgba(242,247,255,.9),rgba(255,255,255,.64),rgba(253,235,211,.35));position:relative;overflow:hidden}.profile h3{font-size:19px;margin:4px 0 8px}.profile p{color:#65758f;line-height:1.7}.facts{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.facts span,.tags span{padding:9px 13px;border-radius:999px;background:rgba(255,255,255,.66);border:1px solid #e6ebf3;font-size:12px}.profile img{position:absolute;height:320px;right:-85px;bottom:-30px}.about-side{display:grid;grid-template-rows:1fr 1fr;gap:12px}.tags,.quote,.info-card{border-radius:27px;padding:20px 22px}.tags div{display:flex;gap:9px;flex-wrap:wrap}.tags h3{margin:0 0 18px}.quote{display:flex;flex-direction:column;justify-content:center}.about-cards{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.2fr 1.1fr 1fr;gap:10px}.info-card h3{margin:0 0 12px}.info-card ul{list-style:none;padding:0;margin:0}.info-card li{padding:8px 0;color:#62728c;font-size:12px;line-height:1.65}.info-card li b{color:#253650;font-size:13px}.experience{padding-bottom:10px;margin-bottom:8px;border-bottom:1px dashed #dce3ee}.experience:last-child{border:0}.badge{float:right;padding:6px 9px;border-radius:10px;background:#eef4ff;color:#5880d9;font-size:10px;font-weight:500}
 .tools-page{padding-top:0}.stack-stage{position:relative;margin-top:10px}.category-track{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 10px 24px;cursor:grab;scrollbar-width:none}.category-track::-webkit-scrollbar,.card-track::-webkit-scrollbar{display:none}.category-card{flex:0 0 calc(50% - 12px);min-height:400px;border-radius:36px;padding:28px 28px 22px;scroll-snap-align:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.92);box-shadow:0 20px 48px rgba(63,91,135,.1);transition:.3s;display:flex;flex-direction:column}.category-card:hover{transform:translateY(-3px);box-shadow:0 26px 56px rgba(63,91,135,.16)}.c-blue{background:linear-gradient(140deg,#d8e9f7,#eff8f8 72%,#deebf5);color:#274566}.c-green{background:linear-gradient(140deg,#deeee7,#f4f8ef 72%,#d8e6dd);color:#315a4d}.c-peach{background:linear-gradient(140deg,#fde8db,#fff6eb 62%,#e5d9f5);color:#744937}.category-card h3{font-size:24px;margin:0 0 4px;display:flex;align-items:center;gap:10px}.category-card .count{font-size:13px;opacity:.7;margin-bottom:16px}
 /* mini tool cards inside category card */
-.mini-carousel-wrap{flex:1;position:relative;display:flex;align-items:flex-start;justify-content:center;padding:10px 0 0}
-.mini-track{position:relative;width:210px;height:180px;cursor:default;margin:0 auto}
-.mini-card{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:18px;background:#fff;border:1.5px solid rgba(255,255,255,.95);box-shadow:0 6px 22px rgba(63,91,135,.18);display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .35s ease,box-shadow .35s;overflow:hidden;transform-origin:center center;cursor:pointer}
+.mini-carousel-wrap{flex:1;position:relative;display:flex;align-items:center;justify-content:center;padding:0}
+.mini-track{position:relative;width:230px;height:220px;cursor:default;margin:0 auto}
+.mini-card{position:absolute;bottom:0;left:0;width:100%;height:165px;border-radius:18px;background:#fff;border:1.5px solid rgba(255,255,255,.95);box-shadow:0 6px 22px rgba(63,91,135,.18);display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .35s ease,box-shadow .35s;overflow:hidden;transform-origin:center center;cursor:pointer}
 .mini-card:hover{box-shadow:0 14px 38px rgba(63,91,135,.22)}
-.mini-card-cover{height:90px;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0}
+.mini-card-cover{height:82px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
 .mini-card-body{padding:10px 16px 12px;flex:1;display:flex;flex-direction:column;gap:4px}
 .mini-card-icon{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);display:grid;place-items:center;font-size:20px;flex-shrink:0}
 .mini-card-title{font-size:16px;font-weight:700;margin:0}
@@ -68,9 +68,9 @@ function initStackCarousel(trackEl){
   let cur=0;
   const offsets=[
     {x:0,y:0,rot:0,scale:1,z:10,op:1},
-    {x:-6,y:10,rot:-4,scale:.96,z:9,op:1},
-    {x:6,y:18,rot:3,scale:.92,z:8,op:.95},
-    {x:0,y:24,rot:0,scale:.88,z:7,op:0},
+    {x:-8,y:-28,rot:-5,scale:.94,z:9,op:1},
+    {x:8,y:-52,rot:4,scale:.88,z:8,op:.9},
+    {x:0,y:-70,rot:0,scale:.82,z:7,op:0},
   ];
   function layout(){
     cards.forEach((c,i)=>{
