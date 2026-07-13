@@ -76,5 +76,11 @@ groups.forEach((_,i)=>{
     const b=e.target.closest('[data-slide]');
     if(b)e.stopPropagation();
   });
-});document.querySelector('#tools .prev').onclick=()=>go(categoryTrack,'.category-card',-1);document.querySelector('#tools .next').onclick=()=>go(categoryTrack,'.category-card',1);categoryTrack.addEventListener('click',e=>{const c=e.target.closest('.category-card');if(c){renderProjects(+c.dataset.index);(function(){var el=document.getElementById('details');var nav=document.querySelector('.nav');var navH=nav?nav.getBoundingClientRect().bottom:106;window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-navH-16,behavior:'instant'});})()}});detailTabs.onclick=e=>{const b=e.target.closest('[data-group]');if(b)renderProjects(+b.dataset.group)};document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.target).scrollIntoView({behavior:'smooth'}));const sections=['home','about','tools','details','summary'];addEventListener('scroll',()=>{let cur=0;sections.forEach((id,i)=>{if(scrollY>=document.getElementById(id).offsetTop-150)cur=i});document.querySelectorAll('.navlinks button').forEach((b,i)=>b.classList.toggle('on',i===cur))});renderProjects(0);
+});document.querySelector('#tools .prev').onclick=()=>go(categoryTrack,'.category-card',-1);document.querySelector('#tools .next').onclick=()=>go(categoryTrack,'.category-card',1);categoryTrack.addEventListener('click',e=>{const c=e.target.closest('.category-card');if(c){renderProjects(+c.dataset.index);(function(){var el=document.getElementById('details');var nav=document.querySelector('.nav');var navBottom=nav?nav.offsetTop+nav.offsetHeight+12:106;window.scrollTo({top:el.offsetTop-navBottom,behavior:'instant'});})()}});detailTabs.onclick=e=>{const b=e.target.closest('[data-group]');if(b)renderProjects(+b.dataset.group)};document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>{
+  var el=document.getElementById(b.dataset.target);
+  if(!el)return;
+  var nav=document.querySelector('.nav');
+  var navBottom=nav?nav.offsetTop+nav.offsetHeight+12:106;
+  window.scrollTo({top:el.offsetTop-navBottom,behavior:'instant'});
+});const sections=['home','about','tools','details','summary'];addEventListener('scroll',()=>{let cur=0;sections.forEach((id,i)=>{if(scrollY>=document.getElementById(id).offsetTop-150)cur=i});document.querySelectorAll('.navlinks button').forEach((b,i)=>b.classList.toggle('on',i===cur))});renderProjects(0);
 </script></body></html>
