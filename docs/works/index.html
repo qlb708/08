@@ -33,7 +33,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 @media(max-width:1000px){.navlinks{display:none}.page{padding:90px 20px 30px;min-height:0}.hero{grid-template-columns:1fr}.hero-art{height:500px}.about-grid{grid-template-columns:1fr}.about-cards{grid-template-columns:1fr 1fr}.category-card{flex-basis:72vw}.summary-main{grid-template-columns:1fr}.summary-cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){:root{--wrap:calc(100vw - 14px)}.nav{height:68px;padding:0 15px}.avatar{width:42px;height:42px}.contact{padding:10px 13px}.page{padding:80px 16px 24px}.hero h1{font-size:43px}.stats{width:100%}.hero-art{height:350px}.hero-art>img{width:130%;right:-20%}.float{display:none}.profile{grid-template-columns:1fr;min-height:530px;padding:25px}.profile img{height:320px;right:-105px}.about-cards{grid-template-columns:1fr}.category-card{flex-basis:84vw;min-height:420px}.slider-arrow{width:40px;height:40px}.project-card{flex-basis:82vw}.summary-cards{grid-template-columns:1fr}.summary-art{height:330px}.footer{flex-direction:column;gap:8px}}
 .contact-card h3{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--dark)}.contact-list{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--dark)}.contact-list div{display:flex;align-items:center;gap:6px}.resume-link{color:var(--blue);text-decoration:none;font-weight:500}.resume-link:hover{text-decoration:underline}.contact-card h3{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--dark)}.contact-list{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--dark)}.contact-list div{display:flex;align-items:center;gap:6px}.resume-link{color:var(--blue);text-decoration:none;font-weight:500}@keyframes cardSlideIn{from{transform:translate(-30px,0) scale(.95);opacity:.6}to{}}
 /* Coverflow 轮播 */
-.cf-stage{flex:1;position:relative;overflow:visible;perspective:900px}
+.cf-stage{flex:1;position:relative;overflow:hidden;perspective:900px;cursor:grab}
 .cf-track{position:absolute;inset:0;cursor:grab;user-select:none;z-index:1}
 .cf-track.dragging{cursor:grabbing}
 .tool-card{position:absolute;z-index:2;width:200px;height:280px;border-radius:22px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .4s,box-shadow .4s;cursor:pointer}
@@ -52,7 +52,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 <div class="snap-frame" id="home"><section class="page hero glass" ><div><span class="eyebrow">AI Product Ops &amp; Travel Tech Builder</span><h1>把重复动作，<br>变成 <em>可复用的能力</em></h1><p class="lead">旅行规划产品方向 · Vibe Coding 实践</p><div class="chips"><span class="chip">ϟ AI Ops</span><span class="chip">▥ Data Insight</span><span class="chip">&lt;/&gt; Vibe Coding</span><span class="chip">✈ Travel Tech</span></div><div class="stats glass"><div class="stat"><b>17+</b><span>实验工具</span></div><div class="stat"><b>200+</b><span>运营场景沉淀</span></div><div class="stat"><b>∞</b><span>持续迭代中</span></div></div></div><div class="hero-art"><img src="hero-qin.png" alt="Qin 的数字工作台"><div class="float f1"><b>Data Insight</b><div class="line"></div><span style="color:#61a58e">+23.5%</span></div><div class="float f2"><b>下一站 · 北海道</b><div style="height:65px;border-radius:10px;background:linear-gradient(#d8e9f3 50%,#a4c5c6 51% 58%,#eadabf 59%)"></div></div><div class="float f3"><b>Ideas</b>✓ AI 自动化<br>✓ 数据分析<br>✓ 产品优化</div></div></section></div>
 <div class="snap-frame" id="about"><section class="page about glass" ><div class="about-grid"><article class="profile glass"><div><h3>用内容连接用户，用数据驱动增长。</h3><p>喜欢用内容和数据发现机会、解决问题，<br>在产品和用户之间搭建连接，<br>让每一次体验更有价值，让每一份增长更可持续。</p><div class="facts"><span>⌖ 上海</span><span>◇ 硕士在读 · 生物医学工程</span><span>♡ 旅行 · 足球 · 运营</span></div></div><img src="hero-qin.png" alt="Qin 个人形象"></article><div class="about-side"><article class="tags glass"><h3>◇　我的标签</h3><div><span>Vibe Coding</span><span>用户洞察</span><span>数据驱动</span><span>内容增长</span><span>旅行探索</span></div></article><article class="quote contact-card glass"><h3>◈&nbsp;&nbsp;联系我</h3><div class="contact-list"><div>📞&nbsp;18735585229</div><div>✉️&nbsp;qinlinbo5@gmail.com</div><div>📄&nbsp;<a href="#" class="resume-link">简历查看（即将上线）</a></div></div></article></div><div class="about-cards"><article class="info-card glass"><h3>◎　教育背景</h3><div style="font-size:15px;font-weight:600;color:var(--blue);margin-bottom:10px">秦琳波 <span style="font-size:12px;font-weight:400;color:var(--muted)">2003.5</span></div><div class="experience"><b>上海科技大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">生物医学工程 · 硕士（推免）</div></div><div class="experience"><b>上海理工大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">医学影像技术 · 本科</div></div></article><article class="info-card glass"><h3>▣　实习经历</h3><div class="experience"><span class="badge">2026.6–2026.8</span><b>小红书｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">AI 旅行规划产品</div></div><div class="experience"><span class="badge">2026.3–2026.6</span><b>传音控股｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">手机 AI 助手</div></div><div class="experience"><span class="badge">2025.12–2026.2</span><b>明基科技｜增长运营</b></div></article><article class="info-card glass"><h3>✦　项目经历</h3><div class="experience"><span class="badge">2026.4–至今</span><b>AI 工具作品集</b><div style="color:var(--muted);font-size:12px;margin-top:2px">Vibe Coding 实践，构建个人 AI 工具集</div></div><div class="experience"><span class="badge">2022.12–2024.6</span><b>垂直足球资讯自媒体矩阵</b><div style="color:var(--muted);font-size:12px;margin-top:2px">垂直足球资讯，17w 粉丝</div></div></article><article class="info-card glass"><h3>◌　生活里的我</h3><ul><li><b>▣ 旅行探索</b><br>探索不同城市，收集美好体验</li><li><b>⚽ 足球爱好者</b><br>看球、写内容、运营足球自媒体</li><li><b>▤ 持续学习</b><br>关注 AI、产品与市场</li></ul></article></div></div></section></div>
 <div class="snap-frame" id="tools"><section class="page tools-page glass" ><div class="page-head"><div><h2>AI工具 <em>✦</em></h2><p>从真实问题出发，把工具做成可复用能力。</p></div></div><div class="stack-stage"><button class="slider-arrow prev" aria-label="上一张">‹</button><div class="category-track" id="categoryTrack"></div><button class="slider-arrow next" aria-label="下一张">›</button></div><div class="dots" id="categoryDots"></div></section></div>
-<div class="snap-frame" id="details"><section class="page details glass" ><div class="page-head"><div><h2>工具详情</h2><p>共 11 个项目，点击卡片直接体验。</p></div></div><div class="cf-stage"><div class="cf-track" id="cfTrack"></div></div><div class="cf-dots" id="cfDots"></div></section></div>
+<div class="snap-frame" id="details"><section class="page details glass" ><div class="page-head"><div><h2>工具详情</h2><p>共 11 个项目，点击卡片直接体验。</p></div></div><div class="cf-stage"></div><div class="cf-dots" id="cfDots"></div></section></div>
 <div class="snap-frame" id="summary"><section class="page summary glass" ><div class="summary-main"><div><h2>谢谢看到这里 <em>Thanks for stopping by</em></h2><p>感谢你的时间与关注。希望我的产品思维、数据洞察与 AI 能力，<br>能为团队创造价值，也期待与更多有趣的人一起做有意义的事。</p></div><div class="summary-art"><img src="hero-qin.png" alt="Qin"></div></div><div class="summary-cards"><article class="sum-card"><b>▦ 核心能力</b><p>产品运营全流程把控<br>数据洞察驱动决策<br>AI 工具应用与自动化</p></article><article class="sum-card"><b>▣ 实习亮点</b><p>洞察用户需求<br>推动产品优化<br>产出可落地方案</p></article><article class="sum-card"><b>&lt;/&gt; 工具方法论</b><p>Vibe Coding 原型开发<br>AI 自动化提升人效<br>结构化复盘持续优化</p></article><article class="sum-card"><b>◎ 关注方向</b><p>产品与数据深度结合<br>旅行与生活方式创新<br>AI 在产品中的落地</p></article><article class="sum-card"><b>☎ 联系方式</b><p>qinlinbo5@gmail.com<br>github.com/qlb708<br>欢迎交流与合作</p></article></div></section></div>
 <footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
 <script>
@@ -168,6 +168,7 @@ function initCoverflow(stage,dots,total){
   const CARD_W=200,CARD_H=280,SPACING=175,SS=.75,SO=.82;
   let cur=Math.min(1,total-1);
 
+  // 精确定位每张卡到 stage 中心
   function place(){
     const cx=Math.round(stage.offsetWidth/2-CARD_W/2);
     const cy=Math.round(stage.offsetHeight/2-CARD_H/2);
@@ -181,17 +182,28 @@ function initCoverflow(stage,dots,total){
     const cards=[...stage.querySelectorAll('.tool-card')];
     cards.forEach((c,i)=>{
       const r=i-cur, ar=Math.abs(r);
+      // 重置 transition
+      c.style.transition='transform .45s cubic-bezier(.22,1,.36,1),opacity .4s,box-shadow .4s';
       if(ar===0){
-        c.style.cssText+=';transform:translateX(0) scale(1);z-index:20;opacity:1;box-shadow:0 20px 52px rgba(63,91,135,.3);pointer-events:auto';
+        c.style.transform='translateX(0) scale(1)';
+        c.style.zIndex=20; c.style.opacity='1';
+        c.style.boxShadow='0 20px 52px rgba(63,91,135,.3)';
+        c.style.pointerEvents='auto';
       }else if(ar===1){
         const d=r>0?1:-1;
-        c.style.cssText+=`;transform:translateX(${d*SPACING}px) scale(${SS}) rotateY(${-d*10}deg);z-index:15;opacity:${SO};box-shadow:0 8px 24px rgba(63,91,135,.15);pointer-events:auto`;
+        c.style.transform=`translateX(${d*SPACING}px) scale(${SS}) rotateY(${-d*10}deg)`;
+        c.style.zIndex=15; c.style.opacity=`${SO}`;
+        c.style.boxShadow='0 8px 24px rgba(63,91,135,.15)';
+        c.style.pointerEvents='auto';
       }else if(ar===2){
         const d=r>0?1:-1;
-        c.style.cssText+=`;transform:translateX(${d*SPACING*1.85}px) scale(.57) rotateY(${-d*18}deg);z-index:10;opacity:.4;box-shadow:none;pointer-events:none`;
+        c.style.transform=`translateX(${d*SPACING*1.85}px) scale(.57) rotateY(${-d*18}deg)`;
+        c.style.zIndex=10; c.style.opacity='.4';
+        c.style.boxShadow='none'; c.style.pointerEvents='none';
       }else{
         const d=r>0?1:-1;
-        c.style.cssText+=`;transform:translateX(${d*SPACING*2.5}px) scale(.42);z-index:0;opacity:0;pointer-events:none`;
+        c.style.transform=`translateX(${d*SPACING*2.5}px) scale(.42)`;
+        c.style.zIndex=0; c.style.opacity='0'; c.style.pointerEvents='none';
       }
     });
     dots.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===cur));
@@ -199,35 +211,42 @@ function initCoverflow(stage,dots,total){
 
   place(); layout();
 
-  // 点击侧卡切换
-  stage.addEventListener('click',e=>{
-    const card=e.target.closest('.tool-card');
-    if(!card)return;
-    const idx=+card.dataset.idx;
-    if(idx===cur)return;
-    e.preventDefault();
-    cur=idx; layout();
+  // 点击侧卡切换（直接绑到卡片上）
+  stage.querySelectorAll('.tool-card').forEach(card=>{
+    card.addEventListener('click',e=>{
+      const idx=+card.dataset.idx;
+      if(idx===cur)return; // 当前卡：允许跳转
+      e.preventDefault();
+      cur=idx; layout();
+    });
   });
 
-  // 拖拽
-  const track=stage.querySelector('.cf-track');
-  if(track){
-    let sx=0,drag=false;
-    track.addEventListener('pointerdown',e=>{sx=e.clientX;drag=false;track.setPointerCapture(e.pointerId);track.classList.add('dragging');});
-    track.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>12)drag=true;});
-    track.addEventListener('pointerup',e=>{
-      track.classList.remove('dragging');
-      if(drag){
-        e.preventDefault();
-        if(e.clientX-sx<-40)cur=Math.min(cur+1,total-1);
-        else if(e.clientX-sx>40)cur=Math.max(cur-1,0);
-        layout();
-      }
-      drag=false;
-    });
-  }
+  // 拖拽：绑到 stage（不是 cf-track），stage 是 position:relative 容器
+  let sx=0,sy=0,drag=false,moved=false;
+  stage.addEventListener('pointerdown',e=>{
+    // 只响应非卡片区域 或 任意位置（cur卡片除外）
+    sx=e.clientX; sy=e.clientY; drag=true; moved=false;
+    stage.setPointerCapture(e.pointerId);
+  },{passive:true});
+  stage.addEventListener('pointermove',e=>{
+    if(!drag)return;
+    if(Math.abs(e.clientX-sx)>8) moved=true;
+  },{passive:true});
+  stage.addEventListener('pointerup',e=>{
+    if(!drag)return;
+    drag=false;
+    if(moved){
+      const dx=e.clientX-sx;
+      // 循环
+      if(dx<-40) cur=(cur+1)%total;
+      else if(dx>40) cur=(cur-1+total)%total;
+      layout();
+    }
+    moved=false;
+  });
 
   dots.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{cur=i;layout();});
   window.addEventListener('resize',()=>{place();layout();});
 }
-</script></div></body><!-- deployed:1783952157 --></html>
+
+</script></div></body><!-- deployed:1783952655 --></html>
