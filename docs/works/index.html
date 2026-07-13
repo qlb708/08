@@ -81,11 +81,11 @@ function renderAllCards(){
     c.innerHTML=`<div class="tool-card-cover" style="background:${grads[i%grads.length]}"><span class="tc-icon">${x.icon}</span></div><div class="tool-card-body"><div class="tool-card-tag" style="color:${x.tone}">${x.tag}</div><div class="tool-card-title">${x.name}</div><div class="tool-card-desc">${x.desc}</div></div>`;
     stage.appendChild(c);
   });
-  dots.innerHTML=allItems.map((_,i)=>`<button class="${i===0?'on':''}" data-i="${i}"></button>`).join('');
+  dots.innerHTML=allItems.map((_,i)=>`<button class="${i===1?'on':''}" data-i="${i}"></button>`).join('');
   initCoverflow(stage,dots,allItems.length);
 }
 function initCoverflow(stage,dots,total){
-  let cur=0,cfInited=true;
+  let cur=1,cfInited=true;// 从第2张开始，左右都有卡片
   const CARD_W=200,CARD_H=280,SPACING=170,SIDE_SCALE=.75,SIDE_OP=.82;
   function centerCards(){
     const cx=Math.round(stage.offsetWidth/2-CARD_W/2);
@@ -176,4 +176,4 @@ groups.forEach((_,i)=>{
   if(!mt)return;
   initStackCarousel(mt);
 });document.querySelector('#tools .prev').onclick=()=>go(categoryTrack,'.category-card',-1);document.querySelector('#tools .next').onclick=()=>go(categoryTrack,'.category-card',1);categoryTrack.addEventListener('click',e=>{const c=e.target.closest('.category-card');if(c){renderProjects(+c.dataset.index);document.getElementById('details').scrollIntoView({behavior:'instant',block:'start'})}});detailTabs.onclick=e=>{const b=e.target.closest('[data-group]');if(b)renderProjects(+b.dataset.group)};document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>{var sc=document.getElementById('sc');var el=document.getElementById(b.dataset.target);if(sc&&el)sc.scrollTo({top:el.offsetTop,behavior:'instant'});});const sections=['home','about','tools','details','summary'];document.getElementById('sc').addEventListener('scroll',()=>{let cur=0;sections.forEach((id,i)=>{if(document.getElementById('sc').scrollTop>=document.getElementById(id).offsetTop-150)cur=i});document.querySelectorAll('.navlinks button').forEach((b,i)=>b.classList.toggle('on',i===cur))});renderAllCards();
-</script></div></body><!-- deployed:1783951703 --></html>
+</script></div></body><!-- deployed:1783951856 --></html>
