@@ -49,38 +49,33 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 .cf-dots button.on{width:22px;border-radius:3px;background:var(--blue)}
 
 /* ── Timeline sticky notes ── */
-.tl-wrap{position:relative;width:100%;overflow:hidden}
-.tl-scroll{display:flex;align-items:flex-end;gap:0;padding:20px 0 80px;overflow-x:auto;overflow-y:visible;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;user-select:none}
+.tl-wrap{position:relative;width:100%;height:100%;overflow:hidden}
+.tl-scroll{display:flex;align-items:center;gap:0;padding:16px 80px 72px;height:100%;box-sizing:border-box;overflow-x:auto;overflow-y:visible;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;user-select:none}
 .tl-scroll::-webkit-scrollbar{display:none}
 .tl-scroll.grabbing{cursor:grabbing}
 .tl-item{flex:0 0 auto;width:160px;display:flex;flex-direction:column;align-items:center;position:relative}
-/* 便利贴本体 */
-.sn-card{width:144px;min-height:160px;border-radius:4px 18px 18px 18px;padding:14px 14px 12px;background:#fff;box-shadow:0 6px 20px rgba(55,83,130,.13),0 1px 4px rgba(55,83,130,.08);display:flex;flex-direction:column;gap:6px;text-decoration:none;color:inherit;transition:transform .25s,box-shadow .25s;position:relative;cursor:pointer}
-.sn-card::before{content:'';position:absolute;top:-10px;left:0;width:28px;height:12px;border-radius:3px 3px 0 0;background:inherit;filter:brightness(.88)}
-.sn-card:hover{transform:translateY(-4px) rotate(0deg);box-shadow:0 14px 32px rgba(55,83,130,.18)}
-.sn-num{font-size:10px;font-weight:700;letter-spacing:.08em;opacity:.45;font-variant-numeric:tabular-nums}
-.sn-icon{font-size:22px;line-height:1}
-.sn-name{font-size:13px;font-weight:700;line-height:1.35;color:#1d2d48}
-.sn-why{font-size:11px;color:#6f7e98;line-height:1.55;margin-top:2px}
-.sn-tag{margin-top:auto;font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px;align-self:flex-start}
-/* 连接线：便利贴到轴的竖线 */
-.tl-stem{width:2px;background:repeating-linear-gradient(to bottom,#c8d6ee 0,#c8d6ee 5px,transparent 5px,transparent 10px);flex-shrink:0}
-/* 时间轴主线容器 */
-.tl-axis-wrap{position:absolute;bottom:20px;left:0;right:0;height:32px;pointer-events:none}
-.tl-axis{position:absolute;bottom:12px;left:60px;right:60px;height:0;border-bottom:2.5px dashed #b8cbe8}
-/* 箭头 */
-.tl-axis::after{content:'›';position:absolute;right:-14px;top:50%;transform:translateY(-50%);font-size:22px;color:#7ea0d4;line-height:1}
-/* 轴上圆点 */
-.tl-dot{position:absolute;bottom:6px;width:10px;height:10px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 0 0 1.5px #96b4d8;transform:translateX(-50%)}
-/* 奇偶交错：偶数便利贴在上方，奇数在下方（相对轴） */
+.sn-card{width:144px;min-height:158px;border-radius:3px 16px 16px 16px;padding:13px 13px 11px;background:#fff;box-shadow:0 6px 20px rgba(55,83,130,.13),0 1px 4px rgba(55,83,130,.08);display:flex;flex-direction:column;gap:5px;text-decoration:none;color:inherit;transition:transform .25s,box-shadow .25s;position:relative;cursor:pointer}
+.sn-card::before{content:'';position:absolute;top:-9px;left:0;width:26px;height:10px;border-radius:3px 3px 0 0;background:inherit;filter:brightness(.86)}
+.sn-card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(55,83,130,.2)}
+.sn-num{font-size:9px;font-weight:700;letter-spacing:.1em;opacity:.4;font-variant-numeric:tabular-nums}
+.sn-icon{font-size:20px;line-height:1}
+.sn-name{font-size:12.5px;font-weight:700;line-height:1.35;color:#1d2d48}
+.sn-why{font-size:10.5px;color:#6f7e98;line-height:1.55;margin-top:1px}
+.sn-tag{margin-top:auto;font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:99px;align-self:flex-start}
+.tl-pin{width:11px;height:11px;border-radius:50%;flex-shrink:0;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.tl-stem{width:2px;background:repeating-linear-gradient(to bottom,#c4d3eb 0,#c4d3eb 4px,transparent 4px,transparent 9px);flex-shrink:0}
+.tl-dot{width:9px;height:9px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px #96b4d8;flex-shrink:0}
 .tl-item.up{flex-direction:column-reverse}
-.tl-item.up .tl-stem{background:repeating-linear-gradient(to top,#c8d6ee 0,#c8d6ee 5px,transparent 5px,transparent 10px)}
+.tl-item.up .tl-stem{background:repeating-linear-gradient(to top,#c4d3eb 0,#c4d3eb 4px,transparent 4px,transparent 9px)}
+.tl-axis-row{position:absolute;bottom:32px;left:0;right:0;height:24px;pointer-events:none}
+.tl-axis-line{position:absolute;bottom:8px;left:40px;right:40px;height:0;border-bottom:2px dashed #b0c4e0}
+.tl-axis-line::after{content:'›';position:absolute;right:-12px;top:50%;transform:translateY(-52%);font-size:20px;color:#7ea0d4;line-height:1}
 </style></head><body>
 <div id="sc"><nav class="nav glass"><a class="brand" href="#home"><img class="avatar" src="hero-qin.png" alt="Qin">08's Portfolio</a><div class="navlinks"><button class="on" data-target="home">首页</button><button data-target="about">自我介绍</button><button data-target="tools">AI工具</button><button data-target="details">工具详情</button><button data-target="summary">总结</button></div><a class="contact" href="mailto:qinlinbo5@gmail.com">联系我　↗</a></nav>
 <div class="snap-frame" id="home"><section class="page hero glass" ><div><span class="eyebrow">AI Product Ops &amp; Travel Tech Builder</span><h1>把重复动作，<br>变成 <em>可复用的能力</em></h1><p class="lead">旅行规划产品方向 · Vibe Coding 实践</p><div class="chips"><span class="chip">ϟ AI Ops</span><span class="chip">▥ Data Insight</span><span class="chip">&lt;/&gt; Vibe Coding</span><span class="chip">✈ Travel Tech</span></div><div class="stats glass"><div class="stat"><b>9+</b><span>实验工具</span></div><div class="stat"><b>200+</b><span>运营场景沉淀</span></div><div class="stat"><b>∞</b><span>持续迭代中</span></div></div></div><div class="hero-art"><img src="hero-qin.png" alt="Qin 的数字工作台"><div class="float f1"><b>Data Insight</b><div class="line"></div><span style="color:#61a58e">+23.5%</span></div><div class="float f2"><b>下一站 · 北海道</b><div style="height:65px;border-radius:10px;background:linear-gradient(#d8e9f3 50%,#a4c5c6 51% 58%,#eadabf 59%)"></div></div><div class="float f3"><b>Ideas</b>✓ AI 自动化<br>✓ 数据分析<br>✓ 产品优化</div></div></section></div>
 <div class="snap-frame" id="about"><section class="page about glass" ><div class="about-grid"><article class="profile glass"><div><h3>用内容连接用户，用数据驱动增长。</h3><p>喜欢用内容和数据发现机会、解决问题，<br>在产品和用户之间搭建连接，<br>让每一次体验更有价值，让每一份增长更可持续。</p><div class="facts"><span>⌖ 上海</span><span>◇ 硕士在读 · 生物医学工程</span><span>♡ 旅行 · 足球 · 运营</span></div></div><img src="hero-qin.png" alt="Qin 个人形象"></article><div class="about-side"><article class="tags glass"><h3>◇　我的标签</h3><div><span>Vibe Coding</span><span>用户洞察</span><span>数据驱动</span><span>内容增长</span><span>旅行探索</span></div></article><article class="quote contact-card glass"><h3>◈&nbsp;&nbsp;联系我</h3><div class="contact-list"><div>📞&nbsp;18735585229</div><div>✉️&nbsp;qinlinbo5@gmail.com</div><div>📄&nbsp;<a href="#" class="resume-link">简历查看（即将上线）</a></div></div></article></div><div class="about-cards"><article class="info-card glass"><h3>◎　教育背景</h3><div style="font-size:15px;font-weight:600;color:var(--blue);margin-bottom:10px">秦琳波 <span style="font-size:12px;font-weight:400;color:var(--muted)">2003.5</span></div><div class="experience"><b>上海科技大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">生物医学工程 · 硕士（推免）</div></div><div class="experience"><b>上海理工大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">医学影像技术 · 本科</div></div></article><article class="info-card glass"><h3>▣　实习经历</h3><div class="experience"><span class="badge">2026.6–2026.8</span><b>小红书｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">AI 旅行规划产品</div></div><div class="experience"><span class="badge">2026.3–2026.6</span><b>传音控股｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">手机 AI 助手</div></div><div class="experience"><span class="badge">2025.12–2026.2</span><b>明基科技｜增长运营</b></div></article><article class="info-card glass"><h3>✦　项目经历</h3><div class="experience"><span class="badge">2026.4–至今</span><b>AI 工具作品集</b><div style="color:var(--muted);font-size:12px;margin-top:2px">Vibe Coding 实践，构建个人 AI 工具集</div></div><div class="experience"><span class="badge">2022.12–2024.6</span><b>垂直足球资讯自媒体矩阵</b><div style="color:var(--muted);font-size:12px;margin-top:2px">垂直足球资讯，17w 粉丝</div></div></article><article class="info-card glass"><h3>◌　生活里的我</h3><ul><li><b>▣ 旅行探索</b><br>探索不同城市，收集美好体验</li><li><b>⚽ 足球爱好者</b><br>看球、写内容、运营足球自媒体</li><li><b>▤ 持续学习</b><br>关注 AI、产品与市场</li></ul></article></div></div></section></div>
-<div class="snap-frame" id="tools"><section class="page tools-page glass" ><div class="page-head"><div><h2>AI工具 <em>✦</em></h2><p>从真实问题出发，把工具做成可复用能力。</p></div></div><div class="stack-stage"><button class="slider-arrow prev" aria-label="上一张">‹</button><div class="category-track" id="categoryTrack"></div><button class="slider-arrow next" aria-label="下一张">›</button></div><div class="dots" id="categoryDots"></div></section></div>
-<div class="snap-frame" id="details"><section class="page details glass" style="overflow:auto;justify-content:flex-start;padding:32px 40px 28px"><div class="page-head" style="margin-bottom:8px"><div><h2 style="font-size:clamp(22px,2.4vw,36px);margin:0 0 2px">工具详情</h2><p style="color:var(--muted);margin:0">按时间顺序 · 每个工具背后的故事</p></div></div><div class="tl-wrap" id="tlWrap"></div></section></div>
+<div class="snap-frame" id="tools"><section class="page tools-page glass" style="overflow:hidden;justify-content:flex-start;padding:32px 50px 0"><div class="page-head" style="margin-bottom:4px;flex-shrink:0"><div><h2>AI工具 <em>✦</em></h2><p>从真实问题出发，把工具做成可复用能力。</p></div></div><div class="tl-wrap" id="tlWrap" style="flex:1;position:relative;min-height:0"></div></section></div>
+<div class="snap-frame" id="details"><section class="page details glass"><div class="page-head"><div><h2>工具详情</h2><p>共 9 个项目，点击卡片直接体验。</p></div></div><div class="cf-stage" id="cfStage"></div><div class="cf-dots" id="cfDots"></div></section></div>
 <div class="snap-frame" id="summary"><section class="page summary glass" ><div class="summary-main"><div><h2>谢谢看到这里 <em>Thanks for stopping by</em></h2><p>感谢你的时间与关注。希望我的产品思维、数据洞察与 AI 能力，<br>能为团队创造价值，也期待与更多有趣的人一起做有意义的事。</p></div><div class="summary-art"><img src="hero-qin.png" alt="Qin"></div></div><div class="summary-cards"><article class="sum-card"><b>▦ 核心能力</b><p>产品运营全流程把控<br>数据洞察驱动决策<br>AI 工具应用与自动化</p></article><article class="sum-card"><b>▣ 实习亮点</b><p>洞察用户需求<br>推动产品优化<br>产出可落地方案</p></article><article class="sum-card"><b>&lt;/&gt; 工具方法论</b><p>Vibe Coding 原型开发<br>AI 自动化提升人效<br>结构化复盘持续优化</p></article><article class="sum-card"><b>◎ 关注方向</b><p>产品与数据深度结合<br>旅行与生活方式创新<br>AI 在产品中的落地</p></article><article class="sum-card"><b>☎ 联系方式</b><p>qinlinbo5@gmail.com<br>github.com/qlb708<br>欢迎交流与合作</p></article></div></section></div>
 <footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
 <script>
@@ -116,6 +111,7 @@ function navTo(id){
   });
   // 如果是 details 页，渲染 coverflow
   if(id==='details') setTimeout(renderAllCards,50);
+  if(id==='tools') setTimeout(renderTools,50);
 }
 
 // ── Scroll spy
@@ -136,6 +132,7 @@ function navTo(id){
         b.classList.toggle('on',b.dataset.target===best);
       });
       if(best==='details') setTimeout(renderAllCards,50);
+      if(best==='tools') setTimeout(renderTools,50);
     }
   });
 })();
@@ -150,135 +147,127 @@ document.querySelectorAll('[data-goto]').forEach(el=>{
 
 // ── Coverflow
 let cfReady=false;
-function renderAllCards(){
-  if(cfReady)return;
+let toolsReady=false;
+
+// ── renderTools：AI工具页 时间轴便利贴
+function renderTools(){
+  if(toolsReady)return;
   const wrap=document.getElementById('tlWrap');
-  if(!wrap)return;
-  if(wrap.offsetWidth<10){setTimeout(renderAllCards,100);return;}
+  if(!wrap||wrap.offsetWidth<10){setTimeout(renderTools,100);return;}
 
-  // 便利贴颜色主题（每张不同）
   const NOTES=[
-    {bg:'#fef9c3',pin:'#f5d400'},// 黄
-    {bg:'#d1fae5',pin:'#34d399'},// 绿
-    {bg:'#dbeafe',pin:'#60a5fa'},// 蓝
-    {bg:'#fce7f3',pin:'#f472b6'},// 粉
-    {bg:'#ede9fe',pin:'#a78bfa'},// 紫
-    {bg:'#ffedd5',pin:'#fb923c'},// 橙
-    {bg:'#e0f2fe',pin:'#38bdf8'},// 天蓝
-    {bg:'#fef3c7',pin:'#fbbf24'},// 琥珀
-    {bg:'#f0fdf4',pin:'#4ade80'},// 浅绿
+    {bg:'#fef9c3',pin:'#e6c700'},{bg:'#d1fae5',pin:'#34d399'},
+    {bg:'#dbeafe',pin:'#60a5fa'},{bg:'#fce7f3',pin:'#f472b6'},
+    {bg:'#ede9fe',pin:'#a78bfa'},{bg:'#ffedd5',pin:'#fb923c'},
+    {bg:'#e0f2fe',pin:'#38bdf8'},{bg:'#fef3c7',pin:'#fbbf24'},
+    {bg:'#f0fdf4',pin:'#4ade80'},
   ];
-
-  // 每个工具的"为什么做"说明
   const WHY=[
-    '复盘是成长的引擎，但大多数人没有习惯。想给自己一个每天5分钟沉淀的理由。',
-    '开完会总忘记谁说了什么、要做什么。试着用AI把会议还原成结构化纪要。',
+    '复盘是成长引擎，但大多数人没有习惯——想给自己一个每天5分钟沉淀的理由。',
+    '开完会总忘记谁说了什么、要做什么，试着用AI把会议还原成结构化纪要。',
     '每次在公司打文件都要猜打印机能不能识别颜色，索性做个工具一键检测。',
     '手动比较多个AI方案太费时间，想把"输入需求→多方案输出"变成一键流程。',
-    '旅行前最烦整理地点，想做个助手帮我把散乱的地点整理成可执行的清单。',
-    '相信命运这件事，本质是相信自己的选择。塔罗只是给旅行加点仪式感。',
+    '旅行前最烦整理地点，想做个助手把散乱的地点整理成可执行的清单。',
+    '相信命运，本质是相信自己的选择——塔罗只是给旅行加点仪式感。',
     '想可视化自己去过的地方，生成一张有温度的足迹卡，不只是个地图。',
-    '旅行风格很个人，想测一测自己是哪种旅行者，也可以和朋友比比默契。',
-    '城市有性格，人也有命。想用占卜的形式重新认识一座城市。',
+    '旅行风格很个人，想测一测自己是哪种旅行者，也能和朋友比比默契。',
+    '城市有性格，人也有命——想用占卜的形式重新认识一座城市。',
   ];
 
-  // 展平数据（与原来保持一致）
   const items=[];
-  groups.forEach(g=>{
-    g.items.forEach(x=>items.push({name:x[0],desc:x[1],url:x[2],icon:x[3],tag:g.title,tone:g.tone,tint:g.tint}));
-  });
+  groups.forEach(g=>g.items.forEach(x=>items.push({name:x[0],desc:x[1],url:x[2],icon:x[3],tag:g.title,tone:g.tone,tint:g.tint})));
+  const total=Math.min(items.length,WHY.length);
 
-  const total=Math.min(items.length, WHY.length);
-
-  // 构建滚动容器
   const scroll=document.createElement('div');
   scroll.className='tl-scroll';
-  scroll.id='tlScroll';
+
+  // 上下排的 stem 高度
+  const UP_H=[72,88,64,80,76,92,68,84,70];
+  const DN_H=[58,70,62,68,74,60,66,72,64];
 
   items.slice(0,total).forEach((x,i)=>{
     const isUp=i%2===0;
     const note=NOTES[i%NOTES.length];
-    const stemH=isUp?60+Math.random()*30:50+Math.random()*25;
+    const stemH=isUp?UP_H[i]||72:DN_H[i]||62;
+    const rot=((i%3)-1)*2.5;
 
     const item=document.createElement('div');
     item.className='tl-item '+(isUp?'up':'down');
-    item.style.marginBottom=isUp?'0':'0';
 
-    // 便利贴
     const card=document.createElement('a');
     card.className='sn-card';
     card.href=x.url||'#';
     card.target='_blank';
-    card.style.background=note.bg;
-    // 轻微随机旋转
-    const rot=(Math.random()-0.5)*4;
-    card.style.transform=`rotate(${rot.toFixed(1)}deg)`;
-    card.innerHTML=`
-      <div class="sn-num">${String(i+1).padStart(2,'0')}</div>
-      <div class="sn-icon">${x.icon}</div>
-      <div class="sn-name">${x.name}</div>
-      <div class="sn-why">${WHY[i]}</div>
-      <div class="sn-tag" style="background:${x.tint||'#eef'};color:${x.tone}">${x.tag}</div>`;
+    card.style.cssText=`background:${note.bg};transform:rotate(${rot}deg)`;
+    card.innerHTML=`<div class="sn-num">${String(i+1).padStart(2,'0')}</div><div class="sn-icon">${x.icon}</div><div class="sn-name">${x.name}</div><div class="sn-why">${WHY[i]}</div><div class="sn-tag" style="background:${x.tint||'#eef'};color:${x.tone}">${x.tag}</div>`;
 
-    // 钉子（便利贴顶部圆点装饰）
     const pin=document.createElement('div');
-    pin.style.cssText=`width:12px;height:12px;border-radius:50%;background:${note.pin};box-shadow:0 2px 6px rgba(0,0,0,.2);flex-shrink:0;z-index:2`;
+    pin.className='tl-pin';
+    pin.style.background=note.pin;
 
-    // 竖线
     const stem=document.createElement('div');
     stem.className='tl-stem';
     stem.style.height=stemH+'px';
 
-    // 轴上的点
     const dot=document.createElement('div');
     dot.className='tl-dot';
     dot.style.background=note.pin;
 
     if(isUp){
-      item.appendChild(card);
-      item.appendChild(pin);
-      item.appendChild(stem);
-      item.appendChild(dot);
+      item.appendChild(card);item.appendChild(pin);item.appendChild(stem);item.appendChild(dot);
     }else{
-      item.appendChild(dot);
-      item.appendChild(stem);
-      item.appendChild(pin);
-      item.appendChild(card);
+      item.appendChild(dot);item.appendChild(stem);item.appendChild(pin);item.appendChild(card);
     }
     scroll.appendChild(item);
   });
 
-  // 时间轴主线
-  const axisWrap=document.createElement('div');
-  axisWrap.className='tl-axis-wrap';
-  axisWrap.innerHTML='<div class="tl-axis"></div>';
+  const axisRow=document.createElement('div');
+  axisRow.className='tl-axis-row';
+  axisRow.innerHTML='<div class="tl-axis-line"></div>';
 
   wrap.innerHTML='';
   wrap.appendChild(scroll);
-  wrap.appendChild(axisWrap);
+  wrap.appendChild(axisRow);
 
-  // 拖拽滚动
-  let sx=0,dragging=false,scrollLeft=0;
-  scroll.addEventListener('pointerdown',e=>{
-    dragging=true; sx=e.clientX; scrollLeft=scroll.scrollLeft;
-    scroll.classList.add('grabbing');
-    scroll.setPointerCapture(e.pointerId);
-  });
-  scroll.addEventListener('pointermove',e=>{
-    if(!dragging)return;
-    scroll.scrollLeft=scrollLeft-(e.clientX-sx);
-  });
-  scroll.addEventListener('pointerup',()=>{dragging=false;scroll.classList.remove('grabbing');});
-
-  // 触控板横向滚动
+  // 拖拽 + 触控板
+  let sx=0,drag=false,sl=0;
+  scroll.addEventListener('pointerdown',e=>{drag=true;sx=e.clientX;sl=scroll.scrollLeft;scroll.classList.add('grabbing');scroll.setPointerCapture(e.pointerId);});
+  scroll.addEventListener('pointermove',e=>{if(drag)scroll.scrollLeft=sl-(e.clientX-sx);});
+  scroll.addEventListener('pointerup',()=>{drag=false;scroll.classList.remove('grabbing');});
   scroll.addEventListener('wheel',e=>{
-    if(Math.abs(e.deltaX)>Math.abs(e.deltaY)*0.3){
-      e.preventDefault();
-      scroll.scrollLeft+=e.deltaX;
-    }
+    if(Math.abs(e.deltaX)>Math.abs(e.deltaY)*0.3){e.preventDefault();scroll.scrollLeft+=e.deltaX;}
   },{passive:false});
 
+  toolsReady=true;
+}
+
+// ── renderAllCards：工具详情页 coverflow
+function renderAllCards(){
+  if(cfReady)return;
+  const stage=document.getElementById('cfStage');
+  const dots=document.getElementById('cfDots');
+  if(!stage||!dots)return;
+  if(stage.offsetWidth<10){setTimeout(renderAllCards,100);return;}
+
+  stage.querySelectorAll('.tool-card').forEach(c=>c.remove());
+
+  const items=[];
+  groups.forEach(g=>g.items.forEach(x=>items.push({name:x[0],desc:x[1],url:x[2],icon:x[3],tag:g.title,tone:g.tone,tint:g.tint})));
+
+  items.forEach((x,i)=>{
+    const a=document.createElement('a');
+    a.className='tool-card';
+    a.href=x.url||'#';
+    a.target='_blank';
+    a.dataset.idx=i;
+    a.innerHTML=`<div class="tool-card-cover" style="background:${GRADS[i%GRADS.length]}"><span class="tc-icon">${x.icon}</span></div><div class="tool-card-body"><div class="tool-card-tag" style="color:${x.tone}">${x.tag}</div><div class="tool-card-title">${x.name}</div><div class="tool-card-desc">${x.desc}</div></div>`;
+    stage.appendChild(a);
+  });
+
+  dots.innerHTML=items.map((_,i)=>`<button class="${i===0?'on':''}" data-i="${i}"></button>`).join('');
+
   cfReady=true;
+  initCoverflow(stage,dots,items.length);
 }
 
 function initCoverflow(stage,dots,total){
@@ -393,7 +382,8 @@ function initCoverflow(stage,dots,total){
   window.addEventListener('resize',()=>{place();layout(dragOffset);});
 }
 
-// ── 自动初始化：DOM ready 就尝试渲染（details 可能已在视口）
+// ── 自动初始化
+setTimeout(renderTools, 80);
 setTimeout(renderAllCards, 80);
 
 </script></div></body><!-- deployed:1783952655 --></html>
