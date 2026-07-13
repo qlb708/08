@@ -2,7 +2,7 @@
 *{box-sizing:border-box}html{scroll-behavior:auto;scroll-padding-top:106px}body{margin:0;padding-top:106px;background:#f3f7fd;color:#182843;font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}a{text-decoration:none;color:inherit}button{font:inherit;color:inherit}:root{--blue:#4a7bff;--mint:#73b99d;--peach:#ee9876;--ink:#182843;--muted:#6f7e98;--line:rgba(102,124,160,.13);--glass:rgba(255,255,255,.68);--shadow:0 18px 52px rgba(55,83,130,.09),inset 0 1px 0 rgba(255,255,255,.95);--wrap:min(1320px,calc(100vw - 28px))}
 body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 9% 8%,rgba(191,211,255,.32),transparent 25%),radial-gradient(circle at 88% 28%,rgba(218,237,227,.35),transparent 27%),linear-gradient(180deg,#f8faff,#f2f6fd 55%,#f8faff)}.glass{background:var(--glass);border:1px solid rgba(255,255,255,.94);box-shadow:var(--shadow);backdrop-filter:blur(24px)}
 .nav{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:50;width:var(--wrap);height:82px;padding:0 32px;border-radius:30px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;font-weight:850;font-size:17px}.avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;object-position:70% 16%;border:3px solid #fff;box-shadow:0 8px 20px rgba(55,83,130,.12)}.navlinks{display:flex;gap:12px}.navlinks button{border:0;background:none;padding:12px 18px;border-radius:999px;cursor:pointer;color:#596984;position:relative}.navlinks button.on{color:var(--blue);background:rgba(240,244,255,.8)}.navlinks button.on:after{content:"";position:absolute;bottom:3px;left:50%;width:5px;height:5px;border-radius:50%;background:var(--blue)}.contact{padding:12px 24px;border-radius:999px;border:1px solid #dce5f5;background:rgba(255,255,255,.72);box-shadow:0 8px 20px rgba(66,92,140,.07)}
-.page{width:var(--wrap);margin:24px auto;border-radius:30px;height:calc(100vh - 160px);padding:32px 54px 28px;position:relative;overflow:hidden;box-sizing:border-box}
+.page{width:var(--wrap);margin:24px auto;border-radius:30px;height:calc(100vh - 154px);padding:32px 54px 28px;position:relative;overflow:hidden;box-sizing:border-box}
 #home{overflow:visible}#summary{padding-bottom:44px}
 /* nav 顶部保护区：防止卡片内容透过 nav 显示 */
 body::before{
@@ -10,15 +10,6 @@ body::before{
   position:fixed;
   top:0;left:0;right:0;
   height:106px;
-  background:#f3f7fd;
-  z-index:49;
-  pointer-events:none;
-}
-body::after{
-  content:'';
-  position:fixed;
-  bottom:0;left:0;right:0;
-  height:20px;
   background:#f3f7fd;
   z-index:49;
   pointer-events:none;
