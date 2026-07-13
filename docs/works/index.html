@@ -57,123 +57,177 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 <footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
 <script>
 const groups=[{key:'daily',title:'日常提效',icon:'▦',count:'5 个实验工具',desc:'解决高频日常场景，提升个人与团队效率。',tone:'#4a7bff',tint:'#e8f1ff',cls:'c-blue',items:[['每日 Todo 和复盘','引导反思总结，持续成长','weekly-report/','✓'],['会议纪要拆解器','智能提取重点，生成结构化纪要','meeting-parser/','☷'],['打印机识别黑白','快速识别文档打印适配','print-helper/','▣'],['人群筛选','清洗筛选高价值用户','audience-filter/','♧'],['ABtest 和漏斗分析','设计并评估最优实验方案','growth-simulator/','△']]},{key:'demo',title:'活动 Demo',icon:'▣',count:'6 个创意项目',desc:'从想法到落地，探索有趣的产品实验。',tone:'#ed936f',tint:'#fff0e8',cls:'c-peach',items:[['AI 多方案对比','输入需求，生成多种优选方案','/08/web/compare/','⚖'],['AI 地点整理助手','自动整理地点，生成旅行清单','/08/web/midpoint/','●'],['塔罗命运旅途','抽一张塔罗牌，获取旅行灵感','/08/web/tarot/','✦'],['我的旅行足迹','标记城市，生成专属足迹卡','/08/activity/footprint/','◌'],['旅行达人鉴定','测出你的旅行角色和默契值','/08/activity/traveler/','♛'],['命运之地','城市命运测定与问卜仪式','/08/activity/fortune/','◇']]}];
-const categoryTrack=document.getElementById('categoryTrack'),categoryDots=document.getElementById('categoryDots'),projectTrack=document.getElementById('projectTrack'),detailTabs=document.getElementById('detailTabs');let activeGroup=0;
-categoryTrack.innerHTML=groups.map((g,i)=>{
-  const miniId=`mini-track-${i}`,dotId=`mini-dots-${i}`;
-  const coverGrads=['linear-gradient(135deg,#e8f1ff,#c5d8ff)','linear-gradient(135deg,#e8f7f0,#b8ecd5)','linear-gradient(135deg,#fff0e8,#ffd4b8)','linear-gradient(135deg,#f0e8ff,#d5b8ff)','linear-gradient(135deg,#e8f9ff,#b8e8ff)','linear-gradient(135deg,#fff8e8,#ffe4b8)'];
-  const cards=g.items.map((x,n)=>`<a class="mini-card" href="${x[2]}" data-idx="${n}"><div class="mini-card-cover" style="background:${coverGrads[n%coverGrads.length]}"><span style="font-size:32px;opacity:.9">${x[3]}</span></div><div class="mini-card-body"><div class="mini-card-title">${x[0]}</div><div class="mini-card-desc">${x[1]}</div><div class="mini-card-foot"><span class="mini-card-num">${String(n+1).padStart(2,'0')} / ${g.items.length}</span><span class="mini-card-arrow">→</span></div></div></a>`).join('');
-  const dots=g.items.map((_,n)=>`<button class="${n===0?'on':''}" data-slide="${n}"></button>`).join('');
-  return`<article class="category-card ${g.cls}" data-index="${i}" style="--tone:${g.tone}"><h3>${g.icon}　${g.title}</h3><div class="count">${g.count}</div><div class="mini-carousel-wrap"><div class="mini-track" id="${miniId}">${cards}</div></div><div class="mini-dots" id="${dotId}">${dots}</div><a class="cat-btn" href="#details" data-group="${i}">查看全部${g.key==='demo'?'项目':'工具'}　→</a></article>`;
-}).join('');categoryDots.innerHTML=groups.map((_,i)=>`<button class="${i===0?'on':''}" data-slide="${i}" aria-label="第${i+1}张"></button>`).join('');detailTabs.innerHTML=groups.map((g,i)=>`<button class="${i===0?'on':''}" data-group="${i}" style="--tone:${g.tone}">${g.icon} ${g.title}</button>`).join('');
+
+// ── 渐变色配置
+const GRADS=[
+  'linear-gradient(135deg,#dce8ff,#b8cfff)',
+  'linear-gradient(135deg,#d5f0e8,#a8e0c5)',
+  'linear-gradient(135deg,#ffe8d5,#ffc9a0)',
+  'linear-gradient(135deg,#ead5ff,#ccaaff)',
+  'linear-gradient(135deg,#ffd5e8,#ffaacc)',
+  'linear-gradient(135deg,#d5eeff,#a0d4ff)',
+  'linear-gradient(135deg,#fff3d5,#ffe099)',
+  'linear-gradient(135deg,#d5ffe8,#99ffcc)',
+  'linear-gradient(135deg,#ffd5d5,#ffaaaa)',
+  'linear-gradient(135deg,#e8ffd5,#bfffaa)',
+  'linear-gradient(135deg,#d5f5ff,#aaecff)',
+];
+
+// ── 当前活跃 section
+let activeSection='home';
+
+// ── navTo: 切换 section
+function navTo(id){
+  activeSection=id;
+  const sc=document.getElementById('sc');
+  const el=document.getElementById(id);
+  if(el&&sc) sc.scrollTo({top:el.offsetTop,behavior:'instant'});
+  // 更新 nav active
+  document.querySelectorAll('.nav-tabs button').forEach(b=>{
+    b.classList.toggle('on',b.dataset.section===id);
+  });
+  // 如果是 details 页，渲染 coverflow
+  if(id==='details') setTimeout(renderAllCards,50);
+}
+
+// ── Scroll spy
+(function(){
+  const sc=document.getElementById('sc');
+  if(!sc)return;
+  sc.addEventListener('scroll',()=>{
+    const sections=['home','about','aitool','details','summary'];
+    const st=sc.scrollTop+sc.clientHeight/2;
+    let best=sections[0];
+    sections.forEach(id=>{
+      const el=document.getElementById(id);
+      if(el&&el.offsetTop<=st) best=id;
+    });
+    if(best!==activeSection){
+      activeSection=best;
+      document.querySelectorAll('.nav-tabs button').forEach(b=>{
+        b.classList.toggle('on',b.dataset.section===best);
+      });
+      if(best==='details') setTimeout(renderAllCards,50);
+    }
+  });
+})();
+
+// ── Nav 绑定
+document.querySelectorAll('.nav-tabs button[data-section]').forEach(b=>{
+  b.onclick=()=>navTo(b.dataset.section);
+});
+document.querySelectorAll('[data-goto]').forEach(el=>{
+  el.onclick=()=>navTo(el.dataset.goto);
+});
+
+// ── Coverflow
+let cfReady=false;
 function renderAllCards(){
+  if(cfReady)return;
   const stage=document.querySelector('#details .cf-stage');
   const dots=document.getElementById('cfDots');
   if(!stage||!dots)return;
-  // 清理旧卡片（防止重复渲染）
+  // 检查 stage 是否有尺寸
+  if(stage.offsetWidth<10){ setTimeout(renderAllCards,100); return; }
+
+  // 清理
   stage.querySelectorAll('.tool-card').forEach(c=>c.remove());
-  dots.innerHTML='';
-  const allItems=[];
-  groups.forEach(g=>{g.items.forEach(x=>allItems.push({name:x[0],desc:x[1],url:x[2],icon:x[3],tag:g.title,tone:g.tone}));});
-  const grads=['linear-gradient(145deg,#dce8ff,#b8cfff)','linear-gradient(145deg,#d5f0e8,#a8e0c5)','linear-gradient(145deg,#ffe8d5,#ffc9a0)','linear-gradient(145deg,#ead5ff,#ccaaff)','linear-gradient(145deg,#ffd5e8,#ffaacc)','linear-gradient(145deg,#d5eeff,#a0d4ff)','linear-gradient(145deg,#fff3d5,#ffe099)','linear-gradient(145deg,#d5ffe8,#99ffcc)','linear-gradient(145deg,#ffd5d5,#ffaaaa)','linear-gradient(145deg,#e8ffd5,#bfffaa)','linear-gradient(145deg,#d5f5ff,#aaecff)'];
-  allItems.forEach((x,i)=>{
-    const c=document.createElement('a');
-    c.className='tool-card'; c.href=x.url; c.dataset.idx=i;
-    c.innerHTML=`<div class="tool-card-cover" style="background:${grads[i%grads.length]}"><span class="tc-icon">${x.icon}</span></div><div class="tool-card-body"><div class="tool-card-tag" style="color:${x.tone}">${x.tag}</div><div class="tool-card-title">${x.name}</div><div class="tool-card-desc">${x.desc}</div></div>`;
-    stage.appendChild(c);
+
+  // 展平数据
+  const items=[];
+  groups.forEach(g=>{
+    g.items.forEach(x=>items.push({name:x[0],desc:x[1],url:x[2],icon:x[3],tag:g.title,tone:g.tone}));
   });
-  dots.innerHTML=allItems.map((_,i)=>`<button class="${i===1?'on':''}" data-i="${i}"></button>`).join('');
-  initCoverflow(stage,dots,allItems.length);
+
+  // 创建卡片（直接挂到 stage）
+  items.forEach((x,i)=>{
+    const a=document.createElement('a');
+    a.className='tool-card';
+    a.href=x.url;
+    a.dataset.idx=i;
+    a.innerHTML=`
+      <div class="tool-card-cover" style="background:${GRADS[i%GRADS.length]}">
+        <span class="tc-icon">${x.icon}</span>
+      </div>
+      <div class="tool-card-body">
+        <div class="tool-card-tag" style="color:${x.tone}">${x.tag}</div>
+        <div class="tool-card-title">${x.name}</div>
+        <div class="tool-card-desc">${x.desc}</div>
+      </div>`;
+    stage.appendChild(a);
+  });
+
+  // dots
+  dots.innerHTML=items.map((_,i)=>`<button class="${i===1?'on':''}" data-i="${i}"></button>`).join('');
+
+  cfReady=true;
+  initCoverflow(stage,dots,items.length);
 }
+
 function initCoverflow(stage,dots,total){
-  let cur=1,cfInited=true;// 从第2张开始，左右都有卡片
-  const CARD_W=200,CARD_H=280,SPACING=170,SIDE_SCALE=.75,SIDE_OP=.82;
-  function centerCards(){
+  const CARD_W=200,CARD_H=280,SPACING=175,SS=.75,SO=.82;
+  let cur=Math.min(1,total-1);
+
+  function place(){
     const cx=Math.round(stage.offsetWidth/2-CARD_W/2);
     const cy=Math.round(stage.offsetHeight/2-CARD_H/2);
-    stage.querySelectorAll('.tool-card').forEach(c=>{c.style.left=cx+'px';c.style.top=cy+'px';});
+    stage.querySelectorAll('.tool-card').forEach(c=>{
+      c.style.left=cx+'px';
+      c.style.top=cy+'px';
+    });
   }
+
   function layout(){
     const cards=[...stage.querySelectorAll('.tool-card')];
     cards.forEach((c,i)=>{
-      const rel=i-cur,a=Math.abs(rel),dir=rel>0?1:-1;
-      if(a===0){c.style.cssText+=';transform:translateX(0) scale(1);z-index:20;opacity:1;box-shadow:0 20px 52px rgba(63,91,135,.28);pointer-events:auto';}
-      else if(a===1){c.style.cssText+=`;transform:translateX(${dir*SPACING}px) scale(${SIDE_SCALE}) rotateY(${-dir*12}deg);z-index:15;opacity:${SIDE_OP};box-shadow:0 10px 28px rgba(63,91,135,.14);pointer-events:auto`;}
-      else if(a===2){c.style.cssText+=`;transform:translateX(${dir*SPACING*1.9}px) scale(.56) rotateY(${-dir*20}deg);z-index:10;opacity:.38;box-shadow:none;pointer-events:none`;}
-      else{c.style.cssText+=`;transform:translateX(${dir*SPACING*2.5}px) scale(.4);z-index:0;opacity:0;pointer-events:none`;}
+      const r=i-cur, ar=Math.abs(r);
+      if(ar===0){
+        c.style.cssText+=';transform:translateX(0) scale(1);z-index:20;opacity:1;box-shadow:0 20px 52px rgba(63,91,135,.3);pointer-events:auto';
+      }else if(ar===1){
+        const d=r>0?1:-1;
+        c.style.cssText+=`;transform:translateX(${d*SPACING}px) scale(${SS}) rotateY(${-d*10}deg);z-index:15;opacity:${SO};box-shadow:0 8px 24px rgba(63,91,135,.15);pointer-events:auto`;
+      }else if(ar===2){
+        const d=r>0?1:-1;
+        c.style.cssText+=`;transform:translateX(${d*SPACING*1.85}px) scale(.57) rotateY(${-d*18}deg);z-index:10;opacity:.4;box-shadow:none;pointer-events:none`;
+      }else{
+        const d=r>0?1:-1;
+        c.style.cssText+=`;transform:translateX(${d*SPACING*2.5}px) scale(.42);z-index:0;opacity:0;pointer-events:none`;
+      }
     });
     dots.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===cur));
   }
-  centerCards(); layout();
+
+  place(); layout();
+
+  // 点击侧卡切换
   stage.addEventListener('click',e=>{
-    const c=e.target.closest('.tool-card'); if(!c)return;
-    const idx=+c.dataset.idx; if(idx===cur)return;
-    e.preventDefault(); cur=idx; layout();
-  });
-  let sx=0,drag=false;
-  const dragEl=stage.querySelector('.cf-track')||stage;
-  dragEl.addEventListener('pointerdown',e=>{sx=e.clientX;drag=false;dragEl.setPointerCapture(e.pointerId);dragEl.style.cursor='grabbing';});
-  dragEl.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10)drag=true;});
-  dragEl.addEventListener('pointerup',e=>{
-    dragEl.style.cursor='';
-    if(drag){e.preventDefault();if(e.clientX-sx<-40)cur=Math.min(cur+1,total-1);else if(e.clientX-sx>40)cur=Math.max(cur-1,0);layout();}
-    drag=false;
-  });
-  dots.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{cur=i;layout();});
-  window.addEventListener('resize',()=>{centerCards();layout();});
-}
-
-
-
-
-
-function initStackCarousel(trackEl){
-  const cards=[...trackEl.querySelectorAll('.mini-card')];
-  const total=cards.length;
-  let cur=0;
-  const offsets=[
-    {x:0,y:0,rot:0,scale:1,z:10,op:1},
-    {x:-8,y:-28,rot:-5,scale:.94,z:9,op:1},
-    {x:8,y:-52,rot:4,scale:.88,z:8,op:.9},
-    {x:0,y:-70,rot:0,scale:.82,z:7,op:0},
-  ];
-  function layout(){
-    cards.forEach((c,i)=>{
-      const rel=(i-cur+total)%total;
-      const o=offsets[Math.min(rel,offsets.length-1)];
-      c.style.transform=`translate(${o.x}px,${o.y}px) rotate(${o.rot}deg) scale(${o.scale})`;
-      c.style.zIndex=o.z;
-      c.style.opacity=o.op;
-      c.style.pointerEvents=(rel<3&&o.op>0)?'auto':'none';
-      c.style.boxShadow=rel===0?'0 12px 28px rgba(63,91,135,.22)':'0 6px 16px rgba(63,91,135,.13)';
-    });
-    const dotWrap=trackEl.parentElement?.nextElementSibling;
-    if(dotWrap)dotWrap.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===cur));
-  }
-  trackEl.addEventListener('click',e=>{
-    const card=e.target.closest('.mini-card');
+    const card=e.target.closest('.tool-card');
     if(!card)return;
     const idx=+card.dataset.idx;
     if(idx===cur)return;
-    e.preventDefault();e.stopPropagation();
-    cur=idx;layout();
+    e.preventDefault();
+    cur=idx; layout();
   });
-  let sx=0,drag=false;
-  trackEl.addEventListener('pointerdown',e=>{sx=e.clientX;drag=false;trackEl.setPointerCapture(e.pointerId);});
-  trackEl.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>8)drag=true;});
-  trackEl.addEventListener('pointerup',e=>{
-    if(drag){e.preventDefault();
-      if(e.clientX-sx<-30)cur=(cur+1)%total;
-      else if(e.clientX-sx>30)cur=(cur-1+total)%total;
-      layout();}
-    drag=false;
-  });
-  const dotWrap=trackEl.parentElement?.nextElementSibling;
-  if(dotWrap)dotWrap.querySelectorAll('button').forEach((b,i)=>b.onclick=e=>{e.stopPropagation();cur=i;layout();});
-  layout();
+
+  // 拖拽
+  const track=stage.querySelector('.cf-track');
+  if(track){
+    let sx=0,drag=false;
+    track.addEventListener('pointerdown',e=>{sx=e.clientX;drag=false;track.setPointerCapture(e.pointerId);track.classList.add('dragging');});
+    track.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>12)drag=true;});
+    track.addEventListener('pointerup',e=>{
+      track.classList.remove('dragging');
+      if(drag){
+        e.preventDefault();
+        if(e.clientX-sx<-40)cur=Math.min(cur+1,total-1);
+        else if(e.clientX-sx>40)cur=Math.max(cur-1,0);
+        layout();
+      }
+      drag=false;
+    });
+  }
+
+  dots.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{cur=i;layout();});
+  window.addEventListener('resize',()=>{place();layout();});
 }
-groups.forEach((_,i)=>{
-  const mt=document.getElementById(`mini-track-${i}`);
-  if(!mt)return;
-  initStackCarousel(mt);
-});document.querySelector('#tools .prev').onclick=()=>go(categoryTrack,'.category-card',-1);document.querySelector('#tools .next').onclick=()=>go(categoryTrack,'.category-card',1);categoryTrack.addEventListener('click',e=>{const c=e.target.closest('.category-card');if(c){renderProjects(+c.dataset.index);document.getElementById('details').scrollIntoView({behavior:'instant',block:'start'})}});detailTabs.onclick=e=>{const b=e.target.closest('[data-group]');if(b)renderProjects(+b.dataset.group)};document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>{var sc=document.getElementById('sc');var el=document.getElementById(b.dataset.target);if(sc&&el)sc.scrollTo({top:el.offsetTop,behavior:'instant'});});const sections=['home','about','tools','details','summary'];document.getElementById('sc').addEventListener('scroll',()=>{let cur=0;sections.forEach((id,i)=>{if(document.getElementById('sc').scrollTop>=document.getElementById(id).offsetTop-150)cur=i});document.querySelectorAll('.navlinks button').forEach((b,i)=>b.classList.toggle('on',i===cur))});renderAllCards();
-</script></div></body><!-- deployed:1783951856 --></html>
+</script></div></body><!-- deployed:1783952100 --></html>
