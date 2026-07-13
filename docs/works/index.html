@@ -33,10 +33,10 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 @media(max-width:1000px){.navlinks{display:none}.page{padding:90px 20px 30px;min-height:0}.hero{grid-template-columns:1fr}.hero-art{height:500px}.about-grid{grid-template-columns:1fr}.about-cards{grid-template-columns:1fr 1fr}.category-card{flex-basis:72vw}.summary-main{grid-template-columns:1fr}.summary-cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){:root{--wrap:calc(100vw - 14px)}.nav{height:68px;padding:0 15px}.avatar{width:42px;height:42px}.contact{padding:10px 13px}.page{padding:80px 16px 24px}.hero h1{font-size:43px}.stats{width:100%}.hero-art{height:350px}.hero-art>img{width:130%;right:-20%}.float{display:none}.profile{grid-template-columns:1fr;min-height:530px;padding:25px}.profile img{height:320px;right:-105px}.about-cards{grid-template-columns:1fr}.category-card{flex-basis:84vw;min-height:420px}.slider-arrow{width:40px;height:40px}.project-card{flex-basis:82vw}.summary-cards{grid-template-columns:1fr}.summary-art{height:330px}.footer{flex-direction:column;gap:8px}}
 .contact-card h3{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--dark)}.contact-list{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--dark)}.contact-list div{display:flex;align-items:center;gap:6px}.resume-link{color:var(--blue);text-decoration:none;font-weight:500}.resume-link:hover{text-decoration:underline}.contact-card h3{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--dark)}.contact-list{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--dark)}.contact-list div{display:flex;align-items:center;gap:6px}.resume-link{color:var(--blue);text-decoration:none;font-weight:500}@keyframes cardSlideIn{from{transform:translate(-30px,0) scale(.95);opacity:.6}to{}}
 /* Coverflow 轮播 */
-.cf-stage{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;perspective:1000px}
-.cf-track{width:100%;height:100%;position:relative;cursor:grab;user-select:none;overflow:visible}
+.cf-stage{flex:1;position:relative;overflow:hidden;perspective:900px}
+.cf-track{position:absolute;inset:0;cursor:grab;user-select:none;z-index:1}
 .cf-track.dragging{cursor:grabbing}
-.tool-card{position:absolute;left:50%;top:50%;width:200px;height:280px;border-radius:22px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .4s,box-shadow .4s;cursor:pointer}
+.tool-card{position:absolute;z-index:2;width:200px;height:280px;border-radius:22px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .4s,box-shadow .4s;cursor:pointer}
 .tool-card-cover{flex:1;display:flex;align-items:center;justify-content:center;font-size:46px;position:relative}
 .tool-card-cover .tc-icon{filter:drop-shadow(0 3px 6px rgba(0,0,0,.15))}
 .tool-card-body{padding:14px 16px 16px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px)}
@@ -89,52 +89,53 @@ function renderAllCards(){
 }
 function initCoverflow(track,dots,total){
   let cur=0;
-  const CARD_W=200,CARD_H=280,SPACING=170,SIDE_SCALE=.75,SIDE_OPACITY=.8;
-  // 动态获取 stage 中心并设置每张卡的基准位置
+  const CARD_W=200,CARD_H=280,SPACING=170,SIDE_SCALE=.75,SIDE_OPACITY=.82;
+  const stage=track.parentElement; // cf-stage (position:relative)
+  // 把所有卡片移到 stage 下（使 position:absolute 相对于 stage）
+  [...track.querySelectorAll('.tool-card')].forEach(c=>{stage.appendChild(c);});
+
   function centerCards(){
-    const stage=track.parentElement;
-    const cx=stage.offsetWidth/2;
-    const cy=stage.offsetHeight/2;
-    [...track.querySelectorAll('.tool-card')].forEach(c=>{
-      c.style.left=(cx-CARD_W/2)+'px';
-      c.style.top=(cy-CARD_H/2)+'px';
-      c.style.marginLeft='0';
-      c.style.marginTop='0';
+    const cx=stage.offsetWidth/2-CARD_W/2;
+    const cy=stage.offsetHeight/2-CARD_H/2;
+    [...stage.querySelectorAll('.tool-card')].forEach(c=>{
+      c.style.left=cx+'px';
+      c.style.top=cy+'px';
     });
   }
   function layout(){
-    const cards=[...track.querySelectorAll('.tool-card')];
+    const cards=[...stage.querySelectorAll('.tool-card')];
     cards.forEach((c,i)=>{
       const rel=i-cur;
       const absRel=Math.abs(rel);
       if(absRel===0){
-        c.style.transform=`translateX(0) scale(1) rotateY(0deg)`;
+        c.style.transform='translateX(0) scale(1) rotateY(0deg)';
         c.style.zIndex=20; c.style.opacity='1';
-        c.style.boxShadow='0 20px 48px rgba(63,91,135,.28)';
+        c.style.boxShadow='0 20px 52px rgba(63,91,135,.3)';
         c.style.pointerEvents='auto';
       } else if(absRel===1){
         const dir=rel>0?1:-1;
         c.style.transform=`translateX(${dir*SPACING}px) scale(${SIDE_SCALE}) rotateY(${-dir*12}deg)`;
         c.style.zIndex=15; c.style.opacity=`${SIDE_OPACITY}`;
-        c.style.boxShadow='0 10px 24px rgba(63,91,135,.15)';
+        c.style.boxShadow='0 10px 28px rgba(63,91,135,.16)';
         c.style.pointerEvents='auto';
       } else if(absRel===2){
         const dir=rel>0?1:-1;
-        c.style.transform=`translateX(${dir*SPACING*1.85}px) scale(.58) rotateY(${-dir*20}deg)`;
-        c.style.zIndex=10; c.style.opacity='.45';
+        c.style.transform=`translateX(${dir*SPACING*1.9}px) scale(.58) rotateY(${-dir*20}deg)`;
+        c.style.zIndex=10; c.style.opacity='.42';
         c.style.boxShadow='none';
         c.style.pointerEvents='none';
       } else {
         const dir=rel>0?1:-1;
-        c.style.transform=`translateX(${dir*SPACING*2.4}px) scale(.45)`;
+        c.style.transform=`translateX(${dir*SPACING*2.5}px) scale(.42)`;
         c.style.zIndex=0; c.style.opacity='0';
         c.style.pointerEvents='none';
       }
     });
     dots.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===cur));
   }
-  centerCards();
-  track.addEventListener('click',e=>{
+  centerCards(); layout();
+  // 用 stage 监听点击和拖拽（track 是覆盖层）
+  stage.addEventListener('click',e=>{
     const card=e.target.closest('.tool-card');
     if(!card)return;
     const idx=+card.dataset.idx;
@@ -155,8 +156,8 @@ function initCoverflow(track,dots,total){
   });
   dots.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{cur=i;layout();});
   window.addEventListener('resize',()=>{centerCards();layout();});
-  layout();
 }
+
 
 
 
@@ -210,4 +211,4 @@ groups.forEach((_,i)=>{
   if(!mt)return;
   initStackCarousel(mt);
 });document.querySelector('#tools .prev').onclick=()=>go(categoryTrack,'.category-card',-1);document.querySelector('#tools .next').onclick=()=>go(categoryTrack,'.category-card',1);categoryTrack.addEventListener('click',e=>{const c=e.target.closest('.category-card');if(c){renderProjects(+c.dataset.index);document.getElementById('details').scrollIntoView({behavior:'instant',block:'start'})}});detailTabs.onclick=e=>{const b=e.target.closest('[data-group]');if(b)renderProjects(+b.dataset.group)};document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>{var sc=document.getElementById('sc');var el=document.getElementById(b.dataset.target);if(sc&&el)sc.scrollTo({top:el.offsetTop,behavior:'instant'});});const sections=['home','about','tools','details','summary'];document.getElementById('sc').addEventListener('scroll',()=>{let cur=0;sections.forEach((id,i)=>{if(document.getElementById('sc').scrollTop>=document.getElementById(id).offsetTop-150)cur=i});document.querySelectorAll('.navlinks button').forEach((b,i)=>b.classList.toggle('on',i===cur))});renderAllCards();
-</script></div></body><!-- deployed:1783950868 --></html>
+</script></div></body><!-- deployed:1783951040 --></html>
