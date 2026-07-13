@@ -95,7 +95,7 @@ function navTo(id){
   const sc=document.getElementById('sc');
   if(!sc)return;
   sc.addEventListener('scroll',()=>{
-    const sections=['home','about','aitool','details','summary'];
+    const sections=['home','about','tools','details','summary'];
     const st=sc.scrollTop+sc.clientHeight/2;
     let best=sections[0];
     sections.forEach(id=>{
@@ -230,4 +230,4 @@ function initCoverflow(stage,dots,total){
   dots.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{cur=i;layout();});
   window.addEventListener('resize',()=>{place();layout();});
 }
-</script></div></body><!-- deployed:1783952100 --></html>
+</script></div></body><!-- deployed:1783952157 --></html>
