@@ -33,7 +33,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 @media(max-width:1000px){.navlinks{display:none}.page{padding:90px 20px 30px;min-height:0}.hero{grid-template-columns:1fr}.hero-art{height:500px}.about-grid{grid-template-columns:1fr}.about-cards{grid-template-columns:1fr 1fr}.category-card{flex-basis:72vw}.summary-main{grid-template-columns:1fr}.summary-cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){:root{--wrap:calc(100vw - 14px)}.nav{height:68px;padding:0 15px}.avatar{width:42px;height:42px}.contact{padding:10px 13px}.page{padding:80px 16px 24px}.hero h1{font-size:43px}.stats{width:100%}.hero-art{height:350px}.hero-art>img{width:130%;right:-20%}.float{display:none}.profile{grid-template-columns:1fr;min-height:530px;padding:25px}.profile img{height:320px;right:-105px}.about-cards{grid-template-columns:1fr}.category-card{flex-basis:84vw;min-height:420px}.slider-arrow{width:40px;height:40px}.project-card{flex-basis:82vw}.summary-cards{grid-template-columns:1fr}.summary-art{height:330px}.footer{flex-direction:column;gap:8px}}
 .contact-card h3{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--dark)}.contact-list{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--dark)}.contact-list div{display:flex;align-items:center;gap:6px}.resume-link{color:var(--blue);text-decoration:none;font-weight:500}.resume-link:hover{text-decoration:underline}.contact-card h3{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--dark)}.contact-list{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--dark)}.contact-list div{display:flex;align-items:center;gap:6px}.resume-link{color:var(--blue);text-decoration:none;font-weight:500}@keyframes cardSlideIn{from{transform:translate(-30px,0) scale(.95);opacity:.6}to{}}
 /* Coverflow 轮播 */
-.cf-stage{flex:1;position:relative;overflow:hidden;perspective:900px;cursor:grab}
+.cf-stage{flex:1;position:relative;overflow:hidden;cursor:grab}
 .cf-track{position:absolute;inset:0;cursor:grab;user-select:none;z-index:1}
 .cf-track.dragging{cursor:grabbing}
 .tool-card{position:absolute;z-index:2;width:200px;height:280px;border-radius:22px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .4s,box-shadow .4s;cursor:pointer}
@@ -191,13 +191,13 @@ function initCoverflow(stage,dots,total){
         c.style.pointerEvents='auto';
       }else if(ar===1){
         const d=r>0?1:-1;
-        c.style.transform=`translateX(${d*SPACING}px) scale(${SS}) rotateY(${-d*10}deg)`;
+        c.style.transform=`translateX(${d*SPACING}px) scale(${SS})`;
         c.style.zIndex=15; c.style.opacity=`${SO}`;
         c.style.boxShadow='0 8px 24px rgba(63,91,135,.15)';
         c.style.pointerEvents='auto';
       }else if(ar===2){
         const d=r>0?1:-1;
-        c.style.transform=`translateX(${d*SPACING*1.85}px) scale(.57) rotateY(${-d*18}deg)`;
+        c.style.transform=`translateX(${d*SPACING*1.85}px) scale(.57)`;
         c.style.zIndex=10; c.style.opacity='.4';
         c.style.boxShadow='none'; c.style.pointerEvents='none';
       }else{
