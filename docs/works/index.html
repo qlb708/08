@@ -245,31 +245,23 @@ function renderTools(){
   wrap.appendChild(scroll);
   wrap.appendChild(axisRow);
 
-  // 拖拽 + 触控板（不用 setPointerCapture，确保 <a> click 可触发）
-  let sx=0,drag=false,sl=0,moved=false;
-  scroll.addEventListener('mousedown',e=>{
-    drag=true;moved=false;sx=e.clientX;sl=scroll.scrollLeft;
-    e.preventDefault(); // 阻止文字选中，但不影响 click
-  });
-  window.addEventListener('mousemove',e=>{
-    if(!drag)return;
-    const dx=e.clientX-sx;
-    if(Math.abs(dx)>6){moved=true;scroll.classList.add('grabbing');scroll.scrollLeft=sl-dx;}
-  });
-  window.addEventListener('mouseup',()=>{
-    if(!drag)return;
-    drag=false;scroll.classList.remove('grabbing');
-    // 短暂标记 moved，让下面的 click 拦截
-    setTimeout(()=>{moved=false;},50);
-  });
-  // 拦截拖拽后的 click，不阻止正常 click
-  scroll.addEventListener('click',e=>{
-    if(moved){e.preventDefault();e.stopPropagation();}
-  },true);
-  // 触控板横向滚动
+  // 触控板横向滚动（主要交互方式）
   scroll.addEventListener('wheel',e=>{
     if(Math.abs(e.deltaX)>Math.abs(e.deltaY)*0.3){e.preventDefault();scroll.scrollLeft+=e.deltaX;}
   },{passive:false});
+  // 鼠标拖拽：只在非 <a> 区域响应，不干扰便利贴点击
+  let sx=0,drag=false,sl=0;
+  scroll.addEventListener('pointerdown',e=>{
+    if(e.target.closest('a')) return;
+    drag=true;sx=e.clientX;sl=scroll.scrollLeft;
+    scroll.setPointerCapture(e.pointerId);
+  },{passive:true});
+  scroll.addEventListener('pointermove',e=>{
+    if(!drag)return;
+    scroll.classList.add('grabbing');
+    scroll.scrollLeft=sl-(e.clientX-sx);
+  },{passive:true});
+  scroll.addEventListener('pointerup',()=>{drag=false;scroll.classList.remove('grabbing');});
 
   toolsReady=true;
 }
