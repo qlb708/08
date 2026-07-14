@@ -514,9 +514,29 @@ input[type=date], select { height: 38px; cursor: pointer; }
           <div class="note-ph-t">填写左侧内容，AI 帮你提炼</div>
         </div>
       </div>
+      <!-- 小日历 -->
+      <div class="card" style="flex:0 0 auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span class="card-lbl" id="rcalTitle"></span>
+          <div style="display:flex;gap:3px">
+            <button class="cal-nav-btn" onclick="rcalMove(-1)">‹</button>
+            <button class="cal-nav-btn" onclick="rcalMove(1)">›</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="rcalGrid"></div>
+      </div>
+
       <!-- 历史 -->
       <div class="card grow">
-        <div class="card-lbl"><span>📅</span> 历史复盘</div>
+        <div class="card-lbl" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <span><span>📅</span> 历史复盘</span>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <input type="date" id="filterFrom" style="height:28px;font-size:11px;padding:4px 8px;border-radius:8px;width:120px" onchange="renderHist()">
+            <span style="font-size:11px;color:var(--muted)">—</span>
+            <input type="date" id="filterTo" style="height:28px;font-size:11px;padding:4px 8px;border-radius:8px;width:120px" onchange="renderHist()">
+            <button onclick="clearFilter()" style="font-size:11px;padding:3px 9px;border-radius:7px;border:1px solid rgba(100,130,200,.2);background:white;color:var(--muted);cursor:pointer">清除</button>
+          </div>
+        </div>
         <div class="hist-wrap" id="histWrap">
           <div class="hist-empty" id="histEmpty">
             <span style="font-size:22px">🗂</span>
@@ -772,7 +792,13 @@ function cpNote() {
 function renderHist() {
   const wrap = document.getElementById('histWrap');
   wrap.querySelectorAll('.hi').forEach(el => el.remove());
-  const recs = getRec();
+  const fromEl = document.getElementById('filterFrom');
+  const toEl = document.getElementById('filterTo');
+  const from = fromEl && fromEl.value ? fromEl.value : null;
+  const to = toEl && toEl.value ? toEl.value : null;
+  let recs = getRec();
+  if(from) recs = recs.filter(r => r.date >= from);
+  if(to)   recs = recs.filter(r => r.date <= to);
   document.getElementById('histEmpty').style.display = recs.length ? 'none' : '';
   recs.forEach((r,i) => {
     const div = document.createElement('div'); div.className = 'hi';
@@ -1005,8 +1031,78 @@ function renderWeek() {
 }
 
 // ── Init ──
+
+// ── 复盘小日历 ──
+let rcalY = new Date().getFullYear(), rcalM = new Date().getMonth();
+let selRecapDate = TODAY;
+
+function rcalMove(d) {
+  rcalM += d;
+  if(rcalM < 0){ rcalM=11; rcalY--; }
+  if(rcalM > 11){ rcalM=0; rcalY++; }
+  renderRcal();
+}
+
+function renderRcal() {
+  const grid = document.getElementById('rcalGrid');
+  if(!grid) return;
+  document.getElementById('rcalTitle').textContent = rcalY + ' 年 ' + (rcalM+1) + ' 月';
+  grid.innerHTML = '';
+  ['日','一','二','三','四','五','六'].forEach(w => {
+    const d = document.createElement('div'); d.className='cw'; d.textContent=w; grid.appendChild(d);
+  });
+  const first = new Date(rcalY,rcalM,1).getDay();
+  const dim = new Date(rcalY,rcalM+1,0).getDate();
+  const diprev = new Date(rcalY,rcalM,0).getDate();
+  const recDates = new Set(getRec().map(r=>r.date));
+
+  for(let i=0;i<first;i++){
+    const d=document.createElement('div'); d.className='cd om'; d.textContent=diprev-first+1+i; grid.appendChild(d);
+  }
+  for(let day=1;day<=dim;day++){
+    const s=rcalY+'-'+String(rcalM+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const d=document.createElement('div'); d.className='cd';
+    if(s===TODAY) d.classList.add('today');
+    if(s===selRecapDate) d.classList.add('sel');
+    if(recDates.has(s)) d.classList.add('has-r');
+    d.textContent=day;
+    d.onclick=(function(ss){ return function(){ selRecapDate=ss; renderRcal(); showRecapForDate(ss); }; })(s);
+    grid.appendChild(d);
+  }
+  const total=first+dim, rem=total%7===0?0:7-total%7;
+  for(let i=1;i<=rem;i++){
+    const d=document.createElement('div'); d.className='cd om'; d.textContent=i; grid.appendChild(d);
+  }
+}
+
+function showRecapForDate(s) {
+  const recs = getRec().filter(r=>r.date===s);
+  const box = document.getElementById('noteBox');
+  if(recs.length) {
+    const r = recs[0];
+    const label = r.mode==='intern' ? '🏢 实习' : '🔬 科研';
+    const tagCls = r.mode==='intern' ? 'i' : 'r';
+    box.className = 'note-box';
+    box.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:8px">查看 '+fmtD(s)+' 的复盘</div>'
+      + '<div class="note-content">'+r.note.replace(/</g,'&lt;')+'</div>'
+      + '<div class="note-meta"><span class="ntag '+tagCls+'">'+label+'</span>'
+      + '<span class="ndate">'+s+'</span></div>';
+  } else {
+    box.className = 'note-box empty';
+    const msg = s===TODAY ? '填写左侧内容，AI 帮你提炼' : fmtD(s)+' 还没有复盘记录';
+    box.innerHTML = '<div class="note-ph">📝</div><div class="note-ph-t">'+msg+'</div>';
+  }
+}
+
+function clearFilter() {
+  document.getElementById('filterFrom').value = '';
+  document.getElementById('filterTo').value = '';
+  renderHist();
+}
+
+// ── Init ──
 renderHist(); upStreak(); renderGoals(); renderCal(); renderDayTasks(TODAY); renderWeek();
-selectDay(TODAY);
+selectDay(TODAY); renderRcal();
 const defD = new Date(); defD.setDate(defD.getDate()+7);
 document.getElementById('dl').value = ds(defD);
 </script>
