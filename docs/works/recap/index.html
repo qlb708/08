@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成长复盘 · 08's Tools</title>
+<style>
+  :root {
+    --bg: #eef2f9;
+    --glass: rgba(255,255,255,0.72);
+    --glass2: rgba(255,255,255,0.5);
+    --border: rgba(255,255,255,0.9);
+    --shadow: 0 8px 32px rgba(80,120,200,0.10), 0 1.5px 6px rgba(80,120,200,0.07);
+    --blue: #4a7cf7;
+    --blue-soft: #dce8ff;
+    --text: #1a2540;
+    --muted: #7a8fae;
+    --intern: #4a7cf7;
+    --intern-soft: #dce8ff;
+    --research: #7c5cf7;
+    --research-soft: #e8dcff;
+    --radius: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--text);
+    background-image: radial-gradient(ellipse at 20% 20%, rgba(180,200,255,0.25) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 80%, rgba(200,180,255,0.18) 0%, transparent 55%);
+  }
+
+  /* ── 顶部导航 ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-back {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    transition: color .2s;
+  }
+  .topbar-back:hover { color: var(--blue); }
+  .topbar-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .topbar-tag {
+    font-size: 11px; padding: 4px 12px; border-radius: 99px;
+    background: var(--blue-soft); color: var(--blue); font-weight: 600;
+  }
+
+  /* ── 主布局 ── */
+  .main {
+    max-width: 1100px; margin: 0 auto;
+    padding: 32px 24px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+  }
+
+  /* ── 标题区 ── */
+  .hero {
+    grid-column: 1 / -1;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 16px;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 3vw, 40px);
+    font-weight: 800; line-height: 1.2;
+    letter-spacing: -.02em;
+  }
+  .hero h1 em { color: var(--blue); font-style: normal; }
+  .hero p { font-size: 14px; color: var(--muted); margin-top: 8px; }
+  .streak-badge {
+    flex-shrink: 0;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .streak-num { font-size: 28px; font-weight: 800; color: var(--blue); line-height: 1; }
+  .streak-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── 卡片通用 ── */
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .08em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title span { font-size: 16px; }
+
+  /* ── 输入区卡片 ── */
+  .input-card { grid-row: 2; }
+
+  /* Tab 切换 */
+  .tab-row {
+    display: flex; gap: 8px;
+    background: rgba(100,130,200,0.08);
+    border-radius: 12px; padding: 4px;
+  }
+  .tab-btn {
+    flex: 1; padding: 8px 0; border: none; border-radius: 9px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    background: transparent; color: var(--muted);
+    transition: all .2s;
+  }
+  .tab-btn.active.intern { background: var(--intern); color: #fff; box-shadow: 0 2px 10px rgba(74,124,247,.3); }
+  .tab-btn.active.research { background: var(--research); color: #fff; box-shadow: 0 2px 10px rgba(124,92,247,.3); }
+
+  /* 表单 */
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label {
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .form-label .emoji { font-size: 14px; }
+  textarea, input[type=text] {
+    width: 100%; border: 1.5px solid rgba(100,130,200,0.15);
+    border-radius: 12px; padding: 10px 14px;
+    font-size: 13px; color: var(--text); resize: none;
+    background: rgba(255,255,255,0.7);
+    font-family: inherit; line-height: 1.6;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(74,124,247,0.12);
+  }
+  textarea.research-focus:focus {
+    border-color: var(--research);
+    box-shadow: 0 0 0 3px rgba(124,92,247,0.12);
+  }
+  textarea { height: 72px; }
+  textarea.sm { height: 56px; }
+
+  /* 能量值 */
+  .energy-row { display: flex; gap: 8px; align-items: center; }
+  .energy-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .energy-dots { display: flex; gap: 6px; }
+  .energy-dot {
+    width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(100,130,200,0.2);
+    cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+    transition: transform .15s, border-color .15s;
+    background: transparent;
+  }
+  .energy-dot:hover { transform: scale(1.15); }
+  .energy-dot.selected { border-color: var(--blue); background: var(--blue-soft); }
+
+  /* 生成按钮 */
+  .gen-btn {
+    width: 100%; padding: 13px; border: none; border-radius: 13px;
+    font-size: 14px; font-weight: 700; cursor: pointer; color: #fff;
+    background: linear-gradient(135deg, var(--intern) 0%, #6a9fff 100%);
+    box-shadow: 0 4px 16px rgba(74,124,247,.35);
+    transition: transform .15s, box-shadow .15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .gen-btn.research-mode {
+    background: linear-gradient(135deg, var(--research) 0%, #a07cff 100%);
+    box-shadow: 0 4px 16px rgba(124,92,247,.35);
+  }
+  .gen-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(74,124,247,.4); }
+  .gen-btn:active { transform: translateY(0); }
+  .gen-btn.loading { opacity: .7; cursor: not-allowed; }
+
+  /* ── 输出区卡片 ── */
+  .output-card { grid-row: 2; display: flex; flex-direction: column; gap: 16px; }
+
+  /* 今日笔记 */
+  .note-box {
+    flex: 0 0 auto;
+    background: linear-gradient(135deg, rgba(74,124,247,0.06) 0%, rgba(124,92,247,0.04) 100%);
+    border: 1.5px solid rgba(74,124,247,0.15);
+    border-radius: 16px; padding: 18px 20px;
+    min-height: 120px; position: relative;
+  }
+  .note-box.empty {
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px; color: var(--muted);
+  }
+  .note-placeholder-icon { font-size: 32px; opacity: .4; }
+  .note-placeholder-text { font-size: 13px; opacity: .6; }
+  .note-content { font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
+  .note-meta { margin-top: 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .note-tag {
+    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px;
+  }
+  .note-tag.intern { background: var(--intern-soft); color: var(--intern); }
+  .note-tag.research { background: var(--research-soft); color: var(--research); }
+  .note-date { font-size: 11px; color: var(--muted); }
+  .copy-btn {
+    margin-left: auto; font-size: 11px; padding: 4px 12px; border-radius: 8px;
+    border: 1px solid rgba(74,124,247,0.2); background: white;
+    color: var(--blue); cursor: pointer; font-weight: 600;
+    transition: background .2s;
+  }
+  .copy-btn:hover { background: var(--blue-soft); }
+
+  /* 历史时间线 */
+  .history-wrap {
+    flex: 1; overflow-y: auto; min-height: 0;
+    display: flex; flex-direction: column; gap: 10px;
+    scrollbar-width: thin; scrollbar-color: rgba(100,130,200,0.2) transparent;
+    max-height: 340px;
+  }
+  .history-empty {
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 6px; color: var(--muted);
+    padding: 32px 0; font-size: 13px;
+  }
+  .history-item {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(200,215,240,0.5);
+    border-radius: 14px; padding: 12px 16px;
+    cursor: pointer; transition: box-shadow .2s, transform .15s;
+    position: relative;
+  }
+  .history-item:hover { box-shadow: 0 4px 16px rgba(74,124,247,0.1); transform: translateX(2px); }
+  .history-item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .history-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .history-dot.intern { background: var(--intern); }
+  .history-dot.research { background: var(--research); }
+  .history-date { font-size: 11px; color: var(--muted); }
+  .history-energy { font-size: 12px; }
+  .history-del {
+    margin-left: auto; font-size: 11px; color: var(--muted);
+    border: none; background: none; cursor: pointer; padding: 2px 6px;
+    border-radius: 6px; transition: background .15s, color .15s;
+  }
+  .history-del:hover { background: #fee2e2; color: #ef4444; }
+  .history-preview { font-size: 12px; color: var(--text); line-height: 1.6; opacity: .8; }
+  .history-preview-clamp {
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  /* loading spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4);
+    border-top-color: white; border-radius: 50%;
+    animation: spin .7s linear infinite; }
+
+  /* ── 响应式 ── */
+  @media (max-width: 700px) {
+    .main { grid-template-columns: 1fr; }
+    .hero { flex-direction: column; align-items: flex-start; }
+    .output-card { grid-row: auto; }
+    .history-wrap { max-height: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<nav class="topbar">
+  <a href="../" class="topbar-back">← 产品运营工具集</a>
+  <span class="topbar-title">成长复盘</span>
+  <span class="topbar-tag">日常提效</span>
+</nav>
+
+<div class="main">
+
+  <!-- 标题区 -->
+  <div class="hero">
+    <div>
+      <h1>把每一天，<br>变成<em> 可沉淀的经验</em></h1>
+      <p>实习 · 科研 · 每日复盘 · AI 提炼成长笔记</p>
+    </div>
+    <div class="streak-badge">
+      <div class="streak-num" id="streakNum">0</div>
+      <div class="streak-label">🔥 连续记录天</div>
+    </div>
+  </div>
+
+  <!-- 左：输入区 -->
+  <div class="card input-card">
+    <div class="card-title"><span>✍️</span> 今天的复盘</div>
+
+    <!-- Tab -->
+    <div class="tab-row">
+      <button class="tab-btn active intern" data-mode="intern" onclick="switchMode('intern')">🏢 实习</button>
+      <button class="tab-btn research" data-mode="research" onclick="switchMode('research')">🔬 科研</button>
+    </div>
+
+    <!-- 实习表单 -->
+    <div id="form-intern">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">💼</span> 今天做了什么</label>
+          <textarea id="i-did" placeholder="e.g. 跟着导师做了用户访谈，整理了5份用户反馈..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">💡</span> 学到 / 观察到什么</label>
+          <textarea id="i-learned" placeholder="e.g. 发现用户最在意的不是功能多，而是流程顺..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🪨</span> 遇到的卡点</label>
+          <textarea class="sm" id="i-block" placeholder="e.g. 数据权限还没申请到，问了两个人都没回..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🎯</span> 明天要做</label>
+          <textarea class="sm" id="i-next" placeholder="e.g. 把访谈整理成结构化的需求文档..."></textarea>
+        </div>
+        <div class="energy-row">
+          <span class="energy-label">今日状态</span>
+          <div class="energy-dots" id="energy-intern">
+            <button class="energy-dot" data-v="1" onclick="setEnergy('intern',1)">😩</button>
+            <button class="energy-dot" data-v="2" onclick="setEnergy('intern',2)">😐</button>
+            <button class="energy-dot" data-v="3" onclick="setEnergy('intern',3)">🙂</button>
+            <button class="energy-dot" data-v="4" onclick="setEnergy('intern',4)">😄</button>
+            <button class="energy-dot" data-v="5" onclick="setEnergy('intern',5)">🚀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 科研表单 -->
+    <div id="form-research" style="display:none">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🧪</span> 今天推进了什么</label>
+          <textarea id="r-did" placeholder="e.g. 跑完了第一组对照实验，结果比预期好一点..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🔍</span> 新发现 / 新想法</label>
+          <textarea id="r-learned" placeholder="e.g. 发现 baseline 方法在长文本上有明显退化..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🌀</span> 还没搞清楚的</label>
+          <textarea class="sm" id="r-block" placeholder="e.g. 为什么 epoch 增加之后 loss 反而震荡..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">📌</span> 下一步验证方向</label>
+          <textarea class="sm" id="r-next" placeholder="e.g. 试试降低 learning rate，看能不能稳住..."></textarea>
+        </div>
+        <div class="energy-row">
+          <span class="energy-label">今日状态</span>
+          <div class="energy-dots" id="energy-research">
+            <button class="energy-dot" data-v="1" onclick="setEnergy('research',1)">😩</button>
+            <button class="energy-dot" data-v="2" onclick="setEnergy('research',2)">😐</button>
+            <button class="energy-dot" data-v="3" onclick="setEnergy('research',3)">🙂</button>
+            <button class="energy-dot" data-v="4" onclick="setEnergy('research',4)">😄</button>
+            <button class="energy-dot" data-v="5" onclick="setEnergy('research',5)">🚀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generate()">
+      <span>✨</span> AI 提炼今日成长笔记
+    </button>
+  </div>
+
+  <!-- 右：输出区 -->
+  <div class="card output-card">
+    <div class="card-title"><span>📝</span> 今日笔记</div>
+
+    <!-- 生成的笔记 -->
+    <div class="note-box empty" id="noteBox">
+      <div class="note-placeholder-icon">🌱</div>
+      <div class="note-placeholder-text">填写左侧内容，AI 帮你提炼</div>
+    </div>
+
+    <!-- 历史记录 -->
+    <div class="card-title" style="margin-top:4px"><span>📅</span> 历史复盘</div>
+    <div class="history-wrap" id="historyWrap">
+      <div class="history-empty" id="historyEmpty">
+        <span style="font-size:24px">🗂</span>
+        还没有记录，快去填今天的复盘吧
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── 状态 ──
+let mode = 'intern'; // intern | research
+const energy = { intern: 0, research: 0 };
+
+// ── tab 切换 ──
+function switchMode(m) {
+  mode = m;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active');
+    if (b.dataset.mode === m) b.classList.add('active');
+  });
+  document.getElementById('form-intern').style.display = m === 'intern' ? '' : 'none';
+  document.getElementById('form-research').style.display = m === 'research' ? '' : 'none';
+  const btn = document.getElementById('genBtn');
+  btn.classList.toggle('research-mode', m === 'research');
+  // 调整 textarea focus 颜色
+  document.querySelectorAll('textarea').forEach(t => {
+    t.classList.toggle('research-focus', m === 'research');
+  });
+}
+
+// ── 能量 ──
+function setEnergy(m, v) {
+  energy[m] = v;
+  document.querySelectorAll(`#energy-${m} .energy-dot`).forEach(d => {
+    d.classList.toggle('selected', parseInt(d.dataset.v) === v);
+  });
+}
+
+// ── 连续记录天数 ──
+function calcStreak() {
+  const records = getRecords();
+  if (!records.length) return 0;
+  const dates = [...new Set(records.map(r => r.date))].sort().reverse();
+  let streak = 0, today = new Date();
+  for (let i = 0; i < dates.length; i++) {
+    const d = new Date(dates[i]);
+    const diff = Math.round((today - d) / 86400000);
+    if (diff === i || diff === i + 1) streak++;
+    else break;
+  }
+  return streak;
+}
+
+// ── localStorage ──
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem('recap_records') || '[]'); }
+  catch { return []; }
+}
+function saveRecord(r) {
+  const arr = getRecords();
+  arr.unshift(r);
+  localStorage.setItem('recap_records', JSON.stringify(arr.slice(0, 60)));
+}
+function deleteRecord(idx) {
+  const arr = getRecords();
+  arr.splice(idx, 1);
+  localStorage.setItem('recap_records', JSON.stringify(arr));
+  renderHistory();
+  document.getElementById('streakNum').textContent = calcStreak();
+}
+
+// ── 渲染历史 ──
+function renderHistory() {
+  const wrap = document.getElementById('historyWrap');
+  const empty = document.getElementById('historyEmpty');
+  const records = getRecords();
+  // 清空旧条目
+  wrap.querySelectorAll('.history-item').forEach(el => el.remove());
+  if (!records.length) { empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  records.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    const energyEmojis = ['','😩','😐','🙂','😄','🚀'];
+    div.innerHTML = `
+      <div class="history-item-head">
+        <div class="history-dot ${r.mode}"></div>
+        <span class="history-date">${r.date} · ${r.mode === 'intern' ? '实习' : '科研'}</span>
+        <span class="history-energy">${energyEmojis[r.energy] || ''}</span>
+        <button class="history-del" onclick="deleteRecord(${i})">✕</button>
+      </div>
+      <div class="history-preview history-preview-clamp">${r.note.replace(/</g,'&lt;')}</div>`;
+    wrap.appendChild(div);
+  });
+}
+
+// ── 生成笔记（本地规则，无需 API）──
+function generate() {
+  const btn = document.getElementById('genBtn');
+  const isIntern = mode === 'intern';
+
+  const did      = document.getElementById(isIntern ? 'i-did'     : 'r-did').value.trim();
+  const learned  = document.getElementById(isIntern ? 'i-learned' : 'r-learned').value.trim();
+  const block    = document.getElementById(isIntern ? 'i-block'   : 'r-block').value.trim();
+  const next     = document.getElementById(isIntern ? 'i-next'    : 'r-next').value.trim();
+  const eng      = energy[mode];
+
+  if (!did && !learned) {
+    shakeBtn(); return;
+  }
+
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="spinner"></div> 提炼中…';
+
+  setTimeout(() => {
+    const note = buildNote({ mode, did, learned, block, next, eng });
+    showNote(note);
+    const today = new Date().toISOString().slice(0, 10);
+    saveRecord({ mode, date: today, note, energy: eng });
+    renderHistory();
+    document.getElementById('streakNum').textContent = calcStreak();
+    btn.classList.remove('loading');
+    btn.innerHTML = '<span>✨</span> AI 提炼今日成长笔记';
+  }, 900);
+}
+
+function buildNote({ mode, did, learned, block, next, eng }) {
+  const energyEmojis = ['','😩','😐','🙂','😄','🚀'];
+  const energyWords  = ['','有点累','状态一般','还不错','状态很好','超级在状态'];
+  const isIntern = mode === 'intern';
+  const today = new Date().toLocaleDateString('zh-CN', { month:'long', day:'numeric', weekday:'long' });
+  const engStr = eng ? `${energyEmojis[eng]} ${energyWords[eng]}` : '';
+
+  const lines = [];
+  lines.push(`📅 ${today}${engStr ? '  ·  今日状态：' + engStr : ''}`);
+  lines.push('');
+
+  if (did) {
+    lines.push(isIntern ? '【今天做了】' : '【今天推进】');
+    lines.push(did);
+    lines.push('');
+  }
+  if (learned) {
+    lines.push(isIntern ? '【学到 / 观察到】' : '【新发现】');
+    lines.push(learned);
+    lines.push('');
+  }
+  if (block) {
+    lines.push(isIntern ? '【卡点】' : '【还没搞清楚】');
+    lines.push(block);
+    lines.push('');
+  }
+  if (next) {
+    lines.push(isIntern ? '【明天要做】' : '【下一步】');
+    lines.push(next);
+    lines.push('');
+  }
+
+  // AI 风格的提炼一句话
+  const insight = generateInsight({ mode, did, learned, block, next });
+  lines.push('💬 今日小结');
+  lines.push(insight);
+
+  return lines.join('\n');
+}
+
+// 根据内容生成一句有温度的小结
+function generateInsight({ mode, did, learned, block, next }) {
+  const isIntern = mode === 'intern';
+  const insightPool = isIntern ? [
+    learned ? `今天最大的收获是发现：${summarize(learned)}。职场里很多道理只有亲身跑过才能明白。` :
+              `扎实推进了今天的工作，每一步都是在为后面的自己铺路。`,
+    block   ? `${summarize(block)}这件事卡住了，但卡点往往是成长的入口——记下来，下次就是经验。` :
+              `今天的推进很顺利，保持节奏比偶尔爆发更重要。`,
+    next    ? `明天要搞定${summarize(next)}，目标清晰了执行就不慌。` :
+              `今天收工，明天继续。`,
+  ] : [
+    learned ? `今天的新发现是：${summarize(learned)}。科研就是在不确定里寻找一点点确定性。` :
+              `实验又推进了一步，研究本来就是螺旋上升的过程。`,
+    block   ? `${summarize(block)}还没想清楚，先记下来，也许明天早上一杯咖啡就想通了。` :
+              `今天的实验结果比预期更有意思，继续挖。`,
+    next    ? `下一步要验证${summarize(next)}，带着具体问题做实验才不会白跑。` :
+              `今天到这里，明天继续探索。`,
+  ];
+  // 随机选一条最相关的
+  const candidates = insightPool.filter(Boolean);
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+function summarize(text) {
+  if (!text) return '';
+  const t = text.replace(/\n/g, ' ').trim();
+  return t.length > 28 ? t.slice(0, 28) + '…' : t;
+}
+
+function showNote(note) {
+  const box = document.getElementById('noteBox');
+  const today = new Date().toLocaleDateString('zh-CN');
+  box.classList.remove('empty');
+  box.innerHTML = `
+    <div class="note-content">${note.replace(/</g,'&lt;')}</div>
+    <div class="note-meta">
+      <span class="note-tag ${mode}">${mode === 'intern' ? '🏢 实习' : '🔬 科研'}</span>
+      <span class="note-date">${today}</span>
+      <button class="copy-btn" onclick="copyNote()">复制</button>
+    </div>`;
+}
+
+function copyNote() {
+  const content = document.querySelector('.note-content');
+  if (!content) return;
+  navigator.clipboard.writeText(content.textContent).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '已复制 ✓';
+    setTimeout(() => btn.textContent = '复制', 1500);
+  });
+}
+
+function shakeBtn() {
+  const btn = document.getElementById('genBtn');
+  btn.style.animation = 'none';
+  btn.style.transform = 'translateX(-4px)';
+  setTimeout(() => { btn.style.transform = 'translateX(4px)'; }, 80);
+  setTimeout(() => { btn.style.transform = 'translateX(-3px)'; }, 160);
+  setTimeout(() => { btn.style.transform = ''; }, 240);
+}
+
+// ── 初始化 ──
+renderHistory();
+document.getElementById('streakNum').textContent = calcStreak();
+</script>
+</body>
+</html>
