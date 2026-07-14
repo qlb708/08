@@ -1,4 +1,4 @@
-<!-- recap_final v1 -->
+<!-- recap_v2 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -9,18 +9,17 @@
 :root{
   --bg:#eef2f9;
   --glass:rgba(255,255,255,.88);
-  --glass2:rgba(255,255,255,.60);
   --border:rgba(255,255,255,.98);
   --border2:rgba(210,222,245,.55);
   --shadow:0 4px 24px rgba(74,124,247,.08),0 1px 3px rgba(74,124,247,.04);
-  --shadow-hover:0 8px 32px rgba(74,124,247,.13),0 2px 6px rgba(74,124,247,.07);
+  --shadow-h:0 8px 32px rgba(74,124,247,.13),0 2px 6px rgba(74,124,247,.07);
   --blue:#4a7cf7;--blue-s:#dce8ff;--blue-m:#b8d0ff;
-  --purple:#7c5cf7;--purple-s:#e8dcff;
+  --purple:#7c5cf7;--purple-s:#e8dcff;--purple-m:#c4b0ff;
   --orange:#f97316;--orange-s:#ffedd5;
   --green:#22c55e;--green-s:#dcfce7;
   --red:#ef4444;
   --text:#1a2540;--text2:#3d5280;--muted:#8a9fc0;
-  --r:18px;--r2:12px;
+  --r:18px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
@@ -28,19 +27,19 @@ body{
   font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;
   color:var(--text);background:var(--bg);
   background-image:
-    radial-gradient(ellipse at 8% 15%,rgba(150,185,255,.32) 0%,transparent 48%),
-    radial-gradient(ellipse at 92% 85%,rgba(180,150,255,.22) 0%,transparent 45%),
-    radial-gradient(ellipse at 55% 50%,rgba(220,232,255,.12) 0%,transparent 60%);
+    radial-gradient(ellipse at 8% 15%,rgba(150,185,255,.30) 0%,transparent 48%),
+    radial-gradient(ellipse at 92% 85%,rgba(180,150,255,.20) 0%,transparent 45%),
+    radial-gradient(ellipse at 55% 10%,rgba(200,220,255,.14) 0%,transparent 40%);
   display:flex;flex-direction:column;
 }
 
-/* ── topbar ── */
+/* topbar */
 .topbar{
-  flex-shrink:0;display:flex;align-items:center;gap:12px;
-  padding:10px 24px;
-  background:rgba(255,255,255,.78);
+  flex-shrink:0;display:flex;align-items:center;gap:10px;
+  padding:9px 22px;
+  background:rgba(255,255,255,.80);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(210,222,245,.40);
+  border-bottom:1px solid rgba(210,222,245,.38);
 }
 .back{
   display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;
@@ -49,461 +48,356 @@ body{
   padding:5px 13px 5px 9px;text-decoration:none;
   box-shadow:0 1px 6px rgba(74,124,247,.08);transition:all .2s;
 }
-.back:hover{color:var(--blue);transform:translateX(-2px);box-shadow:0 2px 10px rgba(74,124,247,.14)}
-.main-tabs{display:flex;gap:3px;margin:0 10px}
-.mtab{
-  padding:7px 22px;border:none;border-radius:99px;font-size:13px;
+.back:hover{color:var(--blue);transform:translateX(-2px)}
+.divider{width:1px;height:16px;background:var(--border2)}
+.mswitch{
+  display:flex;gap:3px;
+  background:rgba(230,238,255,.5);
+  border:1px solid rgba(180,200,240,.4);
+  border-radius:10px;padding:3px;
+}
+.mbtn{
+  padding:5px 18px;border:none;border-radius:7px;font-size:13px;
   font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;
 }
-.mtab:hover{color:var(--text);background:rgba(255,255,255,.7)}
-.mtab.a-recap{background:var(--blue);color:#fff;box-shadow:0 2px 10px rgba(74,124,247,.32)}
-.mtab.a-ddl{background:linear-gradient(135deg,var(--orange),#e8530a);color:#fff;box-shadow:0 2px 10px rgba(249,115,22,.32)}
+.mbtn.on-i{background:white;color:var(--blue);box-shadow:0 1px 6px rgba(74,124,247,.18)}
+.mbtn.on-r{background:white;color:var(--purple);box-shadow:0 1px 6px rgba(124,92,247,.18)}
 .streak{
   margin-left:auto;display:flex;align-items:center;gap:5px;
   background:linear-gradient(135deg,var(--blue-s),rgba(220,232,255,.6));
-  border:1px solid var(--blue-m);
-  border-radius:99px;padding:5px 14px;
-  font-size:12.5px;font-weight:700;color:var(--blue);
-  box-shadow:0 1px 6px rgba(74,124,247,.10);
+  border:1px solid var(--blue-m);border-radius:99px;
+  padding:5px 13px;font-size:12px;font-weight:700;color:var(--blue);
 }
+.ddl-toggle{
+  display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+  color:var(--orange);background:var(--orange-s);border:1px solid rgba(249,115,22,.22);
+  border-radius:99px;padding:5px 13px;cursor:pointer;transition:all .2s;
+}
+.ddl-toggle:hover{background:rgba(255,237,213,.8)}
 
-/* ── panels ── */
-.panels{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
-.panel{flex:1;min-height:0;display:none;padding:18px 24px;gap:16px}
+/* main layout */
+.main{flex:1;min-height:0;display:flex;gap:14px;padding:16px 22px;overflow:hidden}
 
-/* ── card ── */
+/* card */
 .card{
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  box-shadow:var(--shadow);
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--r);box-shadow:var(--shadow);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  padding:18px 20px;
-  display:flex;flex-direction:column;gap:11px;
+  padding:16px 18px;display:flex;flex-direction:column;gap:10px;
   transition:box-shadow .2s;
 }
-.card:hover{box-shadow:var(--shadow-hover)}
+.card:hover{box-shadow:var(--shadow-h)}
 .card.grow{flex:1;min-height:0;overflow:hidden}
-.card.inset{background:rgba(245,249,255,.75);box-shadow:inset 0 1px 3px rgba(74,124,247,.06)}
-.lbl{
-  font-size:10px;font-weight:800;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.10em;
-  display:flex;align-items:center;gap:6px;
-}
-.lbl-dot{width:5px;height:5px;border-radius:50%;background:var(--blue-m);flex-shrink:0}
+.lbl{font-size:9.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.10em;display:flex;align-items:center;gap:5px}
 
-/* ── mode switch ── */
-.mswitch{
-  display:flex;gap:4px;flex-shrink:0;
-  background:rgba(230,238,255,.5);
-  border:1px solid rgba(180,200,240,.4);
-  border-radius:12px;padding:4px;
-}
-.mbtn{
-  flex:1;padding:7px 0;border:none;border-radius:9px;font-size:13px;
-  font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .22s;
-}
-.mbtn:hover{color:var(--text)}
-.mbtn.on-i{background:white;color:var(--blue);box-shadow:0 2px 8px rgba(74,124,247,.18)}
-.mbtn.on-r{background:white;color:var(--purple);box-shadow:0 2px 8px rgba(124,92,247,.18)}
+/* ── 左列：填写 ── */
+.col-left{width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
 
-/* ── form ── */
-.fg{display:flex;flex-direction:column;gap:4px}
-.fl{font-size:11.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:5px}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fl{font-size:11px;font-weight:600;color:var(--muted)}
 textarea,input[type=text],input[type=date],select{
-  width:100%;
-  border:1.5px solid rgba(180,200,240,.25);
-  border-radius:11px;padding:9px 12px;
-  font-size:12.5px;color:var(--text);
-  background:rgba(255,255,255,.85);
-  font-family:inherit;line-height:1.6;resize:none;
+  width:100%;border:1.5px solid rgba(180,200,240,.25);border-radius:10px;
+  padding:8px 11px;font-size:12.5px;color:var(--text);
+  background:rgba(255,255,255,.82);font-family:inherit;line-height:1.55;resize:none;
   transition:border-color .2s,box-shadow .2s,background .2s;
 }
 textarea:focus,input:focus,select:focus{
-  outline:none;
-  border-color:rgba(74,124,247,.5);
-  background:rgba(255,255,255,.98);
-  box-shadow:0 0 0 3px rgba(74,124,247,.09);
+  outline:none;border-color:rgba(74,124,247,.45);
+  background:rgba(255,255,255,.98);box-shadow:0 0 0 3px rgba(74,124,247,.08);
 }
-textarea{height:62px}
-textarea.sm{height:48px}
-input[type=date],select{height:35px;cursor:pointer}
+textarea{height:58px}
+textarea.sm{height:44px}
+input[type=date],select{height:34px;cursor:pointer}
 
-/* ── energy ── */
-.erow{display:flex;align-items:center;gap:10px;padding:2px 0}
-.elbl{font-size:11.5px;color:var(--muted);white-space:nowrap}
-.edots{display:flex;gap:5px}
+.erow{display:flex;align-items:center;gap:8px}
+.elbl{font-size:11px;color:var(--muted);white-space:nowrap}
+.edots{display:flex;gap:4px}
 .edot{
-  width:30px;height:30px;border-radius:50%;
-  border:1.5px solid rgba(180,200,240,.3);
-  cursor:pointer;font-size:15px;
-  display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(180,200,240,.3);
+  cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
   background:rgba(255,255,255,.7);transition:transform .15s,border-color .15s,background .15s;
 }
 .edot:hover{transform:scale(1.18);background:rgba(255,255,255,.95)}
-.edot.on{border-color:var(--blue);background:var(--blue-s);box-shadow:0 2px 8px rgba(74,124,247,.2)}
+.edot.on{border-color:var(--blue);background:var(--blue-s);box-shadow:0 2px 7px rgba(74,124,247,.2)}
 
-/* ── btn ── */
 .btn{
-  width:100%;padding:11px;border:none;border-radius:12px;font-size:13.5px;
+  width:100%;padding:10px;border:none;border-radius:11px;font-size:13px;
   font-weight:700;cursor:pointer;color:#fff;
-  display:flex;align-items:center;justify-content:center;gap:7px;
-  transition:transform .15s,box-shadow .15s;letter-spacing:.01em;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:transform .15s,box-shadow .15s;
 }
 .btn:hover{transform:translateY(-1.5px)}
 .btn:active{transform:translateY(0)}
-.btn.blue{
-  background:linear-gradient(135deg,#5b8fff,var(--blue),#3a6cf0);
-  box-shadow:0 4px 16px rgba(74,124,247,.36);
-}
-.btn.purple{
-  background:linear-gradient(135deg,#9470ff,var(--purple),#6a48f0);
-  box-shadow:0 4px 16px rgba(124,92,247,.36);
-}
-.btn.orange{
-  background:linear-gradient(135deg,#ff8534,var(--orange),#e8530a);
-  box-shadow:0 4px 16px rgba(249,115,22,.36);
-}
+.btn.blue{background:linear-gradient(135deg,#5b8fff,var(--blue),#3a6cf0);box-shadow:0 4px 14px rgba(74,124,247,.34)}
+.btn.purple{background:linear-gradient(135deg,#9470ff,var(--purple),#6a48f0);box-shadow:0 4px 14px rgba(124,92,247,.34)}
 .btn.loading{opacity:.65;cursor:not-allowed;pointer-events:none}
 
-/* ── note box ── */
+/* ── 中列：笔记 + 历史 ── */
+.col-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+
 .notebox{
   background:linear-gradient(135deg,rgba(74,124,247,.04),rgba(124,92,247,.025));
-  border:1.5px solid rgba(74,124,247,.11);
-  border-radius:13px;padding:14px 16px;
-  overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent;
-  min-height:120px;
+  border:1.5px solid rgba(74,124,247,.10);border-radius:12px;
+  padding:13px 15px;overflow-y:auto;scrollbar-width:thin;
+  scrollbar-color:rgba(100,130,200,.18) transparent;min-height:0;flex:1;
 }
-.notebox.empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:7px;color:var(--muted);
-}
-.nph{font-size:26px;opacity:.22;filter:grayscale(.3)}
-.npht{font-size:12px;opacity:.55;font-weight:500}
+.notebox.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--muted)}
+.nph{font-size:24px;opacity:.2}
+.npht{font-size:12px;opacity:.5;font-weight:500}
 .ncontent{font-size:13px;line-height:1.9;color:var(--text);white-space:pre-wrap}
-.nmeta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:11px;padding-top:10px;border-top:1px solid rgba(180,200,240,.2)}
-.ntag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.03em}
+.nmeta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid rgba(180,200,240,.2)}
+.ntag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px}
 .ntag.i{background:var(--blue-s);color:var(--blue);border:1px solid var(--blue-m)}
-.ntag.r{background:var(--purple-s);color:var(--purple);border:1px solid rgba(180,150,255,.4)}
-.ndate{font-size:10.5px;color:var(--muted)}
-.cpbtn{
-  margin-left:auto;font-size:11px;padding:3px 11px;border-radius:8px;
-  border:1px solid rgba(74,124,247,.18);background:white;color:var(--blue);
-  cursor:pointer;font-weight:600;transition:all .18s;
-}
-.cpbtn:hover{background:var(--blue-s);border-color:var(--blue-m)}
+.ntag.r{background:var(--purple-s);color:var(--purple);border:1px solid var(--purple-m)}
+.cpbtn{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:7px;border:1px solid rgba(74,124,247,.18);background:white;color:var(--blue);cursor:pointer;font-weight:600;transition:all .18s}
+.cpbtn:hover{background:var(--blue-s)}
 
-/* ── history ── */
-.hwrap{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
-.hempty{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:12px;padding:22px 0}
-.hi{
-  background:rgba(255,255,255,.72);
-  border:1px solid rgba(210,222,245,.5);
-  border-radius:11px;padding:10px 14px;flex-shrink:0;
-  transition:box-shadow .18s,transform .15s,background .18s;cursor:default;
-}
-.hi:hover{box-shadow:0 3px 14px rgba(74,124,247,.09);transform:translateX(2px);background:rgba(255,255,255,.9)}
-.hihead{display:flex;align-items:center;gap:6px;margin-bottom:4px}
-.hdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.hwrap{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
+.hempty{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:12px;padding:18px 0}
+.hi{background:rgba(255,255,255,.7);border:1px solid rgba(210,222,245,.48);border-radius:10px;padding:9px 13px;flex-shrink:0;transition:all .18s;cursor:default}
+.hi:hover{box-shadow:0 2px 12px rgba(74,124,247,.08);transform:translateX(2px);background:rgba(255,255,255,.9)}
+.hihead{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.hdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .hdot.i{background:var(--blue)}.hdot.r{background:var(--purple)}
-.hdate{font-size:10.5px;color:var(--muted);font-weight:500}
-.hdel{margin-left:auto;font-size:11px;border:none;background:none;cursor:pointer;color:rgba(138,159,192,.6);padding:1px 5px;border-radius:5px;transition:all .15s}
+.hdate{font-size:10px;color:var(--muted);font-weight:500}
+.hdel{margin-left:auto;font-size:11px;border:none;background:none;cursor:pointer;color:rgba(138,159,192,.55);padding:1px 5px;border-radius:5px;transition:all .15s}
 .hdel:hover{background:#fee2e2;color:var(--red)}
-.hpre{font-size:12px;color:var(--text2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hpre{font-size:11.5px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* ── mini cal ── */
+/* ── 右列：日历 + DDL ── */
+.col-right{width:230px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+
+/* mini cal */
 .calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .caltitle{font-size:11.5px;font-weight:700;color:var(--text2)}
 .calnav{display:flex;gap:2px}
-.calnav button{
-  width:20px;height:20px;border:1px solid rgba(180,200,240,.35);
-  background:rgba(255,255,255,.8);border-radius:6px;cursor:pointer;
-  font-size:13px;color:var(--muted);transition:all .15s;
-  display:flex;align-items:center;justify-content:center;line-height:1;
-}
-.calnav button:hover{background:var(--blue-s);color:var(--blue);border-color:var(--blue-m)}
+.calnav button{width:19px;height:19px;border:1px solid var(--border2);background:rgba(255,255,255,.8);border-radius:5px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;display:flex;align-items:center;justify-content:center;line-height:1}
+.calnav button:hover{background:var(--blue-s);color:var(--blue)}
 .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.cw{font-size:9px;font-weight:700;color:rgba(138,159,192,.7);text-align:center;padding:2px 0;letter-spacing:.02em}
-.cd{
-  height:25px;border-radius:6px;display:flex;align-items:center;justify-content:center;
-  font-size:11px;cursor:pointer;position:relative;transition:all .14s;color:var(--text2);
-}
+.cw{font-size:8.5px;font-weight:700;color:rgba(138,159,192,.65);text-align:center;padding:2px 0}
+.cd{height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10.5px;cursor:pointer;position:relative;transition:all .13s;color:var(--text2)}
 .cd:hover{background:var(--blue-s);color:var(--blue)}
-.cd.om{color:rgba(138,159,192,.28);cursor:default}
-.cd.om:hover{background:transparent;color:rgba(138,159,192,.28)}
+.cd.om{color:rgba(138,159,192,.25);cursor:default}
+.cd.om:hover{background:transparent;color:rgba(138,159,192,.25)}
 .cd.today{background:var(--blue);color:#fff;font-weight:700;box-shadow:0 2px 7px rgba(74,124,247,.35)}
 .cd.today:hover{background:var(--blue)}
-.cd.sel{outline:2px solid rgba(74,124,247,.6);outline-offset:1px}
+.cd.sel{outline:2px solid rgba(74,124,247,.55);outline-offset:1px}
 .cd::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;display:none}
 .cd.has-t::after{display:block;background:var(--orange)}
 .cd.has-r::after{display:block;background:var(--green)}
-.cd.has-b::after{display:block;background:linear-gradient(135deg,var(--orange),var(--green))}
+.cd.has-b::after{display:block;background:linear-gradient(90deg,var(--orange),var(--green))}
 .cd.today::after{background:rgba(255,255,255,.7)}
 
-/* ── DDL goal ── */
-.glist{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:7px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
-.gc{
-  background:rgba(255,255,255,.75);border:1.5px solid rgba(210,222,245,.55);
-  border-radius:13px;padding:12px 14px;flex-shrink:0;transition:all .18s;
-}
-.gc:hover{box-shadow:0 4px 16px rgba(74,124,247,.09);background:rgba(255,255,255,.92)}
-.gchead{display:flex;align-items:flex-start;gap:8px;margin-bottom:9px}
-.gcname{font-size:13px;font-weight:700;flex:1;line-height:1.35;color:var(--text)}
-.gcmeta{font-size:10.5px;color:var(--muted);margin-top:2px;font-weight:500}
-.gcdel{font-size:12px;border:none;background:none;cursor:pointer;color:rgba(138,159,192,.55);padding:2px 6px;border-radius:6px;transition:all .15s;flex-shrink:0}
-.gcdel:hover{background:#fee2e2;color:var(--red)}
-.pbar{height:5px;background:rgba(180,200,240,.18);border-radius:99px;overflow:hidden}
-.pbarf{height:100%;border-radius:99px;background:linear-gradient(90deg,#6a9fff,var(--blue));transition:width .45s cubic-bezier(.4,0,.2,1)}
-.plbl{font-size:10px;color:var(--muted);margin-top:4px;display:flex;justify-content:space-between;font-weight:500}
+/* bg info */
+.bgta{flex:1;min-height:40px;font-size:12px;resize:none;background:rgba(255,255,255,.72)!important;border-radius:9px!important}
 
-/* split preview */
-.spre{
-  background:linear-gradient(135deg,rgba(249,115,22,.04),rgba(232,83,10,.02));
-  border:1.5px solid rgba(249,115,22,.18);
-  border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;
-}
-.spt{font-size:9.5px;font-weight:800;color:var(--orange);letter-spacing:.08em;text-transform:uppercase}
-.sd{display:flex;gap:8px;font-size:12px}
-.sdl{flex-shrink:0;color:var(--muted);min-width:42px;font-weight:500}
-.sdt{color:var(--text2);line-height:1.45}
-.sbtns{display:flex;gap:6px;margin-top:2px}
-.smbtn{
-  flex:1;padding:7px 0;border:1.5px solid rgba(180,200,240,.3);
-  background:rgba(255,255,255,.9);border-radius:9px;font-size:12px;font-weight:600;
-  cursor:pointer;color:var(--text2);transition:all .15s;
-}
-.smbtn:hover{background:var(--blue-s);border-color:var(--blue-m);color:var(--blue)}
-
-/* tasks */
-.twrap{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
-.ti{
-  display:flex;align-items:flex-start;gap:9px;padding:10px 12px;
-  border-radius:11px;background:rgba(255,255,255,.72);
-  border:1px solid rgba(210,222,245,.4);flex-shrink:0;transition:opacity .2s,box-shadow .18s;
-}
-.ti:hover{box-shadow:0 2px 10px rgba(74,124,247,.07)}
-.ti.done{opacity:.48}
-.tck{
-  width:17px;height:17px;border-radius:50%;
-  border:2px solid rgba(180,200,240,.4);
-  flex-shrink:0;cursor:pointer;margin-top:1px;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.9);transition:all .2s;
-}
-.tck.on{background:var(--green);border-color:var(--green);box-shadow:0 2px 7px rgba(34,197,94,.3)}
-.tck.on::after{content:'✓';font-size:9px;color:white;font-weight:800}
+/* DDL compact */
+.ddl-panel{display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.ddl-today{flex-shrink:0}
+.dthead{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.dt-date{font-size:11px;color:var(--muted);font-weight:500}
+.twrap{display:flex;flex-direction:column;gap:5px;max-height:130px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
+.ti{display:flex;align-items:flex-start;gap:7px;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.7);border:1px solid rgba(210,222,245,.38);flex-shrink:0;transition:opacity .2s}
+.ti.done{opacity:.45}
+.tck{width:15px;height:15px;border-radius:50%;border:1.5px solid rgba(180,200,240,.4);flex-shrink:0;cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.9);transition:all .2s}
+.tck.on{background:var(--green);border-color:var(--green);box-shadow:0 1px 5px rgba(34,197,94,.28)}
+.tck.on::after{content:'✓';font-size:8px;color:white;font-weight:800}
 .tb{flex:1;min-width:0}
-.tgtag{font-size:9.5px;font-weight:700;color:var(--orange);margin-bottom:2px;letter-spacing:.02em}
-.ttxt{font-size:12.5px;line-height:1.5;color:var(--text2)}
+.tgtag{font-size:9px;font-weight:700;color:var(--orange);margin-bottom:1px}
+.ttxt{font-size:11.5px;line-height:1.45;color:var(--text2)}
 .ttxt.stk{text-decoration:line-through;color:var(--muted)}
-.tdly{
-  font-size:10.5px;border:none;background:none;cursor:pointer;
-  color:var(--muted);padding:2px 8px;border-radius:7px;flex-shrink:0;
-  transition:all .15s;white-space:nowrap;font-weight:500;
-}
+.tdly{font-size:10px;border:none;background:none;cursor:pointer;color:var(--muted);padding:1px 5px;border-radius:5px;flex-shrink:0;transition:all .15s;white-space:nowrap}
 .tdly:hover{background:var(--orange-s);color:var(--orange)}
-.notask{display:flex;flex-direction:column;align-items:center;gap:5px;padding:24px;color:var(--muted);font-size:12px}
+.notask{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px;color:var(--muted);font-size:11.5px}
 
-/* guide */
-.guide{font-size:12px;color:var(--muted);line-height:1.8}
-.guide b{color:var(--text2);font-weight:700}
-.guide p{margin-bottom:2px}
+/* DDL expand */
+.ddl-expand{display:none;flex-direction:column;gap:9px}
+.ddl-expand.open{display:flex}
+.glist{max-height:80px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
+.gc{background:rgba(255,255,255,.75);border:1px solid var(--border2);border-radius:10px;padding:9px 11px;flex-shrink:0}
+.gcname{font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
+.gcdel{font-size:11px;border:none;background:none;cursor:pointer;color:rgba(138,159,192,.55);padding:0 4px;border-radius:4px;transition:all .15s}
+.gcdel:hover{background:#fee2e2;color:var(--red)}
+.gcmeta{font-size:10px;color:var(--muted);margin-bottom:5px}
+.pbar{height:4px;background:rgba(180,200,240,.18);border-radius:99px;overflow:hidden}
+.pbarf{height:100%;border-radius:99px;background:linear-gradient(90deg,#6a9fff,var(--blue));transition:width .4s}
+.plbl{font-size:9.5px;color:var(--muted);margin-top:3px;display:flex;justify-content:space-between}
 
-/* misc */
-.mtempty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px;color:var(--muted);font-size:12px}
+.new-goal{display:flex;flex-direction:column;gap:7px}
+.sbtns{display:flex;gap:6px}
+.smbtn{flex:1;padding:6px 0;border:1.5px solid var(--border2);background:rgba(255,255,255,.9);border-radius:8px;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s}
+.smbtn:hover{background:var(--blue-s);border-color:var(--blue-m);color:var(--blue)}
+.spre{background:rgba(249,115,22,.04);border:1.5px solid rgba(249,115,22,.17);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:5px}
+.spt{font-size:9px;font-weight:800;color:var(--orange);letter-spacing:.08em;text-transform:uppercase}
+.sd{display:flex;gap:6px;font-size:11px}
+.sdl{flex-shrink:0;color:var(--muted);min-width:36px;font-weight:500}
+.sdt{color:var(--text2);line-height:1.4}
+
+/* filter bar */
+.fbar{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.fbar input[type=date]{height:27px;font-size:11px;border-radius:8px;padding:0 8px;width:112px;background:rgba(255,255,255,.85)}
+.fbar button{font-size:11px;padding:3px 9px;border-radius:7px;border:1px solid var(--border2);background:white;color:var(--muted);cursor:pointer;transition:all .15s}
+.fbar button:hover{color:var(--red);border-color:rgba(239,68,68,.25)}
+
+/* spinner */
 @keyframes sp{to{transform:rotate(360deg)}}
-.sp{width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+.sp{width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 </style>
 </head>
 <body>
 
-<!-- topbar + tabs 合一 -->
+<!-- topbar: 返回 | 实习/科研切换 | 连续记录 | DDL开关 -->
 <div class="topbar">
   <a href="/08/works/#tools" class="back">
-    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     主页
   </a>
-  <div class="main-tabs">
-    <button class="mtab a-recap" data-t="recap" onclick="switchTab('recap')">📓 复盘</button>
-    <button class="mtab" data-t="ddl" onclick="switchTab('ddl')">🎯 DDL Master</button>
+  <div class="divider"></div>
+  <div class="mswitch">
+    <button class="mbtn on-i" data-m="intern" onclick="switchMode('intern')">🏢 实习</button>
+    <button class="mbtn" data-m="research" onclick="switchMode('research')">🔬 科研</button>
   </div>
   <div class="streak">🔥 <span id="sNum">0</span> 天连续记录</div>
+  <div class="ddl-toggle" onclick="toggleDDL()">🎯 <span id="ddlTxt">DDL</span></div>
 </div>
 
-<!-- panels -->
-<div class="panels">
+<!-- main 3-col -->
+<div class="main">
 
-  <!-- ══ 复盘 ══ -->
-  <div class="panel" id="p-recap" style="display:flex;flex-direction:row">
+  <!-- ── 左列：填写表单 ── -->
+  <div class="col-left">
+    <div class="card grow" style="overflow-y:auto">
+      <div class="lbl" id="ftitle">✍️ 今天的实习复盘</div>
 
-    <!-- 左 -->
-    <div style="width:400px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;overflow:hidden">
-      <div class="mswitch">
-        <button class="mbtn on-i" data-m="intern" onclick="switchMode('intern')">🏢 实习</button>
-        <button class="mbtn" data-m="research" onclick="switchMode('research')">🔬 科研</button>
+      <!-- intern form -->
+      <div id="fi" style="display:flex;flex-direction:column;gap:9px">
+        <div class="fg"><label class="fl">💼 今天做了什么</label><textarea id="i-did" placeholder="跟着导师做了用户访谈，整理了5份反馈…"></textarea></div>
+        <div class="fg"><label class="fl">💡 学到 / 观察到什么</label><textarea id="i-learned" placeholder="发现用户最在意的不是功能多，而是流程顺…"></textarea></div>
+        <div class="fg"><label class="fl">🪨 遇到的卡点</label><textarea class="sm" id="i-block" placeholder="数据权限还没申请到…"></textarea></div>
+        <div class="fg"><label class="fl">🎯 明天要做</label><textarea class="sm" id="i-next" placeholder="把访谈整理成结构化需求文档…"></textarea></div>
+        <div class="erow"><span class="elbl">今日状态</span>
+          <div class="edots" id="ei">
+            <button class="edot" data-v="1" onclick="setE('i',1)">😩</button>
+            <button class="edot" data-v="2" onclick="setE('i',2)">😐</button>
+            <button class="edot" data-v="3" onclick="setE('i',3)">🙂</button>
+            <button class="edot" data-v="4" onclick="setE('i',4)">😄</button>
+            <button class="edot" data-v="5" onclick="setE('i',5)">🚀</button>
+          </div>
+        </div>
       </div>
-      <div class="card grow" style="overflow-y:auto">
-        <div class="lbl"><span id="ficon">✍️</span><span id="ftitle">今天的实习复盘</span></div>
-        <!-- intern -->
-        <div id="fi" style="display:flex;flex-direction:column;gap:11px">
-          <div class="fg"><label class="fl">💼 今天做了什么</label><textarea id="i-did" placeholder="跟着导师做了用户访谈，整理了5份反馈..."></textarea></div>
-          <div class="fg"><label class="fl">💡 学到 / 观察到什么</label><textarea id="i-learned" placeholder="发现用户最在意的不是功能多，而是流程顺..."></textarea></div>
-          <div class="fg"><label class="fl">🪨 遇到的卡点</label><textarea class="sm" id="i-block" placeholder="数据权限还没申请到..."></textarea></div>
-          <div class="fg"><label class="fl">🎯 明天要做</label><textarea class="sm" id="i-next" placeholder="把访谈整理成结构化需求文档..."></textarea></div>
-          <div class="erow"><span class="elbl">今日状态</span>
-            <div class="edots" id="ei">
-              <button class="edot" data-v="1" onclick="setE('i',1)">😩</button>
-              <button class="edot" data-v="2" onclick="setE('i',2)">😐</button>
-              <button class="edot" data-v="3" onclick="setE('i',3)">🙂</button>
-              <button class="edot" data-v="4" onclick="setE('i',4)">😄</button>
-              <button class="edot" data-v="5" onclick="setE('i',5)">🚀</button>
-            </div>
+
+      <!-- research form -->
+      <div id="fr" style="display:none;flex-direction:column;gap:9px">
+        <div class="fg"><label class="fl">🧪 今天推进了什么</label><textarea id="r-did" placeholder="跑完了第一组对照实验…"></textarea></div>
+        <div class="fg"><label class="fl">🔍 新发现 / 新想法</label><textarea id="r-learned" placeholder="发现baseline在长文本上有明显退化…"></textarea></div>
+        <div class="fg"><label class="fl">🌀 还没搞清楚的</label><textarea class="sm" id="r-block" placeholder="为什么epoch增加loss反而震荡…"></textarea></div>
+        <div class="fg"><label class="fl">📌 下一步验证方向</label><textarea class="sm" id="r-next" placeholder="试试降低learning rate…"></textarea></div>
+        <div class="erow"><span class="elbl">今日状态</span>
+          <div class="edots" id="er">
+            <button class="edot" data-v="1" onclick="setE('r',1)">😩</button>
+            <button class="edot" data-v="2" onclick="setE('r',2)">😐</button>
+            <button class="edot" data-v="3" onclick="setE('r',3)">🙂</button>
+            <button class="edot" data-v="4" onclick="setE('r',4)">😄</button>
+            <button class="edot" data-v="5" onclick="setE('r',5)">🚀</button>
           </div>
         </div>
-        <!-- research -->
-        <div id="fr" style="display:none;flex-direction:column;gap:11px">
-          <div class="fg"><label class="fl">🧪 今天推进了什么</label><textarea id="r-did" placeholder="跑完了第一组对照实验..."></textarea></div>
-          <div class="fg"><label class="fl">🔍 新发现 / 新想法</label><textarea id="r-learned" placeholder="发现baseline在长文本上有明显退化..."></textarea></div>
-          <div class="fg"><label class="fl">🌀 还没搞清楚的</label><textarea class="sm" id="r-block" placeholder="为什么epoch增加loss反而震荡..."></textarea></div>
-          <div class="fg"><label class="fl">📌 下一步验证方向</label><textarea class="sm" id="r-next" placeholder="试试降低learning rate..."></textarea></div>
-          <div class="erow"><span class="elbl">今日状态</span>
-            <div class="edots" id="er">
-              <button class="edot" data-v="1" onclick="setE('r',1)">😩</button>
-              <button class="edot" data-v="2" onclick="setE('r',2)">😐</button>
-              <button class="edot" data-v="3" onclick="setE('r',3)">🙂</button>
-              <button class="edot" data-v="4" onclick="setE('r',4)">😄</button>
-              <button class="edot" data-v="5" onclick="setE('r',5)">🚀</button>
-            </div>
-          </div>
-        </div>
-        <button class="btn blue" id="gBtn" onclick="gen()"><span>✨</span> AI 提炼今日成长笔记</button>
+      </div>
+
+      <button class="btn blue" id="gBtn" onclick="gen()"><span>✨</span> AI 提炼今日成长笔记</button>
+    </div>
+  </div>
+
+  <!-- ── 中列：笔记 + 历史 ── -->
+  <div class="col-mid">
+    <!-- 今日笔记 -->
+    <div class="card" style="flex:0 0 auto;min-height:160px;display:flex;flex-direction:column;gap:9px">
+      <div class="lbl">📝 今日笔记</div>
+      <div class="notebox empty" id="noteBox" style="flex:1">
+        <div class="nph">🌱</div>
+        <div class="npht">填写左侧，AI 帮你提炼成长笔记</div>
       </div>
     </div>
-
-    <!-- 右 -->
-    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;overflow:hidden">
-      <!-- 上：笔记 + 小日历/背景 -->
-      <div style="display:flex;gap:14px;flex-shrink:0">
-        <!-- 笔记 -->
-        <div class="card" style="flex:1;min-width:0">
-          <div class="lbl"><span>📝</span> 今日笔记</div>
-          <div class="notebox empty" id="noteBox">
-            <div class="nph">🌱</div>
-            <div class="npht">填写左侧内容，AI 帮你提炼</div>
-          </div>
-        </div>
-        <!-- 小日历 + 背景 -->
-        <div style="width:205px;flex-shrink:0;display:flex;flex-direction:column;gap:12px">
-          <div class="card" style="padding:12px 13px;gap:0">
-            <div class="calhead">
-              <div class="caltitle" id="rcalT"></div>
-              <div class="calnav">
-                <button onclick="rcalMove(-1)">‹</button>
-                <button onclick="rcalMove(1)">›</button>
-              </div>
-            </div>
-            <div class="cg" id="rcalG"></div>
-          </div>
-          <div class="card" style="flex:1;padding:13px 14px;gap:8px">
-            <div class="lbl"><span>🗒</span> 背景信息</div>
-            <textarea id="bgInfo" placeholder="实习公司、岗位、科研课题、导师方向…" style="flex:1;min-height:70px;font-size:12px;resize:none;background:rgba(255,255,255,.7)" oninput="saveBg()"></textarea>
-          </div>
+    <!-- 历史复盘 -->
+    <div class="card grow">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0">
+        <div class="lbl">📅 历史复盘</div>
+        <div class="fbar" style="margin-left:auto">
+          <input type="date" id="fFrom" onchange="renderHist()">
+          <span style="font-size:11px;color:var(--muted)">—</span>
+          <input type="date" id="fTo" onchange="renderHist()">
+          <button onclick="clearF()">清除</button>
         </div>
       </div>
-      <!-- 历史 -->
-      <div class="card grow">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <div class="lbl"><span>📅</span> 历史复盘</div>
-          <div style="margin-left:auto;display:flex;align-items:center;gap:5px">
-            <input type="date" id="fFrom" style="height:27px;font-size:11px;border-radius:8px;padding:0 8px;width:125px" onchange="renderHist()">
-            <span style="font-size:11px;color:var(--muted)">—</span>
-            <input type="date" id="fTo" style="height:27px;font-size:11px;border-radius:8px;padding:0 8px;width:125px" onchange="renderHist()">
-            <button onclick="clearF()" style="font-size:11px;padding:3px 9px;border-radius:7px;border:1px solid rgba(100,130,200,.2);background:white;color:var(--muted);cursor:pointer">清除</button>
-          </div>
-        </div>
-        <div class="hwrap" id="histWrap">
-          <div class="hempty" id="histEmpty"><span style="font-size:22px">🗂</span>还没有记录</div>
-        </div>
+      <div class="hwrap" id="histWrap">
+        <div class="hempty" id="histEmpty"><span style="font-size:20px">🗂</span>还没有记录</div>
       </div>
     </div>
   </div>
 
-  <!-- ══ DDL Master ══ -->
-  <div class="panel" id="p-ddl" style="display:none;flex-direction:row">
+  <!-- ── 右列：日历 + 背景 + DDL ── -->
+  <div class="col-right">
+    <!-- 小日历 -->
+    <div class="card" style="flex-shrink:0;padding:13px 14px;gap:0">
+      <div class="calhead">
+        <div class="caltitle" id="rcalT"></div>
+        <div class="calnav">
+          <button onclick="rcalMove(-1)">‹</button>
+          <button onclick="rcalMove(1)">›</button>
+        </div>
+      </div>
+      <div class="cg" id="rcalG"></div>
+    </div>
 
-    <!-- 左 -->
-    <div style="width:310px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;overflow:hidden">
-      <div class="card" style="flex-shrink:0">
-        <div class="lbl"><span>➕</span> 新建目标</div>
-        <div style="display:flex;flex-direction:column;gap:9px">
-          <div class="fg"><label class="fl">🎯 目标名称</label><input type="text" id="dn" placeholder="完成实习项目报告"></div>
-          <div class="fg"><label class="fl">📋 内容描述（AI 拆解）</label><textarea id="dd" placeholder="调研竞品、整理用户反馈、写数据分析…" style="height:58px"></textarea></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div class="fg"><label class="fl">📅 截止日期</label><input type="date" id="dl"></div>
-            <div class="fg"><label class="fl">📆 周期</label>
-              <select id="ds">
-                <option value="auto">按截止日自动</option>
-                <option value="7">7 天</option>
-                <option value="14">14 天</option>
-                <option value="30">30 天</option>
+    <!-- 背景信息 -->
+    <div class="card" style="flex-shrink:0;gap:7px;padding:13px 14px">
+      <div class="lbl">🗒 背景信息</div>
+      <textarea class="bgta" id="bgInfo" placeholder="实习公司、岗位、科研课题、导师方向…" style="height:68px;resize:none" oninput="saveBg()"></textarea>
+    </div>
+
+    <!-- DDL 区域（可折叠） -->
+    <div class="card grow" id="ddlCard" style="padding:13px 14px;gap:10px">
+      <div class="lbl">🎯 DDL · 今日任务
+        <span id="ddlStat" style="margin-left:auto;font-size:10px;color:var(--orange);font-weight:700"></span>
+      </div>
+
+      <!-- 今日任务列表 -->
+      <div class="twrap" id="tWrap">
+        <div class="notask" id="noTask"><span style="font-size:18px">✨</span>今天还没有任务</div>
+      </div>
+
+      <!-- 展开：新建 + 进行中 -->
+      <div class="ddl-expand" id="ddlExpand">
+        <div style="height:1px;background:var(--border2);margin:0 -2px"></div>
+        <div class="lbl">进行中目标</div>
+        <div class="glist" id="gList">
+          <div style="font-size:11.5px;color:var(--muted);text-align:center;padding:10px 0">还没有目标</div>
+        </div>
+        <div style="height:1px;background:var(--border2);margin:0 -2px"></div>
+        <div class="lbl">新建目标</div>
+        <div class="new-goal">
+          <input type="text" id="dn" placeholder="目标名称" style="height:33px">
+          <textarea id="dd" placeholder="内容描述（AI拆解用）" style="height:46px"></textarea>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div class="fg"><label class="fl">截止日期</label><input type="date" id="dl" style="font-size:11px"></div>
+            <div class="fg"><label class="fl">周期</label>
+              <select id="ds" style="font-size:11px">
+                <option value="auto">按截止日</option>
+                <option value="7">7天</option>
+                <option value="14">14天</option>
+                <option value="30">30天</option>
               </select>
             </div>
           </div>
-          <button class="btn orange" id="ddlBtn" onclick="createGoal()"><span>🤖</span> AI 拆分任务</button>
-        </div>
-        <div class="spre" id="sPreview" style="display:none">
-          <div class="spt">任务预览</div>
-          <div id="sDays"></div>
-          <div class="sbtns">
-            <button class="smbtn" onclick="confirmGoal()">✅ 确认创建</button>
-            <button class="smbtn" onclick="document.getElementById('sPreview').style.display='none'">取消</button>
+          <button class="btn" id="ddlBtn" onclick="createGoal()" style="background:linear-gradient(135deg,#ff8534,var(--orange),#e8530a);box-shadow:0 3px 12px rgba(249,115,22,.32);border-radius:10px;padding:9px;font-size:12.5px"><span>🤖</span> AI 拆分任务</button>
+          <div class="spre" id="sPreview" style="display:none">
+            <div class="spt">任务预览</div>
+            <div id="sDays"></div>
+            <div class="sbtns" style="margin-top:3px">
+              <button class="smbtn" onclick="confirmGoal()">✅ 确认</button>
+              <button class="smbtn" onclick="document.getElementById('sPreview').style.display='none'">取消</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="card grow">
-        <div class="lbl"><span>🏃</span> 进行中</div>
-        <div class="glist" id="gList">
-          <div class="mtempty" id="gEmpty"><span style="font-size:22px">🎯</span>还没有目标</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 中 -->
-    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;overflow:hidden">
-      <div class="card" style="flex-shrink:0">
-        <div class="calhead">
-          <div class="caltitle" id="dcalT" style="font-size:13.5px"></div>
-          <div class="calnav">
-            <button onclick="dcalMove(-1)" style="width:24px;height:24px;font-size:14px">‹</button>
-            <button onclick="dcalMove(1)" style="width:24px;height:24px;font-size:14px">›</button>
-          </div>
-        </div>
-        <div class="cg" id="dcalG"></div>
-      </div>
-      <div class="card grow">
-        <div class="lbl"><span>📋</span><span id="dtT">今日任务</span></div>
-        <div class="twrap" id="tWrap"></div>
-      </div>
-    </div>
-
-    <!-- 右 -->
-    <div style="width:230px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;overflow:hidden">
-      <div class="card">
-        <div class="lbl"><span>💡</span> 使用说明</div>
-        <div class="guide">
-          <p><b>① 新建目标</b><br>填名称+描述+截止日，AI 拆成每天任务</p><br>
-          <p><b>② 勾选完成</b><br>点圆圈标记，进度条实时更新</p><br>
-          <p><b>③ 重新安排</b><br>点「重新安排↺」把所有未完成任务均匀分配到剩余天数</p><br>
-          <p><b>④ 日历</b><br>点任意天查看任务</p>
-          <div style="display:flex;gap:10px;margin-top:6px;font-size:11.5px;align-items:center">
-            <span><span style="width:7px;height:7px;border-radius:50%;background:var(--orange);display:inline-block"></span> 有任务</span>
-            <span><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block"></span> 有复盘</span>
-          </div>
-        </div>
-      </div>
-      <div class="card grow" style="background:linear-gradient(135deg,rgba(74,124,247,.055),rgba(124,92,247,.035))">
-        <div class="lbl"><span>📊</span> 目标进度</div>
-        <div id="wStats" style="overflow-y:auto;flex:1;min-height:0"></div>
       </div>
     </div>
   </div>
@@ -511,23 +405,15 @@ input[type=date],select{height:35px;cursor:pointer}
 </div>
 
 <script>
-// ─── util ───
-const TODAY = new Date().toISOString().slice(0,10);
-const EE = ['','😩','😐','🙂','😄','🚀'];
-const EW = ['','有点累','状态一般','还不错','状态很好','超级在状态'];
-const ds = d => d instanceof Date ? d.toISOString().slice(0,10) : d;
-const addD = (s,n) => { const d=new Date(s+' 00:00:00'); d.setDate(d.getDate()+n); return ds(d); };
-const diffD = (a,b) => Math.round((new Date(b+' 00:00:00')-new Date(a+' 00:00:00'))/86400000);
-const fmtD = s => new Date(s+' 00:00:00').toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'short'});
+const TODAY=new Date().toISOString().slice(0,10);
+const EE=['','😩','😐','🙂','😄','🚀'];
+const EW=['','有点累','状态一般','还不错','状态很好','超级在状态'];
+const ds=d=>d instanceof Date?d.toISOString().slice(0,10):d;
+const addD=(s,n)=>{const d=new Date(s+' 00:00:00');d.setDate(d.getDate()+n);return ds(d)};
+const diffD=(a,b)=>Math.round((new Date(b+' 00:00:00')-new Date(a+' 00:00:00'))/86400000);
+const fmtD=s=>new Date(s+' 00:00:00').toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'short'});
 
-// ─── tab ───
-function switchTab(t){
-  document.querySelectorAll('.mtab').forEach(b=>{b.className='mtab';if(b.dataset.t===t)b.classList.add('a-'+t)});
-  document.getElementById('p-recap').style.display = t==='recap'?'flex':'none';
-  document.getElementById('p-ddl').style.display   = t==='ddl' ?'flex':'none';
-}
-
-// ─── mode ───
+// mode
 let curMode='intern';
 const energy={i:0,r:0};
 function switchMode(m){
@@ -536,19 +422,23 @@ function switchMode(m){
   const isI=m==='intern';
   document.getElementById('fi').style.display=isI?'flex':'none';
   document.getElementById('fr').style.display=isI?'none':'flex';
-  document.getElementById('ficon').textContent=isI?'✍️':'🔬';
-  document.getElementById('ftitle').textContent=isI?'今天的实习复盘':'今天的科研复盘';
+  document.getElementById('ftitle').textContent=(isI?'✍️ 今天的实习复盘':'🔬 今天的科研复盘');
   document.getElementById('gBtn').className='btn '+(isI?'blue':'purple');
 }
-function setE(k,v){
-  energy[k]=v;
-  document.querySelectorAll(`#e${k} .edot`).forEach(d=>d.classList.toggle('on',+d.dataset.v===v));
+function setE(k,v){energy[k]=v;document.querySelectorAll(`#e${k} .edot`).forEach(d=>d.classList.toggle('on',+d.dataset.v===v))}
+
+// DDL toggle
+let ddlOpen=false;
+function toggleDDL(){
+  ddlOpen=!ddlOpen;
+  document.getElementById('ddlExpand').classList.toggle('open',ddlOpen);
+  document.getElementById('ddlTxt').textContent=ddlOpen?'DDL ▴':'DDL ▾';
 }
 
-// ─── data ───
+// data
 const getRec=()=>{try{return JSON.parse(localStorage.getItem('rc')||'[]')}catch{return[]}};
 const saveRec=r=>{const a=getRec();a.unshift(r);localStorage.setItem('rc',JSON.stringify(a.slice(0,90)))};
-const delRec=i=>{const a=getRec();a.splice(i,1);localStorage.setItem('rc',JSON.stringify(a));renderHist();upStreak();renderRcal();renderDcal()};
+const delRec=i=>{const a=getRec();a.splice(i,1);localStorage.setItem('rc',JSON.stringify(a));renderHist();upStreak();renderRcal()};
 const getGoals=()=>{try{return JSON.parse(localStorage.getItem('dg')||'[]')}catch{return[]}};
 const saveGoals=g=>localStorage.setItem('dg',JSON.stringify(g));
 const getTD=(gid,i)=>localStorage.getItem(`td_${gid}_${i}`)==='1';
@@ -556,20 +446,16 @@ const setTD=(gid,i,v)=>localStorage.setItem(`td_${gid}_${i}`,v?'1':'0');
 const getTL=(gid,i)=>localStorage.getItem(`tl_${gid}_${i}`)||null;
 const setTL=(gid,i,d)=>localStorage.setItem(`tl_${gid}_${i}`,d);
 
-// streak
 function calcStreak(){
   const recs=getRec();if(!recs.length)return 0;
   const dates=[...new Set(recs.map(r=>r.date))].sort().reverse();
   let s=0;const now=new Date();
-  for(let i=0;i<dates.length;i++){
-    const diff=Math.round((now-new Date(dates[i]+' 00:00:00'))/86400000);
-    if(diff===i||diff===i+1)s++;else break;
-  }
+  for(let i=0;i<dates.length;i++){const diff=Math.round((now-new Date(dates[i]+' 00:00:00'))/86400000);if(diff===i||diff===i+1)s++;else break}
   return s;
 }
 const upStreak=()=>document.getElementById('sNum').textContent=calcStreak();
 
-// ─── gen ───
+// gen
 function gen(){
   const btn=document.getElementById('gBtn');
   const isI=curMode==='intern';
@@ -584,7 +470,7 @@ function gen(){
     const note=mkNote({isI,did,learned,block,next,eng});
     showNote(note);
     saveRec({mode:curMode,date:TODAY,note,energy:eng});
-    renderHist();upStreak();renderRcal();renderDcal();
+    renderHist();upStreak();renderRcal();
     btn.classList.remove('loading');btn.innerHTML='<span>✨</span> AI 提炼今日成长笔记';
   },900);
 }
@@ -616,19 +502,14 @@ function mkInsight({isI,did,learned,block,next}){
 function showNote(note,prefix){
   const box=document.getElementById('noteBox');
   box.className='notebox';
-  box.innerHTML=(prefix?`<div style="font-size:11px;color:var(--muted);margin-bottom:8px">${prefix}</div>`:'')+
+  box.innerHTML=(prefix?`<div style="font-size:10.5px;color:var(--muted);margin-bottom:7px">${prefix}</div>`:'')+
     `<div class="ncontent">${note.replace(/</g,'&lt;')}</div>
     <div class="nmeta">
       <span class="ntag ${curMode==='intern'?'i':'r'}">${curMode==='intern'?'🏢 实习':'🔬 科研'}</span>
       <button class="cpbtn" onclick="cpNote()">复制</button>
     </div>`;
 }
-function cpNote(){
-  const t=document.querySelector('.ncontent');if(!t)return;
-  navigator.clipboard.writeText(t.textContent).then(()=>{
-    const b=document.querySelector('.cpbtn');b.textContent='已复制 ✓';setTimeout(()=>b.textContent='复制',1500);
-  });
-}
+function cpNote(){const t=document.querySelector('.ncontent');if(!t)return;navigator.clipboard.writeText(t.textContent).then(()=>{const b=document.querySelector('.cpbtn');b.textContent='已复制 ✓';setTimeout(()=>b.textContent='复制',1500)})}
 function renderHist(){
   const wrap=document.getElementById('histWrap');
   wrap.querySelectorAll('.hi').forEach(el=>el.remove());
@@ -648,18 +529,11 @@ function renderHist(){
   });
 }
 const clearF=()=>{document.getElementById('fFrom').value='';document.getElementById('fTo').value='';renderHist()};
-function shake(el){
-  el.style.transform='translateX(-4px)';
-  setTimeout(()=>el.style.transform='translateX(4px)',80);
-  setTimeout(()=>el.style.transform='translateX(-2px)',160);
-  setTimeout(()=>el.style.transform='',240);
-}
-
-// bg
+function shake(el){el.style.transform='translateX(-4px)';setTimeout(()=>el.style.transform='translateX(4px)',80);setTimeout(()=>el.style.transform='translateX(-2px)',160);setTimeout(()=>el.style.transform='',240)}
 const saveBg=()=>localStorage.setItem('bgInfo',document.getElementById('bgInfo').value);
 const loadBg=()=>{const el=document.getElementById('bgInfo');if(el)el.value=localStorage.getItem('bgInfo')||''};
 
-// ─── mini cal (recap side) ───
+// cal
 let rcY=new Date().getFullYear(),rcM=new Date().getMonth(),rcSel=TODAY;
 function rcalMove(d){rcM+=d;if(rcM<0){rcM=11;rcY--}if(rcM>11){rcM=0;rcY++}renderRcal()}
 function renderRcal(){
@@ -671,13 +545,17 @@ function renderRcal(){
   const dim=new Date(rcY,rcM+1,0).getDate();
   const dprev=new Date(rcY,rcM,0).getDate();
   const recD=new Set(getRec().map(r=>r.date));
+  const goals=getGoals();
+  const taskD=new Set();
+  goals.forEach(g=>g.tasks.forEach((_,i)=>taskD.add(getTL(g.id,i)||addD(g.createdAt,i))));
   for(let i=0;i<first;i++){const d=document.createElement('div');d.className='cd om';d.textContent=dprev-first+1+i;grid.appendChild(d)}
   for(let day=1;day<=dim;day++){
     const s=rcY+'-'+String(rcM+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const ht=taskD.has(s),hr=recD.has(s);
     const d=document.createElement('div');d.className='cd';
     if(s===TODAY)d.classList.add('today');
     if(s===rcSel)d.classList.add('sel');
-    if(recD.has(s))d.classList.add('has-r');
+    if(ht&&hr)d.classList.add('has-b');else if(ht)d.classList.add('has-t');else if(hr)d.classList.add('has-r');
     d.textContent=day;
     d.onclick=(ss=>()=>{rcSel=ss;renderRcal();showRecapForDate(ss)})(s);
     grid.appendChild(d);
@@ -688,18 +566,11 @@ function renderRcal(){
 function showRecapForDate(s){
   const recs=getRec().filter(r=>r.date===s);
   const box=document.getElementById('noteBox');
-  if(recs.length){
-    const r=recs[0];
-    const old=curMode;curMode=r.mode;
-    showNote(r.note,'查看 '+fmtD(s)+' 的复盘');
-    curMode=old;
-  } else {
-    box.className='notebox empty';
-    box.innerHTML=`<div class="nph">📝</div><div class="npht">${s===TODAY?'填写左侧内容，AI 帮你提炼':fmtD(s)+' 还没有复盘记录'}</div>`;
-  }
+  if(recs.length){const r=recs[0];const old=curMode;curMode=r.mode;showNote(r.note,'📅 '+fmtD(s)+' 的复盘');curMode=old}
+  else{box.className='notebox empty';box.innerHTML=`<div class="nph">📝</div><div class="npht">${s===TODAY?'填写左侧，AI 帮你提炼':fmtD(s)+' 还没有复盘记录'}</div>`}
 }
 
-// ─── DDL ───
+// DDL
 let pending=null;
 function createGoal(){
   const name=document.getElementById('dn').value.trim();
@@ -708,137 +579,82 @@ function createGoal(){
   const span=document.getElementById('ds').value;
   if(!name||!deadline){shake(document.getElementById('ddlBtn'));return}
   const btn=document.getElementById('ddlBtn');
-  btn.classList.add('loading');btn.innerHTML='<div class="sp"></div> AI 拆分中…';
+  btn.classList.add('loading');btn.innerHTML='<div class="sp"></div> 拆分中…';
   setTimeout(()=>{
     const days=span==='auto'?Math.max(1,Math.min(30,diffD(TODAY,deadline))):parseInt(span);
     const tasks=splitTasks(desc||name,days);
-    pending={name,desc,deadline,tasks,createdAt:TODAY};
+    pending={name,desc,deadline,tasks,createdAt:TODAY,id:'g'+Date.now()};
     const de=document.getElementById('sDays');de.innerHTML='';
-    tasks.slice(0,6).forEach((t,i)=>{const div=document.createElement('div');div.className='sd';div.innerHTML=`<span class="sdl">Day ${i+1}</span><span class="sdt">${t}</span>`;de.appendChild(div)});
-    if(tasks.length>6){const m=document.createElement('div');m.style.cssText='font-size:10.5px;color:var(--muted);margin-top:2px';m.textContent=`…还有${tasks.length-6}天`;de.appendChild(m)}
+    tasks.slice(0,4).forEach((t,i)=>{const div=document.createElement('div');div.className='sd';div.innerHTML=`<span class="sdl">Day${i+1}</span><span class="sdt">${t}</span>`;de.appendChild(div)});
+    if(tasks.length>4){const m=document.createElement('div');m.style.cssText='font-size:10px;color:var(--muted);margin-top:2px';m.textContent=`…还有${tasks.length-4}天`;de.appendChild(m)}
     document.getElementById('sPreview').style.display='';
     btn.classList.remove('loading');btn.innerHTML='<span>🤖</span> AI 拆分任务';
-  },750);
+  },700);
 }
 function splitTasks(desc,days){
   const kws=desc.split(/[，,、。\n]+/).filter(k=>k.trim()).map(k=>k.trim());
   if(!kws.length)kws.push(desc||'完成目标');
-  return Array.from({length:days},(_,i)=>{
-    const r=i/days;
-    return (r<.2?'启动·':r<.5?'推进·':r<.8?'深化·':'收尾·')+kws[i%kws.length];
-  });
+  return Array.from({length:days},(_,i)=>{const r=i/days;return(r<.2?'启动·':r<.5?'推进·':r<.8?'深化·':'收尾·')+kws[i%kws.length]});
 }
 function confirmGoal(){
   if(!pending)return;
-  const goals=getGoals();goals.push({id:'g'+Date.now(),...pending});
-  saveGoals(goals);pending=null;
+  const goals=getGoals();goals.push(pending);saveGoals(goals);pending=null;
   document.getElementById('sPreview').style.display='none';
   document.getElementById('dn').value='';document.getElementById('dd').value='';document.getElementById('dl').value='';
-  renderGoals();renderDcal();renderDayTasks(dcSel);renderWS();
+  renderGoals();renderTodayTasks();renderRcal();
 }
-function delGoal(id){
-  saveGoals(getGoals().filter(g=>g.id!==id));
-  renderGoals();renderDcal();renderDayTasks(dcSel);renderWS();
-}
+function delGoal(id){saveGoals(getGoals().filter(g=>g.id!==id));renderGoals();renderTodayTasks();renderRcal()}
 function renderGoals(){
-  const list=document.getElementById('gList');
-  list.querySelectorAll('.gc').forEach(el=>el.remove());
+  const list=document.getElementById('gList');list.innerHTML='';
   const goals=getGoals();
-  document.getElementById('gEmpty').style.display=goals.length?'none':'';
+  if(!goals.length){list.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">还没有目标</div>';return}
   goals.forEach(g=>{
-    const total=g.tasks.length;
-    const done=g.tasks.filter((_,i)=>getTD(g.id,i)).length;
-    const pct=total?Math.round(done/total*100):0;
+    const total=g.tasks.length,done=g.tasks.filter((_,i)=>getTD(g.id,i)).length,pct=total?Math.round(done/total*100):0;
     const left=Math.max(0,diffD(TODAY,g.deadline));
     const c=document.createElement('div');c.className='gc';
-    c.innerHTML=`<div class="gchead"><div style="flex:1"><div class="gcname">🎯 ${g.name}</div>
-      <div class="gcmeta">截止 ${g.deadline} · 还剩${left}天</div></div>
+    c.innerHTML=`<div class="gcname"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px">🎯 ${g.name}</span>
       <button class="gcdel" onclick="delGoal('${g.id}')">✕</button></div>
+      <div class="gcmeta">截止 ${g.deadline} · 剩${left}天</div>
       <div class="pbar"><div class="pbarf" style="width:${pct}%"></div></div>
-      <div class="plbl"><span>${done}/${total} 完成</span><span>${pct}%</span></div>`;
+      <div class="plbl"><span>${done}/${total}</span><span>${pct}%</span></div>`;
     list.appendChild(c);
   });
 }
-
-// ddl cal
-let dcY=new Date().getFullYear(),dcM=new Date().getMonth(),dcSel=TODAY;
-function dcalMove(d){dcM+=d;if(dcM<0){dcM=11;dcY--}if(dcM>11){dcM=0;dcY++}renderDcal()}
-function renderDcal(){
-  const grid=document.getElementById('dcalG');
-  document.getElementById('dcalT').textContent=dcY+'年'+( dcM+1)+'月';
-  grid.innerHTML='';
-  ['日','一','二','三','四','五','六'].forEach(w=>{const d=document.createElement('div');d.className='cw';d.textContent=w;grid.appendChild(d)});
-  const first=new Date(dcY,dcM,1).getDay();
-  const dim=new Date(dcY,dcM+1,0).getDate();
-  const dprev=new Date(dcY,dcM,0).getDate();
-  const goals=getGoals();
-  const recD=new Set(getRec().map(r=>r.date));
-  const taskD=new Set();
-  goals.forEach(g=>g.tasks.forEach((_,i)=>taskD.add(getTL(g.id,i)||addD(g.createdAt,i))));
-  for(let i=0;i<first;i++){const d=document.createElement('div');d.className='cd om';d.textContent=dprev-first+1+i;grid.appendChild(d)}
-  for(let day=1;day<=dim;day++){
-    const s=dcY+'-'+String(dcM+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-    const ht=taskD.has(s),hr=recD.has(s);
-    const d=document.createElement('div');d.className='cd';
-    if(s===TODAY)d.classList.add('today');
-    if(s===dcSel)d.classList.add('sel');
-    if(ht&&hr)d.classList.add('has-b');else if(ht)d.classList.add('has-t');else if(hr)d.classList.add('has-r');
-    d.textContent=day;d.onclick=(ss=>()=>selectDay(ss))(s);grid.appendChild(d);
-  }
-  const rem=(first+dim)%7===0?0:7-(first+dim)%7;
-  for(let i=1;i<=rem;i++){const d=document.createElement('div');d.className='cd om';d.textContent=i;grid.appendChild(d)}
-}
-function selectDay(s){dcSel=s;renderDcal();renderDayTasks(s);document.getElementById('dtT').textContent=s===TODAY?'今日任务':fmtD(s)+' 的任务'}
-function renderDayTasks(s){
-  const wrap=document.getElementById('tWrap');wrap.innerHTML='';
+function renderTodayTasks(){
+  const wrap=document.getElementById('tWrap');
+  wrap.querySelectorAll('.ti').forEach(el=>el.remove());
   const all=[];
   getGoals().forEach(g=>g.tasks.forEach((text,i)=>{
     const date=getTL(g.id,i)||addD(g.createdAt,i);
-    if(date===s)all.push({gid:g.id,gname:g.name,idx:i,text,done:getTD(g.id,i)});
+    if(date===TODAY)all.push({gid:g.id,gname:g.name,idx:i,text,done:getTD(g.id,i)});
   }));
-  if(!all.length){wrap.innerHTML=`<div class="notask"><span style="font-size:22px">✨</span>${s===TODAY?'今天没有安排任务':'这天没有任务'}</div>`;return}
+  document.getElementById('noTask').style.display=all.length?'none':'';
+  const stat=document.getElementById('ddlStat');
+  if(all.length){const done=all.filter(t=>t.done).length;stat.textContent=`${done}/${all.length}`;} else stat.textContent='';
   all.forEach(t=>{
     const div=document.createElement('div');div.className='ti'+(t.done?' done':'');
     div.innerHTML=`<div class="tck${t.done?' on':''}" onclick="toggleT('${t.gid}',${t.idx},${t.done})"></div>
-      <div class="tb"><div class="tgtag">🎯 ${t.gname}</div>
+      <div class="tb"><div class="tgtag">${t.gname}</div>
       <div class="ttxt${t.done?' stk':''}">${t.text}</div></div>
-      ${!t.done?`<button class="tdly" onclick="reschedule('${t.gid}')">重新安排↺</button>`:''}`;
+      ${!t.done?`<button class="tdly" onclick="reschedule('${t.gid}')">↺</button>`:''}`;
     wrap.appendChild(div);
   });
 }
-function toggleT(gid,idx,was){setTD(gid,idx,!was);renderGoals();renderDayTasks(dcSel);renderDcal();renderWS()}
+function toggleT(gid,idx,was){setTD(gid,idx,!was);renderGoals();renderTodayTasks();renderRcal()}
 function reschedule(gid){
-  // 把该目标所有未完成任务重新均匀分配到 today→deadline 的剩余天数
   const g=getGoals().find(x=>x.id===gid);if(!g)return;
   const undone=g.tasks.map((_,i)=>i).filter(i=>!getTD(gid,i));
   if(!undone.length)return;
   const remain=Math.max(1,diffD(TODAY,g.deadline));
   const step=remain/undone.length;
-  undone.forEach((idx,n)=>{
-    const d=addD(TODAY,Math.floor(n*step));
-    setTL(gid,idx,d);
-  });
-  renderGoals();renderDcal();renderDayTasks(dcSel);renderWS();
-}
-function renderWS(){
-  const el=document.getElementById('wStats');el.innerHTML='';
-  const goals=getGoals();
-  if(!goals.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:14px 0">还没有目标</div>';return}
-  goals.forEach(g=>{
-    const total=g.tasks.length,done=g.tasks.filter((_,i)=>getTD(g.id,i)).length;
-    const pct=total?Math.round(done/total*100):0;
-    const div=document.createElement('div');div.className='witem';
-    div.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:4px">
-      <span style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px">${g.name}</span>
-      <span style="font-size:11.5px;color:var(--blue);font-weight:700">${pct}%</span></div>
-      <div class="pbar"><div class="pbarf" style="width:${pct}%"></div></div>`;
-    el.appendChild(div);
-  });
+  undone.forEach((idx,n)=>setTL(gid,idx,addD(TODAY,Math.floor(n*step))));
+  renderGoals();renderTodayTasks();renderRcal();
 }
 
-// ─── init ───
-renderHist();upStreak();renderGoals();renderRcal();renderDcal();renderDayTasks(TODAY);renderWS();loadBg();selectDay(TODAY);
-const dd=new Date();dd.setDate(dd.getDate()+7);document.getElementById('dl').value=ds(dd);
+// init
+renderHist();upStreak();renderGoals();renderRcal();renderTodayTasks();loadBg();
+const dd2=new Date();dd2.setDate(dd2.getDate()+7);document.getElementById('dl').value=ds(dd2);
+document.getElementById('ddlTxt').textContent='DDL ▾';
 </script>
 </body>
 </html>
