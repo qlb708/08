@@ -1,4 +1,4 @@
-<!-- recap_v3 -->
+<!-- recap_v4 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -32,15 +32,8 @@ body{
   display:flex;flex-direction:column;
 }
 
-/* ── topbar ── */
-.topbar{
-  flex-shrink:0;display:flex;align-items:center;gap:10px;
-  padding:11px 36px;
-  background:rgba(255,255,255,.82);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(210,222,245,.38);
-  z-index:10;
-}
+/* topbar */
+.topbar{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:11px 36px;background:rgba(255,255,255,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(210,222,245,.38);z-index:10}
 .back{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:600;color:var(--text2);background:rgba(255,255,255,.95);border:1px solid var(--border2);border-radius:99px;padding:6px 14px 6px 10px;text-decoration:none;box-shadow:0 1px 6px rgba(74,124,247,.08);transition:all .2s}
 .back:hover{color:var(--blue);transform:translateX(-2px)}
 .div-line{width:1px;height:16px;background:var(--border2)}
@@ -49,48 +42,44 @@ body{
 .mbtn.on-i{background:white;color:var(--blue);box-shadow:0 1px 6px rgba(74,124,247,.18)}
 .mbtn.on-r{background:white;color:var(--purple);box-shadow:0 1px 6px rgba(124,92,247,.18)}
 .streak{margin-left:auto;display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--blue-s),rgba(220,232,255,.6));border:1px solid var(--blue-m);border-radius:99px;padding:6px 16px;font-size:13.5px;font-weight:700;color:var(--blue)}
-.ddl-pill{display:flex;align-items:center;gap:5px;font-size:13.5px;font-weight:600;color:var(--orange);background:var(--orange-s);border:1px solid rgba(249,115,22,.22);border-radius:99px;padding:5px 14px;cursor:pointer;transition:all .2s;user-select:none}
-.ddl-pill:hover{background:rgba(255,237,213,.8)}
+.ddl-pill{display:flex;align-items:center;gap:5px;font-size:13.5px;font-weight:600;color:var(--orange);background:var(--orange-s);border:1px solid rgba(249,115,22,.22);border-radius:99px;padding:6px 14px;cursor:pointer;transition:all .2s;user-select:none}
+.ddl-pill:hover{background:rgba(255,237,213,.85)}
 
-/* ── main ── */
-.main{flex:1;min-height:0;display:flex;gap:0;padding:20px 36px;gap:16px;overflow:hidden}
+/* main */
+.main{flex:1;min-height:0;display:flex;padding:20px 36px;gap:16px;overflow:hidden}
 
-/* ── card ── */
+/* card */
 .card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;flex-direction:column;transition:box-shadow .2s}
 .card:hover{box-shadow:var(--shadow-h)}
-.card-pad{padding:22px 24px;gap:14px}
-.card-pad-sm{padding:16px 18px;gap:11px}
 .card.grow{flex:1;min-height:0;overflow:hidden}
+.cp{padding:22px 24px;gap:14px}
+.cps{padding:16px 18px;gap:11px}
 .lbl{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:5px;flex-shrink:0}
 
-/* ── form ── */
+/* form */
 .fg{display:flex;flex-direction:column;gap:3px}
 .fl{font-size:12.5px;font-weight:600;color:var(--muted)}
 textarea,input[type=text],input[type=date],select{width:100%;border:1.5px solid rgba(180,200,240,.22);border-radius:10px;padding:8px 11px;font-size:14px;color:var(--text);background:rgba(255,255,255,.8);font-family:inherit;line-height:1.55;resize:none;transition:border-color .2s,box-shadow .2s,background .2s}
 textarea:focus,input:focus,select:focus{outline:none;border-color:rgba(74,124,247,.45);background:rgba(255,255,255,.98);box-shadow:0 0 0 3px rgba(74,124,247,.08)}
 textarea{height:64px}
 textarea.sm{height:52px}
-input[type=date],select{height:33px;cursor:pointer}
-
-.erow{display:flex;align-items:center;gap:8px;flex-shrink:0}
+input[type=date],select{height:34px;cursor:pointer}
 .elbl{font-size:13px;color:var(--muted);white-space:nowrap}
-.edots{display:flex;gap:4px}
+.edots{display:flex;gap:5px}
 .edot{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(180,200,240,.28);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);transition:transform .15s,border-color .15s,background .15s}
 .edot:hover{transform:scale(1.18)}
 .edot.on{border-color:var(--blue);background:var(--blue-s)}
-
-.btn{width:100%;padding:11px;border:none;border-radius:12px;font-size:14.5px;font-weight:700;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s,box-shadow .15s;flex-shrink:0}
+.btn{width:100%;padding:11px;border:none;border-radius:12px;font-size:14.5px;font-weight:700;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s;flex-shrink:0}
 .btn:hover{transform:translateY(-1.5px)}
 .btn.blue{background:linear-gradient(135deg,#5b8fff,var(--blue),#3a6cf0);box-shadow:0 4px 14px rgba(74,124,247,.32)}
 .btn.purple{background:linear-gradient(135deg,#9470ff,var(--purple),#6a48f0);box-shadow:0 4px 14px rgba(124,92,247,.32)}
 .btn.loading{opacity:.65;cursor:not-allowed;pointer-events:none}
 
-/* ── left col ── */
+/* left col */
 .col-left{width:310px;flex-shrink:0;display:flex;flex-direction:column;gap:0;overflow:hidden}
 
-/* ── mid col ── */
+/* mid col */
 .col-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;overflow:hidden}
-
 .notebox{background:linear-gradient(135deg,rgba(74,124,247,.04),rgba(124,92,247,.025));border:1.5px solid rgba(74,124,247,.10);border-radius:12px;padding:14px 16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent;flex:1;min-height:0}
 .notebox.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted)}
 .nph{font-size:26px;opacity:.2}
@@ -103,53 +92,76 @@ input[type=date],select{height:33px;cursor:pointer}
 .cpbtn{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:7px;border:1px solid rgba(74,124,247,.18);background:white;color:var(--blue);cursor:pointer;font-weight:600;transition:all .18s}
 .cpbtn:hover{background:var(--blue-s)}
 
-.hwrap{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
-.hempty{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:12px;padding:20px 0}
-.hi{background:rgba(255,255,255,.7);border:1px solid rgba(210,222,245,.48);border-radius:10px;padding:9px 13px;flex-shrink:0;transition:all .18s;cursor:default}
-.hi:hover{box-shadow:0 2px 12px rgba(74,124,247,.08);transform:translateX(2px);background:rgba(255,255,255,.92)}
-.hihead{display:flex;align-items:center;gap:5px;margin-bottom:3px}
-.hdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.hdot.i{background:var(--blue)}.hdot.r{background:var(--purple)}
-.hdate{font-size:11.5px;color:var(--muted);font-weight:500}
-.hdel{margin-left:auto;font-size:11px;border:none;background:none;cursor:pointer;color:rgba(138,159,192,.55);padding:1px 5px;border-radius:5px;transition:all .15s}
-.hdel:hover{background:#fee2e2;color:var(--red)}
-.hpre{font-size:13px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
-/* ── right col ── */
+/* right col */
 .col-right{width:215px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;overflow:hidden}
-
-/* cal */
 .calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .caltitle{font-size:13px;font-weight:700;color:var(--text2)}
-.calnav{display:flex;gap:2px}
-.calnav button{width:19px;height:19px;border:1px solid var(--border2);background:rgba(255,255,255,.8);border-radius:5px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;display:flex;align-items:center;justify-content:center;line-height:1}
+.calnav button{width:19px;height:19px;border:1px solid var(--border2);background:rgba(255,255,255,.8);border-radius:5px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;display:flex;align-items:center;justify-content:center}
 .calnav button:hover{background:var(--blue-s);color:var(--blue)}
+.calnav{display:flex;gap:2px}
 .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .cw{font-size:10px;font-weight:700;color:rgba(138,159,192,.65);text-align:center;padding:1px 0}
 .cd{height:25px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11.5px;cursor:pointer;position:relative;transition:all .13s;color:var(--text2)}
 .cd:hover{background:var(--blue-s);color:var(--blue)}
 .cd.om{color:rgba(138,159,192,.22);cursor:default}.cd.om:hover{background:transparent;color:rgba(138,159,192,.22)}
-.cd.today{background:var(--blue);color:#fff;font-weight:700;box-shadow:0 2px 7px rgba(74,124,247,.3)}
-.cd.today:hover{background:var(--blue)}
+.cd.today{background:var(--blue);color:#fff;font-weight:700;box-shadow:0 2px 7px rgba(74,124,247,.3)}.cd.today:hover{background:var(--blue)}
 .cd.sel{outline:2px solid rgba(74,124,247,.5);outline-offset:1px}
 .cd::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;display:none}
-.cd.has-t::after{display:block;background:var(--orange)}
 .cd.has-r::after{display:block;background:var(--green)}
-.cd.has-b::after{display:block;background:linear-gradient(90deg,var(--orange),var(--green))}
 .cd.today::after{background:rgba(255,255,255,.7)}
 
-/* DDL panel overlay */
-.ddl-overlay{position:fixed;inset:0;z-index:100;display:none;align-items:flex-start;justify-content:flex-end;padding:56px 28px 0;pointer-events:none}
+/* ── BOOKSHELF ── */
+.shelf-row{display:flex;flex-direction:column;gap:6px}
+.shelf-label{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.shelf-label::after{content:'';flex:1;height:1.5px;background:var(--border2);border-radius:1px}
+.shelf-books{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0 8px}
+
+/* book spine */
+.book{
+  position:relative;
+  width:52px;height:120px;
+  border-radius:4px 10px 10px 4px;
+  cursor:pointer;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:3px 3px 10px rgba(0,0,0,.12),inset -3px 0 8px rgba(0,0,0,.08);
+  flex-shrink:0;
+}
+.book:hover{transform:translateY(-8px) rotate(-2deg);box-shadow:6px 12px 22px rgba(0,0,0,.18),inset -3px 0 8px rgba(0,0,0,.08)}
+.book-spine{writing-mode:vertical-rl;text-orientation:mixed;font-size:13px;font-weight:800;color:rgba(255,255,255,.92);letter-spacing:.06em;text-shadow:0 1px 3px rgba(0,0,0,.2);user-select:none;transform:rotate(180deg)}
+.book-count{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:rgba(255,255,255,.65);white-space:nowrap}
+.book-dot{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35)}
+.book-shadow{position:absolute;left:0;top:4px;bottom:4px;width:7px;background:linear-gradient(90deg,rgba(0,0,0,.18),transparent);border-radius:4px 0 0 4px}
+
+/* book open panel */
+.book-panel{flex:1;min-height:0;display:none;flex-direction:column;gap:10px;overflow:hidden;animation:bkIn .2s ease}
+@keyframes bkIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+.bk-header{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;flex-shrink:0}
+.bk-title{font-size:15px;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.bk-sub{font-size:11px;color:rgba(255,255,255,.72);margin-top:2px}
+.bk-back{margin-left:auto;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;transition:background .15s}
+.bk-back:hover{background:rgba(255,255,255,.35)}
+.bk-entries{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
+.bk-empty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 0;color:var(--muted);font-size:13px}
+.bk-entry{background:rgba(255,255,255,.82);border:1px solid rgba(210,222,245,.5);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .18s;flex-shrink:0}
+.bk-entry:hover{box-shadow:0 3px 14px rgba(74,124,247,.09);transform:translateX(2px)}
+.bke-head{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.bke-date{font-size:11px;font-weight:600;color:var(--muted)}
+.bke-eng{font-size:13px}
+.bke-del{margin-left:auto;font-size:11px;border:none;background:none;cursor:pointer;color:rgba(138,159,192,.5);padding:1px 5px;border-radius:5px;transition:all .15s}
+.bke-del:hover{background:#fee2e2;color:var(--red)}
+.bke-pre{font-size:13px;color:var(--text2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bke-full{display:none;font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap;margin-top:6px;padding-top:6px;border-top:1px solid rgba(180,200,240,.22)}
+
+/* DDL overlay */
+.ddl-overlay{position:fixed;inset:0;z-index:100;display:none;align-items:flex-start;justify-content:flex-end;padding:58px 36px 0;pointer-events:none}
 .ddl-overlay.open{display:flex}
-.ddl-box{width:360px;max-height:calc(100vh - 80px);background:var(--glass);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 12px 48px rgba(74,124,247,.16),0 4px 16px rgba(74,124,247,.10);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;flex-direction:column;gap:0;overflow:hidden;pointer-events:all;animation:slideIn .22s cubic-bezier(.32,0,.18,1)}
+.ddl-box{width:360px;max-height:calc(100vh-80px);background:var(--glass);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 12px 48px rgba(74,124,247,.16);backdrop-filter:blur(24px);display:flex;flex-direction:column;overflow:hidden;pointer-events:all;animation:slideIn .22s cubic-bezier(.32,0,.18,1)}
 @keyframes slideIn{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:none}}
 .ddl-head{display:flex;align-items:center;gap:8px;padding:14px 18px 12px;border-bottom:1px solid var(--border2);flex-shrink:0}
-.ddl-head-title{font-size:13.5px;font-weight:700;color:var(--text)}
 .ddl-close{margin-left:auto;width:24px;height:24px;border:none;background:rgba(180,200,240,.2);border-radius:7px;cursor:pointer;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .15s}
 .ddl-close:hover{background:#fee2e2;color:var(--red)}
-.ddl-body{overflow-y:auto;flex:1;min-height:0;padding:14px 18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
-
-/* today tasks inside ddl */
+.ddl-body{overflow-y:auto;flex:1;padding:14px 18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
 .twrap{display:flex;flex-direction:column;gap:5px}
 .ti{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border-radius:9px;background:rgba(255,255,255,.72);border:1px solid rgba(210,222,245,.4);transition:opacity .2s}
 .ti.done{opacity:.45}
@@ -160,11 +172,9 @@ input[type=date],select{height:33px;cursor:pointer}
 .tgtag{font-size:9px;font-weight:700;color:var(--orange);margin-bottom:2px}
 .ttxt{font-size:12px;line-height:1.45;color:var(--text2)}
 .ttxt.stk{text-decoration:line-through;color:var(--muted)}
-.tdly{font-size:10px;border:none;background:none;cursor:pointer;color:var(--muted);padding:1px 5px;border-radius:5px;flex-shrink:0;transition:all .15s;white-space:nowrap}
+.tdly{font-size:10px;border:none;background:none;cursor:pointer;color:var(--muted);padding:1px 5px;border-radius:5px;flex-shrink:0;transition:all .15s}
 .tdly:hover{background:var(--orange-s);color:var(--orange)}
 .notask{text-align:center;padding:14px 0;font-size:12px;color:var(--muted)}
-
-/* goals */
 .gc{background:rgba(255,255,255,.75);border:1px solid var(--border2);border-radius:11px;padding:11px 13px;flex-shrink:0}
 .gcname{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
 .gcmeta{font-size:10px;color:var(--muted);margin-bottom:6px}
@@ -173,8 +183,6 @@ input[type=date],select{height:33px;cursor:pointer}
 .pbar{height:4px;background:rgba(180,200,240,.18);border-radius:99px;overflow:hidden}
 .pbarf{height:100%;border-radius:99px;background:linear-gradient(90deg,#6a9fff,var(--blue));transition:width .4s}
 .plbl{font-size:9.5px;color:var(--muted);margin-top:3px;display:flex;justify-content:space-between}
-
-/* new goal */
 .new-goal{display:flex;flex-direction:column;gap:8px}
 .sbtns{display:flex;gap:6px;margin-top:2px}
 .smbtn{flex:1;padding:7px 0;border:1.5px solid var(--border2);background:rgba(255,255,255,.9);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s}
@@ -185,25 +193,12 @@ input[type=date],select{height:33px;cursor:pointer}
 .sdl{flex-shrink:0;color:var(--muted);min-width:38px;font-weight:500}
 .sdt{color:var(--text2);line-height:1.4}
 
-/* filter */
-.fbar{display:flex;align-items:center;gap:5px;flex-shrink:0}
-.fbar input[type=date]{height:26px;font-size:11px;border-radius:7px;padding:0 7px;width:106px}
-.fbar button{font-size:11px;padding:3px 9px;border-radius:7px;border:1px solid var(--border2);background:white;color:var(--muted);cursor:pointer;transition:all .15s}
-.fbar button:hover{color:var(--red)}
-
-/* bg info textarea */
-.bgta{height:58px;resize:none;font-size:12px;background:rgba(255,255,255,.75)!important}
-
-/* bg info pill count */
-.ddl-stat{font-size:10px;font-weight:700;color:var(--orange);margin-left:4px;background:var(--orange-s);padding:1px 7px;border-radius:99px}
-
 @keyframes sp{to{transform:rotate(360deg)}}
 .sp{width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 </style>
 </head>
 <body>
 
-<!-- topbar -->
 <div class="topbar">
   <a href="/08/works/#tools" class="back">
     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -215,23 +210,21 @@ input[type=date],select{height:33px;cursor:pointer}
     <button class="mbtn" data-m="research" onclick="switchMode('research')">🔬 科研</button>
   </div>
   <div class="streak">🔥 <span id="sNum">0</span> 天连续记录</div>
-  <div class="ddl-pill" onclick="toggleDDL()">🎯 DDL <span id="ddlStat"></span> <span id="ddlArrow">▾</span></div>
+  <div class="ddl-pill" onclick="toggleDDL()">🎯 DDL <span id="ddlStat" style="display:none"></span> <span id="ddlArrow">▾</span></div>
 </div>
 
-<!-- 三列主区 -->
 <div class="main">
 
   <!-- 左：填写 -->
   <div class="col-left">
-    <div class="card card-pad grow" style="overflow-y:auto">
+    <div class="card cp grow" style="overflow-y:auto">
       <div class="lbl" id="ftitle">✍️ 今天的实习复盘</div>
-
       <div id="fi" style="display:flex;flex-direction:column;gap:10px;flex:1;min-height:0">
         <div class="fg" style="flex:1;min-height:0;display:flex;flex-direction:column"><label class="fl">💼 今天做了什么</label><textarea id="i-did" placeholder="跟导师做了用户访谈…" style="flex:1;min-height:60px;height:auto"></textarea></div>
         <div class="fg" style="flex:1;min-height:0;display:flex;flex-direction:column"><label class="fl">💡 学到 / 观察到什么</label><textarea id="i-learned" placeholder="发现用户最在意流程顺不顺…" style="flex:1;min-height:60px;height:auto"></textarea></div>
         <div class="fg"><label class="fl">🪨 遇到的卡点</label><textarea class="sm" id="i-block" placeholder="数据权限还没申请到…"></textarea></div>
         <div class="fg"><label class="fl">🎯 明天要做</label><textarea class="sm" id="i-next" placeholder="整理成结构化需求文档…"></textarea></div>
-        <div class="erow"><span class="elbl">今日状态</span>
+        <div style="display:flex;align-items:center;gap:8px"><span class="elbl">今日状态</span>
           <div class="edots" id="ei">
             <button class="edot" data-v="1" onclick="setE('i',1)">😩</button>
             <button class="edot" data-v="2" onclick="setE('i',2)">😐</button>
@@ -241,13 +234,12 @@ input[type=date],select{height:33px;cursor:pointer}
           </div>
         </div>
       </div>
-
       <div id="fr" style="display:none;flex-direction:column;gap:10px;flex:1;min-height:0">
         <div class="fg" style="flex:1;min-height:0;display:flex;flex-direction:column"><label class="fl">🧪 今天推进了什么</label><textarea id="r-did" placeholder="跑完了第一组对照实验…" style="flex:1;min-height:60px;height:auto"></textarea></div>
         <div class="fg" style="flex:1;min-height:0;display:flex;flex-direction:column"><label class="fl">🔍 新发现 / 新想法</label><textarea id="r-learned" placeholder="发现baseline在长文本退化…" style="flex:1;min-height:60px;height:auto"></textarea></div>
         <div class="fg"><label class="fl">🌀 还没搞清楚的</label><textarea class="sm" id="r-block" placeholder="为什么epoch增加loss震荡…"></textarea></div>
-        <div class="fg"><label class="fl">📌 下一步验证方向</label><textarea id="r-next" placeholder="试试降低learning rate…"></textarea></div>
-        <div class="erow"><span class="elbl">今日状态</span>
+        <div class="fg"><label class="fl">📌 下一步验证方向</label><textarea class="sm" id="r-next" placeholder="试试降低learning rate…"></textarea></div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="elbl">今日状态</span>
           <div class="edots" id="er">
             <button class="edot" data-v="1" onclick="setE('r',1)">😩</button>
             <button class="edot" data-v="2" onclick="setE('r',2)">😐</button>
@@ -257,39 +249,55 @@ input[type=date],select{height:33px;cursor:pointer}
           </div>
         </div>
       </div>
-
       <button class="btn blue" id="gBtn" onclick="gen()"><span>✨</span> AI 提炼今日成长笔记</button>
     </div>
   </div>
 
-  <!-- 中：笔记 + 历史 -->
+  <!-- 中：笔记 + 书架 -->
   <div class="col-mid">
-    <div class="card card-pad" style="flex:0 0 auto;display:flex;flex-direction:column;gap:10px;min-height:0" id="noteCard">
-      <div class="lbl">📝 今日笔记</div>
-      <div class="notebox empty" id="noteBox">
+    <div class="card cp" style="flex:0 0 auto;min-height:150px;display:flex;flex-direction:column;gap:10px">
+      <div class="lbl">📝 今日笔记
+        <span id="saveTip" style="display:none;margin-left:auto;font-size:10.5px;color:var(--green);font-weight:600;background:var(--green-s);padding:2px 9px;border-radius:99px;border:1px solid rgba(34,197,94,.2)">已存入笔记本 ✓</span>
+      </div>
+      <div class="notebox empty" id="noteBox" style="flex:1">
         <div class="nph">🌱</div>
         <div class="npht">填写左侧，AI 帮你提炼成长笔记</div>
       </div>
     </div>
-    <div class="card card-pad grow">
-      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-        <div class="lbl">📅 历史复盘</div>
-        <div class="fbar" style="margin-left:auto">
-          <input type="date" id="fFrom" onchange="renderHist()">
-          <span style="font-size:11px;color:var(--muted)">—</span>
-          <input type="date" id="fTo" onchange="renderHist()">
-          <button onclick="clearF()">清除</button>
+
+    <!-- 书架 / 笔记本内页 -->
+    <div class="card cp grow" style="overflow:hidden">
+      <div class="lbl" id="shelfLbl">📚 笔记本书架</div>
+
+      <!-- 书架视图 -->
+      <div id="shelfView" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:16px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent">
+        <div class="shelf-row">
+          <div class="shelf-label">实习</div>
+          <div class="shelf-books" id="shelf-intern"></div>
+        </div>
+        <div class="shelf-row">
+          <div class="shelf-label">科研</div>
+          <div class="shelf-books" id="shelf-research"></div>
         </div>
       </div>
-      <div class="hwrap" id="histWrap">
-        <div class="hempty" id="histEmpty"><span style="font-size:20px">🗂</span>还没有记录</div>
+
+      <!-- 笔记本内页 -->
+      <div id="bookView" class="book-panel">
+        <div class="bk-header" id="bkHeader">
+          <div>
+            <div class="bk-title" id="bkTitle"></div>
+            <div class="bk-sub" id="bkSub"></div>
+          </div>
+          <button class="bk-back" onclick="closeBook()">← 书架</button>
+        </div>
+        <div class="bk-entries" id="bkEntries"></div>
       </div>
     </div>
   </div>
 
   <!-- 右：日历 + 背景 -->
   <div class="col-right">
-    <div class="card card-pad-sm" style="flex-shrink:0;display:flex;flex-direction:column;gap:0">
+    <div class="card cps" style="flex-shrink:0;display:flex;flex-direction:column;gap:0">
       <div class="calhead">
         <div class="caltitle" id="rcalT"></div>
         <div class="calnav">
@@ -299,84 +307,75 @@ input[type=date],select{height:33px;cursor:pointer}
       </div>
       <div class="cg" id="rcalG"></div>
     </div>
-    <div class="card card-pad-sm grow" style="display:flex;flex-direction:column;gap:8px">
+    <div class="card cps grow" style="display:flex;flex-direction:column;gap:8px">
       <div class="lbl">🗒 背景信息</div>
-      <textarea class="bgta" id="bgInfo" placeholder="实习公司、岗位、科研课题、导师方向…" oninput="saveBg()" style="flex:1;min-height:0;height:auto"></textarea>
+      <textarea id="bgInfo" placeholder="实习公司、岗位、科研课题、导师方向…" oninput="saveBg()" style="flex:1;min-height:0;height:auto;resize:none;font-size:13px;background:rgba(255,255,255,.75)!important"></textarea>
     </div>
   </div>
 
 </div>
 
 <!-- DDL 浮层 -->
-<div class="ddl-overlay" id="ddlOverlay" onclick="onOverlayClick(event)">
-  <div class="ddl-box" id="ddlBox">
+<div class="ddl-overlay" id="ddlOverlay" onclick="onOvClick(event)">
+  <div class="ddl-box">
     <div class="ddl-head">
       <span style="font-size:16px">🎯</span>
-      <span class="ddl-head-title">DDL Master</span>
+      <span style="font-size:13.5px;font-weight:700;color:var(--text)">DDL Master</span>
       <button class="ddl-close" onclick="toggleDDL()">✕</button>
     </div>
     <div class="ddl-body">
-
-      <!-- 今日任务 -->
       <div>
         <div class="lbl" style="margin-bottom:8px">📋 今日任务</div>
-        <div class="twrap" id="tWrap">
-          <div class="notask" id="noTask">今天还没有任务安排</div>
-        </div>
+        <div class="twrap" id="tWrap"><div class="notask" id="noTask">今天还没有任务</div></div>
       </div>
-
-      <!-- 进行中 -->
       <div>
-        <div class="lbl" style="margin-bottom:8px">🏃 进行中目标</div>
-        <div style="display:flex;flex-direction:column;gap:7px" id="gList">
-          <div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">还没有目标</div>
-        </div>
+        <div class="lbl" style="margin-bottom:8px">🏃 进行中</div>
+        <div style="display:flex;flex-direction:column;gap:7px" id="gList"><div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">还没有目标</div></div>
       </div>
-
-      <!-- 新建 -->
       <div>
         <div class="lbl" style="margin-bottom:8px">➕ 新建目标</div>
         <div class="new-goal">
           <input type="text" id="dn" placeholder="目标名称" style="height:34px">
-          <textarea id="dd" placeholder="内容描述（AI 拆解用）" style="height:52px"></textarea>
+          <textarea id="dd" placeholder="内容描述（AI 拆解）" style="height:52px"></textarea>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div class="fg"><label class="fl">截止日期</label><input type="date" id="dl" style="font-size:11.5px"></div>
-            <div class="fg"><label class="fl">周期</label>
-              <select id="ds" style="font-size:11.5px">
-                <option value="auto">按截止日</option>
-                <option value="7">7 天</option>
-                <option value="14">14 天</option>
-                <option value="30">30 天</option>
-              </select>
-            </div>
+            <div class="fg"><label class="fl" style="font-size:12px">截止日期</label><input type="date" id="dl" style="font-size:11.5px"></div>
+            <div class="fg"><label class="fl" style="font-size:12px">周期</label><select id="ds" style="font-size:11.5px"><option value="auto">按截止日</option><option value="7">7天</option><option value="14">14天</option><option value="30">30天</option></select></div>
           </div>
-          <button class="btn" id="ddlBtn" onclick="createGoal()" style="background:linear-gradient(135deg,#ff8534,var(--orange),#e8530a);box-shadow:0 3px 12px rgba(249,115,22,.30);border-radius:10px;padding:9px;font-size:12.5px"><span>🤖</span> AI 拆分任务</button>
+          <button class="btn" id="ddlBtn" onclick="createGoal()" style="background:linear-gradient(135deg,#ff8534,var(--orange),#e8530a);box-shadow:0 3px 12px rgba(249,115,22,.30);border-radius:10px;padding:9px;font-size:13px"><span>🤖</span> AI 拆分任务</button>
           <div class="spre" id="sPreview" style="display:none">
             <div class="spt">任务预览</div>
             <div id="sDays" style="display:flex;flex-direction:column;gap:4px"></div>
-            <div class="sbtns">
-              <button class="smbtn" onclick="confirmGoal()">✅ 确认创建</button>
-              <button class="smbtn" onclick="document.getElementById('sPreview').style.display='none'">取消</button>
-            </div>
+            <div class="sbtns"><button class="smbtn" onclick="confirmGoal()">✅ 确认</button><button class="smbtn" onclick="document.getElementById('sPreview').style.display='none'">取消</button></div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
+// ── BOOKS CONFIG ──
+const BOOKS = {
+  intern: [
+    {id:'xiaohongshu', name:'小红书', color:'#e8394a', shadow:'#b02030'},
+    {id:'transsion',   name:'传音',   color:'#2563eb', shadow:'#1a4ab0'},
+    {id:'benq',        name:'明基',   color:'#16a34a', shadow:'#0f7a34'},
+  ],
+  research: [
+    {id:'kg',          name:'图谱',   color:'#7c3aed', shadow:'#5b20c0'},
+    {id:'devtraj',     name:'发育轨迹', color:'#d97706', shadow:'#a05c04'},
+  ]
+};
+
 const TODAY=new Date().toISOString().slice(0,10);
 const EE=['','😩','😐','🙂','😄','🚀'];
 const EW=['','有点累','状态一般','还不错','状态很好','超级在状态'];
 const ds=d=>d instanceof Date?d.toISOString().slice(0,10):d;
 const addD=(s,n)=>{const d=new Date(s+' 00:00:00');d.setDate(d.getDate()+n);return ds(d)};
 const diffD=(a,b)=>Math.round((new Date(b+' 00:00:00')-new Date(a+' 00:00:00'))/86400000);
-const fmtD=s=>new Date(s+' 00:00:00').toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'short'});
 
 // mode
-let curMode='intern';
+let curMode='intern',curBook=null;
 const energy={i:0,r:0};
 function switchMode(m){
   curMode=m;
@@ -384,40 +383,40 @@ function switchMode(m){
   const isI=m==='intern';
   document.getElementById('fi').style.display=isI?'flex':'none';
   document.getElementById('fr').style.display=isI?'none':'flex';
-  document.getElementById('ftitle').textContent=isI?'✍️  今天的实习复盘':'🔬  今天的科研复盘';
+  document.getElementById('ftitle').textContent=isI?'✍️ 今天的实习复盘':'🔬 今天的科研复盘';
   document.getElementById('gBtn').className='btn '+(isI?'blue':'purple');
 }
 function setE(k,v){energy[k]=v;document.querySelectorAll('#e'+k+' .edot').forEach(d=>d.classList.toggle('on',+d.dataset.v===v))}
 
-// DDL overlay
+// DDL
 let ddlOpen=false;
-function toggleDDL(){
-  ddlOpen=!ddlOpen;
-  document.getElementById('ddlOverlay').classList.toggle('open',ddlOpen);
-  document.getElementById('ddlArrow').textContent=ddlOpen?'▴':'▾';
-}
-function onOverlayClick(e){if(e.target===document.getElementById('ddlOverlay'))toggleDDL()}
+function toggleDDL(){ddlOpen=!ddlOpen;document.getElementById('ddlOverlay').classList.toggle('open',ddlOpen);document.getElementById('ddlArrow').textContent=ddlOpen?'▴':'▾'}
+function onOvClick(e){if(e.target===document.getElementById('ddlOverlay'))toggleDDL()}
 
-// data
-const getRec=()=>{try{return JSON.parse(localStorage.getItem('rc')||'[]')}catch{return[]}};
-const saveRec=r=>{const a=getRec();a.unshift(r);localStorage.setItem('rc',JSON.stringify(a.slice(0,90)))};
-const delRec=i=>{const a=getRec();a.splice(i,1);localStorage.setItem('rc',JSON.stringify(a));renderHist();upStreak();renderRcal()};
-const getGoals=()=>{try{return JSON.parse(localStorage.getItem('dg')||'[]')}catch{return[]}};
-const saveGoals=g=>localStorage.setItem('dg',JSON.stringify(g));
-const getTD=(gid,i)=>localStorage.getItem('td_'+gid+'_'+i)==='1';
-const setTD=(gid,i,v)=>localStorage.setItem('td_'+gid+'_'+i,v?'1':'0');
-const getTL=(gid,i)=>localStorage.getItem('tl_'+gid+'_'+i)||null;
-const setTL=(gid,i,d)=>localStorage.setItem('tl_'+gid+'_'+i,d);
+// data - records per book
+const getRec=(bid)=>{try{return JSON.parse(localStorage.getItem('bk_'+bid)||'[]')}catch{return[]}};
+const saveRec=(bid,arr)=>localStorage.setItem('bk_'+bid,JSON.stringify(arr));
+const allRecs=()=>Object.values(BOOKS).flat().flatMap(b=>getRec(b.id).map(r=>({...r,bid:b.id})));
 
+// streak - count days with any record
 function calcStreak(){
-  const recs=getRec();if(!recs.length)return 0;
-  const dates=[...new Set(recs.map(r=>r.date))].sort().reverse();
+  const dates=[...new Set(allRecs().map(r=>r.date))].sort().reverse();
+  if(!dates.length)return 0;
   let s=0;const now=new Date();
   for(let i=0;i<dates.length;i++){const diff=Math.round((now-new Date(dates[i]+' 00:00:00'))/86400000);if(diff===i||diff===i+1)s++;else break}
   return s;
 }
 const upStreak=()=>document.getElementById('sNum').textContent=calcStreak();
 
+// find which book to save to based on curMode
+function pickBook(){
+  const cat=curMode==='intern'?'intern':'research';
+  const books=BOOKS[cat];
+  // pick the one matching the switch, or first
+  return books[0];
+}
+
+// gen
 function gen(){
   const btn=document.getElementById('gBtn');
   const isI=curMode==='intern';
@@ -431,28 +430,29 @@ function gen(){
   setTimeout(()=>{
     const note=mkNote({isI,did,learned,block,next,eng});
     showNote(note);
-    saveRec({mode:curMode,date:TODAY,note,energy:eng});
-    renderHist();upStreak();renderRcal();
+    // save to the currently open book, or first book in category
+    const target=curBook||(isI?BOOKS.intern[0]:BOOKS.research[0]);
+    const arr=getRec(target.id);
+    arr.unshift({date:TODAY,note,energy:eng,mode:curMode});
+    saveRec(target.id,arr);
+    renderShelves();
+    if(curBook&&curBook.id===target.id)openBook(curBook,true);
+    showSaveTip(target.name);
+    upStreak();renderRcal();
     btn.classList.remove('loading');btn.innerHTML='<span>✨</span> AI 提炼今日成长笔记';
-    // auto-resize note card
-    sizeNoteCard();
   },900);
 }
-
-function sizeNoteCard(){
-  // give note card ~38% of mid height
-  const mid=document.querySelector('.col-mid');
-  const nc=document.getElementById('noteCard');
-  const h=Math.min(Math.max(mid.offsetHeight*0.38,150),280);
-  nc.style.height=h+'px';
+function showSaveTip(name){
+  const t=document.getElementById('saveTip');
+  t.textContent='已存入「'+name+'」✓';t.style.display='';
+  setTimeout(()=>t.style.display='none',2500);
 }
-
 function mkNote({isI,did,learned,block,next,eng}){
   const today=new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'long'});
   const L=[`📅 ${today}${eng?'  ·  '+EE[eng]+' '+EW[eng]:''}`,``];
   if(did)L.push(isI?'【今天做了】':'【今天推进】',did,'');
   if(learned)L.push(isI?'【学到/观察到】':'【新发现】',learned,'');
-  if(block)L.push(isI?'【卡点】':'【还没搞清楚】',block,'');
+  if(block)L.push(isI?'【卡点】':'【没搞清楚的】',block,'');
   if(next)L.push(isI?'【明天要做】':'【下一步】',next,'');
   L.push('💬 今日小结',mkInsight({isI,did,learned,block,next}));
   return L.join('\n');
@@ -460,52 +460,104 @@ function mkNote({isI,did,learned,block,next,eng}){
 function mkInsight({isI,did,learned,block,next}){
   const s=t=>t?(t.replace(/\n/g,' ').slice(0,24)+(t.length>24?'…':'')):''
   const pool=isI?[
-    learned?`今天最大的收获是发现：${s(learned)}。职场里很多道理只有亲身跑过才能明白。`:null,
-    block?`"${s(block)}"这件事卡住了，卡点往往是成长的入口——记下来，下次就是经验。`:null,
+    learned?`今天最大的收获是发现：${s(learned)}。`:null,
+    block?`"${s(block)}"这件事卡住了，卡点往往是成长的入口。`:null,
     next?`明天要搞定${s(next)}，目标清晰了执行就不慌。`:null,
     '扎实推进了今天的工作，每一步都是在为后面的自己铺路。',
   ]:[
-    learned?`今天的新发现是：${s(learned)}。科研就是在不确定里寻找一点点确定性。`:null,
+    learned?`今天的新发现是：${s(learned)}。科研就是在不确定里找到确定性。`:null,
     block?`"${s(block)}"还没想清楚，也许明天一杯咖啡就想通了。`:null,
     next?`下一步要验证${s(next)}，带着具体问题做实验才不会白跑。`:null,
     '实验又推进了一步，研究本来就是螺旋上升的过程。',
   ];
   const v=pool.filter(Boolean);return v[Math.floor(Math.random()*v.length)];
 }
-function showNote(note,prefix){
+function showNote(note){
   const box=document.getElementById('noteBox');
   box.className='notebox';
-  box.innerHTML=(prefix?`<div style="font-size:10.5px;color:var(--muted);margin-bottom:7px">${prefix}</div>`:'')+
-    `<div class="ncontent">${note.replace(/</g,'&lt;')}</div>
+  box.innerHTML=`<div class="ncontent">${note.replace(/</g,'&lt;')}</div>
     <div class="nmeta">
       <span class="ntag ${curMode==='intern'?'i':'r'}">${curMode==='intern'?'🏢 实习':'🔬 科研'}</span>
       <button class="cpbtn" onclick="cpNote()">复制</button>
     </div>`;
 }
 function cpNote(){const t=document.querySelector('.ncontent');if(!t)return;navigator.clipboard.writeText(t.textContent).then(()=>{const b=document.querySelector('.cpbtn');b.textContent='已复制 ✓';setTimeout(()=>b.textContent='复制',1500)})}
-
-function renderHist(){
-  const wrap=document.getElementById('histWrap');
-  wrap.querySelectorAll('.hi').forEach(el=>el.remove());
-  const from=document.getElementById('fFrom').value||null;
-  const to=document.getElementById('fTo').value||null;
-  let recs=getRec();
-  if(from)recs=recs.filter(r=>r.date>=from);
-  if(to)recs=recs.filter(r=>r.date<=to);
-  document.getElementById('histEmpty').style.display=recs.length?'none':'';
-  recs.forEach((r,i)=>{
-    const div=document.createElement('div');div.className='hi';
-    div.innerHTML=`<div class="hihead"><div class="hdot ${r.mode==='intern'?'i':'r'}"></div>
-      <span class="hdate">${r.date} · ${r.mode==='intern'?'实习':'科研'} ${EE[r.energy]||''}</span>
-      <button class="hdel" onclick="delRec(${i})">✕</button></div>
-      <div class="hpre">${r.note.replace(/</g,'&lt;')}</div>`;
-    wrap.appendChild(div);
-  });
-}
-const clearF=()=>{document.getElementById('fFrom').value='';document.getElementById('fTo').value='';renderHist()};
-function shake(el){el.style.transform='translateX(-4px)';setTimeout(()=>el.style.transform='translateX(4px)',80);setTimeout(()=>el.style.transform='translateX(-2px)',160);setTimeout(()=>el.style.transform='',240)}
+function shake(el){el.style.transform='translateX(-4px)';setTimeout(()=>el.style.transform='translateX(4px)',80);setTimeout(()=>el.style.transform='',200)}
 const saveBg=()=>localStorage.setItem('bgInfo',document.getElementById('bgInfo').value);
 const loadBg=()=>{const el=document.getElementById('bgInfo');if(el)el.value=localStorage.getItem('bgInfo')||''};
+
+// ── BOOKSHELF ──
+function renderShelves(){
+  ['intern','research'].forEach(cat=>{
+    const el=document.getElementById('shelf-'+cat);
+    el.innerHTML='';
+    BOOKS[cat].forEach(b=>{
+      const arr=getRec(b.id);
+      const div=document.createElement('div');
+      div.className='book';
+      div.style.background=`linear-gradient(160deg,${b.color}ee,${b.shadow}cc)`;
+      div.innerHTML=`
+        <div class="book-shadow"></div>
+        <div class="book-dot"></div>
+        <div class="book-spine">${b.name}</div>
+        <div class="book-count">${arr.length} 篇</div>`;
+      div.onclick=()=>openBook(b);
+      el.appendChild(div);
+    });
+  });
+}
+
+function openBook(b,keepScroll){
+  curBook=b;
+  // switch views
+  document.getElementById('shelfView').style.display='none';
+  const bv=document.getElementById('bookView');
+  bv.style.display='flex';
+  // header color
+  const hdr=document.getElementById('bkHeader');
+  hdr.style.background=`linear-gradient(135deg,${b.color}dd,${b.shadow}bb)`;
+  document.getElementById('bkTitle').textContent=b.name;
+  document.getElementById('shelfLbl').textContent='📖 '+b.name;
+  // entries
+  const entries=document.getElementById('bkEntries');
+  if(!keepScroll)entries.scrollTop=0;
+  entries.innerHTML='';
+  const arr=getRec(b.id);
+  if(!arr.length){
+    entries.innerHTML='<div class="bk-empty"><span style="font-size:26px">📝</span>还没有笔记，去填写并提炼吧</div>';
+    return;
+  }
+  arr.forEach((r,i)=>{
+    const div=document.createElement('div');div.className='bk-entry';
+    div.innerHTML=`<div class="bke-head">
+        <span class="bke-date">${r.date}</span>
+        <span class="bke-eng">${EE[r.energy]||''}</span>
+        <button class="bke-del" onclick="delEntry('${b.id}',${i},event)">✕</button>
+      </div>
+      <div class="bke-pre">${r.note.replace(/</g,'&lt;')}</div>
+      <div class="bke-full" id="bkef-${i}">${r.note.replace(/</g,'&lt;')}</div>`;
+    div.onclick=()=>toggleEntry(i,div);
+    entries.appendChild(div);
+  });
+}
+function toggleEntry(i,div){
+  const full=div.querySelector('.bke-full');
+  const pre=div.querySelector('.bke-pre');
+  const open=full.style.display==='block';
+  full.style.display=open?'none':'block';
+  pre.style.display=open?'':'none';
+}
+function delEntry(bid,i,e){
+  e.stopPropagation();
+  const arr=getRec(bid);arr.splice(i,1);saveRec(bid,arr);
+  openBook(curBook,true);renderShelves();upStreak();renderRcal();
+}
+function closeBook(){
+  curBook=null;
+  document.getElementById('bookView').style.display='none';
+  document.getElementById('shelfView').style.display='flex';
+  document.getElementById('shelfLbl').textContent='📚 笔记本书架';
+}
 
 // cal
 let rcY=new Date().getFullYear(),rcM=new Date().getMonth(),rcSel=TODAY;
@@ -518,33 +570,30 @@ function renderRcal(){
   const first=new Date(rcY,rcM,1).getDay();
   const dim=new Date(rcY,rcM+1,0).getDate();
   const dprev=new Date(rcY,rcM,0).getDate();
-  const recD=new Set(getRec().map(r=>r.date));
-  const goals=getGoals();
-  const taskD=new Set();
-  goals.forEach(g=>g.tasks.forEach((_,i)=>taskD.add(getTL(g.id,i)||addD(g.createdAt,i))));
+  const recD=new Set(allRecs().map(r=>r.date));
   for(let i=0;i<first;i++){const d=document.createElement('div');d.className='cd om';d.textContent=dprev-first+1+i;grid.appendChild(d)}
   for(let day=1;day<=dim;day++){
     const s=rcY+'-'+String(rcM+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-    const ht=taskD.has(s),hr=recD.has(s);
     const d=document.createElement('div');d.className='cd';
     if(s===TODAY)d.classList.add('today');
     if(s===rcSel)d.classList.add('sel');
-    if(ht&&hr)d.classList.add('has-b');else if(ht)d.classList.add('has-t');else if(hr)d.classList.add('has-r');
+    if(recD.has(s))d.classList.add('has-r');
     d.textContent=day;
-    d.onclick=(ss=>()=>{rcSel=ss;renderRcal();showRecapForDate(ss)})(s);
+    d.onclick=(ss=>()=>{rcSel=ss;renderRcal()})(s);
     grid.appendChild(d);
   }
   const rem=(first+dim)%7===0?0:7-(first+dim)%7;
   for(let i=1;i<=rem;i++){const d=document.createElement('div');d.className='cd om';d.textContent=i;grid.appendChild(d)}
 }
-function showRecapForDate(s){
-  const recs=getRec().filter(r=>r.date===s);
-  const box=document.getElementById('noteBox');
-  if(recs.length){const r=recs[0];const old=curMode;curMode=r.mode;showNote(r.note,'📅 '+fmtD(s)+' 的复盘');curMode=old;sizeNoteCard()}
-  else{box.className='notebox empty';box.innerHTML=`<div class="nph">📝</div><div class="npht">${s===TODAY?'填写左侧，AI 帮你提炼':fmtD(s)+' 还没有复盘记录'}</div>`}
-}
 
-// DDL
+// DDL data
+const getGoals=()=>{try{return JSON.parse(localStorage.getItem('dg')||'[]')}catch{return[]}};
+const saveGoals=g=>localStorage.setItem('dg',JSON.stringify(g));
+const getTD=(gid,i)=>localStorage.getItem('td_'+gid+'_'+i)==='1';
+const setTD=(gid,i,v)=>localStorage.setItem('td_'+gid+'_'+i,v?'1':'0');
+const getTL=(gid,i)=>localStorage.getItem('tl_'+gid+'_'+i)||null;
+const setTL=(gid,i,d)=>localStorage.setItem('tl_'+gid+'_'+i,d);
+
 let pending=null;
 function createGoal(){
   const name=document.getElementById('dn').value.trim();
@@ -574,10 +623,10 @@ function confirmGoal(){
   if(!pending)return;
   const goals=getGoals();goals.push(pending);saveGoals(goals);pending=null;
   document.getElementById('sPreview').style.display='none';
-  document.getElementById('dn').value='';document.getElementById('dd').value='';document.getElementById('dl').value='';
-  renderGoals();renderTodayTasks();renderRcal();upDDLStat();
+  document.getElementById('dn').value='';document.getElementById('dd').value='';
+  renderGoals();renderTodayTasks();upDDLStat();
 }
-function delGoal(id){saveGoals(getGoals().filter(g=>g.id!==id));renderGoals();renderTodayTasks();renderRcal();upDDLStat()}
+function delGoal(id){saveGoals(getGoals().filter(g=>g.id!==id));renderGoals();renderTodayTasks();upDDLStat()}
 function renderGoals(){
   const list=document.getElementById('gList');list.innerHTML='';
   const goals=getGoals();
@@ -588,9 +637,9 @@ function renderGoals(){
     const c=document.createElement('div');c.className='gc';
     c.innerHTML=`<div class="gcname"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">🎯 ${g.name}</span>
       <button class="gcdel" onclick="delGoal('${g.id}')">✕</button></div>
-      <div class="gcmeta">截止 ${g.deadline} · 还剩 ${left} 天</div>
+      <div class="gcmeta">截止 ${g.deadline} · 剩${left}天</div>
       <div class="pbar"><div class="pbarf" style="width:${pct}%"></div></div>
-      <div class="plbl"><span>${done}/${total} 完成</span><span>${pct}%</span></div>`;
+      <div class="plbl"><span>${done}/${total}</span><span>${pct}%</span></div>`;
     list.appendChild(c);
   });
 }
@@ -615,29 +664,23 @@ function renderTodayTasks(){
 }
 function upDDLStat(){
   const all=[];
-  getGoals().forEach(g=>g.tasks.forEach((text,i)=>{
-    const date=getTL(g.id,i)||addD(g.createdAt,i);
-    if(date===TODAY)all.push({done:getTD(g.id,i)});
-  }));
+  getGoals().forEach(g=>g.tasks.forEach((_,i)=>{if((getTL(g.id,i)||addD(g.createdAt,i))===TODAY)all.push(getTD(g.id,i))}));
   const stat=document.getElementById('ddlStat');
-  if(all.length){const done=all.filter(t=>t.done).length;stat.textContent=done+'/'+all.length;stat.style.display=''}
-  else stat.style.display='none';
+  if(all.length){const done=all.filter(Boolean).length;stat.textContent=done+'/'+all.length;stat.style.display='';}else stat.style.display='none';
 }
-function toggleT(gid,idx,was){setTD(gid,idx,!was);renderGoals();renderTodayTasks();renderRcal()}
+function toggleT(gid,idx,was){setTD(gid,idx,!was);renderGoals();renderTodayTasks()}
 function reschedule(gid){
   const g=getGoals().find(x=>x.id===gid);if(!g)return;
   const undone=g.tasks.map((_,i)=>i).filter(i=>!getTD(gid,i));
-  if(!undone.length)return;
   const remain=Math.max(1,diffD(TODAY,g.deadline));
   const step=remain/undone.length;
   undone.forEach((idx,n)=>setTL(gid,idx,addD(TODAY,Math.floor(n*step))));
-  renderGoals();renderTodayTasks();renderRcal();
+  renderGoals();renderTodayTasks();
 }
 
 // init
-renderHist();upStreak();renderGoals();renderRcal();renderTodayTasks();loadBg();
+renderShelves();upStreak();renderGoals();renderRcal();renderTodayTasks();loadBg();
 const dd2=new Date();dd2.setDate(dd2.getDate()+7);document.getElementById('dl').value=ds(dd2);
-document.getElementById('ddlStat').style.display='none';
 </script>
 </body>
 </html>
