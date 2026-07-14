@@ -31,31 +31,35 @@
                       radial-gradient(ellipse at 80% 80%, rgba(200,180,255,0.18) 0%, transparent 55%);
   }
 
-  /* ── 顶部导航 ── */
-  .topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 32px;
-    background: var(--glass);
+  /* ── 顶部导航（与工具页统一） ── */
+  nav {
+    position: fixed; top: 0; inset-x: 0; height: 52px;
+    background: rgba(255,255,255,.92);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(200,215,240,0.4);
+    z-index: 100; display: flex; align-items: center;
   }
-  .topbar-back {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 13px; color: var(--muted); text-decoration: none;
+  .nw {
+    max-width: 1100px; margin: 0 auto; padding: 0 32px;
+    width: 100%; display: flex; align-items: center; gap: 16px;
+  }
+  .back {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 14px; color: var(--muted); text-decoration: none;
     transition: color .2s;
   }
-  .topbar-back:hover { color: var(--blue); }
-  .topbar-title { font-size: 15px; font-weight: 700; color: var(--text); }
-  .topbar-tag {
-    font-size: 11px; padding: 4px 12px; border-radius: 99px;
-    background: var(--blue-soft); color: var(--blue); font-weight: 600;
+  .back:hover { color: var(--text); }
+  .nav-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--blue);
+    background: var(--blue-soft); padding: 3px 10px;
+    border-radius: 99px; margin-left: auto;
   }
 
   /* ── 主布局 ── */
   .main {
     max-width: 1100px; margin: 0 auto;
-    padding: 32px 24px 60px;
+    padding: 84px 24px 60px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr;
@@ -268,10 +272,14 @@
 <body>
 
 <!-- 顶部导航 -->
-<nav class="topbar">
-  <a href="../" class="topbar-back">← 产品运营工具集</a>
-  <span class="topbar-title">成长复盘</span>
-  <span class="topbar-tag">日常提效</span>
+<nav>
+  <div class="nw">
+    <a href="/08/works/#tools" class="back">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      AI 工具
+    </a>
+    <span class="nav-tag">日常提效</span>
+  </div>
 </nav>
 
 <div class="main">
