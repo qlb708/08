@@ -2,331 +2,615 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>周报生成器 · 产品运营工具集</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成长复盘 · 08's Tools</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#fff;--bg2:#fafafa;--blue:#4f46e5;--blue-dark:#3730a3;
-  --blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
-  --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
-  --bd:rgba(0,0,0,.07);--sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
-  --r:16px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
-}
-body{font-family:var(--font);color:var(--text);background:var(--bg2);-webkit-font-smoothing:antialiased;min-height:100vh}
-a{text-decoration:none;color:var(--blue)}
-nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd)}
-.nav-i{max-width:1280px;margin:0 auto;padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
-.logo em{color:var(--blue);font-style:normal}
-.logo a{color:inherit}
-.back{display:flex;align-items:center;gap:5px;font-size:14px;color:var(--soft);transition:color .2s}
-.back:hover{color:var(--text)}
-.back svg{width:16px;height:16px;flex-shrink:0}.nav-tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill)}
-.hero{padding:72px 32px 20px;max-width:1280px;margin:0 auto}
-.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px}.tool-num{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em}.tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);padding:4px 12px;border-radius:var(--pill);margin-bottom:12px;border:1px solid var(--blue-border)}
-.hero h1{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
-.hero p{font-size:14px;color:var(--soft)}
-.workspace{max-width:1280px;margin:0 auto;padding:0 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:20px;align-items:start}
-.panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
-.in-panel{position:sticky;top:68px}
-.ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
-.pi{width:28px;height:28px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.pi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pt{font-size:13px;font-weight:700}
-.ps{font-size:11px;color:var(--soft)}
-.pb{padding:18px}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text)}
-.fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
-.field input,.field textarea{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
-.field input:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light);background:#fff}
-.field textarea{resize:vertical;line-height:1.6}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{padding:5px 12px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font)}
-.chip:hover{border-color:var(--blue-border);color:var(--blue)}
-.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
-.btn{width:auto;min-width:180px;margin-top:4px;padding:12px 24px;border-radius:var(--pill);background:#0D0D0D;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:none;transition:all .2s}
-.btn:hover:not(:disabled){background:#333;transform:translateY(-1px)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.out-panel{min-height:480px;display:flex;flex-direction:column}
-.ob{flex:1;padding:22px}
-.skel{display:flex;flex-direction:column;gap:10px;opacity:.45}
-.sl{height:12px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
-.sb{height:72px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:10px}
-@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.think{display:flex;align-items:center;gap:10px;padding:28px 0;color:var(--soft);font-size:13px}
-.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin-right:3px}
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
-@keyframes bou{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
-.md-out{font-size:13px;line-height:1.8;color:var(--text)}
-.md-out h1{font-size:18px;font-weight:800;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
-.md-out h2{font-size:14px;font-weight:700;margin:18px 0 7px}
-.md-out h3{font-size:13px;font-weight:700;margin:14px 0 5px}
-.md-out p{margin-bottom:10px}
-.md-out ul,.md-out ol{margin:6px 0 10px 16px}
-.md-out li{margin-bottom:4px}
-.md-out strong{font-weight:700}
-.md-out blockquote{border-left:3px solid var(--blue);padding:8px 12px;margin:12px 0;background:var(--blue-light);border-radius:0 8px 8px 0;color:var(--soft);font-size:12px}
-.md-out table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
-.md-out th,.md-out td{padding:7px 10px;border:1px solid var(--bd);text-align:left}
-.md-out th{background:var(--bg2);font-weight:600}
-.md-out code{background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:12px}
-@keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
-.cursor2::after{content:'|';animation:bl .6s infinite;color:var(--blue);font-weight:300}
-.ebar{padding:12px 18px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
-.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
-.ebtn:hover{border-color:var(--blue-border);color:var(--blue)}
-.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
-.copy-toast{position:fixed;bottom:24px;right:24px;background:#1d1d1f;color:#fff;padding:10px 18px;border-radius:var(--pill);font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
-.copy-toast.show{opacity:1}
-/* 快速填入提示 */
-.quick-tips{margin-bottom:14px}
-.qt-label{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
-.qt-chips{display:flex;flex-wrap:wrap;gap:5px}
-.qt-chip{padding:4px 10px;border-radius:var(--pill);border:1px solid var(--bd);background:#fff;color:var(--soft);font-size:11px;cursor:pointer;transition:all .15s;font-family:var(--font)}
-.qt-chip:hover{border-color:var(--blue-border);color:var(--blue);background:var(--blue-light)}
-@media(max-width:900px){.workspace{grid-template-columns:1fr}.in-panel{position:static}}
-@media(max-width:600px){.workspace{padding:0 16px 60px}.hero{padding:68px 16px 16px}}
+  :root {
+    --bg: #eef2f9;
+    --glass: rgba(255,255,255,0.72);
+    --glass2: rgba(255,255,255,0.5);
+    --border: rgba(255,255,255,0.9);
+    --shadow: 0 8px 32px rgba(80,120,200,0.10), 0 1.5px 6px rgba(80,120,200,0.07);
+    --blue: #4a7cf7;
+    --blue-soft: #dce8ff;
+    --text: #1a2540;
+    --muted: #7a8fae;
+    --intern: #4a7cf7;
+    --intern-soft: #dce8ff;
+    --research: #7c5cf7;
+    --research-soft: #e8dcff;
+    --radius: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--text);
+    background-image: radial-gradient(ellipse at 20% 20%, rgba(180,200,255,0.25) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 80%, rgba(200,180,255,0.18) 0%, transparent 55%);
+  }
+
+  /* ── 顶部导航 ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-back {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    transition: color .2s;
+  }
+  .topbar-back:hover { color: var(--blue); }
+  .topbar-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .topbar-tag {
+    font-size: 11px; padding: 4px 12px; border-radius: 99px;
+    background: var(--blue-soft); color: var(--blue); font-weight: 600;
+  }
+
+  /* ── 主布局 ── */
+  .main {
+    max-width: 1100px; margin: 0 auto;
+    padding: 32px 24px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+  }
+
+  /* ── 标题区 ── */
+  .hero {
+    grid-column: 1 / -1;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 16px;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 3vw, 40px);
+    font-weight: 800; line-height: 1.2;
+    letter-spacing: -.02em;
+  }
+  .hero h1 em { color: var(--blue); font-style: normal; }
+  .hero p { font-size: 14px; color: var(--muted); margin-top: 8px; }
+  .streak-badge {
+    flex-shrink: 0;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .streak-num { font-size: 28px; font-weight: 800; color: var(--blue); line-height: 1; }
+  .streak-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── 卡片通用 ── */
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .08em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title span { font-size: 16px; }
+
+  /* ── 输入区卡片 ── */
+  .input-card { grid-row: 2; }
+
+  /* Tab 切换 */
+  .tab-row {
+    display: flex; gap: 8px;
+    background: rgba(100,130,200,0.08);
+    border-radius: 12px; padding: 4px;
+  }
+  .tab-btn {
+    flex: 1; padding: 8px 0; border: none; border-radius: 9px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    background: transparent; color: var(--muted);
+    transition: all .2s;
+  }
+  .tab-btn.active.intern { background: var(--intern); color: #fff; box-shadow: 0 2px 10px rgba(74,124,247,.3); }
+  .tab-btn.active.research { background: var(--research); color: #fff; box-shadow: 0 2px 10px rgba(124,92,247,.3); }
+
+  /* 表单 */
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label {
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .form-label .emoji { font-size: 14px; }
+  textarea, input[type=text] {
+    width: 100%; border: 1.5px solid rgba(100,130,200,0.15);
+    border-radius: 12px; padding: 10px 14px;
+    font-size: 13px; color: var(--text); resize: none;
+    background: rgba(255,255,255,0.7);
+    font-family: inherit; line-height: 1.6;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(74,124,247,0.12);
+  }
+  textarea.research-focus:focus {
+    border-color: var(--research);
+    box-shadow: 0 0 0 3px rgba(124,92,247,0.12);
+  }
+  textarea { height: 72px; }
+  textarea.sm { height: 56px; }
+
+  /* 能量值 */
+  .energy-row { display: flex; gap: 8px; align-items: center; }
+  .energy-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .energy-dots { display: flex; gap: 6px; }
+  .energy-dot {
+    width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(100,130,200,0.2);
+    cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+    transition: transform .15s, border-color .15s;
+    background: transparent;
+  }
+  .energy-dot:hover { transform: scale(1.15); }
+  .energy-dot.selected { border-color: var(--blue); background: var(--blue-soft); }
+
+  /* 生成按钮 */
+  .gen-btn {
+    width: 100%; padding: 13px; border: none; border-radius: 13px;
+    font-size: 14px; font-weight: 700; cursor: pointer; color: #fff;
+    background: linear-gradient(135deg, var(--intern) 0%, #6a9fff 100%);
+    box-shadow: 0 4px 16px rgba(74,124,247,.35);
+    transition: transform .15s, box-shadow .15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .gen-btn.research-mode {
+    background: linear-gradient(135deg, var(--research) 0%, #a07cff 100%);
+    box-shadow: 0 4px 16px rgba(124,92,247,.35);
+  }
+  .gen-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(74,124,247,.4); }
+  .gen-btn:active { transform: translateY(0); }
+  .gen-btn.loading { opacity: .7; cursor: not-allowed; }
+
+  /* ── 输出区卡片 ── */
+  .output-card { grid-row: 2; display: flex; flex-direction: column; gap: 16px; }
+
+  /* 今日笔记 */
+  .note-box {
+    flex: 0 0 auto;
+    background: linear-gradient(135deg, rgba(74,124,247,0.06) 0%, rgba(124,92,247,0.04) 100%);
+    border: 1.5px solid rgba(74,124,247,0.15);
+    border-radius: 16px; padding: 18px 20px;
+    min-height: 120px; position: relative;
+  }
+  .note-box.empty {
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px; color: var(--muted);
+  }
+  .note-placeholder-icon { font-size: 32px; opacity: .4; }
+  .note-placeholder-text { font-size: 13px; opacity: .6; }
+  .note-content { font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
+  .note-meta { margin-top: 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .note-tag {
+    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px;
+  }
+  .note-tag.intern { background: var(--intern-soft); color: var(--intern); }
+  .note-tag.research { background: var(--research-soft); color: var(--research); }
+  .note-date { font-size: 11px; color: var(--muted); }
+  .copy-btn {
+    margin-left: auto; font-size: 11px; padding: 4px 12px; border-radius: 8px;
+    border: 1px solid rgba(74,124,247,0.2); background: white;
+    color: var(--blue); cursor: pointer; font-weight: 600;
+    transition: background .2s;
+  }
+  .copy-btn:hover { background: var(--blue-soft); }
+
+  /* 历史时间线 */
+  .history-wrap {
+    flex: 1; overflow-y: auto; min-height: 0;
+    display: flex; flex-direction: column; gap: 10px;
+    scrollbar-width: thin; scrollbar-color: rgba(100,130,200,0.2) transparent;
+    max-height: 340px;
+  }
+  .history-empty {
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 6px; color: var(--muted);
+    padding: 32px 0; font-size: 13px;
+  }
+  .history-item {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(200,215,240,0.5);
+    border-radius: 14px; padding: 12px 16px;
+    cursor: pointer; transition: box-shadow .2s, transform .15s;
+    position: relative;
+  }
+  .history-item:hover { box-shadow: 0 4px 16px rgba(74,124,247,0.1); transform: translateX(2px); }
+  .history-item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .history-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .history-dot.intern { background: var(--intern); }
+  .history-dot.research { background: var(--research); }
+  .history-date { font-size: 11px; color: var(--muted); }
+  .history-energy { font-size: 12px; }
+  .history-del {
+    margin-left: auto; font-size: 11px; color: var(--muted);
+    border: none; background: none; cursor: pointer; padding: 2px 6px;
+    border-radius: 6px; transition: background .15s, color .15s;
+  }
+  .history-del:hover { background: #fee2e2; color: #ef4444; }
+  .history-preview { font-size: 12px; color: var(--text); line-height: 1.6; opacity: .8; }
+  .history-preview-clamp {
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  /* loading spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4);
+    border-top-color: white; border-radius: 50%;
+    animation: spin .7s linear infinite; }
+
+  /* ── 响应式 ── */
+  @media (max-width: 700px) {
+    .main { grid-template-columns: 1fr; }
+    .hero { flex-direction: column; align-items: flex-start; }
+    .output-card { grid-row: auto; }
+    .history-wrap { max-height: 220px; }
+  }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nw">
-    <a href="/08/works/" class="back">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-      产品运营工具集
-    </a>
-    <span class="nav-tag">内容运营</span>
-  </div>
+<!-- 顶部导航 -->
+<nav class="topbar">
+  <a href="../" class="topbar-back">← 产品运营工具集</a>
+  <span class="topbar-title">成长复盘</span>
+  <span class="topbar-tag">日常提效</span>
 </nav>
 
-<div class="hero">
-  <div class="hero-meta"><div class="tag">职场效率</div><span class="tool-num">#10</span></div>
-  <h1>周报生成器</h1>
-  <p>把这周做的事情扔进来，AI 帮你整理成专业周报，直接发群。</p>
-</div>
+<div class="main">
 
-<div class="workspace">
-  <div class="panel in-panel">
-    <div class="ph">
-      <div class="pi">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </div>
-      <div><div class="pt">本周工作内容</div><div class="ps">零散碎片都行，AI 来整理</div></div>
+  <!-- 标题区 -->
+  <div class="hero">
+    <div>
+      <h1>把每一天，<br>变成<em> 可沉淀的经验</em></h1>
+      <p>实习 · 科研 · 每日复盘 · AI 提炼成长笔记</p>
     </div>
-    <div class="pb">
-      <div class="field">
-        <label>你的角色 / 团队 <span class="fn">选填</span></label>
-        <input id="role" type="text" placeholder="例如：产品运营实习生 / AI 产品组">
-      </div>
-
-      <div class="quick-tips">
-        <div class="qt-label">快速场景</div>
-        <div class="qt-chips">
-          <span class="qt-chip" onclick="fillExample('intern')">实习生通用</span>
-          <span class="qt-chip" onclick="fillExample('product')">产品周报</span>
-          <span class="qt-chip" onclick="fillExample('ops')">运营周报</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>本周完成的事 <span class="fn">零散描述即可</span></label>
-        <textarea id="done" rows="4" placeholder="例如：
-- 跟进了新功能的用研访谈，整理了5份用户反馈
-- 写了竞品分析报告初稿
-- 参与了两个需求评审会议
-- 帮运营同学做了活动数据复盘"></textarea>
-      </div>
-      <div class="field">
-        <label>遇到的问题 / 阻塞 <span class="fn">选填</span></label>
-        <textarea id="block" rows="2" placeholder="例如：等待研发排期确认、需要 XX 同学提供数据"></textarea>
-      </div>
-      <div class="field">
-        <label>下周计划 <span class="fn">选填，不填 AI 会自动推断</span></label>
-        <textarea id="plan" rows="2" placeholder="例如：完成用研报告终稿，推进下个版本需求评审"></textarea>
-      </div>
-      <div class="field">
-        <label>周报风格</label>
-        <div class="chips" id="styleChips">
-          <button class="chip on" data-v="简洁专业">简洁专业</button>
-          <button class="chip" data-v="详细完整">详细完整</button>
-          <button class="chip" data-v="飞书格式">飞书格式</button>
-          <button class="chip" data-v="英文双语">中英双语</button>
-        </div>
-      </div>
-      <button class="btn" id="genBtn" onclick="generate()">
-        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        生成周报
-      </button>
+    <div class="streak-badge">
+      <div class="streak-num" id="streakNum">0</div>
+      <div class="streak-label">🔥 连续记录天</div>
     </div>
   </div>
 
-  <div class="panel out-panel">
-    <div class="ph">
-      <div class="pi" style="background:rgba(255,149,0,.1)">
-        <svg viewBox="0 0 24 24" style="stroke:#ff9500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      </div>
-      <div><div class="pt">周报草稿</div><div class="ps" id="outSub">填完左边点生成</div></div>
+  <!-- 左：输入区 -->
+  <div class="card input-card">
+    <div class="card-title"><span>✍️</span> 今天的复盘</div>
+
+    <!-- Tab -->
+    <div class="tab-row">
+      <button class="tab-btn active intern" data-mode="intern" onclick="switchMode('intern')">🏢 实习</button>
+      <button class="tab-btn research" data-mode="research" onclick="switchMode('research')">🔬 科研</button>
     </div>
-    <div class="ob" id="outBody">
-      <div id="examplePreview" style="font-size:12.5px;line-height:1.8;color:#555;background:#fafafa;border-radius:10px;padding:14px 16px;border:1px solid #eee">
-        <p style="font-size:11px;font-weight:600;color:#999;margin-bottom:10px;text-align:center">— 示例效果 —</p>
-        <p style="font-weight:700;color:#0D0D0D;margin-bottom:6px">📌 本周工作周报</p>
-        <p style="font-weight:600;color:#444">## 本周概要</p>
-        <p>本周完成了 3 项核心工作：竞品分析报告交付、用户反馈整理上线、需求评审 2 次...</p>
-        <p style="margin-top:10px;font-size:11px;color:#aaa">↑ 填写你的工作内容，AI 整理成专业周报</p>
+
+    <!-- 实习表单 -->
+    <div id="form-intern">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">💼</span> 今天做了什么</label>
+          <textarea id="i-did" placeholder="e.g. 跟着导师做了用户访谈，整理了5份用户反馈..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">💡</span> 学到 / 观察到什么</label>
+          <textarea id="i-learned" placeholder="e.g. 发现用户最在意的不是功能多，而是流程顺..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🪨</span> 遇到的卡点</label>
+          <textarea class="sm" id="i-block" placeholder="e.g. 数据权限还没申请到，问了两个人都没回..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🎯</span> 明天要做</label>
+          <textarea class="sm" id="i-next" placeholder="e.g. 把访谈整理成结构化的需求文档..."></textarea>
+        </div>
+        <div class="energy-row">
+          <span class="energy-label">今日状态</span>
+          <div class="energy-dots" id="energy-intern">
+            <button class="energy-dot" data-v="1" onclick="setEnergy('intern',1)">😩</button>
+            <button class="energy-dot" data-v="2" onclick="setEnergy('intern',2)">😐</button>
+            <button class="energy-dot" data-v="3" onclick="setEnergy('intern',3)">🙂</button>
+            <button class="energy-dot" data-v="4" onclick="setEnergy('intern',4)">😄</button>
+            <button class="energy-dot" data-v="5" onclick="setEnergy('intern',5)">🚀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 科研表单 -->
+    <div id="form-research" style="display:none">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🧪</span> 今天推进了什么</label>
+          <textarea id="r-did" placeholder="e.g. 跑完了第一组对照实验，结果比预期好一点..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🔍</span> 新发现 / 新想法</label>
+          <textarea id="r-learned" placeholder="e.g. 发现 baseline 方法在长文本上有明显退化..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">🌀</span> 还没搞清楚的</label>
+          <textarea class="sm" id="r-block" placeholder="e.g. 为什么 epoch 增加之后 loss 反而震荡..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span class="emoji">📌</span> 下一步验证方向</label>
+          <textarea class="sm" id="r-next" placeholder="e.g. 试试降低 learning rate，看能不能稳住..."></textarea>
+        </div>
+        <div class="energy-row">
+          <span class="energy-label">今日状态</span>
+          <div class="energy-dots" id="energy-research">
+            <button class="energy-dot" data-v="1" onclick="setEnergy('research',1)">😩</button>
+            <button class="energy-dot" data-v="2" onclick="setEnergy('research',2)">😐</button>
+            <button class="energy-dot" data-v="3" onclick="setEnergy('research',3)">🙂</button>
+            <button class="energy-dot" data-v="4" onclick="setEnergy('research',4)">😄</button>
+            <button class="energy-dot" data-v="5" onclick="setEnergy('research',5)">🚀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generate()">
+      <span>✨</span> AI 提炼今日成长笔记
+    </button>
+  </div>
+
+  <!-- 右：输出区 -->
+  <div class="card output-card">
+    <div class="card-title"><span>📝</span> 今日笔记</div>
+
+    <!-- 生成的笔记 -->
+    <div class="note-box empty" id="noteBox">
+      <div class="note-placeholder-icon">🌱</div>
+      <div class="note-placeholder-text">填写左侧内容，AI 帮你提炼</div>
+    </div>
+
+    <!-- 历史记录 -->
+    <div class="card-title" style="margin-top:4px"><span>📅</span> 历史复盘</div>
+    <div class="history-wrap" id="historyWrap">
+      <div class="history-empty" id="historyEmpty">
+        <span style="font-size:24px">🗂</span>
+        还没有记录，快去填今天的复盘吧
       </div>
     </div>
   </div>
+
 </div>
 
-<div class="copy-toast" id="toast">已复制到剪贴板</div>
-
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-var PROVIDERS=[
-  {name:'智谱',url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P',model:'glm-4-flash',type:'openai'},
-  {name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',key:'sk-4f016c9639cb461db37f4f778d2eac4f',model:'deepseek-chat',type:'openai'},
-  {name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''),type:'gemini'}
-];
-async function callAI(prompt){
-  for(var i=0;i<PROVIDERS.length;i++){
-    var p=PROVIDERS[i];
-    try{
-      var res,text='';
-      if(p.type==='openai'){
-        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:0.6}),signal:AbortSignal.timeout(25000)});
-        if(!res.ok){var e=await res.json();console.warn(p.name,e);continue;}
-        var d=await res.json();
-        text=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
-      }else{
-        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:4000,temperature:0.6}}),signal:AbortSignal.timeout(20000)});
-        if(!res.ok)continue;
-        var d2=await res.json();
-        text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
-      }
-      if(text){console.log('✓',p.name);return text;}
-    }catch(err){console.warn(p.name,err.message);}
-  }
-  throw new Error('所有 AI 服务均不可用');
-}
+// ── 状态 ──
+let mode = 'intern'; // intern | research
+const energy = { intern: 0, research: 0 };
 
-var lastResult='';
-function typeRender(text,el,onDone){
-  lastResult=text;
-  var i=0;
-  var iv=setInterval(function(){
-    i=Math.min(i+6,text.length);
-    el.innerHTML='<div class="md-out">'+marked.parse(text.slice(0,i))+'</div>'+(i<text.length?'<span class="cursor2"></span>':'');
-    if(i>=text.length){
-      clearInterval(iv);
-      el.innerHTML='<div class="md-out">'+marked.parse(text)+'</div>';
-      if(onDone)onDone();
-    }
-  },16);
-}
-
-var selStyle='简洁专业';
-document.querySelectorAll('#styleChips .chip').forEach(function(c){
-  c.addEventListener('click',function(){
-    document.querySelectorAll('#styleChips .chip').forEach(function(x){x.classList.remove('on');});
-    c.classList.add('on');
-    selStyle=c.dataset.v;
+// ── tab 切换 ──
+function switchMode(m) {
+  mode = m;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active');
+    if (b.dataset.mode === m) b.classList.add('active');
   });
-});
-
-function fillExample(type){
-  var done=document.getElementById('done');
-  var plan=document.getElementById('plan');
-  var role=document.getElementById('role');
-  if(type==='intern'){
-    role.value='产品运营实习生';
-    done.value='- 参与了竞品调研，整理了3份竞品功能对比报告\n- 协助运营同学完成活动数据复盘，发现次留问题\n- 跟进用户反馈，整理成结构化问题清单提交给产品\n- 参与了两次需求评审和一次设计走查';
-    plan.value='下周完成用研访谈大纲，推进下个版本功能需求对齐';
-  }else if(type==='product'){
-    role.value='产品经理';
-    done.value='- 完成了 AI 搜索功能 PRD v2.0，通过评审\n- 推进了3个需求的研发排期，预计下周开始开发\n- 完成了与设计同学的 UI 走查，提出12个改进意见\n- 用户调研：访谈5名重度用户，整理核心痛点';
-    plan.value='推进 AI 搜索功能开发，跟进上线节点；启动新功能的用户调研';
-  }else if(type==='ops'){
-    role.value='产品运营';
-    done.value='- 上周活动 DAU +15%，超出预期目标 5%\n- 完成了 Q3 内容选题策划，共 30 个选题方向\n- 跟进了 KOL 合作谈判，3位已确认合作\n- 新用户引导流程优化上线，次日留存提升 8%';
-    plan.value='启动 Q3 活动策划，对齐资源；分析本周数据，优化投放策略';
-  }
-}
-
-async function generate(){
-  var done=document.getElementById('done').value.trim();
-  if(!done){document.getElementById('done').focus();return;}
-  var role=document.getElementById('role').value.trim();
-  var block=document.getElementById('block').value.trim();
-  var plan=document.getElementById('plan').value.trim();
-  var btn=document.getElementById('genBtn');
-  var body=document.getElementById('outBody');
-  var sub=document.getElementById('outSub');
-  btn.disabled=true;
-  sub.textContent='生成中…';
-  body.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>AI 正在整理周报，帮你把碎片变成亮点…</span></div>';
-
-  var styleGuide={
-    '简洁专业':'简洁清晰，每条工作用一句话概括，重点突出，去掉废话',
-    '详细完整':'详细描述每项工作内容、进度和影响，适合向上级汇报',
-    '飞书格式':'使用飞书文档风格，包含标题/分组/数字标号，方便直接复制到飞书',
-    '中英双语':'每个section先输出中文，再附英文版本，适合国际化团队'
-  };
-
-  var prompt='你是职场写作专家，擅长将零散的工作记录整理成专业的周报。\n\n'
-    +(role?'角色/团队：'+role+'\n':'')
-    +'周报风格：'+selStyle+'（'+styleGuide[selStyle]+'）\n\n'
-    +'本周完成的工作：\n'+done+'\n\n'
-    +(block?'遇到的问题/阻塞：\n'+block+'\n\n':'')
-    +(plan?'下周计划：\n'+plan+'\n\n':'')
-    +'请按以下结构生成周报（Markdown 格式）：\n\n'
-    +'# 本周工作周报\n\n'
-    +'## 📌 本周概要\n'
-    +'（用 1-2 句话概括本周核心工作和成果，突出亮点）\n\n'
-    +'## ✅ 本周完成\n'
-    +'（将工作内容整理归类，突出每项工作的成果/影响，不只是描述做了什么）\n\n'
-    +(block?'## ⚠️ 问题与阻塞\n（需要支持的事项，格式：问题描述 + 需要谁的帮助）\n\n':'')
-    +'## 🎯 下周计划\n'
-    +(plan?'（基于下周计划整理，加上预期成果）\n\n':'（根据本周工作推断合理的下周计划）\n\n')
-    +'**注意**：工作描述要量化（有数字更好），突出产出和价值，不要只列举动作。';
-
-  try{
-    var text=await callAI(prompt);
-    sub.textContent='周报已生成';
-    typeRender(text,body,function(){
-      document.querySelector('.out-panel').insertAdjacentHTML('beforeend',
-        '<div class="ebar">'
-        +'<button class="ebtn" onclick="copyResult()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制</button>'
-        +'<button class="ebtn" onclick="exportMd()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button>'
-        +'</div>');
-    });
-  }catch(e){
-    body.innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">网络请求失败，请稍后重试</div>';
-    sub.textContent='失败';
-  }
-  btn.disabled=false;
-  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>重新生成';
-}
-
-function copyResult(){
-  if(!lastResult)return;
-  navigator.clipboard.writeText(lastResult).then(function(){
-    var t=document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(function(){t.classList.remove('show');},2000);
+  document.getElementById('form-intern').style.display = m === 'intern' ? '' : 'none';
+  document.getElementById('form-research').style.display = m === 'research' ? '' : 'none';
+  const btn = document.getElementById('genBtn');
+  btn.classList.toggle('research-mode', m === 'research');
+  // 调整 textarea focus 颜色
+  document.querySelectorAll('textarea').forEach(t => {
+    t.classList.toggle('research-focus', m === 'research');
   });
 }
-function exportMd(){
-  if(!lastResult)return;
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([lastResult],{type:'text/markdown'}));
-  a.download='周报.md';a.click();
+
+// ── 能量 ──
+function setEnergy(m, v) {
+  energy[m] = v;
+  document.querySelectorAll(`#energy-${m} .energy-dot`).forEach(d => {
+    d.classList.toggle('selected', parseInt(d.dataset.v) === v);
+  });
 }
+
+// ── 连续记录天数 ──
+function calcStreak() {
+  const records = getRecords();
+  if (!records.length) return 0;
+  const dates = [...new Set(records.map(r => r.date))].sort().reverse();
+  let streak = 0, today = new Date();
+  for (let i = 0; i < dates.length; i++) {
+    const d = new Date(dates[i]);
+    const diff = Math.round((today - d) / 86400000);
+    if (diff === i || diff === i + 1) streak++;
+    else break;
+  }
+  return streak;
+}
+
+// ── localStorage ──
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem('recap_records') || '[]'); }
+  catch { return []; }
+}
+function saveRecord(r) {
+  const arr = getRecords();
+  arr.unshift(r);
+  localStorage.setItem('recap_records', JSON.stringify(arr.slice(0, 60)));
+}
+function deleteRecord(idx) {
+  const arr = getRecords();
+  arr.splice(idx, 1);
+  localStorage.setItem('recap_records', JSON.stringify(arr));
+  renderHistory();
+  document.getElementById('streakNum').textContent = calcStreak();
+}
+
+// ── 渲染历史 ──
+function renderHistory() {
+  const wrap = document.getElementById('historyWrap');
+  const empty = document.getElementById('historyEmpty');
+  const records = getRecords();
+  // 清空旧条目
+  wrap.querySelectorAll('.history-item').forEach(el => el.remove());
+  if (!records.length) { empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  records.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    const energyEmojis = ['','😩','😐','🙂','😄','🚀'];
+    div.innerHTML = `
+      <div class="history-item-head">
+        <div class="history-dot ${r.mode}"></div>
+        <span class="history-date">${r.date} · ${r.mode === 'intern' ? '实习' : '科研'}</span>
+        <span class="history-energy">${energyEmojis[r.energy] || ''}</span>
+        <button class="history-del" onclick="deleteRecord(${i})">✕</button>
+      </div>
+      <div class="history-preview history-preview-clamp">${r.note.replace(/</g,'&lt;')}</div>`;
+    wrap.appendChild(div);
+  });
+}
+
+// ── 生成笔记（本地规则，无需 API）──
+function generate() {
+  const btn = document.getElementById('genBtn');
+  const isIntern = mode === 'intern';
+
+  const did      = document.getElementById(isIntern ? 'i-did'     : 'r-did').value.trim();
+  const learned  = document.getElementById(isIntern ? 'i-learned' : 'r-learned').value.trim();
+  const block    = document.getElementById(isIntern ? 'i-block'   : 'r-block').value.trim();
+  const next     = document.getElementById(isIntern ? 'i-next'    : 'r-next').value.trim();
+  const eng      = energy[mode];
+
+  if (!did && !learned) {
+    shakeBtn(); return;
+  }
+
+  btn.classList.add('loading');
+  btn.innerHTML = '<div class="spinner"></div> 提炼中…';
+
+  setTimeout(() => {
+    const note = buildNote({ mode, did, learned, block, next, eng });
+    showNote(note);
+    const today = new Date().toISOString().slice(0, 10);
+    saveRecord({ mode, date: today, note, energy: eng });
+    renderHistory();
+    document.getElementById('streakNum').textContent = calcStreak();
+    btn.classList.remove('loading');
+    btn.innerHTML = '<span>✨</span> AI 提炼今日成长笔记';
+  }, 900);
+}
+
+function buildNote({ mode, did, learned, block, next, eng }) {
+  const energyEmojis = ['','😩','😐','🙂','😄','🚀'];
+  const energyWords  = ['','有点累','状态一般','还不错','状态很好','超级在状态'];
+  const isIntern = mode === 'intern';
+  const today = new Date().toLocaleDateString('zh-CN', { month:'long', day:'numeric', weekday:'long' });
+  const engStr = eng ? `${energyEmojis[eng]} ${energyWords[eng]}` : '';
+
+  const lines = [];
+  lines.push(`📅 ${today}${engStr ? '  ·  今日状态：' + engStr : ''}`);
+  lines.push('');
+
+  if (did) {
+    lines.push(isIntern ? '【今天做了】' : '【今天推进】');
+    lines.push(did);
+    lines.push('');
+  }
+  if (learned) {
+    lines.push(isIntern ? '【学到 / 观察到】' : '【新发现】');
+    lines.push(learned);
+    lines.push('');
+  }
+  if (block) {
+    lines.push(isIntern ? '【卡点】' : '【还没搞清楚】');
+    lines.push(block);
+    lines.push('');
+  }
+  if (next) {
+    lines.push(isIntern ? '【明天要做】' : '【下一步】');
+    lines.push(next);
+    lines.push('');
+  }
+
+  // AI 风格的提炼一句话
+  const insight = generateInsight({ mode, did, learned, block, next });
+  lines.push('💬 今日小结');
+  lines.push(insight);
+
+  return lines.join('\n');
+}
+
+// 根据内容生成一句有温度的小结
+function generateInsight({ mode, did, learned, block, next }) {
+  const isIntern = mode === 'intern';
+  const insightPool = isIntern ? [
+    learned ? `今天最大的收获是发现：${summarize(learned)}。职场里很多道理只有亲身跑过才能明白。` :
+              `扎实推进了今天的工作，每一步都是在为后面的自己铺路。`,
+    block   ? `${summarize(block)}这件事卡住了，但卡点往往是成长的入口——记下来，下次就是经验。` :
+              `今天的推进很顺利，保持节奏比偶尔爆发更重要。`,
+    next    ? `明天要搞定${summarize(next)}，目标清晰了执行就不慌。` :
+              `今天收工，明天继续。`,
+  ] : [
+    learned ? `今天的新发现是：${summarize(learned)}。科研就是在不确定里寻找一点点确定性。` :
+              `实验又推进了一步，研究本来就是螺旋上升的过程。`,
+    block   ? `${summarize(block)}还没想清楚，先记下来，也许明天早上一杯咖啡就想通了。` :
+              `今天的实验结果比预期更有意思，继续挖。`,
+    next    ? `下一步要验证${summarize(next)}，带着具体问题做实验才不会白跑。` :
+              `今天到这里，明天继续探索。`,
+  ];
+  // 随机选一条最相关的
+  const candidates = insightPool.filter(Boolean);
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+function summarize(text) {
+  if (!text) return '';
+  const t = text.replace(/\n/g, ' ').trim();
+  return t.length > 28 ? t.slice(0, 28) + '…' : t;
+}
+
+function showNote(note) {
+  const box = document.getElementById('noteBox');
+  const today = new Date().toLocaleDateString('zh-CN');
+  box.classList.remove('empty');
+  box.innerHTML = `
+    <div class="note-content">${note.replace(/</g,'&lt;')}</div>
+    <div class="note-meta">
+      <span class="note-tag ${mode}">${mode === 'intern' ? '🏢 实习' : '🔬 科研'}</span>
+      <span class="note-date">${today}</span>
+      <button class="copy-btn" onclick="copyNote()">复制</button>
+    </div>`;
+}
+
+function copyNote() {
+  const content = document.querySelector('.note-content');
+  if (!content) return;
+  navigator.clipboard.writeText(content.textContent).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '已复制 ✓';
+    setTimeout(() => btn.textContent = '复制', 1500);
+  });
+}
+
+function shakeBtn() {
+  const btn = document.getElementById('genBtn');
+  btn.style.animation = 'none';
+  btn.style.transform = 'translateX(-4px)';
+  setTimeout(() => { btn.style.transform = 'translateX(4px)'; }, 80);
+  setTimeout(() => { btn.style.transform = 'translateX(-3px)'; }, 160);
+  setTimeout(() => { btn.style.transform = ''; }, 240);
+}
+
+// ── 初始化 ──
+renderHistory();
+document.getElementById('streakNum').textContent = calcStreak();
 </script>
 </body>
 </html>
