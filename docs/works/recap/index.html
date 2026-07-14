@@ -947,13 +947,41 @@ function renderDayTasks(s) {
         <div class="t-gtag">🎯 ${t.gname}</div>
         <div class="t-txt${t.done?' stk':''}">${t.text}</div>
       </div>
-      ${!t.done&&s===TODAY?`<button class="t-delay" onclick="delayT('${t.gid}',${t.idx})">顺延 →</button>`:''}`;
+      ${!t.done&&s===TODAY?`<button class="t-delay" onclick="delayT('${t.gid}')">重新安排 ↺</button>`:''}`;
     wrap.appendChild(div);
   });
 }
 
 function toggleT(gid,idx,was) { setTD(gid,idx,!was); renderGoals(); renderDayTasks(selDate); renderCal(); renderWeek(); }
-function delayT(gid,idx) { setTL(gid,idx,addD(TODAY,1)); renderGoals(); renderDayTasks(selDate); renderCal(); renderWeek(); }
+
+// 顺延：把该目标所有今天及之前未完成的任务，重新均匀分配到今天~截止日的剩余天数里
+function delayT(gid) {
+  const goals = getGoals();
+  const g = goals.find(x=>x.id===gid);
+  if(!g) return;
+
+  // 收集所有未完成任务的 index
+  const undone = g.tasks.map((_,i)=>i).filter(i => !getTD(gid,i));
+  if(!undone.length) return;
+
+  // 计算剩余可用天数（今天到截止日，含今天）
+  const daysLeft = Math.max(1, diffD(TODAY, g.deadline) + 1);
+
+  // 把未完成任务均匀分配：每天尽量平均，多出来的放到前几天
+  const perDay = Math.floor(undone.length / daysLeft);
+  const extra  = undone.length % daysLeft;
+  let ptr = 0;
+  for(let d=0; d<daysLeft; d++) {
+    const cnt = perDay + (d < extra ? 1 : 0);
+    const date = addD(TODAY, d);
+    for(let k=0; k<cnt; k++) {
+      setTL(gid, undone[ptr], date);
+      ptr++;
+    }
+  }
+
+  renderGoals(); renderDayTasks(selDate); renderCal(); renderWeek();
+}
 
 function renderWeek() {
   const el = document.getElementById('weekStats');
