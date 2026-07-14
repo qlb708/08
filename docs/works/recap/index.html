@@ -114,29 +114,30 @@ input[type=date],select{height:34px;cursor:pointer}
 .shelf-row{display:flex;flex-direction:column;gap:4px}
 .shelf-label{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
 .shelf-label::after{content:'';flex:1;height:1.5px;background:var(--border2);border-radius:1px}
-.shelf-books{display:flex;gap:9px;padding:4px 0 6px;width:100%}
+.shelf-books{display:flex;gap:9px;padding:4px 0 6px;width:100%;align-items:flex-start}
 
 /* book card - flat gradient style like p2 */
 .book{
   position:relative;
-  flex:1;min-width:110px;
-  height:76px;
-  border-radius:16px;
+  width:calc(33.3% - 7px);
+  height:130px;
+  border-radius:18px;
   cursor:pointer;
-  transition:transform .22s cubic-bezier(.34,1.36,.64,1),box-shadow .22s;
-  display:flex;align-items:center;gap:11px;
-  padding:0 16px;
+  transition:transform .24s cubic-bezier(.34,1.42,.64,1),box-shadow .24s;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:16px 14px 14px;
   overflow:hidden;
-  box-shadow:0 4px 18px rgba(0,0,0,.13);
   flex-shrink:0;
+  border:1px solid rgba(255,255,255,.55);
 }
-.book:hover{transform:translateY(-4px) scale(1.025);box-shadow:0 12px 30px rgba(0,0,0,.2)}
-.book::before{content:'';position:absolute;top:-24px;right:-18px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
-.book::after{content:'';position:absolute;bottom:-18px;left:10px;width:55px;height:55px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
-.book-icon{font-size:26px;line-height:1;position:relative;z-index:1;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
-.book-info{display:flex;flex-direction:column;gap:2px;position:relative;z-index:1}
-.book-spine{font-size:14px;font-weight:800;color:rgba(255,255,255,.97);letter-spacing:.02em;text-shadow:0 1px 4px rgba(0,0,0,.2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.book-count{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.68)}
+.book:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.14)!important}
+/* frosted texture overlay */
+.book::before{content:'';position:absolute;inset:0;background:inherit;filter:blur(0);z-index:0}
+.book::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 45%,rgba(255,255,255,.02) 100%);z-index:1;pointer-events:none;border-radius:18px}
+.book-icon{font-size:24px;line-height:1.2;position:relative;z-index:2;display:block;margin-bottom:auto}
+.book-info{display:flex;flex-direction:column;gap:3px;position:relative;z-index:2}
+.book-spine{font-size:13px;font-weight:800;color:rgba(60,70,90,.85);letter-spacing:.02em}
+.book-count{font-size:10px;font-weight:600;color:rgba(80,95,120,.6);letter-spacing:.02em}
 .book-dot{display:none}
 .book-shadow{display:none}
 
@@ -364,13 +365,18 @@ input[type=date],select{height:34px;cursor:pointer}
 // ── BOOKS CONFIG ──
 const BOOKS = {
   intern: [
-    {id:'xiaohongshu', name:'小红书', icon:'📱', color:'linear-gradient(135deg,#e8394a,#c01a2e)', shadow:'#b02030'},
-    {id:'transsion',   name:'传音',   icon:'🎵', color:'linear-gradient(135deg,#2563eb,#1a40b0)', shadow:'#1a4ab0'},
-    {id:'benq',        name:'明基',   icon:'🖥️', color:'linear-gradient(135deg,#16a34a,#0d7a34)', shadow:'#0f7a34'},
+    {id:'xiaohongshu', name:'小红书', icon:'📱',
+     bg:'rgba(180,140,140,.38)', accent:'#c4908a', blur:'rgba(210,170,165,.18)'},
+    {id:'transsion',   name:'传音',   icon:'🎵',
+     bg:'rgba(130,150,180,.38)', accent:'#8098b8', blur:'rgba(160,180,210,.18)'},
+    {id:'benq',        name:'明基',   icon:'🖥️',
+     bg:'rgba(130,160,145,.38)', accent:'#7ca490', blur:'rgba(160,190,175,.18)'},
   ],
   research: [
-    {id:'kg',          name:'图谱',   icon:'🕸️', color:'linear-gradient(135deg,#7c3aed,#5520c0)', shadow:'#5b20c0'},
-    {id:'devtraj',     name:'发育轨迹', icon:'🧬', color:'linear-gradient(135deg,#d97706,#b55a00)', shadow:'#a05c04'},
+    {id:'kg',          name:'图谱',   icon:'🕸️',
+     bg:'rgba(155,140,175,.38)', accent:'#9b8cb8', blur:'rgba(185,170,205,.18)'},
+    {id:'devtraj',     name:'发育轨迹', icon:'🧬',
+     bg:'rgba(175,155,130,.38)', accent:'#b09070', blur:'rgba(205,185,160,.18)'},
   ]
 };
 
@@ -502,7 +508,7 @@ function renderShelves(){
       const arr=getRec(b.id);
       const div=document.createElement('div');
       div.className='book';
-      div.style.background=b.color;
+      div.style.cssText+=`;background:${b.bg};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 6px 24px ${b.blur},inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.12)`;
       div.innerHTML=`
         <div class="book-icon">${b.icon||'📓'}</div>
         <div class="book-info">
