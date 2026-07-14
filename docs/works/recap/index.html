@@ -114,30 +114,31 @@ input[type=date],select{height:34px;cursor:pointer}
 .shelf-row{display:flex;flex-direction:column;gap:4px}
 .shelf-label{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
 .shelf-label::after{content:'';flex:1;height:1.5px;background:var(--border2);border-radius:1px}
-.shelf-books{display:flex;gap:9px;padding:4px 0 6px;width:100%;align-items:flex-start}
+.shelf-books{display:flex;gap:12px;padding:6px 2px 10px;align-items:flex-start;flex-wrap:nowrap}
 
 /* book card - flat gradient style like p2 */
 .book{
   position:relative;
-  width:calc(33.3% - 7px);
-  height:130px;
+  width:110px;
+  height:148px;
   border-radius:18px;
   cursor:pointer;
-  transition:transform .24s cubic-bezier(.34,1.42,.64,1),box-shadow .24s;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:16px 14px 14px;
-  overflow:hidden;
   flex-shrink:0;
-  border:1px solid rgba(255,255,255,.55);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.65);
+  transition:transform .26s cubic-bezier(.34,1.48,.64,1),box-shadow .26s;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:13px 12px 12px;
 }
-.book:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.14)!important}
-/* frosted texture overlay */
-.book::before{content:'';position:absolute;inset:0;background:inherit;filter:blur(0);z-index:0}
-.book::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 45%,rgba(255,255,255,.02) 100%);z-index:1;pointer-events:none;border-radius:18px}
-.book-icon{font-size:24px;line-height:1.2;position:relative;z-index:2;display:block;margin-bottom:auto}
-.book-info{display:flex;flex-direction:column;gap:3px;position:relative;z-index:2}
-.book-spine{font-size:13px;font-weight:800;color:rgba(60,70,90,.85);letter-spacing:.02em}
-.book-count{font-size:10px;font-weight:600;color:rgba(80,95,120,.6);letter-spacing:.02em}
+.book:hover{transform:translateY(-8px) rotate(-1deg) scale(1.03);box-shadow:0 20px 48px rgba(0,0,0,.18)!important}
+/* glossy highlight */
+.book::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.38) 0%,rgba(255,255,255,.08) 40%,transparent 65%);z-index:1;pointer-events:none}
+/* noise grain for depth */
+.book::after{content:'';position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");z-index:2;pointer-events:none}
+.book-icon{font-size:22px;position:relative;z-index:3;display:block;margin-bottom:auto;line-height:1}
+.book-info{position:relative;z-index:3;display:flex;flex-direction:column;gap:2px}
+.book-spine{font-size:12.5px;font-weight:800;letter-spacing:.01em;color:var(--tc,rgba(40,50,70,.85))}
+.book-count{font-size:9.5px;font-weight:600;letter-spacing:.01em;color:var(--tc,rgba(40,50,70,.55))}
 .book-dot{display:none}
 .book-shadow{display:none}
 
@@ -365,18 +366,23 @@ input[type=date],select{height:34px;cursor:pointer}
 // ── BOOKS CONFIG ──
 const BOOKS = {
   intern: [
-    {id:'xiaohongshu', name:'小红书', icon:'📱',
-     bg:'rgba(180,140,140,.38)', accent:'#c4908a', blur:'rgba(210,170,165,.18)'},
+    {id:'xiaohongshu', name:'小红书', icon:'🌸',
+     bg:'linear-gradient(145deg,#f2c4ce 0%,#c9a0c0 40%,#a0b8d8 100%)',
+     shadow:'rgba(200,150,180,.35)', textColor:'rgba(80,40,60,.85)'},
     {id:'transsion',   name:'传音',   icon:'🎵',
-     bg:'rgba(130,150,180,.38)', accent:'#8098b8', blur:'rgba(160,180,210,.18)'},
+     bg:'linear-gradient(145deg,#b8c8e8 0%,#8fa8d0 40%,#c8d8f0 100%)',
+     shadow:'rgba(120,150,200,.35)', textColor:'rgba(40,60,100,.85)'},
     {id:'benq',        name:'明基',   icon:'🖥️',
-     bg:'rgba(130,160,145,.38)', accent:'#7ca490', blur:'rgba(160,190,175,.18)'},
+     bg:'linear-gradient(145deg,#b8d4c0 0%,#90b8a0 40%,#c8e0c8 100%)',
+     shadow:'rgba(100,160,120,.35)', textColor:'rgba(30,70,50,.85)'},
   ],
   research: [
     {id:'kg',          name:'图谱',   icon:'🕸️',
-     bg:'rgba(155,140,175,.38)', accent:'#9b8cb8', blur:'rgba(185,170,205,.18)'},
+     bg:'linear-gradient(145deg,#ccc0e0 0%,#a898c8 40%,#d8c8e8 100%)',
+     shadow:'rgba(150,120,190,.35)', textColor:'rgba(60,30,90,.85)'},
     {id:'devtraj',     name:'发育轨迹', icon:'🧬',
-     bg:'rgba(175,155,130,.38)', accent:'#b09070', blur:'rgba(205,185,160,.18)'},
+     bg:'linear-gradient(145deg,#e0d0b8 0%,#c8b090 40%,#e8d8c0 100%)',
+     shadow:'rgba(180,140,90,.35)', textColor:'rgba(80,55,20,.85)'},
   ]
 };
 
@@ -508,7 +514,7 @@ function renderShelves(){
       const arr=getRec(b.id);
       const div=document.createElement('div');
       div.className='book';
-      div.style.cssText+=`;background:${b.bg};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 6px 24px ${b.blur},inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.12)`;
+      div.style.cssText=`background:${b.bg};box-shadow:0 8px 28px ${b.shadow},0 2px 8px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.55);--tc:${b.textColor}`;
       div.innerHTML=`
         <div class="book-icon">${b.icon||'📓'}</div>
         <div class="book-info">
