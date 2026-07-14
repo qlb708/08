@@ -111,27 +111,34 @@ input[type=date],select{height:34px;cursor:pointer}
 .cd.today::after{background:rgba(255,255,255,.7)}
 
 /* ── BOOKSHELF ── */
-.shelf-row{display:flex;flex-direction:column;gap:6px}
+.shelf-row{display:flex;flex-direction:column;gap:4px}
 .shelf-label{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
 .shelf-label::after{content:'';flex:1;height:1.5px;background:var(--border2);border-radius:1px}
-.shelf-books{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0 8px}
+.shelf-books{display:flex;gap:9px;padding:4px 0 6px;width:100%}
 
-/* book spine */
+/* book card - flat gradient style like p2 */
 .book{
   position:relative;
-  width:52px;height:120px;
-  border-radius:4px 10px 10px 4px;
+  flex:1;min-width:110px;
+  height:76px;
+  border-radius:16px;
   cursor:pointer;
-  transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:3px 3px 10px rgba(0,0,0,.12),inset -3px 0 8px rgba(0,0,0,.08);
+  transition:transform .22s cubic-bezier(.34,1.36,.64,1),box-shadow .22s;
+  display:flex;align-items:center;gap:11px;
+  padding:0 16px;
+  overflow:hidden;
+  box-shadow:0 4px 18px rgba(0,0,0,.13);
   flex-shrink:0;
 }
-.book:hover{transform:translateY(-8px) rotate(-2deg);box-shadow:6px 12px 22px rgba(0,0,0,.18),inset -3px 0 8px rgba(0,0,0,.08)}
-.book-spine{writing-mode:vertical-rl;text-orientation:mixed;font-size:13px;font-weight:800;color:rgba(255,255,255,.92);letter-spacing:.06em;text-shadow:0 1px 3px rgba(0,0,0,.2);user-select:none;transform:rotate(180deg)}
-.book-count{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:rgba(255,255,255,.65);white-space:nowrap}
-.book-dot{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35)}
-.book-shadow{position:absolute;left:0;top:4px;bottom:4px;width:7px;background:linear-gradient(90deg,rgba(0,0,0,.18),transparent);border-radius:4px 0 0 4px}
+.book:hover{transform:translateY(-4px) scale(1.025);box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.book::before{content:'';position:absolute;top:-24px;right:-18px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
+.book::after{content:'';position:absolute;bottom:-18px;left:10px;width:55px;height:55px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
+.book-icon{font-size:26px;line-height:1;position:relative;z-index:1;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.book-info{display:flex;flex-direction:column;gap:2px;position:relative;z-index:1}
+.book-spine{font-size:14px;font-weight:800;color:rgba(255,255,255,.97);letter-spacing:.02em;text-shadow:0 1px 4px rgba(0,0,0,.2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.book-count{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.68)}
+.book-dot{display:none}
+.book-shadow{display:none}
 
 /* book open panel */
 .book-panel{flex:1;min-height:0;display:none;flex-direction:column;gap:10px;overflow:hidden;animation:bkIn .2s ease}
@@ -357,13 +364,13 @@ input[type=date],select{height:34px;cursor:pointer}
 // ── BOOKS CONFIG ──
 const BOOKS = {
   intern: [
-    {id:'xiaohongshu', name:'小红书', color:'#e8394a', shadow:'#b02030'},
-    {id:'transsion',   name:'传音',   color:'#2563eb', shadow:'#1a4ab0'},
-    {id:'benq',        name:'明基',   color:'#16a34a', shadow:'#0f7a34'},
+    {id:'xiaohongshu', name:'小红书', icon:'📱', color:'linear-gradient(135deg,#e8394a,#c01a2e)', shadow:'#b02030'},
+    {id:'transsion',   name:'传音',   icon:'🎵', color:'linear-gradient(135deg,#2563eb,#1a40b0)', shadow:'#1a4ab0'},
+    {id:'benq',        name:'明基',   icon:'🖥️', color:'linear-gradient(135deg,#16a34a,#0d7a34)', shadow:'#0f7a34'},
   ],
   research: [
-    {id:'kg',          name:'图谱',   color:'#7c3aed', shadow:'#5b20c0'},
-    {id:'devtraj',     name:'发育轨迹', color:'#d97706', shadow:'#a05c04'},
+    {id:'kg',          name:'图谱',   icon:'🕸️', color:'linear-gradient(135deg,#7c3aed,#5520c0)', shadow:'#5b20c0'},
+    {id:'devtraj',     name:'发育轨迹', icon:'🧬', color:'linear-gradient(135deg,#d97706,#b55a00)', shadow:'#a05c04'},
   ]
 };
 
@@ -495,12 +502,13 @@ function renderShelves(){
       const arr=getRec(b.id);
       const div=document.createElement('div');
       div.className='book';
-      div.style.background=`linear-gradient(160deg,${b.color}ee,${b.shadow}cc)`;
+      div.style.background=b.color;
       div.innerHTML=`
-        <div class="book-shadow"></div>
-        <div class="book-dot"></div>
-        <div class="book-spine">${b.name}</div>
-        <div class="book-count">${arr.length} 篇</div>`;
+        <div class="book-icon">${b.icon||'📓'}</div>
+        <div class="book-info">
+          <div class="book-spine">${b.name}</div>
+          <div class="book-count">${arr.length} 篇笔记</div>
+        </div>`;
       div.onclick=()=>openBook(b);
       el.appendChild(div);
     });
