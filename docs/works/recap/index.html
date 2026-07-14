@@ -47,8 +47,7 @@ body{
 
 /* main tabs */
 .main-tabs{
-  flex-shrink:0;display:flex;gap:4px;padding:10px 28px;
-  background:rgba(255,255,255,.52);border-bottom:1px solid rgba(200,215,240,.28);
+  display:flex;gap:4px;margin:0 8px;
 }
 .mtab{
   padding:8px 26px;border:none;border-radius:99px;font-size:13.5px;
@@ -245,20 +244,18 @@ input[type=date],select{height:36px;cursor:pointer}
 </head>
 <body>
 
-<!-- topbar -->
+<!-- topbar + tabs 合一 -->
 <div class="topbar">
   <a href="/08/works/#tools" class="back">
     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     主页
   </a>
   <div class="topbar-title">成长复盘</div>
+  <div class="main-tabs">
+    <button class="mtab a-recap" data-t="recap" onclick="switchTab('recap')">📓 复盘</button>
+    <button class="mtab" data-t="ddl" onclick="switchTab('ddl')">🎯 DDL Master</button>
+  </div>
   <div class="streak">🔥 <span id="sNum">0</span> 天连续记录</div>
-</div>
-
-<!-- tabs -->
-<div class="main-tabs">
-  <button class="mtab a-recap" data-t="recap" onclick="switchTab('recap')">📓 复盘</button>
-  <button class="mtab" data-t="ddl" onclick="switchTab('ddl')">🎯 DDL Master</button>
 </div>
 
 <!-- panels -->
