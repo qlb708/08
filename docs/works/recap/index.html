@@ -1,4 +1,4 @@
-<!-- recap_v2 -->
+<!-- recap_v3 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -11,8 +11,8 @@
   --glass:rgba(255,255,255,.88);
   --border:rgba(255,255,255,.98);
   --border2:rgba(210,222,245,.55);
-  --shadow:0 4px 24px rgba(74,124,247,.08),0 1px 3px rgba(74,124,247,.04);
-  --shadow-h:0 8px 32px rgba(74,124,247,.13),0 2px 6px rgba(74,124,247,.07);
+  --shadow:0 4px 24px rgba(74,124,247,.07),0 1px 3px rgba(74,124,247,.04);
+  --shadow-h:0 8px 32px rgba(74,124,247,.12),0 2px 6px rgba(74,124,247,.06);
   --blue:#4a7cf7;--blue-s:#dce8ff;--blue-m:#b8d0ff;
   --purple:#7c5cf7;--purple-s:#e8dcff;--purple-m:#c4b0ff;
   --orange:#f97316;--orange-s:#ffedd5;
@@ -27,122 +27,73 @@ body{
   font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;
   color:var(--text);background:var(--bg);
   background-image:
-    radial-gradient(ellipse at 8% 15%,rgba(150,185,255,.30) 0%,transparent 48%),
-    radial-gradient(ellipse at 92% 85%,rgba(180,150,255,.20) 0%,transparent 45%),
-    radial-gradient(ellipse at 55% 10%,rgba(200,220,255,.14) 0%,transparent 40%);
+    radial-gradient(ellipse at 8% 15%,rgba(150,185,255,.28) 0%,transparent 48%),
+    radial-gradient(ellipse at 92% 85%,rgba(180,150,255,.18) 0%,transparent 45%);
   display:flex;flex-direction:column;
 }
 
-/* topbar */
+/* ── topbar ── */
 .topbar{
   flex-shrink:0;display:flex;align-items:center;gap:10px;
-  padding:9px 22px;
-  background:rgba(255,255,255,.80);
+  padding:10px 28px;
+  background:rgba(255,255,255,.82);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-bottom:1px solid rgba(210,222,245,.38);
+  z-index:10;
 }
-.back{
-  display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;
-  color:var(--text2);background:rgba(255,255,255,.95);
-  border:1px solid var(--border2);border-radius:99px;
-  padding:5px 13px 5px 9px;text-decoration:none;
-  box-shadow:0 1px 6px rgba(74,124,247,.08);transition:all .2s;
-}
+.back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--text2);background:rgba(255,255,255,.95);border:1px solid var(--border2);border-radius:99px;padding:6px 14px 6px 10px;text-decoration:none;box-shadow:0 1px 6px rgba(74,124,247,.08);transition:all .2s}
 .back:hover{color:var(--blue);transform:translateX(-2px)}
-.divider{width:1px;height:16px;background:var(--border2)}
-.mswitch{
-  display:flex;gap:3px;
-  background:rgba(230,238,255,.5);
-  border:1px solid rgba(180,200,240,.4);
-  border-radius:10px;padding:3px;
-}
-.mbtn{
-  padding:5px 18px;border:none;border-radius:7px;font-size:13px;
-  font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;
-}
+.div-line{width:1px;height:16px;background:var(--border2)}
+.mswitch{display:flex;gap:3px;background:rgba(230,238,255,.5);border:1px solid rgba(180,200,240,.4);border-radius:10px;padding:3px}
+.mbtn{padding:5px 18px;border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
 .mbtn.on-i{background:white;color:var(--blue);box-shadow:0 1px 6px rgba(74,124,247,.18)}
 .mbtn.on-r{background:white;color:var(--purple);box-shadow:0 1px 6px rgba(124,92,247,.18)}
-.streak{
-  margin-left:auto;display:flex;align-items:center;gap:5px;
-  background:linear-gradient(135deg,var(--blue-s),rgba(220,232,255,.6));
-  border:1px solid var(--blue-m);border-radius:99px;
-  padding:5px 13px;font-size:12px;font-weight:700;color:var(--blue);
-}
-.ddl-toggle{
-  display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
-  color:var(--orange);background:var(--orange-s);border:1px solid rgba(249,115,22,.22);
-  border-radius:99px;padding:5px 13px;cursor:pointer;transition:all .2s;
-}
-.ddl-toggle:hover{background:rgba(255,237,213,.8)}
+.streak{margin-left:auto;display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--blue-s),rgba(220,232,255,.6));border:1px solid var(--blue-m);border-radius:99px;padding:5px 14px;font-size:12.5px;font-weight:700;color:var(--blue)}
+.ddl-pill{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--orange);background:var(--orange-s);border:1px solid rgba(249,115,22,.22);border-radius:99px;padding:5px 14px;cursor:pointer;transition:all .2s;user-select:none}
+.ddl-pill:hover{background:rgba(255,237,213,.8)}
 
-/* main layout */
-.main{flex:1;min-height:0;display:flex;gap:14px;padding:16px 22px;overflow:hidden}
+/* ── main ── */
+.main{flex:1;min-height:0;display:flex;gap:0;padding:20px 28px;gap:16px;overflow:hidden}
 
-/* card */
-.card{
-  background:var(--glass);border:1px solid var(--border);
-  border-radius:var(--r);box-shadow:var(--shadow);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  padding:16px 18px;display:flex;flex-direction:column;gap:10px;
-  transition:box-shadow .2s;
-}
+/* ── card ── */
+.card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;flex-direction:column;transition:box-shadow .2s}
 .card:hover{box-shadow:var(--shadow-h)}
+.card-pad{padding:20px 22px;gap:12px}
+.card-pad-sm{padding:14px 16px;gap:10px}
 .card.grow{flex:1;min-height:0;overflow:hidden}
-.lbl{font-size:9.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.10em;display:flex;align-items:center;gap:5px}
+.lbl{font-size:9.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.10em;display:flex;align-items:center;gap:5px;flex-shrink:0}
 
-/* ── 左列：填写 ── */
-.col-left{width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
-
+/* ── form ── */
 .fg{display:flex;flex-direction:column;gap:3px}
 .fl{font-size:11px;font-weight:600;color:var(--muted)}
-textarea,input[type=text],input[type=date],select{
-  width:100%;border:1.5px solid rgba(180,200,240,.25);border-radius:10px;
-  padding:8px 11px;font-size:12.5px;color:var(--text);
-  background:rgba(255,255,255,.82);font-family:inherit;line-height:1.55;resize:none;
-  transition:border-color .2s,box-shadow .2s,background .2s;
-}
-textarea:focus,input:focus,select:focus{
-  outline:none;border-color:rgba(74,124,247,.45);
-  background:rgba(255,255,255,.98);box-shadow:0 0 0 3px rgba(74,124,247,.08);
-}
-textarea{height:58px}
-textarea.sm{height:44px}
-input[type=date],select{height:34px;cursor:pointer}
+textarea,input[type=text],input[type=date],select{width:100%;border:1.5px solid rgba(180,200,240,.22);border-radius:10px;padding:8px 11px;font-size:12.5px;color:var(--text);background:rgba(255,255,255,.8);font-family:inherit;line-height:1.5;resize:none;transition:border-color .2s,box-shadow .2s,background .2s}
+textarea:focus,input:focus,select:focus{outline:none;border-color:rgba(74,124,247,.45);background:rgba(255,255,255,.98);box-shadow:0 0 0 3px rgba(74,124,247,.08)}
+textarea{height:54px}
+textarea.sm{height:42px}
+input[type=date],select{height:33px;cursor:pointer}
 
-.erow{display:flex;align-items:center;gap:8px}
+.erow{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .elbl{font-size:11px;color:var(--muted);white-space:nowrap}
 .edots{display:flex;gap:4px}
-.edot{
-  width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(180,200,240,.3);
-  cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.7);transition:transform .15s,border-color .15s,background .15s;
-}
-.edot:hover{transform:scale(1.18);background:rgba(255,255,255,.95)}
-.edot.on{border-color:var(--blue);background:var(--blue-s);box-shadow:0 2px 7px rgba(74,124,247,.2)}
+.edot{width:27px;height:27px;border-radius:50%;border:1.5px solid rgba(180,200,240,.28);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);transition:transform .15s,border-color .15s,background .15s}
+.edot:hover{transform:scale(1.18)}
+.edot.on{border-color:var(--blue);background:var(--blue-s)}
 
-.btn{
-  width:100%;padding:10px;border:none;border-radius:11px;font-size:13px;
-  font-weight:700;cursor:pointer;color:#fff;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  transition:transform .15s,box-shadow .15s;
-}
+.btn{width:100%;padding:10px;border:none;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s,box-shadow .15s;flex-shrink:0}
 .btn:hover{transform:translateY(-1.5px)}
-.btn:active{transform:translateY(0)}
-.btn.blue{background:linear-gradient(135deg,#5b8fff,var(--blue),#3a6cf0);box-shadow:0 4px 14px rgba(74,124,247,.34)}
-.btn.purple{background:linear-gradient(135deg,#9470ff,var(--purple),#6a48f0);box-shadow:0 4px 14px rgba(124,92,247,.34)}
+.btn.blue{background:linear-gradient(135deg,#5b8fff,var(--blue),#3a6cf0);box-shadow:0 4px 14px rgba(74,124,247,.32)}
+.btn.purple{background:linear-gradient(135deg,#9470ff,var(--purple),#6a48f0);box-shadow:0 4px 14px rgba(124,92,247,.32)}
 .btn.loading{opacity:.65;cursor:not-allowed;pointer-events:none}
 
-/* ── 中列：笔记 + 历史 ── */
-.col-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+/* ── left col ── */
+.col-left{width:288px;flex-shrink:0;display:flex;flex-direction:column;gap:0;overflow:hidden}
 
-.notebox{
-  background:linear-gradient(135deg,rgba(74,124,247,.04),rgba(124,92,247,.025));
-  border:1.5px solid rgba(74,124,247,.10);border-radius:12px;
-  padding:13px 15px;overflow-y:auto;scrollbar-width:thin;
-  scrollbar-color:rgba(100,130,200,.18) transparent;min-height:0;flex:1;
-}
-.notebox.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--muted)}
-.nph{font-size:24px;opacity:.2}
+/* ── mid col ── */
+.col-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+
+.notebox{background:linear-gradient(135deg,rgba(74,124,247,.04),rgba(124,92,247,.025));border:1.5px solid rgba(74,124,247,.10);border-radius:12px;padding:14px 16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent;flex:1;min-height:0}
+.notebox.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted)}
+.nph{font-size:26px;opacity:.2}
 .npht{font-size:12px;opacity:.5;font-weight:500}
 .ncontent{font-size:13px;line-height:1.9;color:var(--text);white-space:pre-wrap}
 .nmeta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid rgba(180,200,240,.2)}
@@ -153,9 +104,9 @@ input[type=date],select{height:34px;cursor:pointer}
 .cpbtn:hover{background:var(--blue-s)}
 
 .hwrap{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
-.hempty{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:12px;padding:18px 0}
+.hempty{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:12px;padding:20px 0}
 .hi{background:rgba(255,255,255,.7);border:1px solid rgba(210,222,245,.48);border-radius:10px;padding:9px 13px;flex-shrink:0;transition:all .18s;cursor:default}
-.hi:hover{box-shadow:0 2px 12px rgba(74,124,247,.08);transform:translateX(2px);background:rgba(255,255,255,.9)}
+.hi:hover{box-shadow:0 2px 12px rgba(74,124,247,.08);transform:translateX(2px);background:rgba(255,255,255,.92)}
 .hihead{display:flex;align-items:center;gap:5px;margin-bottom:3px}
 .hdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .hdot.i{background:var(--blue)}.hdot.r{background:var(--purple)}
@@ -164,117 +115,122 @@ input[type=date],select{height:34px;cursor:pointer}
 .hdel:hover{background:#fee2e2;color:var(--red)}
 .hpre{font-size:11.5px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* ── 右列：日历 + DDL ── */
-.col-right{width:230px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+/* ── right col ── */
+.col-right{width:220px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;overflow:hidden}
 
-/* mini cal */
-.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+/* cal */
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .caltitle{font-size:11.5px;font-weight:700;color:var(--text2)}
 .calnav{display:flex;gap:2px}
 .calnav button{width:19px;height:19px;border:1px solid var(--border2);background:rgba(255,255,255,.8);border-radius:5px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;display:flex;align-items:center;justify-content:center;line-height:1}
 .calnav button:hover{background:var(--blue-s);color:var(--blue)}
 .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.cw{font-size:8.5px;font-weight:700;color:rgba(138,159,192,.65);text-align:center;padding:2px 0}
+.cw{font-size:8.5px;font-weight:700;color:rgba(138,159,192,.65);text-align:center;padding:1px 0}
 .cd{height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10.5px;cursor:pointer;position:relative;transition:all .13s;color:var(--text2)}
 .cd:hover{background:var(--blue-s);color:var(--blue)}
-.cd.om{color:rgba(138,159,192,.25);cursor:default}
-.cd.om:hover{background:transparent;color:rgba(138,159,192,.25)}
-.cd.today{background:var(--blue);color:#fff;font-weight:700;box-shadow:0 2px 7px rgba(74,124,247,.35)}
+.cd.om{color:rgba(138,159,192,.22);cursor:default}.cd.om:hover{background:transparent;color:rgba(138,159,192,.22)}
+.cd.today{background:var(--blue);color:#fff;font-weight:700;box-shadow:0 2px 7px rgba(74,124,247,.3)}
 .cd.today:hover{background:var(--blue)}
-.cd.sel{outline:2px solid rgba(74,124,247,.55);outline-offset:1px}
+.cd.sel{outline:2px solid rgba(74,124,247,.5);outline-offset:1px}
 .cd::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;display:none}
 .cd.has-t::after{display:block;background:var(--orange)}
 .cd.has-r::after{display:block;background:var(--green)}
 .cd.has-b::after{display:block;background:linear-gradient(90deg,var(--orange),var(--green))}
 .cd.today::after{background:rgba(255,255,255,.7)}
 
-/* bg info */
-.bgta{flex:1;min-height:40px;font-size:12px;resize:none;background:rgba(255,255,255,.72)!important;border-radius:9px!important}
+/* DDL panel overlay */
+.ddl-overlay{position:fixed;inset:0;z-index:100;display:none;align-items:flex-start;justify-content:flex-end;padding:56px 28px 0;pointer-events:none}
+.ddl-overlay.open{display:flex}
+.ddl-box{width:360px;max-height:calc(100vh - 80px);background:var(--glass);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 12px 48px rgba(74,124,247,.16),0 4px 16px rgba(74,124,247,.10);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;flex-direction:column;gap:0;overflow:hidden;pointer-events:all;animation:slideIn .22s cubic-bezier(.32,0,.18,1)}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:none}}
+.ddl-head{display:flex;align-items:center;gap:8px;padding:14px 18px 12px;border-bottom:1px solid var(--border2);flex-shrink:0}
+.ddl-head-title{font-size:13.5px;font-weight:700;color:var(--text)}
+.ddl-close{margin-left:auto;width:24px;height:24px;border:none;background:rgba(180,200,240,.2);border-radius:7px;cursor:pointer;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ddl-close:hover{background:#fee2e2;color:var(--red)}
+.ddl-body{overflow-y:auto;flex:1;min-height:0;padding:14px 18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
 
-/* DDL compact */
-.ddl-panel{display:flex;flex-direction:column;gap:10px;overflow:hidden}
-.ddl-today{flex-shrink:0}
-.dthead{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
-.dt-date{font-size:11px;color:var(--muted);font-weight:500}
-.twrap{display:flex;flex-direction:column;gap:5px;max-height:130px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
-.ti{display:flex;align-items:flex-start;gap:7px;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.7);border:1px solid rgba(210,222,245,.38);flex-shrink:0;transition:opacity .2s}
+/* today tasks inside ddl */
+.twrap{display:flex;flex-direction:column;gap:5px}
+.ti{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border-radius:9px;background:rgba(255,255,255,.72);border:1px solid rgba(210,222,245,.4);transition:opacity .2s}
 .ti.done{opacity:.45}
-.tck{width:15px;height:15px;border-radius:50%;border:1.5px solid rgba(180,200,240,.4);flex-shrink:0;cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.9);transition:all .2s}
-.tck.on{background:var(--green);border-color:var(--green);box-shadow:0 1px 5px rgba(34,197,94,.28)}
+.tck{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(180,200,240,.4);flex-shrink:0;cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.9);transition:all .2s}
+.tck.on{background:var(--green);border-color:var(--green)}
 .tck.on::after{content:'✓';font-size:8px;color:white;font-weight:800}
 .tb{flex:1;min-width:0}
-.tgtag{font-size:9px;font-weight:700;color:var(--orange);margin-bottom:1px}
-.ttxt{font-size:11.5px;line-height:1.45;color:var(--text2)}
+.tgtag{font-size:9px;font-weight:700;color:var(--orange);margin-bottom:2px}
+.ttxt{font-size:12px;line-height:1.45;color:var(--text2)}
 .ttxt.stk{text-decoration:line-through;color:var(--muted)}
 .tdly{font-size:10px;border:none;background:none;cursor:pointer;color:var(--muted);padding:1px 5px;border-radius:5px;flex-shrink:0;transition:all .15s;white-space:nowrap}
 .tdly:hover{background:var(--orange-s);color:var(--orange)}
-.notask{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px;color:var(--muted);font-size:11.5px}
+.notask{text-align:center;padding:14px 0;font-size:12px;color:var(--muted)}
 
-/* DDL expand */
-.ddl-expand{display:none;flex-direction:column;gap:9px}
-.ddl-expand.open{display:flex}
-.glist{max-height:80px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;scrollbar-width:thin;scrollbar-color:rgba(100,130,200,.18) transparent}
-.gc{background:rgba(255,255,255,.75);border:1px solid var(--border2);border-radius:10px;padding:9px 11px;flex-shrink:0}
-.gcname{font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
-.gcdel{font-size:11px;border:none;background:none;cursor:pointer;color:rgba(138,159,192,.55);padding:0 4px;border-radius:4px;transition:all .15s}
+/* goals */
+.gc{background:rgba(255,255,255,.75);border:1px solid var(--border2);border-radius:11px;padding:11px 13px;flex-shrink:0}
+.gcname{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
+.gcmeta{font-size:10px;color:var(--muted);margin-bottom:6px}
+.gcdel{font-size:11px;border:none;background:none;cursor:pointer;color:rgba(138,159,192,.5);padding:0 4px;border-radius:4px;transition:all .15s}
 .gcdel:hover{background:#fee2e2;color:var(--red)}
-.gcmeta{font-size:10px;color:var(--muted);margin-bottom:5px}
 .pbar{height:4px;background:rgba(180,200,240,.18);border-radius:99px;overflow:hidden}
 .pbarf{height:100%;border-radius:99px;background:linear-gradient(90deg,#6a9fff,var(--blue));transition:width .4s}
 .plbl{font-size:9.5px;color:var(--muted);margin-top:3px;display:flex;justify-content:space-between}
 
-.new-goal{display:flex;flex-direction:column;gap:7px}
-.sbtns{display:flex;gap:6px}
-.smbtn{flex:1;padding:6px 0;border:1.5px solid var(--border2);background:rgba(255,255,255,.9);border-radius:8px;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s}
+/* new goal */
+.new-goal{display:flex;flex-direction:column;gap:8px}
+.sbtns{display:flex;gap:6px;margin-top:2px}
+.smbtn{flex:1;padding:7px 0;border:1.5px solid var(--border2);background:rgba(255,255,255,.9);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s}
 .smbtn:hover{background:var(--blue-s);border-color:var(--blue-m);color:var(--blue)}
 .spre{background:rgba(249,115,22,.04);border:1.5px solid rgba(249,115,22,.17);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:5px}
 .spt{font-size:9px;font-weight:800;color:var(--orange);letter-spacing:.08em;text-transform:uppercase}
-.sd{display:flex;gap:6px;font-size:11px}
-.sdl{flex-shrink:0;color:var(--muted);min-width:36px;font-weight:500}
+.sd{display:flex;gap:6px;font-size:11.5px}
+.sdl{flex-shrink:0;color:var(--muted);min-width:38px;font-weight:500}
 .sdt{color:var(--text2);line-height:1.4}
 
-/* filter bar */
-.fbar{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.fbar input[type=date]{height:27px;font-size:11px;border-radius:8px;padding:0 8px;width:112px;background:rgba(255,255,255,.85)}
+/* filter */
+.fbar{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.fbar input[type=date]{height:26px;font-size:11px;border-radius:7px;padding:0 7px;width:106px}
 .fbar button{font-size:11px;padding:3px 9px;border-radius:7px;border:1px solid var(--border2);background:white;color:var(--muted);cursor:pointer;transition:all .15s}
-.fbar button:hover{color:var(--red);border-color:rgba(239,68,68,.25)}
+.fbar button:hover{color:var(--red)}
 
-/* spinner */
+/* bg info textarea */
+.bgta{height:58px;resize:none;font-size:12px;background:rgba(255,255,255,.75)!important}
+
+/* bg info pill count */
+.ddl-stat{font-size:10px;font-weight:700;color:var(--orange);margin-left:4px;background:var(--orange-s);padding:1px 7px;border-radius:99px}
+
 @keyframes sp{to{transform:rotate(360deg)}}
 .sp{width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 </style>
 </head>
 <body>
 
-<!-- topbar: 返回 | 实习/科研切换 | 连续记录 | DDL开关 -->
+<!-- topbar -->
 <div class="topbar">
   <a href="/08/works/#tools" class="back">
     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     主页
   </a>
-  <div class="divider"></div>
+  <div class="div-line"></div>
   <div class="mswitch">
     <button class="mbtn on-i" data-m="intern" onclick="switchMode('intern')">🏢 实习</button>
     <button class="mbtn" data-m="research" onclick="switchMode('research')">🔬 科研</button>
   </div>
   <div class="streak">🔥 <span id="sNum">0</span> 天连续记录</div>
-  <div class="ddl-toggle" onclick="toggleDDL()">🎯 <span id="ddlTxt">DDL</span></div>
+  <div class="ddl-pill" onclick="toggleDDL()">🎯 DDL <span id="ddlStat"></span> <span id="ddlArrow">▾</span></div>
 </div>
 
-<!-- main 3-col -->
+<!-- 三列主区 -->
 <div class="main">
 
-  <!-- ── 左列：填写表单 ── -->
+  <!-- 左：填写 -->
   <div class="col-left">
-    <div class="card grow" style="overflow-y:auto">
+    <div class="card card-pad grow" style="overflow-y:auto">
       <div class="lbl" id="ftitle">✍️ 今天的实习复盘</div>
 
-      <!-- intern form -->
       <div id="fi" style="display:flex;flex-direction:column;gap:9px">
-        <div class="fg"><label class="fl">💼 今天做了什么</label><textarea id="i-did" placeholder="跟着导师做了用户访谈，整理了5份反馈…"></textarea></div>
-        <div class="fg"><label class="fl">💡 学到 / 观察到什么</label><textarea id="i-learned" placeholder="发现用户最在意的不是功能多，而是流程顺…"></textarea></div>
+        <div class="fg"><label class="fl">💼 今天做了什么</label><textarea id="i-did" placeholder="跟导师做了用户访谈…"></textarea></div>
+        <div class="fg"><label class="fl">💡 学到 / 观察到什么</label><textarea id="i-learned" placeholder="发现用户最在意流程顺不顺…"></textarea></div>
         <div class="fg"><label class="fl">🪨 遇到的卡点</label><textarea class="sm" id="i-block" placeholder="数据权限还没申请到…"></textarea></div>
-        <div class="fg"><label class="fl">🎯 明天要做</label><textarea class="sm" id="i-next" placeholder="把访谈整理成结构化需求文档…"></textarea></div>
+        <div class="fg"><label class="fl">🎯 明天要做</label><textarea class="sm" id="i-next" placeholder="整理成结构化需求文档…"></textarea></div>
         <div class="erow"><span class="elbl">今日状态</span>
           <div class="edots" id="ei">
             <button class="edot" data-v="1" onclick="setE('i',1)">😩</button>
@@ -286,11 +242,10 @@ input[type=date],select{height:34px;cursor:pointer}
         </div>
       </div>
 
-      <!-- research form -->
       <div id="fr" style="display:none;flex-direction:column;gap:9px">
         <div class="fg"><label class="fl">🧪 今天推进了什么</label><textarea id="r-did" placeholder="跑完了第一组对照实验…"></textarea></div>
-        <div class="fg"><label class="fl">🔍 新发现 / 新想法</label><textarea id="r-learned" placeholder="发现baseline在长文本上有明显退化…"></textarea></div>
-        <div class="fg"><label class="fl">🌀 还没搞清楚的</label><textarea class="sm" id="r-block" placeholder="为什么epoch增加loss反而震荡…"></textarea></div>
+        <div class="fg"><label class="fl">🔍 新发现 / 新想法</label><textarea id="r-learned" placeholder="发现baseline在长文本退化…"></textarea></div>
+        <div class="fg"><label class="fl">🌀 还没搞清楚的</label><textarea class="sm" id="r-block" placeholder="为什么epoch增加loss震荡…"></textarea></div>
         <div class="fg"><label class="fl">📌 下一步验证方向</label><textarea class="sm" id="r-next" placeholder="试试降低learning rate…"></textarea></div>
         <div class="erow"><span class="elbl">今日状态</span>
           <div class="edots" id="er">
@@ -307,19 +262,17 @@ input[type=date],select{height:34px;cursor:pointer}
     </div>
   </div>
 
-  <!-- ── 中列：笔记 + 历史 ── -->
+  <!-- 中：笔记 + 历史 -->
   <div class="col-mid">
-    <!-- 今日笔记 -->
-    <div class="card" style="flex:0 0 auto;min-height:160px;display:flex;flex-direction:column;gap:9px">
+    <div class="card card-pad" style="flex:0 0 auto;display:flex;flex-direction:column;gap:10px;min-height:0" id="noteCard">
       <div class="lbl">📝 今日笔记</div>
-      <div class="notebox empty" id="noteBox" style="flex:1">
+      <div class="notebox empty" id="noteBox">
         <div class="nph">🌱</div>
         <div class="npht">填写左侧，AI 帮你提炼成长笔记</div>
       </div>
     </div>
-    <!-- 历史复盘 -->
-    <div class="card grow">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0">
+    <div class="card card-pad grow">
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
         <div class="lbl">📅 历史复盘</div>
         <div class="fbar" style="margin-left:auto">
           <input type="date" id="fFrom" onchange="renderHist()">
@@ -334,10 +287,9 @@ input[type=date],select{height:34px;cursor:pointer}
     </div>
   </div>
 
-  <!-- ── 右列：日历 + 背景 + DDL ── -->
+  <!-- 右：日历 + 背景 -->
   <div class="col-right">
-    <!-- 小日历 -->
-    <div class="card" style="flex-shrink:0;padding:13px 14px;gap:0">
+    <div class="card card-pad-sm" style="flex-shrink:0;display:flex;flex-direction:column;gap:0">
       <div class="calhead">
         <div class="caltitle" id="rcalT"></div>
         <div class="calnav">
@@ -347,61 +299,71 @@ input[type=date],select{height:34px;cursor:pointer}
       </div>
       <div class="cg" id="rcalG"></div>
     </div>
-
-    <!-- 背景信息 -->
-    <div class="card" style="flex-shrink:0;gap:7px;padding:13px 14px">
+    <div class="card card-pad-sm grow" style="display:flex;flex-direction:column;gap:8px">
       <div class="lbl">🗒 背景信息</div>
-      <textarea class="bgta" id="bgInfo" placeholder="实习公司、岗位、科研课题、导师方向…" style="height:68px;resize:none" oninput="saveBg()"></textarea>
+      <textarea class="bgta" id="bgInfo" placeholder="实习公司、岗位、科研课题、导师方向…" oninput="saveBg()" style="flex:1;min-height:0;height:auto"></textarea>
     </div>
+  </div>
 
-    <!-- DDL 区域（可折叠） -->
-    <div class="card grow" id="ddlCard" style="padding:13px 14px;gap:10px">
-      <div class="lbl">🎯 DDL · 今日任务
-        <span id="ddlStat" style="margin-left:auto;font-size:10px;color:var(--orange);font-weight:700"></span>
-      </div>
+</div>
 
-      <!-- 今日任务列表 -->
-      <div class="twrap" id="tWrap">
-        <div class="notask" id="noTask"><span style="font-size:18px">✨</span>今天还没有任务</div>
-      </div>
+<!-- DDL 浮层 -->
+<div class="ddl-overlay" id="ddlOverlay" onclick="onOverlayClick(event)">
+  <div class="ddl-box" id="ddlBox">
+    <div class="ddl-head">
+      <span style="font-size:16px">🎯</span>
+      <span class="ddl-head-title">DDL Master</span>
+      <button class="ddl-close" onclick="toggleDDL()">✕</button>
+    </div>
+    <div class="ddl-body">
 
-      <!-- 展开：新建 + 进行中 -->
-      <div class="ddl-expand" id="ddlExpand">
-        <div style="height:1px;background:var(--border2);margin:0 -2px"></div>
-        <div class="lbl">进行中目标</div>
-        <div class="glist" id="gList">
-          <div style="font-size:11.5px;color:var(--muted);text-align:center;padding:10px 0">还没有目标</div>
+      <!-- 今日任务 -->
+      <div>
+        <div class="lbl" style="margin-bottom:8px">📋 今日任务</div>
+        <div class="twrap" id="tWrap">
+          <div class="notask" id="noTask">今天还没有任务安排</div>
         </div>
-        <div style="height:1px;background:var(--border2);margin:0 -2px"></div>
-        <div class="lbl">新建目标</div>
+      </div>
+
+      <!-- 进行中 -->
+      <div>
+        <div class="lbl" style="margin-bottom:8px">🏃 进行中目标</div>
+        <div style="display:flex;flex-direction:column;gap:7px" id="gList">
+          <div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">还没有目标</div>
+        </div>
+      </div>
+
+      <!-- 新建 -->
+      <div>
+        <div class="lbl" style="margin-bottom:8px">➕ 新建目标</div>
         <div class="new-goal">
-          <input type="text" id="dn" placeholder="目标名称" style="height:33px">
-          <textarea id="dd" placeholder="内容描述（AI拆解用）" style="height:46px"></textarea>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-            <div class="fg"><label class="fl">截止日期</label><input type="date" id="dl" style="font-size:11px"></div>
+          <input type="text" id="dn" placeholder="目标名称" style="height:34px">
+          <textarea id="dd" placeholder="内容描述（AI 拆解用）" style="height:52px"></textarea>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="fg"><label class="fl">截止日期</label><input type="date" id="dl" style="font-size:11.5px"></div>
             <div class="fg"><label class="fl">周期</label>
-              <select id="ds" style="font-size:11px">
+              <select id="ds" style="font-size:11.5px">
                 <option value="auto">按截止日</option>
-                <option value="7">7天</option>
-                <option value="14">14天</option>
-                <option value="30">30天</option>
+                <option value="7">7 天</option>
+                <option value="14">14 天</option>
+                <option value="30">30 天</option>
               </select>
             </div>
           </div>
-          <button class="btn" id="ddlBtn" onclick="createGoal()" style="background:linear-gradient(135deg,#ff8534,var(--orange),#e8530a);box-shadow:0 3px 12px rgba(249,115,22,.32);border-radius:10px;padding:9px;font-size:12.5px"><span>🤖</span> AI 拆分任务</button>
+          <button class="btn" id="ddlBtn" onclick="createGoal()" style="background:linear-gradient(135deg,#ff8534,var(--orange),#e8530a);box-shadow:0 3px 12px rgba(249,115,22,.30);border-radius:10px;padding:9px;font-size:12.5px"><span>🤖</span> AI 拆分任务</button>
           <div class="spre" id="sPreview" style="display:none">
             <div class="spt">任务预览</div>
-            <div id="sDays"></div>
-            <div class="sbtns" style="margin-top:3px">
-              <button class="smbtn" onclick="confirmGoal()">✅ 确认</button>
+            <div id="sDays" style="display:flex;flex-direction:column;gap:4px"></div>
+            <div class="sbtns">
+              <button class="smbtn" onclick="confirmGoal()">✅ 确认创建</button>
               <button class="smbtn" onclick="document.getElementById('sPreview').style.display='none'">取消</button>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
-
 </div>
 
 <script>
@@ -422,18 +384,19 @@ function switchMode(m){
   const isI=m==='intern';
   document.getElementById('fi').style.display=isI?'flex':'none';
   document.getElementById('fr').style.display=isI?'none':'flex';
-  document.getElementById('ftitle').textContent=(isI?'✍️ 今天的实习复盘':'🔬 今天的科研复盘');
+  document.getElementById('ftitle').textContent=isI?'✍️ 今天的实习复盘':'🔬 今天的科研复盘';
   document.getElementById('gBtn').className='btn '+(isI?'blue':'purple');
 }
-function setE(k,v){energy[k]=v;document.querySelectorAll(`#e${k} .edot`).forEach(d=>d.classList.toggle('on',+d.dataset.v===v))}
+function setE(k,v){energy[k]=v;document.querySelectorAll('#e'+k+' .edot').forEach(d=>d.classList.toggle('on',+d.dataset.v===v))}
 
-// DDL toggle
+// DDL overlay
 let ddlOpen=false;
 function toggleDDL(){
   ddlOpen=!ddlOpen;
-  document.getElementById('ddlExpand').classList.toggle('open',ddlOpen);
-  document.getElementById('ddlTxt').textContent=ddlOpen?'DDL ▴':'DDL ▾';
+  document.getElementById('ddlOverlay').classList.toggle('open',ddlOpen);
+  document.getElementById('ddlArrow').textContent=ddlOpen?'▴':'▾';
 }
+function onOverlayClick(e){if(e.target===document.getElementById('ddlOverlay'))toggleDDL()}
 
 // data
 const getRec=()=>{try{return JSON.parse(localStorage.getItem('rc')||'[]')}catch{return[]}};
@@ -441,10 +404,10 @@ const saveRec=r=>{const a=getRec();a.unshift(r);localStorage.setItem('rc',JSON.s
 const delRec=i=>{const a=getRec();a.splice(i,1);localStorage.setItem('rc',JSON.stringify(a));renderHist();upStreak();renderRcal()};
 const getGoals=()=>{try{return JSON.parse(localStorage.getItem('dg')||'[]')}catch{return[]}};
 const saveGoals=g=>localStorage.setItem('dg',JSON.stringify(g));
-const getTD=(gid,i)=>localStorage.getItem(`td_${gid}_${i}`)==='1';
-const setTD=(gid,i,v)=>localStorage.setItem(`td_${gid}_${i}`,v?'1':'0');
-const getTL=(gid,i)=>localStorage.getItem(`tl_${gid}_${i}`)||null;
-const setTL=(gid,i,d)=>localStorage.setItem(`tl_${gid}_${i}`,d);
+const getTD=(gid,i)=>localStorage.getItem('td_'+gid+'_'+i)==='1';
+const setTD=(gid,i,v)=>localStorage.setItem('td_'+gid+'_'+i,v?'1':'0');
+const getTL=(gid,i)=>localStorage.getItem('tl_'+gid+'_'+i)||null;
+const setTL=(gid,i,d)=>localStorage.setItem('tl_'+gid+'_'+i,d);
 
 function calcStreak(){
   const recs=getRec();if(!recs.length)return 0;
@@ -455,7 +418,6 @@ function calcStreak(){
 }
 const upStreak=()=>document.getElementById('sNum').textContent=calcStreak();
 
-// gen
 function gen(){
   const btn=document.getElementById('gBtn');
   const isI=curMode==='intern';
@@ -472,8 +434,19 @@ function gen(){
     saveRec({mode:curMode,date:TODAY,note,energy:eng});
     renderHist();upStreak();renderRcal();
     btn.classList.remove('loading');btn.innerHTML='<span>✨</span> AI 提炼今日成长笔记';
+    // auto-resize note card
+    sizeNoteCard();
   },900);
 }
+
+function sizeNoteCard(){
+  // give note card ~38% of mid height
+  const mid=document.querySelector('.col-mid');
+  const nc=document.getElementById('noteCard');
+  const h=Math.min(Math.max(mid.offsetHeight*0.38,150),280);
+  nc.style.height=h+'px';
+}
+
 function mkNote({isI,did,learned,block,next,eng}){
   const today=new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'long'});
   const L=[`📅 ${today}${eng?'  ·  '+EE[eng]+' '+EW[eng]:''}`,``];
@@ -510,6 +483,7 @@ function showNote(note,prefix){
     </div>`;
 }
 function cpNote(){const t=document.querySelector('.ncontent');if(!t)return;navigator.clipboard.writeText(t.textContent).then(()=>{const b=document.querySelector('.cpbtn');b.textContent='已复制 ✓';setTimeout(()=>b.textContent='复制',1500)})}
+
 function renderHist(){
   const wrap=document.getElementById('histWrap');
   wrap.querySelectorAll('.hi').forEach(el=>el.remove());
@@ -566,7 +540,7 @@ function renderRcal(){
 function showRecapForDate(s){
   const recs=getRec().filter(r=>r.date===s);
   const box=document.getElementById('noteBox');
-  if(recs.length){const r=recs[0];const old=curMode;curMode=r.mode;showNote(r.note,'📅 '+fmtD(s)+' 的复盘');curMode=old}
+  if(recs.length){const r=recs[0];const old=curMode;curMode=r.mode;showNote(r.note,'📅 '+fmtD(s)+' 的复盘');curMode=old;sizeNoteCard()}
   else{box.className='notebox empty';box.innerHTML=`<div class="nph">📝</div><div class="npht">${s===TODAY?'填写左侧，AI 帮你提炼':fmtD(s)+' 还没有复盘记录'}</div>`}
 }
 
@@ -585,8 +559,8 @@ function createGoal(){
     const tasks=splitTasks(desc||name,days);
     pending={name,desc,deadline,tasks,createdAt:TODAY,id:'g'+Date.now()};
     const de=document.getElementById('sDays');de.innerHTML='';
-    tasks.slice(0,4).forEach((t,i)=>{const div=document.createElement('div');div.className='sd';div.innerHTML=`<span class="sdl">Day${i+1}</span><span class="sdt">${t}</span>`;de.appendChild(div)});
-    if(tasks.length>4){const m=document.createElement('div');m.style.cssText='font-size:10px;color:var(--muted);margin-top:2px';m.textContent=`…还有${tasks.length-4}天`;de.appendChild(m)}
+    tasks.slice(0,5).forEach((t,i)=>{const div=document.createElement('div');div.className='sd';div.innerHTML=`<span class="sdl">Day${i+1}</span><span class="sdt">${t}</span>`;de.appendChild(div)});
+    if(tasks.length>5){const m=document.createElement('div');m.style.cssText='font-size:10px;color:var(--muted);margin-top:2px';m.textContent=`…还有${tasks.length-5}天`;de.appendChild(m)}
     document.getElementById('sPreview').style.display='';
     btn.classList.remove('loading');btn.innerHTML='<span>🤖</span> AI 拆分任务';
   },700);
@@ -601,22 +575,22 @@ function confirmGoal(){
   const goals=getGoals();goals.push(pending);saveGoals(goals);pending=null;
   document.getElementById('sPreview').style.display='none';
   document.getElementById('dn').value='';document.getElementById('dd').value='';document.getElementById('dl').value='';
-  renderGoals();renderTodayTasks();renderRcal();
+  renderGoals();renderTodayTasks();renderRcal();upDDLStat();
 }
-function delGoal(id){saveGoals(getGoals().filter(g=>g.id!==id));renderGoals();renderTodayTasks();renderRcal()}
+function delGoal(id){saveGoals(getGoals().filter(g=>g.id!==id));renderGoals();renderTodayTasks();renderRcal();upDDLStat()}
 function renderGoals(){
   const list=document.getElementById('gList');list.innerHTML='';
   const goals=getGoals();
-  if(!goals.length){list.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">还没有目标</div>';return}
+  if(!goals.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">还没有目标</div>';return}
   goals.forEach(g=>{
     const total=g.tasks.length,done=g.tasks.filter((_,i)=>getTD(g.id,i)).length,pct=total?Math.round(done/total*100):0;
     const left=Math.max(0,diffD(TODAY,g.deadline));
     const c=document.createElement('div');c.className='gc';
-    c.innerHTML=`<div class="gcname"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px">🎯 ${g.name}</span>
+    c.innerHTML=`<div class="gcname"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">🎯 ${g.name}</span>
       <button class="gcdel" onclick="delGoal('${g.id}')">✕</button></div>
-      <div class="gcmeta">截止 ${g.deadline} · 剩${left}天</div>
+      <div class="gcmeta">截止 ${g.deadline} · 还剩 ${left} 天</div>
       <div class="pbar"><div class="pbarf" style="width:${pct}%"></div></div>
-      <div class="plbl"><span>${done}/${total}</span><span>${pct}%</span></div>`;
+      <div class="plbl"><span>${done}/${total} 完成</span><span>${pct}%</span></div>`;
     list.appendChild(c);
   });
 }
@@ -629,8 +603,6 @@ function renderTodayTasks(){
     if(date===TODAY)all.push({gid:g.id,gname:g.name,idx:i,text,done:getTD(g.id,i)});
   }));
   document.getElementById('noTask').style.display=all.length?'none':'';
-  const stat=document.getElementById('ddlStat');
-  if(all.length){const done=all.filter(t=>t.done).length;stat.textContent=`${done}/${all.length}`;} else stat.textContent='';
   all.forEach(t=>{
     const div=document.createElement('div');div.className='ti'+(t.done?' done':'');
     div.innerHTML=`<div class="tck${t.done?' on':''}" onclick="toggleT('${t.gid}',${t.idx},${t.done})"></div>
@@ -639,6 +611,17 @@ function renderTodayTasks(){
       ${!t.done?`<button class="tdly" onclick="reschedule('${t.gid}')">↺</button>`:''}`;
     wrap.appendChild(div);
   });
+  upDDLStat();
+}
+function upDDLStat(){
+  const all=[];
+  getGoals().forEach(g=>g.tasks.forEach((text,i)=>{
+    const date=getTL(g.id,i)||addD(g.createdAt,i);
+    if(date===TODAY)all.push({done:getTD(g.id,i)});
+  }));
+  const stat=document.getElementById('ddlStat');
+  if(all.length){const done=all.filter(t=>t.done).length;stat.textContent=done+'/'+all.length;stat.style.display=''}
+  else stat.style.display='none';
 }
 function toggleT(gid,idx,was){setTD(gid,idx,!was);renderGoals();renderTodayTasks();renderRcal()}
 function reschedule(gid){
@@ -654,7 +637,7 @@ function reschedule(gid){
 // init
 renderHist();upStreak();renderGoals();renderRcal();renderTodayTasks();loadBg();
 const dd2=new Date();dd2.setDate(dd2.getDate()+7);document.getElementById('dl').value=ds(dd2);
-document.getElementById('ddlTxt').textContent='DDL ▾';
+document.getElementById('ddlStat').style.display='none';
 </script>
 </body>
 </html>
