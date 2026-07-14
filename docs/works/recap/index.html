@@ -132,7 +132,7 @@ input[type=date],select{height:34px;cursor:pointer}
 }
 .book:hover{transform:translateY(-8px) rotate(-1deg) scale(1.03);box-shadow:0 20px 48px rgba(0,0,0,.18)!important}
 /* glossy highlight */
-.book::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.38) 0%,rgba(255,255,255,.08) 40%,transparent 65%);z-index:1;pointer-events:none}
+.book::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.18) 45%,transparent 70%);z-index:1;pointer-events:none}
 /* noise grain for depth */
 .book::after{content:'';position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");z-index:2;pointer-events:none}
 .book-icon{font-size:22px;position:relative;z-index:3;display:block;margin-bottom:auto;line-height:1}
@@ -367,22 +367,22 @@ input[type=date],select{height:34px;cursor:pointer}
 const BOOKS = {
   intern: [
     {id:'xiaohongshu', name:'小红书', icon:'🌸',
-     bg:'linear-gradient(145deg,#f2c4ce 0%,#c9a0c0 40%,#a0b8d8 100%)',
-     shadow:'rgba(200,150,180,.35)', textColor:'rgba(80,40,60,.85)'},
+     bg:'linear-gradient(145deg,#fff0f3 0%,#fcd6e0 35%,#e8c2d8 65%,#cdd8f0 100%)',
+     shadow:'rgba(220,180,200,.28)', textColor:'rgba(110,55,75,.82)'},
     {id:'transsion',   name:'传音',   icon:'🎵',
-     bg:'linear-gradient(145deg,#b8c8e8 0%,#8fa8d0 40%,#c8d8f0 100%)',
-     shadow:'rgba(120,150,200,.35)', textColor:'rgba(40,60,100,.85)'},
+     bg:'linear-gradient(145deg,#f0f4ff 0%,#d8e4f8 35%,#b8ccee 65%,#dce8fa 100%)',
+     shadow:'rgba(140,170,220,.28)', textColor:'rgba(45,70,120,.82)'},
     {id:'benq',        name:'明基',   icon:'🖥️',
-     bg:'linear-gradient(145deg,#b8d4c0 0%,#90b8a0 40%,#c8e0c8 100%)',
-     shadow:'rgba(100,160,120,.35)', textColor:'rgba(30,70,50,.85)'},
+     bg:'linear-gradient(145deg,#f0faf2 0%,#d4edda 35%,#b0d4bc 65%,#d8eedd 100%)',
+     shadow:'rgba(120,180,140,.28)', textColor:'rgba(35,80,55,.82)'},
   ],
   research: [
     {id:'kg',          name:'图谱',   icon:'🕸️',
-     bg:'linear-gradient(145deg,#ccc0e0 0%,#a898c8 40%,#d8c8e8 100%)',
-     shadow:'rgba(150,120,190,.35)', textColor:'rgba(60,30,90,.85)'},
+     bg:'linear-gradient(145deg,#f5f0ff 0%,#e2d6f5 35%,#c8b8e8 65%,#e8dcf5 100%)',
+     shadow:'rgba(170,140,210,.28)', textColor:'rgba(65,35,100,.82)'},
     {id:'devtraj',     name:'发育轨迹', icon:'🧬',
-     bg:'linear-gradient(145deg,#e0d0b8 0%,#c8b090 40%,#e8d8c0 100%)',
-     shadow:'rgba(180,140,90,.35)', textColor:'rgba(80,55,20,.85)'},
+     bg:'linear-gradient(145deg,#fffaf0 0%,#f5e8d0 35%,#e0c8a0 65%,#f0e4cc 100%)',
+     shadow:'rgba(200,165,110,.28)', textColor:'rgba(90,60,20,.82)'},
   ]
 };
 
