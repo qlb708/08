@@ -163,13 +163,13 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .cd.sel{background:rgba(82,196,26,.14);color:var(--green);font-weight:700}
 
 /* radar */
-.radar-card{flex-shrink:0;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.radar-card{flex-shrink:0;padding:8px 14px;display:flex;flex-direction:column;gap:6px}
 .radar-wrap{display:flex;align-items:center;justify-content:center}
 
 /* achievements */
 .ach-card{flex:1;min-height:0;padding:12px 14px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
-.ach-list{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:6px}
-.ach-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:11px;background:var(--bg);border:1px solid var(--bd);flex-shrink:0}
+.ach-list{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;scrollbar-width:none}
+.ach-item{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:11px;background:var(--bg);border:1px solid var(--bd);flex-shrink:0}
 .ach-ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;font-size:14px;flex-shrink:0}
 .ach-ti{font-size:12px;font-weight:700;color:var(--text)}
 .ach-de{font-size:10.5px;color:var(--muted);margin-top:1px}
@@ -719,7 +719,7 @@ function renderCal(){
 function renderRadar(){
   let v=JSON.parse(localStorage.getItem('rv')||'null');
   if(!v){v=[.72,.88,.64,.78,.83];localStorage.setItem('rv',JSON.stringify(v))}
-  const S=190,cx=S/2,cy=S/2,R=62;
+  const S=170,cx=S/2,cy=S/2,R=56;
   const n=5,emos=['😊','😎','😤','😢','😑'],cols=['#b8f0a0','#a0d4f8','#f8c0c0','#f8e0a0','#d0d0d0'],clbls=['GOOD','SPEED','STRESS','ANGRY',''];
   const pt=(f,i)=>({x:cx+R*f*Math.sin(2*Math.PI*i/n-Math.PI/2),y:cy-R*f*Math.cos(2*Math.PI*i/n-Math.PI/2)});
   const poly=pts=>pts.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
