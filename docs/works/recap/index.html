@@ -79,7 +79,7 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .gen-btn.loading{opacity:.65;pointer-events:none}
 
 /* ─── MID COL ─── */
-.col-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.col-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;overflow:hidden}
 
 /* note */
 .note-card{flex-shrink:0;height:160px;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
@@ -123,7 +123,7 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .book-name{font-size:13px;font-weight:800}
 .book-sub{font-size:9.5px;font-weight:500;opacity:.62;margin-top:1px}
 .book-cnt{font-size:9px;font-weight:600;opacity:.48;margin-top:2px}
-.book-add{width:116px;height:138px;border-radius:15px;flex-shrink:0;cursor:pointer;border:2px dashed var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--muted);transition:all .18s;font-size:12px;font-weight:600;background:rgba(255,255,255,.55)}
+.book-add{width:96px;height:116px;border-radius:12px;flex-shrink:0;cursor:pointer;border:2px dashed var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--muted);transition:all .18s;font-size:11.5px;font-weight:600;background:rgba(255,255,255,.55)}
 .book-add:hover{border-color:var(--green);color:var(--green);background:var(--gs)}
 /* book panel */
 .book-panel{display:none;flex-direction:column;overflow:hidden;border-radius:11px;border:1.5px solid var(--bd);max-height:200px;flex-shrink:0}
@@ -234,7 +234,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
 .mtab{flex:1;padding:5px 0;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .18s;text-align:center}
 .mtab.on{background:var(--green2);color:#fff;box-shadow:0 2px 6px rgba(82,196,26,.25)}
 
-.note-ta{flex:1;width:calc(100% - 44px);height:100%;min-height:80px;resize:none;border:none;outline:none;font-size:13px;font-family:inherit;color:var(--text);line-height:1.6;background:transparent;padding:0}
+.note-ta{flex:1;width:calc(100% - 44px);height:100%;min-height:60px;resize:none;border:none;outline:none;font-size:12.5px;font-family:inherit;color:var(--text);line-height:1.55;background:transparent;padding:0}
 .note-ta::placeholder{color:var(--muted)}
 </style>
 </head>
@@ -570,10 +570,35 @@ function showNote(note){
 }
 
 // shelf
+
+function promptNewBook(mode){
+  const name = prompt('新笔记本名称：');
+  if(!name||!name.trim()) return;
+  // 生成 id
+  const id = 'custom_'+Date.now();
+  const icons = ['📒','📔','📕','📗','📘','📙','🗒'];
+  const icon = icons[Math.floor(Math.random()*icons.length)];
+  const colors = [
+    'linear-gradient(145deg,#fff0f4,#fcd8e4,#f0c8d8)',
+    'linear-gradient(145deg,#f0f5ff,#d8e6fa,#c0d0f0)',
+    'linear-gradient(145deg,#f0fbf4,#d4eddc,#b8dcc8)',
+    'linear-gradient(145deg,#f5f0ff,#e4d8f8,#d0c0f0)',
+    'linear-gradient(145deg,#fffbf0,#f5e8d0,#e8d0a8)',
+  ];
+  const bg = colors[Math.floor(Math.random()*colors.length)];
+  const newBook = {id, name:name.trim(), icon, sub:'自定义', bg, tc:'#666'};
+  // 存到 localStorage
+  const key = 'custom_books_'+mode;
+  const existing = JSON.parse(localStorage.getItem(key)||'[]');
+  existing.push(newBook);
+  localStorage.setItem(key, JSON.stringify(existing));
+  renderShelf();
+}
+
 function renderShelf(){
   const sc=document.getElementById('shelfScroll');sc.innerHTML='';
   ['intern','research'].forEach(cat=>{
-    const sec=document.createElement('div');sec.className='shelf-sec';
+    const sec=document.createElement('div');sec.className='shelf-sec';sec._mode=cat;
     const lbl=document.createElement('div');lbl.className='shelf-lbl';lbl.textContent=cat==='intern'?'实习':'科研';sec.appendChild(lbl);
     const row=document.createElement('div');row.className='books-row';
     BOOKS[cat].forEach(b=>{
@@ -586,6 +611,7 @@ function renderShelf(){
     });
     const add=document.createElement('div');add.className='book-add';
     add.innerHTML='<div style="font-size:20px;font-weight:300">+</div><div>新建笔记本</div>';
+    add.onclick=()=>promptNewBook(sec._mode);
     row.appendChild(add);sec.appendChild(row);
     const panel=document.createElement('div');panel.className='book-panel';sec.appendChild(panel);
     sc.appendChild(sec);
