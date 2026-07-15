@@ -55,11 +55,11 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .col-l{width:clamp(220px,18vw,280px);flex-shrink:0;display:flex;flex-direction:column;gap:clamp(7px,0.9vh,12px);overflow:hidden}
 
 /* mini cards */
-.mc{background:var(--white);border-radius:11px;box-shadow:var(--sh);padding:clamp(7px,0.9vh,11px) clamp(10px,1vw,15px);flex:1;min-height:0;display:flex;flex-direction:column;gap:4px}
+.mc{background:var(--white);border-radius:11px;box-shadow:var(--sh);padding:clamp(7px,0.9vh,11px) clamp(10px,1vw,15px);display:flex;flex-direction:column;gap:4px}
 .mc-title{font-size:11.5px;font-weight:700;color:var(--t2);display:flex;align-items:center;gap:4px;margin-bottom:5px}
 .mc-row{display:flex;align-items:flex-start;gap:8px}
 .mc-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f9c5d5,#f7a8c4);display:flex;align-items:center;font-size:12px;flex-shrink:0}
-.mc-ta{flex:1;min-height:0;border:none;border-radius:8px;padding:6px 8px;font-size:12.5px;color:var(--text);background:#fafcfa;font-family:inherit;line-height:1.5;resize:none;transition:background .18s;outline:none;width:100%}
+.mc-ta{flex:1;min-height:0;border:none;border-radius:8px;padding:6px 8px;font-size:12.5px;color:var(--text);background:#fafcfa;font-family:inherit;line-height:1.5;resize:none;transition:background .18s;outline:none;width:100%;display:block}
 .mc-ta:focus{background:#fff;box-shadow:0 0 0 2px rgba(82,196,26,.16)}
 .mc-foot{display:flex;align-items:center;margin-top:4px}
 
@@ -370,16 +370,16 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       <button class="mtab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
     </div>
       <!-- 实习卡片组 -->
-      <div id="cards-intern" style="display:flex;flex-direction:column;gap:clamp(7px,0.9vh,12px);flex:1;min-height:0">
-        <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
+      <div id="cards-intern" style="display:flex;flex-direction:column;gap:clamp(7px,0.9vh,12px);flex:1;min-height:0;overflow:hidden">
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
           <textarea class="mc-ta" id="i-did" placeholder="跟导师做了用户访谈…"></textarea></div>
-        <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
           <textarea class="mc-ta" id="i-learned" placeholder="发现用户在意流程顺不顺…"></textarea></div>
-        <div class="mc"><div class="mc-title">😰 遇到的卡点</div>
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">😰 遇到的卡点</div>
           <textarea class="mc-ta" id="i-block" placeholder="数据权限还没申请到…"></textarea></div>
-        <div class="mc"><div class="mc-title">🎯 明天要做</div>
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">🎯 明天要做</div>
           <textarea class="mc-ta" id="i-next" placeholder="整理成结构化需求文档…"></textarea></div>
-        <div class="mc" style="padding:6px 10px">
+        <div class="mc" style="padding:6px 10px;flex:0 0 auto">
           <div class="erow"><span class="elbl">今日状态</span>
             <div class="edots" id="edots">
               <button class="edot" data-v="1" onclick="setE(1)">😊</button>
@@ -393,18 +393,18 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       </div>
 
       <!-- 科研卡片组 -->
-      <div id="cards-research" style="display:none;flex-direction:column;gap:clamp(7px,0.9vh,12px);flex:1;min-height:0">
-        <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
+      <div id="cards-research" style="display:none;flex-direction:column;gap:clamp(7px,0.9vh,12px);flex:1;min-height:0;overflow:hidden">
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
           <textarea class="mc-ta" id="r-recap" placeholder="今天的主要进展和感受…"></textarea></div>
-        <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
           <textarea class="mc-ta" id="r-learned" placeholder="发现baseline在长文本退化…"></textarea></div>
-        <div class="mc"><div class="mc-title">🧪 今天推进了什么</div>
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">🧪 今天推进了什么</div>
           <textarea class="mc-ta" id="r-did" placeholder="跑完了第一组对照实验…"></textarea></div>
-        <div class="mc"><div class="mc-title">🔍 新发现 / 新想法</div>
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">🔍 新发现 / 新想法</div>
           <textarea class="mc-ta" id="r-found" placeholder="发现一个有趣的规律…"></textarea></div>
-        <div class="mc"><div class="mc-title">😰 遇到的卡点</div>
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">😰 遇到的卡点</div>
           <textarea class="mc-ta" id="r-block" placeholder="模型收敛慢，学习率需要调整…"></textarea></div>
-        <div class="mc"><div class="mc-title">🎯 明天要做</div>
+        <div class="mc" style="flex:1;min-height:0"><div class="mc-title">🎯 明天要做</div>
           <textarea class="mc-ta" id="r-next" placeholder="跑第二组实验…"></textarea></div>
       </div>
 
