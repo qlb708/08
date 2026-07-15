@@ -69,8 +69,8 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 /* erow */
 .erow{display:flex;align-items:center;gap:6px}
 .elbl{font-size:11.5px;color:var(--muted)}
-.edots{display:flex;gap:4px}
-.edot{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bd);cursor:pointer;font-size:13px;display:flex;align-items:center;background:var(--white);transition:all .14s}
+.edots{display:flex;gap:4px;align-items:center}
+.edot{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bd);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;background:var(--white);transition:all .14s}
 .edot:hover{transform:scale(1.15)}
 .edot.on{border-color:var(--green);background:var(--gs)}
 /* gen btn */
@@ -119,10 +119,10 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .book:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,.13)}
 .book-sh{position:absolute;inset:0;background:linear-gradient(148deg,rgba(255,255,255,.58) 0%,rgba(255,255,255,.07) 48%,transparent 70%);pointer-events:none;border-radius:15px}
 .book-dot{position:absolute;top:9px;right:9px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5)}
-.book-icon{font-size:36px;line-height:1;margin-bottom:5px}
-.book-name{font-size:13px;font-weight:800}
-.book-sub{font-size:9.5px;font-weight:500;opacity:.62;margin-top:1px}
-.book-cnt{font-size:9px;font-weight:600;opacity:.48;margin-top:2px}
+.book-icon{font-size:22px;line-height:1.2;text-align:center;width:100%;display:block}
+.book-name{font-size:10px;font-weight:700;text-align:center;width:100%}
+.book-sub{font-size:9px;font-weight:500;opacity:.62;margin-top:1px;text-align:center;width:100%}
+.book-cnt{font-size:9px;font-weight:600;opacity:.48;margin-top:2px;text-align:center;width:100%}
 .book-add{width:85px;height:104px;border-radius:11px;flex-shrink:0;cursor:pointer;border:2px dashed var(--bd);display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);transition:all .18s;font-size:11px;font-weight:600;background:rgba(255,255,255,.55)}
 .book-add:hover{border-color:var(--green);color:var(--green);background:var(--gs)}
 /* book panel */
@@ -152,8 +152,8 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .cal-nav button{width:22px;height:22px;border:1px solid var(--bd);background:var(--white);border-radius:7px;cursor:pointer;font-size:14px;color:var(--muted);display:flex;align-items:center;transition:all .13s}
 .cal-nav button:hover{background:var(--gs);color:var(--green)}
 .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cw{font-size:9.5px;font-weight:700;color:var(--muted);text-align:center;padding:1px 0}
-.cd{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;font-size:13.5px;cursor:pointer;position:relative;transition:all .12s;color:var(--t2);font-weight:500;z-index:1;user-select:none}
+.cw{font-size:9.5px;font-weight:700;color:var(--muted);text-align:center;padding:1px 0;display:flex;align-items:center;justify-content:center;aspect-ratio:1}
+.cd{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13.5px;cursor:pointer;position:relative;transition:all .12s;color:var(--t2);font-weight:500;z-index:1;user-select:none}
 .cd:hover{background:var(--gs)}
 .cd.om{color:rgba(159,170,184,.28);cursor:default}.cd.om:hover{background:transparent}
 .cd.today{background:var(--green2);color:#fff;font-weight:800;border-radius:50%}.cd.today:hover{background:var(--green2)}
