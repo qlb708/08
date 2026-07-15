@@ -244,9 +244,100 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
 .bk-inline-btns button{flex:1;padding:3px 0;border:none;border-radius:6px;font-size:11.5px;font-weight:600;cursor:pointer}
 .bk-inline-confirm{background:var(--green2);color:#fff}
 .bk-inline-cancel{background:var(--bg);color:var(--muted)}
+
+/* ===== 笔记本全屏内页 ===== */
+#bookPage{display:none;position:absolute;inset:0;background:var(--bg);z-index:200;flex-direction:column;overflow:hidden}
+#bookPage.open{display:flex}
+.bp-topbar{display:flex;align-items:center;gap:12px;padding:10px 28px;background:var(--white);border-bottom:1px solid var(--bd);flex-shrink:0}
+.bp-back{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;border:1.5px solid var(--bd);background:var(--bg);cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:all .14s}
+.bp-back:hover{border-color:var(--green);color:var(--green)}
+.bp-book-icon{font-size:20px}
+.bp-book-name{font-size:17px;font-weight:800;color:var(--text)}
+.bp-book-sub{font-size:12px;color:var(--muted);margin-left:4px}
+.bp-actions{margin-left:auto;display:flex;gap:8px}
+.bp-act-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--bd);background:var(--white);cursor:pointer;font-size:12.5px;font-weight:600;color:var(--t2);transition:all .14s}
+.bp-act-btn:hover{border-color:var(--green);color:var(--green);background:var(--gs)}
+.bp-act-btn.primary{background:var(--green2);color:#fff;border-color:var(--green2)}
+.bp-act-btn.primary:hover{background:#3da818}
+.bp-body-wrap{flex:1;min-height:0;display:flex;gap:0;overflow:hidden}
+/* 左侧笔记列表 */
+.bp-list-col{width:320px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid var(--bd);background:var(--white)}
+.bp-list-hd{padding:14px 18px 10px;flex-shrink:0;display:flex;align-items:center;gap:8px}
+.bp-list-hd-title{font-size:13px;font-weight:700;flex:1}
+.bp-new-btn{padding:4px 12px;border-radius:14px;background:var(--green2);color:#fff;border:none;cursor:pointer;font-size:12px;font-weight:700}
+.bp-entries{flex:1;overflow-y:auto;padding:0 10px 10px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;scrollbar-color:rgba(82,196,26,.2) transparent}
+.bp-entry2{padding:10px 12px;border-radius:10px;border:1.5px solid var(--bd);background:var(--bg);cursor:pointer;transition:all .14s;flex-shrink:0}
+.bp-entry2:hover,.bp-entry2.active{border-color:var(--green);background:var(--gs)}
+.bp-entry2-date{font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.bp-entry2-pre{font-size:13px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bp-del2{margin-left:auto;font-size:10px;border:none;background:none;cursor:pointer;color:rgba(154,165,180,.5);padding:2px 5px;border-radius:4px;transition:all .13s}
+.bp-del2:hover{background:#fee2e2;color:var(--red)}
+.bp-empty2{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 20px;color:var(--muted);font-size:13px;text-align:center}
+/* 右侧内容 */
+.bp-content-col{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.bp-viewer{flex:1;overflow-y:auto;padding:24px 32px;scrollbar-width:thin}
+.bp-viewer-date{font-size:12px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.bp-viewer-text{font-size:15px;line-height:1.9;color:var(--text);white-space:pre-wrap;min-height:80px}
+.bp-viewer-empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:80px 20px;color:var(--muted);font-size:14px;text-align:center}
+/* AI 整理面板 */
+.bp-ai-panel{border-top:1px solid var(--bd);flex-shrink:0;padding:14px 28px;background:var(--white);display:flex;flex-direction:column;gap:10px}
+.bp-ai-tabs{display:flex;gap:6px}
+.bp-ai-tab{padding:4px 13px;border-radius:14px;border:1.5px solid var(--bd);background:var(--bg);cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);transition:all .14s}
+.bp-ai-tab.on{background:var(--green2);color:#fff;border-color:var(--green2)}
+.bp-ai-result{background:var(--bg);border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.8;color:var(--text);min-height:60px;max-height:180px;overflow-y:auto;white-space:pre-wrap;display:none;scrollbar-width:thin}
+.bp-ai-result.show{display:block}
+.bp-ai-btns{display:flex;gap:8px;align-items:center}
+.bp-ai-run{padding:5px 16px;border-radius:16px;background:var(--green2);color:#fff;border:none;cursor:pointer;font-size:12.5px;font-weight:700}
+.bp-ai-run:hover{background:#3da818}
+.bp-export-btn{padding:5px 14px;border-radius:16px;border:1.5px solid var(--bd);background:var(--white);cursor:pointer;font-size:12px;font-weight:600;color:var(--t2)}
+.bp-export-btn:hover{border-color:var(--green);color:var(--green)}
 </style>
 </head>
 <body>
+
+  <!-- ===== 笔记本全屏内页 ===== -->
+  <div id="bookPage">
+    <div class="bp-topbar">
+      <button class="bp-back" onclick="closeBookPage()">← 书架</button>
+      <span class="bp-book-icon" id="bpIcon">📒</span>
+      <span class="bp-book-name" id="bpName">笔记本</span>
+      <span class="bp-book-sub" id="bpSub"></span>
+      <div class="bp-actions">
+        <button class="bp-act-btn" onclick="exportBook('md')">⬇ 导出 .md</button>
+        <button class="bp-act-btn" onclick="exportBook('txt')">⬇ 导出 .txt</button>
+      </div>
+    </div>
+    <div class="bp-body-wrap">
+      <!-- 左列：笔记条目 -->
+      <div class="bp-list-col">
+        <div class="bp-list-hd">
+          <span class="bp-list-hd-title">笔记记录</span>
+          <button class="bp-new-btn" onclick="bpNewEntry()">+ 新建笔记</button>
+        </div>
+        <div class="bp-entries" id="bpEntries"></div>
+      </div>
+      <!-- 右列：内容+AI -->
+      <div class="bp-content-col">
+        <div class="bp-viewer" id="bpViewer">
+          <div class="bp-viewer-empty"><span style="font-size:32px">📖</span><span>选择左侧笔记查看详情</span></div>
+        </div>
+        <div class="bp-ai-panel">
+          <div class="bp-ai-tabs">
+            <button class="bp-ai-tab on" data-t="week" onclick="bpSelectAI('week',this)">📅 周记</button>
+            <button class="bp-ai-tab" data-t="month" onclick="bpSelectAI('month',this)">📆 月记</button>
+            <button class="bp-ai-tab" data-t="project" onclick="bpSelectAI('project',this)">🚀 项目总结</button>
+          </div>
+          <div class="bp-ai-btns">
+            <button class="bp-ai-run" onclick="bpRunAI()">✨ AI 整理</button>
+            <button class="bp-export-btn" onclick="exportAIResult()">导出整理结果</button>
+            <span id="bpAIStatus" style="font-size:11.5px;color:var(--muted)"></span>
+          </div>
+          <div class="bp-ai-result" id="bpAIResult"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 <!-- RIGHT -->
 <div class="right">
@@ -658,11 +749,21 @@ function renderShelf(){
   });
 }
 function openBook(b,sec){
-  if(curBook&&curBook.id===b.id){closeBook();return}
-  document.querySelectorAll('.book-panel.open').forEach(p=>p.classList.remove('open'));
   curBook=b;
-  const panel=sec.querySelector('.book-panel');panel.classList.add('open');
-  renderBP(b,panel);
+  // 打开全屏内页
+  const pg=document.getElementById('bookPage');
+  pg.classList.add('open');
+  document.getElementById('bpIcon').textContent=b.icon;
+  document.getElementById('bpName').textContent=b.name;
+  document.getElementById('bpSub').textContent=b.sub||'';
+  // 设置顶部颜色主题
+  pg.querySelector('.bp-topbar').style.background=b.bg||'var(--white)';
+  bpCurEntry=null;
+  bpAIMode='week';
+  document.getElementById('bpAIResult').classList.remove('show');
+  document.getElementById('bpAIStatus').textContent='';
+  document.querySelectorAll('.bp-ai-tab').forEach((t,i)=>t.classList.toggle('on',i===0));
+  renderBPList();
 }
 function closeBook(){
   curBook=null;
@@ -800,6 +901,146 @@ function reschedule(gid){
 // init
 renderShelf();upStreak();renderStats();renderCal();renderRadar();renderDDL();
 const dd2=new Date();dd2.setDate(dd2.getDate()+7);document.getElementById('dl').value=ds(dd2);
+
+// ===== 笔记本内页 JS =====
+let bpCurBook=null,bpCurEntry=null,bpAIMode='week';
+
+function closeBookPage(){
+  document.getElementById('bookPage').classList.remove('open');
+}
+
+function renderBPList(){
+  const b=curBook; if(!b) return;
+  const recs=getRec(b.id);
+  const el=document.getElementById('bpEntries');
+  el.innerHTML='';
+  if(!recs.length){
+    el.innerHTML='<div class="bp-empty2"><span style="font-size:28px">📝</span><span>还没有笔记<br>去填写成长复盘后提炼吧</span></div>';
+    return;
+  }
+  recs.slice().reverse().forEach((r,ri)=>{
+    const i=recs.length-1-ri;
+    const div=document.createElement('div');
+    div.className='bp-entry2'+(bpCurEntry===i?' active':'');
+    div.innerHTML=`<div class="bp-entry2-date"><span>${r.date}</span><span>${EE[r.energy]||''}</span><button class="bp-del2" onclick="bpDelEntry(${i},event)">✕</button></div><div class="bp-entry2-pre">${r.note.replace(/</g,'&lt;').replace(/\n/g,' ')}</div>`;
+    div.onclick=(e)=>{if(e.target.classList.contains('bp-del2'))return;bpCurEntry=i;renderBPList();renderBPViewer(r);};
+    el.appendChild(div);
+  });
+}
+
+function renderBPViewer(r){
+  const el=document.getElementById('bpViewer');
+  el.innerHTML=`<div class="bp-viewer-date"><span>${r.date}</span><span style="font-size:14px">${EE[r.energy]||''}</span></div><div class="bp-viewer-text">${r.note.replace(/</g,'&lt;')}</div>`;
+}
+
+function bpDelEntry(i,e){
+  e.stopPropagation();
+  if(!curBook)return;
+  const recs=getRec(curBook.id);
+  recs.splice(i,1);
+  localStorage.setItem('bk_'+curBook.id,JSON.stringify(recs));
+  if(bpCurEntry===i)bpCurEntry=null;
+  renderBPList();
+  document.getElementById('bpViewer').innerHTML='<div class="bp-viewer-empty"><span style="font-size:32px">📖</span><span>选择左侧笔记查看详情</span></div>';
+  renderShelf();renderStats();
+}
+
+function bpNewEntry(){
+  if(!curBook)return;
+  const note=prompt('输入笔记内容：');
+  if(!note||!note.trim())return;
+  const recs=getRec(curBook.id);
+  recs.push({date:today(),note:note.trim(),energy:3,mode:curMode});
+  localStorage.setItem('bk_'+curBook.id,JSON.stringify(recs));
+  bpCurEntry=recs.length-1;
+  renderBPList();
+  renderBPViewer(recs[recs.length-1]);
+  renderShelf();renderStats();
+}
+
+function bpSelectAI(t,btn){
+  bpAIMode=t;
+  document.querySelectorAll('.bp-ai-tab').forEach(b=>b.classList.toggle('on',b===btn));
+}
+
+function bpRunAI(){
+  if(!curBook)return;
+  const recs=getRec(curBook.id);
+  if(!recs.length){alert('还没有笔记，请先填写成长复盘并提炼');return;}
+  const statusEl=document.getElementById('bpAIStatus');
+  const resultEl=document.getElementById('bpAIResult');
+  statusEl.textContent='整理中…';
+  resultEl.classList.remove('show');
+  
+  const now=new Date();
+  let filtered=recs;
+  if(bpAIMode==='week'){
+    const weekAgo=new Date(now-7*864e5);
+    filtered=recs.filter(r=>new Date(r.date)>=weekAgo);
+  } else if(bpAIMode==='month'){
+    const monthAgo=new Date(now-30*864e5);
+    filtered=recs.filter(r=>new Date(r.date)>=monthAgo);
+  }
+  if(!filtered.length){statusEl.textContent='该时间段内暂无笔记';return;}
+  
+  const modeLabel={'week':'本周','month':'本月','project':'项目'}[bpAIMode];
+  const combined=filtered.map(r=>`【${r.date}】${r.note}`).join('\n\n');
+  
+  // 模拟AI整理（实际可接入API）
+  const lines=filtered.map(r=>r.note).join(' ');
+  const sentences=lines.split(/[。！？.!?]/).filter(s=>s.trim().length>5).slice(0,6);
+  
+  let result='';
+  if(bpAIMode==='project'){
+    result=`📌 ${curBook.name} · 项目总结\n\n`;
+    result+=`🗂 记录周期：${filtered[0].date} → ${filtered[filtered.length-1].date}\n`;
+    result+=`📝 共 ${filtered.length} 条笔记\n\n`;
+    result+=`💡 核心收获：\n${sentences.slice(0,3).map((s,i)=>`${i+1}. ${s.trim()}。`).join('\n')}\n\n`;
+    result+=`🚀 成长轨迹：\n持续记录了 ${filtered.length} 次，保持了良好的复盘习惯。`;
+  } else {
+    result=`📅 ${modeLabel}记录 · ${curBook.name}\n\n`;
+    result+=`🗓 时间：${filtered[0].date} → ${filtered[filtered.length-1].date}\n`;
+    result+=`📊 共完成 ${filtered.length} 次复盘\n\n`;
+    result+=`✅ 主要进展：\n${sentences.slice(0,4).map((s,i)=>`• ${s.trim()}。`).join('\n')}\n\n`;
+    result+=`🌱 持续保持记录的好习惯！`;
+  }
+  
+  setTimeout(()=>{
+    statusEl.textContent=`已整理 ${filtered.length} 条笔记`;
+    resultEl.textContent=result;
+    resultEl.classList.add('show');
+  }, 600);
+}
+
+function exportAIResult(){
+  const res=document.getElementById('bpAIResult').textContent;
+  if(!res||!document.getElementById('bpAIResult').classList.contains('show')){alert('请先点击 AI 整理');return;}
+  const blob=new Blob([res],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(curBook?curBook.name:'笔记')+'_AI整理.txt';
+  a.click();
+}
+
+function exportBook(fmt){
+  if(!curBook)return;
+  const recs=getRec(curBook.id);
+  if(!recs.length){alert('暂无笔记');return;}
+  let content='';
+  if(fmt==='md'){
+    content=`# ${curBook.icon} ${curBook.name}\n> ${curBook.sub||''}\n\n`;
+    recs.forEach(r=>{content+=`## ${r.date} ${EE[r.energy]||''}\n\n${r.note}\n\n---\n\n`;});
+  } else {
+    content=`${curBook.name}\n${'='.repeat(20)}\n\n`;
+    recs.forEach(r=>{content+=`[${r.date}] ${EE[r.energy]||''}\n${r.note}\n\n`;});
+  }
+  const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=curBook.name+'_笔记.'+fmt;
+  a.click();
+}
+
 </script>
 </body>
 </html>
