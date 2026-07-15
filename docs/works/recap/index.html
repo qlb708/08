@@ -1,4 +1,4 @@
-<!-- recap_v6 -->
+<!-- recap_v7 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -7,226 +7,234 @@
 <title>Growth Journal</title>
 <style>
 :root{
-  --bg:#f7f9f4;--white:#fff;--green:#4CAF50;--green2:#52c41a;--green-s:#e8f5e9;--green-m:#a5d6a7;
-  --orange:#ff8c42;--orange-s:#fff3e8;--purple:#7c5cf7;--purple-s:#f0edff;
-  --yellow:#f7b731;--yellow-s:#fffbe6;--red:#ef4444;
-  --text:#1a2540;--text2:#4a5568;--muted:#9aa5b4;
-  --border:#e8edf2;--shadow:0 2px 12px rgba(0,0,0,.06);--shadow-h:0 8px 28px rgba(0,0,0,.11);
-  --r:20px;
+  --bg:#faf8f2;--white:#fff;
+  --green:#52c41a;--green2:#4CAF50;--green-s:#f0fae8;--green-m:#b7eb8f;
+  --orange:#ff8c42;--orange-s:#fff4ec;
+  --purple:#9b6cf7;--purple-s:#f3efff;
+  --yellow:#f7b731;--yellow-s:#fffae6;
+  --blue:#6ab4f5;--blue-s:#eef7ff;
+  --pink:#f97fa8;--pink-s:#fff0f5;
+  --red:#ef4444;--text:#1a1a2e;--text2:#555f7a;--muted:#aab4c4;
+  --border:#eceae4;--card-shadow:0 2px 14px rgba(0,0,0,.055);
+  --r:18px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
 body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:var(--text);background:var(--bg);display:flex;flex-direction:row}
 
 /* SIDEBAR */
-.sidebar{width:56px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px;z-index:10}
-.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--green2),var(--green));display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:900;margin-bottom:8px;box-shadow:0 3px 10px rgba(82,196,26,.3)}
-.sbi{width:40px;height:40px;border-radius:12px;border:none;background:transparent;cursor:pointer;font-size:19px;display:flex;align-items:center;justify-content:center;transition:background .18s;color:var(--muted)}
-.sbi:hover{background:var(--green-s)}
+.sb{width:64px;flex-shrink:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:14px 0 14px;gap:4px;border-right:1px solid var(--border)}
+.sb-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#8de86a,var(--green2));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:900;margin-bottom:10px;box-shadow:0 3px 10px rgba(82,196,26,.28)}
+.sbi{width:42px;height:42px;border-radius:14px;border:none;background:transparent;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:background .15s;color:var(--muted);position:relative}
+.sbi:hover{background:rgba(82,196,26,.10)}
 .sbi.on{background:var(--green-s);color:var(--green)}
+.sbi.on::before{content:'';position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:3px;height:22px;border-radius:0 3px 3px 0;background:var(--green)}
 .sb-bot{margin-top:auto}
 
-/* RIGHT SIDE */
-.right{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+/* RIGHT */
+.right{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
 
-/* HEADER */
-.header{flex-shrink:0;height:60px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px}
-.h-brand{display:flex;flex-direction:column;gap:1px}
-.h-title{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.01em}
-.h-sub{font-size:11px;color:var(--muted)}
-.h-tabs{display:flex;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:3px;margin:0 auto}
-.htab{padding:5px 18px;border:none;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
-.htab.on{background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(76,175,80,.28)}
-.streak{display:flex;align-items:center;gap:5px;background:var(--orange-s);border:1px solid rgba(255,140,66,.2);border-radius:99px;padding:5px 13px;font-size:13px;font-weight:700;color:var(--orange);white-space:nowrap}
-.new-btn{display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--green2),var(--green));color:#fff;border:none;border-radius:99px;padding:7px 16px;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(76,175,80,.28);transition:transform .15s;white-space:nowrap}
-.new-btn:hover{transform:translateY(-1px)}
-.bell{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .15s}
-.bell:hover{background:var(--green-s);color:var(--green)}
+/* TOPBAR */
+.topbar{flex-shrink:0;height:58px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:14px}
+.tb-brand{display:flex;align-items:center;gap:8px}
+.tb-icon{font-size:22px;color:var(--yellow)}
+.tb-texts{}
+.tb-title{font-size:16px;font-weight:800;color:var(--text);line-height:1.2}
+.tb-sub{font-size:10.5px;color:var(--muted)}
+.tb-tabs{display:flex;gap:2px;margin:0 auto;background:var(--white);border:1px solid var(--border);border-radius:99px;padding:4px}
+.ttab{padding:5px 22px;border:none;border-radius:99px;font-size:13.5px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .18s;display:flex;align-items:center;gap:5px}
+.ttab.on{background:var(--green2);color:#fff;box-shadow:0 2px 8px rgba(76,175,80,.28)}
+.tb-right{display:flex;align-items:center;gap:10px}
+.streak-pill{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--orange);background:var(--orange-s);border:1px solid rgba(255,140,66,.18);border-radius:99px;padding:5px 14px;white-space:nowrap}
+.new-task-btn{display:flex;align-items:center;gap:6px;background:var(--green2);color:#fff;border:none;border-radius:99px;padding:7px 18px;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(76,175,80,.3);transition:transform .15s;white-space:nowrap}
+.new-task-btn:hover{transform:translateY(-1px)}
+.bell-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;transition:all .15s}
+.bell-btn::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--white)}
+.bell-btn:hover{background:var(--green-s)}
 
-/* MAIN */
-.main{flex:1;min-height:0;display:flex;padding:16px;gap:14px;overflow:hidden}
+/* MAIN 3 COLUMNS */
+.main{flex:1;min-height:0;display:flex;padding:14px 16px;gap:12px;overflow:hidden}
 
-/* CARD */
-.card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);display:flex;flex-direction:column}
-.card.grow{flex:1;min-height:0;overflow:hidden}
-.cp{padding:18px 20px;gap:12px}
+/* CARD base */
+.card{background:var(--white);border-radius:var(--r);box-shadow:var(--card-shadow);display:flex;flex-direction:column;flex-shrink:0}
 
-/* LEFT COL */
-.col-l{width:268px;flex-shrink:0;display:flex;flex-direction:column}
-.col-l .card{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:18px 18px 0}
-.form-inner{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-bottom:8px;scrollbar-width:thin;scrollbar-color:rgba(76,175,80,.2) transparent}
-.sec-title{font-size:12px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px}
-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 11px;font-size:13.5px;color:var(--text);background:#fafcfa;font-family:inherit;line-height:1.55;resize:none;transition:border-color .2s,background .2s}
-textarea:focus{outline:none;border-color:rgba(76,175,80,.4);background:#fff;box-shadow:0 0 0 3px rgba(76,175,80,.07)}
-textarea.h3{height:64px}
-textarea.h2{height:48px}
-.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green2),var(--green));display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;flex-shrink:0}
-.user-row{display:flex;align-items:center;gap:8px}
-.utime{font-size:11px;color:var(--muted);margin-left:auto}
-.erow{display:flex;align-items:center;gap:6px}
+/* ═══ LEFT COL ═══ */
+.col-l{width:310px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.mini-card{background:var(--white);border-radius:14px;box-shadow:var(--card-shadow);padding:12px 14px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.mc-title{font-size:12px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px}
+.mc-row{display:flex;align-items:flex-start;gap:9px}
+.mc-avatar{width:30px;height:30px;border-radius:50%;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#f9c5d5,#f7a8c4);display:flex;align-items:center;justify-content:center;font-size:13px}
+.mc-text{flex:1;font-size:13px;color:var(--text2);line-height:1.5}
+.mc-time{font-size:10.5px;color:var(--muted);margin-top:2px}
+.mc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.mc-tag{font-size:10px;font-weight:600;background:var(--green-s);color:var(--green);padding:2px 8px;border-radius:99px}
+.mc-time2{font-size:10.5px;color:var(--muted)}
+/* sparkline */
+.sparkline{height:36px;width:100%;margin-top:2px}
+/* textarea areas */
+textarea{width:100%;border:none;border-radius:10px;padding:8px 10px;font-size:13px;color:var(--text);background:#fafcfa;font-family:inherit;line-height:1.55;resize:none;transition:background .2s;outline:none}
+textarea:focus{background:#fff;box-shadow:0 0 0 2px rgba(82,196,26,.18)}
+.l-bottom{flex-shrink:0;display:flex;flex-direction:column;gap:8px}
+.erow{display:flex;align-items:center;gap:7px;padding:2px 0}
 .elbl{font-size:12px;color:var(--muted)}
-.edots{display:flex;gap:4px}
-.edot{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;background:#fafcfa;transition:all .15s}
+.edots{display:flex;gap:5px}
+.edot{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;background:var(--white);transition:all .15s}
 .edot:hover{transform:scale(1.15)}
 .edot.on{border-color:var(--green);background:var(--green-s)}
-.gen-btn-wrap{flex-shrink:0;padding:12px 0 14px;background:var(--white)}
-.gen-btn{width:100%;padding:11px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--green2),var(--green));color:#fff;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 14px rgba(76,175,80,.3);transition:transform .15s}
+.gen-btn{width:100%;padding:12px;border:none;border-radius:14px;background:linear-gradient(90deg,#8de86a,var(--green2),#3da012);color:#fff;font-size:14.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 16px rgba(76,175,80,.32);transition:transform .15s;letter-spacing:.01em}
 .gen-btn:hover{transform:translateY(-1.5px)}
 .gen-btn.loading{opacity:.65;cursor:not-allowed;pointer-events:none}
 
-/* MID COL */
-.col-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+/* ═══ MID COL ═══ */
+.col-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:11px;overflow:hidden}
 
 /* note card */
-.note-card{flex-shrink:0;height:180px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
-.note-head{display:flex;align-items:center;gap:8px}
-.note-lbl{font-size:13px;font-weight:700;color:var(--text)}
-.note-btn{margin-left:auto;width:34px;height:34px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--green2),var(--green));color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(76,175,80,.28);transition:transform .15s}
-.note-btn:hover{transform:scale(1.1)}
-.note-body{flex:1;min-height:0;overflow:hidden;border-radius:12px;background:#f7faf7;border:1.5px solid rgba(76,175,80,.1);display:flex;align-items:center;justify-content:center;position:relative}
-.note-empty{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted)}
-.note-emoji{font-size:36px;opacity:.5}
-.note-hint{font-size:12px;opacity:.6}
-.note-content{width:100%;height:100%;overflow-y:auto;padding:10px 14px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;scrollbar-width:thin}
+.note-card{padding:14px 18px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;height:176px}
+.note-head{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.note-lbl{font-size:13.5px;font-weight:700}
+.note-body{flex:1;min-height:0;border-radius:12px;background:#fafcf7;border:1.5px solid rgba(82,196,26,.08);display:flex;align-items:center;justify-content:flex-start;padding:10px 14px;position:relative;overflow:hidden}
+.note-placeholder{font-size:13px;color:var(--muted);flex:1}
+.note-plant{position:absolute;right:80px;bottom:0;font-size:56px;line-height:1;opacity:.45;pointer-events:none}
+.note-genbtn{position:absolute;right:16px;bottom:16px;width:42px;height:42px;border-radius:50%;border:none;background:linear-gradient(135deg,#8de86a,var(--green2));color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(76,175,80,.32);transition:transform .15s}
+.note-genbtn:hover{transform:scale(1.1)}
+.note-content{font-size:12.5px;line-height:1.8;color:var(--text);white-space:pre-wrap;overflow-y:auto;flex:1;max-height:100%;scrollbar-width:thin}
 .note-tag{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--green-s);color:var(--green)}
-.note-copy{position:absolute;bottom:8px;right:8px;font-size:11px;padding:3px 10px;border-radius:8px;border:1px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;font-weight:600;transition:all .15s}
-.note-copy:hover{background:var(--green-s);color:var(--green)}
 
 /* stats card */
-.stats-card{flex-shrink:0;height:158px;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
-.stats-head{display:flex;align-items:center;gap:6px}
-.stats-lbl{font-size:13px;font-weight:700;color:var(--text)}
-.stats-period{margin-left:auto;font-size:11.5px;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px 9px;cursor:pointer}
-.stats-grid{display:flex;gap:8px;flex:1}
-.stat-item{flex:1;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
-.stat-icon{font-size:16px}
-.stat-val{font-size:22px;font-weight:800;color:var(--text);line-height:1}
-.stat-name{font-size:10.5px;color:var(--text2);font-weight:600}
-.stat-trend{font-size:10px;color:var(--green);font-weight:600}
+.stats-card{padding:14px 18px;display:flex;flex-direction:column;gap:10px;flex-shrink:0;height:158px}
+.stats-head{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.stats-lbl{font-size:13.5px;font-weight:700;flex:1}
+.period-sel{font-size:12px;color:var(--text2);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px 10px;cursor:pointer;display:flex;align-items:center;gap:3px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex:1}
+.stat-card{border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;position:relative;overflow:hidden}
+.stat-icon-big{position:absolute;right:4px;bottom:-4px;font-size:44px;opacity:.25;pointer-events:none}
+.stat-label{font-size:11px;font-weight:700;color:var(--text2)}
+.stat-val{font-size:24px;font-weight:900;color:var(--text);line-height:1}
+.stat-unit{font-size:11px;color:var(--text2);margin-left:1px}
+.stat-trend{font-size:10.5px;font-weight:600;display:flex;align-items:center;gap:2px;margin-top:2px}
 
 /* shelf card */
-.shelf-card{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:14px 18px 0}
-.shelf-inner{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-bottom:14px;scrollbar-width:thin;scrollbar-color:rgba(76,175,80,.2) transparent}
+.shelf-card{flex:1;min-height:0;overflow:hidden;padding:13px 18px 0;display:flex;flex-direction:column}
+.shelf-scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:14px;scrollbar-width:thin;scrollbar-color:rgba(82,196,26,.15) transparent}
 .shelf-sec{display:flex;flex-direction:column;gap:8px}
-.shelf-lbl{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.shelf-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
-.books-row{display:flex;gap:10px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.shelf-slbl{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em}
+.books-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .books-row::-webkit-scrollbar{display:none}
-
-/* book card */
-.book{width:120px;height:152px;border-radius:18px;flex-shrink:0;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;padding:11px 11px 10px;position:relative;overflow:hidden;transition:transform .24s cubic-bezier(.34,1.48,.64,1),box-shadow .24s;box-shadow:0 4px 16px rgba(0,0,0,.08)}
-.book:hover{transform:translateY(-6px);box-shadow:0 14px 36px rgba(0,0,0,.14)}
-.book-shine{position:absolute;inset:0;background:linear-gradient(148deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.1) 45%,transparent 70%);pointer-events:none}
-.book-icon{position:absolute;top:12px;left:11px;font-size:40px;line-height:1}
-.book-info{position:relative;z-index:1}
-.book-name{font-size:13px;font-weight:800;margin-bottom:1px}
-.book-sub{font-size:9.5px;font-weight:500;opacity:.65;margin-bottom:3px}
-.book-cnt{font-size:9px;font-weight:700;opacity:.55}
-.book-add{width:120px;height:152px;border-radius:18px;flex-shrink:0;cursor:pointer;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--muted);transition:all .2s;font-size:12px;font-weight:600;background:rgba(255,255,255,.6)}
+/* book */
+.book{width:148px;height:164px;border-radius:16px;flex-shrink:0;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;padding:12px 13px 12px;position:relative;overflow:hidden;transition:transform .24s cubic-bezier(.34,1.48,.64,1),box-shadow .24s;box-shadow:0 3px 14px rgba(0,0,0,.07)}
+.book:hover{transform:translateY(-7px);box-shadow:0 14px 36px rgba(0,0,0,.13)}
+.book-shine{position:absolute;inset:0;background:linear-gradient(148deg,rgba(255,255,255,.6) 0%,rgba(255,255,255,.08) 48%,transparent 70%);pointer-events:none;border-radius:16px}
+.book-dot{position:absolute;top:11px;right:11px;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55)}
+.book-icon{font-size:48px;line-height:1;margin-bottom:6px}
+.book-name{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.book-sub{font-size:10.5px;font-weight:500;opacity:.65;margin-top:1px}
+.book-cnt{font-size:10px;font-weight:600;opacity:.5;margin-top:3px}
+.book-add{width:148px;height:164px;border-radius:16px;flex-shrink:0;cursor:pointer;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);transition:all .2s;font-size:12.5px;font-weight:600;background:rgba(255,255,255,.6)}
 .book-add:hover{border-color:var(--green);color:var(--green);background:var(--green-s)}
-.book-add-icon{font-size:22px}
-
-/* book inner panel */
-.book-panel{flex-shrink:0;display:none;flex-direction:column;overflow:hidden;border-radius:14px;border:1.5px solid var(--border);max-height:220px}
+.book-add-plus{font-size:24px;font-weight:300}
+/* book panel */
+.book-panel{display:none;flex-direction:column;overflow:hidden;border-radius:12px;border:1.5px solid var(--border);max-height:200px;flex-shrink:0}
 .book-panel.open{display:flex}
-.bp-head{display:flex;align-items:center;gap:10px;padding:11px 14px;flex-shrink:0}
-.bp-title{font-size:14px;font-weight:800}
-.bp-sub{font-size:10.5px;opacity:.65;margin-top:1px}
-.bp-close{margin-left:auto;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.22);border-radius:8px;padding:3px 10px;cursor:pointer;transition:background .15s}
+.bp-head{display:flex;align-items:center;gap:10px;padding:10px 14px;flex-shrink:0}
+.bp-title{font-size:13.5px;font-weight:800}
+.bp-close{margin-left:auto;font-size:11.5px;font-weight:600;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.22);border-radius:8px;padding:3px 10px;cursor:pointer;transition:background .15s}
 .bp-close:hover{background:rgba(255,255,255,.4)}
-.bp-body{flex:1;overflow-y:auto;background:#fdfaf5;padding:10px 14px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;background-image:repeating-linear-gradient(transparent,transparent 26px,rgba(180,160,130,.1) 26px,rgba(180,160,130,.1) 27px)}
-.bp-empty{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px;color:var(--muted);font-size:12px;text-align:center}
-.bp-entry{background:rgba(255,255,255,.82);border:1px solid rgba(200,185,160,.2);border-radius:9px;padding:9px 12px;cursor:pointer;transition:all .15s;flex-shrink:0}
-.bp-entry:hover{box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.bp-body{flex:1;overflow-y:auto;background:#fdfaf5;padding:10px 14px;display:flex;flex-direction:column;gap:5px;scrollbar-width:thin;background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(180,160,130,.09) 27px,rgba(180,160,130,.09) 28px)}
+.bp-empty{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px;color:var(--muted);font-size:12px;text-align:center}
+.bp-entry{background:rgba(255,255,255,.88);border:1px solid rgba(200,185,160,.18);border-radius:9px;padding:8px 12px;cursor:pointer;transition:all .15s;flex-shrink:0}
+.bp-entry:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
 .bp-edate{font-size:10.5px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .bp-epre{font-size:12.5px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.bp-efull{display:none;font-size:12.5px;color:var(--text);line-height:1.75;white-space:pre-wrap;margin-top:5px;padding-top:5px;border-top:1px solid rgba(180,160,130,.15)}
-.bp-del{margin-left:auto;font-size:10px;border:none;background:none;cursor:pointer;color:rgba(154,165,180,.5);padding:0 4px;border-radius:4px;transition:all .15s}
+.bp-efull{display:none;font-size:12px;color:var(--text);line-height:1.75;white-space:pre-wrap;margin-top:5px;padding-top:5px;border-top:1px solid rgba(180,160,130,.15)}
+.bp-del{margin-left:auto;font-size:10px;border:none;background:none;cursor:pointer;color:rgba(154,165,180,.45);padding:0 4px;border-radius:4px;transition:all .15s}
 .bp-del:hover{background:#fee2e2;color:var(--red)}
 
-/* RIGHT COL */
-.col-r{width:252px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(76,175,80,.15) transparent}
+/* ═══ RIGHT COL ═══ */
+.col-r{width:295px;flex-shrink:0;display:flex;flex-direction:column;gap:11px;overflow-y:auto;scrollbar-width:none}
+.col-r::-webkit-scrollbar{display:none}
 
 /* cal */
-.cal-card{flex-shrink:0;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.cal-card{padding:14px 18px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
 .cal-head{display:flex;align-items:center}
-.cal-title{font-size:13px;font-weight:700;color:var(--text)}
-.cal-nav{display:flex;gap:2px;margin-left:auto}
-.cal-nav button{width:22px;height:22px;border:1px solid var(--border);background:var(--white);border-radius:7px;cursor:pointer;font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cal-title{font-size:15px;font-weight:800;flex:1}
+.cal-nav button{width:24px;height:24px;border:1px solid var(--border);background:var(--white);border-radius:8px;cursor:pointer;font-size:14px;color:var(--muted);transition:all .13s;display:flex;align-items:center;justify-content:center}
+.cal-nav{display:flex;gap:4px}
 .cal-nav button:hover{background:var(--green-s);color:var(--green)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.cal-w{font-size:9.5px;font-weight:700;color:var(--muted);text-align:center;padding:1px 0}
-.cal-d{height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;position:relative;transition:all .13s;color:var(--text2)}
+.cal-w{font-size:10px;font-weight:700;color:var(--muted);text-align:center;padding:2px 0}
+.cal-d{height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;position:relative;transition:all .13s;color:var(--text2);font-weight:500}
 .cal-d:hover{background:var(--green-s)}
-.cal-d.om{color:rgba(154,165,180,.28);cursor:default}.cal-d.om:hover{background:transparent}
-.cal-d.today{background:var(--green);color:#fff;font-weight:700;box-shadow:0 2px 7px rgba(76,175,80,.28)}.cal-d.today:hover{background:var(--green)}
-.cal-d::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;display:none}
+.cal-d.om{color:rgba(170,180,196,.32);cursor:default;font-weight:400}.cal-d.om:hover{background:transparent}
+.cal-d.today{background:var(--green2);color:#fff;font-weight:800;border-radius:50%}.cal-d.today:hover{background:var(--green2)}
+.cal-d::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3.5px;height:3.5px;border-radius:50%;display:none}
 .cal-d.has::after{display:block;background:var(--green)}
-.cal-d.today::after{background:rgba(255,255,255,.75)}
+.cal-d.today::after{background:rgba(255,255,255,.8)}
 
 /* radar */
-.radar-card{flex-shrink:0;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.radar-card{padding:14px 18px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+.radar-head{display:flex;align-items:center;gap:6px}
+.radar-lbl{font-size:13.5px;font-weight:700;flex:1}
+.radar-ic{width:28px;height:28px;border-radius:8px;background:var(--purple-s);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer}
 .radar-wrap{position:relative;width:100%;display:flex;align-items:center;justify-content:center}
 
 /* achievements */
-.ach-card{flex:1;min-height:120px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
-.ach-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:12px;background:var(--bg);border:1px solid var(--border)}
-.ach-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.ach-body{flex:1}
+.ach-card{padding:14px 18px;display:flex;flex-direction:column;gap:10px;flex:1;min-height:0}
+.ach-head{display:flex;align-items:center;gap:6px}
+.ach-lbl{font-size:13.5px;font-weight:700;flex:1}
+.ach-list{display:flex;flex-direction:column;gap:7px;overflow-y:auto;flex:1;min-height:0;scrollbar-width:none}
+.ach-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--border)}
+.ach-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ach-body{flex:1;min-width:0}
 .ach-title{font-size:12.5px;font-weight:700;color:var(--text)}
 .ach-desc{font-size:11px;color:var(--muted);margin-top:1px}
 
-/* DDL OVERLAY */
-.ddl-overlay{position:fixed;inset:0;z-index:200;display:none;align-items:flex-start;justify-content:flex-end;padding:70px 20px 0;pointer-events:none;background:transparent}
+/* DDL */
+.ddl-overlay{position:fixed;inset:0;z-index:200;display:none;align-items:flex-start;justify-content:flex-end;padding:68px 20px 0;pointer-events:none}
 .ddl-overlay.open{display:flex}
-.ddl-mask{position:fixed;inset:0;z-index:-1;pointer-events:all}
+.ddl-mask{position:fixed;inset:0;pointer-events:all;display:none}
 .ddl-overlay.open .ddl-mask{display:block}
-.ddl-box{width:350px;max-height:calc(100vh-90px);background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 12px 48px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;pointer-events:all;animation:slideIn .2s cubic-bezier(.32,0,.18,1)}
+.ddl-box{width:360px;max-height:calc(100vh-88px);background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 12px 48px rgba(0,0,0,.11);display:flex;flex-direction:column;overflow:hidden;pointer-events:all;animation:slideIn .2s cubic-bezier(.32,0,.18,1)}
 @keyframes slideIn{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:none}}
 .ddl-head{display:flex;align-items:center;gap:8px;padding:14px 18px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
-.ddl-close{margin-left:auto;width:24px;height:24px;border:none;background:var(--bg);border-radius:8px;cursor:pointer;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ddl-close{margin-left:auto;width:24px;height:24px;border:none;background:var(--bg);border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .15s}
 .ddl-close:hover{background:#fee2e2;color:var(--red)}
-.ddl-body{overflow-y:auto;flex:1;padding:14px 18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin}
-.ddl-sec-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.ddl-body{overflow-y:auto;flex:1;padding:14px 18px;display:flex;flex-direction:column;gap:13px;scrollbar-width:thin}
+.ds-title{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
 .twrap{display:flex;flex-direction:column;gap:5px}
-.ti{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:9px;background:var(--bg);border:1px solid var(--border);transition:opacity .2s}
+.ti{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:9px;background:var(--bg);border:1px solid var(--border)}
 .ti.done{opacity:.45}
-.tck{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center;background:var(--white);transition:all .2s}
+.tck{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center;background:var(--white);transition:all .18s}
 .tck.on{background:var(--green);border-color:var(--green)}
-.tck.on::after{content:'✓';font-size:8px;color:white;font-weight:800}
+.tck.on::after{content:'✓';font-size:8px;color:#fff;font-weight:800}
 .tb{flex:1;min-width:0}
 .tgtag{font-size:9px;font-weight:700;color:var(--orange);margin-bottom:2px}
 .ttxt{font-size:12px;line-height:1.45;color:var(--text2)}
 .ttxt.stk{text-decoration:line-through;color:var(--muted)}
-.tdly{font-size:10px;border:none;background:none;cursor:pointer;color:var(--muted);padding:1px 5px;border-radius:5px;flex-shrink:0;transition:all .15s}
+.tdly{font-size:10px;border:none;background:none;cursor:pointer;color:var(--muted);padding:1px 5px;border-radius:5px;transition:all .15s}
 .tdly:hover{background:var(--orange-s);color:var(--orange)}
 .notask{text-align:center;padding:10px;font-size:12px;color:var(--muted)}
-.gc{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;flex-shrink:0}
-.gcname{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;display:flex;align-items:center;justify-content:space-between}
+.gc{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.gcname{font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
 .gcmeta{font-size:9.5px;color:var(--muted);margin-bottom:5px}
-.gcdel{font-size:11px;border:none;background:none;cursor:pointer;color:rgba(154,165,180,.5);padding:0 4px;transition:all .15s}
+.gcdel{font-size:11px;border:none;background:none;cursor:pointer;color:rgba(170,180,196,.5);padding:0 4px;border-radius:4px;transition:all .15s}
 .gcdel:hover{background:#fee2e2;color:var(--red)}
 .pbar{height:4px;background:var(--border);border-radius:99px;overflow:hidden}
-.pbarf{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green2),var(--green));transition:width .4s}
+.pbarf{height:100%;border-radius:99px;background:linear-gradient(90deg,#8de86a,var(--green2));transition:width .4s}
 .plbl{font-size:9px;color:var(--muted);margin-top:3px;display:flex;justify-content:space-between}
-input[type=text],input[type=date],select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:7px 10px;font-size:13px;color:var(--text);background:#fafcfa;font-family:inherit;transition:border-color .2s}
-input:focus,select:focus{outline:none;border-color:rgba(76,175,80,.4);background:#fff}
 .fg{display:flex;flex-direction:column;gap:3px}
-.fl{font-size:11.5px;font-weight:600;color:var(--muted)}
-.ddl-create-btn{width:100%;padding:9px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--green2),var(--green));color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 3px 10px rgba(76,175,80,.25);transition:transform .15s}
+.fl{font-size:11px;font-weight:600;color:var(--muted)}
+input[type=text],input[type=date],select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:7px 10px;font-size:13px;color:var(--text);background:#fafcfa;font-family:inherit;transition:border-color .2s;outline:none}
+input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
+.ddl-create-btn{width:100%;padding:9px;border:none;border-radius:10px;background:linear-gradient(90deg,#8de86a,var(--green2));color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 3px 10px rgba(76,175,80,.22);transition:transform .15s}
 .ddl-create-btn:hover{transform:translateY(-1px)}
 .ddl-create-btn.loading{opacity:.65;cursor:not-allowed;pointer-events:none}
 .sbtns{display:flex;gap:6px;margin-top:4px}
-.smbtn{flex:1;padding:6px 0;border:1.5px solid var(--border);background:var(--white);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s}
-.smbtn:hover{background:var(--green-s);border-color:var(--green-m);color:var(--green)}
+.smbtn{flex:1;padding:6px;border:1.5px solid var(--border);background:var(--white);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s}
+.smbtn:hover{background:var(--green-s);color:var(--green)}
 .spre{background:rgba(82,196,26,.04);border:1.5px solid rgba(82,196,26,.18);border-radius:9px;padding:9px 11px;display:flex;flex-direction:column;gap:4px}
 .spt{font-size:9px;font-weight:800;color:var(--green);letter-spacing:.08em;text-transform:uppercase}
 .sd{display:flex;gap:6px;font-size:11px}
 .sdl{flex-shrink:0;color:var(--muted);min-width:36px;font-weight:500}
-.sdt{color:var(--text2);line-height:1.4}
-
-/* lbl generic */
-.lbl{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px;flex-shrink:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 .sp{width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 </style>
@@ -234,143 +242,175 @@ input:focus,select:focus{outline:none;border-color:rgba(76,175,80,.4);background
 <body>
 
 <!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="logo">✦</div>
-  <button class="sbi on" title="首页">🏠</button>
-  <button class="sbi" title="日历">📅</button>
-  <button class="sbi" title="笔记">📋</button>
-  <button class="sbi" title="统计">📊</button>
-  <button class="sbi" title="收藏">⭐</button>
-  <div class="sb-bot"><button class="sbi" title="设置">⚙️</button></div>
+<div class="sb">
+  <div class="sb-logo">✦</div>
+  <button class="sbi on">⊞</button>
+  <button class="sbi">📅</button>
+  <button class="sbi">📋</button>
+  <button class="sbi">📊</button>
+  <button class="sbi">☆</button>
+  <div class="sb-bot"><button class="sbi">⚙</button></div>
 </div>
 
 <!-- RIGHT -->
 <div class="right">
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="h-brand">
-      <div class="h-title">Growth Journal</div>
-      <div class="h-sub">记录成长 · 复盘进步</div>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="tb-brand">
+      <span class="tb-icon">✦</span>
+      <div class="tb-texts">
+        <div class="tb-title">Growth Journal</div>
+        <div class="tb-sub">记录成长 · 复盘进步</div>
+      </div>
     </div>
-    <div class="h-tabs">
-      <button class="htab on" data-m="intern" onclick="switchMode('intern')">📗 实习</button>
-      <button class="htab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
+    <div class="tb-tabs">
+      <button class="ttab on" data-m="intern" onclick="switchMode('intern')">📗 实习</button>
+      <button class="ttab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
     </div>
-    <div class="streak">🔥 <span id="sNum">0</span> 天连续记录</div>
-    <button class="new-btn" onclick="toggleDDL()">+ 新建任务</button>
-    <div class="bell">🔔</div>
+    <div class="tb-right">
+      <div class="streak-pill">🔥 <span id="sNum">0</span> 天连续记录</div>
+      <button class="new-task-btn" onclick="toggleDDL()">+ 新建任务</button>
+      <div class="bell-btn">🔔</div>
+    </div>
   </div>
 
   <!-- MAIN -->
   <div class="main">
 
-    <!-- LEFT -->
+    <!-- ═══ LEFT ═══ -->
     <div class="col-l">
-      <div class="card" style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:18px 18px 0">
-        <div class="lbl" style="margin-bottom:8px" id="formTitle">今天的成长复盘 ✨</div>
-        <div class="form-inner">
-          <div class="user-row">
-            <div class="avatar">A</div>
-            <span style="font-size:12.5px;font-weight:600;color:var(--text2)">今天也要加油～</span>
-            <span class="utime" id="nowTime"></span>
-          </div>
 
-          <!-- intern -->
-          <div id="fi" style="display:flex;flex-direction:column;gap:10px">
-            <div class="fg"><div class="sec-title">🏗 今天做了什么</div><textarea class="h3" id="i-did" placeholder="跟导师做了用户访谈，收集了12个有效用户痛点…"></textarea></div>
-            <div class="fg"><div class="sec-title">💡 学习 / 观察到什么 ✏️</div><textarea class="h3" id="i-learned" placeholder="发现用户在意流程顺不顺，路径清晰度影响转化率…"></textarea></div>
-            <div class="fg"><div class="sec-title">😰 遇到的卡点</div><textarea class="h2" id="i-block" placeholder="数据权限还没申请到…"></textarea></div>
-            <div class="fg"><div class="sec-title">🎯 明天要做</div><textarea class="h2" id="i-next" placeholder="整理成结构化需求文档，对齐产品与设计方向…"></textarea></div>
-          </div>
-
-          <!-- research -->
-          <div id="fr" style="display:none;flex-direction:column;gap:10px">
-            <div class="fg"><div class="sec-title">🧪 今天推进了什么</div><textarea class="h3" id="r-did" placeholder="跑完了第一组对照实验…"></textarea></div>
-            <div class="fg"><div class="sec-title">🔍 新发现 / 新想法 ✏️</div><textarea class="h3" id="r-learned" placeholder="发现baseline在长文本上有明显退化…"></textarea></div>
-            <div class="fg"><div class="sec-title">🌀 还没搞清楚的</div><textarea class="h2" id="r-block" placeholder="为什么epoch增加loss反而震荡…"></textarea></div>
-            <div class="fg"><div class="sec-title">📌 下一步验证</div><textarea class="h2" id="r-next" placeholder="试试降低learning rate…"></textarea></div>
-          </div>
-
-          <div class="erow">
-            <span class="elbl">今日状态</span>
-            <div class="edots" id="edots">
-              <button class="edot" data-v="1" onclick="setE(1)">😩</button>
-              <button class="edot" data-v="2" onclick="setE(2)">😐</button>
-              <button class="edot" data-v="3" onclick="setE(3)">🙂</button>
-              <button class="edot" data-v="4" onclick="setE(4)">😄</button>
-              <button class="edot" data-v="5" onclick="setE(5)">🚀</button>
-            </div>
+      <!-- 今天的成长复盘 -->
+      <div class="mini-card" style="flex-shrink:0">
+        <div class="mc-title">🌱 今天的成长复盘 ✨</div>
+        <div class="mc-row">
+          <div class="mc-avatar">👩</div>
+          <div style="flex:1">
+            <textarea id="i-did" rows="2" placeholder="跟导师做了用户访谈，收集了12个有效用户痛点…" style="height:44px;font-size:12.5px;background:transparent"></textarea>
           </div>
         </div>
-        <div class="gen-btn-wrap">
-          <button class="gen-btn" id="genBtn" onclick="gen()"><span>✦</span> AI 提炼今日成长笔记</button>
+        <div id="fi-did-time" style="display:flex;align-items:center;gap:8px">
+          <span class="mc-time">10:30</span>
+          <span style="color:var(--muted);font-size:13px;margin-left:auto">•••</span>
         </div>
       </div>
-    </div>
 
-    <!-- MID -->
+      <!-- 学习观察 -->
+      <div class="mini-card" style="flex:1;min-height:0;overflow:hidden">
+        <div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
+        <textarea id="i-learned" placeholder="发现用户在意流程顺不顺，路径清晰度影响转化率…" style="flex:1;min-height:48px;height:auto;font-size:12.5px;background:transparent"></textarea>
+        <!-- sparkline -->
+        <svg class="sparkline" viewBox="0 0 200 36" fill="none">
+          <polyline points="0,28 30,22 60,24 90,14 120,18 150,10 180,14 200,8" stroke="#52c41a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <circle cx="200" cy="8" r="3.5" fill="#52c41a"/>
+        </svg>
+        <div class="mc-footer">
+          <span class="mc-tag">用户路径分析</span>
+          <span class="mc-time2">14:20</span>
+        </div>
+      </div>
+
+      <!-- 科研表单 hidden -->
+      <div id="fr" style="display:none;flex-direction:column;gap:10px">
+        <div class="mini-card"><div class="mc-title">🧪 今天推进了什么</div><textarea id="r-did" placeholder="跑完了第一组对照实验…" style="height:52px;font-size:12.5px;background:transparent"></textarea></div>
+        <div class="mini-card"><div class="mc-title">🔍 新发现 / 新想法</div><textarea id="r-learned" placeholder="发现baseline在长文本退化…" style="height:52px;font-size:12.5px;background:transparent"></textarea></div>
+      </div>
+
+      <!-- 卡点 + 明天 -->
+      <div class="mini-card" style="flex-shrink:0">
+        <div class="mc-title">😰 遇到的卡点 😵</div>
+        <textarea id="i-block" placeholder="数据权限还没申请到，部分指标口径不一致…" style="height:46px;font-size:12.5px;background:transparent"></textarea>
+        <div style="text-align:right"><span class="mc-time2">16:40</span></div>
+      </div>
+      <div class="mini-card" style="flex-shrink:0">
+        <div class="mc-title">🎯 明天要做</div>
+        <textarea id="i-next" placeholder="整理成结构化需求文档，对齐产品与设计方向。" style="height:46px;font-size:12.5px;background:transparent"></textarea>
+        <div style="text-align:right"><span class="mc-time2">18:00</span></div>
+      </div>
+
+      <!-- bottom -->
+      <div class="l-bottom">
+        <div class="erow">
+          <span class="elbl">今日状态</span>
+          <div class="edots" id="edots">
+            <button class="edot" data-v="1" onclick="setE(1)">😊</button>
+            <button class="edot" data-v="2" onclick="setE(2)">😐</button>
+            <button class="edot" data-v="3" onclick="setE(3)">🙂</button>
+            <button class="edot on" data-v="4" onclick="setE(4)">😄</button>
+            <button class="edot" data-v="5" onclick="setE(5)">🚀</button>
+          </div>
+        </div>
+        <button class="gen-btn" id="genBtn" onclick="gen()"><span>✦</span> AI 提炼今日成长笔记</button>
+      </div>
+    </div><!-- /col-l -->
+
+    <!-- ═══ MID ═══ -->
     <div class="col-m">
 
-      <!-- note card -->
+      <!-- 今日笔记 -->
       <div class="card note-card">
         <div class="note-head">
-          <span class="note-lbl">📝 今日笔记</span>
-          <button class="note-btn" onclick="gen()" title="AI生成">✦</button>
+          <span style="font-size:16px">📝</span>
+          <span class="note-lbl">今日笔记</span>
         </div>
         <div class="note-body" id="noteBody">
-          <div class="note-empty" id="noteEmpty">
-            <div class="note-emoji">🌱</div>
-            <div class="note-hint">写下你的思考，AI 帮你提炼成长笔记</div>
-          </div>
+          <span class="note-placeholder" id="notePh">写下你的思考，AI 帮你提炼成长笔记</span>
+          <div class="note-plant">🌵</div>
+          <button class="note-genbtn" onclick="gen()" title="AI生成">✦</button>
         </div>
       </div>
 
-      <!-- stats card -->
+      <!-- 成长数据概览 -->
       <div class="card stats-card">
         <div class="stats-head">
-          <span class="stats-lbl">📊 成长数据概览</span>
-          <span class="stats-period">本周 ▾</span>
+          <span style="font-size:16px">📊</span>
+          <span class="stats-lbl">成长数据概览</span>
+          <div class="period-sel">本周 <span>▾</span></div>
         </div>
         <div class="stats-grid">
-          <div class="stat-item" style="background:#e8f5e9">
-            <div class="stat-icon">📓</div>
-            <div class="stat-val" id="s-notes">0</div>
-            <div class="stat-name">笔记记录</div>
-            <div class="stat-trend">↑ 18% 较上周</div>
+          <div class="stat-card" style="background:#edfbde">
+            <div class="stat-label">笔记记录</div>
+            <div style="display:flex;align-items:baseline;gap:3px"><span class="stat-val" id="s-notes">0</span><span class="stat-unit">条</span></div>
+            <div class="stat-trend" style="color:var(--green)">↑ 18% 较上周</div>
+            <div class="stat-icon-big">📓</div>
           </div>
-          <div class="stat-item" style="background:#fff3e8">
-            <div class="stat-icon">✅</div>
-            <div class="stat-val" id="s-tasks">0</div>
-            <div class="stat-name">完成任务</div>
+          <div class="stat-card" style="background:#fff0e4">
+            <div class="stat-label">完成任务</div>
+            <div style="display:flex;align-items:baseline;gap:3px"><span class="stat-val" id="s-tasks">0</span><span class="stat-unit">项</span></div>
             <div class="stat-trend" style="color:var(--orange)">↑ 12% 较上周</div>
+            <div class="stat-icon-big">✅</div>
           </div>
-          <div class="stat-item" style="background:#f0edff">
-            <div class="stat-icon">⏰</div>
-            <div class="stat-val" id="s-hours">0</div>
-            <div class="stat-name">学习时长/h</div>
+          <div class="stat-card" style="background:#f3efff">
+            <div class="stat-label">学习时长</div>
+            <div style="display:flex;align-items:baseline;gap:3px"><span class="stat-val" id="s-hours">0</span><span class="stat-unit">小时</span></div>
             <div class="stat-trend" style="color:var(--purple)">↑ 25% 较上周</div>
+            <div class="stat-icon-big">⏰</div>
           </div>
-          <div class="stat-item" style="background:#fffbe6">
-            <div class="stat-icon">🏆</div>
-            <div class="stat-val" id="s-pts">0</div>
-            <div class="stat-name">成长积分</div>
+          <div class="stat-card" style="background:#fffae6">
+            <div class="stat-label">成长积分</div>
+            <div style="display:flex;align-items:baseline;gap:3px"><span class="stat-val" id="s-pts">0</span><span class="stat-unit">分</span></div>
             <div class="stat-trend" style="color:var(--yellow)">↑ 20% 较上周</div>
+            <div class="stat-icon-big">🏆</div>
           </div>
         </div>
       </div>
 
-      <!-- shelf card -->
+      <!-- 笔记本书架 -->
       <div class="card shelf-card">
-        <div class="lbl" style="margin-bottom:8px">📚 笔记本书架</div>
-        <div class="shelf-inner" id="shelfInner"></div>
+        <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;margin-bottom:10px">
+          <span style="font-size:16px">📚</span>
+          <span style="font-size:13.5px;font-weight:700">笔记本书架</span>
+        </div>
+        <div class="shelf-scroll" id="shelfScroll"></div>
       </div>
 
     </div><!-- /col-m -->
 
-    <!-- RIGHT -->
+    <!-- ═══ RIGHT ═══ -->
     <div class="col-r">
-      <!-- cal -->
+
+      <!-- 日历 -->
       <div class="card cal-card">
         <div class="cal-head">
           <span class="cal-title" id="calTitle"></span>
@@ -382,43 +422,53 @@ input:focus,select:focus{outline:none;border-color:rgba(76,175,80,.4);background
         <div class="cal-grid" id="calGrid"></div>
       </div>
 
-      <!-- radar -->
+      <!-- 雷达 -->
       <div class="card radar-card">
-        <div class="lbl">🌟 本周成长雷达</div>
+        <div class="radar-head">
+          <span style="font-size:16px">🌿</span>
+          <span class="radar-lbl">本周成长雷达 ✦</span>
+          <div class="radar-ic">💬</div>
+        </div>
         <div class="radar-wrap" id="radarWrap"></div>
       </div>
 
-      <!-- achievements -->
+      <!-- 成就 -->
       <div class="card ach-card">
-        <div class="lbl">🏆 近期成就</div>
-        <div class="ach-item">
-          <div class="ach-icon" style="background:#ede9fe;color:#7c3aed">🔥</div>
-          <div class="ach-body">
-            <div class="ach-title">连续记录 <span id="achStreak">0</span> 天</div>
-            <div class="ach-desc">保持记录的好习惯！</div>
-          </div>
+        <div class="ach-head">
+          <span style="font-size:16px">🎖️</span>
+          <span class="ach-lbl">近期成就 🏆</span>
         </div>
-        <div class="ach-item">
-          <div class="ach-icon" style="background:#dcfce7;color:#16a34a">✅</div>
-          <div class="ach-body">
-            <div class="ach-title">完成 <span id="achTasks">0</span> 项任务</div>
-            <div class="ach-desc">本周任务完成率 <span id="achRate">0</span>%</div>
+        <div class="ach-list">
+          <div class="ach-item">
+            <div class="ach-icon" style="background:#ede9fe"><span style="font-size:18px">⭐</span></div>
+            <div class="ach-body">
+              <div class="ach-title">连续记录 <span id="achStreak">0</span> 天</div>
+              <div class="ach-desc">保持记录的好习惯！</div>
+            </div>
           </div>
-        </div>
-        <div class="ach-item">
-          <div class="ach-icon" style="background:#ffedd5;color:#ea580c">📚</div>
-          <div class="ach-body">
-            <div class="ach-title">已记录 <span id="achNotes">0</span> 篇笔记</div>
-            <div class="ach-desc">知识就是你的超能力！</div>
+          <div class="ach-item">
+            <div class="ach-icon" style="background:#dcfce7"><span style="font-size:18px">✅</span></div>
+            <div class="ach-body">
+              <div class="ach-title">完成 <span id="achTasks">0</span> 项任务</div>
+              <div class="ach-desc">本周任务完成率 <span id="achRate">0</span>%</div>
+            </div>
+          </div>
+          <div class="ach-item">
+            <div class="ach-icon" style="background:#ffedd5"><span style="font-size:18px">⏱️</span></div>
+            <div class="ach-body">
+              <div class="ach-title">学习时长突破 15h</div>
+              <div class="ach-desc">比上周增加 3.2 小时</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+    </div><!-- /col-r -->
 
   </div><!-- /main -->
 </div><!-- /right -->
 
-<!-- DDL OVERLAY -->
+<!-- DDL -->
 <div class="ddl-overlay" id="ddlOverlay">
   <div class="ddl-mask" onclick="toggleDDL()"></div>
   <div class="ddl-box">
@@ -428,24 +478,18 @@ input:focus,select:focus{outline:none;border-color:rgba(76,175,80,.4);background
       <button class="ddl-close" onclick="toggleDDL()">✕</button>
     </div>
     <div class="ddl-body">
+      <div><div class="ds-title">📋 今日任务</div><div class="twrap" id="tWrap"><div class="notask" id="noTask">今天还没有任务</div></div></div>
+      <div><div class="ds-title">🏃 进行中</div><div style="display:flex;flex-direction:column;gap:6px" id="gList"><div style="font-size:12px;color:var(--muted);text-align:center;padding:6px 0">还没有目标</div></div></div>
       <div>
-        <div class="ddl-sec-title">📋 今日任务</div>
-        <div class="twrap" id="tWrap"><div class="notask" id="noTask">今天还没有任务</div></div>
-      </div>
-      <div>
-        <div class="ddl-sec-title">🏃 进行中</div>
-        <div style="display:flex;flex-direction:column;gap:6px" id="gList"><div style="font-size:12px;color:var(--muted);text-align:center;padding:6px 0">还没有目标</div></div>
-      </div>
-      <div>
-        <div class="ddl-sec-title">➕ 新建目标</div>
+        <div class="ds-title">➕ 新建目标</div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <div class="fg"><label class="fl">目标名称</label><input type="text" id="dn" placeholder="完成实习项目报告"></div>
-          <div class="fg"><label class="fl">内容描述</label><textarea id="dd" placeholder="调研竞品、整理用户反馈…" style="height:50px"></textarea></div>
+          <div class="fg"><label class="fl">内容描述</label><textarea id="dd" placeholder="调研竞品、整理用户反馈…" style="height:48px;border:1.5px solid var(--border);border-radius:10px;padding:7px 10px;background:#fafcfa"></textarea></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <div class="fg"><label class="fl">截止日期</label><input type="date" id="dl"></div>
             <div class="fg"><label class="fl">周期</label><select id="ds"><option value="auto">按截止日</option><option value="7">7天</option><option value="14">14天</option><option value="30">30天</option></select></div>
           </div>
-          <button class="ddl-create-btn" id="ddlBtn" onclick="createGoal()"><span>🤖</span> AI 拆分任务</button>
+          <button class="ddl-create-btn" id="ddlBtn" onclick="createGoal()">🤖 AI 拆分任务</button>
           <div class="spre" id="sPreview" style="display:none">
             <div class="spt">任务预览</div>
             <div id="sDays" style="display:flex;flex-direction:column;gap:3px"></div>
@@ -460,16 +504,15 @@ input:focus,select:focus{outline:none;border-color:rgba(76,175,80,.4);background
 <script>
 const BOOKS={
   intern:[
-    {id:'xiaohongshu',name:'小红书',icon:'🌸',sub:'AI产品运营',bg:'linear-gradient(145deg,#fff0f4,#fcd8e4,#f0c8d8)',tc:'#c4506a'},
-    {id:'transsion',name:'传音控股',icon:'🎵',sub:'AI产品运营',bg:'linear-gradient(145deg,#f0f5ff,#d8e6fa,#c0d0f0)',tc:'#4a7cd4'},
-    {id:'benq',name:'明基',icon:'🌿',sub:'内容运营',bg:'linear-gradient(145deg,#f0fbf4,#d4eddc,#b8dcc8)',tc:'#3a8a5a'},
+    {id:'xiaohongshu',name:'小红书',icon:'🌸',sub:'AI产品运营',bg:'linear-gradient(145deg,#fff0f4,#fcd8e4,#f5cce0)',tc:'#c4506a'},
+    {id:'transsion',name:'传音控股',icon:'🎵',sub:'AI产品运营',bg:'linear-gradient(145deg,#eef4ff,#d4e4f8,#bdd0f0)',tc:'#3a6cc4'},
+    {id:'benq',name:'明基',icon:'🖥️',sub:'内容运营',bg:'linear-gradient(145deg,#edfbde,#d0edc0,#b8dda8)',tc:'#2e8a4a'},
   ],
   research:[
-    {id:'kg',name:'脑图道构建',icon:'🔮',sub:'多模态影像分析',bg:'linear-gradient(145deg,#f5f0ff,#e4d8f8,#d0c0f0)',tc:'#6c4cd4'},
-    {id:'devtraj',name:'发育轨迹研究',icon:'🧬',sub:'GAMLSS建模',bg:'linear-gradient(145deg,#fffbf0,#f5e8d0,#e8d0a8)',tc:'#c47030'},
+    {id:'kg',name:'脑图道构建',icon:'🔮',sub:'多模态影像分析',bg:'linear-gradient(145deg,#f3efff,#e0d4f8,#cdc0f0)',tc:'#6040c4'},
+    {id:'devtraj',name:'发育轨迹研究',icon:'🧬',sub:'GAMLSS建模',bg:'linear-gradient(145deg,#fffae6,#f5e8c0,#ead0a0)',tc:'#b07020'},
   ]
 };
-
 const TODAY=new Date().toISOString().slice(0,10);
 const EE=['','😩','😐','🙂','😄','🚀'];
 const EW=['','有点累','状态一般','还不错','状态很好','超级在状态'];
@@ -477,26 +520,18 @@ const ds=d=>d instanceof Date?d.toISOString().slice(0,10):d;
 const addD=(s,n)=>{const d=new Date(s+' 00:00:00');d.setDate(d.getDate()+n);return ds(d)};
 const diffD=(a,b)=>Math.round((new Date(b+' 00:00:00')-new Date(a+' 00:00:00'))/86400000);
 
-let curMode='intern',curBook=null,eng=0;
-
-// time
-function upTime(){const n=new Date();document.getElementById('nowTime').textContent=n.getHours()+':'+(n.getMinutes()+'').padStart(2,'0')}
-setInterval(upTime,60000);upTime();
+let curMode='intern',curBook=null,eng=4;
 
 function switchMode(m){
   curMode=m;
-  document.querySelectorAll('.htab').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
-  document.getElementById('fi').style.display=m==='intern'?'flex':'none';
+  document.querySelectorAll('.ttab').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
   document.getElementById('fr').style.display=m==='research'?'flex':'none';
-  document.getElementById('formTitle').textContent=m==='intern'?'今天的成长复盘 ✨':'今天的科研复盘 🔬';
 }
 function setE(v){eng=v;document.querySelectorAll('.edot').forEach(d=>d.classList.toggle('on',+d.dataset.v===v))}
 
-// DDL toggle
 let ddlOpen=false;
 function toggleDDL(){ddlOpen=!ddlOpen;document.getElementById('ddlOverlay').classList.toggle('open',ddlOpen)}
 
-// storage
 const getRec=bid=>{try{return JSON.parse(localStorage.getItem('bk_'+bid)||'[]')}catch{return[]}};
 const saveRec=(bid,arr)=>localStorage.setItem('bk_'+bid,JSON.stringify(arr));
 const allRecs=()=>Object.values(BOOKS).flat().flatMap(b=>getRec(b.id));
@@ -509,7 +544,6 @@ function calcStreak(){
   return s;
 }
 function upStreak(){const s=calcStreak();document.getElementById('sNum').textContent=s;document.getElementById('achStreak').textContent=s}
-
 function renderStats(){
   const notes=allRecs().length;
   const goals=getGoals();
@@ -519,19 +553,17 @@ function renderStats(){
   document.getElementById('s-tasks').textContent=done;
   document.getElementById('s-pts').textContent=notes*10;
   document.getElementById('achTasks').textContent=done;
-  document.getElementById('achNotes').textContent=notes;
   document.getElementById('achRate').textContent=total?Math.round(done/total*100):0;
 }
 
-// gen
 function gen(){
   const btn=document.getElementById('genBtn');
   const isI=curMode==='intern';
   const did=document.getElementById(isI?'i-did':'r-did').value.trim();
   const learned=document.getElementById(isI?'i-learned':'r-learned').value.trim();
-  const block=document.getElementById(isI?'i-block':'r-block').value.trim();
-  const next=document.getElementById(isI?'i-next':'r-next').value.trim();
-  if(!did&&!learned){shake(btn);return}
+  const block=document.getElementById('i-block').value.trim();
+  const next=document.getElementById('i-next').value.trim();
+  if(!did&&!learned){btn.style.transform='translateX(-4px)';setTimeout(()=>btn.style.transform='',200);return}
   btn.classList.add('loading');btn.innerHTML='<div class="sp"></div> 提炼中…';
   setTimeout(()=>{
     const note=mkNote({isI,did,learned,block,next,eng});
@@ -540,7 +572,7 @@ function gen(){
     const arr=getRec(target.id);arr.unshift({date:TODAY,note,energy:eng,mode:curMode});
     saveRec(target.id,arr);
     renderShelf();renderStats();upStreak();renderCal();
-    if(curBook&&curBook.id===target.id)renderBookPanel(curBook);
+    if(curBook&&curBook.id===target.id)renderBP(curBook);
     btn.classList.remove('loading');btn.innerHTML='<span>✦</span> AI 提炼今日成长笔记';
   },900);
 }
@@ -549,104 +581,90 @@ function mkNote({isI,did,learned,block,next,eng}){
   const L=[`📅 ${today}${eng?'  ·  '+EE[eng]+' '+EW[eng]:''}`,``];
   if(did)L.push(isI?'【今天做了】':'【今天推进】',did,'');
   if(learned)L.push(isI?'【学到/观察到】':'【新发现】',learned,'');
-  if(block)L.push(isI?'【卡点】':'【没搞清楚的】',block,'');
+  if(block)L.push('【卡点】',block,'');
   if(next)L.push(isI?'【明天要做】':'【下一步】',next,'');
-  const pool=isI?[
-    learned?`今天最大收获：${learned.slice(0,30)}…`:null,
-    block?`"${block.slice(0,20)}"是今天的卡点，记下来明天就是经验。`:null,
-    '扎实推进，每一步都在为后面的自己铺路。',
+  const insight=isI?[
+    learned?`今天最大收获：${learned.slice(0,28)}…`:null,
+    block?`"${block.slice(0,18)}"是今天的卡点，记下来明天就是经验。`:null,
+    '扎实推进，每一步都在为后面的自己铺路。'
   ]:[
-    learned?`新发现：${learned.slice(0,30)}…`:null,
-    '实验又推进了一步，研究就是螺旋上升的过程。',
+    learned?`新发现：${learned.slice(0,28)}…`:null,
+    '实验推进中，研究就是螺旋上升的过程。'
   ];
-  const v=pool.filter(Boolean);
+  const v=insight.filter(Boolean);
   L.push('💬 今日小结',v[Math.floor(Math.random()*v.length)]);
   return L.join('\n');
 }
 function showNote(note){
   const body=document.getElementById('noteBody');
-  document.getElementById('noteEmpty').style.display='none';
+  document.getElementById('notePh').style.display='none';
+  body.querySelectorAll('.note-plant,.note-genbtn').forEach(el=>el.style.display='none');
   let nc=body.querySelector('.note-content');
   if(!nc){nc=document.createElement('div');nc.className='note-content';body.appendChild(nc)}
-  // tag
   let tag=body.querySelector('.note-tag');
-  if(!tag){tag=document.createElement('div');tag.className='note-tag';body.appendChild(tag)}
+  if(!tag){tag=document.createElement('div');tag.className='note-tag';body.insertBefore(tag,nc)}
   tag.textContent=curMode==='intern'?'🏢 实习':'🔬 科研';
-  // copy btn
-  let cpb=body.querySelector('.note-copy');
-  if(!cpb){cpb=document.createElement('button');cpb.className='note-copy';cpb.textContent='复制';cpb.onclick=()=>navigator.clipboard.writeText(note).then(()=>{cpb.textContent='已复制 ✓';setTimeout(()=>cpb.textContent='复制',1500)});body.appendChild(cpb)}
   nc.textContent=note;
-  body.style.alignItems='flex-start';body.style.justifyContent='flex-start';
+  body.style.alignItems='flex-start';body.style.justifyContent='flex-start';body.style.position='relative';
+  let cpb=body.querySelector('.bp-copy');
+  if(!cpb){cpb=document.createElement('button');cpb.className='bp-copy';cpb.style.cssText='position:absolute;bottom:8px;right:8px;font-size:11px;padding:3px 10px;border-radius:8px;border:1px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;font-weight:600';cpb.textContent='复制';cpb.onclick=()=>navigator.clipboard.writeText(note).then(()=>{cpb.textContent='已复制 ✓';setTimeout(()=>cpb.textContent='复制',1500)});body.appendChild(cpb)}
 }
-function shake(el){el.style.transform='translateX(-4px)';setTimeout(()=>el.style.transform='translateX(4px)',80);setTimeout(()=>el.style.transform='',200)}
 
 // shelf
 function renderShelf(){
-  const inner=document.getElementById('shelfInner');
-  inner.innerHTML='';
+  const sc=document.getElementById('shelfScroll');sc.innerHTML='';
   ['intern','research'].forEach(cat=>{
     const sec=document.createElement('div');sec.className='shelf-sec';
-    const lbl=document.createElement('div');lbl.className='shelf-lbl';lbl.textContent=cat==='intern'?'实习':'科研';sec.appendChild(lbl);
+    const lbl=document.createElement('div');lbl.className='shelf-slbl';lbl.textContent=cat==='intern'?'实习':'科研';sec.appendChild(lbl);
     const row=document.createElement('div');row.className='books-row';
     BOOKS[cat].forEach(b=>{
       const arr=getRec(b.id);
       const div=document.createElement('div');div.className='book';
-      div.style.background=b.bg;
-      div.style.color=b.tc;
-      div.innerHTML=`<div class="book-shine"></div><div class="book-icon">${b.icon}</div><div class="book-info"><div class="book-name" style="color:${b.tc}">${b.name}</div><div class="book-sub" style="color:${b.tc}">${b.sub}</div><div class="book-cnt" style="color:${b.tc}">${arr.length} 条笔记</div></div>`;
+      div.style.cssText=`background:${b.bg};color:${b.tc}`;
+      div.innerHTML=`<div class="book-shine"></div><div class="book-dot"></div><div class="book-icon">${b.icon}</div><div class="book-name">${b.name}</div><div class="book-sub">${b.sub}</div><div class="book-cnt">${arr.length} 条笔记</div>`;
       div.onclick=()=>openBook(b,sec);
       row.appendChild(div);
     });
-    // add btn
     const add=document.createElement('div');add.className='book-add';
-    add.innerHTML=`<div class="book-add-icon">+</div><div>新建笔记本</div>`;
-    row.appendChild(add);
-    sec.appendChild(row);
-    // book panel
-    const panel=document.createElement('div');panel.className='book-panel';panel.id='bp-'+cat;
+    add.innerHTML=`<div class="book-add-plus">+</div><div>新建笔记本</div>`;
+    row.appendChild(add);sec.appendChild(row);
+    const panel=document.createElement('div');panel.className='book-panel';panel.dataset.cat=cat;
     sec.appendChild(panel);
-    inner.appendChild(sec);
+    sc.appendChild(sec);
   });
 }
-
 function openBook(b,sec){
-  if(curBook&&curBook.id===b.id){closeBook(sec);return}
-  // close any open
+  if(curBook&&curBook.id===b.id){closeBook();return}
   document.querySelectorAll('.book-panel.open').forEach(p=>p.classList.remove('open'));
   curBook=b;
-  const panel=sec.querySelector('.book-panel');
-  panel.classList.add('open');
-  renderBookPanel(b,panel);
+  const panel=sec.querySelector('.book-panel');panel.classList.add('open');
+  renderBP(b,panel);
 }
-function closeBook(sec){
+function closeBook(){
   curBook=null;
-  if(sec)sec.querySelector('.book-panel').classList.remove('open');
-  else document.querySelectorAll('.book-panel.open').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.book-panel.open').forEach(p=>{p.classList.remove('open');p.innerHTML=''});
 }
-function renderBookPanel(b,panel){
+function renderBP(b,panel){
   if(!panel)panel=document.querySelector('.book-panel.open');
   if(!panel)return;
-  const arr=getRec(b.id);
-  panel.innerHTML='';
+  const arr=getRec(b.id);panel.innerHTML='';
   const head=document.createElement('div');head.className='bp-head';
   head.style.background=b.bg;
-  head.innerHTML=`<div><div class="bp-title" style="color:${b.tc}">${b.icon} ${b.name}</div><div class="bp-sub" style="color:${b.tc}">${arr.length} 篇笔记</div></div><button class="bp-close" style="color:${b.tc}" onclick="closeBook()">← 关闭</button>`;
+  head.innerHTML=`<span style="font-size:15px">${b.icon}</span><div><div class="bp-title" style="color:${b.tc}">${b.name}</div></div><button class="bp-close" style="color:${b.tc};background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35)" onclick="closeBook()">← 关闭</button>`;
   panel.appendChild(head);
   const body=document.createElement('div');body.className='bp-body';
-  if(!arr.length){body.innerHTML='<div class="bp-empty"><span style="font-size:22px">📝</span>还没有笔记，去填写左侧并提炼吧</div>';panel.appendChild(body);return}
+  if(!arr.length){body.innerHTML='<div class="bp-empty"><span style="font-size:22px">📝</span>还没有笔记，去填写并提炼吧</div>';panel.appendChild(body);return}
   arr.forEach((r,i)=>{
     const div=document.createElement('div');div.className='bp-entry';
-    div.innerHTML=`<div class="bp-edate"><span>${r.date}</span><span>${EE[r.energy]||''}</span><button class="bp-del" onclick="delEntry('${b.id}',${i},event)">✕</button></div><div class="bp-epre">${r.note.replace(/</g,'&lt;')}</div><div class="bp-efull" id="bpef-${i}">${r.note.replace(/</g,'&lt;')}</div>`;
-    div.onclick=()=>{const f=div.querySelector('.bp-efull'),p=div.querySelector('.bp-epre');const o=f.style.display==='block';f.style.display=o?'none':'block';p.style.display=o?'':'none'};
+    div.innerHTML=`<div class="bp-edate"><span>${r.date}</span><span>${EE[r.energy]||''}</span><button class="bp-del" onclick="delEntry('${b.id}',${i},event)">✕</button></div><div class="bp-epre">${r.note.replace(/</g,'&lt;')}</div><div class="bp-efull">${r.note.replace(/</g,'&lt;')}</div>`;
+    div.onclick=()=>{const f=div.querySelector('.bp-efull'),p2=div.querySelector('.bp-epre');const o=f.style.display==='block';f.style.display=o?'none':'block';p2.style.display=o?'':'none'};
     body.appendChild(div);
   });
   panel.appendChild(body);
 }
 function delEntry(bid,i,e){
-  e.stopPropagation();
-  const arr=getRec(bid);arr.splice(i,1);saveRec(bid,arr);
-  const b=Object.values(BOOKS).flat().find(x=>x.id===bid);
-  if(b)renderBookPanel(b);
+  e.stopPropagation();const arr=getRec(bid);arr.splice(i,1);saveRec(bid,arr);
+  const b=Object.values(BOOKS).flat().find(x=>x.id===bid);if(b)renderBP(b);
   renderShelf();renderStats();upStreak();renderCal();
 }
 
@@ -673,43 +691,46 @@ function renderCal(){
   for(let i=1;i<=rem;i++){const d=document.createElement('div');d.className='cal-d om';d.textContent=i;grid.appendChild(d)}
 }
 
-// radar
+// radar SVG
 function renderRadar(){
   let vals=JSON.parse(localStorage.getItem('rv')||'null');
-  if(!vals){vals=[0.7,0.85,0.6,0.75,0.8];localStorage.setItem('rv',JSON.stringify(vals))}
-  const labels=['学习深度','执行力','创新','反思','坚持'];
-  const emojis=['😊','🧠','💡','🔄','🎯'];
-  const size=160,cx=size/2,cy=size/2,r=55,rInner=18;
-  const pts=n=>Array.from({length:n},(_,i)=>({
-    x:cx+r*Math.sin(2*Math.PI*i/n-Math.PI/2),
-    y:cy-r*Math.cos(2*Math.PI*i/n-Math.PI/2)
+  if(!vals){vals=[0.72,0.88,0.64,0.78,0.83];localStorage.setItem('rv',JSON.stringify(vals))}
+  const S=220,cx=S/2,cy=S/2,R=72;
+  const n=5,labels=['学习深度','执行力','创新','反思','坚持'];
+  const faceEmojis=['😊','😎','😤','😢','😑'];
+  const faceLabels=['GOOD','SPEED','STRESSED','ANGRY',''];
+  const faceColors=['#b8f0a0','#a0d4f8','#f8c0c0','#f8e0a0','#d0d0d0'];
+  const pts=(factor)=>Array.from({length:n},(_,i)=>({
+    x:cx+R*factor*Math.sin(2*Math.PI*i/n-Math.PI/2),
+    y:cy-R*factor*Math.cos(2*Math.PI*i/n-Math.PI/2)
   }));
-  const base=pts(5);
-  const data=vals.map((v,i)=>({x:cx+(r*v)*Math.sin(2*Math.PI*i/5-Math.PI/2),y:cy-(r*v)*Math.cos(2*Math.PI*i/5-Math.PI/2)}));
-  const poly=p=>p.map(p=>p.x+','+p.y).join(' ');
-  const gridLines=[0.25,0.5,0.75,1].map(s=>{
-    const gp=Array.from({length:5},(_,i)=>({x:cx+(r*s)*Math.sin(2*Math.PI*i/5-Math.PI/2),y:cy-(r*s)*Math.cos(2*Math.PI*i/5-Math.PI/2)}));
-    return `<polygon points="${poly(gp)}" fill="none" stroke="rgba(76,175,80,.15)" stroke-width="1"/>`;
-  }).join('');
-  const axisLines=base.map(p=>`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(76,175,80,.18)" stroke-width="1"/>`).join('');
-  const emojiLabels=base.map((p,i)=>{
-    const ex=cx+(r+18)*Math.sin(2*Math.PI*i/5-Math.PI/2);
-    const ey=cy-(r+18)*Math.cos(2*Math.PI*i/5-Math.PI/2);
-    return `<text x="${ex}" y="${ey}" text-anchor="middle" dominant-baseline="middle" font-size="14">${emojis[i]}</text>`;
-  }).join('');
-  const nameLabels=base.map((p,i)=>{
-    const ex=cx+(r+34)*Math.sin(2*Math.PI*i/5-Math.PI/2);
-    const ey=cy-(r+34)*Math.cos(2*Math.PI*i/5-Math.PI/2);
-    return `<text x="${ex}" y="${ey}" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="#9aa5b4">${labels[i]}</text>`;
-  }).join('');
-  const svg=`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-    ${gridLines}${axisLines}
-    <polygon points="${poly(data)}" fill="rgba(76,175,80,.2)" stroke="#4CAF50" stroke-width="1.5"/>
-    ${emojiLabels}${nameLabels}
-    <circle cx="${cx}" cy="${cy}" r="${rInner}" fill="white" stroke="rgba(76,175,80,.3)" stroke-width="1"/>
-    <text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="8" font-weight="700" fill="#4CAF50">Mood</text>
-    <text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="7" fill="#9aa5b4">GOOD</text>
-  </svg>`;
+  const poly=p=>p.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
+  let svg=`<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" xmlns="http://www.w3.org/2000/svg">`;
+  // grid
+  [.25,.5,.75,1].forEach(f=>{svg+=`<polygon points="${poly(pts(f))}" fill="none" stroke="rgba(82,196,26,.12)" stroke-width="1"/>`});
+  // axes
+  pts(1).forEach(p=>{svg+=`<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="rgba(82,196,26,.15)" stroke-width="1"/>`});
+  // data
+  const dp=vals.map((v,i)=>({x:cx+R*v*Math.sin(2*Math.PI*i/n-Math.PI/2),y:cy-R*v*Math.cos(2*Math.PI*i/n-Math.PI/2)}));
+  svg+=`<polygon points="${poly(dp)}" fill="rgba(82,196,26,.22)" stroke="#52c41a" stroke-width="2"/>`;
+  // face emojis around
+  pts(1).forEach((p,i)=>{
+    const ex=cx+(R+28)*Math.sin(2*Math.PI*i/n-Math.PI/2);
+    const ey=cy-(R+28)*Math.cos(2*Math.PI*i/n-Math.PI/2);
+    // circle bg
+    svg+=`<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="16" fill="${faceColors[i]}" opacity="0.85"/>`;
+    svg+=`<text x="${ex.toFixed(1)}" y="${(ey+5).toFixed(1)}" text-anchor="middle" font-size="14">${faceEmojis[i]}</text>`;
+    if(faceLabels[i]){
+      const lx=cx+(R+52)*Math.sin(2*Math.PI*i/n-Math.PI/2);
+      const ly=cy-(R+52)*Math.cos(2*Math.PI*i/n-Math.PI/2);
+      svg+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#aab4c4">${faceLabels[i]}</text>`;
+    }
+  });
+  // center
+  svg+=`<circle cx="${cx}" cy="${cy}" r="26" fill="white" stroke="rgba(82,196,26,.2)" stroke-width="1.5"/>`;
+  svg+=`<text x="${cx}" y="${cy-5}" text-anchor="middle" font-size="11" font-weight="800" fill="#52c41a">Mood</text>`;
+  svg+=`<text x="${cx}" y="${cy+8}" text-anchor="middle" font-size="9.5" fill="#aab4c4">GOOD</text>`;
+  svg+=`</svg>`;
   document.getElementById('radarWrap').innerHTML=svg;
 }
 
@@ -723,54 +744,40 @@ const setTL=(gid,i,d)=>localStorage.setItem('tl_'+gid+'_'+i,d);
 let pending=null;
 function createGoal(){
   const name=document.getElementById('dn').value.trim();
-  const desc=document.getElementById('dd').value.trim();
   const deadline=document.getElementById('dl').value;
   const span=document.getElementById('ds').value;
-  if(!name||!deadline){return}
-  const btn=document.getElementById('ddlBtn');
-  btn.classList.add('loading');btn.innerHTML='<div class="sp"></div> 拆分中…';
+  if(!name||!deadline)return;
+  const btn=document.getElementById('ddlBtn');btn.classList.add('loading');btn.innerHTML='<div class="sp"></div> 拆分中…';
+  const desc=document.getElementById('dd').value.trim();
   setTimeout(()=>{
     const days=span==='auto'?Math.max(1,Math.min(30,diffD(TODAY,deadline))):parseInt(span);
-    const tasks=splitTasks(desc||name,days);
+    const kws=desc.split(/[，,、。\n]+/).filter(k=>k.trim());if(!kws.length)kws.push(desc||name);
+    const tasks=Array.from({length:days},(_,i)=>{const r=i/days;return(r<.2?'启动·':r<.5?'推进·':r<.8?'深化·':'收尾·')+kws[i%kws.length]});
     pending={name,desc,deadline,tasks,createdAt:TODAY,id:'g'+Date.now()};
     const de=document.getElementById('sDays');de.innerHTML='';
-    tasks.slice(0,5).forEach((t,i)=>{const div=document.createElement('div');div.className='sd';div.innerHTML=`<span class="sdl">Day${i+1}</span><span class="sdt">${t}</span>`;de.appendChild(div)});
-    if(tasks.length>5){const m=document.createElement('div');m.style.cssText='font-size:10px;color:var(--muted);margin-top:2px';m.textContent=`…还有${tasks.length-5}天`;de.appendChild(m)}
+    tasks.slice(0,5).forEach((t,i)=>{const d=document.createElement('div');d.className='sd';d.innerHTML=`<span class="sdl">Day${i+1}</span><span>${t}</span>`;de.appendChild(d)});
+    if(tasks.length>5){const m=document.createElement('div');m.style.cssText='font-size:10px;color:var(--muted)';m.textContent='…还有'+(tasks.length-5)+'天';de.appendChild(m)}
     document.getElementById('sPreview').style.display='';
-    btn.classList.remove('loading');btn.innerHTML='<span>🤖</span> AI 拆分任务';
+    btn.classList.remove('loading');btn.innerHTML='🤖 AI 拆分任务';
   },700);
 }
-function splitTasks(desc,days){
-  const kws=desc.split(/[，,、。\n]+/).filter(k=>k.trim()).map(k=>k.trim());
-  if(!kws.length)kws.push(desc||'完成目标');
-  return Array.from({length:days},(_,i)=>{const r=i/days;return(r<.2?'启动·':r<.5?'推进·':r<.8?'深化·':'收尾·')+kws[i%kws.length]});
-}
 function confirmGoal(){
-  if(!pending)return;
-  const goals=getGoals();goals.push(pending);saveGoals(goals);pending=null;
+  if(!pending)return;saveGoals([...getGoals(),pending]);pending=null;
   document.getElementById('sPreview').style.display='none';
   document.getElementById('dn').value='';document.getElementById('dd').value='';
   renderDDL();renderStats();
 }
 function delGoal(id){saveGoals(getGoals().filter(g=>g.id!==id));renderDDL();renderStats()}
 function renderDDL(){
-  // today tasks
-  const wrap=document.getElementById('tWrap');
-  wrap.querySelectorAll('.ti').forEach(el=>el.remove());
+  const wrap=document.getElementById('tWrap');wrap.querySelectorAll('.ti').forEach(el=>el.remove());
   const all=[];
-  getGoals().forEach(g=>g.tasks.forEach((text,i)=>{
-    const date=getTL(g.id,i)||addD(g.createdAt,i);
-    if(date===TODAY)all.push({gid:g.id,gname:g.name,idx:i,text,done:getTD(g.id,i)});
-  }));
+  getGoals().forEach(g=>g.tasks.forEach((text,i)=>{const date=getTL(g.id,i)||addD(g.createdAt,i);if(date===TODAY)all.push({gid:g.id,gname:g.name,idx:i,text,done:getTD(g.id,i)})}));
   document.getElementById('noTask').style.display=all.length?'none':'';
   all.forEach(t=>{
     const div=document.createElement('div');div.className='ti'+(t.done?' done':'');
-    div.innerHTML=`<div class="tck${t.done?' on':''}" onclick="toggleT('${t.gid}',${t.idx},${t.done})"></div>
-      <div class="tb"><div class="tgtag">${t.gname}</div><div class="ttxt${t.done?' stk':''}">${t.text}</div></div>
-      ${!t.done?`<button class="tdly" onclick="reschedule('${t.gid}')">↺</button>`:''}`;
+    div.innerHTML=`<div class="tck${t.done?' on':''}" onclick="toggleT('${t.gid}',${t.idx},${t.done})"></div><div class="tb"><div class="tgtag">${t.gname}</div><div class="ttxt${t.done?' stk':''}">${t.text}</div></div>${!t.done?`<button class="tdly" onclick="reschedule('${t.gid}')">↺</button>`:''}`;
     wrap.appendChild(div);
   });
-  // goals
   const list=document.getElementById('gList');list.innerHTML='';
   const goals=getGoals();
   if(!goals.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:6px 0">还没有目标</div>';return}
@@ -778,10 +785,7 @@ function renderDDL(){
     const total=g.tasks.length,done=g.tasks.filter((_,i)=>getTD(g.id,i)).length,pct=total?Math.round(done/total*100):0;
     const left=Math.max(0,diffD(TODAY,g.deadline));
     const c=document.createElement('div');c.className='gc';
-    c.innerHTML=`<div class="gcname"><span>🎯 ${g.name}</span><button class="gcdel" onclick="delGoal('${g.id}')">✕</button></div>
-      <div class="gcmeta">截止 ${g.deadline} · 剩${left}天</div>
-      <div class="pbar"><div class="pbarf" style="width:${pct}%"></div></div>
-      <div class="plbl"><span>${done}/${total}</span><span>${pct}%</span></div>`;
+    c.innerHTML=`<div class="gcname"><span>🎯 ${g.name}</span><button class="gcdel" onclick="delGoal('${g.id}')">✕</button></div><div class="gcmeta">截止 ${g.deadline} · 剩${left}天</div><div class="pbar"><div class="pbarf" style="width:${pct}%"></div></div><div class="plbl"><span>${done}/${total}</span><span>${pct}%</span></div>`;
     list.appendChild(c);
   });
 }
@@ -789,14 +793,9 @@ function toggleT(gid,idx,was){setTD(gid,idx,!was);renderDDL();renderStats()}
 function reschedule(gid){
   const g=getGoals().find(x=>x.id===gid);if(!g)return;
   const undone=g.tasks.map((_,i)=>i).filter(i=>!getTD(gid,i));
-  const remain=Math.max(1,diffD(TODAY,g.deadline));
-  const step=remain/undone.length;
-  undone.forEach((idx,n)=>setTL(gid,idx,addD(TODAY,Math.floor(n*step))));
-  renderDDL();
+  const remain=Math.max(1,diffD(TODAY,g.deadline));const step=remain/undone.length;
+  undone.forEach((idx,n)=>setTL(gid,idx,addD(TODAY,Math.floor(n*step))));renderDDL();
 }
-
-// sidebar nav
-document.querySelectorAll('.sbi').forEach((b,i)=>{if(i>0&&i<6)b.onclick=()=>{document.querySelectorAll('.sbi').forEach(x=>x.classList.remove('on'));b.classList.add('on')}});
 
 // init
 renderShelf();upStreak();renderStats();renderCal();renderRadar();renderDDL();
