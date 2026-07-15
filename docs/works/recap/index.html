@@ -27,7 +27,7 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 /* ─── TOPBAR ─── */
 .topbar{flex-shrink:0;height:52px;background:var(--white);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:0;z-index:10}
 .tb-left{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-.tb-center{flex:1;display:flex;justify-content:center}
+.tb-center{flex:1}
 .tb-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 .back-btn{display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;color:var(--t2);background:rgba(255,255,255,.9);border:1px solid var(--bd);border-radius:99px;padding:4px 12px 4px 9px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:all .18s;white-space:nowrap}
 .back-btn:hover{color:var(--green);transform:translateX(-1px)}
@@ -62,7 +62,7 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .mc-ta{flex:1;border:none;border-radius:8px;padding:6px 8px;font-size:12.5px;color:var(--text);background:#fafcfa;font-family:inherit;line-height:1.5;resize:none;transition:background .18s;outline:none;width:100%}
 .mc-ta:focus{background:#fff;box-shadow:0 0 0 2px rgba(82,196,26,.16)}
 .mc-foot{display:flex;align-items:center;margin-top:4px}
-.mc-time{font-size:10px;color:var(--muted)}
+
 .mc-tag{font-size:9.5px;font-weight:600;background:var(--gs);color:var(--green);padding:1px 7px;border-radius:99px}
 /* sparkline */
 .spark{width:100%;height:22px;margin:3px 0}
@@ -229,6 +229,10 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
 
 @keyframes sp{to{transform:rotate(360deg)}}
 .sp{width:11px;height:11px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+
+.mode-tabs{display:flex;gap:4px;background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:3px;flex-shrink:0}
+.mtab{flex:1;padding:5px 0;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .18s;text-align:center}
+.mtab.on{background:var(--green2);color:#fff;box-shadow:0 2px 6px rgba(82,196,26,.25)}
 </style>
 </head>
 <body>
@@ -247,12 +251,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       <span class="tb-star">✦</span>
       <div class="tb-title">Growth Journal</div>
     </div>
-    <div class="tb-center">
-      <div class="tb-tabs">
-        <button class="ttab on" data-m="intern" onclick="switchMode('intern')">📗 实习</button>
-        <button class="ttab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
-      </div>
-    </div>
+    <div class="tb-center"></div>
     <div class="tb-right">
       <div class="streak-pill">🔥 <span id="sNum">0</span> 天连续</div>
       <button class="new-btn" onclick="toggleDDL()">+ 新建任务</button>
@@ -264,6 +263,10 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
 
     <!-- LEFT -->
     <div class="col-l">
+    <div class="mode-tabs">
+      <button class="mtab on" data-m="intern" onclick="switchMode('intern')">📗 实习</button>
+      <button class="mtab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
+    </div>
       <!-- 成长复盘 -->
       <div class="mc">
         <div class="mc-title">🌱 今天的成长复盘 ✨</div>
@@ -271,7 +274,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
           <div class="mc-av">👩</div>
           <textarea class="mc-ta" id="i-did" rows="2" placeholder="跟导师做了用户访谈，收集了12个有效用户痛点…" style="height:54px"></textarea>
         </div>
-        <div class="mc-foot"><span class="mc-time">10:30</span><span style="margin-left:auto;color:var(--muted);font-size:12px">···</span></div>
+        
       </div>
 
       <!-- 学习观察 -->
@@ -282,7 +285,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
           <polyline points="0,18 30,14 60,15 90,8 120,11 150,5 180,8 200,4" stroke="#52c41a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
           <circle cx="200" cy="4" r="3" fill="#52c41a"/>
         </svg>
-        <div class="mc-foot"><span class="mc-tag">用户路径分析</span><span class="mc-time" style="margin-left:auto">14:20</span></div>
+        <div class="mc-foot"><span class="mc-tag">用户路径分析</span></div>
       </div>
 
       <!-- 科研（hidden） -->
@@ -295,14 +298,14 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       <div class="mc">
         <div class="mc-title">😰 遇到的卡点</div>
         <textarea class="mc-ta" id="i-block" rows="2" placeholder="数据权限还没申请到，部分指标口径不一致…" style="height:54px"></textarea>
-        <div class="mc-foot"><span class="mc-time" style="margin-left:auto">16:40</span></div>
+        
       </div>
 
       <!-- 明天要做 -->
       <div class="mc">
         <div class="mc-title">🎯 明天要做</div>
         <textarea class="mc-ta" id="i-next" rows="2" placeholder="整理成结构化需求文档，对齐产品与设计方向。" style="height:54px"></textarea>
-        <div class="mc-foot"><span class="mc-time" style="margin-left:auto">18:00</span></div>
+        
       </div>
 
       <!-- 状态 + 按钮 -->
@@ -479,7 +482,7 @@ let curMode='intern',curBook=null,eng=4;
 
 function switchMode(m){
   curMode=m;
-  document.querySelectorAll('.ttab').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  document.querySelectorAll('.ttab,.mtab').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
   document.getElementById('fr').style.display=m==='research'?'flex':'none';
 }
 function setE(v){eng=v;document.querySelectorAll('.edot').forEach(d=>d.classList.toggle('on',+d.dataset.v===v))}
