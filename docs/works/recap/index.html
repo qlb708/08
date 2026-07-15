@@ -46,16 +46,16 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .bell::after{content:'';position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--red);border:1.5px solid var(--white)}
 
 /* ─── MAIN ─── */
-.main{flex:1;min-height:0;display:flex;padding:16px 28px;gap:18px;overflow:hidden}
+.main{flex:1;min-height:0;display:flex;padding:14px 40px;gap:20px;overflow:hidden}
 
 /* ─── CARD ─── */
 .card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh)}
 
 /* ─── LEFT COL ─── */
-.col-l{width:310px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:none}
+.col-l{width:230px;flex-shrink:0;display:flex;flex-direction:column;gap:7px;overflow:hidden}
 
 /* mini cards */
-.mc{background:var(--white);border-radius:13px;box-shadow:var(--sh);padding:10px 14px}
+.mc{background:var(--white);border-radius:11px;box-shadow:var(--sh);padding:8px 12px}
 .mc-title{font-size:11.5px;font-weight:700;color:var(--t2);display:flex;align-items:center;gap:4px;margin-bottom:5px}
 .mc-row{display:flex;align-items:flex-start;gap:8px}
 .mc-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f9c5d5,#f7a8c4);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
@@ -142,18 +142,18 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .bp-del:hover{background:#fee2e2;color:var(--red)}
 
 /* ─── RIGHT COL ─── */
-.col-r{width:310px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.col-r{width:304px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;overflow:hidden}
 
 /* cal */
-.cal-card{flex-shrink:0;padding:14px 16px;display:flex;flex-direction:column;gap:8px;overflow:visible}
+.cal-card{flex-shrink:0;padding:14px 14px;display:flex;flex-direction:column;gap:8px;overflow:visible}
 .cal-head{display:flex;align-items:center}
 .cal-title{font-size:14px;font-weight:800;flex:1}
 .cal-nav{display:flex;gap:3px}
 .cal-nav button{width:22px;height:22px;border:1px solid var(--bd);background:var(--white);border-radius:7px;cursor:pointer;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .13s}
 .cal-nav button:hover{background:var(--gs);color:var(--green)}
-.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .cw{font-size:9.5px;font-weight:700;color:var(--muted);text-align:center;padding:1px 0}
-.cd{height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;position:relative;transition:all .12s;color:var(--t2);font-weight:500;z-index:1;user-select:none}
+.cd{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13.5px;cursor:pointer;position:relative;transition:all .12s;color:var(--t2);font-weight:500;z-index:1;user-select:none}
 .cd:hover{background:var(--gs)}
 .cd.om{color:rgba(159,170,184,.28);cursor:default}.cd.om:hover{background:transparent}
 .cd.today{background:var(--green2);color:#fff;font-weight:800;border-radius:50%}.cd.today:hover{background:var(--green2)}
@@ -230,7 +230,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
 @keyframes sp{to{transform:rotate(360deg)}}
 .sp{width:11px;height:11px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 
-.mode-tabs{display:flex;gap:4px;background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:3px;flex-shrink:0}
+.mode-tabs{display:flex;gap:4px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:3px;flex-shrink:0}
 .mtab{flex:1;padding:5px 0;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .18s;text-align:center}
 .mtab.on{background:var(--green2);color:#fff;box-shadow:0 2px 6px rgba(82,196,26,.25)}
 
@@ -271,7 +271,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       <button class="mtab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
     </div>
       <!-- 实习卡片组 -->
-      <div id="cards-intern" style="display:flex;flex-direction:column;gap:9px">
+      <div id="cards-intern" style="display:flex;flex-direction:column;gap:7px">
         <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
           <textarea class="mc-ta" id="i-did" placeholder="跟导师做了用户访谈…"></textarea></div>
         <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
@@ -280,7 +280,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
           <textarea class="mc-ta" id="i-block" placeholder="数据权限还没申请到…"></textarea></div>
         <div class="mc"><div class="mc-title">🎯 明天要做</div>
           <textarea class="mc-ta" id="i-next" placeholder="整理成结构化需求文档…"></textarea></div>
-        <div class="mc" style="padding:8px 12px">
+        <div class="mc" style="padding:6px 10px">
           <div class="erow"><span class="elbl">今日状态</span>
             <div class="edots" id="edots">
               <button class="edot" data-v="1" onclick="setE(1)">😊</button>
@@ -294,7 +294,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       </div>
 
       <!-- 科研卡片组 -->
-      <div id="cards-research" style="display:none;flex-direction:column;gap:9px">
+      <div id="cards-research" style="display:none;flex-direction:column;gap:7px">
         <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
           <textarea class="mc-ta" id="r-recap" placeholder="今天的主要进展和感受…"></textarea></div>
         <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
