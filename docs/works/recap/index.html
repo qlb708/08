@@ -46,16 +46,16 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .bell::after{content:'';position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--red);border:1.5px solid var(--white)}
 
 /* ─── MAIN ─── */
-.main{flex:1;min-height:0;display:flex;padding:14px 40px;gap:20px;overflow:hidden}
+.main{flex:1;min-height:0;display:flex;padding:20px 52px;gap:28px;overflow:hidden}
 
 /* ─── CARD ─── */
 .card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh)}
 
 /* ─── LEFT COL ─── */
-.col-l{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:7px;overflow:hidden}
+.col-l{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}
 
 /* mini cards */
-.mc{background:var(--white);border-radius:11px;box-shadow:var(--sh);padding:8px 12px}
+.mc{background:var(--white);border-radius:11px;box-shadow:var(--sh);padding:11px 15px}
 .mc-title{font-size:11.5px;font-weight:700;color:var(--t2);display:flex;align-items:center;gap:4px;margin-bottom:5px}
 .mc-row{display:flex;align-items:flex-start;gap:8px}
 .mc-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f9c5d5,#f7a8c4);display:flex;align-items:center;font-size:12px;flex-shrink:0}
@@ -79,10 +79,10 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .gen-btn.loading{opacity:.65;pointer-events:none}
 
 /* ─── MID COL ─── */
-.col-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.col-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;overflow:hidden}
 
 /* note */
-.note-card{flex-shrink:0;height:160px;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.note-card{flex-shrink:0;height:168px;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
 .note-head{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .note-lbl{font-size:13px;font-weight:700}
 .note-body{flex:1;min-height:0;border-radius:11px;background:#fafcf7;border:1.5px solid rgba(82,196,26,.08);display:flex;flex-direction:row;align-items:flex-end;padding:10px 14px;gap:8px;position:relative;overflow:hidden}
@@ -95,11 +95,11 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .note-cp{position:absolute;bottom:7px;right:54px;font-size:11px;padding:2px 9px;border-radius:7px;border:1px solid var(--bd);background:var(--white);color:var(--t2);cursor:pointer;font-weight:600}
 
 /* stats */
-.stats-card{flex-shrink:0;height:148px;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.stats-card{flex-shrink:0;height:148px;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
 .stats-head{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .stats-lbl{font-size:13px;font-weight:700;flex:1}
 .period{font-size:11.5px;color:var(--t2);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:2px 9px;cursor:pointer}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex:1}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;flex:1}
 .sc{border-radius:13px;padding:9px 11px;display:flex;flex-direction:column;gap:2px;position:relative;overflow:hidden}
 .sc-big{position:absolute;right:2px;bottom:-6px;font-size:40px;opacity:.22;pointer-events:none}
 .sc-lbl{font-size:10.5px;font-weight:700;color:var(--t2)}
@@ -108,11 +108,11 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .sc-trend{font-size:10px;font-weight:600;margin-top:2px}
 
 /* shelf */
-.shelf-card{flex:1;min-height:0;overflow:hidden;padding:11px 16px 0;display:flex;flex-direction:column;gap:8px}
-.shelf-scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-bottom:12px;scrollbar-width:thin;scrollbar-color:rgba(82,196,26,.15) transparent}
+.shelf-card{flex:1;min-height:0;overflow:hidden;padding:14px 18px 0;display:flex;flex-direction:column;gap:10px}
+.shelf-scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-bottom:14px;scrollbar-width:thin;scrollbar-color:rgba(82,196,26,.15) transparent}
 .shelf-sec{display:flex;flex-direction:column;gap:6px}
 .shelf-lbl{font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:.07em}
-.books-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.books-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .books-row::-webkit-scrollbar{display:none}
 /* book */
 .book{width:116px;height:138px;border-radius:15px;flex-shrink:0;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;padding:10px 10px 9px;position:relative;overflow:hidden;transition:transform .22s cubic-bezier(.34,1.48,.64,1),box-shadow .22s;box-shadow:0 3px 12px rgba(0,0,0,.07)}
@@ -142,10 +142,10 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .bp-del:hover{background:#fee2e2;color:var(--red)}
 
 /* ─── RIGHT COL ─── */
-.col-r{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.col-r{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;overflow:hidden}
 
 /* cal */
-.cal-card{flex-shrink:0;padding:14px 14px;display:flex;flex-direction:column;gap:8px;overflow:visible}
+.cal-card{flex-shrink:0;padding:16px 16px;display:flex;flex-direction:column;gap:10px;overflow:visible}
 .cal-head{display:flex;align-items:center}
 .cal-title{font-size:14px;font-weight:800;flex:1;text-align:center}
 .cal-nav{display:flex;gap:3px}
@@ -163,13 +163,13 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .cd.sel{background:rgba(82,196,26,.14);color:var(--green);font-weight:700}
 
 /* radar */
-.radar-card{flex-shrink:0;padding:8px 14px;display:flex;flex-direction:column;gap:6px}
+.radar-card{flex-shrink:0;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
 .radar-wrap{display:flex;align-items:center;justify-content:center}
 
 /* achievements */
-.ach-card{flex:1;min-height:0;padding:12px 14px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.ach-card{flex:1;min-height:0;padding:14px 16px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
 .ach-list{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;scrollbar-width:none}
-.ach-item{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:11px;background:var(--bg);border:1px solid var(--bd);flex-shrink:0}
+.ach-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:11px;background:var(--bg);border:1px solid var(--bd);flex-shrink:0}
 .ach-ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;font-size:14px;flex-shrink:0}
 .ach-ti{font-size:12px;font-weight:700;color:var(--text)}
 .ach-de{font-size:10.5px;color:var(--muted);margin-top:1px}
@@ -370,7 +370,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       <button class="mtab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
     </div>
       <!-- 实习卡片组 -->
-      <div id="cards-intern" style="display:flex;flex-direction:column;gap:7px">
+      <div id="cards-intern" style="display:flex;flex-direction:column;gap:12px">
         <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
           <textarea class="mc-ta" id="i-did" placeholder="跟导师做了用户访谈…"></textarea></div>
         <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
