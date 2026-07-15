@@ -267,60 +267,45 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       <button class="mtab on" data-m="intern" onclick="switchMode('intern')">📗 实习</button>
       <button class="mtab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
     </div>
-      <!-- 成长复盘 -->
-      <div class="mc">
-        <div class="mc-title">🌱 今天的成长复盘 ✨</div>
-        <div class="mc-row">
-          <div class="mc-av">👩</div>
-          <textarea class="mc-ta" id="i-did" rows="2" placeholder="跟导师做了用户访谈，收集了12个有效用户痛点…" style="height:54px"></textarea>
-        </div>
-        
-      </div>
-
-      <!-- 学习观察 -->
-      <div class="mc">
-        <div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
-        <textarea class="mc-ta" id="i-learned" rows="2" placeholder="发现用户在意流程顺不顺，路径清晰度影响转化率…" style="height:54px"></textarea>
-        <svg class="spark" viewBox="0 0 200 22" fill="none">
-          <polyline points="0,18 30,14 60,15 90,8 120,11 150,5 180,8 200,4" stroke="#52c41a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-          <circle cx="200" cy="4" r="3" fill="#52c41a"/>
-        </svg>
-        <div class="mc-foot"><span class="mc-tag">用户路径分析</span></div>
-      </div>
-
-      <!-- 科研（hidden） -->
-      <div id="fr" style="display:none;flex-direction:column;gap:8px">
-        <div class="mc"><div class="mc-title">🧪 今天推进了什么</div><textarea class="mc-ta" id="r-did" rows="2" placeholder="跑完了第一组对照实验…" style="height:54px"></textarea></div>
-        <div class="mc"><div class="mc-title">🔍 新发现 / 新想法</div><textarea class="mc-ta" id="r-learned" rows="2" placeholder="发现baseline在长文本退化…" style="height:54px"></textarea></div>
-      </div>
-
-      <!-- 卡点 -->
-      <div class="mc">
-        <div class="mc-title">😰 遇到的卡点</div>
-        <textarea class="mc-ta" id="i-block" rows="2" placeholder="数据权限还没申请到，部分指标口径不一致…" style="height:54px"></textarea>
-        
-      </div>
-
-      <!-- 明天要做 -->
-      <div class="mc">
-        <div class="mc-title">🎯 明天要做</div>
-        <textarea class="mc-ta" id="i-next" rows="2" placeholder="整理成结构化需求文档，对齐产品与设计方向。" style="height:54px"></textarea>
-        
-      </div>
-
-      <!-- 状态 + 按钮 -->
-      <div class="mc" style="padding:8px 12px">
-        <div class="erow">
-          <span class="elbl">今日状态</span>
-          <div class="edots" id="edots">
-            <button class="edot" data-v="1" onclick="setE(1)">😊</button>
-            <button class="edot" data-v="2" onclick="setE(2)">😐</button>
-            <button class="edot" data-v="3" onclick="setE(3)">🙂</button>
-            <button class="edot on" data-v="4" onclick="setE(4)">😄</button>
-            <button class="edot" data-v="5" onclick="setE(5)">🚀</button>
+      <!-- 实习卡片组 -->
+      <div id="cards-intern" style="display:flex;flex-direction:column;gap:9px">
+        <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
+          <textarea class="mc-ta" id="i-did" placeholder="跟导师做了用户访谈…"></textarea></div>
+        <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
+          <textarea class="mc-ta" id="i-learned" placeholder="发现用户在意流程顺不顺…"></textarea></div>
+        <div class="mc"><div class="mc-title">😰 遇到的卡点</div>
+          <textarea class="mc-ta" id="i-block" placeholder="数据权限还没申请到…"></textarea></div>
+        <div class="mc"><div class="mc-title">🎯 明天要做</div>
+          <textarea class="mc-ta" id="i-next" placeholder="整理成结构化需求文档…"></textarea></div>
+        <div class="mc" style="padding:8px 12px">
+          <div class="erow"><span class="elbl">今日状态</span>
+            <div class="edots" id="edots">
+              <button class="edot" data-v="1" onclick="setE(1)">😊</button>
+              <button class="edot" data-v="2" onclick="setE(2)">😐</button>
+              <button class="edot" data-v="3" onclick="setE(3)">🙂</button>
+              <button class="edot on" data-v="4" onclick="setE(4)">😄</button>
+              <button class="edot" data-v="5" onclick="setE(5)">🚀</button>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- 科研卡片组 -->
+      <div id="cards-research" style="display:none;flex-direction:column;gap:9px">
+        <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
+          <textarea class="mc-ta" id="r-recap" placeholder="今天的主要进展和感受…"></textarea></div>
+        <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
+          <textarea class="mc-ta" id="r-learned" placeholder="发现baseline在长文本退化…"></textarea></div>
+        <div class="mc"><div class="mc-title">🧪 今天推进了什么</div>
+          <textarea class="mc-ta" id="r-did" placeholder="跑完了第一组对照实验…"></textarea></div>
+        <div class="mc"><div class="mc-title">🔍 新发现 / 新想法</div>
+          <textarea class="mc-ta" id="r-found" placeholder="发现一个有趣的规律…"></textarea></div>
+        <div class="mc"><div class="mc-title">😰 遇到的卡点</div>
+          <textarea class="mc-ta" id="r-block" placeholder="模型收敛慢，学习率需要调整…"></textarea></div>
+        <div class="mc"><div class="mc-title">🎯 明天要做</div>
+          <textarea class="mc-ta" id="r-next" placeholder="跑第二组实验…"></textarea></div>
+      </div>
+
       <button class="gen-btn" id="genBtn" onclick="gen()"><span>✦</span> AI 提炼今日成长笔记</button>
     </div>
 
@@ -483,7 +468,15 @@ let curMode='intern',curBook=null,eng=4;
 function switchMode(m){
   curMode=m;
   document.querySelectorAll('.ttab,.mtab').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
-  document.getElementById('fr').style.display=m==='research'?'flex':'none';
+  // 切换左列卡片组
+  const ci=document.getElementById('cards-intern');
+  const cr=document.getElementById('cards-research');
+  if(ci) ci.style.display=m==='intern'?'flex':'none';
+  if(cr) cr.style.display=m==='research'?'flex':'none';
+  // 刷新书架（不同模式书架相同，只切换数据）
+  renderShelf();
+  // 恢复当天填写内容
+  loadDayFields();
 }
 function setE(v){eng=v;document.querySelectorAll('.edot').forEach(d=>d.classList.toggle('on',+d.dataset.v===v))}
 
@@ -513,6 +506,22 @@ function renderStats(){
   document.getElementById('achT').textContent=done;
   document.getElementById('achN').textContent=notes;
   document.getElementById('achR').textContent=total?Math.round(done/total*100):0;
+}
+
+
+function loadDayFields(){
+  if(curMode==='intern'){
+    const d=JSON.parse(localStorage.getItem('intern_'+TODAY)||'{}');
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''};
+    set('i-did',d.did);set('i-learned',d.learned);set('i-block',d.block);set('i-next',d.next);
+    const ev=parseInt(d.energy||4);
+    document.querySelectorAll('.edot').forEach(b=>b.classList.toggle('on',parseInt(b.dataset.v)===ev));
+  } else {
+    const d=JSON.parse(localStorage.getItem('research_'+TODAY)||'{}');
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||''};
+    set('r-recap',d.recap);set('r-learned',d.learned);set('r-did',d.did);
+    set('r-found',d.found);set('r-block',d.block);set('r-next',d.next);
+  }
 }
 
 function gen(){
