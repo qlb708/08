@@ -55,11 +55,11 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;color:v
 .col-l{width:clamp(220px,18vw,280px);flex-shrink:0;display:flex;flex-direction:column;gap:clamp(7px,0.9vh,12px);overflow:hidden}
 
 /* mini cards */
-.mc{background:var(--white);border-radius:11px;box-shadow:var(--sh);padding:clamp(7px,0.9vh,11px) clamp(10px,1vw,15px)}
+.mc{background:var(--white);border-radius:11px;box-shadow:var(--sh);padding:clamp(7px,0.9vh,11px) clamp(10px,1vw,15px);flex:1;min-height:0;display:flex;flex-direction:column;gap:4px}
 .mc-title{font-size:11.5px;font-weight:700;color:var(--t2);display:flex;align-items:center;gap:4px;margin-bottom:5px}
 .mc-row{display:flex;align-items:flex-start;gap:8px}
 .mc-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#f9c5d5,#f7a8c4);display:flex;align-items:center;font-size:12px;flex-shrink:0}
-.mc-ta{flex:1;border:none;border-radius:8px;padding:6px 8px;font-size:12.5px;color:var(--text);background:#fafcfa;font-family:inherit;line-height:1.5;resize:none;transition:background .18s;outline:none;width:100%}
+.mc-ta{flex:1;min-height:0;border:none;border-radius:8px;padding:6px 8px;font-size:12.5px;color:var(--text);background:#fafcfa;font-family:inherit;line-height:1.5;resize:none;transition:background .18s;outline:none;width:100%}
 .mc-ta:focus{background:#fff;box-shadow:0 0 0 2px rgba(82,196,26,.16)}
 .mc-foot{display:flex;align-items:center;margin-top:4px}
 
@@ -370,7 +370,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       <button class="mtab" data-m="research" onclick="switchMode('research')">🔬 科研</button>
     </div>
       <!-- 实习卡片组 -->
-      <div id="cards-intern" style="display:flex;flex-direction:column;gap:clamp(7px,0.9vh,12px)">
+      <div id="cards-intern" style="display:flex;flex-direction:column;gap:clamp(7px,0.9vh,12px);flex:1;min-height:0">
         <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
           <textarea class="mc-ta" id="i-did" placeholder="跟导师做了用户访谈…"></textarea></div>
         <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
@@ -393,7 +393,7 @@ input:focus,select:focus{border-color:rgba(82,196,26,.4);background:#fff}
       </div>
 
       <!-- 科研卡片组 -->
-      <div id="cards-research" style="display:none;flex-direction:column;gap:7px">
+      <div id="cards-research" style="display:none;flex-direction:column;gap:clamp(7px,0.9vh,12px);flex:1;min-height:0">
         <div class="mc"><div class="mc-title">🌱 今天的成长复盘 ✨</div>
           <textarea class="mc-ta" id="r-recap" placeholder="今天的主要进展和感受…"></textarea></div>
         <div class="mc"><div class="mc-title">🌿 学习 / 观察到什么 ✏️</div>
