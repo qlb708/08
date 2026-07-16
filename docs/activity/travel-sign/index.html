@@ -3,524 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>FATE TRIP · 抽你的旅行签</title>
+<title>FATE TRIP</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
 :root{
-  --blue1:#0a1628;--blue2:#0d2045;--blue3:#1a3a6e;
-  --accent:#4a90d9;--accent2:#7ab8f5;--accent3:#b8d9ff;
+  --bg:#07101f;
+  --blue:#1a4a9e;--blue2:#2a6ad4;--blue3:#4a90d9;--blue4:#7ab8f5;
   --gold:#d4af5a;--gold2:#f0cc7a;
-  --white:#ffffff;--text:#e8f2ff;--muted:#7a9cc8;
-  --card-r:18px;
-  --sh:0 16px 48px rgba(0,0,0,.45);
+  --text:#e8f4ff;--muted:#5a80a8;
 }
-html,body{height:100%;background:var(--blue1);font-family:'PingFang SC','Hiragino Sans GB',sans-serif;overflow:hidden;color:var(--text)}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
+  font-family:'PingFang SC','Hiragino Sans GB',sans-serif;color:var(--text)}
 
-/* ===== 动态背景 ===== */
-#bg{position:fixed;inset:0;z-index:0;overflow:hidden}
-.wave{position:absolute;border-radius:50%;filter:blur(60px);opacity:.15;animation:float linear infinite}
-.w1{width:300px;height:300px;background:radial-gradient(#2a6ad4,transparent 70%);top:-80px;left:-60px;animation-duration:18s}
-.w2{width:400px;height:400px;background:radial-gradient(#1a4fa8,transparent 70%);bottom:-120px;right:-100px;animation-duration:22s;animation-direction:reverse}
-.w3{width:200px;height:200px;background:radial-gradient(#4a90d9,transparent 70%);top:40%;left:50%;animation-duration:14s}
-@keyframes float{0%{transform:translate(0,0) scale(1)}33%{transform:translate(20px,-15px) scale(1.05)}66%{transform:translate(-15px,10px) scale(.95)}100%{transform:translate(0,0) scale(1)}}
+/* ─── 星空 ─── */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.s{position:absolute;border-radius:50%;background:#fff;animation:tw ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.04}to{opacity:.55}}
 
-/* 星点 */
-.star-field{position:absolute;inset:0}
-.sd{position:absolute;border-radius:50%;background:#fff;animation:tw ease-in-out infinite alternate}
-@keyframes tw{from{opacity:.05}to{opacity:.5}}
+/* ─── 页面容器 ─── */
+.screen{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:opacity .5s,transform .5s}
+.screen.out{opacity:0;pointer-events:none;transform:scale(.96)}
+.screen.in-up{opacity:0;pointer-events:none;transform:translateY(30px)}
 
-/* ===== 全局层 ===== */
-.page{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
-  transition:opacity .45s ease,transform .45s ease;z-index:1;overflow:hidden}
-.page.hidden{opacity:0;pointer-events:none;transform:translateY(24px)}
+/* ─── 返回 ─── */
+.back{position:fixed;top:20px;left:18px;z-index:99;
+  display:flex;align-items:center;gap:4px;
+  font-size:13px;color:var(--muted);text-decoration:none;
+  transition:color .2s;padding:6px}
+.back:hover{color:var(--blue4)}
+.back svg{opacity:.7}
 
-/* 返回 */
-.back{position:fixed;top:env(safe-area-inset-top,14px);left:16px;z-index:999;
-  display:flex;align-items:center;gap:5px;padding:7px 14px 7px 9px;
-  background:rgba(255,255,255,.07);backdrop-filter:blur(12px);
-  border:1px solid rgba(74,144,217,.25);border-radius:40px;
-  font-size:13px;color:var(--accent2);font-weight:600;text-decoration:none;
-  transition:background .2s}
-.back:hover{background:rgba(255,255,255,.12)}
+/* ═══════════════════════════════
+   屏1  封面
+═══════════════════════════════ */
+#s1{}
+.s1-top{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:32px;width:100%}
+.brand{font-family:Georgia,serif;font-size:52px;font-weight:900;letter-spacing:10px;line-height:1;
+  background:linear-gradient(160deg,var(--blue4),var(--text),var(--blue3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  text-align:center}
+.brand-sub{font-size:11px;color:var(--muted);letter-spacing:4px;margin-top:10px;text-align:center}
+.brand-rule{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--blue3),transparent);
+  margin:16px auto}
+.tagline{font-size:15px;color:rgba(184,217,255,.7);text-align:center;line-height:1.8;
+  padding:0 40px}
+.tagline strong{color:var(--blue4);font-weight:700}
 
-/* ===== 屏1 封面页 ===== */
-#p1{justify-content:space-between;padding:0}
-.cover{width:100%;flex:1;position:relative;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;overflow:hidden;
-  background:linear-gradient(180deg,#0a1628 0%,#0d2045 50%,#0a1628 100%)}
-.cover-photo{position:absolute;inset:0;
-  background:linear-gradient(160deg,#0e2a58 0%,#1a4080 40%,#0d1f45 100%);
-  opacity:.9}
-.cover-lines{position:absolute;inset:0;overflow:hidden}
-.cline{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(74,144,217,.2),transparent);
-  animation:slide-r 6s linear infinite}
-@keyframes slide-r{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.s1-bottom{width:100%;padding:0 28px 52px;display:flex;flex-direction:column;gap:14px}
+.dest-wrap{position:relative}
+.dest-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(74,144,217,.2);
+  border-radius:16px;padding:16px 20px;font-size:18px;color:var(--text);outline:none;
+  font-family:inherit;text-align:center;letter-spacing:1px;
+  transition:border-color .25s,background .25s}
+.dest-input::placeholder{color:rgba(90,128,168,.6);font-size:16px}
+.dest-input:focus{border-color:var(--blue3);background:rgba(255,255,255,.08)}
 
-.cover-content{position:relative;z-index:2;text-align:center;padding:0 28px}
-.cover-eyebrow{font-size:11px;letter-spacing:5px;color:var(--accent2);margin-bottom:16px;
-  text-transform:uppercase;opacity:.8}
-.cover-title{font-size:44px;font-weight:900;letter-spacing:6px;line-height:1.1;
+.start-btn{width:100%;padding:18px;border:none;border-radius:16px;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue),var(--blue2),var(--blue3));
+  font-size:17px;font-weight:800;color:#fff;letter-spacing:4px;
   font-family:Georgia,serif;
-  background:linear-gradient(135deg,var(--accent3),var(--white),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.cover-sub{font-size:13px;color:var(--muted);letter-spacing:2px;margin-top:10px}
-.cover-divider{display:flex;align-items:center;gap:8px;justify-content:center;margin:18px auto;width:180px}
-.cover-divider::before,.cover-divider::after{content:'';flex:1;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(74,144,217,.4))}
-.cover-divider span{color:var(--accent);font-size:10px;letter-spacing:2px}
-
-.cover-tagline{font-size:15px;color:var(--text);line-height:1.6;text-align:center;
-  padding:0 24px;opacity:.85}
-.cover-tagline strong{color:var(--accent2);font-weight:700}
-
-.cover-bottom{width:100%;padding:24px 24px max(24px, env(safe-area-inset-bottom));
-  background:linear-gradient(0deg,rgba(10,22,40,1) 0%,transparent 100%);
-  display:flex;flex-direction:column;gap:12px;position:relative;z-index:2}
-
-.dest-row{display:flex;gap:10px;align-items:center}
-.dest-inp{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(74,144,217,.25);
-  border-radius:12px;padding:12px 16px;font-size:16px;color:var(--text);
-  outline:none;font-family:inherit;transition:border-color .2s;backdrop-filter:blur(8px)}
-.dest-inp::placeholder{color:rgba(122,156,200,.5)}
-.dest-inp:focus{border-color:var(--accent)}
-
-.cnt-row{display:flex;gap:8px;align-items:center}
-.cnt-label{font-size:12px;color:var(--muted);letter-spacing:1px;white-space:nowrap}
-.cnt-tabs{display:flex;gap:0;border:1px solid rgba(74,144,217,.2);border-radius:10px;overflow:hidden;flex:1}
-.cnt-tabs input{display:none}
-.cnt-tabs label{flex:1;text-align:center;padding:8px 4px;font-size:13px;
-  color:var(--muted);cursor:pointer;transition:all .2s}
-.cnt-tabs input:checked+label{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
-
-.shake-cta{width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;
-  background:linear-gradient(135deg,#1a5abf,var(--accent),var(--accent2));
-  font-size:16px;font-weight:800;color:#fff;letter-spacing:3px;
-  box-shadow:0 4px 24px rgba(74,144,217,.35),0 0 0 1px rgba(74,144,217,.15);
-  transition:transform .15s;font-family:Georgia,serif;position:relative;overflow:hidden}
-.shake-cta::before{content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.12) 50%,transparent 60%);
+  box-shadow:0 8px 32px rgba(42,106,212,.4),0 0 0 1px rgba(74,144,217,.15);
+  transition:transform .15s,box-shadow .2s;position:relative;overflow:hidden}
+.start-btn::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 30%,rgba(255,255,255,.1) 50%,transparent 70%);
   transform:translateX(-100%);transition:transform .6s}
-.shake-cta:hover::before{transform:translateX(100%)}
-.shake-cta:active{transform:scale(.97)}
+.start-btn:hover::after{transform:translateX(100%)}
+.start-btn:active{transform:scale(.97);box-shadow:0 4px 16px rgba(42,106,212,.3)}
 
-/* ===== 屏2 翻牌页 ===== */
-#p2{justify-content:flex-start;padding-top:56px;align-items:center;gap:0}
-.flip-hd{text-align:center;margin-bottom:20px;width:100%;padding:0 20px}
-.flip-dest{font-size:13px;color:var(--accent2);letter-spacing:3px;font-family:Georgia,serif}
-.flip-remain{font-size:12px;color:var(--muted);margin-top:5px;letter-spacing:.5px}
+/* ═══════════════════════════════
+   屏2  翻牌  （全屏沉浸）
+═══════════════════════════════ */
+#s2{background:transparent}
+.remain-badge{position:fixed;top:22px;right:20px;z-index:10;
+  font-size:12px;color:var(--muted);letter-spacing:2px}
+.dest-badge{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:10;
+  font-size:12px;color:var(--blue4);letter-spacing:2px;
+  font-family:Georgia,serif;white-space:nowrap}
 
-.flip-wrap{position:relative;display:flex;flex-direction:column;align-items:center;width:100%;flex-shrink:0}
-.flip-card{width:240px;height:346px;min-height:346px;cursor:pointer;flex-shrink:0;position:relative;z-index:2}
-.flip-inner{position:absolute;inset:0;transform-style:preserve-3d;perspective:1200px;transition:transform .65s cubic-bezier(.35,0,.2,1)}
-.flip-inner.flipped{transform:rotateY(180deg)}
-.f-front,.f-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px}
+/* 全屏卡片舞台 */
+.stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  position:relative}
 
-/* 卡背 — 蓝色系锦缎 */
-.f-front{
-  background:linear-gradient(150deg,#0d2a5e 0%,#1a4a9e 35%,#2a6ad4 60%,#1a4a9e 85%,#0d2a5e 100%);
+/* 卡片 */
+.card-wrap{width:min(76vw,300px);position:relative;cursor:pointer}
+.card-ratio{width:100%;padding-top:145%;position:relative}/* 约 2:3 比例 */
+.card-scene{position:absolute;inset:0}
+/* perspective 单独给 scene */
+.card-3d{width:100%;height:100%;transform-style:preserve-3d;
+  transition:transform .7s cubic-bezier(.4,0,.15,1);position:relative}
+.card-3d.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;overflow:hidden}
+
+/* 正面（背）—— 蓝色锦缎 */
+.card-back-face{
+  background:linear-gradient(155deg,#0b2050 0%,#1a4a9e 40%,#2a6ad4 65%,#1a4a9e 85%,#0b2050 100%);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:var(--sh),0 0 48px rgba(74,144,217,.25),inset 0 1px 0 rgba(255,255,255,.08);
-  overflow:hidden;position:relative;
+  box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 0 1px rgba(74,144,217,.12),
+    inset 0 1px 0 rgba(255,255,255,.06);
 }
-.front-texture{position:absolute;inset:0;
+.card-texture{position:absolute;inset:0;opacity:1;
   background-image:
-    repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 9px),
-    repeating-linear-gradient(-45deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 9px);
-}
-.front-glow{position:absolute;width:120px;height:120px;background:radial-gradient(var(--accent),transparent 70%);
-  opacity:.2;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
-.sign-char{font-size:100px;font-family:Georgia,serif;line-height:1;position:relative;z-index:1;
-  color:transparent;
-  -webkit-text-stroke:1.5px rgba(212,175,90,.7);
-  text-shadow:0 0 40px rgba(212,175,90,.4),0 0 80px rgba(74,144,217,.3);
-  user-select:none;animation:glow-pulse 3s ease-in-out infinite alternate}
-@keyframes glow-pulse{from{text-shadow:0 0 30px rgba(212,175,90,.3),0 0 60px rgba(74,144,217,.2)}
-  to{text-shadow:0 0 50px rgba(212,175,90,.6),0 0 100px rgba(74,144,217,.4)}}
-.card-frame{position:absolute;inset:10px;border:1px solid rgba(212,175,90,.2);border-radius:13px;pointer-events:none}
-.cc{position:absolute;width:16px;height:16px;border-color:rgba(212,175,90,.5);border-style:solid}
-.cc.tl{top:16px;left:16px;border-width:1.5px 0 0 1.5px}
-.cc.tr{top:16px;right:16px;border-width:1.5px 1.5px 0 0}
-.cc.bl{bottom:16px;left:16px;border-width:0 0 1.5px 1.5px}
-.cc.br{bottom:16px;right:16px;border-width:0 1.5px 1.5px 0}
-.tap-hint{position:absolute;bottom:22px;font-size:10px;color:rgba(212,175,90,.45);letter-spacing:4px;z-index:1}
+    repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 10px),
+    repeating-linear-gradient(-45deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 10px)}
+.card-glow{position:absolute;width:60%;height:60%;background:radial-gradient(var(--blue3),transparent 70%);
+  opacity:.18;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:glow 3s ease-in-out infinite alternate}
+@keyframes glow{from{opacity:.12;transform:translate(-50%,-50%) scale(1)}to{opacity:.25;transform:translate(-50%,-50%) scale(1.15)}}
+.sign-big{position:relative;z-index:1;font-family:Georgia,serif;font-size:clamp(80px,22vw,120px);
+  color:transparent;-webkit-text-stroke:1.5px rgba(212,175,90,.65);line-height:1;
+  text-shadow:0 0 40px rgba(212,175,90,.35),0 0 80px rgba(74,144,217,.25);
+  animation:sign-glow 3s ease-in-out infinite alternate}
+@keyframes sign-glow{
+  from{text-shadow:0 0 30px rgba(212,175,90,.25),0 0 60px rgba(74,144,217,.15)}
+  to{text-shadow:0 0 60px rgba(212,175,90,.55),0 0 120px rgba(74,144,217,.35)}}
+.card-corner{position:absolute;width:20px;height:20px;border-color:rgba(212,175,90,.4);border-style:solid}
+.cc-tl{top:18px;left:18px;border-width:1.5px 0 0 1.5px}
+.cc-tr{top:18px;right:18px;border-width:1.5px 1.5px 0 0}
+.cc-bl{bottom:18px;left:18px;border-width:0 0 1.5px 1.5px}
+.cc-br{bottom:18px;right:18px;border-width:0 1.5px 1.5px 0}
+.tap-label{position:absolute;bottom:22px;font-size:10px;letter-spacing:4px;
+  color:rgba(212,175,90,.35);z-index:1}
 
-/* 卡正面 */
-.f-back{
+/* 反面（正）—— POI */
+.card-poi-face{
   transform:rotateY(180deg);
-  background:linear-gradient(160deg,#0f2444,#1a3a6e,#0d1f3a);
-  border:1px solid rgba(74,144,217,.2);
-  box-shadow:var(--sh),inset 0 1px 0 rgba(255,255,255,.05);
+  background:linear-gradient(160deg,#0d1e3a,#152d5a,#0d1e3a);
+  border:1px solid rgba(74,144,217,.18);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:22px 18px;
-}
-.poi-icon{font-size:54px;margin-bottom:8px;filter:drop-shadow(0 0 16px rgba(74,144,217,.5))}
-.poi-name{font-size:21px;font-weight:900;color:var(--text);text-align:center;margin-bottom:8px}
-.poi-badge{font-size:11px;padding:3px 12px;border-radius:20px;font-weight:700;letter-spacing:1px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
-.poi-sep{width:100px;height:1px;margin:14px 0;
-  background:linear-gradient(90deg,transparent,rgba(74,144,217,.35),transparent)}
-.poi-phrase{font-size:13px;color:var(--accent3);text-align:center;line-height:1.8;
+  padding:28px 22px;gap:0;
+  box-shadow:0 24px 64px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04)}
+.poi-em{font-size:clamp(48px,14vw,68px);line-height:1;
+  filter:drop-shadow(0 0 20px rgba(74,144,217,.5));margin-bottom:14px}
+.poi-nm{font-size:clamp(18px,5vw,22px);font-weight:900;color:var(--text);text-align:center;margin-bottom:10px}
+.poi-tag{font-size:11px;padding:4px 14px;border-radius:20px;font-weight:700;letter-spacing:1px;
+  background:linear-gradient(135deg,var(--blue),var(--blue3));color:#fff}
+.poi-line{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(74,144,217,.3),transparent);
+  margin:16px 0}
+.poi-sign{font-size:13px;color:var(--blue4);text-align:center;line-height:1.9;
   font-style:italic;letter-spacing:.5px}
-.poi-desc{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.6}
 
-/* 粒子 */
-#pcvs{position:absolute;top:0;left:50%;transform:translateX(-50%);width:240px;height:346px;pointer-events:none;z-index:10}
+/* 粒子层 */
+#pcvs{position:fixed;inset:0;pointer-events:none;z-index:5}
 
-/* 摇一摇 */
-.shake-wrap{margin-top:16px;text-align:center}
-.shake-anim{display:inline-flex;align-items:center;gap:6px;
-  background:rgba(74,144,217,.08);border:1px solid rgba(74,144,217,.15);
-  border-radius:40px;padding:8px 16px}
-.shake-ico{font-size:18px;animation:jiggle 2.5s ease-in-out infinite}
-@keyframes jiggle{0%,100%{transform:rotate(0)}15%{transform:rotate(-18deg)}30%{transform:rotate(14deg)}45%{transform:rotate(-10deg)}60%{transform:rotate(7deg)}75%{transform:rotate(-4deg)}}
+/* 底部提示 */
+.flip-bottom{position:fixed;bottom:40px;left:0;right:0;
+  display:flex;flex-direction:column;align-items:center;gap:12px;z-index:10}
+.shake-hint{display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(74,144,217,.12);
+  border-radius:40px;padding:8px 18px}
+.shake-ico{font-size:16px;animation:jiggle 2.5s ease-in-out infinite}
+@keyframes jiggle{0%,100%{transform:rotate(0)}15%{transform:rotate(-20deg)}30%{transform:rotate(16deg)}45%{transform:rotate(-10deg)}60%{transform:rotate(7deg)}75%{transform:rotate(-3deg)}}
 .shake-txt{font-size:11px;color:var(--muted);letter-spacing:1px}
-
-.next-btn{display:none;margin-top:14px;padding:12px 36px;border:none;border-radius:40px;
-  cursor:pointer;font-size:14px;font-weight:700;letter-spacing:2px;font-family:inherit;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
-  box-shadow:0 4px 18px rgba(74,144,217,.3);transition:transform .15s}
+.next-btn{display:none;padding:13px 40px;border:none;border-radius:40px;
+  background:linear-gradient(135deg,var(--blue),var(--blue3));
+  font-size:14px;font-weight:800;color:#fff;letter-spacing:3px;cursor:pointer;
+  font-family:inherit;box-shadow:0 6px 24px rgba(74,144,217,.3);transition:transform .15s}
 .next-btn:active{transform:scale(.96)}
 
-/* ===== 屏3 结果页 ===== */
-#p3{justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding-bottom:env(safe-area-inset-bottom,20px)}
-.result-scroll{width:100%;max-width:390px;padding:52px 18px 20px;display:flex;flex-direction:column;align-items:center;gap:14px}
-.result-hd{text-align:center}
-.result-eyebrow{font-size:10px;color:var(--accent);letter-spacing:5px;margin-bottom:6px}
-.result-title{font-size:22px;font-weight:900;color:var(--text)}
-.result-title em{color:var(--accent2);font-style:normal}
+/* ═══════════════════════════════
+   屏3  结果
+═══════════════════════════════ */
+#s3{overflow:hidden}
+.result-inner{width:100%;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:flex;flex-direction:column;align-items:center;
+  padding:80px 22px 48px}
+.result-eyebrow{font-size:10px;letter-spacing:5px;color:var(--blue4);margin-bottom:8px}
+.result-title{font-size:26px;font-weight:900;text-align:center;margin-bottom:28px}
+.result-title em{color:var(--blue4);font-style:normal}
 
-/* 路线卡片（海报感） */
-.route-card{width:100%;background:linear-gradient(155deg,#0e2244,#1a3868,#0d1e40);
-  border-radius:18px;border:1px solid rgba(74,144,217,.18);
-  box-shadow:var(--sh),0 0 0 1px rgba(255,255,255,.03);overflow:hidden}
-.route-header{padding:14px 18px 12px;
-  background:linear-gradient(90deg,rgba(74,144,217,.12),transparent);
-  border-bottom:1px solid rgba(74,144,217,.1);
-  display:flex;justify-content:space-between;align-items:center}
-.route-brand{font-family:Georgia,serif;font-size:12px;color:var(--accent2);letter-spacing:3px}
-.route-dest{font-size:12px;color:var(--muted)}
-.route-pois{padding:14px 18px;display:flex;flex-direction:column;gap:12px}
-.route-poi{display:flex;align-items:flex-start;gap:12px}
-.route-num{width:22px;height:22px;border-radius:50%;border:1px solid rgba(74,144,217,.3);
-  display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent2);
-  flex-shrink:0;margin-top:2px}
-.route-poi-icon{font-size:24px;flex-shrink:0}
-.route-poi-info{flex:1}
-.route-poi-name{font-size:14px;font-weight:700;color:var(--text)}
-.route-poi-phrase{font-size:11px;color:var(--accent3);font-style:italic;margin-top:2px;line-height:1.5}
-.route-footer{padding:10px 18px 14px;border-top:1px solid rgba(74,144,217,.08);
-  display:flex;align-items:center;justify-content:space-between}
-.fate-text{font-size:11px;color:var(--muted);flex:1;line-height:1.6;padding-right:10px}
-.fate-tag{font-size:9px;color:var(--accent2);border:1px solid rgba(74,144,217,.25);
-  border-radius:6px;padding:3px 8px;letter-spacing:1px;white-space:nowrap}
+/* 签列表：飞入动画 */
+.sign-list{width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.sign-item{display:flex;align-items:center;gap:14px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(74,144,217,.12);
+  border-radius:16px;padding:14px 16px;
+  opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+.sign-item.show{opacity:1;transform:translateY(0)}
+.si-icon{font-size:28px;flex-shrink:0}
+.si-info{}
+.si-name{font-size:15px;font-weight:700}
+.si-phrase{font-size:12px;color:var(--blue4);font-style:italic;margin-top:3px;line-height:1.5}
 
-/* 心动按钮 */
-.heart-btn{width:100%;padding:16px;border:none;border-radius:14px;cursor:pointer;
-  font-size:17px;font-weight:800;color:#fff;letter-spacing:2px;font-family:inherit;
-  background:linear-gradient(135deg,#c0176e,#e83e8c,#ff6fb0);
-  box-shadow:0 6px 24px rgba(232,62,140,.4);transition:transform .15s,box-shadow .15s}
-.heart-btn:active{transform:scale(.97)}
-.heart-btn.sent{background:linear-gradient(135deg,#3a2060,#6b4299);
-  box-shadow:0 6px 24px rgba(107,66,153,.3)}
+/* 心动 */
+.heart-btn{width:100%;max-width:340px;padding:18px;border:none;border-radius:16px;cursor:pointer;
+  background:linear-gradient(135deg,#9b1d6e,#d4337a,#f06098);
+  color:#fff;font-size:18px;font-weight:900;letter-spacing:2px;font-family:inherit;
+  box-shadow:0 8px 28px rgba(212,51,122,.4);transition:transform .15s;
+  opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s,box-shadow .2s;
+  margin-bottom:12px}
+.heart-btn.show{opacity:1;transform:translateY(0)}
+.heart-btn:active{transform:scale(.97) translateY(0)}
+.heart-btn.sent{background:linear-gradient(135deg,#2a1a50,#4a2880);
+  box-shadow:0 8px 28px rgba(74,40,128,.3)}
 
-/* 底部按钮 */
-.r-row{display:flex;gap:10px;width:100%}
+.r-row{display:flex;gap:10px;width:100%;max-width:340px;
+  opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.r-row.show{opacity:1;transform:translateY(0)}
 .r-btn{flex:1;padding:13px;border-radius:12px;font-size:13px;font-weight:700;
-  cursor:pointer;letter-spacing:1px;border:none;font-family:inherit;transition:transform .15s}
+  cursor:pointer;border:none;font-family:inherit;transition:transform .15s}
 .r-btn:active{transform:scale(.97)}
-.r-copy{background:rgba(74,144,217,.1);color:var(--accent2);border:1px solid rgba(74,144,217,.2)}
+.r-copy{background:rgba(74,144,217,.1);color:var(--blue4);border:1px solid rgba(74,144,217,.2)}
 .r-restart{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid rgba(255,255,255,.08)}
 </style>
 </head>
 <body>
 
-<!-- 背景 -->
-<div id="bg">
-  <div class="wave w1"></div>
-  <div class="wave w2"></div>
-  <div class="wave w3"></div>
-  <div class="star-field" id="stars"></div>
-</div>
+<div id="stars"></div>
+<canvas id="pcvs"></canvas>
 
 <a class="back" href="/08/works/#tools">
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="#7ab8f5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="#5a80a8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   AI 工具
 </a>
 
-<!-- ===== 屏1：封面 ===== -->
-<div class="page" id="p1">
-  <div class="cover">
-    <div class="cover-photo"></div>
-    <div class="cover-lines">
-      <div class="cline" style="top:30%;animation-delay:0s"></div>
-      <div class="cline" style="top:55%;animation-delay:2s"></div>
-      <div class="cline" style="top:75%;animation-delay:4s"></div>
+<!-- ═══ 屏1 ═══ -->
+<div class="screen" id="s1">
+  <div class="s1-top">
+    <div>
+      <div class="brand">FATE<br>TRIP</div>
+      <div class="brand-sub">让命运为你选路</div>
+      <div class="brand-rule"></div>
+      <div class="tagline">分享行程不只是发链接<br>让对方<strong>拆签</strong>，抽出属于他的路线</div>
     </div>
-    <div class="cover-content">
-      <div class="cover-eyebrow">摇一摇 · 抽你的旅行签</div>
-      <div class="cover-title">FATE<br>TRIP</div>
-      <div class="cover-divider"><span>✦</span></div>
-      <div class="cover-sub">让命运为你选路</div>
-      <div style="margin-top:20px"></div>
-      <div class="cover-tagline">
-        分享行程不只是发链接——<br>
-        让对方<strong>拆签</strong>，抽出<strong>属于他的路线</strong>
-      </div>
-    </div>
-    <div class="cover-bottom">
-      <div class="dest-row">
-        <input class="dest-inp" id="destInp" type="text" placeholder="输入目的地：曼谷、京都、大理…" maxlength="20">
-      </div>
-      <div class="cnt-row">
-        <span class="cnt-label">签数</span>
-        <div class="cnt-tabs">
-          <input type="radio" name="cnt" id="c3" value="3" checked><label for="c3">3 签</label>
-          <input type="radio" name="cnt" id="c4" value="4"><label for="c4">4 签</label>
-          <input type="radio" name="cnt" id="c5" value="5"><label for="c5">5 签</label>
-        </div>
-      </div>
-      <button class="shake-cta" onclick="startSign()">摇一摇，抽签 ✦</button>
-    </div>
+  </div>
+  <div class="s1-bottom">
+    <input class="dest-input" id="destInp" type="text" placeholder="目的地：曼谷、京都、大理…" maxlength="20">
+    <button class="start-btn" onclick="startSign()">摇一摇，抽签</button>
   </div>
 </div>
 
-<!-- ===== 屏2：翻牌 ===== -->
-<div class="page hidden" id="p2">
-  <div class="flip-hd">
-    <div class="flip-dest" id="flipDest">FATE TRIP</div>
-    <div class="flip-remain" id="flipRemain">点击卡片 · 揭晓第 1 签</div>
+<!-- ═══ 屏2 ═══ -->
+<div class="screen out" id="s2">
+  <div class="dest-badge" id="destBadge">FATE TRIP</div>
+  <div class="remain-badge" id="remainBadge">1 / 3</div>
+
+  <div class="stage">
+    <div class="card-wrap" id="cardWrap" onclick="flipSign()">
+      <div class="card-ratio">
+        <div class="card-scene" style="perspective:1000px">
+          <div class="card-3d" id="card3d">
+            <!-- 背面（初始可见）-->
+            <div class="card-face card-back-face">
+              <div class="card-texture"></div>
+              <div class="card-glow"></div>
+              <div class="sign-big">签</div>
+              <div class="card-corner cc-tl"></div>
+              <div class="card-corner cc-tr"></div>
+              <div class="card-corner cc-bl"></div>
+              <div class="card-corner cc-br"></div>
+              <div class="tap-label">TAP · SHAKE</div>
+            </div>
+            <!-- 正面（翻后可见）-->
+            <div class="card-face card-poi-face">
+              <div class="poi-em" id="poiIcon">🌅</div>
+              <div class="poi-nm" id="poiName">—</div>
+              <div class="poi-tag" id="poiType">类型</div>
+              <div class="poi-line"></div>
+              <div class="poi-sign" id="poiPhrase">签语</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="flip-wrap">
-    <canvas id="pcvs"></canvas>
-    <div class="flip-card" id="flipCard" onclick="flipSign()">
-      <div class="flip-inner" id="flipInner">
-        <div class="f-front">
-          <div class="front-texture"></div>
-          <div class="front-glow"></div>
-          <div class="sign-char">签</div>
-          <div class="card-frame"></div>
-          <div class="cc tl"></div><div class="cc tr"></div>
-          <div class="cc bl"></div><div class="cc br"></div>
-          <div class="tap-hint">TAP  ·  SHAKE</div>
-        </div>
-        <div class="f-back">
-          <div class="poi-icon" id="bIcon">🌅</div>
-          <div class="poi-name" id="bName">—</div>
-          <div class="poi-badge" id="bType">类型</div>
-          <div class="poi-sep"></div>
-          <div class="poi-phrase" id="bPhrase">签语</div>
-          <div class="poi-desc" id="bDesc">描述</div>
-        </div>
-      </div>
+
+  <div class="flip-bottom">
+    <div class="shake-hint" id="shakeHint">
+      <span class="shake-ico">📱</span>
+      <span class="shake-txt">轻摇手机也可揭签</span>
     </div>
-    <div class="shake-wrap" id="shakeWrap">
-      <div class="shake-anim">
-        <span class="shake-ico">📱</span>
-        <span class="shake-txt">轻摇手机也可揭签</span>
-      </div>
-    </div>
-    <button class="next-btn" id="nextBtn" onclick="nextSign()">再拆一签 →</button>
+    <button class="next-btn" id="nextBtn" onclick="nextSign()">再拆一签</button>
   </div>
 </div>
 
-<!-- ===== 屏3：结果 ===== -->
-<div class="page hidden" id="p3">
-  <div class="result-scroll">
-    <div class="result-hd">
-      <div class="result-eyebrow">HIDDEN ROUTE</div>
-      <div class="result-title">你的<em>命定路线</em> ✦</div>
-    </div>
-
-    <div class="route-card" id="routeCard">
-      <div class="route-header">
-        <div class="route-brand">FATE TRIP</div>
-        <div class="route-dest" id="routeDest">目的地</div>
-      </div>
-      <div class="route-pois" id="routePois"></div>
-      <div class="route-footer">
-        <div class="fate-text" id="fateText"></div>
-        <div class="fate-tag">命运签定</div>
-      </div>
-    </div>
-
+<!-- ═══ 屏3 ═══ -->
+<div class="screen out" id="s3">
+  <div class="result-inner">
+    <div class="result-eyebrow">HIDDEN ROUTE</div>
+    <div class="result-title">你的<em>命定路线</em></div>
+    <div class="sign-list" id="signList"></div>
     <button class="heart-btn" id="heartBtn" onclick="sendHeart()">我也想去 💛</button>
-
-    <div class="r-row">
-      <button class="r-btn r-copy" onclick="copyShare()">📋 复制分享文案</button>
+    <div class="r-row" id="rRow">
+      <button class="r-btn r-copy" onclick="copyShare()">复制分享</button>
       <button class="r-btn r-restart" onclick="restart()">重新求签</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ===== 星点 ===== */
+/* ─── 星空 ─── */
 !function(){
-  const sf=document.getElementById('stars');
-  for(let i=0;i<80;i++){
-    const d=document.createElement('div'); d.className='sd';
-    const s=.4+Math.random()*1.4;
-    d.style.cssText=`width:${s}px;height:${s}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation:tw ${2+Math.random()*4}s ${Math.random()*4}s ease-in-out infinite alternate`;
-    sf.appendChild(d);
+  const c=document.getElementById('stars');
+  for(let i=0;i<90;i++){
+    const d=document.createElement('div'),s=.3+Math.random()*1.3;
+    d.className='s';
+    d.style.cssText=`width:${s}px;height:${s}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+    c.appendChild(d);
   }
 }();
 
-/* ===== POI库 ===== */
+/* ─── POI库 ─── */
 const POIS={
   '曼谷':[
-    {name:'乍都乍市场',type:'市集',icon:'🛍️',desc:'城市最大的周末市场，藏着无数惊喜'},
-    {name:'卧佛寺',type:'文化',icon:'🙏',desc:'镀金巨佛静卧，时间在这里慢下来'},
-    {name:'考山路',type:'夜市',icon:'🍺',desc:'背包客的精神故乡，喧嚣中的自由'},
-    {name:'湄南河畔',type:'风景',icon:'🌅',desc:'黄昏时分，河面金光，值得等待'},
-    {name:'Or Tor Kor市场',type:'美食',icon:'🍜',desc:'当地人才知道的鲜果天堂'},
+    {name:'乍都乍市场',type:'市集',icon:'🛍️'},
+    {name:'卧佛寺',type:'文化',icon:'🙏'},
+    {name:'考山路',type:'夜市',icon:'🍺'},
+    {name:'湄南河畔',type:'风景',icon:'🌅'},
+    {name:'Or Tor Kor市场',type:'美食',icon:'🍜'},
   ],
   '京都':[
-    {name:'岚山竹林',type:'自然',icon:'🎋',desc:'晨雾中穿行，心自然清净'},
-    {name:'祗园花见小路',type:'文化',icon:'🌸',desc:'石板路上，偶遇的美最难忘'},
-    {name:'锦市场',type:'美食',icon:'🍱',desc:'京都的厨房，每一摊都是故事'},
-    {name:'伏见稻荷',type:'景点',icon:'⛩️',desc:'千本鸟居，走进去就是另一个世界'},
-    {name:'哲学之道',type:'散步',icon:'🍁',desc:'沿着水渠漫步，答案自然浮现'},
+    {name:'岚山竹林',type:'自然',icon:'🎋'},
+    {name:'祗园花见小路',type:'文化',icon:'🌸'},
+    {name:'锦市场',type:'美食',icon:'🍱'},
+    {name:'伏见稻荷',type:'景点',icon:'⛩️'},
+    {name:'哲学之道',type:'散步',icon:'🍁'},
   ],
   '大理':[
-    {name:'洱海骑行',type:'自然',icon:'🚴',desc:'风从苍山来，水向洱海去'},
-    {name:'古城三塔',type:'文化',icon:'🏛️',desc:'千年沧桑，立于此间'},
-    {name:'喜洲古镇',type:'散步',icon:'🪷',desc:'白墙青瓦，比古城更安静'},
-    {name:'双廊渔村',type:'风景',icon:'🌊',desc:'住下来，发一天呆，刚好'},
-    {name:'人民路文艺街',type:'市集',icon:'☕',desc:'文艺青年的秘密集合地'},
+    {name:'洱海骑行',type:'自然',icon:'🚴'},
+    {name:'古城三塔',type:'文化',icon:'🏛️'},
+    {name:'喜洲古镇',type:'散步',icon:'🪷'},
+    {name:'双廊渔村',type:'风景',icon:'🌊'},
+    {name:'人民路文艺街',type:'市集',icon:'☕'},
   ],
   '上海':[
-    {name:'武康路梧桐道',type:'散步',icon:'🍂',desc:'法式梧桐下，每一步都是故事'},
-    {name:'外滩夜景',type:'风景',icon:'🌆',desc:'灯火倒映黄浦江，上海最美的切面'},
-    {name:'田子坊',type:'市集',icon:'🎨',desc:'弄堂里的创意集市，有惊喜也有温度'},
-    {name:'安福路咖啡街',type:'休闲',icon:'☕',desc:'一条街走完，喝饱看饱'},
-    {name:'豫园老街',type:'美食',icon:'🥟',desc:'小笼包的正确打开方式在这里'},
+    {name:'武康路梧桐道',type:'散步',icon:'🍂'},
+    {name:'外滩夜景',type:'风景',icon:'🌆'},
+    {name:'田子坊',type:'市集',icon:'🎨'},
+    {name:'安福路',type:'休闲',icon:'☕'},
+    {name:'豫园老街',type:'美食',icon:'🥟'},
   ],
   default:[
-    {name:'老城漫步',type:'文化',icon:'🏛️',desc:'斑驳的墙壁，每一块都有故事'},
-    {name:'当地早市',type:'市集',icon:'🛒',desc:'清晨的叫卖声，才是城市的呼吸'},
-    {name:'江边日落',type:'风景',icon:'🌅',desc:'最后一缕光收走时，旅行才真正开始'},
-    {name:'街角咖啡馆',type:'休闲',icon:'☕',desc:'转角遇见的那家，永远是最好喝的那家'},
-    {name:'夜市美食街',type:'美食',icon:'🍢',desc:'跟着人流走，就对了'},
+    {name:'老城漫步',type:'文化',icon:'🏛️'},
+    {name:'当地早市',type:'市集',icon:'🛒'},
+    {name:'江边日落',type:'风景',icon:'🌅'},
+    {name:'街角咖啡馆',type:'休闲',icon:'☕'},
+    {name:'夜市美食街',type:'美食',icon:'🍢'},
   ]
 };
 const PHRASES={
-  '市集':['今日宜淘货，忌冲动消费 🛍️','人声鼎沸处，有你想要的答案','缘分是什么？逛到第三圈还没走'],
-  '文化':['今日宜静心参拜，忌走马观花 🙏','历史不言语，却回答一切问题','你来这里，不是偶然'],
-  '夜市':['今日宜放下计划，忌早睡 🍺','灯火最亮处，就是今晚的归宿','摊主的笑容，是城市送你的礼物'],
-  '风景':['今日宜驻足凝望，忌赶行程 🌅','美景不等人，但为你留了一秒','站在这里，所有烦恼都变小了'],
-  '美食':['今日宜大胆点餐，忌节食 🍜','这一口，是旅行最诚实的部分','吃饱了再说走，是对城市的尊重'],
-  '自然':['今日宜深呼吸，忌看手机 🌿','自然界的钟表没有分针','你选了它，它也选了你'],
-  '散步':['今日宜无目的漫游，忌导航 🍁','没有目的地的路，往往通向最好的地方','今天的脚步，明天会感谢'],
-  '景点':['今日宜认真感受，忌只拍照 ⛩️','打卡是手段，感受是目的','这里只记得认真的那个人'],
-  '休闲':['今日宜发呆，忌赶行程 ☕','一杯的时间，刚好够想清楚','坐下来，城市会来跟你说话'],
+  '市集':['今日宜淘货，忌冲动消费','人声鼎沸处，有你想要的答案','缘分是什么？逛到第三圈还没走'],
+  '文化':['今日宜静心参拜，忌走马观花','历史不言语，却回答一切','你来这里，不是偶然'],
+  '夜市':['今日宜放下计划，忌早睡','灯火最亮处，就是今晚的归宿','摊主的笑容，是城市送你的礼物'],
+  '风景':['今日宜驻足凝望，忌赶行程','美景不等人，但为你留了一秒','站在这里，所有烦恼都变小了'],
+  '美食':['今日宜大胆点餐，忌节食','这一口，是旅行最诚实的部分','吃饱了再说走'],
+  '自然':['今日宜深呼吸，忌看手机','自然界的钟表没有分针','你选了它，它也选了你'],
+  '散步':['今日宜无目的漫游，忌导航','没有目的地的路，往往最好','今天的脚步，明天会感谢'],
+  '景点':['今日宜认真感受，忌只拍照','打卡是手段，感受是目的','来了就要认真看一眼'],
+  '休闲':['今日宜发呆，忌赶行程','一杯的时间，刚好够想清楚','坐下来，城市来跟你说话'],
 };
-const FATES=[
-  '命运落定。你不是随机选中这几个地方，是它们在等你。',
-  '签语已定，出发吧。旅行从来不需要完美计划，只需要此刻的勇气。',
-  '这条路线，是你内心的渴望在说话。带着它上路，命运会补全剩下的。',
-];
 
-/* ===== 状态 ===== */
-let dest='', pois=[], curIdx=0, flipped=false, cnt=3;
-const phraseCache={};
+/* ─── 状态 ─── */
+let dest='', pois=[], cur=0, flipped=false, phraseMap={};
 
-function getPhrase(type,id){
-  if(phraseCache[id]) return phraseCache[id];
-  const arr=PHRASES[type]||['今日宜出发，忌犹豫 ✦'];
-  const p=arr[Math.floor(Math.random()*arr.length)];
-  phraseCache[id]=p; return p;
+function getPhrase(type,i){
+  if(phraseMap[i]) return phraseMap[i];
+  const arr=PHRASES[type]||['今日宜出发，忌犹豫'];
+  phraseMap[i]=arr[Math.floor(Math.random()*arr.length)];
+  return phraseMap[i];
 }
-function extractPOIs(d,txt){
+function pickPOIs(d){
   let pool=POIS.default;
-  Object.keys(POIS).filter(k=>k!=='default').forEach(k=>{if(d.includes(k)||txt.includes(k))pool=POIS[k];});
-  return [...pool].sort(()=>Math.random()-.5).slice(0,cnt);
-}
-function goPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
-  setTimeout(()=>document.getElementById(id).classList.remove('hidden'),40);
+  Object.keys(POIS).filter(k=>k!=='default').forEach(k=>{if(d.includes(k))pool=POIS[k];});
+  return [...pool].sort(()=>Math.random()-.5).slice(0,3);
 }
 
-/* ===== 开始 ===== */
+/* ─── 页面切换 ─── */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>{
+    if(s.id===id){s.classList.remove('out','in-up');}
+    else{s.classList.add('out');}
+  });
+}
+
+/* ─── 开始 ─── */
 function startSign(){
   dest=document.getElementById('destInp').value.trim()||'远方';
-  cnt=parseInt(document.querySelector('input[name=cnt]:checked').value)||3;
-  pois=extractPOIs(dest,'');
-  curIdx=0; flipped=false; Object.keys(phraseCache).forEach(k=>delete phraseCache[k]);
-  document.getElementById('flipDest').textContent='✦ '+dest+' FATE TRIP ✦';
-  updateRemain(); resetCard(); goPage('p2'); setupShake();
+  pois=pickPOIs(dest); cur=0; flipped=false; phraseMap={};
+  document.getElementById('destBadge').textContent=dest;
+  updateBadge(); resetCard(); show('s2'); setupShake();
 }
-function updateRemain(){
-  if(!flipped){
-    document.getElementById('flipRemain').textContent=`点击卡片 · 揭晓第 ${curIdx+1} 签`;
-    document.getElementById('shakeWrap').style.display='block';
-  } else {
-    const left=pois.length-curIdx-1;
-    document.getElementById('flipRemain').textContent=left>0?`还剩 ${left} 签 · 继续拆`:'全部揭晓 · 查看命定路线';
-    document.getElementById('shakeWrap').style.display='none';
-  }
+
+function updateBadge(){
+  document.getElementById('remainBadge').textContent=`${cur+1} / ${pois.length}`;
 }
+
 function resetCard(){
-  document.getElementById('flipInner').classList.remove('flipped');
-  document.getElementById('flipCard').style.pointerEvents='auto';
+  const c=document.getElementById('card3d');
+  c.classList.remove('flipped');
+  document.getElementById('cardWrap').style.pointerEvents='auto';
   document.getElementById('nextBtn').style.display='none';
-  document.getElementById('shakeWrap').style.display='block';
+  document.getElementById('shakeHint').style.display='flex';
   flipped=false;
 }
-function loadPOI(i){
+
+function loadCard(i){
   const p=pois[i];
-  document.getElementById('bIcon').textContent=p.icon;
-  document.getElementById('bName').textContent=p.name;
-  document.getElementById('bType').textContent=p.type;
-  document.getElementById('bPhrase').textContent=getPhrase(p.type,i);
-  document.getElementById('bDesc').textContent=p.desc;
+  document.getElementById('poiIcon').textContent=p.icon;
+  document.getElementById('poiName').textContent=p.name;
+  document.getElementById('poiType').textContent=p.type;
+  document.getElementById('poiPhrase').textContent=getPhrase(p.type,i);
 }
 
-/* ===== 翻牌 ===== */
+/* ─── 翻牌 ─── */
 function flipSign(){
-  if(flipped)return;
+  if(flipped) return;
   flipped=true;
-  loadPOI(curIdx);
-  document.getElementById('flipInner').classList.add('flipped');
-  document.getElementById('flipCard').style.pointerEvents='none';
-  spawnParticles();
+  loadCard(cur);
+  document.getElementById('card3d').classList.add('flipped');
+  document.getElementById('cardWrap').style.pointerEvents='none';
+  burst();
   setTimeout(()=>{
-    updateRemain();
+    document.getElementById('shakeHint').style.display='none';
     const nb=document.getElementById('nextBtn');
     nb.style.display='block';
-    nb.textContent=curIdx<pois.length-1?'再拆一签 →':'查看命定路线 ✦';
-  },550);
-}
-function nextSign(){
-  if(curIdx>=pois.length-1){showResult();return;}
-  curIdx++; resetCard(); updateRemain();
+    nb.textContent=cur<pois.length-1?`再拆一签  ${cur+2}/${pois.length}`:'查看命定路线 ✦';
+  },600);
 }
 
-/* ===== 粒子 ===== */
-function spawnParticles(){
+function nextSign(){
+  if(cur>=pois.length-1){showResult();return;}
+  cur++; updateBadge(); resetCard();
+}
+
+/* ─── 粒子 ─── */
+function burst(){
   const cv=document.getElementById('pcvs');
+  cv.width=innerWidth; cv.height=innerHeight;
   const ctx=cv.getContext('2d');
-  cv.width=240; cv.height=346;
+  const cx=innerWidth/2, cy=innerHeight/2;
   const ps=[];
-  for(let i=0;i<44;i++){
-    const a=Math.random()*Math.PI*2, sp=1.8+Math.random()*3.5;
-    ps.push({x:120,y:173,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,r:.8+Math.random()*2,alpha:1,
-      h:190+Math.random()*40});
+  for(let i=0;i<50;i++){
+    const a=Math.random()*Math.PI*2, sp=2+Math.random()*5;
+    ps.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.5,
+      r:.6+Math.random()*2.2,alpha:1,h:190+Math.random()*50});
   }
   let f=0;
   (function draw(){
-    ctx.clearRect(0,0,240,346);
-    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.alpha-=.017;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.09;p.alpha-=.016;
       if(p.alpha<=0)return;
-      ctx.globalAlpha=p.alpha;
-      ctx.fillStyle=`hsl(${p.h},85%,70%)`;
+      ctx.globalAlpha=p.alpha;ctx.fillStyle=`hsl(${p.h},85%,72%)`;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
     });
     ctx.globalAlpha=1;
-    if(++f<72)requestAnimationFrame(draw);else ctx.clearRect(0,0,240,346);
+    if(++f<75)requestAnimationFrame(draw);else ctx.clearRect(0,0,cv.width,cv.height);
   })();
 }
 
-/* ===== 摇一摇 ===== */
+/* ─── 摇一摇 ─── */
 function setupShake(){
   let last=0;
   window.addEventListener('devicemotion',function(e){
@@ -531,30 +463,31 @@ function setupShake(){
   });
 }
 
-/* ===== 结果页 ===== */
+/* ─── 结果 ─── */
 function showResult(){
-  document.getElementById('routeDest').textContent=dest;
-  const list=document.getElementById('routePois');
+  const list=document.getElementById('signList');
   list.innerHTML='';
   pois.forEach((p,i)=>{
-    const el=document.createElement('div'); el.className='route-poi';
-    el.innerHTML=`<div class="route-poi-icon">${p.icon}</div><div class="route-poi-info"><div class="route-poi-name">${p.name}</div><div class="route-poi-phrase">${getPhrase(p.type,i)}</div></div>`;
+    const el=document.createElement('div'); el.className='sign-item';
+    el.innerHTML=`<div class="si-icon">${p.icon}</div><div class="si-info"><div class="si-name">${p.name}</div><div class="si-phrase">${getPhrase(p.type,i)}</div></div>`;
     list.appendChild(el);
+    setTimeout(()=>el.classList.add('show'), 200+i*150);
   });
-  document.getElementById('fateText').textContent=FATES[Math.floor(Math.random()*FATES.length)];
   const hb=document.getElementById('heartBtn');
   hb.className='heart-btn'; hb.textContent='我也想去 💛';
-  goPage('p3');
+  setTimeout(()=>hb.classList.add('show'), 200+pois.length*150+100);
+  setTimeout(()=>document.getElementById('rRow').classList.add('show'), 200+pois.length*150+250);
+  show('s3');
 }
 
-/* ===== 心动 ===== */
+/* ─── 心动 ─── */
 function sendHeart(){
   const btn=document.getElementById('heartBtn');
-  btn.className='heart-btn sent';
-  btn.textContent='💙 心动通知已发送 · 对方会收到你的回应';
+  btn.className='heart-btn sent show';
+  btn.textContent='💙 心动通知已发送';
 }
 
-/* ===== 分享 ===== */
+/* ─── 分享 ─── */
 function copyShare(){
   const lines=pois.map((p,i)=>p.icon+' '+p.name+' — '+getPhrase(p.type,i)).join('\n');
   const txt=`摇一摇，抽你的${dest}旅行签 🎴\n\n${lines}\n\n让命运为你选路 → https://qlb708.github.io/08/activity/travel-sign/`;
@@ -563,11 +496,15 @@ function copyShare(){
     const ta=document.createElement('textarea');ta.value=txt;
     document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
   });
-  btn.textContent='✅ 已复制';setTimeout(()=>btn.textContent='📋 复制分享文案',1600);
+  btn.textContent='✅ 已复制';setTimeout(()=>btn.textContent='复制分享',1500);
 }
+
 function restart(){
   document.getElementById('destInp').value='';
-  goPage('p1');
+  document.getElementById('signList').innerHTML='';
+  document.getElementById('heartBtn').className='heart-btn';
+  document.getElementById('rRow').className='r-row';
+  show('s1');
 }
 </script>
 </body>
