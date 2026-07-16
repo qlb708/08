@@ -3,589 +3,1157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>FATE TRIP</title>
+<title>FATE TRIP · 圆周旅行社交</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
 :root{
-  --bg:#eef4fc;
-  --bg2:#f7faff;
-  --blue:#2563eb;--blue2:#3b82f6;--blue3:#93c5fd;--blue4:#dbeafe;
-  --ink:#0f172a;--ink2:#334155;--ink3:#64748b;--ink4:#94a3b8;
-  --card:#ffffff;
-  --pink:#f43f8e;--pink2:#fb7eb8;
-  --gold:#d97706;--gold2:#fbbf24;
-  --r:20px;
-  --sh:0 2px 16px rgba(37,99,235,.08),0 1px 4px rgba(0,0,0,.04);
-  --sh2:0 8px 40px rgba(37,99,235,.12),0 2px 8px rgba(0,0,0,.06);
+  --bg:#f0f6ff;--bg2:#f8faff;--white:#fff;
+  --blue:#2563eb;--blue2:#3b82f6;--blue3:#60a5fa;--blue4:#bfdbfe;--blue5:#eff6ff;
+  --ink:#0f172a;--ink2:#1e293b;--ink3:#475569;--ink4:#94a3b8;--ink5:#e2e8f0;
+  --pink:#f43f8e;--pink2:#fda4d1;
+  --green:#10b981;--green2:#d1fae5;
+  --purple:#7c3aed;--purple2:#ede9fe;
+  --gold:#d97706;--gold2:#fef3c7;
+  --r:16px;
+  --sh:0 1px 8px rgba(37,99,235,.07),0 0 2px rgba(0,0,0,.04);
+  --sh2:0 8px 32px rgba(37,99,235,.13),0 2px 8px rgba(0,0,0,.06);
 }
-html,body{height:100%;background:var(--bg);
-  font-family:'PingFang SC','SF Pro Text','Hiragino Sans GB',sans-serif;
-  color:var(--ink);overflow:hidden}
+html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Text',sans-serif;color:var(--ink);overflow:hidden}
 
-/* ── 背景装饰 ── */
-.bg-blob{position:fixed;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0}
-.blob1{width:400px;height:400px;background:radial-gradient(#bfdbfe,transparent 70%);
-  top:-120px;right:-100px;opacity:.6}
-.blob2{width:300px;height:300px;background:radial-gradient(#fce7f3,transparent 70%);
-  bottom:-80px;left:-80px;opacity:.5}
-.blob3{width:200px;height:200px;background:radial-gradient(#e0f2fe,transparent 70%);
-  top:40%;left:30%;opacity:.4}
+/* ════ 全局背景装饰 ════ */
+.blob{position:fixed;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0}
+.b1{width:350px;height:350px;background:radial-gradient(#bfdbfe,transparent 70%);top:-100px;right:-80px;opacity:.5}
+.b2{width:250px;height:250px;background:radial-gradient(#fce7f3,transparent 70%);bottom:-60px;left:-60px;opacity:.4}
 
-/* ── 屏幕切换 ── */
-.screen{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;
-  transition:opacity .4s cubic-bezier(.4,0,.2,1),transform .4s cubic-bezier(.4,0,.2,1)}
-.screen.gone{opacity:0;pointer-events:none;transform:translateY(16px) scale(.99)}
+/* ════ 屏幕层 ════ */
+.screen{position:fixed;inset:0;z-index:1;transition:opacity .35s,transform .35s}
+.screen.gone{opacity:0;pointer-events:none;transform:translateY(14px) scale(.99)}
 
-/* ── 返回 ── */
-.back-btn{position:fixed;top:18px;left:16px;z-index:99;
-  display:flex;align-items:center;gap:5px;padding:7px 14px;
-  font-size:13px;font-weight:500;color:var(--blue);text-decoration:none;
-  background:rgba(255,255,255,.8);border:1px solid rgba(37,99,235,.12);
-  border-radius:30px;backdrop-filter:blur(12px);
-  box-shadow:0 1px 6px rgba(37,99,235,.08);transition:all .2s}
-.back-btn:active{transform:scale(.96)}
+/* ════════════════════════════════════
+   封面 / 角色选择页
+════════════════════════════════════ */
+#sCover{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
 
-/* ═════════════════════════
-   屏1  封面
-═════════════════════════ */
-#s1{justify-content:flex-end}
-
-/* 封面上方视觉区 */
-.hero{position:absolute;top:0;left:0;right:0;bottom:280px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:64px 28px 20px}
-
-/* 大卡片封面 */
-.hero-card{width:100%;max-width:300px;
-  background:var(--card);border-radius:28px;
-  box-shadow:var(--sh2);overflow:hidden;position:relative}
-.hc-img{width:100%;height:180px;
-  background:linear-gradient(135deg,#1e40af 0%,#2563eb 35%,#3b82f6 60%,#60a5fa 80%,#93c5fd 100%);
-  position:relative;display:flex;align-items:flex-end;padding:16px}
-/* 光线扫过 */
-.hc-shine{position:absolute;inset:0;
-  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);
+.cover-card{width:100%;max-width:340px;background:var(--white);border-radius:28px;
+  overflow:hidden;box-shadow:var(--sh2);margin-bottom:24px}
+.cover-img{width:100%;height:160px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1e40af 0%,#2563eb 40%,#3b82f6 70%,#93c5fd 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:18px}
+.ci-shine{position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.15) 50%,transparent 75%);
   animation:shine 4s ease-in-out infinite}
 @keyframes shine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
-/* 城市光晕 */
-.hc-glow{position:absolute;bottom:0;left:0;right:0;height:80px;
-  background:linear-gradient(0deg,rgba(30,64,175,.6),transparent)}
-.hc-city{display:flex;gap:6px;align-items:flex-end;position:relative;z-index:1}
-.hc-city span{background:rgba(255,255,255,.2);border-radius:3px 3px 0 0;display:block}
-.hc-loc{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.6);
-  position:absolute;top:14px;left:16px}
-.hc-dest{font-size:22px;font-weight:900;color:#fff;font-family:'Georgia',serif;
-  position:absolute;top:36px;left:16px;letter-spacing:1px}
+.ci-tag{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.5);margin-bottom:6px;font-weight:600}
+.ci-title{font-size:22px;font-weight:900;color:#fff;letter-spacing:.5px}
+.ci-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:4px}
+/* 城市剪影 */
+.skyline{display:flex;gap:4px;align-items:flex-end;position:absolute;right:18px;bottom:18px}
+.skyline span{background:rgba(255,255,255,.25);border-radius:2px 2px 0 0;display:block}
 
-.hc-body{padding:14px 16px 16px;display:flex;justify-content:space-between;align-items:center}
-.hc-poi-preview{display:flex;gap:6px}
-.hc-dot{width:8px;height:8px;border-radius:50%;background:var(--blue3)}
-.hc-dot:nth-child(2){background:var(--blue2);opacity:.6}
-.hc-dot:nth-child(3){background:var(--blue3);opacity:.4}
-.hc-label{font-size:12px;color:var(--ink3)}
-.hc-shake{display:flex;align-items:center;gap:5px;
-  background:var(--blue4);border-radius:20px;padding:6px 12px}
-.hc-shake-ico{font-size:13px;animation:jig 2.5s ease-in-out infinite}
-@keyframes jig{0%,100%{transform:rotate(0)}20%{transform:rotate(-18deg)}36%{transform:rotate(14deg)}50%{transform:rotate(-9deg)}65%{transform:rotate(6deg)}80%{transform:rotate(-3deg)}}
-.hc-shake-txt{font-size:11px;color:var(--blue);font-weight:600}
+.cover-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:14px}
+.cover-intro{font-size:13px;color:var(--ink3);line-height:1.8}
+.cover-intro b{color:var(--blue);font-weight:700}
 
-/* 品牌文字 */
-.brand-area{text-align:center;margin-top:20px}
-.brand-word{font-family:'Georgia',serif;font-size:clamp(36px,10vw,48px);
-  font-weight:900;letter-spacing:6px;color:var(--ink);line-height:1}
-.brand-dot{display:inline-block;width:6px;height:6px;border-radius:50%;
-  background:var(--blue);margin:0 2px;vertical-align:middle}
-.brand-sub{font-size:11px;color:var(--ink4);letter-spacing:3px;margin-top:8px}
+.role-label{font-size:11px;font-weight:700;color:var(--ink4);letter-spacing:2px}
+.role-btns{display:flex;gap:10px}
+.role-btn{flex:1;padding:14px 8px;border:1.5px solid var(--ink5);border-radius:14px;
+  background:var(--white);cursor:pointer;text-align:center;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:6px}
+.role-btn:active{transform:scale(.97)}
+.role-btn.A:hover,.role-btn.A.sel{border-color:var(--blue);background:var(--blue5)}
+.role-btn.B:hover,.role-btn.B.sel{border-color:var(--pink);background:#fff0f6}
+.rb-ico{font-size:24px}
+.rb-name{font-size:13px;font-weight:800;color:var(--ink)}
+.rb-desc{font-size:11px;color:var(--ink4)}
 
-/* 输入区 */
-.input-panel{width:100%;padding:20px 20px max(28px,env(safe-area-inset-bottom));
-  background:var(--bg2);border-top:1px solid rgba(37,99,235,.06);
-  display:flex;flex-direction:column;gap:12px}
+.brand-foot{display:flex;flex-direction:column;align-items:center;gap:4px}
+.brand-name{font-family:'Georgia',serif;font-size:20px;font-weight:900;letter-spacing:5px;color:var(--ink2)}
+.brand-tagline{font-size:11px;color:var(--ink4);letter-spacing:2px}
 
-.dest-wrap{position:relative}
-.dest-flag{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px}
-.dest-in{width:100%;background:var(--card);border:1.5px solid rgba(37,99,235,.12);
-  border-radius:14px;padding:13px 14px 13px 42px;font-size:16px;color:var(--ink);
-  outline:none;font-family:inherit;
-  box-shadow:inset 0 1px 3px rgba(0,0,0,.03);transition:border-color .2s,box-shadow .2s}
-.dest-in::placeholder{color:var(--ink4);font-size:15px}
-.dest-in:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(37,99,235,.08),inset 0 1px 3px rgba(0,0,0,.03)}
+/* ════════════════════════════════════
+   A 发起页
+════════════════════════════════════ */
+#sSetup{display:flex;flex-direction:column}
+.page-header{flex-shrink:0;height:56px;display:flex;align-items:center;padding:0 18px;
+  background:rgba(240,246,255,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--ink5);position:relative}
+.ph-back{position:absolute;left:16px;font-size:13px;color:var(--blue);cursor:pointer;padding:6px}
+.ph-title{flex:1;text-align:center;font-size:16px;font-weight:800}
+.ph-action{position:absolute;right:16px;font-size:13px;color:var(--blue);cursor:pointer;font-weight:700;padding:6px}
 
-.cnt-row{display:flex;align-items:center;gap:8px}
-.cnt-lbl{font-size:12px;color:var(--ink3);font-weight:500;white-space:nowrap}
+.setup-scroll{flex:1;overflow-y:auto;padding:18px 20px 40px;display:flex;flex-direction:column;gap:18px}
+.sec-title{font-size:12px;font-weight:700;color:var(--ink4);letter-spacing:2px;margin-bottom:8px}
+.sec-card{background:var(--white);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+
+.dest-field{position:relative}
+.df-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px}
+.df-inp{width:100%;border:1.5px solid var(--ink5);border-radius:12px;
+  padding:12px 14px 12px 42px;font-size:15px;color:var(--ink);outline:none;
+  font-family:inherit;background:var(--bg2);transition:border-color .2s}
+.df-inp:focus{border-color:var(--blue2)}
+.df-inp::placeholder{color:var(--ink4)}
+
+.cnt-row{display:flex;align-items:center;gap:10px}
+.cnt-lbl{font-size:13px;color:var(--ink3);white-space:nowrap}
 .cnt-pills{display:flex;gap:6px;flex:1}
 .cnt-pills input{display:none}
 .cnt-pills label{flex:1;text-align:center;padding:9px 0;font-size:13px;font-weight:600;
-  color:var(--ink3);border:1.5px solid rgba(37,99,235,.12);
-  border-radius:10px;cursor:pointer;background:var(--card);
-  transition:all .2s;box-shadow:var(--sh)}
-.cnt-pills input:checked+label{color:#fff;background:var(--blue);border-color:var(--blue);
-  box-shadow:0 4px 12px rgba(37,99,235,.28)}
+  color:var(--ink4);border:1.5px solid var(--ink5);border-radius:10px;cursor:pointer;
+  background:var(--bg2);transition:all .2s}
+.cnt-pills input:checked+label{color:var(--blue);background:var(--blue5);border-color:var(--blue2)}
 
-.go-btn{width:100%;padding:16px;border:none;border-radius:16px;cursor:pointer;
+.mbti-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mbti-btn{padding:11px 8px;border:1.5px solid var(--ink5);border-radius:12px;cursor:pointer;
+  background:var(--bg2);text-align:center;transition:all .2s;font-family:inherit}
+.mbti-btn:active{transform:scale(.97)}
+.mb-type{font-size:14px;font-weight:800;color:var(--ink)}
+.mb-desc{font-size:11px;color:var(--ink4);margin-top:3px}
+.mbti-btn.sel{border-color:var(--purple);background:var(--purple2)}
+.mbti-btn.sel .mb-type{color:var(--purple)}
+
+.gen-btn{width:100%;padding:15px;border:none;border-radius:14px;cursor:pointer;
   background:linear-gradient(135deg,var(--blue),var(--blue2));
-  font-size:16px;font-weight:800;color:#fff;letter-spacing:2px;
-  font-family:inherit;position:relative;overflow:hidden;
-  box-shadow:0 6px 20px rgba(37,99,235,.32);transition:transform .14s,box-shadow .2s}
-.go-btn::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%);
-  transform:translateX(-100%);transition:transform .6s}
-.go-btn:hover::after{transform:translateX(100%)}
-.go-btn:active{transform:scale(.97);box-shadow:0 3px 12px rgba(37,99,235,.24)}
+  color:#fff;font-size:15px;font-weight:800;letter-spacing:1px;
+  box-shadow:0 6px 20px rgba(37,99,235,.28);font-family:inherit;transition:transform .14s}
+.gen-btn:active{transform:scale(.97)}
 
-/* ═════════════════════════
-   屏2  翻牌
-═════════════════════════ */
-#s2{background:var(--bg)}
+.share-preview{background:var(--blue5);border:1px dashed var(--blue3);
+  border-radius:12px;padding:14px;text-align:center;display:none}
+.sp-label{font-size:11px;color:var(--blue3);margin-bottom:6px}
+.sp-text{font-size:14px;font-weight:700;color:var(--blue)}
+.sp-copy{margin-top:8px;padding:8px 20px;border:none;border-radius:8px;
+  background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 
-.flip-nav{position:fixed;top:0;left:0;right:0;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 20px;padding-top:max(20px,env(safe-area-inset-top));
-  background:rgba(238,244,252,.9);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(37,99,235,.06)}
-.fn-dest{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:.5px}
-.fn-right{display:flex;align-items:center;gap:8px}
-.fn-prog{display:flex;align-items:center;gap:5px}
-.pdot{width:7px;height:7px;border-radius:50%;
-  background:rgba(37,99,235,.15);transition:all .35s}
-.pdot.done{background:var(--blue3)}
-.pdot.cur{background:var(--blue);width:20px;border-radius:4px;
-  box-shadow:0 0 8px rgba(37,99,235,.4)}
+/* ════════════════════════════════════
+   主 App（B视角）
+════════════════════════════════════ */
+#sApp{display:flex;flex-direction:column;background:var(--bg)}
 
-.flip-stage{flex:1;width:100%;display:flex;align-items:center;justify-content:center;
-  padding-top:70px;padding-bottom:110px;position:relative}
+/* 顶部状态栏 */
+.app-topbar{flex-shrink:0;height:52px;display:flex;align-items:center;
+  padding:0 18px;background:rgba(240,246,255,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--ink5);position:relative}
+.at-left{position:absolute;left:16px;font-size:12px;color:var(--ink4)}
+.at-title{flex:1;text-align:center;font-family:'Georgia',serif;font-size:17px;
+  font-weight:900;color:var(--ink);letter-spacing:2px}
+.at-from{position:absolute;right:16px;display:flex;align-items:center;gap:5px}
+.at-avatar{width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700}
+.at-name{font-size:11px;color:var(--ink3);font-weight:500}
 
-/* 卡片 */
-.card-wrap{width:min(68vw,260px);position:relative;filter:drop-shadow(0 20px 40px rgba(37,99,235,.18))}
-.card-ratio{width:100%;padding-top:148%;position:relative}
-.card-scene{position:absolute;inset:0;perspective:900px}
-.card-3d{width:100%;height:100%;transform-style:preserve-3d;
-  transition:transform .7s cubic-bezier(.38,0,.18,1)}
-.card-3d.flipped{transform:rotateY(180deg)}
-.cface{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;overflow:hidden}
+/* 内容区 */
+.app-content{flex:1;overflow:hidden;position:relative}
+.tab-panel{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:18px 18px 80px;display:flex;flex-direction:column;align-items:center;gap:14px;
+  transition:opacity .3s;opacity:1}
+.tab-panel.hidden{opacity:0;pointer-events:none}
 
-/* 卡背——深蓝（唯一深色，制造对比）*/
-.cback{
-  background:linear-gradient(150deg,#1e3a8a 0%,#1d4ed8 40%,#2563eb 65%,#1d4ed8 85%,#1e3a8a 100%);
+/* 底部 Tab Bar */
+.tab-bar{flex-shrink:0;height:64px;background:rgba(255,255,255,.95);
+  backdrop-filter:blur(16px);border-top:1px solid var(--ink5);
+  display:flex;align-items:center}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;padding:6px 0;transition:opacity .2s}
+.tab-item:active{opacity:.7}
+.tab-ico{font-size:22px;filter:grayscale(1);opacity:.4;transition:all .2s}
+.tab-lbl{font-size:10px;color:var(--ink4);font-weight:500;transition:all .2s}
+.tab-item.active .tab-ico{filter:none;opacity:1}
+.tab-item.active .tab-lbl{color:var(--blue);font-weight:700}
+
+/* ── 通用卡片 ── */
+.card{background:var(--white);border-radius:20px;box-shadow:var(--sh);width:100%;max-width:360px}
+.card-head{padding:16px 18px 12px;border-bottom:1px solid var(--ink5)}
+.card-head-row{display:flex;align-items:center;justify-content:space-between}
+.ch-title{font-size:15px;font-weight:800}
+.ch-sub{font-size:11px;color:var(--ink4);margin-top:3px}
+.ch-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700}
+.badge-blue{background:var(--blue5);color:var(--blue)}
+.badge-pink{background:#fff0f6;color:var(--pink)}
+.badge-green{background:var(--green2);color:var(--green)}
+.badge-purple{background:var(--purple2);color:var(--purple)}
+.badge-gold{background:var(--gold2);color:var(--gold)}
+
+/* ════ Tab 1: 旅行签 ════ */
+.sign-cover{width:100%;max-width:360px;height:140px;border-radius:20px;overflow:hidden;
+  position:relative;background:linear-gradient(135deg,#1e40af,#2563eb,#60a5fa);
+  box-shadow:var(--sh2);display:flex;flex-direction:column;justify-content:flex-end;padding:16px}
+.sc-shine{position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.14) 50%,transparent 75%);
+  animation:shine 5s ease-in-out infinite}
+.sc-label{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.5);margin-bottom:4px;position:relative;z-index:1}
+.sc-title{font-size:20px;font-weight:900;color:#fff;position:relative;z-index:1}
+.sc-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;position:relative;z-index:1}
+
+/* 签牌翻牌区 */
+.sign-stage{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center}
+.sign-nav{width:100%;display:flex;justify-content:space-between;align-items:center;
+  padding:10px 4px;margin-bottom:10px}
+.sn-dest{font-size:13px;font-weight:700;color:var(--ink)}
+.sn-prog{display:flex;gap:5px;align-items:center}
+.sp-dot{width:7px;height:7px;border-radius:50%;background:var(--ink5);transition:all .3s}
+.sp-dot.done{background:var(--blue3)}
+.sp-dot.cur{background:var(--blue);width:18px;border-radius:4px}
+
+/* 翻牌卡 */
+.flip-wrap{width:200px;height:290px;position:relative;cursor:pointer;
+  filter:drop-shadow(0 16px 32px rgba(37,99,235,.2))}
+.flip-scene{width:100%;height:100%;perspective:800px}
+.flip-3d{width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.38,0,.18,1)}
+.flip-3d.flipped{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;overflow:hidden}
+
+.f-back{background:linear-gradient(150deg,#1e3a8a,#1d4ed8,#2563eb,#1d4ed8,#1e3a8a);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.2)}
-.ctex{position:absolute;inset:0;
-  background-image:
-    repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 10px),
-    repeating-linear-gradient(-45deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 10px)}
-.cglow{position:absolute;width:60%;height:60%;top:50%;left:50%;
-  transform:translate(-50%,-50%);border-radius:50%;
-  background:radial-gradient(rgba(147,197,253,.2),transparent 70%);
+  border:1px solid rgba(255,255,255,.06)}
+.fb-tex{position:absolute;inset:0;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0,rgba(255,255,255,.02) 1px,transparent 1px,transparent 9px),
+    repeating-linear-gradient(-45deg,rgba(255,255,255,.02) 0,rgba(255,255,255,.02) 1px,transparent 1px,transparent 9px)}
+.fb-glow{position:absolute;width:50%;height:50%;top:50%;left:50%;transform:translate(-50%,-50%);
+  border-radius:50%;background:radial-gradient(rgba(147,197,253,.18),transparent);
   animation:cpulse 3s ease-in-out infinite alternate}
-@keyframes cpulse{from{opacity:.6;transform:translate(-50%,-50%) scale(1)}to{opacity:1;transform:translate(-50%,-50%) scale(1.18)}}
-.csign{position:relative;z-index:1;font-family:'Georgia',serif;
-  font-size:clamp(70px,19vw,105px);line-height:1;
-  color:transparent;-webkit-text-stroke:1.5px rgba(219,234,254,.5);
-  animation:sglw 3s ease-in-out infinite alternate}
-@keyframes sglw{
-  from{text-shadow:0 0 24px rgba(147,197,253,.3)}
-  to{text-shadow:0 0 48px rgba(147,197,253,.6),0 0 80px rgba(37,99,235,.3)}}
-.cframe{position:absolute;inset:14px;border:1px solid rgba(219,234,254,.15);border-radius:14px;pointer-events:none}
-.ccorner{position:absolute;width:16px;height:16px;border-color:rgba(219,234,254,.3);border-style:solid}
-.cc-tl{top:20px;left:20px;border-width:1.5px 0 0 1.5px}
-.cc-tr{top:20px;right:20px;border-width:1.5px 1.5px 0 0}
-.cc-bl{bottom:20px;left:20px;border-width:0 0 1.5px 1.5px}
-.cc-br{bottom:20px;right:20px;border-width:0 1.5px 1.5px 0}
-.ctap{position:absolute;bottom:18px;font-size:9px;letter-spacing:4px;
-  color:rgba(219,234,254,.28);z-index:1}
+@keyframes cpulse{from{transform:translate(-50%,-50%) scale(1);opacity:.6}to{transform:translate(-50%,-50%) scale(1.2);opacity:1}}
+.fb-sign{position:relative;z-index:1;font-family:'Georgia',serif;font-size:80px;color:transparent;
+  -webkit-text-stroke:1.5px rgba(219,234,254,.45);
+  animation:sglw 3s ease-in-out infinite alternate;line-height:1}
+@keyframes sglw{from{text-shadow:0 0 20px rgba(147,197,253,.2)}to{text-shadow:0 0 45px rgba(147,197,253,.55)}}
+.fb-corner{position:absolute;width:14px;height:14px;border-color:rgba(219,234,254,.25);border-style:solid}
+.fc-tl{top:14px;left:14px;border-width:1px 0 0 1px}
+.fc-tr{top:14px;right:14px;border-width:1px 1px 0 0}
+.fc-bl{bottom:14px;left:14px;border-width:0 0 1px 1px}
+.fc-br{bottom:14px;right:14px;border-width:0 1px 1px 0}
+.fb-hint{position:absolute;bottom:16px;font-size:9px;letter-spacing:3px;color:rgba(219,234,254,.25);z-index:1}
 
-/* 卡正面——白色精致卡片 */
-.cfront{transform:rotateY(180deg);
-  background:#fff;border:1px solid rgba(37,99,235,.07);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:24px 18px;gap:0}
-.poi-ico{font-size:clamp(42px,12vw,58px);line-height:1;margin-bottom:12px}
-.poi-nm{font-size:clamp(17px,5vw,21px);font-weight:900;text-align:center;
-  color:var(--ink);margin-bottom:8px}
-.poi-badge{display:inline-block;font-size:10px;padding:3px 12px;border-radius:20px;
-  background:var(--blue4);color:var(--blue);font-weight:700;letter-spacing:1px}
-.poi-sep{width:60px;height:1px;margin:15px 0;
-  background:linear-gradient(90deg,transparent,var(--blue3),transparent)}
-.poi-sign{font-size:12px;color:var(--ink3);text-align:center;
-  line-height:1.9;font-style:italic;padding:0 8px;letter-spacing:.3px}
-.poi-num{position:absolute;top:14px;right:16px;
-  font-size:11px;color:var(--ink4);font-weight:600}
+.f-front{transform:rotateY(180deg);background:#fff;
+  border:1px solid rgba(37,99,235,.07);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px}
+.ff-num{position:absolute;top:12px;right:14px;font-size:10px;color:var(--ink4);font-weight:600}
+.ff-ico{font-size:48px;margin-bottom:10px;line-height:1}
+.ff-name{font-size:18px;font-weight:900;color:var(--ink);text-align:center;margin-bottom:7px}
+.ff-badge{font-size:10px;padding:3px 12px;border-radius:20px;background:var(--blue5);color:var(--blue);font-weight:700}
+.ff-sep{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--blue4),transparent);margin:13px 0}
+.ff-phrase{font-size:12px;color:var(--ink3);text-align:center;line-height:1.9;font-style:italic}
+
+.shake-hint{display:flex;align-items:center;gap:6px;margin-top:12px;
+  background:var(--white);border:1px solid var(--ink5);border-radius:40px;padding:7px 16px;box-shadow:var(--sh)}
+.sh-ico{font-size:14px;animation:jig 2.5s ease-in-out infinite}
+@keyframes jig{0%,100%{transform:rotate(0)}18%{transform:rotate(-18deg)}34%{transform:rotate(14deg)}48%{transform:rotate(-9deg)}64%{transform:rotate(6deg)}80%{transform:rotate(-3deg)}}
+.sh-txt{font-size:11px;color:var(--ink3)}
+
+.next-sign-btn{display:none;width:100%;max-width:360px;padding:14px;border:none;
+  border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;
+  box-shadow:0 5px 18px rgba(37,99,235,.25);font-family:inherit;transition:transform .14s}
+.next-sign-btn:active{transform:scale(.97)}
+
+/* 结果海报 */
+.result-poster{display:none;width:100%;max-width:360px;background:var(--white);
+  border-radius:20px;overflow:hidden;box-shadow:var(--sh2)}
+.rp-cover{height:100px;background:linear-gradient(135deg,#1e40af,#2563eb,#60a5fa);
+  position:relative;padding:14px 16px;display:flex;flex-direction:column;justify-content:flex-end}
+.rp-eyebrow{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.5);margin-bottom:4px}
+.rp-title{font-size:18px;font-weight:900;color:#fff}
+.rp-list{padding:12px 16px 10px;display:flex;flex-direction:column;gap:0}
+.rp-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--ink5)}
+.rp-item:last-child{border-bottom:none}
+.rp-seq{width:20px;height:20px;border-radius:50%;background:var(--blue5);
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--blue);flex-shrink:0;margin-top:2px}
+.rp-ico{font-size:20px;flex-shrink:0}
+.rp-info .rp-name{font-size:13px;font-weight:800}
+.rp-info .rp-phrase{font-size:11px;color:var(--ink3);font-style:italic;margin-top:2px;line-height:1.5}
+.rp-foot{padding:10px 16px 14px;border-top:1px solid var(--ink5);
+  display:flex;align-items:center;justify-content:space-between}
+.rp-brand{font-size:9px;font-weight:700;color:var(--blue2);letter-spacing:2px}
+.rp-stamp{font-size:9px;color:var(--gold);border:1px solid rgba(217,119,6,.2);border-radius:6px;padding:2px 8px}
+
+.heart-btn{width:100%;max-width:360px;padding:16px;border:none;border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,#db2777,var(--pink));color:#fff;
+  font-size:15px;font-weight:900;letter-spacing:1px;font-family:inherit;
+  box-shadow:0 6px 22px rgba(244,63,142,.28);transition:transform .14s;display:none}
+.heart-btn:active{transform:scale(.97)}
+.heart-btn.sent{background:linear-gradient(135deg,#6d28d9,#7c3aed)}
+
+.act-row{display:none;flex-direction:row;gap:8px;width:100%;max-width:360px}
+.ar-btn{flex:1;padding:12px 4px;border-radius:12px;font-size:12px;font-weight:700;
+  cursor:pointer;border:none;font-family:inherit;box-shadow:var(--sh);transition:transform .14s}
+.ar-btn:active{transform:scale(.97)}
+.ar-copy{background:var(--blue5);color:var(--blue)}
+.ar-save{background:var(--gold2);color:var(--gold)}
+.ar-again{background:var(--white);color:var(--ink3);border:1px solid var(--ink5)}
+
+/* ════ Tab 2: 默契测试 ════ */
+.match-intro{width:100%;max-width:360px}
+.poi-swipe-wrap{width:100%;max-width:360px;position:relative;height:320px}
+.poi-swipe-card{position:absolute;inset:0;background:var(--white);border-radius:20px;
+  box-shadow:var(--sh2);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:24px;transition:transform .4s,opacity .4s;cursor:grab}
+.psc-ico{font-size:56px;margin-bottom:12px}
+.psc-name{font-size:20px;font-weight:900;color:var(--ink);margin-bottom:6px;text-align:center}
+.psc-type{font-size:11px;padding:3px 12px;border-radius:20px;background:var(--blue5);color:var(--blue);font-weight:700}
+.psc-desc{font-size:13px;color:var(--ink3);text-align:center;margin-top:12px;line-height:1.7}
+.swipe-hint{position:absolute;bottom:16px;left:0;right:0;
+  display:flex;justify-content:space-between;padding:0 20px}
+.swh-no{font-size:12px;color:#ef4444;font-weight:700;opacity:.4}
+.swh-yes{font-size:12px;color:var(--green);font-weight:700;opacity:.4}
+
+.vote-btns{display:flex;gap:14px;width:100%;max-width:360px;justify-content:center;margin-top:0}
+.vb{width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+  font-size:24px;display:flex;align-items:center;justify-content:center;
+  transition:transform .15s,box-shadow .15s;box-shadow:var(--sh)}
+.vb:active{transform:scale(.9)}
+.vb-no{background:#fff0f0;box-shadow:0 4px 16px rgba(239,68,68,.15)}
+.vb-yes{background:#f0fdf4;box-shadow:0 4px 16px rgba(16,185,129,.15)}
+
+.match-wait{display:none;width:100%;max-width:360px}
+.mw-card{background:var(--white);border-radius:20px;padding:24px;text-align:center;box-shadow:var(--sh2)}
+.mw-title{font-size:16px;font-weight:800;margin-bottom:8px}
+.mw-sub{font-size:13px;color:var(--ink3);line-height:1.7;margin-bottom:18px}
+.mw-loader{display:flex;gap:5px;justify-content:center}
+.ml-dot{width:8px;height:8px;border-radius:50%;background:var(--blue3);animation:bounce 1s infinite}
+.ml-dot:nth-child(2){animation-delay:.16s}
+.ml-dot:nth-child(3){animation-delay:.32s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.match-result{display:none;width:100%;max-width:360px}
+.mr-card{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:var(--sh2)}
+.mr-cover{height:90px;background:linear-gradient(135deg,#6d28d9,#7c3aed,#a78bfa);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.mr-pct{font-size:36px;font-weight:900;color:#fff;font-family:'Georgia',serif}
+.mr-label{font-size:11px;color:rgba(255,255,255,.7);letter-spacing:2px}
+.mr-body{padding:18px}
+.mr-verdict{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.mr-detail{font-size:13px;color:var(--ink3);line-height:1.8}
+.mr-items{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.mr-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ink5)}
+.mr-item:last-child{border-bottom:none}
+.mi-ico{font-size:18px}
+.mi-name{flex:1;font-size:13px;font-weight:600}
+.mi-match{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px}
+.match-y{background:var(--green2);color:var(--green)}
+.match-n{background:#fee2e2;color:#ef4444}
+.match-m{background:var(--gold2);color:var(--gold)}
+
+/* ════ Tab 3: 性格推荐 ════ */
+.mbti-pick-card{background:var(--white);border-radius:20px;padding:18px;box-shadow:var(--sh);width:100%;max-width:360px}
+.mbti-pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mp-btn{padding:12px 8px;border:1.5px solid var(--ink5);border-radius:12px;cursor:pointer;
+  background:var(--bg2);text-align:center;transition:all .2s;font-family:inherit}
+.mp-btn:active{transform:scale(.97)}
+.mp-type{font-size:14px;font-weight:800;color:var(--ink)}
+.mp-trait{font-size:11px;color:var(--ink4);margin-top:3px}
+.mp-btn.sel{border-color:var(--purple);background:var(--purple2)}
+.mp-btn.sel .mp-type{color:var(--purple)}
+.mp-go{width:100%;padding:13px;border:none;border-radius:12px;cursor:pointer;margin-top:12px;
+  background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff;
+  font-size:14px;font-weight:800;font-family:inherit;
+  box-shadow:0 5px 18px rgba(124,58,237,.25);transition:transform .14s}
+.mp-go:active{transform:scale(.97)}
+
+.persona-route{display:none;width:100%;max-width:360px}
+.pr-card{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:var(--sh2)}
+.pr-cover{height:100px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px 16px}
+.pr-eyebrow{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,.6);margin-bottom:4px}
+.pr-title{font-size:17px;font-weight:900;color:#fff}
+.pr-list{padding:12px 16px 10px}
+.pr-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--ink5)}
+.pr-item:last-child{border-bottom:none}
+.pri-ico{font-size:22px;flex-shrink:0}
+.pri-info .pri-name{font-size:13px;font-weight:800}
+.pri-info .pri-why{font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.5;font-style:italic}
+.pr-comment{padding:12px 16px 16px;background:var(--bg2);font-size:12px;color:var(--ink3);line-height:1.8;border-top:1px solid var(--ink5)}
+.pr-comment b{color:var(--purple);font-weight:700}
+
+/* ════ Tab 4: 我的履历 ════ */
+.profile-header{width:100%;max-width:360px;background:linear-gradient(135deg,var(--blue),var(--blue2));
+  border-radius:20px;padding:20px;color:#fff;box-shadow:var(--sh2)}
+.ph-user{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.phu-avatar{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;font-size:22px}
+.phu-info .phu-name{font-size:16px;font-weight:800}
+.phu-info .phu-tag{font-size:11px;color:rgba(255,255,255,.7);margin-top:3px}
+.ph-stats{display:flex;gap:0}
+.phs-item{flex:1;text-align:center;padding:10px 0;position:relative}
+.phs-item+.phs-item::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:1px;background:rgba(255,255,255,.2)}
+.phsi-num{font-size:22px;font-weight:900}
+.phsi-lbl{font-size:10px;color:rgba(255,255,255,.65);margin-top:2px}
+
+.history-list{width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px}
+.hl-card{background:var(--white);border-radius:16px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
+.hlc-icos{display:flex;gap:-4px}
+.hlc-ico{width:36px;height:36px;border-radius:10px;overflow:hidden;flex-shrink:0;
+  background:linear-gradient(135deg,#1e40af,#60a5fa);
+  display:flex;align-items:center;justify-content:center;font-size:18px}
+.hlc-info{flex:1;min-width:0}
+.hlci-dest{font-size:14px;font-weight:800}
+.hlci-meta{font-size:11px;color:var(--ink4);margin-top:2px}
+.hlc-badge{font-size:10px;padding:3px 10px;border-radius:20px;white-space:nowrap}
+
+.buddy-card{background:var(--white);border-radius:16px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
+.bc-avatar{width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}
+.bc-info{flex:1}
+.bc-name{font-size:14px;font-weight:800}
+.bc-match{font-size:11px;color:var(--ink3);margin-top:2px}
+.bc-score{font-family:'Georgia',serif;font-size:18px;font-weight:900}
 
 /* 粒子 */
-#pcvs{position:fixed;inset:0;pointer-events:none;z-index:20}
-
-/* 底部 */
-.flip-foot{position:fixed;bottom:0;left:0;right:0;
-  padding:12px 20px max(28px,env(safe-area-inset-bottom));
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  background:linear-gradient(0deg,rgba(238,244,252,1) 70%,transparent 100%);
-  z-index:10}
-.shake-chip{display:flex;align-items:center;gap:6px;
-  background:var(--card);border:1px solid rgba(37,99,235,.1);
-  border-radius:40px;padding:7px 16px;box-shadow:var(--sh)}
-.shake-ico{font-size:14px;animation:jig 2.5s ease-in-out infinite}
-.shake-txt{font-size:11px;color:var(--ink3);font-weight:500}
-.next-btn{display:none;width:100%;padding:15px;border:none;border-radius:14px;cursor:pointer;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;font-family:inherit;
-  box-shadow:0 6px 20px rgba(37,99,235,.28);transition:transform .14s}
-.next-btn:active{transform:scale(.97)}
-
-/* ═════════════════════════
-   屏3  结果
-═════════════════════════ */
-#s3{background:var(--bg);overflow:hidden}
-.r-scroll{width:100%;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  display:flex;flex-direction:column;align-items:center;
-  padding:max(60px,env(safe-area-inset-top)+40px) 18px max(40px,env(safe-area-inset-bottom))}
-
-/* 路线海报卡片 */
-.poster{width:100%;max-width:340px;background:var(--card);
-  border-radius:24px;overflow:hidden;
-  box-shadow:0 12px 48px rgba(37,99,235,.12),0 2px 8px rgba(0,0,0,.06)}
-.p-cover{width:100%;height:120px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,#1e40af,#2563eb 40%,#3b82f6 70%,#60a5fa)}
-.p-shine{position:absolute;inset:0;
-  background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.15) 50%,transparent 75%)}
-.p-eyebrow{position:absolute;top:14px;left:16px;
-  font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.55);font-weight:600}
-.p-title{position:absolute;bottom:14px;left:16px;right:16px}
-.p-title-main{font-size:20px;font-weight:900;color:#fff;letter-spacing:.5px}
-.p-title-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;letter-spacing:1px}
-
-.p-list{padding:14px 16px 10px;display:flex;flex-direction:column;gap:0}
-.p-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;
-  border-bottom:1px solid rgba(37,99,235,.06)}
-.p-item:last-child{border-bottom:none}
-.p-seq{width:22px;height:22px;border-radius:50%;background:var(--blue4);
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:700;color:var(--blue);flex-shrink:0;margin-top:2px}
-.p-ico{font-size:22px;flex-shrink:0}
-.p-info{flex:1;min-width:0}
-.p-name{font-size:14px;font-weight:800;color:var(--ink)}
-.p-phrase{font-size:11px;color:var(--ink3);font-style:italic;
-  margin-top:3px;line-height:1.6}
-
-.p-foot{padding:10px 16px 14px;
-  border-top:1px solid rgba(37,99,235,.06);
-  display:flex;align-items:center;justify-content:space-between}
-.p-brand{display:flex;align-items:center;gap:5px}
-.p-brand-dot{width:6px;height:6px;border-radius:50%;background:var(--blue2)}
-.p-brand-txt{font-size:10px;font-weight:700;color:var(--blue2);letter-spacing:2px}
-.p-stamp{font-size:9px;color:var(--gold);border:1px solid rgba(217,119,6,.25);
-  border-radius:6px;padding:3px 8px;font-weight:600;letter-spacing:1px}
-
-/* 心动按钮 */
-.heart-btn{width:100%;max-width:340px;padding:17px;border:none;border-radius:16px;cursor:pointer;
-  background:linear-gradient(135deg,#db2777,var(--pink),var(--pink2));
-  color:#fff;font-size:16px;font-weight:900;letter-spacing:1px;font-family:inherit;
-  box-shadow:0 8px 24px rgba(244,63,142,.28);transition:transform .14s;
-  margin-top:12px}
-.heart-btn:active{transform:scale(.97)}
-.heart-btn.sent{background:linear-gradient(135deg,#6d28d9,#7c3aed);
-  box-shadow:0 8px 24px rgba(109,40,217,.22)}
-
-/* 操作行 */
-.act-row{display:flex;gap:8px;width:100%;max-width:340px;margin-top:10px}
-.act-btn{flex:1;padding:12px 6px;border-radius:12px;font-size:12px;font-weight:700;
-  cursor:pointer;border:none;font-family:inherit;transition:transform .14s;
-  box-shadow:var(--sh)}
-.act-btn:active{transform:scale(.97)}
-.a-copy{background:var(--blue4);color:var(--blue)}
-.a-save{background:#fef9c3;color:var(--gold)}
-.a-restart{background:var(--card);color:var(--ink3)}
+#pcvs{position:fixed;inset:0;pointer-events:none;z-index:50}
 
 /* 飞入 */
-.fly{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.fly{opacity:0;transform:translateY(12px);transition:opacity .45s,transform .45s}
 .fly.show{opacity:1;transform:none}
 </style>
 </head>
 <body>
 
-<div class="bg-blob blob1"></div>
-<div class="bg-blob blob2"></div>
-<div class="bg-blob blob3"></div>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
 <canvas id="pcvs"></canvas>
 
-<a class="back-btn" href="/08/works/#tools">
-  <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  AI 工具
-</a>
-
-<!-- ═══ 屏1 ═══ -->
-<div class="screen" id="s1">
-  <div class="hero">
-    <div class="hero-card">
-      <div class="hc-img">
-        <div class="hc-shine"></div>
-        <div class="hc-glow"></div>
-        <div class="hc-loc">HIDDEN ROUTE</div>
-        <div class="hc-dest" id="heroDestPreview">你的目的地</div>
-        <!-- 城市光点装饰 -->
-        <div style="position:absolute;bottom:16px;right:16px;display:flex;gap:4px;align-items:flex-end">
-          <div style="width:3px;height:14px;background:rgba(255,255,255,.3);border-radius:2px"></div>
-          <div style="width:3px;height:22px;background:rgba(255,255,255,.4);border-radius:2px"></div>
-          <div style="width:3px;height:10px;background:rgba(255,255,255,.25);border-radius:2px"></div>
-          <div style="width:3px;height:28px;background:rgba(255,255,255,.45);border-radius:2px"></div>
-          <div style="width:3px;height:16px;background:rgba(255,255,255,.3);border-radius:2px"></div>
-          <div style="width:3px;height:8px;background:rgba(255,255,255,.2);border-radius:2px"></div>
-        </div>
+<!-- ════ 封面页 ════ -->
+<div class="screen" id="sCover">
+  <div class="cover-card">
+    <div class="cover-img">
+      <div class="ci-shine"></div>
+      <div class="skyline">
+        <span style="width:4px;height:18px"></span>
+        <span style="width:4px;height:28px"></span>
+        <span style="width:4px;height:14px"></span>
+        <span style="width:4px;height:36px"></span>
+        <span style="width:4px;height:22px"></span>
+        <span style="width:4px;height:12px"></span>
+        <span style="width:4px;height:30px"></span>
       </div>
-      <div class="hc-body">
-        <div>
-          <div style="font-size:13px;font-weight:700;color:var(--ink)">摇一摇，抽你的旅行签</div>
-          <div style="font-size:11px;color:var(--ink4);margin-top:2px">分享行程的全新玩法</div>
-        </div>
-        <div class="hc-shake">
-          <span class="hc-shake-ico">📱</span>
-          <span class="hc-shake-txt">SHAKE</span>
-        </div>
+      <div class="ci-tag">FATE TRIP · 圆周</div>
+      <div class="ci-title" id="coverTitle">抽你的曼谷旅行签</div>
+      <div class="ci-sub">看看抽到哪家夜市！🍜</div>
+    </div>
+    <div class="cover-body">
+      <div class="cover-intro">
+        <b>A</b> 为你规划好了曼谷 5 日游，发来了一个旅行签——<b>不只是分享行程，而是邀你一起拆惊喜</b> 🎴
       </div>
-    </div>
-    <div class="brand-area">
-      <div class="brand-word">FATE<span class="brand-dot"></span>TRIP</div>
-      <div class="brand-sub">让命运为你选路</div>
-    </div>
-  </div>
-
-  <div class="input-panel">
-    <div class="dest-wrap">
-      <span class="dest-flag">✈️</span>
-      <input class="dest-in" id="destInp" type="text"
-        placeholder="目的地：曼谷、京都、大理…" maxlength="20"
-        oninput="document.getElementById('heroDestPreview').textContent=this.value||'你的目的地'">
-    </div>
-    <div class="cnt-row">
-      <span class="cnt-lbl">签数</span>
-      <div class="cnt-pills">
-        <input type="radio" name="cnt" id="c3" value="3" checked><label for="c3">3 签</label>
-        <input type="radio" name="cnt" id="c4" value="4"><label for="c4">4 签</label>
-        <input type="radio" name="cnt" id="c5" value="5"><label for="c5">5 签</label>
-      </div>
-    </div>
-    <button class="go-btn" onclick="goSign()">摇一摇，抽你的旅行签</button>
-  </div>
-</div>
-
-<!-- ═══ 屏2 翻牌 ═══ -->
-<div class="screen gone" id="s2">
-  <div class="flip-nav">
-    <div class="fn-dest" id="fnDest">FATE TRIP</div>
-    <div class="fn-right">
-      <div class="fn-prog" id="fnProg"></div>
-    </div>
-  </div>
-
-  <div class="flip-stage">
-    <div class="card-wrap">
-      <div class="card-ratio">
-        <div class="card-scene">
-          <div class="card-3d" id="card3d" onclick="flipSign()">
-            <!-- 卡背 -->
-            <div class="cface cback">
-              <div class="ctex"></div>
-              <div class="cglow"></div>
-              <div class="csign">签</div>
-              <div class="cframe"></div>
-              <div class="ccorner cc-tl"></div><div class="ccorner cc-tr"></div>
-              <div class="ccorner cc-bl"></div><div class="ccorner cc-br"></div>
-              <div class="ctap">TAP · SHAKE</div>
-            </div>
-            <!-- 卡正面 -->
-            <div class="cface cfront">
-              <div class="poi-num" id="poiNum">1/3</div>
-              <div class="poi-ico" id="poiIco">🌅</div>
-              <div class="poi-nm" id="poiNm">—</div>
-              <div class="poi-badge" id="poiBadge">类型</div>
-              <div class="poi-sep"></div>
-              <div class="poi-sign" id="poiSign">签语</div>
-            </div>
+      <div>
+        <div class="role-label">选择你的身份</div>
+        <div class="role-btns" style="margin-top:8px">
+          <div class="role-btn A" onclick="selectRole('A')">
+            <div class="rb-ico">✈️</div>
+            <div class="rb-name">我是发起人 A</div>
+            <div class="rb-desc">设置行程 · 生成分享</div>
+          </div>
+          <div class="role-btn B" onclick="selectRole('B')">
+            <div class="rb-ico">🎴</div>
+            <div class="rb-name">我是接收方 B</div>
+            <div class="rb-desc">开始拆签 · 体验全程</div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="flip-foot">
-    <div class="shake-chip" id="shakeChip">
-      <span class="shake-ico">📱</span>
-      <span class="shake-txt">轻摇手机也可揭签</span>
-    </div>
-    <button class="next-btn" id="nextBtn" onclick="nextSign()">—</button>
+  <div class="brand-foot">
+    <div class="brand-name">FATE · TRIP</div>
+    <div class="brand-tagline">让分享变成双向互动</div>
   </div>
 </div>
 
-<!-- ═══ 屏3 结果 ═══ -->
-<div class="screen gone" id="s3">
-  <div class="r-scroll">
-
-    <div class="poster fly" id="poster">
-      <div class="p-cover">
-        <div class="p-shine"></div>
-        <div class="p-eyebrow">HIDDEN ROUTE · FATE TRIP</div>
-        <div class="p-title">
-          <div class="p-title-main" id="pTitleMain">的隐藏路线</div>
-          <div class="p-title-sub" id="pTitleSub">命运为你选定的 3 个地方</div>
-        </div>
-      </div>
-      <div class="p-list" id="pList"></div>
-      <div class="p-foot">
-        <div class="p-brand">
-          <div class="p-brand-dot"></div>
-          <div class="p-brand-txt">FATE TRIP</div>
-        </div>
-        <div class="p-stamp">命运签定 ✦</div>
+<!-- ════ A 发起设置页 ════ -->
+<div class="screen gone" id="sSetup">
+  <div class="page-header">
+    <div class="ph-back" onclick="showScreen('sCover')">← 返回</div>
+    <div class="ph-title">设置旅行签</div>
+  </div>
+  <div class="setup-scroll">
+    <div>
+      <div class="sec-title">目的地</div>
+      <div class="dest-field">
+        <span class="df-ico">✈️</span>
+        <input class="df-inp" id="aDestInp" placeholder="曼谷、京都、大理…" maxlength="20">
       </div>
     </div>
-
-    <button class="heart-btn fly" id="heartBtn" onclick="sendHeart()">我也想去 💛</button>
-
-    <div class="act-row fly" id="actRow">
-      <button class="act-btn a-copy" onclick="copyShare()">📋 复制分享</button>
-      <button class="act-btn a-save" onclick="saveImg()">💾 保存海报</button>
-      <button class="act-btn a-restart" onclick="restart()">重新求签</button>
+    <div class="sec-card">
+      <div class="sec-title">签数设置</div>
+      <div class="cnt-row" style="margin-top:8px">
+        <span class="cnt-lbl">盲盒签数</span>
+        <div class="cnt-pills">
+          <input type="radio" name="acnt" id="ac3" value="3" checked><label for="ac3">3 签</label>
+          <input type="radio" name="acnt" id="ac4" value="4"><label for="ac4">4 签</label>
+          <input type="radio" name="acnt" id="ac5" value="5"><label for="ac5">5 签</label>
+        </div>
+      </div>
     </div>
-
+    <div class="sec-card">
+      <div class="sec-title">对方的 MBTI（性格推荐用）</div>
+      <div class="mbti-grid" style="margin-top:8px">
+        <div class="mbti-btn sel" data-mbti="INFP" onclick="selMBTI(this)">
+          <div class="mb-type">INFP</div><div class="mb-desc">文艺 · 独立 · 感性</div>
+        </div>
+        <div class="mbti-btn" data-mbti="ENTJ" onclick="selMBTI(this)">
+          <div class="mb-type">ENTJ</div><div class="mb-desc">高效 · 目标 · 掌控</div>
+        </div>
+        <div class="mbti-btn" data-mbti="ENFP" onclick="selMBTI(this)">
+          <div class="mb-type">ENFP</div><div class="mb-desc">活力 · 探索 · 随性</div>
+        </div>
+        <div class="mbti-btn" data-mbti="ISTJ" onclick="selMBTI(this)">
+          <div class="mb-type">ISTJ</div><div class="mb-desc">严谨 · 计划 · 经典</div>
+        </div>
+      </div>
+    </div>
+    <button class="gen-btn" onclick="genShare()">生成旅行签链接</button>
+    <div class="share-preview" id="sharePreview">
+      <div class="sp-label">分享文案</div>
+      <div class="sp-text" id="shareText"></div>
+      <button class="sp-copy" onclick="copyShareLink()">复制链接</button>
+    </div>
   </div>
 </div>
+
+<!-- ════ 主 App（B视角）════ -->
+<div class="screen gone" id="sApp">
+  <div class="app-topbar">
+    <div class="at-left" onclick="showScreen('sCover')" style="cursor:pointer">← 退出</div>
+    <div class="at-title">FATE TRIP</div>
+    <div class="at-from">
+      <div class="at-avatar" id="atAvatar">A</div>
+      <div class="at-name" id="atName">来自 A</div>
+    </div>
+  </div>
+
+  <div class="app-content">
+
+    <!-- Tab 1: 旅行签 -->
+    <div class="tab-panel" id="tab1">
+      <!-- 封面 -->
+      <div class="sign-cover">
+        <div class="sc-shine"></div>
+        <div class="sc-label">HIDDEN ROUTE · FATE TRIP</div>
+        <div class="sc-title" id="sc-title">抽你的旅行签</div>
+        <div class="sc-sub" id="sc-sub">看看命运为你选了哪里 🎴</div>
+      </div>
+
+      <!-- 签牌阶段 -->
+      <div class="sign-stage" id="signStage">
+        <div class="sign-nav">
+          <div class="sn-dest" id="snDest">—</div>
+          <div class="sn-prog" id="snProg"></div>
+        </div>
+        <div class="flip-wrap" id="flipWrap" onclick="flipSign()">
+          <div class="flip-scene">
+            <div class="flip-3d" id="flip3d">
+              <div class="flip-face f-back">
+                <div class="fb-tex"></div>
+                <div class="fb-glow"></div>
+                <div class="fb-sign">签</div>
+                <div class="fb-corner fc-tl"></div><div class="fb-corner fc-tr"></div>
+                <div class="fb-corner fc-bl"></div><div class="fb-corner fc-br"></div>
+                <div class="fb-hint">TAP · SHAKE</div>
+              </div>
+              <div class="flip-face f-front">
+                <div class="ff-num" id="ffNum">1/3</div>
+                <div class="ff-ico" id="ffIco">🌅</div>
+                <div class="ff-name" id="ffName">—</div>
+                <div class="ff-badge" id="ffBadge">类型</div>
+                <div class="ff-sep"></div>
+                <div class="ff-phrase" id="ffPhrase">签语</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="shake-hint" id="shakeHint">
+          <span class="sh-ico">📱</span>
+          <span class="sh-txt">轻摇手机也可揭签</span>
+        </div>
+      </div>
+      <button class="next-sign-btn" id="nextSignBtn" onclick="nextSign()">—</button>
+
+      <!-- 结果 -->
+      <div class="result-poster fly" id="resultPoster">
+        <div class="rp-cover">
+          <div class="rp-eyebrow">HIDDEN ROUTE</div>
+          <div class="rp-title" id="rpTitle">的隐藏路线</div>
+        </div>
+        <div class="rp-list" id="rpList"></div>
+        <div class="rp-foot">
+          <div class="rp-brand">FATE TRIP</div>
+          <div class="rp-stamp">命运签定 ✦</div>
+        </div>
+      </div>
+      <button class="heart-btn fly" id="heartBtn" onclick="sendHeart()">我也想去 💛</button>
+      <div class="act-row fly" id="actRow">
+        <button class="ar-btn ar-copy" onclick="copyResult()">📋 复制</button>
+        <button class="ar-btn ar-save" onclick="saveImg()">💾 保存</button>
+        <button class="ar-btn ar-again" onclick="resetSign()">重新拆</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: 默契测试 -->
+    <div class="tab-panel hidden" id="tab2">
+      <div class="card match-intro" id="matchIntro">
+        <div class="card-head">
+          <div class="card-head-row">
+            <div><div class="ch-title">默契大考验</div><div class="ch-sub">看看你和 A 的旅行默契</div></div>
+            <div class="ch-badge badge-purple">Phase 2</div>
+          </div>
+        </div>
+        <div style="padding:14px 18px">
+          <div style="font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:14px">
+            A 已经对 <b style="color:var(--ink)">5 个地点</b> 做了选择，现在轮到你——右滑 ❤️ 想去，左滑 ❌ 不去，最后看你们的默契度！
+          </div>
+          <button class="gen-btn" onclick="startMatch()" style="font-size:14px;padding:13px">开始测试 →</button>
+        </div>
+      </div>
+      <div class="poi-swipe-wrap" id="swipeWrap" style="display:none">
+        <div class="poi-swipe-card" id="swipeCard">
+          <div class="psc-ico" id="scIco">🛍️</div>
+          <div class="psc-name" id="scName">乍都乍市场</div>
+          <div class="psc-type" id="scType">市集</div>
+          <div class="psc-desc" id="scDesc">城市最大的周末市场，藏着无数惊喜</div>
+          <div class="swipe-hint">
+            <span class="swh-no">❌ 不去</span>
+            <span class="swh-yes">❤️ 想去</span>
+          </div>
+        </div>
+      </div>
+      <div class="vote-btns" id="voteBtns" style="display:none">
+        <button class="vb vb-no" onclick="vote(false)">❌</button>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+          <span style="font-size:11px;color:var(--ink4)" id="matchProgress">1 / 5</span>
+          <span style="font-size:10px;color:var(--ink5)">还剩几个</span>
+        </div>
+        <button class="vb vb-yes" onclick="vote(true)">❤️</button>
+      </div>
+      <div class="match-wait" id="matchWait">
+        <div class="mw-card">
+          <div class="mw-title">等待 A 的结果 🔮</div>
+          <div class="mw-sub">你已经选完了！正在和 A 的选择对比中…</div>
+          <div class="mw-loader">
+            <div class="ml-dot"></div><div class="ml-dot"></div><div class="ml-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="match-result" id="matchResult"></div>
+    </div>
+
+    <!-- Tab 3: 性格推荐 -->
+    <div class="tab-panel hidden" id="tab3">
+      <div class="mbti-pick-card" id="mbtiPick">
+        <div style="font-size:15px;font-weight:800;margin-bottom:4px">性格导向推荐</div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:0">选你的 MBTI，看专属路线</div>
+        <div class="mbti-pick-grid">
+          <div class="mp-btn sel" data-m="INFP" onclick="selPersona(this)">
+            <div class="mp-type">INFP</div><div class="mp-trait">文艺 · 独立书店 · 小众咖啡</div>
+          </div>
+          <div class="mp-btn" data-m="ENTJ" onclick="selPersona(this)">
+            <div class="mp-type">ENTJ</div><div class="mp-trait">高效 · 地标打卡 · 米其林</div>
+          </div>
+          <div class="mp-btn" data-m="ENFP" onclick="selPersona(this)">
+            <div class="mp-type">ENFP</div><div class="mp-trait">活力 · 夜市探索 · 随机漫游</div>
+          </div>
+          <div class="mp-btn" data-m="ISTJ" onclick="selPersona(this)">
+            <div class="mp-type">ISTJ</div><div class="mp-trait">严谨 · 历史文化 · 经典路线</div>
+          </div>
+        </div>
+        <button class="mp-go" onclick="genPersona()">生成专属路线 ✦</button>
+      </div>
+      <div class="persona-route" id="personaRoute"></div>
+    </div>
+
+    <!-- Tab 4: 我的履历 -->
+    <div class="tab-panel hidden" id="tab4">
+      <div class="profile-header">
+        <div class="ph-user">
+          <div class="phu-avatar">🧳</div>
+          <div class="phu-info">
+            <div class="phu-name">旅行者 B</div>
+            <div class="phu-tag">INFP · 文艺路线偏好者</div>
+          </div>
+        </div>
+        <div class="ph-stats">
+          <div class="phs-item"><div class="phsi-num" id="statCities">3</div><div class="phsi-lbl">城市</div></div>
+          <div class="phs-item"><div class="phsi-num" id="statSigns">12</div><div class="phsi-lbl">拆过的签</div></div>
+          <div class="phs-item"><div class="phsi-num" id="statHearts">5</div><div class="phsi-lbl">心动次数</div></div>
+          <div class="phs-item"><div class="phsi-num">78%</div><div class="phsi-lbl">平均默契</div></div>
+        </div>
+      </div>
+
+      <div style="width:100%;max-width:360px">
+        <div style="font-size:12px;font-weight:700;color:var(--ink4);letter-spacing:2px;margin-bottom:8px">旅行记录</div>
+        <div class="history-list">
+          <div class="hl-card">
+            <div class="hlc-ico">🏙️</div>
+            <div class="hlc-info">
+              <div class="hlci-dest">曼谷 · 5日游</div>
+              <div class="hlci-meta">拆了 3 签 · 心动了乍都乍市场</div>
+            </div>
+            <div class="hlc-badge badge-pink">心动 💛</div>
+          </div>
+          <div class="hl-card">
+            <div class="hlc-ico">🏯</div>
+            <div class="hlc-info">
+              <div class="hlci-dest">京都 · 4日游</div>
+              <div class="hlci-meta">拆了 3 签 · 默契度 85%</div>
+            </div>
+            <div class="hlc-badge badge-purple">高默契 💕</div>
+          </div>
+          <div class="hl-card">
+            <div class="hlc-ico">⛵</div>
+            <div class="hlc-info">
+              <div class="hlci-dest">大理 · 3日游</div>
+              <div class="hlci-meta">拆了 4 签 · 收藏了隐藏路线</div>
+            </div>
+            <div class="hlc-badge badge-blue">已收藏</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="width:100%;max-width:360px">
+        <div style="font-size:12px;font-weight:700;color:var(--ink4);letter-spacing:2px;margin-bottom:8px">旅行搭子默契榜</div>
+        <div class="history-list">
+          <div class="buddy-card">
+            <div class="bc-avatar" style="background:linear-gradient(135deg,#2563eb,#60a5fa)">A</div>
+            <div class="bc-info">
+              <div class="bc-name">旅行者 A</div>
+              <div class="bc-match">一起去过 2 个城市 · 共同心动 5 个地点</div>
+            </div>
+            <div class="bc-score" style="color:var(--purple)">85%</div>
+          </div>
+          <div class="buddy-card">
+            <div class="bc-avatar" style="background:linear-gradient(135deg,#10b981,#34d399)">C</div>
+            <div class="bc-info">
+              <div class="bc-name">旅行者 C</div>
+              <div class="bc-match">一起去过 1 个城市 · 共同心动 3 个地点</div>
+            </div>
+            <div class="bc-score" style="color:var(--green)">72%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app-content -->
+
+  <div class="tab-bar">
+    <div class="tab-item active" onclick="switchTab(1)">
+      <div class="tab-ico">🎴</div><div class="tab-lbl">旅行签</div>
+    </div>
+    <div class="tab-item" onclick="switchTab(2)">
+      <div class="tab-ico">💕</div><div class="tab-lbl">默契测试</div>
+    </div>
+    <div class="tab-item" onclick="switchTab(3)">
+      <div class="tab-ico">🔮</div><div class="tab-lbl">性格推荐</div>
+    </div>
+    <div class="tab-item" onclick="switchTab(4)">
+      <div class="tab-ico">👤</div><div class="tab-lbl">我的履历</div>
+    </div>
+  </div>
+</div><!-- /sApp -->
 
 <script>
-/* ─── POI库 ─── */
+/* ════ 数据 ════ */
 const POIS={
   '曼谷':[
-    {name:'乍都乍市场',type:'市集',icon:'🛍️'},
-    {name:'卧佛寺',type:'文化',icon:'🙏'},
-    {name:'考山路',type:'夜市',icon:'🍺'},
-    {name:'湄南河畔',type:'风景',icon:'🌅'},
-    {name:'Or Tor Kor市场',type:'美食',icon:'🍜'},
+    {name:'乍都乍市场',type:'市集',icon:'🛍️',desc:'城市最大的周末市场，藏着无数惊喜'},
+    {name:'卧佛寺',type:'文化',icon:'🙏',desc:'镀金巨佛静卧，时间在这里慢下来'},
+    {name:'考山路',type:'夜市',icon:'🍺',desc:'背包客的精神故乡，喧嚣中的自由'},
+    {name:'湄南河畔',type:'风景',icon:'🌅',desc:'黄昏时分，河面金光，值得等待'},
+    {name:'Or Tor Kor市场',type:'美食',icon:'🍜',desc:'当地人才知道的鲜果天堂'},
   ],
   '京都':[
-    {name:'岚山竹林',type:'自然',icon:'🎋'},
-    {name:'祗园花见小路',type:'文化',icon:'🌸'},
-    {name:'锦市场',type:'美食',icon:'🍱'},
-    {name:'伏见稻荷',type:'景点',icon:'⛩️'},
-    {name:'哲学之道',type:'散步',icon:'🍁'},
-  ],
-  '大理':[
-    {name:'洱海骑行',type:'自然',icon:'🚴'},
-    {name:'古城三塔',type:'文化',icon:'🏛️'},
-    {name:'喜洲古镇',type:'散步',icon:'🪷'},
-    {name:'双廊渔村',type:'风景',icon:'🌊'},
-    {name:'人民路文艺街',type:'市集',icon:'☕'},
-  ],
-  '上海':[
-    {name:'武康路梧桐道',type:'散步',icon:'🍂'},
-    {name:'外滩夜景',type:'风景',icon:'🌆'},
-    {name:'田子坊',type:'市集',icon:'🎨'},
-    {name:'安福路咖啡街',type:'休闲',icon:'☕'},
-    {name:'豫园老街',type:'美食',icon:'🥟'},
+    {name:'岚山竹林',type:'自然',icon:'🎋',desc:'晨雾中穿行，心自然清净'},
+    {name:'祗园花见小路',type:'文化',icon:'🌸',desc:'石板路上，偶遇的美最难忘'},
+    {name:'锦市场',type:'美食',icon:'🍱',desc:'京都的厨房，每一摊都是故事'},
+    {name:'伏见稻荷',type:'景点',icon:'⛩️',desc:'千本鸟居，走进去就是另一个世界'},
+    {name:'哲学之道',type:'散步',icon:'🍁',desc:'沿着水渠漫步，答案自然浮现'},
   ],
   default:[
-    {name:'老城漫步',type:'文化',icon:'🏛️'},
-    {name:'当地早市',type:'市集',icon:'🛒'},
-    {name:'江边日落',type:'风景',icon:'🌅'},
-    {name:'街角咖啡馆',type:'休闲',icon:'☕'},
-    {name:'夜市美食街',type:'美食',icon:'🍢'},
+    {name:'老城漫步',type:'文化',icon:'🏛️',desc:'斑驳的墙壁记录着每个时代的故事'},
+    {name:'当地早市',type:'市集',icon:'🛒',desc:'清晨叫卖声，才是城市真实的呼吸'},
+    {name:'江边日落',type:'风景',icon:'🌅',desc:'最后一缕光收走时，旅行才真正开始'},
+    {name:'街角咖啡馆',type:'休闲',icon:'☕',desc:'转角遇见的那家，永远最好喝'},
+    {name:'夜市美食街',type:'美食',icon:'🍢',desc:'跟着人流走就对了'},
   ]
 };
 
-function mkPhrase(p){
-  const t={
-    '市集':[`今日宜逛${p.name}，忌冲动消费 🛍️`,`缘分是什么？就是逛${p.name}到第三圈还没走`],
-    '文化':[`今日宜参拜${p.name}，忌走马观花 🙏`,`你来${p.name}，不是偶然`],
-    '夜市':[`今日宜闯${p.name}，忌早睡 🍺`,`${p.name}灯火最亮处，就是今晚的归宿`],
-    '风景':[`今日宜在${p.name}驻足，忌赶行程 🌅`,`站在${p.name}，所有烦恼都变小了`],
-    '美食':[`今日宜在${p.name}大胆点餐，忌节食 🍜`,`吃完${p.name}再说走，是对城市的尊重`],
-    '自然':[`今日宜深入${p.name}，忌看手机 🌿`,`你选了${p.name}，它也选了你`],
-    '散步':[`今日宜在${p.name}无目的漫游，忌导航 🍁`,`沿${p.name}漫步，答案自然浮现`],
-    '景点':[`今日宜在${p.name}认真感受，忌只拍照 ⛩️`,`来${p.name}了，就要好好看一眼`],
-    '休闲':[`今日宜在${p.name}发呆，忌赶行程 ☕`,`坐在${p.name}，城市会来跟你说话`],
-  };
-  const arr=t[p.type]||[`今日宜去${p.name}，忌犹豫 ✦`];
-  return arr[Math.floor(Math.random()*arr.length)];
-}
+const PHRASES={
+  '市集':p=>`今日宜逛${p.name}，忌冲动消费 🛍️`,
+  '文化':p=>`今日宜参拜${p.name}，忌走马观花 🙏`,
+  '夜市':p=>`今日宜闯${p.name}，忌早睡 🍺`,
+  '风景':p=>`今日宜在${p.name}驻足，忌赶行程 🌅`,
+  '美食':p=>`今日宜在${p.name}大胆点餐，忌节食 🍜`,
+  '自然':p=>`今日宜深入${p.name}，忌看手机 🌿`,
+  '散步':p=>`今日宜在${p.name}无目的漫游，忌导航 🍁`,
+  '景点':p=>`今日宜在${p.name}认真感受，忌只拍照 ⛩️`,
+  '休闲':p=>`今日宜在${p.name}发呆，忌赶行程 ☕`,
+};
 
-/* ─── 状态 ─── */
-let dest='',pois=[],phrases=[],cur=0,flipped=false,cnt=3;
+const PERSONA_ROUTES={
+  INFP:{
+    color:'linear-gradient(135deg,#7c3aed,#a78bfa)',
+    label:'给 INFP 的曼谷隐藏路线',
+    tag:'文艺 · 慢游 · 独立',
+    pois:[
+      {icon:'☕',name:'Roast咖啡馆',why:'小众独立咖啡，INFP 最爱的那种安静角落'},
+      {icon:'📚',name:'二手书街',why:'文字是 INFP 的母语，这里有你说的那种感觉'},
+      {icon:'🌿',name:'是隆花园',why:'人少、绿意、适合发呆——你会感谢这个选择'},
+    ],
+    comment:'太懂你了对吧？INFP 不需要景点打卡，需要<b>被某个角落真正打动</b>的瞬间。这条路线，是命运为你筛过的。'
+  },
+  ENTJ:{
+    color:'linear-gradient(135deg,#1e40af,#2563eb)',
+    label:'给 ENTJ 的曼谷高效路线',
+    tag:'高效 · 打卡 · 商务',
+    pois:[
+      {icon:'🏙️',name:'曼谷天空步道',why:'360° 全景，10分钟掌握城市格局'},
+      {icon:'⭐',name:'米其林街头小吃',why:'效率最高的美食打卡，不浪费一秒'},
+      {icon:'🛍️',name:'暹罗百丽宫',why:'购物+商务+地标，一站搞定'},
+    ],
+    comment:'ENTJ 的旅行是<b>有目标的</b>。这条路线按优先级排序，每个地点都值得你的时间投入。'
+  },
+  ENFP:{
+    color:'linear-gradient(135deg,#f59e0b,#fbbf24)',
+    label:'给 ENFP 的曼谷随机路线',
+    tag:'活力 · 探索 · 惊喜',
+    pois:[
+      {icon:'🌃',name:'考山路夜市',why:'人多、热闹、随时能交到新朋友——ENFP 天堂'},
+      {icon:'🎨',name:'涂鸦街区',why:'每次来都不一样，符合你对惊喜的期待'},
+      {icon:'🛶',name:'水上市场',why:'活在当下，划着船不知道下一个转角是什么'},
+    ],
+    comment:'ENFP 旅行的精髓是<b>不预期的相遇</b>。这条路线故意留了空白，让你自己填满它。'
+  },
+  ISTJ:{
+    color:'linear-gradient(135deg,#0f766e,#14b8a6)',
+    label:'给 ISTJ 的曼谷经典路线',
+    tag:'严谨 · 历史 · 计划',
+    pois:[
+      {icon:'🏛️',name:'大皇宫',why:'必去历史地标，有完整的时代背景，值得认真研究'},
+      {icon:'🙏',name:'玉佛寺',why:'宗教文化精华，有逻辑有结构，ISTJ 会欣赏'},
+      {icon:'⛵',name:'湄南河游船',why:'城市历史脉络的最佳视角，按时刻表运行'},
+    ],
+    comment:'ISTJ 的旅行<b>要有价值感</b>。这条路线每个地点都有历史厚度，不是随便打卡，是真正看懂曼谷。'
+  }
+};
 
-function pickPOIs(d){
-  let pool=POIS.default;
-  Object.keys(POIS).filter(k=>k!=='default').forEach(k=>{if(d.includes(k))pool=POIS[k];});
-  return [...pool].sort(()=>Math.random()-.5).slice(0,cnt);
-}
+/* ════ 状态 ════ */
+let appDest='曼谷', appPOIs=[], appPhrases=[], appCur=0, appFlipped=false, appCnt=3;
+let aMBTI='INFP';
+let matchPOIs=[], matchCur=0, myVotes=[], aVotes=[];
+let selectedPersona='INFP';
+let signDone=false;
+
+/* ════ 屏幕切换 ════ */
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('gone',s.id!==id));
 }
+
+/* ════ 角色选择 ════ */
+function selectRole(r){
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelector(`.role-btn.${r}`).classList.add('sel');
+  setTimeout(()=>{
+    if(r==='A') showScreen('sSetup');
+    else startBExperience();
+  },200);
+}
+
+/* ════ A 设置 ════ */
+function selMBTI(el){
+  document.querySelectorAll('.mbti-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  aMBTI=el.dataset.mbti;
+}
+function genShare(){
+  const dest=document.getElementById('aDestInp').value.trim()||'曼谷';
+  const cnt=+document.querySelector('input[name=acnt]:checked').value;
+  const p=document.getElementById('sharePreview');
+  const t=document.getElementById('shareText');
+  p.style.display='block';
+  t.textContent=`抽你的${dest}旅行签，看看抽到哪家夜市！🍜\n→ fate-trip.app/join?dest=${encodeURIComponent(dest)}&cnt=${cnt}&mbti=${aMBTI}`;
+}
+function copyShareLink(){
+  const t=document.getElementById('shareText').textContent;
+  navigator.clipboard.writeText(t).catch(()=>{});
+  event.target.textContent='✅ 已复制';
+  setTimeout(()=>event.target.textContent='复制链接',1500);
+}
+
+/* ════ B 进入体验 ════ */
+function startBExperience(){
+  appDest='曼谷'; appCnt=3;
+  initSign();
+  document.getElementById('sc-title').textContent=`抽你的${appDest}旅行签`;
+  document.getElementById('atAvatar').textContent='A';
+  document.getElementById('atName').textContent='来自 A';
+  showScreen('sApp');
+  switchTab(1);
+  setupShake();
+}
+
+/* ════ Tab 切换 ════ */
+function switchTab(n){
+  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('hidden',i+1!==n));
+  document.querySelectorAll('.tab-item').forEach((t,i)=>t.classList.toggle('active',i+1===n));
+}
+
+/* ════ Tab1: 旅行签 ════ */
+function pickPOIs(d,cnt){
+  let pool=POIS[d]||POIS.default;
+  return [...pool].sort(()=>Math.random()-.5).slice(0,cnt);
+}
+function mkPhrase(p){
+  const fn=PHRASES[p.type]||((p)=>`今日宜去${p.name}，忌犹豫 ✦`);
+  return fn(p);
+}
+function initSign(){
+  appPOIs=pickPOIs(appDest,appCnt);
+  appPhrases=appPOIs.map(p=>mkPhrase(p));
+  appCur=0; appFlipped=false; signDone=false;
+  document.getElementById('snDest').textContent=appDest;
+  renderProg(); resetCard();
+  document.getElementById('signStage').style.display='flex';
+  document.getElementById('resultPoster').style.display='none';
+  document.getElementById('heartBtn').style.display='none';
+  document.getElementById('actRow').style.display='none';
+  document.getElementById('resultPoster').classList.remove('show');
+  document.getElementById('heartBtn').classList.remove('show');
+  document.getElementById('actRow').classList.remove('show');
+}
 function renderProg(){
-  const pg=document.getElementById('fnProg');pg.innerHTML='';
-  for(let i=0;i<pois.length;i++){
+  const pg=document.getElementById('snProg'); pg.innerHTML='';
+  for(let i=0;i<appPOIs.length;i++){
     const d=document.createElement('div');
-    d.className='pdot'+(i<cur?' done':i===cur?' cur':'');
+    d.className='sp-dot'+(i<appCur?' done':i===appCur?' cur':'');
     pg.appendChild(d);
   }
 }
-
-/* ─── 开始 ─── */
-function goSign(){
-  dest=document.getElementById('destInp').value.trim()||'远方';
-  cnt=+document.querySelector('input[name=cnt]:checked').value||3;
-  pois=pickPOIs(dest);phrases=pois.map(p=>mkPhrase(p));
-  cur=0;flipped=false;
-  document.getElementById('fnDest').textContent=dest;
-  renderProg();resetCard();showScreen('s2');setupShake();
-}
 function resetCard(){
-  const c=document.getElementById('card3d');
-  c.classList.remove('flipped');c.style.pointerEvents='auto';
-  document.getElementById('nextBtn').style.display='none';
-  document.getElementById('shakeChip').style.opacity='1';
-  flipped=false;
+  const c=document.getElementById('flip3d');
+  c.classList.remove('flipped'); c.style.pointerEvents='auto';
+  document.getElementById('nextSignBtn').style.display='none';
+  document.getElementById('shakeHint').style.opacity='1';
+  appFlipped=false;
 }
 function loadCard(i){
-  const p=pois[i];
-  document.getElementById('poiIco').textContent=p.icon;
-  document.getElementById('poiNm').textContent=p.name;
-  document.getElementById('poiBadge').textContent=p.type;
-  document.getElementById('poiSign').textContent=phrases[i];
-  document.getElementById('poiNum').textContent=`${i+1}/${pois.length}`;
+  const p=appPOIs[i];
+  document.getElementById('ffIco').textContent=p.icon;
+  document.getElementById('ffName').textContent=p.name;
+  document.getElementById('ffBadge').textContent=p.type;
+  document.getElementById('ffPhrase').textContent=appPhrases[i];
+  document.getElementById('ffNum').textContent=`${i+1}/${appPOIs.length}`;
 }
-
-/* ─── 翻牌 ─── */
 function flipSign(){
-  if(flipped)return;flipped=true;
-  loadCard(cur);
-  const c=document.getElementById('card3d');
-  c.classList.add('flipped');c.style.pointerEvents='none';
+  if(appFlipped||signDone)return;
+  appFlipped=true;
+  loadCard(appCur);
+  document.getElementById('flip3d').classList.add('flipped');
+  document.getElementById('flipWrap').style.pointerEvents='none';
   burst();
   setTimeout(()=>{
-    document.getElementById('shakeChip').style.opacity='0';
-    const nb=document.getElementById('nextBtn');nb.style.display='block';
-    nb.textContent=cur<pois.length-1?`还剩 ${pois.length-cur-1} 签  继续拆 →`:'查看我的命定路线 ✦';
-  },650);
+    document.getElementById('shakeHint').style.opacity='0';
+    const nb=document.getElementById('nextSignBtn'); nb.style.display='block';
+    nb.textContent=appCur<appPOIs.length-1?`还剩 ${appPOIs.length-appCur-1} 签  继续拆 →`:'查看我的命定路线 ✦';
+  },680);
 }
 function nextSign(){
-  if(cur>=pois.length-1){buildResult();showScreen('s3');return;}
-  cur++;renderProg();resetCard();
+  if(appCur>=appPOIs.length-1){buildResult();return;}
+  appCur++; renderProg(); resetCard();
+}
+function buildResult(){
+  signDone=true;
+  document.getElementById('signStage').style.display='none';
+  document.getElementById('nextSignBtn').style.display='none';
+  document.getElementById('rpTitle').textContent=`${appDest}的隐藏路线`;
+  const list=document.getElementById('rpList'); list.innerHTML='';
+  appPOIs.forEach((p,i)=>{
+    const el=document.createElement('div'); el.className='rp-item';
+    el.innerHTML=`<div class="rp-seq">${i+1}</div><div class="rp-ico">${p.icon}</div><div class="rp-info"><div class="rp-name">${p.name}</div><div class="rp-phrase">${appPhrases[i]}</div></div>`;
+    list.appendChild(el);
+  });
+  const rp=document.getElementById('resultPoster');
+  const hb=document.getElementById('heartBtn');
+  const ar=document.getElementById('actRow');
+  rp.style.display='block'; hb.style.display='block'; ar.style.display='flex';
+  hb.className='heart-btn fly'; hb.textContent='我也想去 💛';
+  setTimeout(()=>rp.classList.add('show'),80);
+  setTimeout(()=>hb.classList.add('show'),240);
+  setTimeout(()=>ar.classList.add('show'),380);
+  // 更新履历数据
+  document.getElementById('statSigns').textContent=parseInt(document.getElementById('statSigns').textContent)+appPOIs.length;
+}
+function sendHeart(){
+  const b=document.getElementById('heartBtn');
+  b.classList.add('sent'); b.textContent='💙 心动通知已发送！';
+  document.getElementById('statHearts').textContent=parseInt(document.getElementById('statHearts').textContent)+1;
+}
+function copyResult(){
+  const lines=appPOIs.map((p,i)=>`${p.icon} ${p.name} — ${appPhrases[i]}`).join('\n');
+  navigator.clipboard.writeText(`摇一摇，抽你的${appDest}旅行签 🎴\n\n${lines}`).catch(()=>{});
+  event.target.textContent='✅'; setTimeout(()=>event.target.textContent='📋 复制',1500);
+}
+function saveImg(){
+  const btn=event.target; btn.textContent='生成…';
+  const dpr=window.devicePixelRatio||2, W=340, rowH=50, H=100+appPOIs.length*rowH+40;
+  const cv=document.createElement('canvas'); cv.width=W*dpr; cv.height=H*dpr;
+  const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.fillStyle='#fff'; ctx.roundRect(0,0,W,H,20); ctx.fill();
+  const g=ctx.createLinearGradient(0,0,W,0);
+  g.addColorStop(0,'#1e40af'); g.addColorStop(.5,'#2563eb'); g.addColorStop(1,'#60a5fa');
+  ctx.fillStyle=g; ctx.roundRect(0,0,W,100,{topLeft:20,topRight:20}); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='600 9px sans-serif';
+  ctx.fillText('HIDDEN ROUTE · FATE TRIP',16,22);
+  ctx.fillStyle='#fff'; ctx.font='900 17px sans-serif';
+  ctx.fillText(`${appDest}的隐藏路线`,16,76);
+  appPOIs.forEach((p,i)=>{
+    const y=100+i*rowH;
+    if(i>0){ctx.strokeStyle='rgba(37,99,235,.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(16,y);ctx.lineTo(W-16,y);ctx.stroke();}
+    ctx.fillStyle='#dbeafe';ctx.beginPath();ctx.arc(27,y+rowH/2,10,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#2563eb';ctx.font='700 9px sans-serif';ctx.textAlign='center';
+    ctx.fillText(i+1,27,y+rowH/2+3);ctx.textAlign='left';
+    ctx.font='20px sans-serif';ctx.fillText(p.icon,44,y+rowH/2+7);
+    ctx.fillStyle='#0f172a';ctx.font='700 13px sans-serif';ctx.fillText(p.name,72,y+rowH/2-2);
+    ctx.fillStyle='#64748b';ctx.font='italic 10px sans-serif';
+    const ph=appPhrases[i]; ctx.fillText(ph.length>28?ph.slice(0,28)+'…':ph,72,y+rowH/2+13);
+  });
+  const a=document.createElement('a'); a.download=`fate-trip-${appDest}.png`; a.href=cv.toDataURL(); a.click();
+  btn.textContent='💾 保存';
+}
+function resetSign(){ initSign(); }
+
+/* ════ Tab2: 默契测试 ════ */
+const MATCH_POIS=[
+  {name:'乍都乍市场',type:'市集',icon:'🛍️',desc:'城市最大的周末市场，藏着无数惊喜'},
+  {name:'卧佛寺',type:'文化',icon:'🙏',desc:'镀金巨佛静卧，时间在这里慢下来'},
+  {name:'考山路',type:'夜市',icon:'🍺',desc:'背包客的精神故乡，喧嚣中的自由'},
+  {name:'湄南河畔',type:'风景',icon:'🌅',desc:'黄昏时分，河面金光，值得等待'},
+  {name:'Or Tor Kor市场',type:'美食',icon:'🍜',desc:'当地人才知道的鲜果天堂'},
+];
+// A 的预设选择
+aVotes=[true,false,true,true,false];
+
+function startMatch(){
+  matchPOIs=[...MATCH_POIS]; matchCur=0; myVotes=[];
+  document.getElementById('matchIntro').style.display='none';
+  loadMatchCard();
+  document.getElementById('swipeWrap').style.display='block';
+  document.getElementById('voteBtns').style.display='flex';
+}
+function loadMatchCard(){
+  const p=matchPOIs[matchCur];
+  document.getElementById('scIco').textContent=p.icon;
+  document.getElementById('scName').textContent=p.name;
+  document.getElementById('scType').textContent=p.type;
+  document.getElementById('scDesc').textContent=p.desc;
+  document.getElementById('matchProgress').textContent=`${matchCur+1} / ${matchPOIs.length}`;
+  const card=document.getElementById('swipeCard');
+  card.style.transform=''; card.style.opacity='1';
+}
+function vote(yes){
+  myVotes.push(yes);
+  const card=document.getElementById('swipeCard');
+  card.style.transform=`translateX(${yes?120:-120}px) rotate(${yes?15:-15}deg)`;
+  card.style.opacity='0';
+  setTimeout(()=>{
+    matchCur++;
+    if(matchCur>=matchPOIs.length){
+      document.getElementById('swipeWrap').style.display='none';
+      document.getElementById('voteBtns').style.display='none';
+      document.getElementById('matchWait').style.display='block';
+      setTimeout(showMatchResult,2200);
+    } else { loadMatchCard(); }
+  },350);
+}
+function showMatchResult(){
+  document.getElementById('matchWait').style.display='none';
+  const matches=myVotes.filter((v,i)=>v===aVotes[i]).length;
+  const pct=Math.round(matches/matchPOIs.length*100);
+  const verdict=pct>=80?'灵魂契合型旅伴 💯':pct>=60?'求同存异型旅伴 🤝':'互补型旅伴 🤔';
+  const html=`
+    <div class="mr-card">
+      <div class="mr-cover">
+        <div class="mr-pct">${pct}%</div>
+        <div class="mr-label">旅行默契度</div>
+      </div>
+      <div class="mr-body">
+        <div class="mr-verdict">${verdict}</div>
+        <div class="mr-detail">你们 5 个地点里 <b>${matches} 个一致</b>，${matchPOIs.length-matches} 个分歧。${pct>=60?'一起出发没问题！':'分歧点值得好好聊聊～'}</div>
+        <div class="mr-items">
+          ${matchPOIs.map((p,i)=>`
+            <div class="mr-item">
+              <div class="mi-ico">${p.icon}</div>
+              <div class="mi-name">${p.name}</div>
+              <div class="mi-match ${myVotes[i]===aVotes[i]?'match-y':myVotes[i]&&!aVotes[i]?'match-m':'match-n'}">
+                ${myVotes[i]===aVotes[i]?'💯 一致':myVotes[i]?'你想去':'A 想去'}
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  const mr=document.getElementById('matchResult');
+  mr.innerHTML=html; mr.style.display='block';
+  document.getElementById('statCities').textContent=Math.min(5,parseInt(document.getElementById('statCities').textContent)+1);
 }
 
-/* ─── 粒子（蓝白色调） ─── */
+/* ════ Tab3: 性格推荐 ════ */
+function selPersona(el){
+  document.querySelectorAll('.mp-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel'); selectedPersona=el.dataset.m;
+}
+function genPersona(){
+  const r=PERSONA_ROUTES[selectedPersona]||PERSONA_ROUTES.INFP;
+  const html=`
+    <div class="pr-card">
+      <div class="pr-cover" style="background:${r.color}">
+        <div class="pr-eyebrow">${r.tag}</div>
+        <div class="pr-title">${r.label}</div>
+      </div>
+      <div class="pr-list">
+        ${r.pois.map(p=>`
+          <div class="pr-item">
+            <div class="pri-ico">${p.icon}</div>
+            <div class="pri-info">
+              <div class="pri-name">${p.name}</div>
+              <div class="pri-why">${p.why}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="pr-comment">${r.comment}</div>
+    </div>
+    <button style="width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;margin-top:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;font-size:14px;font-weight:800;font-family:inherit;box-shadow:0 5px 18px rgba(124,58,237,.25)" onclick="document.getElementById('heartBtn2')&&document.getElementById('heartBtn2').click()">
+      我也想去 💛
+    </button>`;
+  const pr=document.getElementById('personaRoute');
+  pr.innerHTML=html; pr.style.display='block';
+  pr.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ════ 摇一摇 ════ */
+function setupShake(){
+  let last=0;
+  window.addEventListener('devicemotion',e=>{
+    if(appFlipped||signDone)return;
+    const a=e.accelerationIncludingGravity; if(!a)return;
+    const m=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z),now=Date.now();
+    if(m>13&&now-last>900){last=now;flipSign();}
+  });
+}
+
+/* ════ 粒子 ════ */
 function burst(){
   const cv=document.getElementById('pcvs');
-  cv.width=innerWidth;cv.height=innerHeight;
+  cv.width=innerWidth; cv.height=innerHeight;
   const ctx=cv.getContext('2d');
-  const cx=innerWidth/2,cy=innerHeight*.45,ps=[];
+  const cx=innerWidth/2, cy=innerHeight*.42, ps=[];
   for(let i=0;i<50;i++){
-    const a=Math.random()*Math.PI*2,sp=2+Math.random()*4.5;
-    const warm=Math.random()>.6;
+    const a=Math.random()*Math.PI*2,sp=1.8+Math.random()*4.5;
+    const warm=Math.random()>.5;
     ps.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.2,
       r:.5+Math.random()*2,alpha:1,
-      color:warm?`hsl(${210+Math.random()*30},80%,${62+Math.random()*15}%)`
-               :`hsl(${340+Math.random()*20},75%,${68+Math.random()*12}%)`});
+      color:warm?`hsl(${40+Math.random()*20},85%,${65+Math.random()*12}%)`:
+                 `hsl(${210+Math.random()*30},80%,${65+Math.random()*12}%)`});
   }
   let f=0;
   (function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
-    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.alpha-=.017;
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.alpha-=.016;
       if(p.alpha<=0)return;
       ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
@@ -594,111 +1162,6 @@ function burst(){
     if(++f<70)requestAnimationFrame(draw);
     else ctx.clearRect(0,0,cv.width,cv.height);
   })();
-}
-
-/* ─── 摇一摇 ─── */
-function setupShake(){
-  let last=0;
-  window.addEventListener('devicemotion',e=>{
-    if(flipped)return;
-    const a=e.accelerationIncludingGravity;if(!a)return;
-    const m=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z),now=Date.now();
-    if(m>13&&now-last>900){last=now;flipSign();}
-  });
-}
-
-/* ─── 结果 ─── */
-function buildResult(){
-  document.getElementById('pTitleMain').textContent=`${dest}的隐藏路线`;
-  document.getElementById('pTitleSub').textContent=`命运为你选定的 ${pois.length} 个地方`;
-  const list=document.getElementById('pList');list.innerHTML='';
-  pois.forEach((p,i)=>{
-    const el=document.createElement('div');el.className='p-item';
-    el.innerHTML=`<div class="p-seq">${i+1}</div><div class="p-ico">${p.icon}</div><div class="p-info"><div class="p-name">${p.name}</div><div class="p-phrase">${phrases[i]}</div></div>`;
-    list.appendChild(el);
-  });
-  ['poster','heartBtn','actRow'].forEach((id,i)=>{
-    const el=document.getElementById(id);
-    el.classList.remove('show');
-    setTimeout(()=>el.classList.add('show'),80+i*160);
-  });
-  const hb=document.getElementById('heartBtn');
-  hb.className='heart-btn fly';hb.textContent='我也想去 💛';
-}
-
-/* ─── 心动 ─── */
-function sendHeart(){
-  const b=document.getElementById('heartBtn');
-  b.classList.add('sent');b.textContent='💙 心动通知已发送';
-}
-
-/* ─── 复制 ─── */
-function copyShare(){
-  const lines=pois.map((p,i)=>`${p.icon} ${p.name}  ${phrases[i]}`).join('\n');
-  const txt=`摇一摇，抽你的${dest}旅行签 🎴\n\n${lines}\n\n让命运为你选路 → https://qlb708.github.io/08/activity/travel-sign/`;
-  const btn=event.target;
-  navigator.clipboard.writeText(txt).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=txt;
-    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-  });
-  btn.textContent='✅ 已复制';setTimeout(()=>btn.textContent='📋 复制分享',1500);
-}
-
-/* ─── 保存海报 ─── */
-function saveImg(){
-  const btn=event.target;btn.textContent='生成中…';
-  const dpr=window.devicePixelRatio||2;
-  const W=340,rowH=52,H=120+pois.length*rowH+46;
-  const cv=document.createElement('canvas');
-  cv.width=W*dpr;cv.height=H*dpr;
-  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
-
-  // 背景
-  ctx.fillStyle='#fff';ctx.roundRect(0,0,W,H,24);ctx.fill();
-
-  // 封面
-  const g=ctx.createLinearGradient(0,0,W,0);
-  g.addColorStop(0,'#1e40af');g.addColorStop(.5,'#2563eb');g.addColorStop(1,'#3b82f6');
-  ctx.fillStyle=g;ctx.roundRect(0,0,W,120,{topLeft:24,topRight:24,bottomLeft:0,bottomRight:0});ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='600 9px sans-serif';
-  ctx.fillText('HIDDEN ROUTE · FATE TRIP',16,22);
-  ctx.fillStyle='#fff';ctx.font='900 18px sans-serif';
-  ctx.fillText(`${dest}的隐藏路线`,16,82);
-  ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='500 11px sans-serif';
-  ctx.fillText(`命运为你选定的 ${pois.length} 个地方`,16,100);
-
-  // POI行
-  pois.forEach((p,i)=>{
-    const y=120+i*rowH;
-    if(i>0){ctx.strokeStyle='rgba(37,99,235,.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(16,y);ctx.lineTo(W-16,y);ctx.stroke();}
-    // 序号
-    ctx.fillStyle='#dbeafe';ctx.beginPath();ctx.arc(28,y+rowH/2,11,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#2563eb';ctx.font='700 10px sans-serif';ctx.textAlign='center';
-    ctx.fillText(i+1,28,y+rowH/2+4);ctx.textAlign='left';
-    // icon
-    ctx.font='20px sans-serif';ctx.fillText(p.icon,46,y+rowH/2+7);
-    // name
-    ctx.fillStyle='#0f172a';ctx.font='700 13px sans-serif';ctx.fillText(p.name,74,y+rowH/2-2);
-    // phrase
-    ctx.fillStyle='#64748b';ctx.font='italic 10px sans-serif';
-    const ph=phrases[i];ctx.fillText(ph.length>30?ph.slice(0,30)+'…':ph,74,y+rowH/2+14);
-  });
-
-  // 底部
-  const footY=120+pois.length*rowH;
-  ctx.strokeStyle='rgba(37,99,235,.07)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,footY);ctx.lineTo(W,footY);ctx.stroke();
-  ctx.fillStyle='#2563eb';ctx.font='700 9px sans-serif';ctx.fillText('FATE TRIP',16,footY+28);
-  ctx.fillStyle='#d97706';ctx.font='600 9px sans-serif';ctx.fillText('命运签定 ✦',W-70,footY+28);
-
-  const a=document.createElement('a');a.download=`fate-trip-${dest}.png`;a.href=cv.toDataURL();a.click();
-  btn.textContent='💾 保存海报';
-}
-
-/* ─── 重新 ─── */
-function restart(){
-  document.getElementById('destInp').value='';
-  document.getElementById('heroDestPreview').textContent='你的目的地';
-  showScreen('s1');
 }
 </script>
 </body>
