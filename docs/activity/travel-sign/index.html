@@ -18,16 +18,13 @@
   --sh:0 1px 8px rgba(37,99,235,.07),0 0 2px rgba(0,0,0,.04);
   --sh2:0 8px 32px rgba(37,99,235,.13),0 2px 8px rgba(0,0,0,.06);
 }
-html,body{height:100%;background:#c8d8f0;font-family:'PingFang SC','SF Pro Text',sans-serif;color:var(--ink);overflow:hidden}
-/* 电脑端：显示手机框 */
+html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Text',sans-serif;color:var(--ink);overflow:hidden}
+/* 居中容器，手机尺寸 */
 .phone-shell{
-  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(390px, 96vw);
-  height:min(844px, calc(100vh - 32px));
-  background:var(--bg);
-  border-radius:clamp(20px,4vw,50px);overflow:hidden;
-  box-shadow:0 0 0 8px #1a1a2e,0 0 0 10px #2d2d4e,0 24px 60px rgba(0,0,0,.40);}
-@media(max-width:430px){.phone-shell{border-radius:0;box-shadow:none;top:0;left:0;transform:none;width:100%;height:100%}}
+  position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:390px;height:100%;
+  background:var(--bg);overflow:hidden;}
+@media(max-width:390px){.phone-shell{left:0;transform:none;width:100%}}
 
 /* ════ 全局背景装饰 ════ */
 .blob{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0}
