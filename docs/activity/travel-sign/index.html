@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>FATE TRIP · 圆周旅行社交</title>
+<title>FATE TRIP · 旅行社交</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
 :root{
@@ -18,15 +18,22 @@
   --sh:0 1px 8px rgba(37,99,235,.07),0 0 2px rgba(0,0,0,.04);
   --sh2:0 8px 32px rgba(37,99,235,.13),0 2px 8px rgba(0,0,0,.06);
 }
-html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Text',sans-serif;color:var(--ink);overflow:hidden}
+html,body{height:100%;background:#c8d8f0;font-family:'PingFang SC','SF Pro Text',sans-serif;color:var(--ink);overflow:hidden}
+/* 电脑端：显示手机框 */
+.phone-shell{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:390px;height:844px;background:var(--bg);
+  border-radius:50px;overflow:hidden;
+  box-shadow:0 0 0 10px #1a1a2e,0 0 0 12px #2d2d4e,0 40px 80px rgba(0,0,0,.45);
+  position:relative}
+@media(max-width:430px){.phone-shell{border-radius:0;box-shadow:none;top:0;left:0;transform:none;width:100%;height:100%}}
 
 /* ════ 全局背景装饰 ════ */
-.blob{position:fixed;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0}
 .b1{width:350px;height:350px;background:radial-gradient(#bfdbfe,transparent 70%);top:-100px;right:-80px;opacity:.5}
 .b2{width:250px;height:250px;background:radial-gradient(#fce7f3,transparent 70%);bottom:-60px;left:-60px;opacity:.4}
 
 /* ════ 屏幕层 ════ */
-.screen{position:fixed;inset:0;z-index:1;transition:opacity .35s,transform .35s}
+.screen{position:absolute;inset:0;z-index:1;transition:opacity .35s,transform .35s}
 .screen.gone{opacity:0;pointer-events:none;transform:translateY(14px) scale(.99)}
 
 /* ════════════════════════════════════
@@ -400,7 +407,7 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
 .bc-score{font-family:'Georgia',serif;font-size:18px;font-weight:900}
 
 /* 粒子 */
-#pcvs{position:fixed;inset:0;pointer-events:none;z-index:50}
+#pcvs{position:absolute;inset:0;pointer-events:none;z-index:50}
 
 /* 飞入 */
 .fly{opacity:0;transform:translateY(12px);transition:opacity .45s,transform .45s}
@@ -409,6 +416,7 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
 </head>
 <body>
 
+<div class="phone-shell" id="phoneShell">
 <div class="blob b1"></div>
 <div class="blob b2"></div>
 <canvas id="pcvs"></canvas>
@@ -427,7 +435,7 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
         <span style="width:4px;height:12px"></span>
         <span style="width:4px;height:30px"></span>
       </div>
-      <div class="ci-tag">FATE TRIP · 圆周</div>
+      <div class="ci-tag">FATE TRIP</div>
       <div class="ci-title" id="coverTitle">抽你的曼谷旅行签</div>
       <div class="ci-sub">看看抽到哪家夜市！🍜</div>
     </div>
@@ -747,6 +755,8 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
     </div>
   </div>
 </div><!-- /sApp -->
+
+</div><!-- /phone-shell -->
 
 <script>
 /* ════ 数据 ════ */
@@ -1162,6 +1172,10 @@ function burst(){
     if(++f<70)requestAnimationFrame(draw);
     else ctx.clearRect(0,0,cv.width,cv.height);
   })();
+}
+// 电脑端：把body背景改成深色
+if(window.innerWidth>500){
+  document.body.style.background='#c8d8f0';
 }
 </script>
 </body>
