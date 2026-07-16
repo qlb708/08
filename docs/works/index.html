@@ -85,7 +85,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 <div class="snap-frame" id="summary"><section class="page summary glass" ><div class="summary-main"><div><h2>谢谢看到这里 <em>Thanks for stopping by</em></h2><p>感谢你的时间与关注。希望我的产品思维、数据洞察与 AI 能力，<br>能为团队创造价值，也期待与更多有趣的人一起做有意义的事。</p></div><div class="summary-art"><img src="hero-qin.png" alt="Qin"></div></div><div class="summary-cards"><article class="sum-card"><b>▦ 核心能力</b><p>产品运营全流程把控<br>数据洞察驱动决策<br>AI 工具应用与自动化</p></article><article class="sum-card"><b>▣ 实习亮点</b><p>洞察用户需求<br>推动产品优化<br>产出可落地方案</p></article><article class="sum-card"><b>&lt;/&gt; 工具方法论</b><p>Vibe Coding 原型开发<br>AI 自动化提升人效<br>结构化复盘持续优化</p></article><article class="sum-card"><b>◎ 关注方向</b><p>产品与数据深度结合<br>旅行与生活方式创新<br>AI 在产品中的落地</p></article><article class="sum-card"><b>☎ 联系方式</b><p>qinlinbo5@gmail.com<br>github.com/qlb708<br>欢迎交流与合作</p></article></div></section></div>
 <footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
 <script>
-const groups=[{key:'daily',title:'日常提效',icon:'▦',count:'2 个实验工具',desc:'解决高频日常场景，提升个人与团队效率。',tone:'#4a7bff',tint:'#e8f1ff',cls:'c-blue',items:[['每日 Todo 和复盘','引导反思总结，持续成长','recap/','✓'],['打印机识别黑白','快速识别文档打印适配','print-helper/','▣'],]},{key:'demo',title:'活动 Demo',icon:'▣',count:'4 个创意项目',desc:'从想法到落地，探索有趣的产品实验。',tone:'#ed936f',tint:'#fff0e8',cls:'c-peach',items:[['AI 多方案对比','输入需求，生成多种优选方案','/08/web/compare/','⚖'],['旅行签','输入目的地抽签，盲盒解锁隐藏路线+命运签语','/08/activity/travel-sign/','✦'],['我的旅行足迹','标记城市，生成专属足迹卡','/08/activity/footprint/','◌'],['旅行达人鉴定','测出你的旅行角色和默契值','/08/activity/traveler/','♛']]}];
+const groups=[{key:'daily',title:'日常提效',icon:'▦',count:'2 个实验工具',desc:'解决高频日常场景，提升个人与团队效率。',tone:'#4a7bff',tint:'#e8f1ff',cls:'c-blue',items:[['每日 Todo 和复盘','引导反思总结，持续成长','recap/','✓'],['打印机识别黑白','快速识别文档打印适配','print-helper/','▣'],]},{key:'demo',title:'活动 Demo',icon:'▣',count:'4 个创意项目',desc:'从想法到落地，探索有趣的产品实验。',tone:'#ed936f',tint:'#fff0e8',cls:'c-peach',items:[['AI 多方案对比','输入需求，生成多种优选方案','/08/web/compare/','⚖'],['拆你的旅行签','抽签解锁隐藏路线——盲盒翻牌×命运签语×心动反馈','/08/activity/travel-sign/','✦'],['我的旅行足迹','标记城市，生成专属足迹卡','/08/activity/footprint/','◌'],['旅行达人鉴定','测出你的旅行角色和默契值','/08/activity/traveler/','♛']]}];
 
 // ── 渐变色配置
 const GRADS=[
@@ -172,11 +172,9 @@ function renderTools(){
     '复盘是成长引擎，但大多数人没有习惯——想给自己一个每天5分钟沉淀的理由。',
     '每次在公司打文件都要猜打印机能不能识别颜色，索性做个工具一键检测。',
     '手动比较多个AI方案太费时间，想把"输入需求→多方案输出"变成一键流程。',
-    '旅行前最烦整理地点，想做个助手把散乱的地点整理成可执行的清单。',
-    '相信命运，本质是相信自己的选择——塔罗只是给旅行加点仪式感。',
+    '分享行程为什么只能发一条链接？想让对方从"被动看"变成"主动拆"——像求签一样抽出属于自己的路线。',
     '想可视化自己去过的地方，生成一张有温度的足迹卡，不只是个地图。',
     '旅行风格很个人，想测一测自己是哪种旅行者，也能和朋友比比默契。',
-    '城市有性格，人也有命——想用占卜的形式重新认识一座城市。',
   ];
 
   const items=[];
