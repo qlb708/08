@@ -3,308 +3,357 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>FATE TRIP · 旅行签</title>
+<title>FATE TRIP</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#060f1e;
-  --b1:#0d2040;--b2:#1a4080;--b3:#2a6ad4;--b4:#5aa0e8;--b5:#a0c8f8;
-  --warm:#f5c842;--warm2:#fde68a;--pink:#e84393;--pink2:#ff7ec7;
-  --text:#e8f4ff;--sub:#7ea8d0;--card:#0d1e38;
-  --r:22px;
+  --bg:#eef4fc;
+  --bg2:#f7faff;
+  --blue:#2563eb;--blue2:#3b82f6;--blue3:#93c5fd;--blue4:#dbeafe;
+  --ink:#0f172a;--ink2:#334155;--ink3:#64748b;--ink4:#94a3b8;
+  --card:#ffffff;
+  --pink:#f43f8e;--pink2:#fb7eb8;
+  --gold:#d97706;--gold2:#fbbf24;
+  --r:20px;
+  --sh:0 2px 16px rgba(37,99,235,.08),0 1px 4px rgba(0,0,0,.04);
+  --sh2:0 8px 40px rgba(37,99,235,.12),0 2px 8px rgba(0,0,0,.06);
 }
 html,body{height:100%;background:var(--bg);
-  font-family:'PingFang SC','SF Pro Display','Hiragino Sans GB',sans-serif;
-  color:var(--text);overflow:hidden}
+  font-family:'PingFang SC','SF Pro Text','Hiragino Sans GB',sans-serif;
+  color:var(--ink);overflow:hidden}
 
-/* ── 星空 ── */
-#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
-.st{position:absolute;border-radius:50%;background:#fff;animation:tw ease-in-out infinite alternate}
-@keyframes tw{0%{opacity:.03}100%{opacity:.5}}
+/* ── 背景装饰 ── */
+.bg-blob{position:fixed;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0}
+.blob1{width:400px;height:400px;background:radial-gradient(#bfdbfe,transparent 70%);
+  top:-120px;right:-100px;opacity:.6}
+.blob2{width:300px;height:300px;background:radial-gradient(#fce7f3,transparent 70%);
+  bottom:-80px;left:-80px;opacity:.5}
+.blob3{width:200px;height:200px;background:radial-gradient(#e0f2fe,transparent 70%);
+  top:40%;left:30%;opacity:.4}
 
-/* ── 光晕 ── */
-.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;animation:drift ease-in-out infinite alternate}
-.orb1{width:320px;height:320px;background:radial-gradient(#1a4a9e,transparent 70%);top:-80px;left:-80px;opacity:.4;animation-duration:12s}
-.orb2{width:280px;height:280px;background:radial-gradient(#6020b0,transparent 70%);bottom:-60px;right:-60px;opacity:.3;animation-duration:16s;animation-direction:alternate-reverse}
-.orb3{width:180px;height:180px;background:radial-gradient(#f5c842,transparent 70%);top:45%;left:55%;opacity:.08;animation-duration:9s}
-@keyframes drift{from{transform:translate(0,0)}to{transform:translate(18px,-14px)}}
-
-/* ── 屏切换 ── */
+/* ── 屏幕切换 ── */
 .screen{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;
-  transition:opacity .45s,transform .45s}
-.screen.gone{opacity:0;pointer-events:none;transform:translateY(20px) scale(.98)}
+  transition:opacity .4s cubic-bezier(.4,0,.2,1),transform .4s cubic-bezier(.4,0,.2,1)}
+.screen.gone{opacity:0;pointer-events:none;transform:translateY(16px) scale(.99)}
 
 /* ── 返回 ── */
-.back-btn{position:fixed;top:20px;left:16px;z-index:99;
-  display:flex;align-items:center;gap:4px;padding:6px 10px;
-  font-size:13px;color:var(--sub);text-decoration:none;
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
-  border-radius:30px;backdrop-filter:blur(8px);transition:all .2s}
-.back-btn:hover{color:var(--b5);border-color:rgba(90,160,232,.3)}
+.back-btn{position:fixed;top:18px;left:16px;z-index:99;
+  display:flex;align-items:center;gap:5px;padding:7px 14px;
+  font-size:13px;font-weight:500;color:var(--blue);text-decoration:none;
+  background:rgba(255,255,255,.8);border:1px solid rgba(37,99,235,.12);
+  border-radius:30px;backdrop-filter:blur(12px);
+  box-shadow:0 1px 6px rgba(37,99,235,.08);transition:all .2s}
+.back-btn:active{transform:scale(.96)}
 
-/* ═══════════════════════════
+/* ═════════════════════════
    屏1  封面
-═══════════════════════════ */
-#s1{justify-content:space-between;padding-top:env(safe-area-inset-top,0px)}
+═════════════════════════ */
+#s1{justify-content:flex-end}
 
-/* 上半：封面视觉区 */
-.cover-zone{flex:1;width:100%;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;position:relative;overflow:hidden;padding:20px 0 0}
+/* 封面上方视觉区 */
+.hero{position:absolute;top:0;left:0;right:0;bottom:280px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:64px 28px 20px}
 
-/* 封面背景（模拟行程封面图） */
-.cover-img{position:absolute;inset:0;
-  background:linear-gradient(160deg,#0a1e40 0%,#0e2a5a 30%,#152e6a 55%,#0a1e40 100%);
-  opacity:1}
-/* 城市剪影线条感 */
-.city-skyline{position:absolute;bottom:0;left:0;right:0;height:120px;
-  background:linear-gradient(0deg,rgba(10,22,40,.95) 0%,transparent 100%)}
+/* 大卡片封面 */
+.hero-card{width:100%;max-width:300px;
+  background:var(--card);border-radius:28px;
+  box-shadow:var(--sh2);overflow:hidden;position:relative}
+.hc-img{width:100%;height:180px;
+  background:linear-gradient(135deg,#1e40af 0%,#2563eb 35%,#3b82f6 60%,#60a5fa 80%,#93c5fd 100%);
+  position:relative;display:flex;align-items:flex-end;padding:16px}
+/* 光线扫过 */
+.hc-shine{position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);
+  animation:shine 4s ease-in-out infinite}
+@keyframes shine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+/* 城市光晕 */
+.hc-glow{position:absolute;bottom:0;left:0;right:0;height:80px;
+  background:linear-gradient(0deg,rgba(30,64,175,.6),transparent)}
+.hc-city{display:flex;gap:6px;align-items:flex-end;position:relative;z-index:1}
+.hc-city span{background:rgba(255,255,255,.2);border-radius:3px 3px 0 0;display:block}
+.hc-loc{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.6);
+  position:absolute;top:14px;left:16px}
+.hc-dest{font-size:22px;font-weight:900;color:#fff;font-family:'Georgia',serif;
+  position:absolute;top:36px;left:16px;letter-spacing:1px}
 
-.cover-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;gap:0}
-.cover-label{font-size:11px;letter-spacing:5px;color:var(--b4);margin-bottom:14px;opacity:.8}
-.cover-title{font-family:'Georgia',serif;font-size:clamp(48px,13vw,64px);
-  font-weight:900;letter-spacing:8px;line-height:1.05;
-  background:linear-gradient(160deg,#c8e8ff 0%,#ffffff 40%,#a8d0ff 70%,#dce8ff 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.cover-rule{display:flex;align-items:center;gap:10px;margin:14px 0}
-.cover-rule::before,.cover-rule::after{content:'';flex:1;height:1px;max-width:50px;
-  background:linear-gradient(90deg,transparent,rgba(90,160,232,.4))}
-.cover-rule span{font-size:14px;color:var(--warm);opacity:.7}
-.cover-tagline{font-size:14px;color:rgba(200,232,255,.65);line-height:1.9;padding:0 36px}
-.cover-tagline b{color:var(--b5);font-weight:700}
+.hc-body{padding:14px 16px 16px;display:flex;justify-content:space-between;align-items:center}
+.hc-poi-preview{display:flex;gap:6px}
+.hc-dot{width:8px;height:8px;border-radius:50%;background:var(--blue3)}
+.hc-dot:nth-child(2){background:var(--blue2);opacity:.6}
+.hc-dot:nth-child(3){background:var(--blue3);opacity:.4}
+.hc-label{font-size:12px;color:var(--ink3)}
+.hc-shake{display:flex;align-items:center;gap:5px;
+  background:var(--blue4);border-radius:20px;padding:6px 12px}
+.hc-shake-ico{font-size:13px;animation:jig 2.5s ease-in-out infinite}
+@keyframes jig{0%,100%{transform:rotate(0)}20%{transform:rotate(-18deg)}36%{transform:rotate(14deg)}50%{transform:rotate(-9deg)}65%{transform:rotate(6deg)}80%{transform:rotate(-3deg)}}
+.hc-shake-txt{font-size:11px;color:var(--blue);font-weight:600}
 
-/* 下半：输入区 */
-.input-zone{width:100%;padding:20px 24px max(28px,env(safe-area-inset-bottom));
-  display:flex;flex-direction:column;gap:12px;
-  background:linear-gradient(0deg,rgba(6,15,30,1) 80%,transparent 100%)}
+/* 品牌文字 */
+.brand-area{text-align:center;margin-top:20px}
+.brand-word{font-family:'Georgia',serif;font-size:clamp(36px,10vw,48px);
+  font-weight:900;letter-spacing:6px;color:var(--ink);line-height:1}
+.brand-dot{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--blue);margin:0 2px;vertical-align:middle}
+.brand-sub{font-size:11px;color:var(--ink4);letter-spacing:3px;margin-top:8px}
 
-.dest-field{position:relative}
-.dest-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;opacity:.5}
-.dest-inp{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(90,160,232,.18);
-  border-radius:14px;padding:14px 16px 14px 46px;font-size:16px;color:var(--text);
-  outline:none;font-family:inherit;transition:border-color .25s,background .25s;
-  backdrop-filter:blur(6px)}
-.dest-inp::placeholder{color:rgba(126,168,208,.45);font-size:15px}
-.dest-inp:focus{border-color:rgba(90,160,232,.45);background:rgba(255,255,255,.09)}
+/* 输入区 */
+.input-panel{width:100%;padding:20px 20px max(28px,env(safe-area-inset-bottom));
+  background:var(--bg2);border-top:1px solid rgba(37,99,235,.06);
+  display:flex;flex-direction:column;gap:12px}
 
-/* 签数选择 */
-.cnt-row{display:flex;align-items:center;gap:10px}
-.cnt-lbl{font-size:12px;color:var(--sub);white-space:nowrap;letter-spacing:.5px}
+.dest-wrap{position:relative}
+.dest-flag{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px}
+.dest-in{width:100%;background:var(--card);border:1.5px solid rgba(37,99,235,.12);
+  border-radius:14px;padding:13px 14px 13px 42px;font-size:16px;color:var(--ink);
+  outline:none;font-family:inherit;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.03);transition:border-color .2s,box-shadow .2s}
+.dest-in::placeholder{color:var(--ink4);font-size:15px}
+.dest-in:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(37,99,235,.08),inset 0 1px 3px rgba(0,0,0,.03)}
+
+.cnt-row{display:flex;align-items:center;gap:8px}
+.cnt-lbl{font-size:12px;color:var(--ink3);font-weight:500;white-space:nowrap}
 .cnt-pills{display:flex;gap:6px;flex:1}
 .cnt-pills input{display:none}
-.cnt-pills label{flex:1;text-align:center;padding:9px 4px;font-size:14px;font-weight:600;
-  color:var(--sub);border:1px solid rgba(90,160,232,.15);border-radius:10px;cursor:pointer;
-  transition:all .2s;background:rgba(255,255,255,.03)}
-.cnt-pills input:checked+label{color:#fff;background:linear-gradient(135deg,var(--b2),var(--b3));
-  border-color:transparent;box-shadow:0 4px 14px rgba(42,106,212,.3)}
+.cnt-pills label{flex:1;text-align:center;padding:9px 0;font-size:13px;font-weight:600;
+  color:var(--ink3);border:1.5px solid rgba(37,99,235,.12);
+  border-radius:10px;cursor:pointer;background:var(--card);
+  transition:all .2s;box-shadow:var(--sh)}
+.cnt-pills input:checked+label{color:#fff;background:var(--blue);border-color:var(--blue);
+  box-shadow:0 4px 12px rgba(37,99,235,.28)}
 
-/* 主按钮 */
-.go-btn{position:relative;width:100%;padding:17px;border:none;border-radius:16px;cursor:pointer;
-  background:linear-gradient(135deg,#1050d0,var(--b3),var(--b4));
-  font-size:17px;font-weight:800;color:#fff;letter-spacing:3px;
-  font-family:'Georgia',serif;overflow:hidden;
-  box-shadow:0 8px 28px rgba(42,106,212,.4),0 0 0 1px rgba(90,160,232,.12);
-  transition:transform .14s,box-shadow .2s}
+.go-btn{width:100%;padding:16px;border:none;border-radius:16px;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  font-size:16px;font-weight:800;color:#fff;letter-spacing:2px;
+  font-family:inherit;position:relative;overflow:hidden;
+  box-shadow:0 6px 20px rgba(37,99,235,.32);transition:transform .14s,box-shadow .2s}
 .go-btn::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.13) 50%,transparent 70%);
-  transform:translateX(-100%);transition:transform .7s}
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%);
+  transform:translateX(-100%);transition:transform .6s}
 .go-btn:hover::after{transform:translateX(100%)}
-.go-btn:active{transform:scale(.97);box-shadow:0 4px 14px rgba(42,106,212,.3)}
+.go-btn:active{transform:scale(.97);box-shadow:0 3px 12px rgba(37,99,235,.24)}
 
-/* ═══════════════════════════
+/* ═════════════════════════
    屏2  翻牌
-═══════════════════════════ */
-#s2{}
+═════════════════════════ */
+#s2{background:var(--bg)}
 
-/* 顶部信息栏 */
-.flip-nav{position:fixed;top:0;left:0;right:0;height:60px;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;padding:0 20px;
-  background:linear-gradient(0deg,transparent,rgba(6,15,30,.7) 60%)}
-.fn-dest{font-size:13px;color:var(--b5);font-family:'Georgia',serif;letter-spacing:2px}
-.fn-prog{display:flex;align-items:center;gap:6px}
-.prog-dot{width:6px;height:6px;border-radius:50%;background:rgba(90,160,232,.25);transition:all .35s}
-.prog-dot.done{background:var(--b4)}
-.prog-dot.cur{background:var(--warm);width:18px;border-radius:3px;box-shadow:0 0 8px var(--warm)}
+.flip-nav{position:fixed;top:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;padding-top:max(20px,env(safe-area-inset-top));
+  background:rgba(238,244,252,.9);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(37,99,235,.06)}
+.fn-dest{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:.5px}
+.fn-right{display:flex;align-items:center;gap:8px}
+.fn-prog{display:flex;align-items:center;gap:5px}
+.pdot{width:7px;height:7px;border-radius:50%;
+  background:rgba(37,99,235,.15);transition:all .35s}
+.pdot.done{background:var(--blue3)}
+.pdot.cur{background:var(--blue);width:20px;border-radius:4px;
+  box-shadow:0 0 8px rgba(37,99,235,.4)}
 
-/* 舞台：卡片垂直居中 */
-.flip-stage{flex:1;width:100%;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding-top:60px;padding-bottom:100px;position:relative}
+.flip-stage{flex:1;width:100%;display:flex;align-items:center;justify-content:center;
+  padding-top:70px;padding-bottom:110px;position:relative}
 
-/* 卡片容器 */
-.card-outer{width:min(72vw,280px);position:relative}
-.card-aspect{width:100%;padding-top:148%;position:relative}/* ~2:3 */
+/* 卡片 */
+.card-wrap{width:min(68vw,260px);position:relative;filter:drop-shadow(0 20px 40px rgba(37,99,235,.18))}
+.card-ratio{width:100%;padding-top:148%;position:relative}
 .card-scene{position:absolute;inset:0;perspective:900px}
 .card-3d{width:100%;height:100%;transform-style:preserve-3d;
   transition:transform .7s cubic-bezier(.38,0,.18,1)}
 .card-3d.flipped{transform:rotateY(180deg)}
-.cface{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;overflow:hidden}
+.cface{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;overflow:hidden}
 
-/* 卡背——蓝色锦缎 */
+/* 卡背——深蓝（唯一深色，制造对比）*/
 .cback{
-  background:linear-gradient(150deg,#0c2458 0%,#1848a0 38%,#2a6ad4 60%,#1848a0 82%,#0c2458 100%);
+  background:linear-gradient(150deg,#1e3a8a 0%,#1d4ed8 40%,#2563eb 65%,#1d4ed8 85%,#1e3a8a 100%);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:0 28px 60px rgba(0,0,0,.65),0 0 0 1px rgba(90,160,232,.1),
-    inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1px 0 rgba(0,0,0,.3)}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.2)}
 .ctex{position:absolute;inset:0;
   background-image:
-    repeating-linear-gradient(45deg,rgba(255,255,255,.022) 0,rgba(255,255,255,.022) 1px,transparent 1px,transparent 10px),
-    repeating-linear-gradient(-45deg,rgba(255,255,255,.022) 0,rgba(255,255,255,.022) 1px,transparent 1px,transparent 10px)}
-.cglow{position:absolute;width:55%;height:55%;top:50%;left:50%;transform:translate(-50%,-50%);
-  border-radius:50%;background:radial-gradient(rgba(90,160,232,.25),transparent 70%);
+    repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 10px),
+    repeating-linear-gradient(-45deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 10px)}
+.cglow{position:absolute;width:60%;height:60%;top:50%;left:50%;
+  transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(rgba(147,197,253,.2),transparent 70%);
   animation:cpulse 3s ease-in-out infinite alternate}
-@keyframes cpulse{from{opacity:.6;transform:translate(-50%,-50%) scale(1)}to{opacity:1;transform:translate(-50%,-50%) scale(1.2)}}
+@keyframes cpulse{from{opacity:.6;transform:translate(-50%,-50%) scale(1)}to{opacity:1;transform:translate(-50%,-50%) scale(1.18)}}
 .csign{position:relative;z-index:1;font-family:'Georgia',serif;
-  font-size:clamp(72px,20vw,110px);color:transparent;line-height:1;
-  -webkit-text-stroke:1.5px rgba(212,175,90,.6);
+  font-size:clamp(70px,19vw,105px);line-height:1;
+  color:transparent;-webkit-text-stroke:1.5px rgba(219,234,254,.5);
   animation:sglw 3s ease-in-out infinite alternate}
 @keyframes sglw{
-  from{text-shadow:0 0 30px rgba(212,175,90,.3),0 0 70px rgba(42,106,212,.2)}
-  to{text-shadow:0 0 55px rgba(212,175,90,.6),0 0 110px rgba(42,106,212,.4)}}
-.cframe{position:absolute;inset:12px;border:1px solid rgba(212,175,90,.18);border-radius:14px;pointer-events:none}
-.ccorner{position:absolute;width:18px;height:18px;border-color:rgba(212,175,90,.38);border-style:solid}
-.cc-tl{top:18px;left:18px;border-width:1.5px 0 0 1.5px}
-.cc-tr{top:18px;right:18px;border-width:1.5px 1.5px 0 0}
-.cc-bl{bottom:18px;left:18px;border-width:0 0 1.5px 1.5px}
-.cc-br{bottom:18px;right:18px;border-width:0 1.5px 1.5px 0}
-.ctap{position:absolute;bottom:20px;font-size:10px;letter-spacing:4px;
-  color:rgba(212,175,90,.32);z-index:1}
+  from{text-shadow:0 0 24px rgba(147,197,253,.3)}
+  to{text-shadow:0 0 48px rgba(147,197,253,.6),0 0 80px rgba(37,99,235,.3)}}
+.cframe{position:absolute;inset:14px;border:1px solid rgba(219,234,254,.15);border-radius:14px;pointer-events:none}
+.ccorner{position:absolute;width:16px;height:16px;border-color:rgba(219,234,254,.3);border-style:solid}
+.cc-tl{top:20px;left:20px;border-width:1.5px 0 0 1.5px}
+.cc-tr{top:20px;right:20px;border-width:1.5px 1.5px 0 0}
+.cc-bl{bottom:20px;left:20px;border-width:0 0 1.5px 1.5px}
+.cc-br{bottom:20px;right:20px;border-width:0 1.5px 1.5px 0}
+.ctap{position:absolute;bottom:18px;font-size:9px;letter-spacing:4px;
+  color:rgba(219,234,254,.28);z-index:1}
 
-/* 卡正面——POI */
+/* 卡正面——白色精致卡片 */
 .cfront{transform:rotateY(180deg);
-  background:linear-gradient(155deg,#0c1e3a,#152e5a,#0c1e3a);
-  border:1px solid rgba(90,160,232,.14);
-  box-shadow:0 28px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.04);
+  background:#fff;border:1px solid rgba(37,99,235,.07);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:24px 18px;gap:0}
-.poi-ico{font-size:clamp(44px,13vw,62px);line-height:1;margin-bottom:12px;
-  filter:drop-shadow(0 0 18px rgba(90,160,232,.5))}
-.poi-nm{font-size:clamp(16px,5vw,21px);font-weight:900;text-align:center;
-  color:var(--text);margin-bottom:8px}
-.poi-badge{display:inline-block;font-size:11px;padding:3px 13px;border-radius:20px;
-  background:linear-gradient(135deg,var(--b2),var(--b4));color:#fff;
-  font-weight:700;letter-spacing:1px}
-.poi-sep{width:80px;height:1px;margin:15px 0;
-  background:linear-gradient(90deg,transparent,rgba(90,160,232,.28),transparent)}
-.poi-sign{font-size:13px;color:var(--b5);text-align:center;line-height:1.9;
-  font-style:italic;letter-spacing:.3px;padding:0 8px}
+.poi-ico{font-size:clamp(42px,12vw,58px);line-height:1;margin-bottom:12px}
+.poi-nm{font-size:clamp(17px,5vw,21px);font-weight:900;text-align:center;
+  color:var(--ink);margin-bottom:8px}
+.poi-badge{display:inline-block;font-size:10px;padding:3px 12px;border-radius:20px;
+  background:var(--blue4);color:var(--blue);font-weight:700;letter-spacing:1px}
+.poi-sep{width:60px;height:1px;margin:15px 0;
+  background:linear-gradient(90deg,transparent,var(--blue3),transparent)}
+.poi-sign{font-size:12px;color:var(--ink3);text-align:center;
+  line-height:1.9;font-style:italic;padding:0 8px;letter-spacing:.3px}
+.poi-num{position:absolute;top:14px;right:16px;
+  font-size:11px;color:var(--ink4);font-weight:600}
 
 /* 粒子 */
 #pcvs{position:fixed;inset:0;pointer-events:none;z-index:20}
 
 /* 底部 */
 .flip-foot{position:fixed;bottom:0;left:0;right:0;
-  padding:0 24px max(32px,env(safe-area-inset-bottom));
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  background:linear-gradient(0deg,rgba(6,15,30,1) 0%,transparent 100%);
-  padding-top:20px;z-index:10}
-.shake-pill{display:flex;align-items:center;gap:7px;
-  background:rgba(255,255,255,.04);border:1px solid rgba(90,160,232,.1);
-  border-radius:40px;padding:8px 18px}
-.shake-ico{font-size:15px;animation:jig 2.8s ease-in-out infinite}
-@keyframes jig{0%,100%{transform:rotate(0)}18%{transform:rotate(-20deg)}34%{transform:rotate(16deg)}48%{transform:rotate(-10deg)}62%{transform:rotate(7deg)}76%{transform:rotate(-3deg)}}
-.shake-txt{font-size:11px;color:var(--sub);letter-spacing:1px}
+  padding:12px 20px max(28px,env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:linear-gradient(0deg,rgba(238,244,252,1) 70%,transparent 100%);
+  z-index:10}
+.shake-chip{display:flex;align-items:center;gap:6px;
+  background:var(--card);border:1px solid rgba(37,99,235,.1);
+  border-radius:40px;padding:7px 16px;box-shadow:var(--sh)}
+.shake-ico{font-size:14px;animation:jig 2.5s ease-in-out infinite}
+.shake-txt{font-size:11px;color:var(--ink3);font-weight:500}
 .next-btn{display:none;width:100%;padding:15px;border:none;border-radius:14px;cursor:pointer;
-  background:linear-gradient(135deg,var(--b2),var(--b3),var(--b4));
-  color:#fff;font-size:15px;font-weight:800;letter-spacing:2px;font-family:inherit;
-  box-shadow:0 6px 22px rgba(42,106,212,.35);transition:transform .14s}
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;font-family:inherit;
+  box-shadow:0 6px 20px rgba(37,99,235,.28);transition:transform .14s}
 .next-btn:active{transform:scale(.97)}
 
-/* ═══════════════════════════
+/* ═════════════════════════
    屏3  结果
-═══════════════════════════ */
-#s3{overflow:hidden}
+═════════════════════════ */
+#s3{background:var(--bg);overflow:hidden}
 .r-scroll{width:100%;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;
   display:flex;flex-direction:column;align-items:center;
-  padding:0 20px max(40px,env(safe-area-inset-bottom))}
+  padding:max(60px,env(safe-area-inset-top)+40px) 18px max(40px,env(safe-area-inset-bottom))}
 
-/* 路线海报 */
-.poster{width:100%;max-width:350px;margin-top:60px;
-  background:linear-gradient(155deg,#0c1e3a,#101e3a,#0c1930);
-  border-radius:20px;border:1px solid rgba(90,160,232,.14);
-  overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+/* 路线海报卡片 */
+.poster{width:100%;max-width:340px;background:var(--card);
+  border-radius:24px;overflow:hidden;
+  box-shadow:0 12px 48px rgba(37,99,235,.12),0 2px 8px rgba(0,0,0,.06)}
+.p-cover{width:100%;height:120px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1e40af,#2563eb 40%,#3b82f6 70%,#60a5fa)}
+.p-shine{position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.15) 50%,transparent 75%)}
+.p-eyebrow{position:absolute;top:14px;left:16px;
+  font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.55);font-weight:600}
+.p-title{position:absolute;bottom:14px;left:16px;right:16px}
+.p-title-main{font-size:20px;font-weight:900;color:#fff;letter-spacing:.5px}
+.p-title-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;letter-spacing:1px}
 
-.poster-cover{width:100%;height:100px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,#0e2a5a,#1a4a9e,#2a6ad4,#1040a0)}
-.pc-label{position:absolute;top:14px;left:16px;font-size:10px;letter-spacing:4px;color:rgba(255,255,255,.5)}
-.pc-title{position:absolute;bottom:14px;left:16px;right:16px;
-  font-size:20px;font-weight:900;color:#fff;letter-spacing:1px}
-.pc-title span{color:var(--warm2);font-family:'Georgia',serif}
-.pc-glow{position:absolute;inset:0;
-  background:radial-gradient(ellipse at 70% 50%,rgba(90,160,232,.2),transparent 70%)}
+.p-list{padding:14px 16px 10px;display:flex;flex-direction:column;gap:0}
+.p-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;
+  border-bottom:1px solid rgba(37,99,235,.06)}
+.p-item:last-child{border-bottom:none}
+.p-seq{width:22px;height:22px;border-radius:50%;background:var(--blue4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:var(--blue);flex-shrink:0;margin-top:2px}
+.p-ico{font-size:22px;flex-shrink:0}
+.p-info{flex:1;min-width:0}
+.p-name{font-size:14px;font-weight:800;color:var(--ink)}
+.p-phrase{font-size:11px;color:var(--ink3);font-style:italic;
+  margin-top:3px;line-height:1.6}
 
-.poster-pois{padding:14px 16px 10px;display:flex;flex-direction:column;gap:12px}
-.pp-item{display:flex;align-items:center;gap:10px}
-.pp-num{width:24px;height:24px;border-radius:50%;border:1px solid rgba(90,160,232,.25);
-  display:flex;align-items:center;justify-content:center;font-size:11px;
-  color:var(--b5);flex-shrink:0}
-.pp-ico{font-size:22px;flex-shrink:0}
-.pp-info{flex:1;min-width:0}
-.pp-name{font-size:14px;font-weight:700}
-.pp-sign{font-size:11px;color:var(--b5);font-style:italic;margin-top:2px;
-  line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-.poster-foot{padding:10px 16px 14px;border-top:1px solid rgba(90,160,232,.08);
+.p-foot{padding:10px 16px 14px;
+  border-top:1px solid rgba(37,99,235,.06);
   display:flex;align-items:center;justify-content:space-between}
-.pf-brand{font-size:10px;color:var(--sub);letter-spacing:3px;font-family:'Georgia',serif}
-.pf-badge{font-size:9px;color:var(--warm);border:1px solid rgba(245,200,66,.25);
-  border-radius:6px;padding:3px 8px;letter-spacing:1px}
+.p-brand{display:flex;align-items:center;gap:5px}
+.p-brand-dot{width:6px;height:6px;border-radius:50%;background:var(--blue2)}
+.p-brand-txt{font-size:10px;font-weight:700;color:var(--blue2);letter-spacing:2px}
+.p-stamp{font-size:9px;color:var(--gold);border:1px solid rgba(217,119,6,.25);
+  border-radius:6px;padding:3px 8px;font-weight:600;letter-spacing:1px}
 
 /* 心动按钮 */
-.heart-btn{width:100%;max-width:350px;padding:17px;border:none;border-radius:16px;cursor:pointer;
-  background:linear-gradient(135deg,#c01878,var(--pink),var(--pink2));
-  color:#fff;font-size:17px;font-weight:900;letter-spacing:2px;font-family:inherit;
-  box-shadow:0 8px 28px rgba(232,67,147,.4);transition:transform .14s,box-shadow .2s;
-  margin-top:14px}
+.heart-btn{width:100%;max-width:340px;padding:17px;border:none;border-radius:16px;cursor:pointer;
+  background:linear-gradient(135deg,#db2777,var(--pink),var(--pink2));
+  color:#fff;font-size:16px;font-weight:900;letter-spacing:1px;font-family:inherit;
+  box-shadow:0 8px 24px rgba(244,63,142,.28);transition:transform .14s;
+  margin-top:12px}
 .heart-btn:active{transform:scale(.97)}
-.heart-btn.sent{background:linear-gradient(135deg,#2a1850,#4a2a90);
-  box-shadow:0 8px 28px rgba(74,42,144,.3);letter-spacing:1px}
+.heart-btn.sent{background:linear-gradient(135deg,#6d28d9,#7c3aed);
+  box-shadow:0 8px 24px rgba(109,40,217,.22)}
 
 /* 操作行 */
-.act-row{display:flex;gap:10px;width:100%;max-width:350px;margin-top:10px}
-.act-btn{flex:1;padding:13px 8px;border-radius:12px;font-size:13px;font-weight:700;
-  cursor:pointer;border:none;font-family:inherit;transition:transform .14s;text-align:center}
+.act-row{display:flex;gap:8px;width:100%;max-width:340px;margin-top:10px}
+.act-btn{flex:1;padding:12px 6px;border-radius:12px;font-size:12px;font-weight:700;
+  cursor:pointer;border:none;font-family:inherit;transition:transform .14s;
+  box-shadow:var(--sh)}
 .act-btn:active{transform:scale(.97)}
-.btn-copy{background:rgba(90,160,232,.1);color:var(--b5);border:1px solid rgba(90,160,232,.2)}
-.btn-save{background:rgba(245,200,66,.08);color:var(--warm2);border:1px solid rgba(245,200,66,.18)}
-.btn-restart{background:rgba(255,255,255,.04);color:var(--sub);border:1px solid rgba(255,255,255,.08)}
+.a-copy{background:var(--blue4);color:var(--blue)}
+.a-save{background:#fef9c3;color:var(--gold)}
+.a-restart{background:var(--card);color:var(--ink3)}
 
-/* 飞入动画 */
-.fly{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
-.fly.show{opacity:1;transform:translateY(0)}
+/* 飞入 */
+.fly{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.fly.show{opacity:1;transform:none}
 </style>
 </head>
 <body>
 
-<div id="stars"></div>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
+<div class="bg-blob blob1"></div>
+<div class="bg-blob blob2"></div>
+<div class="bg-blob blob3"></div>
 <canvas id="pcvs"></canvas>
 
 <a class="back-btn" href="/08/works/#tools">
-  <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="#7ea8d0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   AI 工具
 </a>
 
 <!-- ═══ 屏1 ═══ -->
 <div class="screen" id="s1">
-  <div class="cover-zone">
-    <div class="cover-img"></div>
-    <div class="city-skyline"></div>
-    <div class="cover-inner">
-      <div class="cover-label">摇一摇 · 抽你的旅行签</div>
-      <div class="cover-title">FATE<br>TRIP</div>
-      <div class="cover-rule"><span>✦</span></div>
-      <div class="cover-tagline">
-        分享行程不只是发链接<br>
-        让对方<b>拆签</b>，抽出<b>属于他的隐藏路线</b>
+  <div class="hero">
+    <div class="hero-card">
+      <div class="hc-img">
+        <div class="hc-shine"></div>
+        <div class="hc-glow"></div>
+        <div class="hc-loc">HIDDEN ROUTE</div>
+        <div class="hc-dest" id="heroDestPreview">你的目的地</div>
+        <!-- 城市光点装饰 -->
+        <div style="position:absolute;bottom:16px;right:16px;display:flex;gap:4px;align-items:flex-end">
+          <div style="width:3px;height:14px;background:rgba(255,255,255,.3);border-radius:2px"></div>
+          <div style="width:3px;height:22px;background:rgba(255,255,255,.4);border-radius:2px"></div>
+          <div style="width:3px;height:10px;background:rgba(255,255,255,.25);border-radius:2px"></div>
+          <div style="width:3px;height:28px;background:rgba(255,255,255,.45);border-radius:2px"></div>
+          <div style="width:3px;height:16px;background:rgba(255,255,255,.3);border-radius:2px"></div>
+          <div style="width:3px;height:8px;background:rgba(255,255,255,.2);border-radius:2px"></div>
+        </div>
+      </div>
+      <div class="hc-body">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink)">摇一摇，抽你的旅行签</div>
+          <div style="font-size:11px;color:var(--ink4);margin-top:2px">分享行程的全新玩法</div>
+        </div>
+        <div class="hc-shake">
+          <span class="hc-shake-ico">📱</span>
+          <span class="hc-shake-txt">SHAKE</span>
+        </div>
       </div>
     </div>
+    <div class="brand-area">
+      <div class="brand-word">FATE<span class="brand-dot"></span>TRIP</div>
+      <div class="brand-sub">让命运为你选路</div>
+    </div>
   </div>
-  <div class="input-zone">
-    <div class="dest-field">
-      <span class="dest-icon">✈️</span>
-      <input class="dest-inp" id="destInp" type="text"
-        placeholder="输入目的地：曼谷、京都、大理…" maxlength="20">
+
+  <div class="input-panel">
+    <div class="dest-wrap">
+      <span class="dest-flag">✈️</span>
+      <input class="dest-in" id="destInp" type="text"
+        placeholder="目的地：曼谷、京都、大理…" maxlength="20"
+        oninput="document.getElementById('heroDestPreview').textContent=this.value||'你的目的地'">
     </div>
     <div class="cnt-row">
       <span class="cnt-lbl">签数</span>
@@ -314,22 +363,25 @@ html,body{height:100%;background:var(--bg);
         <input type="radio" name="cnt" id="c5" value="5"><label for="c5">5 签</label>
       </div>
     </div>
-    <button class="go-btn" onclick="goSign()">摇一摇，抽你的旅行签 ✦</button>
+    <button class="go-btn" onclick="goSign()">摇一摇，抽你的旅行签</button>
   </div>
 </div>
 
-<!-- ═══ 屏2 ═══ -->
+<!-- ═══ 屏2 翻牌 ═══ -->
 <div class="screen gone" id="s2">
   <div class="flip-nav">
     <div class="fn-dest" id="fnDest">FATE TRIP</div>
-    <div class="fn-prog" id="fnProg"></div>
+    <div class="fn-right">
+      <div class="fn-prog" id="fnProg"></div>
+    </div>
   </div>
 
   <div class="flip-stage">
-    <div class="card-outer">
-      <div class="card-aspect">
+    <div class="card-wrap">
+      <div class="card-ratio">
         <div class="card-scene">
           <div class="card-3d" id="card3d" onclick="flipSign()">
+            <!-- 卡背 -->
             <div class="cface cback">
               <div class="ctex"></div>
               <div class="cglow"></div>
@@ -339,7 +391,9 @@ html,body{height:100%;background:var(--bg);
               <div class="ccorner cc-bl"></div><div class="ccorner cc-br"></div>
               <div class="ctap">TAP · SHAKE</div>
             </div>
+            <!-- 卡正面 -->
             <div class="cface cfront">
+              <div class="poi-num" id="poiNum">1/3</div>
               <div class="poi-ico" id="poiIco">🌅</div>
               <div class="poi-nm" id="poiNm">—</div>
               <div class="poi-badge" id="poiBadge">类型</div>
@@ -353,7 +407,7 @@ html,body{height:100%;background:var(--bg);
   </div>
 
   <div class="flip-foot">
-    <div class="shake-pill" id="shakePill">
+    <div class="shake-chip" id="shakeChip">
       <span class="shake-ico">📱</span>
       <span class="shake-txt">轻摇手机也可揭签</span>
     </div>
@@ -361,50 +415,42 @@ html,body{height:100%;background:var(--bg);
   </div>
 </div>
 
-<!-- ═══ 屏3 ═══ -->
+<!-- ═══ 屏3 结果 ═══ -->
 <div class="screen gone" id="s3">
   <div class="r-scroll">
 
-    <!-- 路线海报 -->
     <div class="poster fly" id="poster">
-      <div class="poster-cover">
-        <div class="pc-glow"></div>
-        <div class="pc-label">HIDDEN ROUTE</div>
-        <div class="pc-title" id="posterTitle">的<span>隐藏路线</span></div>
+      <div class="p-cover">
+        <div class="p-shine"></div>
+        <div class="p-eyebrow">HIDDEN ROUTE · FATE TRIP</div>
+        <div class="p-title">
+          <div class="p-title-main" id="pTitleMain">的隐藏路线</div>
+          <div class="p-title-sub" id="pTitleSub">命运为你选定的 3 个地方</div>
+        </div>
       </div>
-      <div class="poster-pois" id="posterPois"></div>
-      <div class="poster-foot">
-        <div class="pf-brand">FATE TRIP</div>
-        <div class="pf-badge">命运签定 ✦</div>
+      <div class="p-list" id="pList"></div>
+      <div class="p-foot">
+        <div class="p-brand">
+          <div class="p-brand-dot"></div>
+          <div class="p-brand-txt">FATE TRIP</div>
+        </div>
+        <div class="p-stamp">命运签定 ✦</div>
       </div>
     </div>
 
-    <!-- 心动 -->
     <button class="heart-btn fly" id="heartBtn" onclick="sendHeart()">我也想去 💛</button>
 
-    <!-- 操作 -->
     <div class="act-row fly" id="actRow">
-      <button class="act-btn btn-copy" onclick="copyShare()">📋 复制分享</button>
-      <button class="act-btn btn-save" onclick="saveImg()">💾 保存海报</button>
-      <button class="act-btn btn-restart" onclick="restart()">重新求签</button>
+      <button class="act-btn a-copy" onclick="copyShare()">📋 复制分享</button>
+      <button class="act-btn a-save" onclick="saveImg()">💾 保存海报</button>
+      <button class="act-btn a-restart" onclick="restart()">重新求签</button>
     </div>
 
   </div>
 </div>
 
 <script>
-/* ─── 星空 ─── */
-!function(){
-  const c=document.getElementById('stars');
-  for(let i=0;i<100;i++){
-    const d=document.createElement('div'),s=.25+Math.random()*1.4;
-    d.className='st';
-    d.style.cssText=`width:${s}px;height:${s}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${1.8+Math.random()*4}s;animation-delay:${Math.random()*5}s`;
-    c.appendChild(d);
-  }
-}();
-
-/* ─── POI 库 ─── */
+/* ─── POI库 ─── */
 const POIS={
   '曼谷':[
     {name:'乍都乍市场',type:'市集',icon:'🛍️'},
@@ -443,43 +489,38 @@ const POIS={
   ]
 };
 
-/* 签语：带地点名的动态格式 */
-function makePhraseFor(poi){
-  const templates={
-    '市集':[`今日宜逛${poi.name}，忌冲动消费 🛍️`,`人声鼎沸处有你想要的答案 —— ${poi.name}在等你`,`缘分是什么？就是逛${poi.name}到第三圈还没走`],
-    '文化':[`今日宜参拜${poi.name}，忌走马观花 🙏`,`${poi.name}不言语，却回答一切`,`你来${poi.name}，不是偶然`],
-    '夜市':[`今日宜闯${poi.name}，忌早睡 🍺`,`${poi.name}灯火最亮处，就是今晚的归宿`,`摊主的笑容，是${poi.name}送你的礼物`],
-    '风景':[`今日宜在${poi.name}驻足，忌赶行程 🌅`,`${poi.name}的美，停下来看一眼够用很久`,`站在${poi.name}，所有烦恼都变小了`],
-    '美食':[`今日宜在${poi.name}大胆点餐，忌节食 🍜`,`${poi.name}这一口，是旅行最诚实的部分`,`吃完${poi.name}再说走，是对城市的尊重`],
-    '自然':[`今日宜深入${poi.name}，忌看手机 🌿`,`${poi.name}的钟表没有分针`,`你选了${poi.name}，它也选了你`],
-    '散步':[`今日宜在${poi.name}无目的漫游，忌导航 🍁`,`沿${poi.name}漫步，答案自然浮现`,`今天在${poi.name}的脚步，明天会感谢`],
-    '景点':[`今日宜在${poi.name}认真感受，忌只拍照 ⛩️`,`${poi.name}见过太多人，但只记得认真的那个`,`来${poi.name}了，就要好好看一眼`],
-    '休闲':[`今日宜在${poi.name}发呆，忌赶行程 ☕`,`在${poi.name}一杯的时间，刚好够想清楚`,`坐在${poi.name}，城市会来跟你说话`],
+function mkPhrase(p){
+  const t={
+    '市集':[`今日宜逛${p.name}，忌冲动消费 🛍️`,`缘分是什么？就是逛${p.name}到第三圈还没走`],
+    '文化':[`今日宜参拜${p.name}，忌走马观花 🙏`,`你来${p.name}，不是偶然`],
+    '夜市':[`今日宜闯${p.name}，忌早睡 🍺`,`${p.name}灯火最亮处，就是今晚的归宿`],
+    '风景':[`今日宜在${p.name}驻足，忌赶行程 🌅`,`站在${p.name}，所有烦恼都变小了`],
+    '美食':[`今日宜在${p.name}大胆点餐，忌节食 🍜`,`吃完${p.name}再说走，是对城市的尊重`],
+    '自然':[`今日宜深入${p.name}，忌看手机 🌿`,`你选了${p.name}，它也选了你`],
+    '散步':[`今日宜在${p.name}无目的漫游，忌导航 🍁`,`沿${p.name}漫步，答案自然浮现`],
+    '景点':[`今日宜在${p.name}认真感受，忌只拍照 ⛩️`,`来${p.name}了，就要好好看一眼`],
+    '休闲':[`今日宜在${p.name}发呆，忌赶行程 ☕`,`坐在${p.name}，城市会来跟你说话`],
   };
-  const arr=templates[poi.type]||[`今日宜去${poi.name}，忌犹豫 ✦`];
+  const arr=t[p.type]||[`今日宜去${p.name}，忌犹豫 ✦`];
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
 /* ─── 状态 ─── */
-let dest='', pois=[], cur=0, flipped=false, cnt=3, phrases=[];
+let dest='',pois=[],phrases=[],cur=0,flipped=false,cnt=3;
 
 function pickPOIs(d){
   let pool=POIS.default;
   Object.keys(POIS).filter(k=>k!=='default').forEach(k=>{if(d.includes(k))pool=POIS[k];});
   return [...pool].sort(()=>Math.random()-.5).slice(0,cnt);
 }
-
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('gone',s.id!==id));
 }
-
-/* ─── 进度点 ─── */
 function renderProg(){
-  const pg=document.getElementById('fnProg');
-  pg.innerHTML='';
+  const pg=document.getElementById('fnProg');pg.innerHTML='';
   for(let i=0;i<pois.length;i++){
     const d=document.createElement('div');
-    d.className='prog-dot'+(i<cur?' done':i===cur?' cur':'');
+    d.className='pdot'+(i<cur?' done':i===cur?' cur':'');
     pg.appendChild(d);
   }
 }
@@ -487,82 +528,70 @@ function renderProg(){
 /* ─── 开始 ─── */
 function goSign(){
   dest=document.getElementById('destInp').value.trim()||'远方';
-  cnt=parseInt(document.querySelector('input[name=cnt]:checked').value)||3;
-  pois=pickPOIs(dest);
-  phrases=pois.map(p=>makePhraseFor(p));
-  cur=0; flipped=false;
+  cnt=+document.querySelector('input[name=cnt]:checked').value||3;
+  pois=pickPOIs(dest);phrases=pois.map(p=>mkPhrase(p));
+  cur=0;flipped=false;
   document.getElementById('fnDest').textContent=dest;
-  renderProg(); resetCard(); showScreen('s2'); setupShake();
+  renderProg();resetCard();showScreen('s2');setupShake();
 }
-
 function resetCard(){
   const c=document.getElementById('card3d');
-  c.classList.remove('flipped');
-  c.style.pointerEvents='auto';
+  c.classList.remove('flipped');c.style.pointerEvents='auto';
   document.getElementById('nextBtn').style.display='none';
-  document.getElementById('shakePill').style.opacity='1';
+  document.getElementById('shakeChip').style.opacity='1';
   flipped=false;
 }
-
 function loadCard(i){
   const p=pois[i];
   document.getElementById('poiIco').textContent=p.icon;
   document.getElementById('poiNm').textContent=p.name;
   document.getElementById('poiBadge').textContent=p.type;
   document.getElementById('poiSign').textContent=phrases[i];
+  document.getElementById('poiNum').textContent=`${i+1}/${pois.length}`;
 }
 
 /* ─── 翻牌 ─── */
 function flipSign(){
-  if(flipped)return;
-  flipped=true;
+  if(flipped)return;flipped=true;
   loadCard(cur);
   const c=document.getElementById('card3d');
-  c.classList.add('flipped');
-  c.style.pointerEvents='none';
+  c.classList.add('flipped');c.style.pointerEvents='none';
   burst();
   setTimeout(()=>{
-    document.getElementById('shakePill').style.opacity='0';
-    const nb=document.getElementById('nextBtn');
-    nb.style.display='block';
-    if(cur<pois.length-1){
-      nb.textContent=`还剩 ${pois.length-cur-1} 签 · 继续拆 →`;
-    } else {
-      nb.textContent='查看你的命定路线 ✦';
-    }
-  },620);
+    document.getElementById('shakeChip').style.opacity='0';
+    const nb=document.getElementById('nextBtn');nb.style.display='block';
+    nb.textContent=cur<pois.length-1?`还剩 ${pois.length-cur-1} 签  继续拆 →`:'查看我的命定路线 ✦';
+  },650);
 }
-
 function nextSign(){
   if(cur>=pois.length-1){buildResult();showScreen('s3');return;}
-  cur++; renderProg(); resetCard();
+  cur++;renderProg();resetCard();
 }
 
-/* ─── 粒子 ─── */
+/* ─── 粒子（蓝白色调） ─── */
 function burst(){
   const cv=document.getElementById('pcvs');
-  cv.width=innerWidth; cv.height=innerHeight;
+  cv.width=innerWidth;cv.height=innerHeight;
   const ctx=cv.getContext('2d');
-  const cx=innerWidth/2, cy=innerHeight*0.45;
-  const ps=[];
-  for(let i=0;i<55;i++){
-    const a=Math.random()*Math.PI*2, sp=1.8+Math.random()*5;
-    const warm=Math.random()>.4;
-    ps.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.5,
+  const cx=innerWidth/2,cy=innerHeight*.45,ps=[];
+  for(let i=0;i<50;i++){
+    const a=Math.random()*Math.PI*2,sp=2+Math.random()*4.5;
+    const warm=Math.random()>.6;
+    ps.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.2,
       r:.5+Math.random()*2,alpha:1,
-      color:warm?`hsl(${40+Math.random()*20},90%,${65+Math.random()*15}%)` 
-                :`hsl(${195+Math.random()*30},80%,${65+Math.random()*15}%)`});
+      color:warm?`hsl(${210+Math.random()*30},80%,${62+Math.random()*15}%)`
+               :`hsl(${340+Math.random()*20},75%,${68+Math.random()*12}%)`});
   }
   let f=0;
   (function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
-    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.09;p.alpha-=.016;
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.alpha-=.017;
       if(p.alpha<=0)return;
       ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
     });
     ctx.globalAlpha=1;
-    if(++f<75)requestAnimationFrame(draw);
+    if(++f<70)requestAnimationFrame(draw);
     else ctx.clearRect(0,0,cv.width,cv.height);
   })();
 }
@@ -570,105 +599,105 @@ function burst(){
 /* ─── 摇一摇 ─── */
 function setupShake(){
   let last=0;
-  window.addEventListener('devicemotion',function(e){
+  window.addEventListener('devicemotion',e=>{
     if(flipped)return;
-    const a=e.accelerationIncludingGravity; if(!a)return;
+    const a=e.accelerationIncludingGravity;if(!a)return;
     const m=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z),now=Date.now();
     if(m>13&&now-last>900){last=now;flipSign();}
   });
 }
 
-/* ─── 构建结果 ─── */
+/* ─── 结果 ─── */
 function buildResult(){
-  // 海报标题
-  document.getElementById('posterTitle').innerHTML=`${dest}的<span>隐藏路线</span>`;
-  // POI 列表
-  const list=document.getElementById('posterPois');
-  list.innerHTML='';
+  document.getElementById('pTitleMain').textContent=`${dest}的隐藏路线`;
+  document.getElementById('pTitleSub').textContent=`命运为你选定的 ${pois.length} 个地方`;
+  const list=document.getElementById('pList');list.innerHTML='';
   pois.forEach((p,i)=>{
-    const el=document.createElement('div');
-    el.className='pp-item';
-    el.innerHTML=`<div class="pp-num">${i+1}</div><div class="pp-ico">${p.icon}</div><div class="pp-info"><div class="pp-name">${p.name}</div><div class="pp-sign">${phrases[i]}</div></div>`;
+    const el=document.createElement('div');el.className='p-item';
+    el.innerHTML=`<div class="p-seq">${i+1}</div><div class="p-ico">${p.icon}</div><div class="p-info"><div class="p-name">${p.name}</div><div class="p-phrase">${phrases[i]}</div></div>`;
     list.appendChild(el);
   });
-  // 飞入动画
   ['poster','heartBtn','actRow'].forEach((id,i)=>{
     const el=document.getElementById(id);
     el.classList.remove('show');
-    setTimeout(()=>el.classList.add('show'),100+i*180);
+    setTimeout(()=>el.classList.add('show'),80+i*160);
   });
-  // 重置心动按钮
   const hb=document.getElementById('heartBtn');
-  hb.className='heart-btn fly'; hb.textContent='我也想去 💛';
+  hb.className='heart-btn fly';hb.textContent='我也想去 💛';
 }
 
 /* ─── 心动 ─── */
 function sendHeart(){
-  const btn=document.getElementById('heartBtn');
-  btn.classList.add('sent');
-  btn.textContent='💙 心动通知已发送 · 对方收到了你的回应';
+  const b=document.getElementById('heartBtn');
+  b.classList.add('sent');b.textContent='💙 心动通知已发送';
 }
 
-/* ─── 复制分享 ─── */
+/* ─── 复制 ─── */
 function copyShare(){
-  const lines=pois.map((p,i)=>`${p.icon} ${p.name} — ${phrases[i]}`).join('\n');
+  const lines=pois.map((p,i)=>`${p.icon} ${p.name}  ${phrases[i]}`).join('\n');
   const txt=`摇一摇，抽你的${dest}旅行签 🎴\n\n${lines}\n\n让命运为你选路 → https://qlb708.github.io/08/activity/travel-sign/`;
   const btn=event.target;
   navigator.clipboard.writeText(txt).catch(()=>{
     const ta=document.createElement('textarea');ta.value=txt;
     document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
   });
-  btn.textContent='✅ 已复制';setTimeout(()=>btn.textContent='📋 复制分享',1600);
+  btn.textContent='✅ 已复制';setTimeout(()=>btn.textContent='📋 复制分享',1500);
 }
 
-/* ─── 保存海报（canvas截图） ─── */
+/* ─── 保存海报 ─── */
 function saveImg(){
-  const btn=event.target;
-  btn.textContent='生成中…';
-  // 用html2canvas思路：直接把poster节点信息绘制到canvas
-  const poster=document.getElementById('poster');
-  const pw=poster.offsetWidth, ph=poster.offsetHeight;
-  const cv=document.createElement('canvas');
+  const btn=event.target;btn.textContent='生成中…';
   const dpr=window.devicePixelRatio||2;
-  cv.width=pw*dpr; cv.height=ph*dpr;
-  const ctx=cv.getContext('2d');
-  ctx.scale(dpr,dpr);
+  const W=340,rowH=52,H=120+pois.length*rowH+46;
+  const cv=document.createElement('canvas');
+  cv.width=W*dpr;cv.height=H*dpr;
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+
   // 背景
-  const grad=ctx.createLinearGradient(0,0,pw,ph);
-  grad.addColorStop(0,'#0c1e3a');grad.addColorStop(.5,'#101e3a');grad.addColorStop(1,'#0c1930');
-  ctx.fillStyle=grad;ctx.roundRect(0,0,pw,ph,20);ctx.fill();
-  // 封面区
-  const cg=ctx.createLinearGradient(0,0,pw,0);
-  cg.addColorStop(0,'#0e2a5a');cg.addColorStop(.5,'#2a6ad4');cg.addColorStop(1,'#1040a0');
-  ctx.fillStyle=cg;ctx.roundRect(0,0,pw,100,{topLeft:20,topRight:20,bottomLeft:0,bottomRight:0});ctx.fill();
-  // 标题
-  ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='10px sans-serif';ctx.fillText('HIDDEN ROUTE',16,24);
-  ctx.fillStyle='#fff';ctx.font='bold 18px sans-serif';ctx.fillText(`${dest}的隐藏路线`,16,78);
-  // POI 列表
+  ctx.fillStyle='#fff';ctx.roundRect(0,0,W,H,24);ctx.fill();
+
+  // 封面
+  const g=ctx.createLinearGradient(0,0,W,0);
+  g.addColorStop(0,'#1e40af');g.addColorStop(.5,'#2563eb');g.addColorStop(1,'#3b82f6');
+  ctx.fillStyle=g;ctx.roundRect(0,0,W,120,{topLeft:24,topRight:24,bottomLeft:0,bottomRight:0});ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='600 9px sans-serif';
+  ctx.fillText('HIDDEN ROUTE · FATE TRIP',16,22);
+  ctx.fillStyle='#fff';ctx.font='900 18px sans-serif';
+  ctx.fillText(`${dest}的隐藏路线`,16,82);
+  ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='500 11px sans-serif';
+  ctx.fillText(`命运为你选定的 ${pois.length} 个地方`,16,100);
+
+  // POI行
   pois.forEach((p,i)=>{
-    const y=118+i*46;
-    ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='12px sans-serif';ctx.fillText(`${i+1}`,14,y+16);
-    ctx.font='22px sans-serif';ctx.fillText(p.icon,38,y+18);
-    ctx.fillStyle='#e8f4ff';ctx.font='bold 14px sans-serif';ctx.fillText(p.name,68,y+10);
-    ctx.fillStyle='#5aa0e8';ctx.font='italic 11px sans-serif';
-    const ph=phrases[i]; ctx.fillText(ph.length>28?ph.slice(0,28)+'…':ph,68,y+26);
+    const y=120+i*rowH;
+    if(i>0){ctx.strokeStyle='rgba(37,99,235,.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(16,y);ctx.lineTo(W-16,y);ctx.stroke();}
+    // 序号
+    ctx.fillStyle='#dbeafe';ctx.beginPath();ctx.arc(28,y+rowH/2,11,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#2563eb';ctx.font='700 10px sans-serif';ctx.textAlign='center';
+    ctx.fillText(i+1,28,y+rowH/2+4);ctx.textAlign='left';
+    // icon
+    ctx.font='20px sans-serif';ctx.fillText(p.icon,46,y+rowH/2+7);
+    // name
+    ctx.fillStyle='#0f172a';ctx.font='700 13px sans-serif';ctx.fillText(p.name,74,y+rowH/2-2);
+    // phrase
+    ctx.fillStyle='#64748b';ctx.font='italic 10px sans-serif';
+    const ph=phrases[i];ctx.fillText(ph.length>30?ph.slice(0,30)+'…':ph,74,y+rowH/2+14);
   });
+
   // 底部
-  const footY=ph-32;
-  ctx.fillStyle='rgba(90,160,232,.4)';ctx.fillRect(0,footY,pw,1);
-  ctx.fillStyle='#7ea8d0';ctx.font='10px Georgia,serif';ctx.fillText('FATE TRIP',16,footY+20);
-  ctx.fillStyle='#f5c842';ctx.font='9px sans-serif';ctx.fillText('命运签定 ✦',pw-70,footY+20);
-  // 下载
-  const a=document.createElement('a');
-  a.download=`fate-trip-${dest}.png`;
-  a.href=cv.toDataURL('image/png');
-  a.click();
+  const footY=120+pois.length*rowH;
+  ctx.strokeStyle='rgba(37,99,235,.07)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,footY);ctx.lineTo(W,footY);ctx.stroke();
+  ctx.fillStyle='#2563eb';ctx.font='700 9px sans-serif';ctx.fillText('FATE TRIP',16,footY+28);
+  ctx.fillStyle='#d97706';ctx.font='600 9px sans-serif';ctx.fillText('命运签定 ✦',W-70,footY+28);
+
+  const a=document.createElement('a');a.download=`fate-trip-${dest}.png`;a.href=cv.toDataURL();a.click();
   btn.textContent='💾 保存海报';
 }
 
-/* ─── 重新求签 ─── */
+/* ─── 重新 ─── */
 function restart(){
   document.getElementById('destInp').value='';
+  document.getElementById('heroDestPreview').textContent='你的目的地';
   showScreen('s1');
 }
 </script>
