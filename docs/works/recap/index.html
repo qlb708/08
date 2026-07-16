@@ -809,7 +809,7 @@ function renderCal(){
     if(s===TODAY)d.classList.add('today');
     if(recD.has(s))d.classList.add('has');
     d.textContent=day;
-    d.addEventListener('click',()=>{document.querySelectorAll('.cd.sel').forEach(x=>x.classList.remove('sel'));d.classList.add('sel');});
+    d.addEventListener('pointerdown',(e)=>{e.stopPropagation();document.querySelectorAll('.cd.sel').forEach(x=>x.classList.remove('sel'));d.classList.add('sel');});
     g.appendChild(d);
   }
   const rem=(first+dim)%7===0?0:7-(first+dim)%7;
@@ -900,6 +900,57 @@ function reschedule(gid){
 
 // init
 renderShelf();upStreak();renderStats();renderCal();renderRadar();renderDDL();
+
+// 预设30天小红书笔记数据（如果没有数据时自动填入示例）
+function seedXHSData(){
+  const key='bk_xiaohongshu';
+  if(localStorage.getItem(key)) return; // 已有数据则跳过
+  const entries=[];
+  const today=new Date();
+  const notes=[
+    '完成了用户访谈，发现用户最在意内容质量而非数量，信息密度要高',
+    '跟导师讨论了产品定位，小红书核心用户是18-28岁女性，内容调性要精致',
+    '分析了竞品内容策略，发现抖音偏娱乐，小红书偏生活方式和种草',
+    '整理了用户增长漏斗，从曝光到互动转化率约3.2%，有提升空间',
+    '学习了A/B测试方法论，需要控制变量，样本量要足够大才有统计意义',
+    '参与了内容审核流程设计，了解了违规判定的多级策略',
+    '研究了推荐算法逻辑，冷启动阶段标签匹配权重更高',
+    '完成了数据埋点方案设计，定义了15个核心用户行为事件',
+    '分析了本周内容数据，视频笔记平均互动率比图文高23%',
+    '调研了创作者激励体系，蒲公英合作和薯条推广是主要变现路径',
+    '参与了产品需求评审，学会了从用户视角拆解功能优先级',
+    '研究了用户留存数据，次日留存52%，7日留存31%，需要提升',
+    '完成了竞品功能对比分析，制作了功能矩阵表格',
+    '学习了内容分发机制，标签、地域、关系链三个维度影响分发',
+    '整理了用户反馈，核心诉求是内容更精准、减少广告',
+    '分析了热门话题背后的用户心理，情绪共鸣和实用价值是关键',
+    '参与了新功能灰度测试方案设计，了解了分层实验框架',
+    '研究了用户生命周期模型，分为新用户激活-活跃用户维护-流失用户召回',
+    '完成了月度运营数据报告，DAU同比提升12%，内容互动率持平',
+    '学习了产品数据分析方法，漏斗分析、路径分析、留存分析三板斧',
+    '研究了社区氛围管理策略，正向激励比惩罚机制效果更持久',
+    '参与了用户增长实验，优化了新用户引导流程，注册完成率+8%',
+    '分析了不同内容品类的用户画像差异，美妆、旅行、美食用户重叠度高',
+    '学习了OKR制定方法，目标要有挑战性但可达成，关键结果要可量化',
+    '完成了用户调研报告，深度访谈了8位核心用户，提炼了5个痛点',
+    '研究了内容创作者成长路径，粉丝0-1k是最难的冷启动阶段',
+    '分析了平台内容生态健康度，PGC和UGC的比例需要动态平衡',
+    '参与了产品迭代复盘，学会了从数据驱动的角度评估功能效果',
+    '整理了本月学习笔记，记录了产品运营的10个关键认知',
+    '完成了实习阶段性总结，梳理了成长点和待提升的能力项'
+  ];
+  const moods=[4,3,5,4,4,3,5,4,3,4,5,3,4,4,5,4,3,5,4,4,3,5,4,4,5,3,4,5,4,5];
+  for(let i=29;i>=0;i--){
+    const d=new Date(today);
+    d.setDate(d.getDate()-i);
+    const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    entries.push({date:ds,note:notes[29-i],energy:moods[29-i],mode:'intern'});
+  }
+  localStorage.setItem(key,JSON.stringify(entries));
+  console.log('小红书30天示例数据已预设');
+}
+seedXHSData();
+
 const dd2=new Date();dd2.setDate(dd2.getDate()+7);document.getElementById('dl').value=ds(dd2);
 
 // ===== 笔记本内页 JS =====
