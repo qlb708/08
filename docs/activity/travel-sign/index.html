@@ -7,134 +7,172 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
 :root{
-  /* 淡蓝色系 */
-  --bg:#eef4fd;--bg2:#f5f9ff;--white:#ffffff;
-  --blue:#3b6fd4;--blue2:#5b8ee8;--blue3:#89b0f0;--blue4:#c5d9f8;--blue5:#eef4fd;
-  --ink:#111827;--ink2:#1f2d3d;--ink3:#4b5a72;--ink4:#8fa3be;--ink5:#dce8f5;
-  --pink:#e85c8a;--pink2:#f8b4cf;
-  --green:#12b076;--green2:#d0f5e8;
-  --purple:#6d40cc;--purple2:#ece6fa;
-  --gold:#c9820a;--gold2:#fef3d0;
+  --bg:#dde8f5;--bg2:#f0f6ff;--white:#ffffff;
+  --blue:#4a7fd4;--blue2:#6a9be8;--blue3:#96bdf5;--blue4:#c8dcf8;--blue5:#eef5ff;
+  --ink:#1a2540;--ink2:#2a3a5c;--ink3:#506080;--ink4:#8fa8cc;--ink5:#dde8f5;
+  --pink:#d45c8a;--pink2:#f5c0d5;
+  --green:#18b87c;--green2:#d0f5e8;
+  --purple:#7048c8;--purple2:#ede6fa;
+  --gold:#c08010;--gold2:#fef0c8;
   --r:18px;
-  --sh:0 2px 12px rgba(59,111,212,.08),0 1px 3px rgba(0,0,0,.04);
-  --sh2:0 8px 32px rgba(59,111,212,.14),0 2px 8px rgba(0,0,0,.05);
-  --sh3:0 20px 60px rgba(59,111,212,.18),0 4px 16px rgba(0,0,0,.06);
+  --sh:0 2px 16px rgba(74,127,212,.08),0 1px 4px rgba(0,0,0,.04);
+  --sh2:0 8px 36px rgba(74,127,212,.13),0 2px 8px rgba(0,0,0,.04);
+  --sh3:0 20px 60px rgba(74,127,212,.16),0 4px 16px rgba(0,0,0,.05);
 }
-html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Text',-apple-system,sans-serif;color:var(--ink);overflow:hidden}
-/* 居中容器，手机尺寸 */
-.phone-shell{
-  position:fixed;top:0;left:50%;transform:translateX(-50%);
-  width:390px;height:100%;
-  background:var(--bg);overflow:hidden;}
-@media(max-width:390px){.phone-shell{left:0;transform:none;width:100%}}
 
-/* 背景装饰 */
-.blob{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0}
-.b1{width:320px;height:320px;background:radial-gradient(#c5d9f8,transparent 70%);top:-80px;right:-60px;opacity:.6}
-.b2{width:200px;height:200px;background:radial-gradient(#f0d5f5,transparent 70%);bottom:-40px;left:-40px;opacity:.4}
+/* ══ 全局背景 ══ */
+html,body{
+  height:100%;
+  font-family:'PingFang SC','SF Pro Text',-apple-system,sans-serif;
+  color:var(--ink);overflow:hidden;
+  background:linear-gradient(170deg,#b8d4f0 0%,#cde0f8 25%,#d8e8f8 50%,#e0e8f5 75%,#e8e0f0 100%);
+}
 
-/* 屏幕层 */
-.screen{position:absolute;inset:0;z-index:1;transition:opacity .38s cubic-bezier(.4,0,.2,1),transform .38s cubic-bezier(.4,0,.2,1)}
-.screen.gone{opacity:0;pointer-events:none;transform:translateY(16px) scale(.985)}
+/* ══ 静态星点装饰（不动，不卡） ══ */
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star-dot{position:absolute;border-radius:50%;background:#fff}
+
+/* ══ 视图切换按钮 ══ */
+.view-toggle{
+  position:fixed;top:14px;right:16px;z-index:1000;
+  display:flex;gap:6px;
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:30px;padding:5px;
+  box-shadow:0 2px 12px rgba(74,127,212,.12)}
+.vt-btn{padding:6px 14px;border-radius:22px;font-size:11px;font-weight:700;
+  letter-spacing:.5px;cursor:pointer;border:none;background:transparent;
+  color:var(--ink3);transition:all .22s;font-family:inherit}
+.vt-btn.active{background:var(--white);color:var(--blue);
+  box-shadow:0 2px 8px rgba(74,127,212,.15)}
+
+/* ══ 布局容器 ══ */
+/* Web 模式：全宽 */
+body.mode-web .phone-shell{
+  position:fixed;inset:0;width:100%;height:100%;
+  background:transparent;overflow:hidden}
+/* 手机模式：iPhone 比例，居中 */
+body.mode-phone .phone-shell{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:390px;height:844px;
+  background:linear-gradient(170deg,#b8d4f0 0%,#cde0f8 25%,#d8e8f8 50%,#e0e8f5 75%,#e8e0f0 100%);
+  border-radius:48px;overflow:hidden;
+  box-shadow:0 0 0 9px #e8eef8,0 0 0 11px #d0daf0,0 30px 80px rgba(40,60,120,.25)}
+
+/* ══ 屏幕层 ══ */
+.screen{position:absolute;inset:0;z-index:1;
+  transition:opacity .35s,transform .35s;overflow:hidden}
+.screen.gone{opacity:0;pointer-events:none;transform:translateY(16px)}
+
+/* ══ 毛玻璃球 ══ */
+.glass-orb{
+  position:absolute;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.85) 0%,rgba(220,235,255,.5) 40%,rgba(180,210,248,.2) 70%,transparent 100%);
+  box-shadow:inset 0 0 40px rgba(255,255,255,.6),0 8px 32px rgba(100,150,220,.15);
+  pointer-events:none}
+.orb-ring{
+  position:absolute;border-radius:50%;
+  border:1px dashed rgba(255,255,255,.35);
+  pointer-events:none}
 
 /* ══ 封面页 ══ */
-#sCover{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 22px;gap:22px}
+#sCover{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px 24px;gap:0;background:transparent}
+/* 大球装饰 */
+.cover-orb{width:220px;height:220px;margin-bottom:40px}
+.cover-ring1{width:320px;height:320px;top:50%;left:50%;transform:translate(-50%,-50%) translateY(-20px)}
+.cover-ring2{width:420px;height:420px;top:50%;left:50%;transform:translate(-50%,-50%) translateY(-20px);opacity:.4}
 
-.cover-card{width:100%;max-width:346px;background:var(--white);border-radius:26px;overflow:hidden;box-shadow:var(--sh3)}
-.cover-img{width:100%;height:152px;position:relative;overflow:hidden;
-  background:linear-gradient(145deg,#2451b8 0%,#3b6fd4 45%,#6898ec 80%,#a8c4f4 100%);
-  display:flex;flex-direction:column;justify-content:flex-end;padding:16px 18px}
-.ci-shine{position:absolute;inset:0;
-  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.12) 50%,transparent 70%);
-  animation:shine 5s ease-in-out infinite}
-@keyframes shine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
-.ci-tag{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.55);margin-bottom:5px;font-weight:600;position:relative;z-index:1}
-.ci-title{font-size:22px;font-weight:900;color:#fff;letter-spacing:.3px;position:relative;z-index:1;line-height:1.25}
-.ci-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px;position:relative;z-index:1}
-.skyline{display:flex;gap:3px;align-items:flex-end;position:absolute;right:18px;bottom:16px;z-index:1}
-.skyline span{background:rgba(255,255,255,.2);border-radius:2px 2px 0 0;display:block}
+.cover-text{text-align:center;margin-bottom:36px}
+.cover-title{font-size:28px;font-weight:300;letter-spacing:8px;color:var(--ink2);margin-bottom:10px}
+.cover-title span{font-weight:700;letter-spacing:6px}
+.cover-sub{font-size:12px;letter-spacing:4px;color:var(--ink4);line-height:2}
 
-.cover-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:16px}
-.cover-intro{font-size:13px;color:var(--ink3);line-height:1.85}
-.cover-intro b{color:var(--blue);font-weight:700}
-.role-label{font-size:11px;font-weight:700;color:var(--ink4);letter-spacing:2px}
-.role-btns{display:flex;gap:10px;margin-top:8px}
-.role-btn{flex:1;padding:16px 8px 14px;border:1.5px solid var(--ink5);border-radius:16px;
-  background:var(--bg2);cursor:pointer;text-align:center;transition:all .22s;
-  display:flex;flex-direction:column;align-items:center;gap:7px}
-.role-btn:active{transform:scale(.96)}
-.role-btn.A.sel,.role-btn.A:hover{border-color:var(--blue3);background:var(--blue5);box-shadow:0 3px 12px rgba(59,111,212,.12)}
-.role-btn.B.sel,.role-btn.B:hover{border-color:#e0a0c0;background:#fef5f9;box-shadow:0 3px 12px rgba(232,92,138,.10)}
-.rb-ico{font-size:26px}
-.rb-name{font-size:13px;font-weight:800;color:var(--ink)}
-.rb-desc{font-size:11px;color:var(--ink4);line-height:1.4}
-
-.brand-foot{text-align:center}
-.brand-name{font-family:'Georgia',serif;font-size:18px;font-weight:900;letter-spacing:6px;
-  color:var(--ink2);opacity:.7}
-.brand-tagline{font-size:11px;color:var(--ink4);letter-spacing:2px;margin-top:4px}
+.role-btns-cover{display:flex;gap:12px}
+.rbc-btn{padding:13px 26px;border-radius:30px;border:none;cursor:pointer;
+  font-size:13px;font-weight:600;letter-spacing:1px;font-family:inherit;
+  transition:all .22s;display:flex;align-items:center;gap:7px}
+.rbc-btn:active{transform:scale(.96)}
+.rbc-a{background:rgba(255,255,255,.55);backdrop-filter:blur(12px);
+  color:var(--ink2);border:1px solid rgba(255,255,255,.8);
+  box-shadow:0 4px 16px rgba(74,127,212,.12)}
+.rbc-b{background:rgba(74,127,212,.85);backdrop-filter:blur(12px);
+  color:#fff;border:1px solid rgba(100,160,240,.6);
+  box-shadow:0 4px 20px rgba(74,127,212,.28)}
+.rbc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,127,212,.2)}
 
 /* ══ A 发起页 ══ */
-#sSetup{display:flex;flex-direction:column}
-.page-header{flex-shrink:0;height:56px;display:flex;align-items:center;padding:0 18px;
-  background:rgba(238,244,253,.9);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--ink5);position:relative}
-.ph-back{position:absolute;left:14px;font-size:13px;color:var(--blue);cursor:pointer;padding:8px;font-weight:500}
-.ph-title{flex:1;text-align:center;font-size:15px;font-weight:800;letter-spacing:.3px}
+#sSetup{display:flex;flex-direction:column;background:transparent}
+.page-header{
+  flex-shrink:0;height:56px;display:flex;align-items:center;padding:0 18px;
+  background:rgba(255,255,255,.35);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.5);position:relative}
+.ph-back{position:absolute;left:14px;font-size:13px;color:var(--ink2);cursor:pointer;
+  padding:8px;font-weight:500;display:flex;align-items:center;gap:4px}
+.ph-title{flex:1;text-align:center;font-size:15px;font-weight:700;
+  letter-spacing:1px;color:var(--ink)}
 
-.setup-scroll{flex:1;overflow-y:auto;padding:20px 18px 48px;display:flex;flex-direction:column;gap:20px}
-.sec-title{font-size:11px;font-weight:700;color:var(--ink4);letter-spacing:2px;margin-bottom:8px}
-.sec-card{background:var(--white);border-radius:18px;padding:18px;box-shadow:var(--sh)}
+.setup-scroll{flex:1;overflow-y:auto;padding:20px 18px 48px;
+  display:flex;flex-direction:column;gap:16px}
+.sec-title{font-size:11px;font-weight:600;color:var(--ink4);letter-spacing:2px;margin-bottom:8px}
+.sec-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:20px;padding:18px;box-shadow:var(--sh)}
 
 .dest-field{position:relative}
 .df-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px}
-.df-inp{width:100%;border:1.5px solid var(--ink5);border-radius:14px;
+.df-inp{width:100%;border:1px solid rgba(255,255,255,.6);border-radius:14px;
   padding:13px 14px 13px 44px;font-size:15px;color:var(--ink);outline:none;
-  font-family:inherit;background:var(--bg2);transition:border-color .2s,box-shadow .2s}
-.df-inp:focus{border-color:var(--blue3);box-shadow:0 0 0 3px rgba(59,111,212,.10)}
+  font-family:inherit;background:rgba(255,255,255,.7);transition:border-color .2s,box-shadow .2s}
+.df-inp:focus{border-color:var(--blue3);box-shadow:0 0 0 3px rgba(74,127,212,.10)}
 .df-inp::placeholder{color:var(--ink4)}
 
-.cnt-row{display:flex;align-items:center;gap:12px}
-.cnt-lbl{font-size:13px;color:var(--ink3);white-space:nowrap;flex-shrink:0}
 .cnt-pills{display:flex;gap:6px;flex:1}
 .cnt-pills input{display:none}
 .cnt-pills label{flex:1;text-align:center;padding:10px 0;font-size:13px;font-weight:600;
-  color:var(--ink4);border:1.5px solid var(--ink5);border-radius:12px;cursor:pointer;
-  background:var(--bg2);transition:all .2s}
-.cnt-pills input:checked+label{color:var(--blue);background:var(--blue5);border-color:var(--blue3);
-  box-shadow:0 2px 8px rgba(59,111,212,.12)}
+  color:var(--ink4);border:1px solid rgba(255,255,255,.6);border-radius:12px;cursor:pointer;
+  background:rgba(255,255,255,.5);transition:all .2s}
+.cnt-pills input:checked+label{color:var(--blue);background:rgba(255,255,255,.9);
+  border-color:var(--blue3);box-shadow:0 2px 8px rgba(74,127,212,.14)}
+.cnt-row{display:flex;align-items:center;gap:12px}
+.cnt-lbl{font-size:13px;color:var(--ink3);white-space:nowrap;flex-shrink:0}
 
 .mbti-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.mbti-btn{padding:12px 8px;border:1.5px solid var(--ink5);border-radius:14px;cursor:pointer;
-  background:var(--bg2);text-align:center;transition:all .2s;font-family:inherit}
+.mbti-btn{padding:12px 8px;border:1px solid rgba(255,255,255,.6);border-radius:14px;cursor:pointer;
+  background:rgba(255,255,255,.5);text-align:center;transition:all .2s;font-family:inherit}
 .mbti-btn:active{transform:scale(.97)}
 .mb-type{font-size:14px;font-weight:800;color:var(--ink)}
 .mb-desc{font-size:11px;color:var(--ink4);margin-top:3px}
-.mbti-btn.sel{border-color:var(--purple);background:var(--purple2);box-shadow:0 2px 10px rgba(109,64,204,.12)}
+.mbti-btn.sel{border-color:var(--purple);background:rgba(112,72,200,.08);
+  box-shadow:0 2px 10px rgba(112,72,200,.12)}
 .mbti-btn.sel .mb-type{color:var(--purple)}
 
 .gen-btn{width:100%;padding:15px;border:none;border-radius:16px;cursor:pointer;
   background:linear-gradient(135deg,var(--blue),var(--blue2));
-  color:#fff;font-size:15px;font-weight:800;letter-spacing:.5px;
-  box-shadow:0 6px 20px rgba(59,111,212,.28);font-family:inherit;transition:transform .14s,box-shadow .14s}
-.gen-btn:active{transform:scale(.97);box-shadow:0 3px 10px rgba(59,111,212,.20)}
+  color:#fff;font-size:15px;font-weight:700;letter-spacing:1px;
+  box-shadow:0 6px 20px rgba(74,127,212,.28);font-family:inherit;transition:transform .14s}
+.gen-btn:active{transform:scale(.97)}
 
-.share-preview{background:var(--blue5);border:1.5px dashed var(--blue3);
+.share-preview{background:rgba(255,255,255,.7);border:1px dashed var(--blue3);
   border-radius:16px;padding:16px;text-align:center;display:none}
-.sp-label{font-size:11px;color:var(--blue3);margin-bottom:7px;font-weight:600;letter-spacing:1px}
-.sp-text{font-size:14px;font-weight:700;color:var(--ink2);line-height:1.7}
+.sp-label{font-size:11px;color:var(--blue);margin-bottom:7px;font-weight:600;letter-spacing:1px}
+.sp-text{font-size:13px;font-weight:600;color:var(--ink2);line-height:1.75}
 .sp-copy{margin-top:12px;padding:10px 24px;border:none;border-radius:10px;
   background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 
 /* ══ 主 App ══ */
-#sApp{display:flex;flex-direction:column;background:var(--bg)}
+#sApp{display:flex;flex-direction:column;background:transparent}
 
-.app-topbar{flex-shrink:0;height:54px;display:flex;align-items:center;
-  padding:0 18px;background:rgba(238,244,253,.88);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(220,232,245,.8);position:relative}
-.at-left{position:absolute;left:14px;font-size:12px;color:var(--blue3);cursor:pointer;padding:6px;font-weight:500}
-.at-title{flex:1;text-align:center;font-family:'Georgia',serif;font-size:16px;font-weight:900;
-  color:var(--ink);letter-spacing:3px}
+.app-topbar{
+  flex-shrink:0;height:54px;display:flex;align-items:center;
+  padding:0 18px;
+  background:rgba(255,255,255,.35);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.5);position:relative}
+.at-left{position:absolute;left:14px;font-size:12px;color:var(--ink3);cursor:pointer;
+  padding:6px;font-weight:500}
+.at-title{flex:1;text-align:center;font-size:15px;font-weight:300;
+  letter-spacing:5px;color:var(--ink)}
 .at-from{position:absolute;right:14px;display:flex;align-items:center;gap:5px}
 .at-avatar{width:28px;height:28px;border-radius:50%;
   background:linear-gradient(135deg,var(--blue),var(--blue2));
@@ -144,52 +182,59 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
 .app-content{flex:1;overflow:hidden;position:relative}
 .tab-panel{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:16px 16px 76px;display:flex;flex-direction:column;align-items:center;gap:12px;
-  transition:opacity .28s;opacity:1}
+  transition:opacity .25s;opacity:1}
 .tab-panel.hidden{opacity:0;pointer-events:none}
 
-/* 底部 Tab Bar */
-.tab-bar{flex-shrink:0;height:68px;background:rgba(255,255,255,.92);
-  backdrop-filter:blur(20px);border-top:1px solid rgba(220,232,245,.9);
+/* ══ 底部 Tab Bar ══ */
+.tab-bar{
+  flex-shrink:0;height:68px;
+  background:rgba(255,255,255,.45);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,.6);
   display:flex;align-items:center;padding-bottom:2px}
 .tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
   cursor:pointer;padding:8px 0;transition:opacity .18s}
 .tab-item:active{opacity:.6}
-.tab-ico{font-size:20px;filter:grayscale(1);opacity:.35;transition:all .22s}
+.tab-ico{font-size:20px;filter:grayscale(1);opacity:.3;transition:all .22s}
 .tab-lbl{font-size:10px;color:var(--ink4);font-weight:500;transition:all .22s}
-.tab-item.active .tab-ico{filter:none;opacity:1;transform:scale(1.08)}
-.tab-item.active .tab-lbl{color:var(--blue);font-weight:800}
+.tab-item.active .tab-ico{filter:none;opacity:1}
+.tab-item.active .tab-lbl{color:var(--blue);font-weight:700}
 
-/* 通用卡片 */
-.card{background:var(--white);border-radius:22px;box-shadow:var(--sh);width:100%;max-width:358px}
-.card-head{padding:16px 18px 12px;border-bottom:1px solid var(--ink5)}
+/* ══ 通用卡片（毛玻璃） ══ */
+.card{
+  background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:22px;box-shadow:var(--sh);width:100%;max-width:358px}
+.card-head{padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.6)}
 .card-head-row{display:flex;align-items:center;justify-content:space-between}
 .ch-title{font-size:15px;font-weight:800;letter-spacing:.2px}
 .ch-sub{font-size:11px;color:var(--ink4);margin-top:3px}
 .ch-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700}
-.badge-blue{background:var(--blue5);color:var(--blue)}
-.badge-pink{background:#fef0f5;color:var(--pink)}
+.badge-blue{background:rgba(74,127,212,.12);color:var(--blue)}
+.badge-pink{background:rgba(212,92,138,.08);color:var(--pink)}
 .badge-green{background:var(--green2);color:var(--green)}
-.badge-purple{background:var(--purple2);color:var(--purple)}
+.badge-purple{background:rgba(112,72,200,.1);color:var(--purple)}
 .badge-gold{background:var(--gold2);color:var(--gold)}
 
 /* ══ Tab1: 旅行签 ══ */
-.sign-cover{width:100%;max-width:358px;height:128px;border-radius:22px;overflow:hidden;
+.sign-cover{
+  width:100%;max-width:358px;height:120px;border-radius:22px;overflow:hidden;
   position:relative;
-  background:linear-gradient(145deg,#2451b8,#3b6fd4,#6898ec);
-  box-shadow:var(--sh2);display:flex;flex-direction:column;justify-content:flex-end;padding:16px 18px}
+  background:linear-gradient(145deg,#3a5fc8,#5a88e0,#80b0f0,#a8ccf8);
+  box-shadow:0 8px 28px rgba(74,127,212,.22);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:16px 18px}
 .sc-shine{position:absolute;inset:0;
-  background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.12) 50%,transparent 75%);
-  animation:shine 6s ease-in-out infinite}
-.sc-label{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.5);margin-bottom:4px;position:relative;z-index:1;font-weight:600}
-.sc-title{font-size:19px;font-weight:900;color:#fff;position:relative;z-index:1;line-height:1.3}
-.sc-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:3px;position:relative;z-index:1}
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%)}
+.sc-label{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.55);margin-bottom:4px;
+  position:relative;z-index:1;font-weight:600}
+.sc-title{font-size:18px;font-weight:800;color:#fff;position:relative;z-index:1;line-height:1.3}
+.sc-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px;position:relative;z-index:1}
 
 /* 签牌区 */
 .sign-stage{width:100%;max-width:358px;display:flex;flex-direction:column;align-items:center}
 .sign-nav{width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 2px 10px}
-.sn-dest{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:.3px}
+.sn-dest{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:.5px}
 .sn-prog{display:flex;gap:5px;align-items:center}
-.sp-dot{width:6px;height:6px;border-radius:50%;background:var(--ink5);transition:all .3s}
+.sp-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .3s}
 .sp-dot.done{background:var(--blue3)}
 .sp-dot.cur{background:var(--blue);width:18px;border-radius:3px}
 
@@ -200,267 +245,282 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
 .flip-3d.flipped{transform:rotateY(180deg)}
 .flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;overflow:hidden}
 
-/* 签牌背面 —— 用淡蓝色系，不要深色 */
+/* 签牌背面：毛玻璃风格 */
 .f-back{
-  background:linear-gradient(160deg,#3460c8 0%,#4a80e4 45%,#6898ec 80%,#8fb8f4 100%);
+  background:linear-gradient(155deg,
+    rgba(100,148,230,.75) 0%,
+    rgba(130,175,245,.65) 45%,
+    rgba(160,200,255,.55) 80%,
+    rgba(200,220,255,.5) 100%);
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.55);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:0 12px 40px rgba(59,111,212,.30),0 4px 12px rgba(59,111,212,.20)}
+  box-shadow:0 12px 36px rgba(74,127,212,.22),inset 0 1px 0 rgba(255,255,255,.6)}
 .fb-tex{position:absolute;inset:0;
-  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,transparent 1px,transparent 8px),
-    repeating-linear-gradient(-45deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,transparent 1px,transparent 8px)}
-.fb-glow{position:absolute;width:60%;height:60%;top:50%;left:50%;transform:translate(-50%,-50%);
-  border-radius:50%;background:radial-gradient(rgba(255,255,255,.18),transparent);
-  animation:cpulse 3s ease-in-out infinite alternate}
-@keyframes cpulse{from{transform:translate(-50%,-50%) scale(1);opacity:.5}to{transform:translate(-50%,-50%) scale(1.25);opacity:1}}
-.fb-sign{position:relative;z-index:1;font-family:'Georgia',serif;font-size:76px;
-  color:rgba(255,255,255,.92);
-  text-shadow:0 2px 16px rgba(59,111,212,.4),0 0 40px rgba(255,255,255,.25);
-  animation:sglw 3s ease-in-out infinite alternate;line-height:1}
-@keyframes sglw{from{text-shadow:0 2px 12px rgba(59,111,212,.3)}to{text-shadow:0 2px 28px rgba(59,111,212,.5),0 0 50px rgba(255,255,255,.3)}}
-.fb-corner{position:absolute;width:14px;height:14px;border-color:rgba(255,255,255,.3);border-style:solid}
+  background-image:radial-gradient(circle at 30% 30%,rgba(255,255,255,.3) 0,transparent 60%)}
+.fb-sign{position:relative;z-index:1;font-size:72px;
+  color:rgba(255,255,255,.9);font-weight:300;letter-spacing:4px;
+  text-shadow:0 2px 20px rgba(74,127,212,.3),0 0 40px rgba(255,255,255,.4);
+  line-height:1}
+.fb-corner{position:absolute;width:13px;height:13px;border-color:rgba(255,255,255,.45);border-style:solid}
 .fc-tl{top:14px;left:14px;border-width:1px 0 0 1px}
 .fc-tr{top:14px;right:14px;border-width:1px 1px 0 0}
 .fc-bl{bottom:14px;left:14px;border-width:0 0 1px 1px}
 .fc-br{bottom:14px;right:14px;border-width:0 1px 1px 0}
-.fb-hint{position:absolute;bottom:14px;font-size:8px;letter-spacing:3px;color:rgba(255,255,255,.4);z-index:1;font-weight:600}
+.fb-hint{position:absolute;bottom:14px;font-size:8px;letter-spacing:3px;
+  color:rgba(255,255,255,.45);z-index:1;font-weight:600}
 
 /* 翻牌正面 */
-.f-front{transform:rotateY(180deg);background:#fff;
-  box-shadow:0 12px 40px rgba(59,111,212,.18),0 4px 12px rgba(59,111,212,.10);
+.f-front{transform:rotateY(180deg);
+  background:rgba(255,255,255,.88);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 12px 36px rgba(74,127,212,.16);
   display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px}
 .ff-num{position:absolute;top:11px;right:13px;font-size:10px;color:var(--ink4);font-weight:600}
-.ff-ico{font-size:46px;margin-bottom:10px;line-height:1}
-.ff-name{font-size:17px;font-weight:900;color:var(--ink);text-align:center;margin-bottom:7px;letter-spacing:.2px}
+.ff-ico{font-size:44px;margin-bottom:10px;line-height:1}
+.ff-name{font-size:17px;font-weight:800;color:var(--ink);text-align:center;margin-bottom:7px}
 .ff-badge{font-size:10px;padding:3px 12px;border-radius:20px;
-  background:var(--blue5);color:var(--blue);font-weight:700;letter-spacing:.5px}
-.ff-sep{width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--blue4),transparent);margin:13px 0}
-.ff-phrase{font-size:12px;color:var(--ink3);text-align:center;line-height:1.95;font-style:italic;letter-spacing:.2px}
+  background:rgba(74,127,212,.1);color:var(--blue);font-weight:700;letter-spacing:.5px}
+.ff-sep{width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--blue4),transparent);margin:12px 0}
+.ff-phrase{font-size:12px;color:var(--ink3);text-align:center;line-height:2;font-style:italic}
 
 /* 摇一摇提示 */
 .shake-hint{display:flex;align-items:center;gap:7px;margin-top:14px;
-  background:var(--white);border:1px solid var(--ink5);border-radius:40px;
+  background:rgba(255,255,255,.65);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.8);border-radius:40px;
   padding:8px 18px;box-shadow:var(--sh)}
-.sh-ico{font-size:14px;animation:jig 2.8s ease-in-out infinite}
-@keyframes jig{0%,100%{transform:rotate(0)}15%{transform:rotate(-16deg)}30%{transform:rotate(12deg)}45%{transform:rotate(-8deg)}60%{transform:rotate(5deg)}75%{transform:rotate(-2deg)}}
+.sh-ico{font-size:14px}
 .sh-txt{font-size:11px;color:var(--ink3)}
 
 .next-sign-btn{display:none;width:100%;max-width:358px;padding:15px;border:none;
   border-radius:16px;cursor:pointer;
   background:linear-gradient(135deg,var(--blue),var(--blue2));
-  color:#fff;font-size:14px;font-weight:800;letter-spacing:.5px;
-  box-shadow:0 5px 18px rgba(59,111,212,.24);font-family:inherit;transition:transform .14s}
+  color:#fff;font-size:14px;font-weight:700;letter-spacing:.5px;
+  box-shadow:0 5px 18px rgba(74,127,212,.24);font-family:inherit;transition:transform .14s}
 .next-sign-btn:active{transform:scale(.97)}
 
 /* 结果海报 */
-.result-poster{display:none;width:100%;max-width:358px;background:var(--white);
+.result-poster{display:none;width:100%;max-width:358px;
+  background:rgba(255,255,255,.7);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.85);
   border-radius:22px;overflow:hidden;box-shadow:var(--sh2)}
-.rp-cover{height:96px;background:linear-gradient(145deg,#2451b8,#3b6fd4,#6898ec);
-  position:relative;padding:14px 18px;display:flex;flex-direction:column;justify-content:flex-end}
-.rp-eyebrow{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.5);margin-bottom:3px;font-weight:600}
-.rp-title{font-size:17px;font-weight:900;color:#fff;letter-spacing:.2px}
-.rp-list{padding:12px 16px 10px;display:flex;flex-direction:column}
-.rp-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--ink5)}
+.rp-cover{height:90px;background:linear-gradient(145deg,#3a5fc8,#5a88e0,#80b0f0);
+  padding:14px 18px;display:flex;flex-direction:column;justify-content:flex-end}
+.rp-eyebrow{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.55);margin-bottom:3px;font-weight:600}
+.rp-title{font-size:17px;font-weight:800;color:#fff}
+.rp-list{padding:12px 16px 10px}
+.rp-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;
+  border-bottom:1px solid rgba(200,220,248,.5)}
 .rp-item:last-child{border-bottom:none}
-.rp-seq{width:22px;height:22px;border-radius:50%;background:var(--blue5);
-  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--blue);flex-shrink:0;margin-top:2px}
+.rp-seq{width:22px;height:22px;border-radius:50%;background:rgba(74,127,212,.1);
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;
+  color:var(--blue);flex-shrink:0;margin-top:2px}
 .rp-ico{font-size:20px;flex-shrink:0}
 .rp-info .rp-name{font-size:13px;font-weight:800;color:var(--ink)}
 .rp-info .rp-phrase{font-size:11px;color:var(--ink3);font-style:italic;margin-top:2px;line-height:1.6}
-.rp-foot{padding:10px 16px 14px;border-top:1px solid var(--ink5);
+.rp-foot{padding:10px 16px 14px;border-top:1px solid rgba(200,220,248,.5);
   display:flex;align-items:center;justify-content:space-between}
-.rp-brand{font-size:9px;font-weight:700;color:var(--blue3);letter-spacing:3px}
-.rp-stamp{font-size:9px;color:var(--gold);border:1px solid rgba(201,130,10,.25);border-radius:6px;padding:2px 8px;font-weight:600}
+.rp-brand{font-size:9px;font-weight:600;color:var(--blue3);letter-spacing:3px}
+.rp-stamp{font-size:9px;color:var(--gold);border:1px solid rgba(192,128,16,.25);
+  border-radius:6px;padding:2px 8px;font-weight:600}
 
 .heart-btn{width:100%;max-width:358px;padding:16px;border:none;border-radius:16px;cursor:pointer;
-  background:linear-gradient(135deg,#d44a7a,var(--pink));color:#fff;
-  font-size:15px;font-weight:900;letter-spacing:.5px;font-family:inherit;
-  box-shadow:0 6px 22px rgba(232,92,138,.28);transition:transform .14s;display:none}
+  background:linear-gradient(135deg,#c84070,var(--pink));color:#fff;
+  font-size:15px;font-weight:800;letter-spacing:.5px;font-family:inherit;
+  box-shadow:0 6px 22px rgba(212,92,138,.25);transition:transform .14s;display:none}
 .heart-btn:active{transform:scale(.97)}
-.heart-btn.sent{background:linear-gradient(135deg,#5a30b0,var(--purple))}
+.heart-btn.sent{background:linear-gradient(135deg,#5030a8,var(--purple))}
 
 .act-row{display:none;flex-direction:row;gap:8px;width:100%;max-width:358px}
 .ar-btn{flex:1;padding:12px 4px;border-radius:13px;font-size:12px;font-weight:700;
   cursor:pointer;border:none;font-family:inherit;box-shadow:var(--sh);transition:transform .14s}
 .ar-btn:active{transform:scale(.97)}
-.ar-copy{background:var(--blue5);color:var(--blue)}
-.ar-save{background:var(--gold2);color:var(--gold)}
-.ar-again{background:var(--white);color:var(--ink3);border:1px solid var(--ink5)}
+.ar-copy{background:rgba(74,127,212,.1);color:var(--blue)}
+.ar-save{background:rgba(192,128,16,.1);color:var(--gold)}
+.ar-again{background:rgba(255,255,255,.7);color:var(--ink3);border:1px solid rgba(255,255,255,.8)}
 
 /* ══ Tab2: 默契测试 ══ */
 .match-intro{width:100%;max-width:358px}
-.poi-swipe-wrap{width:100%;max-width:358px;position:relative;height:300px}
-.poi-swipe-card{position:absolute;inset:0;background:var(--white);border-radius:22px;
-  box-shadow:var(--sh2);display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:24px;cursor:grab}
-.psc-ico{font-size:52px;margin-bottom:12px}
-.psc-name{font-size:20px;font-weight:900;color:var(--ink);margin-bottom:7px;text-align:center;letter-spacing:.2px}
-.psc-type{font-size:11px;padding:3px 12px;border-radius:20px;background:var(--blue5);color:var(--blue);font-weight:700}
+.poi-swipe-wrap{width:100%;max-width:358px;position:relative;height:296px}
+.poi-swipe-card{position:absolute;inset:0;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.85);
+  border-radius:22px;box-shadow:var(--sh2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;cursor:grab}
+.psc-ico{font-size:50px;margin-bottom:12px}
+.psc-name{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:7px;text-align:center}
+.psc-type{font-size:11px;padding:3px 12px;border-radius:20px;
+  background:rgba(74,127,212,.1);color:var(--blue);font-weight:700}
 .psc-desc{font-size:13px;color:var(--ink3);text-align:center;margin-top:12px;line-height:1.75}
-.swipe-hint{position:absolute;bottom:16px;left:0;right:0;display:flex;justify-content:space-between;padding:0 22px}
-.swh-no{font-size:12px;color:#e05555;font-weight:700;opacity:.4}
+.swipe-hint{position:absolute;bottom:16px;left:0;right:0;
+  display:flex;justify-content:space-between;padding:0 22px}
+.swh-no{font-size:12px;color:#c04040;font-weight:700;opacity:.4}
 .swh-yes{font-size:12px;color:var(--green);font-weight:700;opacity:.4}
 
 .vote-btns{display:flex;gap:18px;width:100%;max-width:358px;justify-content:center}
-.vb{width:62px;height:62px;border-radius:50%;border:none;cursor:pointer;
+.vb{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
   font-size:22px;display:flex;align-items:center;justify-content:center;
-  transition:transform .15s;box-shadow:var(--sh)}
+  transition:transform .15s;
+  background:rgba(255,255,255,.7);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.8);box-shadow:var(--sh)}
 .vb:active{transform:scale(.88)}
-.vb-no{background:#fff5f5;box-shadow:0 4px 16px rgba(224,85,85,.14)}
-.vb-yes{background:#f0fdf8;box-shadow:0 4px 16px rgba(18,176,118,.14)}
 
 .match-wait{display:none;width:100%;max-width:358px}
-.mw-card{background:var(--white);border-radius:22px;padding:26px;text-align:center;box-shadow:var(--sh2)}
+.mw-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:22px;padding:26px;text-align:center;box-shadow:var(--sh2)}
 .mw-title{font-size:16px;font-weight:800;margin-bottom:8px}
 .mw-sub{font-size:13px;color:var(--ink3);line-height:1.75;margin-bottom:20px}
 .mw-loader{display:flex;gap:6px;justify-content:center}
-.ml-dot{width:8px;height:8px;border-radius:50%;background:var(--blue3);animation:bounce 1s infinite}
-.ml-dot:nth-child(2){animation-delay:.16s}
-.ml-dot:nth-child(3){animation-delay:.32s}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.ml-dot{width:8px;height:8px;border-radius:50%;background:var(--blue3);
+  animation:bounce .9s ease-in-out infinite}
+.ml-dot:nth-child(2){animation-delay:.15s}
+.ml-dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
 .match-result{display:none;width:100%;max-width:358px}
-.mr-card{background:var(--white);border-radius:22px;overflow:hidden;box-shadow:var(--sh2)}
-.mr-cover{height:90px;background:linear-gradient(135deg,#5030a8,#6d40cc,#9570e0);
+.mr-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:22px;overflow:hidden;box-shadow:var(--sh2)}
+.mr-cover{height:90px;background:linear-gradient(135deg,#5030a8,#7048c8,#9570e0);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.mr-pct{font-size:36px;font-weight:900;color:#fff;font-family:'Georgia',serif}
+.mr-pct{font-size:36px;font-weight:300;color:#fff;letter-spacing:2px}
 .mr-label{font-size:11px;color:rgba(255,255,255,.7);letter-spacing:2px;font-weight:600}
 .mr-body{padding:18px}
 .mr-verdict{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:8px}
 .mr-detail{font-size:13px;color:var(--ink3);line-height:1.8}
-.mr-items{margin-top:14px;display:flex;flex-direction:column;gap:0}
-.mr-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ink5)}
+.mr-items{margin-top:14px;display:flex;flex-direction:column}
+.mr-item{display:flex;align-items:center;gap:10px;padding:10px 0;
+  border-bottom:1px solid rgba(200,220,248,.5)}
 .mr-item:last-child{border-bottom:none}
 .mi-ico{font-size:18px}
 .mi-name{flex:1;font-size:13px;font-weight:600;color:var(--ink)}
 .mi-match{font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px}
 .match-y{background:var(--green2);color:var(--green)}
-.match-n{background:#fee8e8;color:#e05555}
+.match-n{background:#ffe8e8;color:#c04040}
 .match-m{background:var(--gold2);color:var(--gold)}
 
 /* ══ Tab3: 性格推荐 ══ */
-.mbti-pick-card{background:var(--white);border-radius:22px;padding:18px;box-shadow:var(--sh);width:100%;max-width:358px}
+.mbti-pick-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:22px;padding:18px;box-shadow:var(--sh);width:100%;max-width:358px}
 .mbti-pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.mp-btn{padding:13px 8px;border:1.5px solid var(--ink5);border-radius:14px;cursor:pointer;
-  background:var(--bg2);text-align:center;transition:all .2s;font-family:inherit}
+.mp-btn{padding:13px 8px;border:1px solid rgba(255,255,255,.6);border-radius:14px;cursor:pointer;
+  background:rgba(255,255,255,.55);text-align:center;transition:all .2s;font-family:inherit}
 .mp-btn:active{transform:scale(.97)}
 .mp-type{font-size:14px;font-weight:800;color:var(--ink)}
 .mp-trait{font-size:11px;color:var(--ink4);margin-top:3px;line-height:1.45}
-.mp-btn.sel{border-color:var(--purple);background:var(--purple2);box-shadow:0 2px 10px rgba(109,64,204,.12)}
+.mp-btn.sel{border-color:var(--purple);background:rgba(112,72,200,.09);
+  box-shadow:0 2px 10px rgba(112,72,200,.12)}
 .mp-btn.sel .mp-type{color:var(--purple)}
 .mp-go{width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;margin-top:12px;
   background:linear-gradient(135deg,var(--purple),#8050d8);color:#fff;
-  font-size:14px;font-weight:800;font-family:inherit;
-  box-shadow:0 5px 18px rgba(109,64,204,.24);transition:transform .14s}
+  font-size:14px;font-weight:700;font-family:inherit;
+  box-shadow:0 5px 18px rgba(112,72,200,.22);transition:transform .14s}
 .mp-go:active{transform:scale(.97)}
 
 .persona-route{display:none;width:100%;max-width:358px}
-.pr-card{background:var(--white);border-radius:22px;overflow:hidden;box-shadow:var(--sh2)}
-.pr-cover{height:96px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px 18px}
+.pr-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:22px;overflow:hidden;box-shadow:var(--sh2)}
+.pr-cover{height:90px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px 18px}
 .pr-eyebrow{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,.6);margin-bottom:4px;font-weight:600}
-.pr-title{font-size:17px;font-weight:900;color:#fff;letter-spacing:.2px}
+.pr-title{font-size:17px;font-weight:800;color:#fff}
 .pr-list{padding:12px 16px 10px}
-.pr-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--ink5)}
+.pr-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;
+  border-bottom:1px solid rgba(200,220,248,.5)}
 .pr-item:last-child{border-bottom:none}
 .pri-ico{font-size:22px;flex-shrink:0}
 .pri-info .pri-name{font-size:13px;font-weight:800;color:var(--ink)}
 .pri-info .pri-why{font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.6;font-style:italic}
-.pr-comment{padding:12px 16px 16px;background:var(--bg2);font-size:12px;color:var(--ink3);line-height:1.85;border-top:1px solid var(--ink5)}
+.pr-comment{padding:12px 16px 16px;background:rgba(255,255,255,.4);
+  font-size:12px;color:var(--ink3);line-height:1.85;
+  border-top:1px solid rgba(200,220,248,.5)}
 .pr-comment b{color:var(--purple);font-weight:700}
 
 /* ══ Tab4: 我的履历 ══ */
-.profile-header{width:100%;max-width:358px;background:linear-gradient(145deg,#2451b8,#3b6fd4,#6898ec);
+.profile-header{width:100%;max-width:358px;
+  background:linear-gradient(145deg,#3a5fc8,#5a88e0,#80b0f0);
   border-radius:22px;padding:20px 18px;color:#fff;box-shadow:var(--sh2)}
 .ph-user{display:flex;align-items:center;gap:13px;margin-bottom:18px}
-.phu-avatar{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);
+.phu-avatar{width:48px;height:48px;border-radius:50%;
+  background:rgba(255,255,255,.22);
   display:flex;align-items:center;justify-content:center;font-size:22px}
-.phu-info .phu-name{font-size:16px;font-weight:800;letter-spacing:.2px}
+.phu-info .phu-name{font-size:16px;font-weight:700;letter-spacing:.3px}
 .phu-info .phu-tag{font-size:11px;color:rgba(255,255,255,.7);margin-top:3px}
 .ph-stats{display:flex}
 .phs-item{flex:1;text-align:center;padding:10px 0;position:relative}
-.phs-item+.phs-item::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:1px;background:rgba(255,255,255,.18)}
-.phsi-num{font-size:22px;font-weight:900;font-family:'Georgia',serif}
+.phs-item+.phs-item::before{content:'';position:absolute;left:0;top:15%;bottom:15%;
+  width:1px;background:rgba(255,255,255,.2)}
+.phsi-num{font-size:22px;font-weight:300;letter-spacing:1px}
 .phsi-lbl{font-size:10px;color:rgba(255,255,255,.65);margin-top:2px}
 
-.history-list{width:100%;max-width:358px;display:flex;flex-direction:column;gap:9px}
-.hl-card{background:var(--white);border-radius:16px;padding:14px 16px;
+.history-list{width:100%;max-width:358px;display:flex;flex-direction:column;gap:8px}
+.hl-card{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:16px;padding:14px 16px;
   display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
 .hlc-ico{width:38px;height:38px;border-radius:11px;flex-shrink:0;
-  background:linear-gradient(145deg,#3460c8,#6898ec);
+  background:linear-gradient(145deg,#4a7fd4,#80b0f0);
   display:flex;align-items:center;justify-content:center;font-size:18px}
-.hlc-info{flex:1;min-width:0}
-.hlci-dest{font-size:14px;font-weight:800;color:var(--ink)}
+.hlc-info{flex:1}
+.hlci-dest{font-size:14px;font-weight:700;color:var(--ink)}
 .hlci-meta{font-size:11px;color:var(--ink4);margin-top:2px}
 .hlc-badge{font-size:10px;padding:3px 10px;border-radius:20px;white-space:nowrap;font-weight:700}
 
-.buddy-card{background:var(--white);border-radius:16px;padding:14px 16px;
+.buddy-card{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:16px;padding:14px 16px;
   display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
 .bc-avatar{width:42px;height:42px;border-radius:50%;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff}
 .bc-info{flex:1}
-.bc-name{font-size:14px;font-weight:800;color:var(--ink)}
-.bc-match{font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.5}
-.bc-score{font-family:'Georgia',serif;font-size:20px;font-weight:900}
+.bc-name{font-size:14px;font-weight:700;color:var(--ink)}
+.bc-match{font-size:11px;color:var(--ink4);margin-top:2px}
+.bc-score{font-size:20px;font-weight:300;letter-spacing:1px}
+
+.sec-lbl{width:100%;max-width:358px;font-size:11px;font-weight:600;
+  color:rgba(255,255,255,.7);letter-spacing:2px;padding-left:2px}
 
 /* 粒子 */
 #pcvs{position:absolute;inset:0;pointer-events:none;z-index:50}
 
 /* 飞入 */
-.fly{opacity:0;transform:translateY(14px);transition:opacity .48s,transform .48s}
+.fly{opacity:0;transform:translateY(14px);transition:opacity .45s,transform .45s}
 .fly.show{opacity:1;transform:none}
-
-/* section label */
-.sec-lbl{width:100%;max-width:358px;font-size:11px;font-weight:700;color:var(--ink4);letter-spacing:2px;padding-left:2px}
 </style>
 </head>
-<body>
+<body class="mode-web">
+
+<!-- 静态星点背景 -->
+<div class="stars-bg" id="starsBg"></div>
+
+<!-- Web / 手机切换 -->
+<div class="view-toggle">
+  <button class="vt-btn active" id="btnWeb" onclick="setMode('web')">🖥 Web</button>
+  <button class="vt-btn" id="btnPhone" onclick="setMode('phone')">📱 iPhone</button>
+</div>
 
 <div class="phone-shell" id="phoneShell">
-<div class="blob b1"></div>
-<div class="blob b2"></div>
 <canvas id="pcvs"></canvas>
 
 <!-- ════ 封面页 ════ -->
 <div class="screen" id="sCover">
-  <div class="cover-card">
-    <div class="cover-img">
-      <div class="ci-shine"></div>
-      <div class="skyline">
-        <span style="width:4px;height:18px"></span>
-        <span style="width:4px;height:28px"></span>
-        <span style="width:4px;height:14px"></span>
-        <span style="width:4px;height:36px"></span>
-        <span style="width:4px;height:22px"></span>
-        <span style="width:4px;height:12px"></span>
-        <span style="width:4px;height:30px"></span>
-      </div>
-      <div class="ci-tag">FATE TRIP</div>
-      <div class="ci-title" id="coverTitle">抽你的曼谷旅行签</div>
-      <div class="ci-sub">看看抽到哪家夜市！🍜</div>
+  <!-- 装饰球 -->
+  <div class="glass-orb cover-orb" style="position:absolute;width:200px;height:200px;top:50%;left:50%;transform:translate(-50%,-58%)"></div>
+  <div class="orb-ring cover-ring1" style="position:absolute;width:310px;height:310px;top:50%;left:50%;transform:translate(-50%,-58%)"></div>
+  <div class="orb-ring cover-ring2" style="position:absolute;width:420px;height:420px;top:50%;left:50%;transform:translate(-50%,-58%)"></div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+    height:100%;padding-bottom:15%;gap:22px;position:relative;z-index:2">
+    <div class="cover-text">
+      <div class="cover-title">F A T E &nbsp; T R I P</div>
+      <div class="cover-sub">想 一 万 次 ， 不 如 出 发 一 次<br>抽 一 签 ， 奔 赴 属 于 你 的 远 方</div>
     </div>
-    <div class="cover-body">
-      <div class="cover-intro">
-        <b>A</b> 为你规划好了曼谷 5 日游，发来了一个旅行签——<b>不只是分享行程，而是邀你一起拆惊喜</b> 🎴
-      </div>
-      <div>
-        <div class="role-label">选择你的身份</div>
-        <div class="role-btns" style="margin-top:8px">
-          <div class="role-btn A" onclick="selectRole('A')">
-            <div class="rb-ico">✈️</div>
-            <div class="rb-name">我是发起人 A</div>
-            <div class="rb-desc">设置行程 · 生成分享</div>
-          </div>
-          <div class="role-btn B" onclick="selectRole('B')">
-            <div class="rb-ico">🎴</div>
-            <div class="rb-name">我是接收方 B</div>
-            <div class="rb-desc">开始拆签 · 体验全程</div>
-          </div>
-        </div>
-      </div>
+    <div class="role-btns-cover">
+      <button class="rbc-btn rbc-a" onclick="selectRole('A')">✈️ 我是发起人 A</button>
+      <button class="rbc-btn rbc-b" onclick="selectRole('B')">🎴 我是接收方 B</button>
     </div>
-  </div>
-  <div class="brand-foot">
-    <div class="brand-name">FATE · TRIP</div>
-    <div class="brand-tagline">让分享变成双向互动</div>
   </div>
 </div>
 
@@ -491,7 +551,7 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
     </div>
     <div class="sec-card">
       <div class="sec-title">对方的 MBTI（性格推荐用）</div>
-      <div class="mbti-grid" style="margin-top:8px">
+      <div class="mbti-grid">
         <div class="mbti-btn sel" data-mbti="INFP" onclick="selMBTI(this)">
           <div class="mb-type">INFP</div><div class="mb-desc">文艺 · 独立 · 感性</div>
         </div>
@@ -518,7 +578,7 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
 <!-- ════ 主 App（B视角）════ -->
 <div class="screen gone" id="sApp">
   <div class="app-topbar">
-    <div class="at-left" onclick="showScreen('sCover')" style="cursor:pointer">← 退出</div>
+    <div class="at-left" onclick="showScreen('sCover')">← 退出</div>
     <div class="at-title">FATE TRIP</div>
     <div class="at-from">
       <div class="at-avatar" id="atAvatar">A</div>
@@ -530,15 +590,12 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
 
     <!-- Tab 1: 旅行签 -->
     <div class="tab-panel" id="tab1">
-      <!-- 封面 -->
       <div class="sign-cover">
         <div class="sc-shine"></div>
         <div class="sc-label">HIDDEN ROUTE · FATE TRIP</div>
         <div class="sc-title" id="sc-title">抽你的旅行签</div>
         <div class="sc-sub" id="sc-sub">看看命运为你选了哪里 🎴</div>
       </div>
-
-      <!-- 签牌阶段 -->
       <div class="sign-stage" id="signStage">
         <div class="sign-nav">
           <div class="sn-dest" id="snDest">—</div>
@@ -549,7 +606,6 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
             <div class="flip-3d" id="flip3d">
               <div class="flip-face f-back">
                 <div class="fb-tex"></div>
-                <div class="fb-glow"></div>
                 <div class="fb-sign">签</div>
                 <div class="fb-corner fc-tl"></div><div class="fb-corner fc-tr"></div>
                 <div class="fb-corner fc-bl"></div><div class="fb-corner fc-br"></div>
@@ -572,8 +628,6 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
         </div>
       </div>
       <button class="next-sign-btn" id="nextSignBtn" onclick="nextSign()">—</button>
-
-      <!-- 结果 -->
       <div class="result-poster fly" id="resultPoster">
         <div class="rp-cover">
           <div class="rp-eyebrow">HIDDEN ROUTE</div>
@@ -603,8 +657,8 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
           </div>
         </div>
         <div style="padding:14px 18px">
-          <div style="font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:14px">
-            A 已经对 <b style="color:var(--ink)">5 个地点</b> 做了选择，现在轮到你——右滑 ❤️ 想去，左滑 ❌ 不去，最后看你们的默契度！
+          <div style="font-size:13px;color:var(--ink3);line-height:1.85;margin-bottom:14px">
+            A 已对 <b style="color:var(--ink)">5 个地点</b> 做了选择，现在轮到你——右滑 ❤️ 想去，左滑 ❌ 不去，最后看默契度！
           </div>
           <button class="gen-btn" onclick="startMatch()" style="font-size:14px;padding:13px">开始测试 →</button>
         </div>
@@ -615,24 +669,20 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
           <div class="psc-name" id="scName">乍都乍市场</div>
           <div class="psc-type" id="scType">市集</div>
           <div class="psc-desc" id="scDesc">城市最大的周末市场，藏着无数惊喜</div>
-          <div class="swipe-hint">
-            <span class="swh-no">❌ 不去</span>
-            <span class="swh-yes">❤️ 想去</span>
-          </div>
+          <div class="swipe-hint"><span class="swh-no">❌ 不去</span><span class="swh-yes">❤️ 想去</span></div>
         </div>
       </div>
       <div class="vote-btns" id="voteBtns" style="display:none">
-        <button class="vb vb-no" onclick="vote(false)">❌</button>
+        <button class="vb" onclick="vote(false)">❌</button>
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
           <span style="font-size:11px;color:var(--ink4)" id="matchProgress">1 / 5</span>
-          <span style="font-size:10px;color:var(--ink5)">还剩几个</span>
         </div>
-        <button class="vb vb-yes" onclick="vote(true)">❤️</button>
+        <button class="vb" onclick="vote(true)">❤️</button>
       </div>
       <div class="match-wait" id="matchWait">
         <div class="mw-card">
           <div class="mw-title">等待 A 的结果 🔮</div>
-          <div class="mw-sub">你已经选完了！正在和 A 的选择对比中…</div>
+          <div class="mw-sub">你已选完！正在和 A 的选择对比中…</div>
           <div class="mw-loader">
             <div class="ml-dot"></div><div class="ml-dot"></div><div class="ml-dot"></div>
           </div>
@@ -645,7 +695,7 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
     <div class="tab-panel hidden" id="tab3">
       <div class="mbti-pick-card" id="mbtiPick">
         <div style="font-size:15px;font-weight:800;margin-bottom:4px">性格导向推荐</div>
-        <div style="font-size:12px;color:var(--ink3);margin-bottom:0">选你的 MBTI，看专属路线</div>
+        <div style="font-size:12px;color:var(--ink3)">选你的 MBTI，看专属路线</div>
         <div class="mbti-pick-grid">
           <div class="mp-btn sel" data-m="INFP" onclick="selPersona(this)">
             <div class="mp-type">INFP</div><div class="mp-trait">文艺 · 独立书店 · 小众咖啡</div>
@@ -682,56 +732,35 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
           <div class="phs-item"><div class="phsi-num">78%</div><div class="phsi-lbl">平均默契</div></div>
         </div>
       </div>
-
-      <div style="width:100%;max-width:360px">
-        <div style="font-size:12px;font-weight:700;color:var(--ink4);letter-spacing:2px;margin-bottom:8px">旅行记录</div>
-        <div class="history-list">
-          <div class="hl-card">
-            <div class="hlc-ico">🏙️</div>
-            <div class="hlc-info">
-              <div class="hlci-dest">曼谷 · 5日游</div>
-              <div class="hlci-meta">拆了 3 签 · 心动了乍都乍市场</div>
-            </div>
-            <div class="hlc-badge badge-pink">心动 💛</div>
-          </div>
-          <div class="hl-card">
-            <div class="hlc-ico">🏯</div>
-            <div class="hlc-info">
-              <div class="hlci-dest">京都 · 4日游</div>
-              <div class="hlci-meta">拆了 3 签 · 默契度 85%</div>
-            </div>
-            <div class="hlc-badge badge-purple">高默契 💕</div>
-          </div>
-          <div class="hl-card">
-            <div class="hlc-ico">⛵</div>
-            <div class="hlc-info">
-              <div class="hlci-dest">大理 · 3日游</div>
-              <div class="hlci-meta">拆了 4 签 · 收藏了隐藏路线</div>
-            </div>
-            <div class="hlc-badge badge-blue">已收藏</div>
-          </div>
+      <div class="sec-lbl">旅行记录</div>
+      <div class="history-list">
+        <div class="hl-card">
+          <div class="hlc-ico">🏙️</div>
+          <div class="hlc-info"><div class="hlci-dest">曼谷 · 5日游</div><div class="hlci-meta">拆了 3 签 · 心动了乍都乍市场</div></div>
+          <div class="hlc-badge badge-pink">心动 💛</div>
+        </div>
+        <div class="hl-card">
+          <div class="hlc-ico">🏯</div>
+          <div class="hlc-info"><div class="hlci-dest">京都 · 4日游</div><div class="hlci-meta">拆了 3 签 · 默契度 85%</div></div>
+          <div class="hlc-badge badge-purple">高默契 💕</div>
+        </div>
+        <div class="hl-card">
+          <div class="hlc-ico">⛵</div>
+          <div class="hlc-info"><div class="hlci-dest">大理 · 3日游</div><div class="hlci-meta">拆了 4 签 · 收藏了隐藏路线</div></div>
+          <div class="hlc-badge badge-blue">已收藏</div>
         </div>
       </div>
-
-      <div style="width:100%;max-width:360px">
-        <div style="font-size:12px;font-weight:700;color:var(--ink4);letter-spacing:2px;margin-bottom:8px">旅行搭子默契榜</div>
-        <div class="history-list">
-          <div class="buddy-card">
-            <div class="bc-avatar" style="background:linear-gradient(135deg,#2563eb,#60a5fa)">A</div>
-            <div class="bc-info">
-              <div class="bc-name">旅行者 A</div>
-              <div class="bc-match">一起去过 2 个城市 · 共同心动 5 个地点</div>
-            </div>
-            <div class="bc-score" style="color:var(--purple)">85%</div>
-          </div>
-          <div class="buddy-card">
-            <div class="bc-avatar" style="background:linear-gradient(135deg,#10b981,#34d399)">C</div>
-            <div class="bc-info">
-              <div class="bc-name">旅行者 C</div>
-              <div class="bc-match">一起去过 1 个城市 · 共同心动 3 个地点</div>
-            </div>
-            <div class="bc-score" style="color:var(--green)">72%</div>
-          </div>
+      <div class="sec-lbl">旅行搭子默契榜</div>
+      <div class="history-list">
+        <div class="buddy-card">
+          <div class="bc-avatar" style="background:linear-gradient(135deg,#4a7fd4,#80b0f0)">A</div>
+          <div class="bc-info"><div class="bc-name">旅行者 A</div><div class="bc-match">一起去过 2 个城市 · 共同心动 5 个地点</div></div>
+          <div class="bc-score" style="color:var(--purple)">85%</div>
+        </div>
+        <div class="buddy-card">
+          <div class="bc-avatar" style="background:linear-gradient(135deg,#18b87c,#50d4a0)">C</div>
+          <div class="bc-info"><div class="bc-name">旅行者 C</div><div class="bc-match">一起去过 1 个城市 · 共同心动 3 个地点</div></div>
+          <div class="bc-score" style="color:var(--green)">72%</div>
         </div>
       </div>
     </div>
@@ -739,25 +768,70 @@ html,body{height:100%;background:var(--bg);font-family:'PingFang SC','SF Pro Tex
   </div><!-- /app-content -->
 
   <div class="tab-bar">
-    <div class="tab-item active" onclick="switchTab(1)">
-      <div class="tab-ico">🎴</div><div class="tab-lbl">旅行签</div>
-    </div>
-    <div class="tab-item" onclick="switchTab(2)">
-      <div class="tab-ico">💕</div><div class="tab-lbl">默契测试</div>
-    </div>
-    <div class="tab-item" onclick="switchTab(3)">
-      <div class="tab-ico">🔮</div><div class="tab-lbl">性格推荐</div>
-    </div>
-    <div class="tab-item" onclick="switchTab(4)">
-      <div class="tab-ico">👤</div><div class="tab-lbl">我的履历</div>
-    </div>
+    <div class="tab-item active" onclick="switchTab(1)"><div class="tab-ico">🎴</div><div class="tab-lbl">旅行签</div></div>
+    <div class="tab-item" onclick="switchTab(2)"><div class="tab-ico">💕</div><div class="tab-lbl">默契测试</div></div>
+    <div class="tab-item" onclick="switchTab(3)"><div class="tab-ico">🔮</div><div class="tab-lbl">性格推荐</div></div>
+    <div class="tab-item" onclick="switchTab(4)"><div class="tab-ico">👤</div><div class="tab-lbl">我的履历</div></div>
   </div>
 </div><!-- /sApp -->
 
 </div><!-- /phone-shell -->
 
 <script>
-/* ════ 数据 ════ */
+/* ════ 静态星点 ════ */
+(function(){
+  const c=document.getElementById('starsBg');
+  const pts=[[5,8],[12,22],[88,6],[92,18],[78,45],[15,55],[95,62],[8,78],[85,82],[45,4],[55,96],[30,92],[70,88],[50,50],[25,35],[65,25],[40,70]];
+  pts.forEach(([x,y])=>{
+    const d=document.createElement('div');
+    d.className='star-dot';
+    const s=1+Math.random()*2;
+    d.style.cssText=`width:${s}px;height:${s}px;top:${y}%;left:${x}%;opacity:${.15+Math.random()*.25}`;
+    c.appendChild(d);
+  });
+})();
+
+/* ════ 视图切换 ════ */
+function setMode(m){
+  document.body.className='mode-'+m;
+  document.getElementById('btnWeb').classList.toggle('active',m==='web');
+  document.getElementById('btnPhone').classList.toggle('active',m==='phone');
+  // 切换按钮在手机模式下收起
+  document.querySelector('.view-toggle').style.top = m==='phone'?'calc(50% - 422px + 8px)':'14px';
+}
+
+/* ════ 屏幕切换 ════ */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('gone',s.id!==id));
+}
+
+/* ════ 角色选择 ════ */
+function selectRole(r){
+  setTimeout(()=>{
+    if(r==='A') showScreen('sSetup');
+    else startBExperience();
+  },180);
+}
+
+/* ════ A 设置 ════ */
+let aMBTI='INFP';
+function selMBTI(el){
+  document.querySelectorAll('.mbti-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel'); aMBTI=el.dataset.mbti;
+}
+function genShare(){
+  const dest=document.getElementById('aDestInp').value.trim()||'曼谷';
+  const cnt=+document.querySelector('input[name=acnt]:checked').value;
+  const p=document.getElementById('sharePreview');
+  document.getElementById('shareText').textContent=`抽你的${dest}旅行签，看看抽到哪家夜市！🍜`;
+  p.style.display='block';
+}
+function copyShareLink(){
+  navigator.clipboard.writeText(document.getElementById('shareText').textContent).catch(()=>{});
+  event.target.textContent='✅ 已复制'; setTimeout(()=>event.target.textContent='复制链接',1500);
+}
+
+/* ════ POI 数据 ════ */
 const POIS={
   '曼谷':[
     {name:'乍都乍市场',type:'市集',icon:'🛍️',desc:'城市最大的周末市场，藏着无数惊喜'},
@@ -781,7 +855,6 @@ const POIS={
     {name:'夜市美食街',type:'美食',icon:'🍢',desc:'跟着人流走就对了'},
   ]
 };
-
 const PHRASES={
   '市集':p=>`今日宜逛${p.name}，忌冲动消费 🛍️`,
   '文化':p=>`今日宜参拜${p.name}，忌走马观花 🙏`,
@@ -789,144 +862,46 @@ const PHRASES={
   '风景':p=>`今日宜在${p.name}驻足，忌赶行程 🌅`,
   '美食':p=>`今日宜在${p.name}大胆点餐，忌节食 🍜`,
   '自然':p=>`今日宜深入${p.name}，忌看手机 🌿`,
-  '散步':p=>`今日宜在${p.name}无目的漫游，忌导航 🍁`,
+  '散步':p=>`今日宜在${p.name}无目的漫游 🍁`,
   '景点':p=>`今日宜在${p.name}认真感受，忌只拍照 ⛩️`,
   '休闲':p=>`今日宜在${p.name}发呆，忌赶行程 ☕`,
 };
 
-const PERSONA_ROUTES={
-  INFP:{
-    color:'linear-gradient(135deg,#7c3aed,#a78bfa)',
-    label:'给 INFP 的曼谷隐藏路线',
-    tag:'文艺 · 慢游 · 独立',
-    pois:[
-      {icon:'☕',name:'Roast咖啡馆',why:'小众独立咖啡，INFP 最爱的那种安静角落'},
-      {icon:'📚',name:'二手书街',why:'文字是 INFP 的母语，这里有你说的那种感觉'},
-      {icon:'🌿',name:'是隆花园',why:'人少、绿意、适合发呆——你会感谢这个选择'},
-    ],
-    comment:'太懂你了对吧？INFP 不需要景点打卡，需要<b>被某个角落真正打动</b>的瞬间。这条路线，是命运为你筛过的。'
-  },
-  ENTJ:{
-    color:'linear-gradient(135deg,#1e40af,#2563eb)',
-    label:'给 ENTJ 的曼谷高效路线',
-    tag:'高效 · 打卡 · 商务',
-    pois:[
-      {icon:'🏙️',name:'曼谷天空步道',why:'360° 全景，10分钟掌握城市格局'},
-      {icon:'⭐',name:'米其林街头小吃',why:'效率最高的美食打卡，不浪费一秒'},
-      {icon:'🛍️',name:'暹罗百丽宫',why:'购物+商务+地标，一站搞定'},
-    ],
-    comment:'ENTJ 的旅行是<b>有目标的</b>。这条路线按优先级排序，每个地点都值得你的时间投入。'
-  },
-  ENFP:{
-    color:'linear-gradient(135deg,#f59e0b,#fbbf24)',
-    label:'给 ENFP 的曼谷随机路线',
-    tag:'活力 · 探索 · 惊喜',
-    pois:[
-      {icon:'🌃',name:'考山路夜市',why:'人多、热闹、随时能交到新朋友——ENFP 天堂'},
-      {icon:'🎨',name:'涂鸦街区',why:'每次来都不一样，符合你对惊喜的期待'},
-      {icon:'🛶',name:'水上市场',why:'活在当下，划着船不知道下一个转角是什么'},
-    ],
-    comment:'ENFP 旅行的精髓是<b>不预期的相遇</b>。这条路线故意留了空白，让你自己填满它。'
-  },
-  ISTJ:{
-    color:'linear-gradient(135deg,#0f766e,#14b8a6)',
-    label:'给 ISTJ 的曼谷经典路线',
-    tag:'严谨 · 历史 · 计划',
-    pois:[
-      {icon:'🏛️',name:'大皇宫',why:'必去历史地标，有完整的时代背景，值得认真研究'},
-      {icon:'🙏',name:'玉佛寺',why:'宗教文化精华，有逻辑有结构，ISTJ 会欣赏'},
-      {icon:'⛵',name:'湄南河游船',why:'城市历史脉络的最佳视角，按时刻表运行'},
-    ],
-    comment:'ISTJ 的旅行<b>要有价值感</b>。这条路线每个地点都有历史厚度，不是随便打卡，是真正看懂曼谷。'
-  }
-};
+/* ════ 旅行签状态 ════ */
+let appDest='曼谷',appPOIs=[],appPhrases=[],appCur=0,appFlipped=false,appCnt=3,signDone=false;
 
-/* ════ 状态 ════ */
-let appDest='曼谷', appPOIs=[], appPhrases=[], appCur=0, appFlipped=false, appCnt=3;
-let aMBTI='INFP';
-let matchPOIs=[], matchCur=0, myVotes=[], aVotes=[];
-let selectedPersona='INFP';
-let signDone=false;
-
-/* ════ 屏幕切换 ════ */
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('gone',s.id!==id));
-}
-
-/* ════ 角色选择 ════ */
-function selectRole(r){
-  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('sel'));
-  document.querySelector(`.role-btn.${r}`).classList.add('sel');
-  setTimeout(()=>{
-    if(r==='A') showScreen('sSetup');
-    else startBExperience();
-  },200);
-}
-
-/* ════ A 设置 ════ */
-function selMBTI(el){
-  document.querySelectorAll('.mbti-btn').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel');
-  aMBTI=el.dataset.mbti;
-}
-function genShare(){
-  const dest=document.getElementById('aDestInp').value.trim()||'曼谷';
-  const cnt=+document.querySelector('input[name=acnt]:checked').value;
-  const p=document.getElementById('sharePreview');
-  const t=document.getElementById('shareText');
-  p.style.display='block';
-  t.textContent=`抽你的${dest}旅行签，看看抽到哪家夜市！🍜\n→ fate-trip.app/join?dest=${encodeURIComponent(dest)}&cnt=${cnt}&mbti=${aMBTI}`;
-}
-function copyShareLink(){
-  const t=document.getElementById('shareText').textContent;
-  navigator.clipboard.writeText(t).catch(()=>{});
-  event.target.textContent='✅ 已复制';
-  setTimeout(()=>event.target.textContent='复制链接',1500);
-}
-
-/* ════ B 进入体验 ════ */
 function startBExperience(){
   appDest='曼谷'; appCnt=3;
   initSign();
   document.getElementById('sc-title').textContent=`抽你的${appDest}旅行签`;
-  document.getElementById('atAvatar').textContent='A';
-  document.getElementById('atName').textContent='来自 A';
-  showScreen('sApp');
-  switchTab(1);
-  setupShake();
+  showScreen('sApp'); switchTab(1); setupShake();
 }
 
-/* ════ Tab 切换 ════ */
 function switchTab(n){
   document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('hidden',i+1!==n));
   document.querySelectorAll('.tab-item').forEach((t,i)=>t.classList.toggle('active',i+1===n));
 }
 
-/* ════ Tab1: 旅行签 ════ */
 function pickPOIs(d,cnt){
   let pool=POIS[d]||POIS.default;
   return [...pool].sort(()=>Math.random()-.5).slice(0,cnt);
 }
-function mkPhrase(p){
-  const fn=PHRASES[p.type]||((p)=>`今日宜去${p.name}，忌犹豫 ✦`);
-  return fn(p);
-}
+function mkPhrase(p){return (PHRASES[p.type]||(p=>`今日宜去${p.name} ✦`))(p)}
+
 function initSign(){
   appPOIs=pickPOIs(appDest,appCnt);
   appPhrases=appPOIs.map(p=>mkPhrase(p));
-  appCur=0; appFlipped=false; signDone=false;
+  appCur=0;appFlipped=false;signDone=false;
   document.getElementById('snDest').textContent=appDest;
-  renderProg(); resetCard();
+  renderProg();resetCard();
   document.getElementById('signStage').style.display='flex';
-  document.getElementById('resultPoster').style.display='none';
-  document.getElementById('heartBtn').style.display='none';
-  document.getElementById('actRow').style.display='none';
-  document.getElementById('resultPoster').classList.remove('show');
-  document.getElementById('heartBtn').classList.remove('show');
-  document.getElementById('actRow').classList.remove('show');
+  ['resultPoster','heartBtn','actRow'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.style.display='none';el.classList.remove('show');
+  });
 }
 function renderProg(){
-  const pg=document.getElementById('snProg'); pg.innerHTML='';
+  const pg=document.getElementById('snProg');pg.innerHTML='';
   for(let i=0;i<appPOIs.length;i++){
     const d=document.createElement('div');
     d.className='sp-dot'+(i<appCur?' done':i===appCur?' cur':'');
@@ -935,7 +910,7 @@ function renderProg(){
 }
 function resetCard(){
   const c=document.getElementById('flip3d');
-  c.classList.remove('flipped'); c.style.pointerEvents='auto';
+  c.classList.remove('flipped');c.style.pointerEvents='auto';
   document.getElementById('nextSignBtn').style.display='none';
   document.getElementById('shakeHint').style.opacity='1';
   appFlipped=false;
@@ -957,76 +932,69 @@ function flipSign(){
   burst();
   setTimeout(()=>{
     document.getElementById('shakeHint').style.opacity='0';
-    const nb=document.getElementById('nextSignBtn'); nb.style.display='block';
+    const nb=document.getElementById('nextSignBtn');nb.style.display='block';
     nb.textContent=appCur<appPOIs.length-1?`还剩 ${appPOIs.length-appCur-1} 签  继续拆 →`:'查看我的命定路线 ✦';
   },680);
 }
 function nextSign(){
   if(appCur>=appPOIs.length-1){buildResult();return;}
-  appCur++; renderProg(); resetCard();
+  appCur++;renderProg();resetCard();
 }
 function buildResult(){
   signDone=true;
   document.getElementById('signStage').style.display='none';
   document.getElementById('nextSignBtn').style.display='none';
   document.getElementById('rpTitle').textContent=`${appDest}的隐藏路线`;
-  const list=document.getElementById('rpList'); list.innerHTML='';
+  const list=document.getElementById('rpList');list.innerHTML='';
   appPOIs.forEach((p,i)=>{
-    const el=document.createElement('div'); el.className='rp-item';
+    const el=document.createElement('div');el.className='rp-item';
     el.innerHTML=`<div class="rp-seq">${i+1}</div><div class="rp-ico">${p.icon}</div><div class="rp-info"><div class="rp-name">${p.name}</div><div class="rp-phrase">${appPhrases[i]}</div></div>`;
     list.appendChild(el);
   });
-  const rp=document.getElementById('resultPoster');
-  const hb=document.getElementById('heartBtn');
-  const ar=document.getElementById('actRow');
-  rp.style.display='block'; hb.style.display='block'; ar.style.display='flex';
-  hb.className='heart-btn fly'; hb.textContent='我也想去 💛';
-  setTimeout(()=>rp.classList.add('show'),80);
-  setTimeout(()=>hb.classList.add('show'),240);
-  setTimeout(()=>ar.classList.add('show'),380);
-  // 更新履历数据
+  const show=(id,delay)=>setTimeout(()=>{const e=document.getElementById(id);e.style.display=id==='actRow'?'flex':'block';setTimeout(()=>e.classList.add('show'),20);},delay);
+  show('resultPoster',80);show('heartBtn',240);show('actRow',380);
   document.getElementById('statSigns').textContent=parseInt(document.getElementById('statSigns').textContent)+appPOIs.length;
 }
 function sendHeart(){
   const b=document.getElementById('heartBtn');
-  b.classList.add('sent'); b.textContent='💙 心动通知已发送！';
+  b.classList.add('sent');b.textContent='💙 心动通知已发送！';
   document.getElementById('statHearts').textContent=parseInt(document.getElementById('statHearts').textContent)+1;
 }
 function copyResult(){
   const lines=appPOIs.map((p,i)=>`${p.icon} ${p.name} — ${appPhrases[i]}`).join('\n');
   navigator.clipboard.writeText(`摇一摇，抽你的${appDest}旅行签 🎴\n\n${lines}`).catch(()=>{});
-  event.target.textContent='✅'; setTimeout(()=>event.target.textContent='📋 复制',1500);
+  event.target.textContent='✅';setTimeout(()=>event.target.textContent='📋 复制',1500);
 }
 function saveImg(){
-  const btn=event.target; btn.textContent='生成…';
-  const dpr=window.devicePixelRatio||2, W=340, rowH=50, H=100+appPOIs.length*rowH+40;
-  const cv=document.createElement('canvas'); cv.width=W*dpr; cv.height=H*dpr;
-  const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
-  ctx.fillStyle='#fff'; ctx.roundRect(0,0,W,H,20); ctx.fill();
+  const btn=event.target;btn.textContent='生成…';
+  const dpr=Math.min(window.devicePixelRatio||2,2),W=340,rowH=50,H=90+appPOIs.length*rowH+40;
+  const cv=document.createElement('canvas');cv.width=W*dpr;cv.height=H*dpr;
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
   const g=ctx.createLinearGradient(0,0,W,0);
-  g.addColorStop(0,'#1e40af'); g.addColorStop(.5,'#2563eb'); g.addColorStop(1,'#60a5fa');
-  ctx.fillStyle=g; ctx.roundRect(0,0,W,100,{topLeft:20,topRight:20}); ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='600 9px sans-serif';
-  ctx.fillText('HIDDEN ROUTE · FATE TRIP',16,22);
-  ctx.fillStyle='#fff'; ctx.font='900 17px sans-serif';
-  ctx.fillText(`${appDest}的隐藏路线`,16,76);
+  g.addColorStop(0,'#3a5fc8');g.addColorStop(.5,'#5a88e0');g.addColorStop(1,'#80b0f0');
+  ctx.fillStyle=g;ctx.roundRect(0,0,W,90,{topLeft:18,topRight:18});ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 9px sans-serif';
+  ctx.fillText('HIDDEN ROUTE · FATE TRIP',16,20);
+  ctx.fillStyle='#fff';ctx.font='800 17px sans-serif';
+  ctx.fillText(`${appDest}的隐藏路线`,16,70);
+  ctx.fillStyle='#fff';ctx.roundRect(0,90,W,H-90,{bottomLeft:18,bottomRight:18});ctx.fill();
   appPOIs.forEach((p,i)=>{
-    const y=100+i*rowH;
-    if(i>0){ctx.strokeStyle='rgba(37,99,235,.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(16,y);ctx.lineTo(W-16,y);ctx.stroke();}
-    ctx.fillStyle='#dbeafe';ctx.beginPath();ctx.arc(27,y+rowH/2,10,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#2563eb';ctx.font='700 9px sans-serif';ctx.textAlign='center';
+    const y=90+i*rowH;
+    if(i>0){ctx.strokeStyle='rgba(200,220,248,.6)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(16,y);ctx.lineTo(W-16,y);ctx.stroke();}
+    ctx.fillStyle='rgba(74,127,212,.1)';ctx.beginPath();ctx.arc(27,y+rowH/2,10,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#4a7fd4';ctx.font='700 9px sans-serif';ctx.textAlign='center';
     ctx.fillText(i+1,27,y+rowH/2+3);ctx.textAlign='left';
-    ctx.font='20px sans-serif';ctx.fillText(p.icon,44,y+rowH/2+7);
-    ctx.fillStyle='#0f172a';ctx.font='700 13px sans-serif';ctx.fillText(p.name,72,y+rowH/2-2);
-    ctx.fillStyle='#64748b';ctx.font='italic 10px sans-serif';
-    const ph=appPhrases[i]; ctx.fillText(ph.length>28?ph.slice(0,28)+'…':ph,72,y+rowH/2+13);
+    ctx.font='18px sans-serif';ctx.fillText(p.icon,44,y+rowH/2+6);
+    ctx.fillStyle='#1a2540';ctx.font='700 13px sans-serif';ctx.fillText(p.name,70,y+rowH/2-2);
+    ctx.fillStyle='#506080';ctx.font='italic 11px sans-serif';
+    const ph=appPhrases[i];ctx.fillText(ph.length>30?ph.slice(0,30)+'…':ph,70,y+rowH/2+13);
   });
-  const a=document.createElement('a'); a.download=`fate-trip-${appDest}.png`; a.href=cv.toDataURL(); a.click();
+  const a=document.createElement('a');a.download=`fate-trip-${appDest}.png`;a.href=cv.toDataURL();a.click();
   btn.textContent='💾 保存';
 }
-function resetSign(){ initSign(); }
+function resetSign(){initSign();}
 
-/* ════ Tab2: 默契测试 ════ */
+/* ════ 默契测试 ════ */
 const MATCH_POIS=[
   {name:'乍都乍市场',type:'市集',icon:'🛍️',desc:'城市最大的周末市场，藏着无数惊喜'},
   {name:'卧佛寺',type:'文化',icon:'🙏',desc:'镀金巨佛静卧，时间在这里慢下来'},
@@ -1034,102 +1002,78 @@ const MATCH_POIS=[
   {name:'湄南河畔',type:'风景',icon:'🌅',desc:'黄昏时分，河面金光，值得等待'},
   {name:'Or Tor Kor市场',type:'美食',icon:'🍜',desc:'当地人才知道的鲜果天堂'},
 ];
-// A 的预设选择
-aVotes=[true,false,true,true,false];
+const aVotes=[true,false,true,true,false];
+let matchCur=0,myVotes=[];
 
 function startMatch(){
-  matchPOIs=[...MATCH_POIS]; matchCur=0; myVotes=[];
+  matchCur=0;myVotes=[];
   document.getElementById('matchIntro').style.display='none';
   loadMatchCard();
   document.getElementById('swipeWrap').style.display='block';
   document.getElementById('voteBtns').style.display='flex';
 }
 function loadMatchCard(){
-  const p=matchPOIs[matchCur];
+  const p=MATCH_POIS[matchCur];
   document.getElementById('scIco').textContent=p.icon;
   document.getElementById('scName').textContent=p.name;
   document.getElementById('scType').textContent=p.type;
   document.getElementById('scDesc').textContent=p.desc;
-  document.getElementById('matchProgress').textContent=`${matchCur+1} / ${matchPOIs.length}`;
+  document.getElementById('matchProgress').textContent=`${matchCur+1} / ${MATCH_POIS.length}`;
   const card=document.getElementById('swipeCard');
-  card.style.transform=''; card.style.opacity='1';
+  card.style.transform='';card.style.opacity='1';
 }
 function vote(yes){
   myVotes.push(yes);
   const card=document.getElementById('swipeCard');
-  card.style.transform=`translateX(${yes?120:-120}px) rotate(${yes?15:-15}deg)`;
+  card.style.transition='transform .35s,opacity .35s';
+  card.style.transform=`translateX(${yes?120:-120}px) rotate(${yes?14:-14}deg)`;
   card.style.opacity='0';
   setTimeout(()=>{
+    card.style.transition='';
     matchCur++;
-    if(matchCur>=matchPOIs.length){
+    if(matchCur>=MATCH_POIS.length){
       document.getElementById('swipeWrap').style.display='none';
       document.getElementById('voteBtns').style.display='none';
       document.getElementById('matchWait').style.display='block';
-      setTimeout(showMatchResult,2200);
-    } else { loadMatchCard(); }
-  },350);
+      setTimeout(showMatchResult,2000);
+    } else loadMatchCard();
+  },360);
 }
 function showMatchResult(){
   document.getElementById('matchWait').style.display='none';
   const matches=myVotes.filter((v,i)=>v===aVotes[i]).length;
-  const pct=Math.round(matches/matchPOIs.length*100);
+  const pct=Math.round(matches/MATCH_POIS.length*100);
   const verdict=pct>=80?'灵魂契合型旅伴 💯':pct>=60?'求同存异型旅伴 🤝':'互补型旅伴 🤔';
-  const html=`
-    <div class="mr-card">
-      <div class="mr-cover">
-        <div class="mr-pct">${pct}%</div>
-        <div class="mr-label">旅行默契度</div>
-      </div>
-      <div class="mr-body">
-        <div class="mr-verdict">${verdict}</div>
-        <div class="mr-detail">你们 5 个地点里 <b>${matches} 个一致</b>，${matchPOIs.length-matches} 个分歧。${pct>=60?'一起出发没问题！':'分歧点值得好好聊聊～'}</div>
-        <div class="mr-items">
-          ${matchPOIs.map((p,i)=>`
-            <div class="mr-item">
-              <div class="mi-ico">${p.icon}</div>
-              <div class="mi-name">${p.name}</div>
-              <div class="mi-match ${myVotes[i]===aVotes[i]?'match-y':myVotes[i]&&!aVotes[i]?'match-m':'match-n'}">
-                ${myVotes[i]===aVotes[i]?'💯 一致':myVotes[i]?'你想去':'A 想去'}
-              </div>
-            </div>`).join('')}
-        </div>
-      </div>
-    </div>`;
   const mr=document.getElementById('matchResult');
-  mr.innerHTML=html; mr.style.display='block';
-  document.getElementById('statCities').textContent=Math.min(5,parseInt(document.getElementById('statCities').textContent)+1);
+  mr.innerHTML=`<div class="mr-card"><div class="mr-cover"><div class="mr-pct">${pct}%</div><div class="mr-label">旅行默契度</div></div><div class="mr-body"><div class="mr-verdict">${verdict}</div><div class="mr-detail">你们 5 个地点里 <b>${matches} 个一致</b>，${MATCH_POIS.length-matches} 个分歧。${pct>=60?'一起出发没问题！':'分歧点值得好好聊聊～'}</div><div class="mr-items">${MATCH_POIS.map((p,i)=>`<div class="mr-item"><div class="mi-ico">${p.icon}</div><div class="mi-name">${p.name}</div><div class="mi-match ${myVotes[i]===aVotes[i]?'match-y':myVotes[i]?'match-m':'match-n'}">${myVotes[i]===aVotes[i]?'💯 一致':myVotes[i]?'你想去':'A 想去'}</div></div>`).join('')}</div></div></div>`;
+  mr.style.display='block';
 }
 
-/* ════ Tab3: 性格推荐 ════ */
+/* ════ 性格推荐 ════ */
+const PERSONA_ROUTES={
+  INFP:{color:'linear-gradient(135deg,#7048c8,#9570e0)',label:'给 INFP 的曼谷隐藏路线',tag:'文艺 · 慢游 · 独立',
+    pois:[{icon:'☕',name:'Roast咖啡馆',why:'小众独立咖啡，INFP 最爱的那种安静角落'},{icon:'📚',name:'二手书街',why:'文字是 INFP 的母语，这里有你说的那种感觉'},{icon:'🌿',name:'是隆花园',why:'人少、绿意、适合发呆——你会感谢这个选择'}],
+    comment:'太懂你了对吧？INFP 不需要景点打卡，需要<b>被某个角落真正打动</b>的瞬间。'},
+  ENTJ:{color:'linear-gradient(135deg,#2451b8,#5a88e0)',label:'给 ENTJ 的曼谷高效路线',tag:'高效 · 打卡 · 商务',
+    pois:[{icon:'🏙️',name:'曼谷天空步道',why:'360° 全景，10分钟掌握城市格局'},{icon:'⭐',name:'米其林街头小吃',why:'效率最高的美食打卡，不浪费一秒'},{icon:'🛍️',name:'暹罗百丽宫',why:'购物+商务+地标，一站搞定'}],
+    comment:'ENTJ 的旅行是<b>有目标的</b>。这条路线按优先级排序，每个地点都值得你的时间。'},
+  ENFP:{color:'linear-gradient(135deg,#c08010,#e0a030)',label:'给 ENFP 的曼谷随机路线',tag:'活力 · 探索 · 惊喜',
+    pois:[{icon:'🌃',name:'考山路夜市',why:'人多、热闹、随时能交到新朋友——ENFP 天堂'},{icon:'🎨',name:'涂鸦街区',why:'每次来都不一样，符合你对惊喜的期待'},{icon:'🛶',name:'水上市场',why:'活在当下，不知道下一个转角是什么'}],
+    comment:'ENFP 旅行的精髓是<b>不预期的相遇</b>。这条路线故意留了空白，让你自己填满。'},
+  ISTJ:{color:'linear-gradient(135deg,#186080,#3090b0)',label:'给 ISTJ 的曼谷经典路线',tag:'严谨 · 历史 · 计划',
+    pois:[{icon:'🏛️',name:'大皇宫',why:'必去历史地标，有完整的时代背景，值得认真研究'},{icon:'🙏',name:'玉佛寺',why:'宗教文化精华，有逻辑有结构，ISTJ 会欣赏'},{icon:'⛵',name:'湄南河游船',why:'城市历史脉络的最佳视角，按时刻表运行'}],
+    comment:'ISTJ 的旅行<b>要有价值感</b>。每个地点都有历史厚度，不是随便打卡，是真正看懂曼谷。'}
+};
+let selectedPersona='INFP';
 function selPersona(el){
   document.querySelectorAll('.mp-btn').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel'); selectedPersona=el.dataset.m;
+  el.classList.add('sel');selectedPersona=el.dataset.m;
 }
 function genPersona(){
   const r=PERSONA_ROUTES[selectedPersona]||PERSONA_ROUTES.INFP;
-  const html=`
-    <div class="pr-card">
-      <div class="pr-cover" style="background:${r.color}">
-        <div class="pr-eyebrow">${r.tag}</div>
-        <div class="pr-title">${r.label}</div>
-      </div>
-      <div class="pr-list">
-        ${r.pois.map(p=>`
-          <div class="pr-item">
-            <div class="pri-ico">${p.icon}</div>
-            <div class="pri-info">
-              <div class="pri-name">${p.name}</div>
-              <div class="pri-why">${p.why}</div>
-            </div>
-          </div>`).join('')}
-      </div>
-      <div class="pr-comment">${r.comment}</div>
-    </div>
-    <button style="width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;margin-top:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;font-size:14px;font-weight:800;font-family:inherit;box-shadow:0 5px 18px rgba(124,58,237,.25)" onclick="document.getElementById('heartBtn2')&&document.getElementById('heartBtn2').click()">
-      我也想去 💛
-    </button>`;
   const pr=document.getElementById('personaRoute');
-  pr.innerHTML=html; pr.style.display='block';
+  pr.innerHTML=`<div class="pr-card"><div class="pr-cover" style="background:${r.color}"><div class="pr-eyebrow">${r.tag}</div><div class="pr-title">${r.label}</div></div><div class="pr-list">${r.pois.map(p=>`<div class="pr-item"><div class="pri-ico">${p.icon}</div><div class="pri-info"><div class="pri-name">${p.name}</div><div class="pri-why">${p.why}</div></div></div>`).join('')}</div><div class="pr-comment">${r.comment}</div></div><button style="width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;margin-top:10px;background:linear-gradient(135deg,var(--purple),#8050d8);color:#fff;font-size:14px;font-weight:700;font-family:inherit;box-shadow:0 5px 18px rgba(112,72,200,.22)" onclick="sendHeart()">我也想去 💛</button>`;
+  pr.style.display='block';
   pr.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
@@ -1138,42 +1082,40 @@ function setupShake(){
   let last=0;
   window.addEventListener('devicemotion',e=>{
     if(appFlipped||signDone)return;
-    const a=e.accelerationIncludingGravity; if(!a)return;
+    const a=e.accelerationIncludingGravity;if(!a)return;
     const m=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z),now=Date.now();
     if(m>13&&now-last>900){last=now;flipSign();}
   });
 }
 
-/* ════ 粒子 ════ */
+/* ════ 粒子（轻量，仅翻牌时） ════ */
 function burst(){
   const cv=document.getElementById('pcvs');
-  cv.width=innerWidth; cv.height=innerHeight;
+  const shell=document.getElementById('phoneShell');
+  const br=shell.getBoundingClientRect();
+  cv.width=br.width;cv.height=br.height;
   const ctx=cv.getContext('2d');
-  const cx=innerWidth/2, cy=innerHeight*.42, ps=[];
-  for(let i=0;i<50;i++){
-    const a=Math.random()*Math.PI*2,sp=1.8+Math.random()*4.5;
-    const warm=Math.random()>.5;
-    ps.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.2,
-      r:.5+Math.random()*2,alpha:1,
-      color:warm?`hsl(${40+Math.random()*20},85%,${65+Math.random()*12}%)`:
-                 `hsl(${210+Math.random()*30},80%,${65+Math.random()*12}%)`});
+  const fw=document.getElementById('flipWrap').getBoundingClientRect();
+  const cx=fw.left-br.left+fw.width/2,cy=fw.top-br.top+fw.height/2;
+  const ps=[];
+  for(let i=0;i<36;i++){
+    const a=Math.random()*Math.PI*2,sp=1.5+Math.random()*3.5;
+    ps.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,
+      r:.8+Math.random()*2,alpha:1,
+      color:`hsl(${210+Math.random()*40},${70+Math.random()*20}%,${70+Math.random()*15}%)`});
   }
   let f=0;
   (function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
-    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.alpha-=.016;
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.alpha-=.018;
       if(p.alpha<=0)return;
       ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
     });
     ctx.globalAlpha=1;
-    if(++f<70)requestAnimationFrame(draw);
+    if(++f<65)requestAnimationFrame(draw);
     else ctx.clearRect(0,0,cv.width,cv.height);
   })();
-}
-// 电脑端：把body背景改成深色
-if(window.innerWidth>500){
-  document.body.style.background='#c8d8f0';
 }
 </script>
 </body>
