@@ -82,84 +82,109 @@
 (function(){
   const cv=document.getElementById('bg-canvas');
   const ctx=cv.getContext('2d');
-  let W,H,mouse={x:0,y:0},target={x:0,y:0};
-  // 粒子
-  const N=320;
-  const pts=[];
-  function resize(){
-    W=cv.width=window.innerWidth;
-    H=cv.height=window.innerHeight;
-    // 底层渐变色块位置重算
+  let W,H,mouse={x:.5,y:.5},target={x:.5,y:.5};
+
+  // ── 波源列表（每次鼠标移动/点击产生新波源）──
+  const waves=[];
+  let lastWaveT=0;
+
+  function addWave(x,y,strength){
+    waves.push({
+      x,y,          // 归一化坐标
+      t:0,          // 时间
+      str:strength||1,
+      maxT:120      // 生命周期帧数
+    });
   }
-  function mkPt(){
-    return {
-      x:Math.random()*1.2-.1,// 0-1 归一化
-      y:Math.random()*1.2-.1,
-      vx:(Math.random()-.5)*.0003,
-      vy:(Math.random()-.5)*.0003,
-      r:Math.random()*.8+.2,
-      alpha:Math.random()*.22+.05,
-      // 色调：冰蓝/粉白/白
-      h:205+Math.random()*20,
-      s:Math.random()<.55?15+Math.random()*20:0,
-      l:90+Math.random()*8,
-    };
-  }
-  for(let i=0;i<N;i++) pts.push(mkPt());
-  // 涟漪状态
-  const ripples=[];
-  let lastRT=0;
+
   window.addEventListener('mousemove',e=>{
     target.x=e.clientX/W;
     target.y=e.clientY/H;
     const now=Date.now();
-    if(now-lastRT>80){
-      lastRT=now;
-      ripples.push({x:e.clientX/W,y:e.clientY/H,r:0,maxR:.10,alpha:.50,speed:.0013,lw:1.2});
+    if(now-lastWaveT>120){
+      lastWaveT=now;
+      addWave(e.clientX/W, e.clientY/H, 0.6);
     }
   });
   window.addEventListener('click',e=>{
-    for(let i=0;i<5;i++){
-      ripples.push({x:e.clientX/W,y:e.clientY*1/H,r:i*.022,maxR:.22-i*.02,alpha:.70-i*.11,speed:.0018+i*.0003,lw:1.6-i*.22});
+    // 点击产生更强的多重波
+    for(let i=0;i<3;i++){
+      setTimeout(()=>addWave(e.clientX/W, e.clientY/H, 1.2-i*.3), i*80);
     }
   });
-  // 移动时偏移小光晟
-  let trailPts=[];
-  window.addEventListener('mousemove',e=>{
-    if(Math.random()<.12){
-      trailPts.push({x:e.clientX/W,y:e.clientY/H,life:1,r:.3+Math.random()*.8});
-    }
+
+  window.addEventListener('resize',()=>{
+    W=cv.width=window.innerWidth;
+    H=cv.height=window.innerHeight;
   });
-  window.addEventListener('resize',resize);
-  resize();
-  // 3个慢移动的大光晕（底色）
+  W=cv.width=window.innerWidth;
+  H=cv.height=window.innerHeight;
+
+  // ── 大光晕底色 ──
   const blobs=[
-    {x:.0,y:.0,vx:.00006,vy:.00005,r:.55,c:'rgba(160,222,238,.48)'},
+    {x:.0, y:.0, vx:.00006,vy:.00005,r:.55,c:'rgba(160,222,238,.48)'},
     {x:.92,y:.06,vx:-.00006,vy:.00008,r:.52,c:'rgba(140,215,238,.42)'},
     {x:.96,y:.94,vx:-.00007,vy:-.00006,r:.48,c:'rgba(155,220,240,.38)'},
     {x:.04,y:.96,vx:.00005,vy:-.00006,r:.45,c:'rgba(168,225,242,.35)'},
     {x:.50,y:.50,vx:.00003,vy:.00004,r:.38,c:'rgba(158,218,238,.25)'},
   ];
+
+  // ── 水波纹渲染：按同心圆轮廓采样正弦波亮度 ──
+  function drawWave(wave){
+    const cx=wave.x*W, cy=wave.y*H;
+    const life=1-wave.t/wave.maxT;           // 1→0 生命衰减
+    const speed=4.5;                          // 波速（px/frame）
+    const waveLen=60;                         // 波长（px）
+    const maxR=wave.t*speed;                 // 当前波前半径
+    const ringCount=6;                        // 同时渲染的波环数
+
+    for(let k=0;k<ringCount;k++){
+      const r=maxR - k*waveLen;
+      if(r<=0) continue;
+
+      // 衰减：距波源越远越弱；波尾越老越弱
+      const distDecay=Math.max(0, 1-r/(Math.min(W,H)*.85));
+      const alpha=life * distDecay * wave.str * (1-k/ringCount) * 0.55;
+      if(alpha<0.004) continue;
+
+      // 用多边形近似圆，逐段计算正弦偏移制造"水面起伏"质感
+      const segs=Math.max(60, Math.round(r*.8));
+      ctx.beginPath();
+      for(let i=0;i<=segs;i++){
+        const angle=(i/segs)*Math.PI*2;
+        // 正弦扰动：让圆圈轻微起伏，模拟水面
+        const wobble=Math.sin(angle*8 + wave.t*.18)*2.5*(1-k/ringCount)*life;
+        const rr=r+wobble;
+        const px=cx+Math.cos(angle)*rr;
+        const py=cy+Math.sin(angle)*rr;
+        i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+      }
+      ctx.closePath();
+
+      // 颜色：内圈亮白蓝，外圈冰蓝
+      const blue=Math.round(180+60*(1-k/ringCount));
+      ctx.strokeStyle=`rgba(100,${blue},255,1)`;
+      ctx.lineWidth=Math.max(0.4, (1.8-k*.25)*life*wave.str);
+      ctx.globalAlpha=alpha;
+      ctx.stroke();
+    }
+  }
+
+  let frame=0;
   function draw(){
     requestAnimationFrame(draw);
+    frame++;
     ctx.clearRect(0,0,W,H);
-    // 底色：冰蓝为主
+
+    // 背景渐变
     const bg=ctx.createLinearGradient(0,0,0,H);
     bg.addColorStop(0,'#ffffff');
     bg.addColorStop(.45,'#d8f0f8');
     bg.addColorStop(1,'#b8e2f0');
-    ctx.fillStyle=bg;
+    ctx.fillStyle=bg; ctx.globalAlpha=1;
     ctx.fillRect(0,0,W,H);
-    // 晨昏线
-    const dawn=ctx.createLinearGradient(0,H*.65,W*.65,0);
-    dawn.addColorStop(0,'transparent');
-    dawn.addColorStop(.44,'transparent');
-    dawn.addColorStop(.5,'rgba(120,215,240,.18)');
-    dawn.addColorStop(.56,'transparent');
-    dawn.addColorStop(1,'transparent');
-    ctx.fillStyle=dawn;
-    ctx.fillRect(0,0,W,H);
-    // 大光晕跟随鼠标缓移
+
+    // 大光晕
     mouse.x+=(target.x-mouse.x)*.018;
     mouse.y+=(target.y-mouse.y)*.018;
     blobs.forEach(b=>{
@@ -169,71 +194,38 @@
       if(b.x<-.3)b.x=1.3; if(b.x>1.3)b.x=-.3;
       if(b.y<-.3)b.y=1.3; if(b.y>1.3)b.y=-.3;
       const g=ctx.createRadialGradient(b.x*W,b.y*H,0,b.x*W,b.y*H,b.r*Math.max(W,H));
-      g.addColorStop(0,b.c);
-      g.addColorStop(1,'transparent');
-      ctx.fillStyle=g;
+      g.addColorStop(0,b.c); g.addColorStop(1,'transparent');
+      ctx.fillStyle=g; ctx.globalAlpha=1;
       ctx.fillRect(0,0,W,H);
     });
-    // 鼠标小聚光（小范围，不扳布局）
+
+    // 鼠标聚光
     const mg=ctx.createRadialGradient(mouse.x*W,mouse.y*H,0,mouse.x*W,mouse.y*H,Math.min(W,H)*.08);
-    mg.addColorStop(0,'rgba(120,225,248,.45)');
-    mg.addColorStop(.6,'rgba(160,235,252,.12)');
+    mg.addColorStop(0,'rgba(120,225,248,.40)');
+    mg.addColorStop(.6,'rgba(160,235,252,.10)');
     mg.addColorStop(1,'transparent');
-    ctx.fillStyle=mg;
+    ctx.fillStyle=mg; ctx.globalAlpha=1;
     ctx.fillRect(0,0,W,H);
-    // 移动拖尾小光点
-    
-    // 涟漪
-    ripples.forEach((rp)=>{
-      rp.r+=rp.speed;
-      const progress=rp.r/rp.maxR;
-      rp.alpha=Math.max(0,rp.alpha*(1-progress*.035)-(rp.lw<1?.012:.010));
-      if(rp.alpha<=0||rp.r>rp.maxR)return;
-      const rad=rp.r*Math.min(W,H);
-      // 外圈：冰蓝
-      ctx.globalAlpha=rp.alpha;
-      ctx.strokeStyle='rgba(80,180,240,1)';
-      ctx.lineWidth=rp.lw*(1-progress*.5);
-      ctx.beginPath();
-      ctx.arc(rp.x*W,rp.y*H,rad,0,Math.PI*2);
-      ctx.stroke();
-      // 内圈：更亮白蓝，营造层次感
-      if(rad>4){
-        ctx.globalAlpha=rp.alpha*.45;
-        ctx.strokeStyle='rgba(200,240,255,1)';
-        ctx.lineWidth=rp.lw*.5*(1-progress*.6);
-        ctx.beginPath();
-        ctx.arc(rp.x*W,rp.y*H,rad*.75,0,Math.PI*2);
-        ctx.stroke();
-      }
+
+    // ── 水波纹 ──
+    ctx.save();
+    ctx.lineJoin='round';
+    waves.forEach(w=>{
+      w.t++;
+      drawWave(w);
     });
-    ripples.splice(0,ripples.length,...ripples.filter(r=>r.alpha>0&&r.r<=r.maxR));
-    if(false){const p={life:0};p.life<=0)return;
-      ctx.globalAlpha=p.life*.8;
-      ctx.fillStyle=`hsl(${p.h},65%,75%)`;
-      ctx.beginPath();ctx.arc(p.x*W,p.y*H,p.r*p.life,0,Math.PI*2);ctx.fill();
-    });
+    // 清理过期波
+    for(let i=waves.length-1;i>=0;i--){
+      if(waves[i].t>=waves[i].maxT) waves.splice(i,1);
     }
-    // 粒子
-    pts.forEach(p=>{
-      p.vx+=(mouse.x-p.x)*.000018;
-      p.vy+=(mouse.y-p.y)*.000018;
-      p.vx*=.994; p.vy*=.994;
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<-.05)p.x=1.05; if(p.x>1.05)p.x=-.05;
-      if(p.y<-.05)p.y=1.05; if(p.y>1.05)p.y=-.05;
-      const dx=p.x-mouse.x,dy=p.y-mouse.y;
-      const dist=Math.sqrt(dx*dx+dy*dy);
-      const glow=Math.max(0,1-dist/.3);
-      ctx.globalAlpha=p.alpha+glow*.45;
-      ctx.fillStyle=`hsl(${p.h},${p.s}%,${p.l+glow*8}%)`;
-      ctx.beginPath();
-      ctx.arc(p.x*W,p.y*H,p.r*(1+glow*.8),0,Math.PI*2);
-      ctx.fill();
-    });
+    ctx.restore();
+
     ctx.globalAlpha=1;
   }
+
   draw();
+  // 页面加载后在中心产生一个欢迎波
+  setTimeout(()=>addWave(.5,.38,0.8),600);
 })();
 </script>
 <div id="sc"><nav class="nav glass"><a class="brand" href="#home"><img class="avatar" src="hero-qin.png" alt="Qin">08's Portfolio</a><div class="navlinks"><button class="on" data-target="home">首页</button><button data-target="about">自我介绍</button><button data-target="tools">AI工具</button><button data-target="details">工具详情</button><button data-target="summary">总结</button></div><a class="contact" href="mailto:qinlinbo5@gmail.com">联系我　↗</a></nav>
