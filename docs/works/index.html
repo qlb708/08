@@ -113,14 +113,14 @@
     target.x=e.clientX/W;
     target.y=e.clientY/H;
     const now=Date.now();
-    if(now-lastRT>130){
+    if(now-lastRT>80){
       lastRT=now;
-      ripples.push({x:e.clientX/W,y:e.clientY/H,r:0,maxR:.05,alpha:.38,speed:.0016,lw:.8});
+      ripples.push({x:e.clientX/W,y:e.clientY/H,r:0,maxR:.10,alpha:.50,speed:.0013,lw:1.2});
     }
   });
   window.addEventListener('click',e=>{
-    for(let i=0;i<3;i++){
-      ripples.push({x:e.clientX/W,y:e.clientY/H,r:i*.018,maxR:.13,alpha:.65-i*.15,speed:.0022,lw:1.2-i*.2});
+    for(let i=0;i<5;i++){
+      ripples.push({x:e.clientX/W,y:e.clientY*1/H,r:i*.022,maxR:.22-i*.02,alpha:.70-i*.11,speed:.0018+i*.0003,lw:1.6-i*.22});
     }
   });
   // 移动时偏移小光晟
@@ -187,15 +187,25 @@
     ripples.forEach((rp)=>{
       rp.r+=rp.speed;
       const progress=rp.r/rp.maxR;
-      rp.alpha=Math.max(0,rp.alpha*(1-progress*.04)-(rp.lw<1?.018:.014));
+      rp.alpha=Math.max(0,rp.alpha*(1-progress*.035)-(rp.lw<1?.012:.010));
       if(rp.alpha<=0||rp.r>rp.maxR)return;
       const rad=rp.r*Math.min(W,H);
+      // 外圈：冰蓝
       ctx.globalAlpha=rp.alpha;
-      ctx.strokeStyle=`rgba(100,170,240,1)`;
+      ctx.strokeStyle='rgba(80,180,240,1)';
       ctx.lineWidth=rp.lw*(1-progress*.5);
       ctx.beginPath();
       ctx.arc(rp.x*W,rp.y*H,rad,0,Math.PI*2);
       ctx.stroke();
+      // 内圈：更亮白蓝，营造层次感
+      if(rad>4){
+        ctx.globalAlpha=rp.alpha*.45;
+        ctx.strokeStyle='rgba(200,240,255,1)';
+        ctx.lineWidth=rp.lw*.5*(1-progress*.6);
+        ctx.beginPath();
+        ctx.arc(rp.x*W,rp.y*H,rad*.75,0,Math.PI*2);
+        ctx.stroke();
+      }
     });
     ripples.splice(0,ripples.length,...ripples.filter(r=>r.alpha>0&&r.r<=r.maxR));
     if(false){const p={life:0};p.life<=0)return;
