@@ -32,6 +32,17 @@ html,body{
 .stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .star-dot{position:absolute;border-radius:50%;background:#fff}
 
+/* ══ 返回按钮 ══ */
+.back-to-works{
+  position:fixed;top:14px;left:16px;z-index:1000;
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.55);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.8);border-radius:30px;
+  padding:7px 14px;font-size:12px;font-weight:600;
+  color:var(--ink3);cursor:pointer;text-decoration:none;
+  box-shadow:0 2px 12px rgba(74,127,212,.10);transition:all .2s}
+.back-to-works:hover{background:rgba(255,255,255,.8);transform:translateX(-2px)}
+
 /* ══ 视图切换按钮 ══ */
 .view-toggle{
   position:fixed;top:14px;right:16px;z-index:1000;
@@ -52,12 +63,13 @@ html,body{
 body.mode-web .phone-shell{
   position:fixed;inset:0;width:100%;height:100%;
   background:transparent;overflow:hidden}
-/* 手机模式：iPhone 比例，居中 */
+/* 手机模式：iPhone 比例，居中，自适应视口高度 */
 body.mode-phone .phone-shell{
   position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:390px;height:844px;
+  width:min(390px, 96vw);
+  height:min(844px, calc(100vh - 24px));
   background:linear-gradient(170deg,#b8d4f0 0%,#cde0f8 25%,#d8e8f8 50%,#e0e8f5 75%,#e8e0f0 100%);
-  border-radius:48px;overflow:hidden;
+  border-radius:clamp(24px,5vw,48px);overflow:hidden;
   box-shadow:0 0 0 9px #e8eef8,0 0 0 11px #d0daf0,0 30px 80px rgba(40,60,120,.25)}
 
 /* ══ 屏幕层 ══ */
@@ -495,6 +507,9 @@ body.mode-phone .phone-shell{
 <!-- 静态星点背景 -->
 <div class="stars-bg" id="starsBg"></div>
 
+<!-- 返回 AI 工具 -->
+<a class="back-to-works" href="https://qlb708.github.io/08/works/#tools">← AI 工具</a>
+
 <!-- Web / 手机切换 -->
 <div class="view-toggle">
   <button class="vt-btn active" id="btnWeb" onclick="setMode('web')">🖥 Web</button>
@@ -797,7 +812,9 @@ function setMode(m){
   document.getElementById('btnWeb').classList.toggle('active',m==='web');
   document.getElementById('btnPhone').classList.toggle('active',m==='phone');
   // 切换按钮在手机模式下收起
-  document.querySelector('.view-toggle').style.top = m==='phone'?'calc(50% - 422px + 8px)':'14px';
+  const vTop = m==='phone'?'calc(50% - min(422px, calc(50vh - 12px)) + 8px)':'14px';
+  document.querySelector('.view-toggle').style.top = vTop;
+  document.querySelector('.back-to-works').style.top = vTop;
 }
 
 /* ════ 屏幕切换 ════ */
