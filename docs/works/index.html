@@ -1,6 +1,6 @@
 ﻿<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>08's Portfolio</title><style>
 *{box-sizing:border-box}html{scroll-behavior:auto;scroll-padding-top:106px}body{margin:0;background:#fdf0f3;color:#182843;font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}a{text-decoration:none;color:inherit}button{font:inherit;color:inherit}:root{--blue:#4a7bff;--mint:#73b99d;--peach:#ee9876;--ink:#182843;--muted:#6f7e98;--line:rgba(102,124,160,.13);--glass:rgba(255,255,255,.72);--shadow:0 18px 52px rgba(55,83,130,.09),inset 0 1px 0 rgba(255,255,255,.95);--wrap:min(1320px,calc(100vw - 28px))}
-body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 60% at 15% 20%,rgba(255,211,219,.75),transparent),radial-gradient(ellipse 55% 50% at 80% 15%,rgba(203,236,243,.70),transparent),radial-gradient(ellipse 50% 45% at 85% 80%,rgba(203,236,243,.55),transparent),radial-gradient(ellipse 60% 55% at 20% 85%,rgba(255,211,219,.50),transparent),radial-gradient(ellipse 45% 40% at 50% 50%,rgba(254,255,206,.60),transparent),linear-gradient(160deg,#fdf0f3,#f5eef8 40%,#eef5f8 70%,#fdf5e8)}.glass{background:var(--glass);border:1px solid rgba(255,255,255,.94);box-shadow:var(--shadow);backdrop-filter:blur(24px)}
+#bg-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}body{background:#eef3f8}.glass{background:var(--glass);border:1px solid rgba(255,255,255,.94);box-shadow:var(--shadow);backdrop-filter:blur(24px)}
 .nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:50;width:var(--wrap);height:82px;padding:0 32px;border-radius:30px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;font-weight:850;font-size:17px}.avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;object-position:70% 16%;border:3px solid #fff;box-shadow:0 8px 20px rgba(55,83,130,.12)}.navlinks{display:flex;gap:12px}.navlinks button{border:0;background:none;padding:12px 18px;border-radius:999px;cursor:pointer;color:#596984;position:relative}.navlinks button.on{color:var(--blue);background:rgba(240,244,255,.8)}.navlinks button.on:after{content:"";position:absolute;bottom:3px;left:50%;width:5px;height:5px;border-radius:50%;background:var(--blue)}.contact{padding:12px 24px;border-radius:999px;border:1px solid #dce5f5;background:rgba(255,255,255,.72);box-shadow:0 8px 20px rgba(66,92,140,.07)}
 #sc{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:auto}.snap-frame{height:100vh;scroll-snap-align:start;padding:122px 20px 20px;box-sizing:border-box}.page{width:var(--wrap);margin:0 auto;border-radius:30px;height:calc(100% - 0px);padding:28px 50px 24px;position:relative;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:20px}
 #home{overflow:visible}#summary{padding-bottom:44px}
@@ -77,6 +77,105 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradi
 .tl-axis-line{position:absolute;bottom:8px;left:40px;right:40px;height:0;border-bottom:2px dashed #b0c4e0}
 .tl-axis-line::after{content:'›';position:absolute;right:-14px;top:50%;transform:translateY(-52%);font-size:20px;color:#7ea0d4;line-height:1}
 </style></head><body>
+<canvas id="bg-canvas"></canvas>
+<script>
+(function(){
+  const cv=document.getElementById('bg-canvas');
+  const ctx=cv.getContext('2d');
+  let W,H,mouse={x:0,y:0},target={x:0,y:0};
+  // 粒子
+  const N=320;
+  const pts=[];
+  function resize(){
+    W=cv.width=window.innerWidth;
+    H=cv.height=window.innerHeight;
+    // 底层渐变色块位置重算
+  }
+  function mkPt(){
+    return {
+      x:Math.random()*1.2-.1,// 0-1 归一化
+      y:Math.random()*1.2-.1,
+      vx:(Math.random()-.5)*.0003,
+      vy:(Math.random()-.5)*.0003,
+      r:Math.random()*2+.4,
+      alpha:Math.random()*.55+.12,
+      // 色调：冰蓝/粉白/白
+      h:Math.random()<.5?210+Math.random()*20:340+Math.random()*20,
+      s:Math.random()<.7?30+Math.random()*30:0,
+      l:88+Math.random()*10,
+    };
+  }
+  for(let i=0;i<N;i++) pts.push(mkPt());
+  window.addEventListener('mousemove',e=>{
+    target.x=e.clientX/W;
+    target.y=e.clientY/H;
+  });
+  window.addEventListener('resize',resize);
+  resize();
+  // 3个慢移动的大光晕（底色）
+  const blobs=[
+    {x:.15,y:.2,vx:.0001,vy:.00008,r:.55,c:'rgba(255,211,219,.72)'},
+    {x:.8,y:.15,vx:-.00009,vy:.00012,r:.48,c:'rgba(203,236,243,.68)'},
+    {x:.5,y:.75,vx:.00007,vy:-.0001,r:.45,c:'rgba(254,255,206,.58)'},
+    {x:.85,y:.78,vx:-.00008,vy:-.00009,r:.42,c:'rgba(203,236,243,.52)'},
+  ];
+  function draw(){
+    requestAnimationFrame(draw);
+    ctx.clearRect(0,0,W,H);
+    // 底色
+    const bg=ctx.createLinearGradient(0,0,W*.6,H);
+    bg.addColorStop(0,'#fdf0f3');
+    bg.addColorStop(.4,'#f5eef8');
+    bg.addColorStop(.7,'#eef5f8');
+    bg.addColorStop(1,'#fdf5e8');
+    ctx.fillStyle=bg;
+    ctx.fillRect(0,0,W,H);
+    // 大光晕跟随鼠标缓移
+    mouse.x+=(target.x-mouse.x)*.018;
+    mouse.y+=(target.y-mouse.y)*.018;
+    blobs.forEach(b=>{
+      b.x+=b.vx; b.y+=b.vy;
+      // 被鼠标轻微吸引
+      b.x+=(mouse.x-b.x)*.0006;
+      b.y+=(mouse.y-b.y)*.0006;
+      if(b.x<-.3)b.x=1.3; if(b.x>1.3)b.x=-.3;
+      if(b.y<-.3)b.y=1.3; if(b.y>1.3)b.y=-.3;
+      const g=ctx.createRadialGradient(b.x*W,b.y*H,0,b.x*W,b.y*H,b.r*Math.max(W,H));
+      g.addColorStop(0,b.c);
+      g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;
+      ctx.fillRect(0,0,W,H);
+    });
+    // 鼠标聚光
+    const mg=ctx.createRadialGradient(mouse.x*W,mouse.y*H,0,mouse.x*W,mouse.y*H,Math.min(W,H)*.22);
+    mg.addColorStop(0,'rgba(255,255,255,.28)');
+    mg.addColorStop(.5,'rgba(220,235,255,.10)');
+    mg.addColorStop(1,'transparent');
+    ctx.fillStyle=mg;
+    ctx.fillRect(0,0,W,H);
+    // 粒子
+    pts.forEach(p=>{
+      p.vx+=(mouse.x-p.x)*.000018;
+      p.vy+=(mouse.y-p.y)*.000018;
+      p.vx*=.994; p.vy*=.994;
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<-.05)p.x=1.05; if(p.x>1.05)p.x=-.05;
+      if(p.y<-.05)p.y=1.05; if(p.y>1.05)p.y=-.05;
+      // 距鼠标近时变亮
+      const dx=p.x-mouse.x,dy=p.y-mouse.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      const glow=Math.max(0,1-dist/.3);
+      ctx.globalAlpha=p.alpha+glow*.45;
+      ctx.fillStyle=`hsl(${p.h},${p.s}%,${p.l+glow*8}%)`;
+      ctx.beginPath();
+      ctx.arc(p.x*W,p.y*H,p.r*(1+glow*.8),0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha=1;
+  }
+  draw();
+})();
+</script>
 <div id="sc"><nav class="nav glass"><a class="brand" href="#home"><img class="avatar" src="hero-qin.png" alt="Qin">08's Portfolio</a><div class="navlinks"><button class="on" data-target="home">首页</button><button data-target="about">自我介绍</button><button data-target="tools">AI工具</button><button data-target="details">工具详情</button><button data-target="summary">总结</button></div><a class="contact" href="mailto:qinlinbo5@gmail.com">联系我　↗</a></nav>
 <div class="snap-frame" id="home"><section class="page hero glass" ><div><span class="eyebrow">AI Product Ops &amp; Travel Tech Builder</span><h1>把重复动作，<br>变成 <em>可复用的能力</em></h1><p class="lead">旅行规划产品方向 · Vibe Coding 实践</p><div class="chips"><span class="chip">ϟ AI Ops</span><span class="chip">▥ Data Insight</span><span class="chip">&lt;/&gt; Vibe Coding</span><span class="chip">✈ Travel Tech</span></div><div class="stats glass"><div class="stat"><b>8+</b><span>实验工具</span></div><div class="stat"><b>200+</b><span>运营场景沉淀</span></div><div class="stat"><b>∞</b><span>持续迭代中</span></div></div></div><div class="hero-art"><img src="hero-qin.png" alt="Qin 的数字工作台"><div class="float f1"><b>Data Insight</b><div class="line"></div><span style="color:#61a58e">+23.5%</span></div><div class="float f2"><b>下一站 · 北海道</b><div style="height:65px;border-radius:10px;background:linear-gradient(#d8e9f3 50%,#a4c5c6 51% 58%,#eadabf 59%)"></div></div><div class="float f3"><b>Ideas</b>✓ AI 自动化<br>✓ 数据分析<br>✓ 产品优化</div></div></section></div>
 <div class="snap-frame" id="about"><section class="page about glass" ><div class="about-grid"><article class="profile glass"><div><h3>用内容连接用户，用数据驱动增长。</h3><p>喜欢用内容和数据发现机会、解决问题，<br>在产品和用户之间搭建连接，<br>让每一次体验更有价值，让每一份增长更可持续。</p><div class="facts"><span>⌖ 上海</span><span>◇ 硕士在读 · 生物医学工程</span><span>♡ 旅行 · 足球 · 运营</span></div></div><img src="hero-qin.png" alt="Qin 个人形象"></article><div class="about-side"><article class="tags glass"><h3>◇　我的标签</h3><div><span>Vibe Coding</span><span>用户洞察</span><span>数据驱动</span><span>内容增长</span><span>旅行探索</span></div></article><article class="quote contact-card glass"><h3>◈&nbsp;&nbsp;联系我</h3><div class="contact-list"><div>📞&nbsp;18735585229</div><div>✉️&nbsp;qinlinbo5@gmail.com</div><div>📄&nbsp;<a href="#" class="resume-link">简历查看（即将上线）</a></div></div></article></div><div class="about-cards"><article class="info-card glass"><h3>◎　教育背景</h3><div style="font-size:15px;font-weight:600;color:var(--blue);margin-bottom:10px">秦琳波 <span style="font-size:12px;font-weight:400;color:var(--muted)">2003.5</span></div><div class="experience"><b>上海科技大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">生物医学工程 · 硕士（推免）</div></div><div class="experience"><b>上海理工大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">医学影像技术 · 本科</div></div></article><article class="info-card glass"><h3>▣　实习经历</h3><div class="experience"><span class="badge">2026.6–2026.8</span><b>小红书｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">AI 旅行规划产品</div></div><div class="experience"><span class="badge">2026.3–2026.6</span><b>传音控股｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">手机 AI 助手</div></div><div class="experience"><span class="badge">2025.12–2026.2</span><b>明基科技｜增长运营</b></div></article><article class="info-card glass"><h3>✦　项目经历</h3><div class="experience"><span class="badge">2026.4–至今</span><b>AI 工具作品集</b><div style="color:var(--muted);font-size:12px;margin-top:2px">Vibe Coding 实践，构建个人 AI 工具集</div></div><div class="experience"><span class="badge">2022.12–2024.6</span><b>垂直足球资讯自媒体矩阵</b><div style="color:var(--muted);font-size:12px;margin-top:2px">垂直足球资讯，17w 粉丝</div></div></article><article class="info-card glass"><h3>◌　生活里的我</h3><ul><li><b>▣ 旅行探索</b><br>探索不同城市，收集美好体验</li><li><b>⚽ 足球爱好者</b><br>看球、写内容、运营足球自媒体</li><li><b>▤ 持续学习</b><br>关注 AI、产品与市场</li></ul></article></div></div></section></div>
