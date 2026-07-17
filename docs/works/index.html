@@ -118,9 +118,10 @@
     H=cv.height=window.innerHeight;
   });
   function resize(){
-    W=cv.width=window.innerWidth;
-    H=cv.height=window.innerHeight;
+    W=cv.width=window.innerWidth||document.documentElement.clientWidth||1280;
+    H=cv.height=window.innerHeight||document.documentElement.clientHeight||800;
   }
+  resize(); // 立即执行一次
   window.addEventListener('resize', resize);
 
   // ── 大光晕底色 ──
@@ -226,13 +227,8 @@
     ctx.globalAlpha=1;
   }
 
-  function start(){
-    resize();
-    draw();
-    setTimeout(()=>addWave(.5,.38,0.8),800);
-  }
-  if(document.readyState==='complete'){start();}
-  else{window.addEventListener('load',start);}
+  draw();
+  setTimeout(()=>addWave(.5,.38,0.8),800);
 })();
 </script>
 <div id="sc"><nav class="nav glass"><a class="brand" href="#home"><img class="avatar" src="hero-qin.png" alt="Qin">08's Portfolio</a><div class="navlinks"><button class="on" data-target="home">首页</button><button data-target="about">自我介绍</button><button data-target="tools">AI工具</button><button data-target="details">工具详情</button><button data-target="summary">总结</button></div><a class="contact" href="mailto:qinlinbo5@gmail.com">联系我　↗</a></nav>
