@@ -295,6 +295,25 @@
   .summary-art { height: 320px; }
   .sum-card { padding: 16px; }
 }
+
+/* about-timeline-v2 */
+.about-v2{justify-content:flex-start!important;padding:30px 46px!important;overflow:hidden!important}
+.about-shell{display:grid;grid-template-columns:330px minmax(0,1fr);gap:26px;width:100%;height:100%;min-height:0}
+.about-sticky{position:sticky;top:0;align-self:start;height:100%;min-height:0;border-radius:30px;padding:24px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(240,247,255,.58));border:1px solid rgba(255,255,255,.92);box-shadow:var(--shadow);backdrop-filter:blur(24px)}
+.about-avatar-wrap{display:flex;align-items:center;gap:14px}.about-avatar-wrap img{width:76px;height:76px;border-radius:24px;object-fit:cover;object-position:66% 12%;border:3px solid rgba(255,255,255,.95);box-shadow:0 16px 34px rgba(75,105,160,.16)}
+.about-name{font-size:24px;font-weight:850;letter-spacing:-.04em;color:#182843}.about-role{margin-top:4px;color:#65748f;font-size:13px;line-height:1.55}.about-role b{color:var(--blue)}
+.about-loc{display:grid;grid-template-columns:1fr 1fr;gap:9px}.about-pill{padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.66);border:1px solid rgba(225,232,243,.9);font-size:12px;color:#41516b}.about-pill b{display:block;color:#182843;font-size:13px;margin-bottom:2px}
+.about-side-section{padding:15px;border-radius:22px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85)}.about-side-section h3{margin:0 0 10px;font-size:13px;color:#24324d}.about-side-section p{margin:0;color:#64748d;font-size:12px;line-height:1.75}
+.about-tag-list,.about-contact-list{display:flex;flex-wrap:wrap;gap:8px}.about-tag-list span{padding:8px 10px;border-radius:999px;background:rgba(237,243,255,.78);border:1px solid #dfe8f7;font-size:11px;color:#395277}.about-tag-list span.hot{background:linear-gradient(135deg,#e9f0ff,#dce8ff);color:#4a7bff;font-weight:750}
+.about-contact-list a,.about-contact-list span{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid #e4ebf6;color:#425371;font-size:11px;text-decoration:none}
+.about-life-list{display:grid;gap:8px}.about-life-list span{display:flex;align-items:center;gap:8px;color:#53637d;font-size:12px}.about-life-list i{width:24px;height:24px;border-radius:9px;display:grid;place-items:center;background:#edf5ff;font-style:normal}
+.about-main{min-height:0;display:flex;flex-direction:column}.about-main-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px}.about-main-head h2{margin:0;font-size:clamp(28px,3.2vw,44px);letter-spacing:-.055em;color:#182843}.about-main-head h2 em{font-style:normal;color:var(--blue)}.about-main-head p{margin:6px 0 0;color:#64748d;font-size:13px}.about-legend{display:flex;gap:8px;flex-wrap:wrap}.data-badge{display:inline-flex;align-items:center;gap:5px;padding:8px 11px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.8);box-shadow:0 8px 20px rgba(55,83,130,.08)}.data-badge.blue{background:#e8f0ff;color:#4a7bff}.data-badge.green{background:#e6f5ed;color:#4b9877}.data-badge.peach{background:#fff0e7;color:#cc7652}.data-badge.sage{background:#eef3e9;color:#657166}
+.timeline{position:relative;flex:1;min-height:0;overflow-y:auto;padding:4px 8px 8px 26px;scrollbar-width:thin;scrollbar-color:#cbd8ec transparent}.timeline:before{content:'';position:absolute;top:14px;bottom:18px;left:11px;width:2px;background:linear-gradient(180deg,rgba(74,123,255,.15),rgba(115,185,157,.55),rgba(238,152,118,.18));border-radius:999px}.timeline::-webkit-scrollbar{width:6px}.timeline::-webkit-scrollbar-thumb{background:#cbd8ec;border-radius:999px}
+.t-item{position:relative;margin:0 0 13px}.t-dot{position:absolute;left:-23px;top:24px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid #b9c9e8;box-shadow:0 0 0 6px rgba(255,255,255,.68),0 0 24px rgba(74,123,255,.08);transition:.25s}.t-card{position:relative;border-radius:25px;padding:18px 20px;background:rgba(255,255,255,.68);border:1px solid rgba(255,255,255,.92);box-shadow:0 14px 38px rgba(55,83,130,.08);transition:transform .25s,box-shadow .25s,border-color .25s;backdrop-filter:blur(20px)}.t-card:hover{transform:translateY(-4px);box-shadow:0 24px 52px rgba(55,83,130,.13);border-color:rgba(255,255,255,1)}.t-item:hover .t-dot{border-color:var(--blue);box-shadow:0 0 0 7px rgba(74,123,255,.10),0 0 26px rgba(74,123,255,.35)}
+.t-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:8px}.t-kicker{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#8a99b0}.t-title{margin:2px 0 0;font-size:18px;font-weight:850;color:#1d2d48;letter-spacing:-.02em}.t-time{flex:0 0 auto;padding:7px 10px;border-radius:999px;background:#edf4ff;color:#5076d8;font-size:11px;font-weight:750}.t-desc{margin:0;color:#60708a;font-size:12px;line-height:1.65}.t-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.t-badges .data-badge{padding:6px 9px;font-size:10px}.t-list{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:5px}.t-list li{color:#65748f;font-size:12px;line-height:1.55}.t-list li:before{content:'+';color:#8db6dc;margin-right:7px;font-size:10px}
+@media(max-width:900px){.about-v2{padding:28px 22px!important;overflow:visible!important}.about-shell{grid-template-columns:1fr;height:auto}.about-sticky{position:relative;height:auto}.about-main{min-height:auto}.timeline{overflow:visible;padding-left:24px}.about-main-head{display:block}.about-legend{margin-top:12px}}
+@media(max-width:640px){.about-v2{padding:22px 16px!important}.about-sticky{padding:18px;border-radius:24px}.about-avatar-wrap img{width:64px;height:64px;border-radius:20px}.about-name{font-size:21px}.about-loc{grid-template-columns:1fr}.t-card{padding:16px}.t-title{font-size:16px}.t-top{flex-direction:column;gap:8px}.t-time{align-self:flex-start}.about-legend{gap:6px}.data-badge{padding:7px 9px}}
+
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
 <script>
@@ -580,7 +599,49 @@
     </div>
   </div>
 </div></section></div>
-<div class="snap-frame" id="about"><section class="page about glass" ><div class="about-grid"><article class="profile glass"><div><h3>用内容连接用户，用数据驱动增长。</h3><p>喜欢用内容和数据发现机会、解决问题，<br>在产品和用户之间搭建连接，<br>让每一次体验更有价值，让每一份增长更可持续。</p><div class="facts"><span>⌖ 上海</span><span>◇ 硕士在读 · 生物医学工程</span><span>♡ 旅行 · 足球 · 运营</span></div></div><img src="hero-qin.png" alt="Qin 个人形象"></article><div class="about-side"><article class="tags glass"><h3>◇　我的标签</h3><div><span>Vibe Coding</span><span>用户洞察</span><span>数据驱动</span><span>内容增长</span><span>旅行探索</span></div></article><article class="quote contact-card glass"><h3>◈&nbsp;&nbsp;联系我</h3><div class="contact-list"><div>📞&nbsp;18735585229</div><div>✉️&nbsp;qinlinbo5@gmail.com</div><div>📄&nbsp;<a href="#" class="resume-link">简历查看（即将上线）</a></div></div></article></div><div class="about-cards"><article class="info-card glass"><h3>◎　教育背景</h3><div style="font-size:15px;font-weight:600;color:var(--blue);margin-bottom:10px">秦琳波 <span style="font-size:12px;font-weight:400;color:var(--muted)">2003.5</span></div><div class="experience"><b>上海科技大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">生物医学工程 · 硕士（推免）</div></div><div class="experience"><b>上海理工大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">医学影像技术 · 本科</div></div></article><article class="info-card glass"><h3>▣　实习经历</h3><div class="experience"><span class="badge">2026.6–2026.8</span><b>小红书｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">AI 旅行规划产品</div></div><div class="experience"><span class="badge">2026.3–2026.6</span><b>传音控股｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">手机 AI 助手</div></div><div class="experience"><span class="badge">2025.12–2026.2</span><b>明基科技｜增长运营</b></div></article><article class="info-card glass"><h3>✦　项目经历</h3><div class="experience"><span class="badge">2026.4–至今</span><b>AI 工具作品集</b><div style="color:var(--muted);font-size:12px;margin-top:2px">Vibe Coding 实践，构建个人 AI 工具集</div></div><div class="experience"><span class="badge">2022.12–2024.6</span><b>垂直足球资讯自媒体矩阵</b><div style="color:var(--muted);font-size:12px;margin-top:2px">垂直足球资讯，17w 粉丝</div></div></article><article class="info-card glass"><h3>◌　生活里的我</h3><ul><li><b>▣ 旅行探索</b><br>探索不同城市，收集美好体验</li><li><b>⚽ 足球爱好者</b><br>看球、写内容、运营足球自媒体</li><li><b>▤ 持续学习</b><br>关注 AI、产品与市场</li></ul></article></div></div></section></div>
+<div class="snap-frame" id="about"><section class="page about about-v2 glass">
+  <div class="about-shell">
+    <aside class="about-sticky">
+      <div class="about-avatar-wrap">
+        <img src="hero-qin.png" alt="Qin">
+        <div>
+          <div class="about-name">Qin</div>
+          <div class="about-role"><b>AI 产品运营</b><br>Travel Tech | Vibe Coding</div>
+        </div>
+      </div>
+      <div class="about-loc">
+        <div class="about-pill"><b>上海</b>当前城市</div>
+        <div class="about-pill"><b>硕士在读</b>生物医学工程</div>
+      </div>
+      <div class="about-side-section">
+        <h3>核心标签</h3>
+        <div class="about-tag-list"><span class="hot">Vibe Coding</span><span class="hot">数据驱动</span><span>用户洞察</span><span>内容增长</span><span>旅行产品</span></div>
+      </div>
+      <div class="about-side-section">
+        <h3>联系我</h3>
+        <div class="about-contact-list"><span>Tel 18735585229</span><a href="mailto:qinlinbo5@gmail.com">Mail qinlinbo5@gmail.com</a><a href="https://github.com/qlb708" target="_blank" rel="noreferrer">GitHub -></a></div>
+      </div>
+      <div class="about-side-section">
+        <h3>生活里的我</h3>
+        <div class="about-life-list"><span><i>*</i>旅行探索，收集城市体验</span><span><i>*</i>足球爱好者，长期内容运营</span><span><i>*</i>持续学习 AI、产品与市场</span></div>
+      </div>
+    </aside>
+    <main class="about-main">
+      <div class="about-main-head">
+        <div><h2>自我介绍 <em>Timeline</em></h2><p>按时间倒序整合实习经历、项目成果与教育背景，重点信息一眼可扫。</p></div>
+        <div class="about-legend"><span class="data-badge blue">小红书</span><span class="data-badge green">传音控股</span><span class="data-badge peach">17w+ 粉丝</span><span class="data-badge sage">推免硕士</span></div>
+      </div>
+      <div class="timeline">
+        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Internship - Latest</div><h3 class="t-title">小红书 | AI 产品运营实习生</h3></div><span class="t-time">2026.06 - 2026.08</span></div><p class="t-desc">围绕 AI 旅行规划产品，参与内容供给、冷启动与场景运营，把用户需求转化为产品可验证的增长动作。</p><div class="t-badges"><span class="data-badge blue">小红书</span><span class="data-badge green">AI 旅行规划</span><span class="data-badge sage">内容供给策略</span></div><ul class="t-list"><li>负责地点合集新功能上线运营，搭建内容供给与分发策略</li><li>参与世界杯、暑期等重点场景增长项目，沉淀 AI 规划转化链路</li></ul></div></article>
+        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Internship</div><h3 class="t-title">传音控股 | AI 产品运营实习生</h3></div><span class="t-time">2026.03 - 2026.06</span></div><p class="t-desc">围绕 Ella AI 手机助手与足球 Agent 场景，设计本地化运营玩法和赛事互动链路。</p><div class="t-badges"><span class="data-badge green">传音控股</span><span class="data-badge blue">AI 助手</span><span class="data-badge peach">足球 Agent</span></div><ul class="t-list"><li>负责足球 Agent 世界杯场景运营，搭建赛事互动链路与端内运营阵地</li><li>设计 AIGC 图生视频玩法，结合热点本地化运营提升用户活跃</li></ul></div></article>
+        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Project - Vibe Coding</div><h3 class="t-title">AI 工具作品集 | 个人产品实验室</h3></div><span class="t-time">2026.04 - 至今</span></div><p class="t-desc">从真实运营问题出发，用 Vibe Coding 快速构建 AI 工具原型，把重复动作沉淀成可复用能力。</p><div class="t-badges"><span class="data-badge blue">8+ 工具原型</span><span class="data-badge green">数据洞察</span><span class="data-badge sage">可点击 Demo</span></div></div></article>
+        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Project - Content Growth</div><h3 class="t-title">垂直足球资讯自媒体矩阵</h3></div><span class="t-time">2022.12 - 2024.06</span></div><p class="t-desc">长期运营垂直足球资讯内容矩阵，沉淀选题、分发、复盘与用户增长方法。</p><div class="t-badges"><span class="data-badge peach">17w+ 粉丝</span><span class="data-badge blue">内容增长</span><span class="data-badge green">用户洞察</span></div></div></article>
+        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Education</div><h3 class="t-title">上海科技大学 | 生物医学工程 硕士</h3></div><span class="t-time">硕士在读</span></div><p class="t-desc">跨学科背景训练数据分析、研究拆解与结构化表达能力，为产品与 AI 场景判断提供理工科底层方法。</p><div class="t-badges"><span class="data-badge sage">推免硕士</span><span class="data-badge blue">上海科技大学</span></div></div></article>
+        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Education</div><h3 class="t-title">上海理工大学 | 医学影像技术 本科</h3></div><span class="t-time">本科</span></div><p class="t-desc">医学影像与工程训练带来对复杂信息的拆解能力，也塑造了后续做数据洞察与 AI 工具原型的基础。</p><div class="t-badges"><span class="data-badge blue">工程背景</span><span class="data-badge green">数据分析</span></div></div></article>
+      </div>
+    </main>
+  </div>
+</section></div>
 <div class="snap-frame" id="tools"><section class="page tools-page glass" style="overflow:hidden;justify-content:flex-start;padding:32px 50px 0"><div class="page-head" style="margin-bottom:4px;flex-shrink:0"><div><h2>AI工具 <em>✦</em></h2><p>从真实问题出发，把工具做成可复用能力。</p></div></div><div class="tl-wrap" id="tlWrap" style="flex:1;position:relative;min-height:0"></div></section></div>
 <div class="snap-frame" id="details"><section class="page details glass"><div class="page-head"><div><h2>工具详情</h2><p>共 8 个项目，点击卡片直接体验。</p></div></div><div class="cf-stage" id="cfStage"></div><div class="cf-dots" id="cfDots"></div></section></div>
 <div class="snap-frame" id="summary"><section class="page summary glass" ><div class="summary-main"><div><h2>谢谢看到这里 <em>Thanks for stopping by</em></h2><p>感谢你的时间与关注。希望我的产品思维、数据洞察与 AI 能力，<br>能为团队创造价值，也期待与更多有趣的人一起做有意义的事。</p></div><div class="summary-art"><img src="hero-qin.png" alt="Qin"></div></div><div class="summary-cards"><article class="sum-card"><b>▦ 核心能力</b><p>产品运营全流程把控<br>数据洞察驱动决策<br>AI 工具应用与自动化</p></article><article class="sum-card"><b>▣ 实习亮点</b><p>洞察用户需求<br>推动产品优化<br>产出可落地方案</p></article><article class="sum-card"><b>&lt;/&gt; 工具方法论</b><p>Vibe Coding 原型开发<br>AI 自动化提升人效<br>结构化复盘持续优化</p></article><article class="sum-card"><b>◎ 关注方向</b><p>产品与数据深度结合<br>旅行与生活方式创新<br>AI 在产品中的落地</p></article><article class="sum-card"><b>☎ 联系方式</b><p>qinlinbo5@gmail.com<br>github.com/qlb708<br>欢迎交流与合作</p></article></div></section></div>
