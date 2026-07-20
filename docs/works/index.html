@@ -167,6 +167,20 @@
 }
 .polaroid.p2::before{ width:40px; height:18px; }
 .polaroid.p3::before{ width:40px; height:18px; }
+
+/* ── 拍立得响应式补丁 ── */
+@media(max-width:480px){
+  .polaroid{ width:clamp(180px,72vw,300px) !important; }
+  .polaroid.p2{ width:clamp(80px,28vw,130px) !important; right:2% !important; }
+  .polaroid.p3{ width:clamp(75px,26vw,120px) !important; left:2% !important; }
+  .hero-art{ height:clamp(300px,75vw,420px) !important; }
+}
+@media(min-width:1400px){
+  .polaroid{ width:clamp(280px,22vw,460px) !important; }
+  .polaroid.p2{ width:clamp(130px,9vw,200px) !important; }
+  .polaroid.p3{ width:clamp(120px,8.5vw,190px) !important; }
+  .hero-art{ height:clamp(500px,38vw,640px) !important; }
+}
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
 <script>
