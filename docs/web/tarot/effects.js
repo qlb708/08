@@ -101,10 +101,10 @@ class Starfield {
     const octx = offscreen.getContext('2d');
 
     const nebulaColors = [
-      { r: 212, g: 175, b: 55 },
-      { r: 138, g: 43, b: 226 },
-      { r: 30, g: 80, b: 180 },
-      { r: 80, g: 40, b: 120 },
+      { r: 220, g: 205, b: 175 },
+      { r: 200, g: 185, b: 155 },
+      { r: 210, g: 195, b: 165 },
+      { r: 230, g: 215, b: 185 },
     ];
 
     const count = 2 + Math.floor(Math.random() * 2);
@@ -126,11 +126,11 @@ class Starfield {
 
   // 预计算的颜色前缀
   static STAR_COLORS = [
-    'rgba(255,255,255,',
-    'rgba(200,220,255,',
-    'rgba(255,240,220,',
-    'rgba(220,200,255,',
-    'rgba(255,210,180,',
+    'rgba(180,165,140,',
+    'rgba(160,148,125,',
+    'rgba(190,175,148,',
+    'rgba(170,158,132,',
+    'rgba(200,185,158,',
   ];
 
   _maybeSpawnShootingStar() {
@@ -269,7 +269,7 @@ class ParticleSystem {
   /**
    * 添加召唤粒子（从中心向外扩散）
    */
-  emitSummon(color = '#ffd700', count = 40) {
+  emitSummon(color = '#c8a860', count = 40) {
     const cx = this._w / 2;
     const cy = this._h * 0.6;
 
