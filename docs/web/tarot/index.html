@@ -70,6 +70,38 @@
   color: #6a3020 !important;
 }
 </style>
+<script>
+// 花瓣漂浮动画
+(function initPetals() {
+  function spawn() {
+    var c = document.getElementById('petals-container');
+    if (!c) return;
+    var emojis = ['🌸','🌺','✿','❀','🌼','✦','✧'];
+    var el = document.createElement('span');
+    el.className = 'petal';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = (Math.random() * 100) + '%';
+    el.style.fontSize = (12 + Math.random() * 14) + 'px';
+    var dur = 6 + Math.random() * 8;
+    el.style.animationDuration = dur + 's';
+    el.style.animationDelay = (Math.random() * 4) + 's';
+    el.style.opacity = '0';
+    c.appendChild(el);
+    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, (dur + 4) * 1000);
+  }
+  function start() {
+    // 初始批量生成
+    for (var i = 0; i < 12; i++) setTimeout(spawn, i * 400);
+    // 持续生成
+    setInterval(spawn, 800);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+})();
+</script>
 </head>
 <body>
   <!-- ✦ 开场欢迎页 — 魔法球/灵珠风格 ✦ -->
