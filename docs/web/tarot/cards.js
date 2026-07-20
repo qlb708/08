@@ -287,8 +287,8 @@ class CardCarousel {
     const _wrapper = document.getElementById('carousel-wrapper');
     if (_wrapper) {
       _wrapper.style.transition = 'transform 1s cubic-bezier(0.2,0.8,0.2,1)';
-      _wrapper.style.transform = 'scale(var(--carousel-scale)) translateY(8%) rotateX(-40deg)';
-      _wrapper.style.transformOrigin = '50% 100%';
+      _wrapper.style.transform = 'scale(var(--carousel-scale)) translateY(-15%) rotateX(-38deg)';
+      _wrapper.style.transformOrigin = '50% 70%';
     }
 
     this.cards.forEach((el, i) => {
@@ -316,7 +316,7 @@ class CardCarousel {
     if (_wrapper2) {
       _wrapper2.style.transition = 'transform 0.6s cubic-bezier(0.2,0.8,0.2,1)';
       _wrapper2.style.transform = 'scale(var(--carousel-scale)) translateY(0%) rotateX(0deg)';
-      _wrapper2.style.transformOrigin = '50% 100%';
+      _wrapper2.style.transformOrigin = '50% 70%';
     }
 
     this.cards.forEach((el) => {
