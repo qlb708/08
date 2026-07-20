@@ -1039,9 +1039,10 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1000px;
   overflow: visible;
   transform: scale(var(--carousel-scale));
-  transform-origin: 50% 60%;
+  transform-origin: 50% 48%;
 }
 
 
@@ -1053,7 +1054,7 @@ html, body {
 }
 #carousel-wrapper.arc-reset {
   transform: scale(var(--carousel-scale));
-  transform-origin: 50% 60%;
+  transform-origin: 50% 48%;
   transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 @media (max-width: 520px) {
@@ -1062,14 +1063,7 @@ html, body {
   }
 }
 
-#carousel-tilt {
-  /* 此层只负责 X 轴倾斜，perspective 在自身（内联形式） */
-  position: relative;
-  width: var(--card-w);
-  height: var(--card-h);
-  transform-style: preserve-3d;
-  transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
+
 
 #carousel {
   position: relative;
