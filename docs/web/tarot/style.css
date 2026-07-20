@@ -11,32 +11,30 @@
 }
 
 :root {
-  --bg-dark: #050510;
-  --bg-card: #0f1123;
-  --gold: #d4af37;
-  --gold-dim: #997a00;
-  --gold-glow: rgba(212, 175, 55, 0.4);
-  --cyan: #00e5ff;
+  --bg-dark: #1a1510;
+  --bg-card: #2a2018;
+  --gold: #c8973a;
+  --gold-dim: #9a7030;
+  --gold-glow: rgba(200, 151, 58, 0.35);
+  --cyan: #d4a574;
   --card-w: 140px;
   --card-h: 238px;
   --carousel-scale: 1;
-  /* v6 新增配色 */
-  --text-primary: #f0ebe3;
-  --text-secondary: rgba(255, 255, 255, 0.55);
-  --text-muted: rgba(255, 255, 255, 0.35);
-  --accent-rose: #e8b4b8;
-  --accent-lavender: #b8a9c9;
-  --accent-ice: #a8c8d8;
-  /* 优化：使用更深的半透明背景代替高斯模糊 */
-  --glass-bg: rgba(8, 6, 22, 0.82);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f5ede0;
+  --text-secondary: rgba(245, 237, 224, 0.6);
+  --text-muted: rgba(245, 237, 224, 0.38);
+  --accent-rose: #d4956a;
+  --accent-lavender: #c4a882;
+  --accent-ice: #b8a070;
+  --glass-bg: rgba(26, 18, 10, 0.80);
+  --glass-border: rgba(200, 151, 58, 0.15);
 }
 
 html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: radial-gradient(ellipse at 50% 0%, #0a0a2e 0%, #050510 50%, #020208 100%);
+  background: radial-gradient(ellipse at 50% 0%, #2a1f12 0%, #1a1510 45%, #0f0e0c 100%);
   font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
   color: var(--text-primary);
   -webkit-tap-highlight-color: transparent;
@@ -88,7 +86,7 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: safe center;
-  background: radial-gradient(ellipse at 50% 40%, #0d0a2a 0%, #050510 60%, #020208 100%);
+  background: radial-gradient(ellipse at 50% 40%, #2a1f12 0%, #1a1510 60%, #0f0e0c 100%);
   z-index: 10000;
   overflow: hidden;
   padding: 16px 0;
@@ -1082,17 +1080,36 @@ html, body {
   inset: 0;
   border-radius: 8px;
   overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8);
+  border: 2px solid rgba(200, 151, 58, 0.55);
+  box-shadow: 0 0 18px rgba(200,151,58,0.18), inset 0 0 24px rgba(180,130,40,0.10);
   backface-visibility: hidden;
-  background: var(--bg-card);
+  background: linear-gradient(160deg, #f5ede0 0%, #ede0cc 40%, #e8d5b8 100%);
 }
 
 .card-back-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  display: none;
+}
+/* 奶油牌背金色纹样 — CSS 伪元素绘制 */
+.card-back::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1.5px solid rgba(200,151,58,0.6);
+  border-radius: 4px;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(200,151,58,0.08) 0%, transparent 70%);
+}
+.card-back::after {
+  content: '✦';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  color: rgba(200,151,58,0.55);
+  text-shadow: 0 0 18px rgba(200,151,58,0.4);
+  letter-spacing: 0;
 }
 
 /* 正对用户的牌 — 增强发光效果 */
@@ -1100,7 +1117,7 @@ html, body {
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow:
     0 0 25px rgba(255, 255, 255, 0.2),
-    0 0 50px rgba(212, 175, 55, 0.15),
+    0 0 50px rgba(200, 151, 58, 0.25),
     0 10px 40px rgba(0,0,0,0.7);
   /* 轻微高亮 */
   filter: brightness(1.1);
