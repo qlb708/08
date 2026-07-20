@@ -176,20 +176,23 @@
   let W,H,mouse={x:.5,y:.5},target={x:.5,y:.5};
 
   // ── 漂浮粒子（鼠标聚拢效果）──
-  const NPTS = 200;
+  const NPTS = 220;
   const pts = [];
+  // 彩虹色相区间：青蓝/蓝紫/粉紫/玫红/金橙/薄荷绿
+  const hRanges=[[175,210],[220,260],[270,310],[320,345],[35,55],[140,175]];
   (function initPts(){
     for(let i=0;i<NPTS;i++){
       const ox=Math.random(), oy=Math.random();
+      const hr=hRanges[Math.floor(Math.random()*hRanges.length)];
+      const h=hr[0]+Math.random()*(hr[1]-hr[0]);
       pts.push({
         x:ox, y:oy, ox, oy,
         vx:(Math.random()-.5)*.0003,
         vy:(Math.random()-.5)*.0003,
-        r: Math.random()*2+.5,
-        alpha: Math.random()*.28+.06,
-        h: 190+Math.random()*30,
-        s: Math.random()<.55 ? 22+Math.random()*28 : 8,
-        l: 70+Math.random()*20,
+        r: Math.random()*2.2+.7,
+        alpha: Math.random()*.4+.12,
+        h, s: 75+Math.random()*20,   // 高饱和度，绚烂
+        l: 62+Math.random()*18,
       });
     }
   })();
@@ -340,51 +343,69 @@
     // ── 粒子聚拢渲染 ──
     ctx.save();
     pts.forEach(p=>{
-      // 随机漂浮
-      p.vx += (Math.random()-.5)*.00006;
-      p.vy += (Math.random()-.5)*.00006;
-      p.vx *= .97; p.vy *= .97;
+      // 随机漂浮（轻微布朗运动）
+      p.vx += (Math.random()-.5)*.00005;
+      p.vy += (Math.random()-.5)*.00005;
 
       const dx=mouse.x-p.x, dy=mouse.y-p.y;
       const dist=Math.sqrt(dx*dx+dy*dy);
-      const pullR=.20;
+      const pullR=.28;
 
       if(dist < pullR){
-        // 鼠标吸引：距离越近越强
-        const force=(1-dist/pullR)*(1-dist/pullR)*.0035;
+        // 更强的吸引：二次方加速，近距离极速聚拢
+        const t=1-dist/pullR;
+        const force=t*t*.022;        // 比之前大6倍
         p.vx += dx*force;
         p.vy += dy*force;
+        p.vx *= .82; p.vy *= .82;   // 阻尼降低，更灵敏
       } else {
+        p.vx *= .96; p.vy *= .96;
         // 缓慢回归原位
-        p.vx += (p.ox-p.x)*.0001;
-        p.vy += (p.oy-p.y)*.0001;
+        p.vx += (p.ox-p.x)*.00015;
+        p.vy += (p.oy-p.y)*.00015;
       }
 
       p.x+=p.vx; p.y+=p.vy;
       if(p.x<-.02)p.x=1.02; if(p.x>1.02)p.x=-.02;
       if(p.y<-.02)p.y=1.02; if(p.y>1.02)p.y=-.02;
 
-      const glow=Math.max(0,1-dist/.13);
-      const alpha=Math.min(.95, p.alpha + glow*.55);
-      const radius=p.r*(1+glow*2.2);
+      const glow=Math.max(0,1-dist/.15);
+      const alpha=Math.min(.98, p.alpha + glow*.6);
+      const radius=p.r*(1+glow*2.8);
 
-      // 聚拢时发出光晕
-      if(glow>.05){
-        const pg=ctx.createRadialGradient(p.x*W,p.y*H,0,p.x*W,p.y*H,radius*4);
-        pg.addColorStop(0,`hsla(${p.h},60%,80%,.45)`);
+      // 常态下也画小光晕（让粒子自带发光感）
+      {
+        const baseGlow=p.r*3.5;
+        const pg=ctx.createRadialGradient(p.x*W,p.y*H,0,p.x*W,p.y*H,baseGlow);
+        pg.addColorStop(0,`hsla(${p.h},90%,75%,${.18+glow*.4})`);
         pg.addColorStop(1,'transparent');
         ctx.fillStyle=pg;
-        ctx.globalAlpha=glow*.3;
+        ctx.globalAlpha=.6+glow*.4;
         ctx.beginPath();
-        ctx.arc(p.x*W,p.y*H,radius*4,0,Math.PI*2);
+        ctx.arc(p.x*W,p.y*H,baseGlow,0,Math.PI*2);
         ctx.fill();
       }
-      // 粒子本体
+      // 聚拢时额外大光晕
+      if(glow>.04){
+        const pg2=ctx.createRadialGradient(p.x*W,p.y*H,0,p.x*W,p.y*H,radius*5);
+        pg2.addColorStop(0,`hsla(${p.h},95%,80%,.55)`);
+        pg2.addColorStop(.5,`hsla(${p.h+30},80%,70%,.2)`);
+        pg2.addColorStop(1,'transparent');
+        ctx.fillStyle=pg2;
+        ctx.globalAlpha=glow*.5;
+        ctx.beginPath();
+        ctx.arc(p.x*W,p.y*H,radius*5,0,Math.PI*2);
+        ctx.fill();
+      }
+      // 粒子本体（高饱和亮色）
       ctx.globalAlpha=alpha;
-      ctx.fillStyle=`hsl(${p.h},${p.s}%,${p.l}%)`;
+      ctx.fillStyle=`hsl(${p.h},${p.s}%,${p.l+glow*12}%)`;
+      ctx.shadowColor=`hsl(${p.h},100%,70%)`;
+      ctx.shadowBlur=radius*4;
       ctx.beginPath();
       ctx.arc(p.x*W,p.y*H,radius,0,Math.PI*2);
       ctx.fill();
+      ctx.shadowBlur=0;
     });
     ctx.restore();
 
