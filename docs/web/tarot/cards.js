@@ -120,9 +120,9 @@ class CardCarousel {
     this.currentAngle = 0;
     this.targetAngle = 0;
     this.totalCards = CARDS.length;
-    this.ringSize = 10;
-    this.anglePerCard = 36;
-    this.radius = 320;
+    this.ringSize = 18;
+    this.anglePerCard = 20;
+    this.radius = 700;
     this.cards = [];
     this._animFrame = null;
     this._velocity = 0;
@@ -136,9 +136,9 @@ class CardCarousel {
   /** 窄屏减少环上物理牌数，增大夹角，牌与牌之间留出「缝」 */
   _syncRingSize() {
     const vw = typeof window !== 'undefined' ? window.innerWidth || 600 : 600;
-    if (vw < 500) this.ringSize = 7;
-    else if (vw < 780) this.ringSize = 8;
-    else this.ringSize = 10;
+    if (vw < 500) this.ringSize = 14;
+    else if (vw < 780) this.ringSize = 16;
+    else this.ringSize = 18;
     if (typeof document !== 'undefined' && document.documentElement.classList.contains('perf-tarot-vivo')) {
       this.ringSize = Math.min(this.ringSize, 6);
     }
@@ -283,6 +283,12 @@ class CardCarousel {
     if (!this._isStacked) return;
     this._isStacked = false;
 
+    // 倾斜整个轮盘，产生图2扇形弧面视觉效果
+    if (this.container) {
+      this.container.style.transition = 'transform 1s cubic-bezier(0.2,0.8,0.2,1)';
+      this.container.style.transform = 'rotateX(-52deg)';
+    }
+
     this.cards.forEach((el, i) => {
       el.style.transition = `transform ${0.8 + i * 0.08}s cubic-bezier(0.2, 0.8, 0.2, 1)`;
       const angle = this.anglePerCard * i;
@@ -303,6 +309,11 @@ class CardCarousel {
     this._velocity = 0;
     this._isAnimating = false;
     this.currentAngle = 0;
+
+    if (this.container) {
+      this.container.style.transition = 'transform 0.6s cubic-bezier(0.2,0.8,0.2,1)';
+      this.container.style.transform = 'rotateX(0deg)';
+    }
 
     this.cards.forEach((el) => {
       el.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
