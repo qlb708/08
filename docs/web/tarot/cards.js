@@ -120,9 +120,9 @@ class CardCarousel {
     this.currentAngle = 0;
     this.targetAngle = 0;
     this.totalCards = CARDS.length;
-    this.ringSize = 18;
-    this.anglePerCard = 20;
-    this.radius = 440;
+    this.ringSize = 10;
+    this.anglePerCard = 36;
+    this.radius = 320;
     this.cards = [];
     this._animFrame = null;
     this._velocity = 0;
@@ -137,9 +137,9 @@ class CardCarousel {
   /** 窄屏减少环上物理牌数，增大夹角，牌与牌之间留出「缝」 */
   _syncRingSize() {
     const vw = typeof window !== 'undefined' ? window.innerWidth || 600 : 600;
-    if (vw < 500) this.ringSize = 14;
-    else if (vw < 780) this.ringSize = 16;
-    else this.ringSize = 18;
+    if (vw < 500) this.ringSize = 7;
+    else if (vw < 780) this.ringSize = 8;
+    else this.ringSize = 10;
     if (typeof document !== 'undefined' && document.documentElement.classList.contains('perf-tarot-vivo')) {
       this.ringSize = Math.min(this.ringSize, 6);
     }
@@ -285,7 +285,7 @@ class CardCarousel {
     this._isStacked = false;
 
     // 倾斜 carousel-tilt 层实现近大远小弧形效果
-    const _tiltEl = document.getElementById('carousel-tilt');
+    
     if (_tiltEl) {
       _tiltEl.style.transition = 'transform 1.1s cubic-bezier(0.2,0.8,0.2,1)';
       _tiltEl.style.transform = 'perspective(1000px) rotateX(-42deg) translateY(-12%)';
@@ -315,7 +315,7 @@ class CardCarousel {
     this.currentAngle = 0;
 
     // 复位 tilt 层
-    const _tiltEl2 = document.getElementById('carousel-tilt');
+    
     if (_tiltEl2) {
       _tiltEl2.style.transition = 'transform 0.7s cubic-bezier(0.2,0.8,0.2,1)';
       _tiltEl2.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0%)';
