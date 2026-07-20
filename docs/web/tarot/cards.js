@@ -122,7 +122,7 @@ class CardCarousel {
     this.totalCards = CARDS.length;
     this.ringSize = 18;
     this.anglePerCard = 20;
-    this.radius = 700;
+    this.radius = 580;
     this.cards = [];
     this._animFrame = null;
     this._velocity = 0;
@@ -287,7 +287,7 @@ class CardCarousel {
     const _wrapper = document.getElementById('carousel-wrapper');
     if (_wrapper) {
       _wrapper.style.transition = 'transform 1s cubic-bezier(0.2,0.8,0.2,1)';
-      _wrapper.style.transform = 'scale(var(--carousel-scale)) translateY(28%) rotateX(-52deg)';
+      _wrapper.style.transform = 'scale(var(--carousel-scale)) translateY(18%) rotateX(-42deg)';
       _wrapper.style.transformOrigin = '50% 100%';
     }
 
