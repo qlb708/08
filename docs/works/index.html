@@ -181,6 +181,120 @@
   .polaroid.p3{ width:clamp(120px,8.5vw,190px) !important; }
   .hero-art{ height:clamp(500px,38vw,640px) !important; }
 }
+
+/* responsive-hotfix-20260720 */
+@media (max-width: 1180px) {
+  :root { --wrap: calc(100vw - 24px); }
+  .nav { height: 76px; padding: 0 22px; }
+  .navlinks { gap: 4px; }
+  .navlinks button { padding: 10px 12px; }
+  .page { padding: 24px 34px; gap: 14px; }
+  .hero h1 { font-size: clamp(34px, 4.8vw, 54px); }
+  .hero-art, .summary-art { min-width: 0; }
+  .summary-art { height: min(40vh, 360px); }
+  .about-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .demo-layout { gap: 14px; }
+  .tool-card { width: 230px; height: 330px; }
+}
+@media (max-width: 900px) {
+  html { scroll-padding-top: 86px; }
+  body { overflow-x: hidden; }
+  #sc { height: auto; min-height: 100vh; overflow: visible; scroll-snap-type: none; }
+  .snap-frame { height: auto; min-height: 100svh; scroll-snap-align: none; padding: 96px 12px 18px; }
+  .snap-frame + .snap-frame { padding-top: 22px; }
+  .page { height: auto; min-height: auto; overflow: visible; justify-content: flex-start; border-radius: 26px; padding: 28px 22px; }
+  .nav { top: 10px; width: calc(100vw - 20px); height: 68px; border-radius: 24px; padding: 0 14px; }
+  .brand { min-width: 0; gap: 8px; font-size: 15px; }
+  .brand .avatar { width: 44px; height: 44px; }
+  .contact { padding: 10px 14px; font-size: 13px; white-space: nowrap; }
+  .hero { display: flex; flex-direction: column; align-items: stretch; }
+  .hero-art { order: 2; height: clamp(300px, 58vw, 460px); min-width: 0; }
+  .hero-art > img { width: 100%; height: 100%; object-fit: contain; }
+  .stats { width: 100%; max-width: 520px; }
+  .about { display: flex; }
+  .about-grid { display: flex; flex-direction: column; }
+  .profile { grid-template-columns: 1fr; min-height: 420px; padding: 24px; }
+  .profile img { height: min(360px, 62vw); right: -80px; bottom: -42px; opacity: .92; }
+  .about-side { grid-template-rows: auto; }
+  .about-cards { grid-template-columns: 1fr; }
+  .category-track { gap: 14px; padding: 8px 4px 20px; }
+  .category-card { flex: 0 0 min(82vw, 520px); min-height: 390px; padding: 24px; }
+  .details { padding-top: 28px !important; overflow: visible !important; }
+  .detail-tabs { overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .detail-tabs::-webkit-scrollbar { display: none; }
+  .detail-tabs button { flex: 0 0 auto; }
+  .demo-layout { flex-direction: column; }
+  .demo-app-cards { overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; }
+  .portrait-wrap { flex: 0 0 46%; min-width: 160px; scroll-snap-align: start; }
+  .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cf-stage { min-height: 400px; }
+  .tool-card { width: min(68vw, 260px); height: 340px; }
+  .tl-wrap { height: 480px; }
+  .summary-main { display: flex; flex-direction: column; align-items: stretch; }
+  .summary h2 { font-size: clamp(38px, 9vw, 60px); }
+  .summary-art { height: clamp(260px, 52vw, 380px); min-width: 0; }
+  .summary-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  :root { --wrap: calc(100vw - 16px); }
+  .snap-frame { padding: 86px 8px 14px; }
+  .snap-frame + .snap-frame { padding-top: 16px; }
+  .page { border-radius: 22px; padding: 22px 16px; gap: 16px; }
+  .nav { width: calc(100vw - 14px); height: 64px; border-radius: 22px; padding: 0 10px; }
+  .brand { font-size: 13px; }
+  .avatar, .brand .avatar { width: 40px; height: 40px; }
+  .contact { padding: 9px 11px; font-size: 12px; }
+  .eyebrow { font-size: 11px; padding: 7px 12px; }
+  .hero h1 { font-size: clamp(36px, 12vw, 46px); line-height: 1.12; }
+  .lead { font-size: 15px; }
+  .chips { gap: 8px; margin: 16px 0 18px; }
+  .chip { font-size: 12px; padding: 8px 11px; }
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 10px 0; }
+  .stat b { font-size: 22px; }
+  .hero-art { height: clamp(260px, 78vw, 360px); }
+  .float { display: none; }
+  .page-head { align-items: flex-start; }
+  .page-head h2 { font-size: clamp(28px, 9vw, 38px); }
+  .profile { min-height: 500px; padding: 20px; }
+  .profile img { height: 310px; right: -112px; bottom: -38px; }
+  .tags, .quote, .info-card { padding: 18px; border-radius: 22px; }
+  .facts span, .tags span { font-size: 11px; padding: 8px 10px; }
+  .category-card { flex-basis: 86vw; min-height: 380px; border-radius: 28px; padding: 22px; }
+  .category-card h3 { font-size: 21px; }
+  .mini-track { width: min(220px, 68vw); height: 210px; }
+  .mini-card { height: 156px; }
+  .slider-arrow { width: 38px; height: 38px; font-size: 18px; }
+  .slider-arrow.prev { left: -5px; }
+  .slider-arrow.next { right: -5px; }
+  .project-grid { grid-template-columns: 1fr; }
+  .project-card.flat { padding: 14px !important; }
+  .demo-app-cards { gap: 10px; }
+  .portrait-wrap { flex-basis: 72%; min-width: 190px; }
+  .cf-stage { min-height: 360px; }
+  .tool-card { width: min(76vw, 250px); height: 320px; }
+  .tl-wrap { height: 430px; }
+  .tl-scroll { padding: 0 28px; }
+  .polaroid { width: min(330px, 78vw); }
+  .polaroid.p2, .polaroid.p3 { width: 130px; }
+  .summary-art { height: clamp(230px, 70vw, 330px); }
+  .summary-cards { grid-template-columns: 1fr; }
+  .sum-card { padding: 18px; border-radius: 20px; }
+  .footer { width: var(--wrap); flex-direction: column; gap: 6px; text-align: center; }
+}
+@media (max-height: 760px) and (min-width: 901px) {
+  .snap-frame { padding-top: 104px; }
+  .page { padding: 20px 40px; gap: 10px; }
+  .hero h1 { font-size: clamp(32px, 3.6vw, 50px); margin: 10px 0 6px; }
+  .chips { margin: 14px 0 18px; }
+  .hero-art { height: 430px; }
+  .profile img { height: 280px; }
+  .category-card { min-height: 340px; }
+  .mini-track { height: 185px; }
+  .mini-card { height: 140px; }
+  .tool-card { height: 315px; }
+  .summary-art { height: 320px; }
+  .sum-card { padding: 16px; }
+}
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
 <script>
