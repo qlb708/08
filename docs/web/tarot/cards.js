@@ -284,14 +284,7 @@ class CardCarousel {
     if (!this._isStacked) return;
     this._isStacked = false;
 
-    // 倾斜 carousel-tilt 层实现近大远小弧形效果
-    
-    if (_tiltEl) {
-      _tiltEl.style.transition = 'transform 1.1s cubic-bezier(0.2,0.8,0.2,1)';
-      _tiltEl.style.transform = 'perspective(1000px) rotateX(-42deg) translateY(-12%)';
-      _tiltEl.style.transformOrigin = '50% 68%';
-    }
-    }
+
 
     this.cards.forEach((el, i) => {
       el.style.transition = `transform ${0.8 + i * 0.08}s cubic-bezier(0.2, 0.8, 0.2, 1)`;
@@ -314,12 +307,7 @@ class CardCarousel {
     this._isAnimating = false;
     this.currentAngle = 0;
 
-    // 复位 tilt 层
-    
-    if (_tiltEl2) {
-      _tiltEl2.style.transition = 'transform 0.7s cubic-bezier(0.2,0.8,0.2,1)';
-      _tiltEl2.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0%)';
-    }
+
 
     this.cards.forEach((el) => {
       el.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
