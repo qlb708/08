@@ -283,11 +283,12 @@ class CardCarousel {
     if (!this._isStacked) return;
     this._isStacked = false;
 
-    // 倾斜整个轮盘，产生图2扇形弧面视觉效果（用 class 避免 inline style 冲突）
+    // 倾斜整个轮盘 — perspective() 内联在 transform 里，不依赖父级 perspective 属性
     const _wrapper = document.getElementById('carousel-wrapper');
     if (_wrapper) {
-      _wrapper.classList.remove('arc-reset');
-      _wrapper.classList.add('arc-spread');
+      _wrapper.style.transition = 'transform 1.1s cubic-bezier(0.2,0.8,0.2,1)';
+      _wrapper.style.transform = 'perspective(900px) rotateX(-42deg) translateY(-8%)';
+      _wrapper.style.transformOrigin = '50% 65%';
     }
     }
 
@@ -314,8 +315,9 @@ class CardCarousel {
 
     const _wrapper2 = document.getElementById('carousel-wrapper');
     if (_wrapper2) {
-      _wrapper2.classList.remove('arc-spread');
-      _wrapper2.classList.add('arc-reset');
+      _wrapper2.style.transition = 'transform 0.7s cubic-bezier(0.2,0.8,0.2,1)';
+      _wrapper2.style.transform = '';
+      _wrapper2.style.transformOrigin = '';
     }
 
     this.cards.forEach((el) => {
