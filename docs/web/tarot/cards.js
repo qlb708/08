@@ -129,7 +129,6 @@ class CardCarousel {
     this._friction = 0.92;
     this._isAnimating = false;
     this._isStacked = true;
-    this._tiltX = 0;  // 展开时设为 -42 度
     this._resizeTid = null;
     this._bindResize();
   }
@@ -284,8 +283,6 @@ class CardCarousel {
     if (!this._isStacked) return;
     this._isStacked = false;
 
-
-
     this.cards.forEach((el, i) => {
       el.style.transition = `transform ${0.8 + i * 0.08}s cubic-bezier(0.2, 0.8, 0.2, 1)`;
       const angle = this.anglePerCard * i;
@@ -306,8 +303,6 @@ class CardCarousel {
     this._velocity = 0;
     this._isAnimating = false;
     this.currentAngle = 0;
-
-
 
     this.cards.forEach((el) => {
       el.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
