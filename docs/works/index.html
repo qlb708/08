@@ -1,5 +1,5 @@
 ﻿<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>08's Portfolio</title><style>
-*{box-sizing:border-box}html{scroll-behavior:auto;scroll-padding-top:106px}body{margin:0;background:linear-gradient(to bottom,#d4f0ee 0%,#c2e8f5 28%,#bde0f0 52%,#c8d8ed 75%,#eef0f8 100%);color:#182843;font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}a{text-decoration:none;color:inherit}button{font:inherit;color:inherit}:root{--blue:#4a7bff;--mint:#73b99d;--peach:#ee9876;--ink:#182843;--muted:#6f7e98;--line:rgba(102,124,160,.13);--glass:rgba(255,255,255,.72);--shadow:0 18px 52px rgba(55,83,130,.09),inset 0 1px 0 rgba(255,255,255,.95);--wrap:min(1320px,calc(100vw - 28px))}
+*{box-sizing:border-box}html{scroll-behavior:auto;scroll-padding-top:106px}body{margin:0;background:linear-gradient(to bottom,#e6f7f8 0%,#daf1f8 22%,#e8f5fb 45%,#eef2fb 68%,#f5f7fd 85%,#fafbff 100%);color:#182843;font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}a{text-decoration:none;color:inherit}button{font:inherit;color:inherit}:root{--blue:#4a7bff;--mint:#73b99d;--peach:#ee9876;--ink:#182843;--muted:#6f7e98;--line:rgba(102,124,160,.13);--glass:rgba(255,255,255,.72);--shadow:0 18px 52px rgba(55,83,130,.09),inset 0 1px 0 rgba(255,255,255,.95);--wrap:min(1320px,calc(100vw - 28px))}
 #bg-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}body{background:linear-gradient(to bottom,#ffffff 0%,#d8f0f8 50%,#b8e2f0 100%)}.glass{background:var(--glass);border:1px solid rgba(255,255,255,.94);box-shadow:var(--shadow);backdrop-filter:blur(24px)}
 .nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:50;width:var(--wrap);height:82px;padding:0 32px;border-radius:30px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;font-weight:850;font-size:17px}.avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;object-position:70% 16%;border:3px solid #fff;box-shadow:0 8px 20px rgba(55,83,130,.12)}.navlinks{display:flex;gap:12px}.navlinks button{border:0;background:none;padding:12px 18px;border-radius:999px;cursor:pointer;color:#596984;position:relative}.navlinks button.on{color:var(--blue);background:rgba(240,244,255,.8)}.navlinks button.on:after{content:"";position:absolute;bottom:3px;left:50%;width:5px;height:5px;border-radius:50%;background:var(--blue)}.contact{padding:12px 24px;border-radius:999px;border:1px solid #dce5f5;background:rgba(255,255,255,.72);box-shadow:0 8px 20px rgba(66,92,140,.07)}
 #sc{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:auto}.snap-frame{height:100vh;scroll-snap-align:start;padding:122px 20px 20px;box-sizing:border-box}.page{width:var(--wrap);margin:0 auto;border-radius:30px;height:calc(100% - 0px);padding:28px 50px 24px;position:relative;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:20px}
@@ -175,6 +175,25 @@
   const ctx=cv.getContext('2d');
   let W,H,mouse={x:.5,y:.5},target={x:.5,y:.5};
 
+  // ── 漂浮粒子（鼠标聚拢效果）──
+  const NPTS = 200;
+  const pts = [];
+  (function initPts(){
+    for(let i=0;i<NPTS;i++){
+      const ox=Math.random(), oy=Math.random();
+      pts.push({
+        x:ox, y:oy, ox, oy,
+        vx:(Math.random()-.5)*.0003,
+        vy:(Math.random()-.5)*.0003,
+        r: Math.random()*2+.5,
+        alpha: Math.random()*.28+.06,
+        h: 190+Math.random()*30,
+        s: Math.random()<.55 ? 22+Math.random()*28 : 8,
+        l: 70+Math.random()*20,
+      });
+    }
+  })();
+
   // ── 波源列表（每次鼠标移动/点击产生新波源）──
   const waves=[];
   let lastWaveT=0;
@@ -217,11 +236,11 @@
 
   // ── 大光晕底色 ──
   const blobs=[
-    {x:.0, y:.0, vx:.00006,vy:.00005,r:.55,c:'rgba(160,230,225,.38)'},
-    {x:.92,y:.06,vx:-.00006,vy:.00008,r:.52,c:'rgba(140,220,240,.32)'},
-    {x:.96,y:.94,vx:-.00007,vy:-.00006,r:.48,c:'rgba(155,215,235,.28)'},
-    {x:.04,y:.96,vx:.00005,vy:-.00006,r:.45,c:'rgba(180,215,240,.25)'},
-    {x:.50,y:.50,vx:.00003,vy:.00004,r:.38,c:'rgba(190,210,235,.20)'},
+    {x:.0, y:.0, vx:.00006,vy:.00005,r:.50,c:'rgba(160,230,225,.16)'},
+    {x:.92,y:.06,vx:-.00006,vy:.00008,r:.48,c:'rgba(140,220,240,.14)'},
+    {x:.96,y:.94,vx:-.00007,vy:-.00006,r:.44,c:'rgba(155,215,235,.12)'},
+    {x:.04,y:.96,vx:.00005,vy:-.00006,r:.42,c:'rgba(180,215,240,.11)'},
+    {x:.50,y:.50,vx:.00003,vy:.00004,r:.35,c:'rgba(190,210,235,.08)'},
   ];
 
   // ── 水波纹渲染：按同心圆轮廓采样正弦波亮度 ──
@@ -273,11 +292,12 @@
 
     // 背景渐变
     const bg=ctx.createLinearGradient(0,0,0,H);
-    bg.addColorStop(0,'#d4f0ee');
-    bg.addColorStop(.28,'#c2e8f5');
-    bg.addColorStop(.52,'#bde0f0');
-    bg.addColorStop(.75,'#c8d8ed');
-    bg.addColorStop(1,'#eef0f8');
+    bg.addColorStop(0,'#e6f7f8');
+    bg.addColorStop(.22,'#daf1f8');
+    bg.addColorStop(.45,'#e8f5fb');
+    bg.addColorStop(.68,'#eef2fb');
+    bg.addColorStop(.85,'#f5f7fd');
+    bg.addColorStop(1,'#fafbff');
     ctx.fillStyle=bg; ctx.globalAlpha=1;
     ctx.fillRect(0,0,W,H);
 
@@ -315,6 +335,57 @@
     for(let i=waves.length-1;i>=0;i--){
       if(waves[i].t>=waves[i].maxT) waves.splice(i,1);
     }
+    ctx.restore();
+
+    // ── 粒子聚拢渲染 ──
+    ctx.save();
+    pts.forEach(p=>{
+      // 随机漂浮
+      p.vx += (Math.random()-.5)*.00006;
+      p.vy += (Math.random()-.5)*.00006;
+      p.vx *= .97; p.vy *= .97;
+
+      const dx=mouse.x-p.x, dy=mouse.y-p.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      const pullR=.20;
+
+      if(dist < pullR){
+        // 鼠标吸引：距离越近越强
+        const force=(1-dist/pullR)*(1-dist/pullR)*.0035;
+        p.vx += dx*force;
+        p.vy += dy*force;
+      } else {
+        // 缓慢回归原位
+        p.vx += (p.ox-p.x)*.0001;
+        p.vy += (p.oy-p.y)*.0001;
+      }
+
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<-.02)p.x=1.02; if(p.x>1.02)p.x=-.02;
+      if(p.y<-.02)p.y=1.02; if(p.y>1.02)p.y=-.02;
+
+      const glow=Math.max(0,1-dist/.13);
+      const alpha=Math.min(.95, p.alpha + glow*.55);
+      const radius=p.r*(1+glow*2.2);
+
+      // 聚拢时发出光晕
+      if(glow>.05){
+        const pg=ctx.createRadialGradient(p.x*W,p.y*H,0,p.x*W,p.y*H,radius*4);
+        pg.addColorStop(0,`hsla(${p.h},60%,80%,.45)`);
+        pg.addColorStop(1,'transparent');
+        ctx.fillStyle=pg;
+        ctx.globalAlpha=glow*.3;
+        ctx.beginPath();
+        ctx.arc(p.x*W,p.y*H,radius*4,0,Math.PI*2);
+        ctx.fill();
+      }
+      // 粒子本体
+      ctx.globalAlpha=alpha;
+      ctx.fillStyle=`hsl(${p.h},${p.s}%,${p.l}%)`;
+      ctx.beginPath();
+      ctx.arc(p.x*W,p.y*H,radius,0,Math.PI*2);
+      ctx.fill();
+    });
     ctx.restore();
 
     ctx.globalAlpha=1;
