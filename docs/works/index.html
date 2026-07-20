@@ -1,10 +1,10 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>08's Portfolio</title><style>
+﻿<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>08's Portfolio</title><style>
 *{box-sizing:border-box}html{scroll-behavior:auto;scroll-padding-top:106px}body{margin:0;background:linear-gradient(to bottom,#eaf6ff 0%,#dff0fc 20%,#eaf5ff 42%,#f0f6ff 62%,#f6f9ff 80%,#fafcff 100%);color:#182843;font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}a{text-decoration:none;color:inherit}button{font:inherit;color:inherit}:root{--blue:#4a7bff;--mint:#73b99d;--peach:#ee9876;--ink:#182843;--muted:#6f7e98;--line:rgba(102,124,160,.13);--glass:rgba(255,255,255,.72);--shadow:0 18px 52px rgba(55,83,130,.09),inset 0 1px 0 rgba(255,255,255,.95);--wrap:min(1320px,calc(100vw - 28px))}
 #bg-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}body{background:linear-gradient(to bottom,#ffffff 0%,#d8f0f8 50%,#b8e2f0 100%)}.glass{background:var(--glass);border:1px solid rgba(255,255,255,.94);box-shadow:var(--shadow);backdrop-filter:blur(24px)}
 .nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:50;width:var(--wrap);height:82px;padding:0 32px;border-radius:30px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;font-weight:850;font-size:17px}.avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;object-position:70% 16%;border:3px solid #fff;box-shadow:0 8px 20px rgba(55,83,130,.12)}.navlinks{display:flex;gap:12px}.navlinks button{border:0;background:none;padding:12px 18px;border-radius:999px;cursor:pointer;color:#596984;position:relative}.navlinks button.on{color:var(--blue);background:rgba(240,244,255,.8)}.navlinks button.on:after{content:"";position:absolute;bottom:3px;left:50%;width:5px;height:5px;border-radius:50%;background:var(--blue)}.contact{padding:12px 24px;border-radius:999px;border:1px solid #dce5f5;background:rgba(255,255,255,.72);box-shadow:0 8px 20px rgba(66,92,140,.07)}
 #sc{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:auto}.snap-frame{height:100vh;scroll-snap-align:start;padding:122px 20px 20px;box-sizing:border-box}.page{width:var(--wrap);margin:0 auto;border-radius:30px;height:calc(100% - 0px);padding:28px 50px 24px;position:relative;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:20px}
 #home{overflow:visible}#summary{padding-bottom:44px}
-/* nav 椤堕儴鐢?snap-frame padding-top 澶勭悊 */.hero{display:grid;grid-template-columns:45% 55%;align-items:center;min-width:0}.eyebrow{display:inline-block;padding:8px 15px;border-radius:999px;background:#edf3ff;color:var(--blue);font-size:12px}.hero h1{font-size:clamp(36px,4vw,60px);line-height:1.18;letter-spacing:-.05em;margin:14px 0 10px}.hero h1 em{font-style:normal;color:var(--blue)}.lead{font-size:18px;color:#65748f}.chips{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 28px}.chip{padding:10px 15px;border-radius:999px;background:rgba(255,255,255,.68);border:1px solid #e3e9f4;font-size:13px}.stats{width:470px;display:grid;grid-template-columns:repeat(3,1fr);padding:10px 0;border-radius:23px}.stat{text-align:center;border-right:1px solid #e3e8f2}.stat:last-child{border:0}.stat b{display:block;font-size:29px;color:var(--blue)}.stat span{font-size:12px;color:var(--muted)}.hero-art{height:clamp(380px,46vw,580px);min-width:0;position:relative;}.hero-art>img{width:100%;height:100%;object-fit:contain;object-position:center bottom}.float{position:absolute;padding:14px;border-radius:19px;background:rgba(255,255,255,.62);border:1px solid #fff;box-shadow:var(--shadow);backdrop-filter:blur(16px);font-size:11px;color:var(--muted)}.float b{display:block;color:#3c4c68;margin-bottom:7px}.f1{left:8%;top:120px;width:130px;transform:rotate(-3deg)}.f2{right:0;top:70px;width:130px;transform:rotate(5deg)}.f3{right:0;top:270px;width:120px;transform:rotate(7deg);line-height:1.8}.line{height:50px;background:linear-gradient(155deg,transparent 49%,#6490ff 50% 52%,transparent 53%)}
+/* nav 顶部由 snap-frame padding-top 处理 */.hero{display:grid;grid-template-columns:45% 55%;align-items:center;min-width:0}.eyebrow{display:inline-block;padding:8px 15px;border-radius:999px;background:#edf3ff;color:var(--blue);font-size:12px}.hero h1{font-size:clamp(36px,4vw,60px);line-height:1.18;letter-spacing:-.05em;margin:14px 0 10px}.hero h1 em{font-style:normal;color:var(--blue)}.lead{font-size:18px;color:#65748f}.chips{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 28px}.chip{padding:10px 15px;border-radius:999px;background:rgba(255,255,255,.68);border:1px solid #e3e9f4;font-size:13px}.stats{width:470px;display:grid;grid-template-columns:repeat(3,1fr);padding:10px 0;border-radius:23px}.stat{text-align:center;border-right:1px solid #e3e8f2}.stat:last-child{border:0}.stat b{display:block;font-size:29px;color:var(--blue)}.stat span{font-size:12px;color:var(--muted)}.hero-art{height:clamp(380px,46vw,580px);min-width:0;position:relative;}.hero-art>img{width:100%;height:100%;object-fit:contain;object-position:center bottom}.float{position:absolute;padding:14px;border-radius:19px;background:rgba(255,255,255,.62);border:1px solid #fff;box-shadow:var(--shadow);backdrop-filter:blur(16px);font-size:11px;color:var(--muted)}.float b{display:block;color:#3c4c68;margin-bottom:7px}.f1{left:8%;top:120px;width:130px;transform:rotate(-3deg)}.f2{right:0;top:70px;width:130px;transform:rotate(5deg)}.f3{right:0;top:270px;width:120px;transform:rotate(7deg);line-height:1.8}.line{height:50px;background:linear-gradient(155deg,transparent 49%,#6490ff 50% 52%,transparent 53%)}
 .about{display:grid;grid-template-rows:auto 1fr;gap:20px}.page-head{display:flex;justify-content:space-between;align-items:flex-end}.page-head h2{font-size:clamp(22px,2.4vw,36px);letter-spacing:-.05em;margin:0 0 2px}.page-head h2 em{font-style:normal;color:var(--blue)}.page-head p{color:var(--muted);margin:6px 0 0}.about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;align-content:start}.profile{display:grid;grid-template-columns:1fr 48%;padding:14px 18px;border-radius:28px;background:linear-gradient(135deg,rgba(242,247,255,.9),rgba(255,255,255,.64),rgba(253,235,211,.35));position:relative;overflow:hidden}.profile h3{font-size:19px;margin:4px 0 8px}.profile p{color:#65758f;line-height:1.7}.facts{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.facts span,.tags span{padding:9px 13px;border-radius:999px;background:rgba(255,255,255,.66);border:1px solid #e6ebf3;font-size:12px}.profile img{position:absolute;height:320px;right:-85px;bottom:-30px}.about-side{display:grid;grid-template-rows:1fr 1fr;gap:12px}.tags,.quote,.info-card{border-radius:27px;padding:20px 22px}.tags div{display:flex;gap:9px;flex-wrap:wrap}.tags h3{margin:0 0 18px}.quote{display:flex;flex-direction:column;justify-content:center}.about-cards{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.2fr 1.1fr 1fr;gap:10px}.info-card h3{margin:0 0 12px}.info-card ul{list-style:none;padding:0;margin:0}.info-card li{padding:8px 0;color:#62728c;font-size:12px;line-height:1.65}.info-card li b{color:#253650;font-size:13px}.experience{padding-bottom:10px;margin-bottom:8px;border-bottom:1px dashed #dce3ee}.experience:last-child{border:0}.badge{float:right;padding:6px 9px;border-radius:10px;background:#eef4ff;color:#5880d9;font-size:10px;font-weight:500}
 .tools-page{padding-top:0}.stack-stage{position:relative;margin-top:10px}.category-track{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 10px 24px;cursor:grab;scrollbar-width:none}.category-track::-webkit-scrollbar,.card-track::-webkit-scrollbar{display:none}.category-card{flex:0 0 calc(50% - 12px);min-height:400px;border-radius:36px;padding:28px 28px 22px;scroll-snap-align:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.92);box-shadow:0 20px 48px rgba(63,91,135,.1);transition:.3s;display:flex;flex-direction:column}.category-card:hover{transform:translateY(-3px);box-shadow:0 26px 56px rgba(63,91,135,.16)}.c-blue{background:linear-gradient(140deg,#d8e9f7,#eff8f8 72%,#deebf5);color:#274566}.c-green{background:linear-gradient(140deg,#deeee7,#f4f8ef 72%,#d8e6dd);color:#315a4d}.c-peach{background:linear-gradient(140deg,#fde8db,#fff6eb 62%,#e5d9f5);color:#744937}.category-card h3{font-size:24px;margin:0 0 4px;display:flex;align-items:center;gap:10px}.category-card .count{font-size:13px;opacity:.7;margin-bottom:16px}
 /* mini tool cards inside category card */
@@ -31,121 +31,8 @@
 .demo-wrap{width:100%}.demo-layout{display:flex;gap:24px;align-items:flex-start;width:100%}.demo-web-col{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}.demo-app-col{flex:1;display:flex;flex-direction:column;gap:0;min-width:0}.demo-app-cards{display:flex;gap:12px;align-items:flex-start}.demo-col-label{font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.45;margin-bottom:10px;text-transform:uppercase}.project-card.flat{min-height:auto!important;flex-direction:row!important;align-items:center!important;gap:14px;padding:16px 18px!important}.project-card.flat .p-icon{flex-shrink:0;width:40px;height:40px;border-radius:12px;font-size:18px}.project-card.flat .flat-text{flex:1;min-width:0}.project-card.flat h3{font-size:14px;margin:0 0 2px;overflow:hidden;text-overflow:ellipsis}.project-card.flat p{font-size:12px;margin:0;color:#6f7e98;line-height:1.4;overflow:hidden;text-overflow:ellipsis}.project-card.flat small{font-size:10px;margin:0 0 2px;display:block}.project-card.flat .p-foot{margin-top:0!important;flex-shrink:0}.portrait-wrap{flex:1;position:relative;min-width:0}.portrait-notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:40px;height:4px;border-radius:99px;background:rgba(0,0,0,.1);z-index:2}.project-card.portrait{min-height:0!important;aspect-ratio:9/16;padding:16px;justify-content:flex-end!important;position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(255,240,232,.9));border-radius:20px!important;border:1.5px solid rgba(255,255,255,.95)!important;width:100%}.project-card.portrait .p-icon{position:absolute;top:16px;left:16px;width:34px;height:34px;border-radius:10px;font-size:15px}.project-card.portrait small{font-size:10px;margin:0 0 3px;display:block}.project-card.portrait h3{font-size:13px;margin:0 0 4px;line-height:1.3}.project-card.portrait p{font-size:11px;margin:0;color:#6f7e98;line-height:1.4}.project-card.portrait .p-foot{margin-top:6px!important;font-size:10px}.project-card{min-height:220px;padding:22px;border-radius:26px;background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.95);box-shadow:var(--shadow);display:flex;flex-direction:column;transition:.25s}.project-card:hover{transform:translateY(-6px);box-shadow:0 22px 48px rgba(58,88,135,.14)}.p-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--tint);font-size:22px}.project-card small{display:inline-block;margin:13px 0 9px;color:var(--tone);font-weight:700}.project-card h3{font-size:19px;margin:0 0 10px}.project-card p{color:#6c7b94;font-size:13px;line-height:1.75;margin:0}.p-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:18px;color:#9aa6ba;font-size:11px}.go{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.8);border:1px solid #e1e7f1;color:var(--tone)}.dragging{cursor:grabbing!important;scroll-behavior:auto!important}.dragging *{pointer-events:none}
 .summary{display:grid;grid-template-rows:1fr auto}.summary-main{display:grid;grid-template-columns:45% 55%;align-items:center}.summary h2{font-size:clamp(48px,5vw,74px);line-height:1.1;letter-spacing:-.05em;margin:0 0 20px}.summary h2 em{display:block;color:var(--blue);font-style:normal;font-size:.75em}.summary p{color:#64748d;line-height:1.9}.summary-art{height:420px;min-width:360px}.summary-art img{width:100%;height:100%;object-fit:contain;object-position:center bottom}.summary-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.sum-card{padding:22px;border-radius:25px;background:rgba(255,255,255,.62);border:1px solid #fff;box-shadow:var(--shadow)}.sum-card b{display:block;margin-bottom:12px}.sum-card p{font-size:11px;line-height:1.7}.footer{width:var(--wrap);margin:0 auto 24px;padding:18px 8px;display:flex;justify-content:space-between;color:#8491a7;font-size:11px}
 @media(max-width:1000px){.navlinks{display:none}.page{padding:90px 20px 30px;min-height:0}.hero{grid-template-columns:1fr}.hero-art{height:clamp(340px,60vw,500px)}.about-grid{grid-template-columns:1fr}.about-cards{grid-template-columns:1fr 1fr}.category-card{flex-basis:72vw}.summary-main{grid-template-columns:1fr}.summary-cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){:root{--wrap:calc(100vw - 14px)}.nav{height:68px;padding:0 15px}.avatar{width:42px;height:42px}.contact{padding:10px 13px}.page{padding:80px 16px 24px}.hero h1{font-size:43px}.stats{width:100%}.hero-art{height:350px}.hero-art>img{width:130%;right:-20%}.float{display:none}.profile{grid-template-columns:1fr;min-height:530px;padding:25px}.profile img{height:320px;right:-105px}.about-cards{grid-template-columns:1fr}.category-card{flex-basis:84vw;min-height:420px}.slider-arrow{width:40px;height:40px}.project-card{flex-basis:82vw}.summary-cards{grid-template-columns:1fr}.summary-art{height:330px}.footer{flex-direction:column;gap:8px}}
-@media(max-width:1180px){
-  :root{--wrap:calc(100vw - 24px)}
-  .nav{height:76px;padding:0 22px}
-  .navlinks{gap:4px}
-  .navlinks button{padding:10px 12px}
-  .page{padding:24px 34px;gap:14px}
-  .hero h1{font-size:clamp(34px,4.8vw,54px)}
-  .hero-art,.summary-art{min-width:0}
-  .hero-art{height:min(48vh,460px)}
-  .summary-art{height:min(40vh,360px)}
-  .about-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .demo-layout{gap:14px}
-  .tool-card{width:230px;height:330px}
-}
-@media(max-width:900px){
-  html{scroll-padding-top:86px}
-  #sc{height:auto;min-height:100vh;overflow:visible;scroll-snap-type:none}
-  .snap-frame{height:auto;min-height:100svh;scroll-snap-align:none;padding:96px 12px 18px}
-  .snap-frame+ .snap-frame{padding-top:22px}
-  .page{height:auto;min-height:auto;overflow:visible;justify-content:flex-start;border-radius:26px;padding:28px 22px}
-  .nav{top:10px;width:calc(100vw - 20px);height:68px;border-radius:24px;padding:0 14px}
-  .brand{font-size:15px;gap:8px;min-width:0}
-  .brand .avatar{width:44px;height:44px}
-  .contact{padding:10px 14px;font-size:13px;white-space:nowrap}
-  .hero{display:flex;flex-direction:column;align-items:stretch}
-  .hero-art{height:clamp(300px,58vw,460px);min-width:0;order:2}
-  .hero-art>img{width:100%;height:100%;object-fit:contain}
-  .stats{width:100%;max-width:520px}
-  .about{display:flex}
-  .about-grid{display:flex;flex-direction:column}
-  .profile{grid-template-columns:1fr;min-height:420px;padding:24px}
-  .profile img{height:min(360px,62vw);right:-80px;bottom:-42px;opacity:.92}
-  .about-side{grid-template-rows:auto}
-  .about-cards{grid-template-columns:1fr}
-  .category-track{gap:14px;padding:8px 4px 20px}
-  .category-card{flex:0 0 min(82vw,520px);min-height:390px;padding:24px}
-  .details{padding-top:28px!important;overflow:visible!important}
-  .detail-tabs{overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-  .detail-tabs::-webkit-scrollbar{display:none}
-  .detail-tabs button{flex:0 0 auto}
-  .demo-layout{flex-direction:column}
-  .demo-app-cards{overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
-  .portrait-wrap{flex:0 0 46%;min-width:160px;scroll-snap-align:start}
-  .project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cf-stage{min-height:400px}
-  .tool-card{width:min(68vw,260px);height:340px}
-  .tl-wrap{height:480px}
-  .summary-main{display:flex;flex-direction:column;align-items:stretch}
-  .summary h2{font-size:clamp(38px,9vw,60px)}
-  .summary-art{height:clamp(260px,52vw,380px);min-width:0}
-  .summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:640px){
-  :root{--wrap:calc(100vw - 16px)}
-  body{overflow-x:hidden}
-  .snap-frame{padding:86px 8px 14px}
-  .snap-frame+ .snap-frame{padding-top:16px}
-  .page{border-radius:22px;padding:22px 16px;gap:16px}
-  .nav{width:calc(100vw - 14px);height:64px;border-radius:22px;padding:0 10px}
-  .brand{font-size:13px}
-  .avatar,.brand .avatar{width:40px;height:40px}
-  .contact{padding:9px 11px;font-size:12px}
-  .eyebrow{font-size:11px;padding:7px 12px}
-  .hero h1{font-size:clamp(36px,12vw,46px);line-height:1.12}
-  .lead{font-size:15px}
-  .chips{gap:8px;margin:16px 0 18px}
-  .chip{font-size:12px;padding:8px 11px}
-  .stats{grid-template-columns:repeat(3,minmax(0,1fr));padding:10px 0}
-  .stat b{font-size:22px}
-  .hero-art{height:clamp(260px,78vw,360px)}
-  .float{display:none}
-  .page-head{align-items:flex-start}
-  .page-head h2{font-size:clamp(28px,9vw,38px)}
-  .profile{min-height:500px;padding:20px}
-  .profile img{height:310px;right:-112px;bottom:-38px}
-  .tags,.quote,.info-card{padding:18px;border-radius:22px}
-  .facts span,.tags span{font-size:11px;padding:8px 10px}
-  .category-card{flex-basis:86vw;min-height:380px;border-radius:28px;padding:22px}
-  .category-card h3{font-size:21px}
-  .mini-track{width:min(220px,68vw);height:210px}
-  .mini-card{height:156px}
-  .slider-arrow{width:38px;height:38px;font-size:18px}
-  .slider-arrow.prev{left:-5px}
-  .slider-arrow.next{right:-5px}
-  .project-grid{grid-template-columns:1fr}
-  .project-card.flat{padding:14px!important}
-  .demo-app-cards{gap:10px}
-  .portrait-wrap{flex-basis:72%;min-width:190px}
-  .cf-stage{min-height:360px}
-  .tool-card{width:min(76vw,250px);height:320px}
-  .tl-wrap{height:430px}
-  .tl-scroll{padding:0 28px}
-  .polaroid{width:min(330px,78vw)}
-  .polaroid.p2,.polaroid.p3{width:130px}
-  .summary-art{height:clamp(230px,70vw,330px)}
-  .summary-cards{grid-template-columns:1fr}
-  .sum-card{padding:18px;border-radius:20px}
-  .footer{width:var(--wrap);flex-direction:column;gap:6px;text-align:center}
-}
-@media(max-height:760px) and (min-width:901px){
-  .snap-frame{padding-top:104px}
-  .page{padding:20px 40px;gap:10px}
-  .hero h1{font-size:clamp(32px,3.6vw,50px);margin:10px 0 6px}
-  .chips{margin:14px 0 18px}
-  .hero-art{height:430px}
-  .profile img{height:280px}
-  .category-card{min-height:340px}
-  .mini-track{height:185px}
-  .mini-card{height:140px}
-  .tool-card{height:315px}
-  .summary-art{height:320px}
-  .sum-card{padding:16px}
-}
 .contact-card h3{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--dark)}.contact-list{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--dark)}.contact-list div{display:flex;align-items:center;gap:6px}.resume-link{color:var(--blue);text-decoration:none;font-weight:500}.resume-link:hover{text-decoration:underline}.contact-card h3{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--dark)}.contact-list{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--dark)}.contact-list div{display:flex;align-items:center;gap:6px}.resume-link{color:var(--blue);text-decoration:none;font-weight:500}@keyframes cardSlideIn{from{transform:translate(-30px,0) scale(.95);opacity:.6}to{}}
-/* Coverflow 杞挱 */
+/* Coverflow 轮播 */
 .cf-stage{flex:1;position:relative;overflow:visible;cursor:grab;user-select:none}
 .cf-stage.is-dragging{cursor:grabbing}
 .tool-card{position:absolute;z-index:2;width:260px;height:370px;border-radius:28px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;will-change:transform;cursor:pointer;border:1.5px solid rgba(255,255,255,.9)}
@@ -161,7 +48,7 @@
 .cf-dots button{width:6px;height:6px;border-radius:50%;border:0;background:#d0d8e8;cursor:pointer;padding:0;transition:.3s}
 .cf-dots button.on{width:22px;border-radius:3px;background:var(--blue)}
 
-/* 鈹€鈹€ Timeline sticky notes 鈹€鈹€ */
+/* ── Timeline sticky notes ── */
 .tl-wrap{position:relative;width:100%;height:100%;overflow:hidden}
 .tl-scroll{display:flex;align-items:flex-end;gap:0;padding:16px 60px 68px;height:100%;box-sizing:border-box;overflow-x:auto;overflow-y:visible;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;user-select:none}
 .tl-scroll::-webkit-scrollbar{display:none}
@@ -169,9 +56,9 @@
 .tl-scroll{display:flex;align-items:stretch;gap:0;padding:0 60px;height:calc(100% - 40px);box-sizing:border-box;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;user-select:none}
 .tl-scroll::-webkit-scrollbar{display:none}
 .tl-scroll.grabbing{cursor:grabbing}
-/* 姣忎釜 item 鍗犳弧鏁村垪楂樺害锛屽唴閮ㄤ袱鍗婂悇鏀捐创绾?*/
+/* 每个 item 占满整列高度，内部两半各放贴纸 */
 .tl-item{flex:0 0 auto;width:162px;display:grid;grid-template-rows:1fr 12px 40px 12px 1fr;align-items:center;justify-items:center;position:relative}
-/* grid 琛岋細涓婅创绾稿尯 / 涓妏in / stem+dot / 涓媝in / 涓嬭创绾稿尯 */
+/* grid 行：上贴纸区 / 上pin / stem+dot / 下pin / 下贴纸区 */
 .sn-card{width:144px;min-height:152px;border-radius:3px 16px 16px 16px;padding:12px 12px 10px;background:#fff;box-shadow:0 6px 20px rgba(55,83,130,.13),0 1px 4px rgba(55,83,130,.08);display:flex;flex-direction:column;gap:4px;text-decoration:none;color:inherit;transition:transform .25s,box-shadow .25s;position:relative;cursor:pointer;align-self:end}
 .tl-item.down .sn-card{align-self:start}
 .sn-card::before{content:'';position:absolute;top:-9px;left:0;width:26px;height:10px;border-radius:3px 3px 0 0;background:inherit;filter:brightness(.86)}
@@ -185,12 +72,12 @@
 .tl-pin{width:10px;height:10px;border-radius:50%;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .tl-stem{width:2px;height:100%;background:repeating-linear-gradient(to bottom,#c4d3eb 0,#c4d3eb 4px,transparent 4px,transparent 9px)}
 .tl-dot{width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px #96b4d8;background:#fff;z-index:3;grid-row:3;position:relative}
-/* 妯酱锛氱粷瀵瑰畾浣嶅湪 scroll 澶栫殑 axis-row */
+/* 横轴：绝对定位在 scroll 外的 axis-row */
 .tl-axis-row{position:absolute;bottom:16px;left:0;right:0;height:24px;pointer-events:none}
 .tl-axis-line{position:absolute;bottom:8px;left:40px;right:40px;height:0;border-bottom:2px dashed #b0c4e0}
-.tl-axis-line::after{content:'鈥?;position:absolute;right:-14px;top:50%;transform:translateY(-52%);font-size:20px;color:#7ea0d4;line-height:1}
+.tl-axis-line::after{content:'›';position:absolute;right:-14px;top:50%;transform:translateY(-52%);font-size:20px;color:#7ea0d4;line-height:1}
 
-/* 鈹€鈹€ 鎷嶇珛寰楃収鐗囩粍 鈹€鈹€ */
+/* ── 拍立得照片组 ── */
 .polaroid-wrap{
   position:relative;
   width:100%;
@@ -237,7 +124,7 @@
   font-family:'Segoe UI',sans-serif;
   letter-spacing:.5px;
 }
-/* 灏忔媿绔嬪緱 p2 p3 */
+/* 小拍立得 p2 p3 */
 .polaroid.p2{
   width:clamp(100px,15%,175px);
   bottom:-15px; right:8%; top:auto; left:auto;
@@ -267,7 +154,7 @@
   flex-direction:column;
   justify-content:center;
 }
-/* 鑳跺甫瑁呴グ */
+/* 胶带装饰 */
 .polaroid::before{
   content:'';
   position:absolute;
@@ -281,7 +168,7 @@
 .polaroid.p2::before{ width:40px; height:18px; }
 .polaroid.p3::before{ width:40px; height:18px; }
 
-/* 鈹€鈹€ 鎷嶇珛寰楀搷搴斿紡琛ヤ竵 鈹€鈹€ */
+/* ── 拍立得响应式补丁 ── */
 @media(max-width:480px){
   .polaroid{ width:clamp(180px,72vw,300px) !important; }
   .polaroid.p2{ width:clamp(80px,28vw,130px) !important; right:2% !important; }
@@ -302,48 +189,48 @@
   const ctx=cv.getContext('2d');
   let W,H,mouse={x:.5,y:.5},target={x:.5,y:.5};
 
-  // 鈹€鈹€ 鍏夌矑瀛愮郴缁燂細璺熼殢榧犳爣鑱氭嫝 鈹€鈹€
-  const NPTS = 520;  // 鏇村绮掑瓙锛屽瘑搴﹂珮
+  // ── 光粒子系统：跟随鼠标聚拢 ──
+  const NPTS = 520;  // 更多粒子，密度高
   const pts = [];
   (function(){
     for(let i=0;i<NPTS;i++){
       const r=Math.random();
-      // 鍐拌摑涓昏壊璋冿紝灏戦噺钖勮嵎銆佹瀬灏戦噺娴呯传
-      const h = r<.50 ? 188+Math.random()*18   // 鍐拌摑
-              : r<.80 ? 165+Math.random()*20    // 钖勮嵎闈?
-              : r<.95 ? 205+Math.random()*20    // 澶╄摑
-              :          240+Math.random()*20;  // 鏋佸皯娴呯传
-      // 鏄熶簯褰㈢姸锛氫腑蹇冨瘑闆嗭紝杈圭紭绋€鐤忥紙鐢ㄩ珮鏂垎甯冭繎浼硷級
+      // 冰蓝主色调，少量薄荷、极少量浅紫
+      const h = r<.50 ? 188+Math.random()*18   // 冰蓝
+              : r<.80 ? 165+Math.random()*20    // 薄荷青
+              : r<.95 ? 205+Math.random()*20    // 天蓝
+              :          240+Math.random()*20;  // 极少浅紫
+      // 星云形状：中心密集，边缘稀疏（用高斯分布近似）
       const angle=Math.random()*Math.PI*2;
-      const dist=Math.pow(Math.random(),0.5)*0.18; // 闆嗕腑鍦ㄤ腑蹇?
+      const dist=Math.pow(Math.random(),0.5)*0.18; // 集中在中心
       pts.push({
         x:.5, y:.5, vx:0, vy:0,
-        ox: Math.cos(angle)*dist,         // 鐩稿榧犳爣鐨勫亸绉?
+        ox: Math.cos(angle)*dist,         // 相对鼠标的偏移
         oy: Math.sin(angle)*dist*.7,
-        // 绮掑瓙鏈韩灏哄鏋佸皬
+        // 粒子本身尺寸极小
         r: Math.random()<.15
-            ? Math.random()*.8+.6          // 灏戦噺绋嶅ぇ绮掑瓙锛堜寒鏄燂級
-            : Math.random()*.35+.15,       // 澶у鏁版瀬缁嗗皬
+            ? Math.random()*.8+.6          // 少量稍大粒子（亮星）
+            : Math.random()*.35+.15,       // 大多数极细小
         h,
         s: 60+Math.random()*35,
         l: 75+Math.random()*20,
         a: Math.random()*.7+.2,
         phase: Math.random()*Math.PI*2,
-        freq:  .004+Math.random()*.009,   // 鍛煎惛棰戠巼
-        twinkle: Math.random()*.5+.5,     // 闂儊骞呭害
+        freq:  .004+Math.random()*.009,   // 呼吸频率
+        twinkle: Math.random()*.5+.5,     // 闪烁幅度
       });
     }
   })();
-  // 鈹€鈹€ 娉㈡簮鍒楄〃锛堟瘡娆￠紶鏍囩Щ鍔?鐐瑰嚮浜х敓鏂版尝婧愶級鈹€鈹€
+  // ── 波源列表（每次鼠标移动/点击产生新波源）──
   const waves=[];
   let lastWaveT=0;
 
   function addWave(x,y,strength){
     waves.push({
-      x,y,          // 褰掍竴鍖栧潗鏍?
-      t:0,          // 鏃堕棿
+      x,y,          // 归一化坐标
+      t:0,          // 时间
       str:strength||1,
-      maxT:120      // 鐢熷懡鍛ㄦ湡甯ф暟
+      maxT:120      // 生命周期帧数
     });
   }
 
@@ -357,7 +244,7 @@
     }
   });
   window.addEventListener('click',e=>{
-    // 鐐瑰嚮浜х敓鏇村己鐨勫閲嶆尝
+    // 点击产生更强的多重波
     for(let i=0;i<3;i++){
       setTimeout(()=>addWave(e.clientX/W, e.clientY/H, 1.2-i*.3), i*80);
     }
@@ -371,10 +258,10 @@
     W=cv.width=window.innerWidth||document.documentElement.clientWidth||1280;
     H=cv.height=window.innerHeight||document.documentElement.clientHeight||800;
   }
-  resize(); // 绔嬪嵆鎵ц涓€娆?
+  resize(); // 立即执行一次
   window.addEventListener('resize', resize);
 
-  // 鈹€鈹€ 澶у厜鏅曞簳鑹?鈹€鈹€
+  // ── 大光晕底色 ──
   const blobs=[
     {x:.0, y:.0, vx:.00006,vy:.00005,r:.50,c:'rgba(140,200,255,.14)'},
     {x:.92,y:.06,vx:-.00006,vy:.00008,r:.48,c:'rgba(120,190,255,.12)'},
@@ -383,30 +270,30 @@
     {x:.50,y:.50,vx:.00003,vy:.00004,r:.35,c:'rgba(170,215,255,.07)'},
   ];
 
-  // 鈹€鈹€ 姘存尝绾规覆鏌擄細鎸夊悓蹇冨渾杞粨閲囨牱姝ｅ鸡娉寒搴?鈹€鈹€
+  // ── 水波纹渲染：按同心圆轮廓采样正弦波亮度 ──
   function drawWave(wave){
     const cx=wave.x*W, cy=wave.y*H;
-    const life=1-wave.t/wave.maxT;           // 1鈫? 鐢熷懡琛板噺
-    const speed=4.5;                          // 娉㈤€燂紙px/frame锛?
-    const waveLen=60;                         // 娉㈤暱锛坧x锛?
-    const maxR=wave.t*speed;                 // 褰撳墠娉㈠墠鍗婂緞
-    const ringCount=6;                        // 鍚屾椂娓叉煋鐨勬尝鐜暟
+    const life=1-wave.t/wave.maxT;           // 1→0 生命衰减
+    const speed=4.5;                          // 波速（px/frame）
+    const waveLen=60;                         // 波长（px）
+    const maxR=wave.t*speed;                 // 当前波前半径
+    const ringCount=6;                        // 同时渲染的波环数
 
     for(let k=0;k<ringCount;k++){
       const r=maxR - k*waveLen;
       if(r<=0) continue;
 
-      // 琛板噺锛氳窛娉㈡簮瓒婅繙瓒婂急锛涙尝灏捐秺鑰佽秺寮?
+      // 衰减：距波源越远越弱；波尾越老越弱
       const distDecay=Math.max(0, 1-r/(Math.min(W,H)*.85));
       const alpha=life * distDecay * wave.str * (1-k/ringCount) * 0.55;
       if(alpha<0.004) continue;
 
-      // 鐢ㄥ杈瑰舰杩戜技鍦嗭紝閫愭璁＄畻姝ｅ鸡鍋忕Щ鍒堕€?姘撮潰璧蜂紡"璐ㄦ劅
+      // 用多边形近似圆，逐段计算正弦偏移制造"水面起伏"质感
       const segs=Math.max(60, Math.round(r*.8));
       ctx.beginPath();
       for(let i=0;i<=segs;i++){
         const angle=(i/segs)*Math.PI*2;
-        // 姝ｅ鸡鎵板姩锛氳鍦嗗湀杞诲井璧蜂紡锛屾ā鎷熸按闈?
+        // 正弦扰动：让圆圈轻微起伏，模拟水面
         const wobble=Math.sin(angle*8 + wave.t*.18)*2.5*(1-k/ringCount)*life;
         const rr=r+wobble;
         const px=cx+Math.cos(angle)*rr;
@@ -415,7 +302,7 @@
       }
       ctx.closePath();
 
-      // 棰滆壊锛氬唴鍦堜寒鐧借摑锛屽鍦堝啺钃?
+      // 颜色：内圈亮白蓝，外圈冰蓝
       const blue=Math.round(180+60*(1-k/ringCount));
       ctx.strokeStyle=`rgba(100,${blue},255,1)`;
       ctx.lineWidth=Math.max(0.4, (1.8-k*.25)*life*wave.str);
@@ -430,7 +317,7 @@
     frame++;
     ctx.clearRect(0,0,W,H);
 
-    // 鑳屾櫙娓愬彉
+    // 背景渐变
     const bg=ctx.createLinearGradient(0,0,0,H);
     bg.addColorStop(0,'#eaf6ff');
     bg.addColorStop(.20,'#dff0fc');
@@ -441,7 +328,7 @@
     ctx.fillStyle=bg; ctx.globalAlpha=1;
     ctx.fillRect(0,0,W,H);
 
-    // 澶у厜鏅?
+    // 大光晕
     mouse.x+=(target.x-mouse.x)*.018;
     mouse.y+=(target.y-mouse.y)*.018;
     blobs.forEach(b=>{
@@ -456,7 +343,7 @@
       ctx.fillRect(0,0,W,H);
     });
 
-    // 榧犳爣鑱氬厜
+    // 鼠标聚光
     const mg=ctx.createRadialGradient(mouse.x*W,mouse.y*H,0,mouse.x*W,mouse.y*H,Math.min(W,H)*.08);
     mg.addColorStop(0,'rgba(180,240,240,.35)');
     mg.addColorStop(.6,'rgba(180,235,245,.08)');
@@ -464,25 +351,25 @@
     ctx.fillStyle=mg; ctx.globalAlpha=1;
     ctx.fillRect(0,0,W,H);
 
-    // 鈹€鈹€ 姘存尝绾?鈹€鈹€
+    // ── 水波纹 ──
     ctx.save();
     ctx.lineJoin='round';
     waves.forEach(w=>{
       w.t++;
       drawWave(w);
     });
-    // 娓呯悊杩囨湡娉?
+    // 清理过期波
     for(let i=waves.length-1;i>=0;i--){
       if(waves[i].t>=waves[i].maxT) waves.splice(i,1);
     }
     ctx.restore();
 
-    // 鈹€鈹€ 鍏夌矑瀛愭覆鏌擄細璺熼殢榧犳爣 鈹€鈹€
+    // ── 光粒子渲染：跟随鼠标 ──
     ctx.save();
     ctx.globalCompositeOperation='source-over';
     const tf=frame*.016;
 
-    // 鍏堢敾鏁翠綋鏄熶簯鍏夋檿锛堜竴涓ぇ鐨勫讥鏁ｅ厜鍦堬紝鍦ㄦ墍鏈夌矑瀛愪笅闈級
+    // 先画整体星云光晕（一个大的弥散光圈，在所有粒子下面）
     const nebulaCX=mouse.x*W, nebulaCY=mouse.y*H;
     const nebulaR=Math.min(W,H)*.12;
     const ng=ctx.createRadialGradient(nebulaCX,nebulaCY,0,nebulaCX,nebulaCY,nebulaR);
@@ -494,14 +381,14 @@
     ctx.beginPath(); ctx.arc(nebulaCX,nebulaCY,nebulaR,0,Math.PI*2); ctx.fill();
 
     pts.forEach(p=>{
-      // 闂儊锛氫寒搴﹂殢鏃堕棿寰彉
+      // 闪烁：亮度随时间微变
       const twinkle=1+Math.sin(tf*p.freq*3+p.phase)*p.twinkle*.3;
 
-      // 鐩爣浣嶇疆 = 榧犳爣 + 鍥哄畾鍋忕Щ + 鏋佸皬鍛煎惛婕傜Щ
+      // 目标位置 = 鼠标 + 固定偏移 + 极小呼吸漂移
       const tx=mouse.x + p.ox + Math.sin(tf*p.freq+p.phase)*.006;
       const ty=mouse.y + p.oy + Math.cos(tf*p.freq+p.phase*1.3)*.006;
 
-      // 寮圭哀杩借釜锛堝揩锛?
+      // 弹簧追踪（快）
       p.vx+=(tx-p.x)*.16; p.vy+=(ty-p.y)*.16;
       p.vx*=.70; p.vy*=.70;
       p.x+=p.vx; p.y+=p.vy;
@@ -510,7 +397,7 @@
       const radius=p.r*twinkle;
       const alpha=Math.min(1,p.a*twinkle);
 
-      // 鈶?寮ユ暎鍏夋檿锛堥潪甯稿ぇ浣嗘瀬閫忔槑锛屽儚鏄熶簯鐨勫彂鍏夋皵浣擄級
+      // ① 弥散光晕（非常大但极透明，像星云的发光气体）
       if(radius>0.3){
         const haloR=radius*22;
         const hg=ctx.createRadialGradient(px,py,0,px,py,haloR);
@@ -521,7 +408,7 @@
         ctx.beginPath(); ctx.arc(px,py,haloR,0,Math.PI*2); ctx.fill();
       }
 
-      // 鈶?涓眰鏌斿厜锛堢◢杩戯級
+      // ② 中层柔光（稍近）
       const mgR=radius*5;
       const mg=ctx.createRadialGradient(px,py,0,px,py,mgR);
       mg.addColorStop(0,`hsla(${p.h},85%,88%,${alpha*.55})`);
@@ -530,12 +417,12 @@
       ctx.fillStyle=mg; ctx.globalAlpha=1;
       ctx.beginPath(); ctx.arc(px,py,mgR,0,Math.PI*2); ctx.fill();
 
-      // 鈶?浜姱锛堟瀬灏忥紝楂樹寒锛?
+      // ③ 亮芯（极小，高亮）
       ctx.globalAlpha=alpha;
       ctx.fillStyle=`hsl(${p.h},${p.s}%,${Math.min(95,p.l+10)}%)`;
       ctx.beginPath(); ctx.arc(px,py,radius,0,Math.PI*2); ctx.fill();
 
-      // 鈶?鏈€浜腑蹇冪櫧鐐癸紙鍙澶х矑瀛愶級
+      // ④ 最亮中心白点（只对大粒子）
       if(radius>0.5){
         ctx.globalAlpha=alpha*.8;
         ctx.fillStyle='rgba(255,255,255,.92)';
@@ -553,21 +440,21 @@
   setTimeout(()=>addWave(.5,.38,0.8),800);
 })();
 </script>
-<div id="sc"><nav class="nav glass"><a class="brand" href="#home"><img class="avatar" src="hero-qin.png" alt="Qin">08's Portfolio</a><div class="navlinks"><button class="on" data-target="home">棣栭〉</button><button data-target="about">鑷垜浠嬬粛</button><button data-target="tools">AI宸ュ叿</button><button data-target="details">宸ュ叿璇︽儏</button><button data-target="summary">鎬荤粨</button></div><a class="contact" href="mailto:qinlinbo5@gmail.com">鑱旂郴鎴戙€€鈫?/a></nav>
-<div class="snap-frame" id="home"><section class="page hero glass" ><div><span class="eyebrow">AI Product Ops &amp; Travel Tech Builder</span><h1>鎶婇噸澶嶅姩浣滐紝<br>鍙樻垚 <em>鍙鐢ㄧ殑鑳藉姏</em></h1><p class="lead">鏃呰瑙勫垝浜у搧鏂瑰悜 路 Vibe Coding 瀹炶返</p><div class="chips"><span class="chip">蠠 AI Ops</span><span class="chip">鈻?Data Insight</span><span class="chip">&lt;/&gt; Vibe Coding</span><span class="chip">鉁?Travel Tech</span></div><div class="stats glass"><div class="stat"><b>8+</b><span>瀹為獙宸ュ叿</span></div><div class="stat"><b>200+</b><span>杩愯惀鍦烘櫙娌夋穩</span></div><div class="stat"><b>鈭?/b><span>鎸佺画杩唬涓?/span></div></div></div><div class="hero-art">
+<div id="sc"><nav class="nav glass"><a class="brand" href="#home"><img class="avatar" src="hero-qin.png" alt="Qin">08's Portfolio</a><div class="navlinks"><button class="on" data-target="home">首页</button><button data-target="about">自我介绍</button><button data-target="tools">AI工具</button><button data-target="details">工具详情</button><button data-target="summary">总结</button></div><a class="contact" href="mailto:qinlinbo5@gmail.com">联系我　↗</a></nav>
+<div class="snap-frame" id="home"><section class="page hero glass" ><div><span class="eyebrow">AI Product Ops &amp; Travel Tech Builder</span><h1>把重复动作，<br>变成 <em>可复用的能力</em></h1><p class="lead">旅行规划产品方向 · Vibe Coding 实践</p><div class="chips"><span class="chip">ϟ AI Ops</span><span class="chip">▥ Data Insight</span><span class="chip">&lt;/&gt; Vibe Coding</span><span class="chip">✈ Travel Tech</span></div><div class="stats glass"><div class="stat"><b>8+</b><span>实验工具</span></div><div class="stat"><b>200+</b><span>运营场景沉淀</span></div><div class="stat"><b>∞</b><span>持续迭代中</span></div></div></div><div class="hero-art">
   <div class="polaroid-wrap">
     <div class="polaroid">
       <div class="polaroid-img-box">
-        <img src="hero-qin.png" alt="Qin 鐨勬暟瀛楀伐浣滃彴">
+        <img src="hero-qin.png" alt="Qin 的数字工作台">
       </div>
-      <div class="polaroid-caption">AI Product Ops &amp; Vibe Coder 鉁?/div>
+      <div class="polaroid-caption">AI Product Ops &amp; Vibe Coder ✦</div>
     </div>
     <div class="polaroid p2">
       <div class="polaroid-img-box p2-inner">
-        <b>涓嬩竴绔?路 鍖楁捣閬?/b>
+        <b>下一站 · 北海道</b>
         <div style="height:55px;border-radius:6px;background:linear-gradient(#d8e9f3 50%,#a4c5c6 51% 58%,#eadabf 59%);margin-top:6px"></div>
       </div>
-      <div class="polaroid-caption" style="font-size:11px">Travel Dream 鉁?/div>
+      <div class="polaroid-caption" style="font-size:11px">Travel Dream ✈</div>
     </div>
     <div class="polaroid p3">
       <div class="polaroid-img-box p3-inner">
@@ -575,19 +462,19 @@
         <div class="line" style="margin:6px 0 4px"></div>
         <span style="color:#61a58e;font-size:20px;font-weight:700">+23.5%</span>
       </div>
-      <div class="polaroid-caption" style="font-size:11px">Growth 馃搱</div>
+      <div class="polaroid-caption" style="font-size:11px">Growth 📈</div>
     </div>
   </div>
 </div></section></div>
-<div class="snap-frame" id="about"><section class="page about glass" ><div class="about-grid"><article class="profile glass"><div><h3>鐢ㄥ唴瀹硅繛鎺ョ敤鎴凤紝鐢ㄦ暟鎹┍鍔ㄥ闀裤€?/h3><p>鍠滄鐢ㄥ唴瀹瑰拰鏁版嵁鍙戠幇鏈轰細銆佽В鍐抽棶棰橈紝<br>鍦ㄤ骇鍝佸拰鐢ㄦ埛涔嬮棿鎼缓杩炴帴锛?br>璁╂瘡涓€娆′綋楠屾洿鏈変环鍊硷紝璁╂瘡涓€浠藉闀挎洿鍙寔缁€?/p><div class="facts"><span>鈱?涓婃捣</span><span>鈼?纭曞＋鍦ㄨ 路 鐢熺墿鍖诲宸ョ▼</span><span>鈾?鏃呰 路 瓒崇悆 路 杩愯惀</span></div></div><img src="hero-qin.png" alt="Qin 涓汉褰㈣薄"></article><div class="about-side"><article class="tags glass"><h3>鈼囥€€鎴戠殑鏍囩</h3><div><span>Vibe Coding</span><span>鐢ㄦ埛娲炲療</span><span>鏁版嵁椹卞姩</span><span>鍐呭澧為暱</span><span>鏃呰鎺㈢储</span></div></article><article class="quote contact-card glass"><h3>鈼?nbsp;&nbsp;鑱旂郴鎴?/h3><div class="contact-list"><div>馃摓&nbsp;18735585229</div><div>鉁夛笍&nbsp;qinlinbo5@gmail.com</div><div>馃搫&nbsp;<a href="#" class="resume-link">绠€鍘嗘煡鐪嬶紙鍗冲皢涓婄嚎锛?/a></div></div></article></div><div class="about-cards"><article class="info-card glass"><h3>鈼庛€€鏁欒偛鑳屾櫙</h3><div style="font-size:15px;font-weight:600;color:var(--blue);margin-bottom:10px">绉︾惓娉?<span style="font-size:12px;font-weight:400;color:var(--muted)">2003.5</span></div><div class="experience"><b>涓婃捣绉戞妧澶у</b><div style="color:var(--muted);font-size:12px;margin-top:3px">鐢熺墿鍖诲宸ョ▼ 路 纭曞＋锛堟帹鍏嶏級</div></div><div class="experience"><b>涓婃捣鐞嗗伐澶у</b><div style="color:var(--muted);font-size:12px;margin-top:3px">鍖诲褰卞儚鎶€鏈?路 鏈</div></div></article><article class="info-card glass"><h3>鈻ｃ€€瀹炰範缁忓巻</h3><div class="experience"><span class="badge">2026.6鈥?026.8</span><b>灏忕孩涔︼綔AI 浜у搧杩愯惀</b><div style="color:var(--muted);font-size:12px;margin-top:2px">AI 鏃呰瑙勫垝浜у搧</div></div><div class="experience"><span class="badge">2026.3鈥?026.6</span><b>浼犻煶鎺ц偂锝淎I 浜у搧杩愯惀</b><div style="color:var(--muted);font-size:12px;margin-top:2px">鎵嬫満 AI 鍔╂墜</div></div><div class="experience"><span class="badge">2025.12鈥?026.2</span><b>鏄庡熀绉戞妧锝滃闀胯繍钀?/b></div></article><article class="info-card glass"><h3>鉁︺€€椤圭洰缁忓巻</h3><div class="experience"><span class="badge">2026.4鈥撹嚦浠?/span><b>AI 宸ュ叿浣滃搧闆?/b><div style="color:var(--muted);font-size:12px;margin-top:2px">Vibe Coding 瀹炶返锛屾瀯寤轰釜浜?AI 宸ュ叿闆?/div></div><div class="experience"><span class="badge">2022.12鈥?024.6</span><b>鍨傜洿瓒崇悆璧勮鑷獟浣撶煩闃?/b><div style="color:var(--muted);font-size:12px;margin-top:2px">鍨傜洿瓒崇悆璧勮锛?7w 绮変笣</div></div></article><article class="info-card glass"><h3>鈼屻€€鐢熸椿閲岀殑鎴?/h3><ul><li><b>鈻?鏃呰鎺㈢储</b><br>鎺㈢储涓嶅悓鍩庡競锛屾敹闆嗙編濂戒綋楠?/li><li><b>鈿?瓒崇悆鐖卞ソ鑰?/b><br>鐪嬬悆銆佸啓鍐呭銆佽繍钀ヨ冻鐞冭嚜濯掍綋</li><li><b>鈻?鎸佺画瀛︿範</b><br>鍏虫敞 AI銆佷骇鍝佷笌甯傚満</li></ul></article></div></div></section></div>
-<div class="snap-frame" id="tools"><section class="page tools-page glass" style="overflow:hidden;justify-content:flex-start;padding:32px 50px 0"><div class="page-head" style="margin-bottom:4px;flex-shrink:0"><div><h2>AI宸ュ叿 <em>鉁?/em></h2><p>浠庣湡瀹為棶棰樺嚭鍙戯紝鎶婂伐鍏峰仛鎴愬彲澶嶇敤鑳藉姏銆?/p></div></div><div class="tl-wrap" id="tlWrap" style="flex:1;position:relative;min-height:0"></div></section></div>
-<div class="snap-frame" id="details"><section class="page details glass"><div class="page-head"><div><h2>宸ュ叿璇︽儏</h2><p>鍏?8 涓」鐩紝鐐瑰嚮鍗＄墖鐩存帴浣撻獙銆?/p></div></div><div class="cf-stage" id="cfStage"></div><div class="cf-dots" id="cfDots"></div></section></div>
-<div class="snap-frame" id="summary"><section class="page summary glass" ><div class="summary-main"><div><h2>璋㈣阿鐪嬪埌杩欓噷 <em>Thanks for stopping by</em></h2><p>鎰熻阿浣犵殑鏃堕棿涓庡叧娉ㄣ€傚笇鏈涙垜鐨勪骇鍝佹€濈淮銆佹暟鎹礊瀵熶笌 AI 鑳藉姏锛?br>鑳戒负鍥㈤槦鍒涢€犱环鍊硷紝涔熸湡寰呬笌鏇村鏈夎叮鐨勪汉涓€璧峰仛鏈夋剰涔夌殑浜嬨€?/p></div><div class="summary-art"><img src="hero-qin.png" alt="Qin"></div></div><div class="summary-cards"><article class="sum-card"><b>鈻?鏍稿績鑳藉姏</b><p>浜у搧杩愯惀鍏ㄦ祦绋嬫妸鎺?br>鏁版嵁娲炲療椹卞姩鍐崇瓥<br>AI 宸ュ叿搴旂敤涓庤嚜鍔ㄥ寲</p></article><article class="sum-card"><b>鈻?瀹炰範浜偣</b><p>娲炲療鐢ㄦ埛闇€姹?br>鎺ㄥ姩浜у搧浼樺寲<br>浜у嚭鍙惤鍦版柟妗?/p></article><article class="sum-card"><b>&lt;/&gt; 宸ュ叿鏂规硶璁?/b><p>Vibe Coding 鍘熷瀷寮€鍙?br>AI 鑷姩鍖栨彁鍗囦汉鏁?br>缁撴瀯鍖栧鐩樻寔缁紭鍖?/p></article><article class="sum-card"><b>鈼?鍏虫敞鏂瑰悜</b><p>浜у搧涓庢暟鎹繁搴︾粨鍚?br>鏃呰涓庣敓娲绘柟寮忓垱鏂?br>AI 鍦ㄤ骇鍝佷腑鐨勮惤鍦?/p></article><article class="sum-card"><b>鈽?鑱旂郴鏂瑰紡</b><p>qinlinbo5@gmail.com<br>github.com/qlb708<br>娆㈣繋浜ゆ祦涓庡悎浣?/p></article></div></section></div>
-<footer class="footer"><span>漏 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. 鈾?/span></footer>
+<div class="snap-frame" id="about"><section class="page about glass" ><div class="about-grid"><article class="profile glass"><div><h3>用内容连接用户，用数据驱动增长。</h3><p>喜欢用内容和数据发现机会、解决问题，<br>在产品和用户之间搭建连接，<br>让每一次体验更有价值，让每一份增长更可持续。</p><div class="facts"><span>⌖ 上海</span><span>◇ 硕士在读 · 生物医学工程</span><span>♡ 旅行 · 足球 · 运营</span></div></div><img src="hero-qin.png" alt="Qin 个人形象"></article><div class="about-side"><article class="tags glass"><h3>◇　我的标签</h3><div><span>Vibe Coding</span><span>用户洞察</span><span>数据驱动</span><span>内容增长</span><span>旅行探索</span></div></article><article class="quote contact-card glass"><h3>◈&nbsp;&nbsp;联系我</h3><div class="contact-list"><div>📞&nbsp;18735585229</div><div>✉️&nbsp;qinlinbo5@gmail.com</div><div>📄&nbsp;<a href="#" class="resume-link">简历查看（即将上线）</a></div></div></article></div><div class="about-cards"><article class="info-card glass"><h3>◎　教育背景</h3><div style="font-size:15px;font-weight:600;color:var(--blue);margin-bottom:10px">秦琳波 <span style="font-size:12px;font-weight:400;color:var(--muted)">2003.5</span></div><div class="experience"><b>上海科技大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">生物医学工程 · 硕士（推免）</div></div><div class="experience"><b>上海理工大学</b><div style="color:var(--muted);font-size:12px;margin-top:3px">医学影像技术 · 本科</div></div></article><article class="info-card glass"><h3>▣　实习经历</h3><div class="experience"><span class="badge">2026.6–2026.8</span><b>小红书｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">AI 旅行规划产品</div></div><div class="experience"><span class="badge">2026.3–2026.6</span><b>传音控股｜AI 产品运营</b><div style="color:var(--muted);font-size:12px;margin-top:2px">手机 AI 助手</div></div><div class="experience"><span class="badge">2025.12–2026.2</span><b>明基科技｜增长运营</b></div></article><article class="info-card glass"><h3>✦　项目经历</h3><div class="experience"><span class="badge">2026.4–至今</span><b>AI 工具作品集</b><div style="color:var(--muted);font-size:12px;margin-top:2px">Vibe Coding 实践，构建个人 AI 工具集</div></div><div class="experience"><span class="badge">2022.12–2024.6</span><b>垂直足球资讯自媒体矩阵</b><div style="color:var(--muted);font-size:12px;margin-top:2px">垂直足球资讯，17w 粉丝</div></div></article><article class="info-card glass"><h3>◌　生活里的我</h3><ul><li><b>▣ 旅行探索</b><br>探索不同城市，收集美好体验</li><li><b>⚽ 足球爱好者</b><br>看球、写内容、运营足球自媒体</li><li><b>▤ 持续学习</b><br>关注 AI、产品与市场</li></ul></article></div></div></section></div>
+<div class="snap-frame" id="tools"><section class="page tools-page glass" style="overflow:hidden;justify-content:flex-start;padding:32px 50px 0"><div class="page-head" style="margin-bottom:4px;flex-shrink:0"><div><h2>AI工具 <em>✦</em></h2><p>从真实问题出发，把工具做成可复用能力。</p></div></div><div class="tl-wrap" id="tlWrap" style="flex:1;position:relative;min-height:0"></div></section></div>
+<div class="snap-frame" id="details"><section class="page details glass"><div class="page-head"><div><h2>工具详情</h2><p>共 8 个项目，点击卡片直接体验。</p></div></div><div class="cf-stage" id="cfStage"></div><div class="cf-dots" id="cfDots"></div></section></div>
+<div class="snap-frame" id="summary"><section class="page summary glass" ><div class="summary-main"><div><h2>谢谢看到这里 <em>Thanks for stopping by</em></h2><p>感谢你的时间与关注。希望我的产品思维、数据洞察与 AI 能力，<br>能为团队创造价值，也期待与更多有趣的人一起做有意义的事。</p></div><div class="summary-art"><img src="hero-qin.png" alt="Qin"></div></div><div class="summary-cards"><article class="sum-card"><b>▦ 核心能力</b><p>产品运营全流程把控<br>数据洞察驱动决策<br>AI 工具应用与自动化</p></article><article class="sum-card"><b>▣ 实习亮点</b><p>洞察用户需求<br>推动产品优化<br>产出可落地方案</p></article><article class="sum-card"><b>&lt;/&gt; 工具方法论</b><p>Vibe Coding 原型开发<br>AI 自动化提升人效<br>结构化复盘持续优化</p></article><article class="sum-card"><b>◎ 关注方向</b><p>产品与数据深度结合<br>旅行与生活方式创新<br>AI 在产品中的落地</p></article><article class="sum-card"><b>☎ 联系方式</b><p>qinlinbo5@gmail.com<br>github.com/qlb708<br>欢迎交流与合作</p></article></div></section></div>
+<footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
 <script>
-const groups=[{key:'daily',title:'鏃ュ父鎻愭晥',icon:'鈻?,count:'2 涓疄楠屽伐鍏?,desc:'瑙ｅ喅楂橀鏃ュ父鍦烘櫙锛屾彁鍗囦釜浜轰笌鍥㈤槦鏁堢巼銆?,tone:'#4a7bff',tint:'#e8f1ff',cls:'c-blue',items:[['姣忔棩 Todo 鍜屽鐩?,'寮曞鍙嶆€濇€荤粨锛屾寔缁垚闀?,'recap/','鉁?],['鎵撳嵃鏈鸿瘑鍒粦鐧?,'蹇€熻瘑鍒枃妗ｆ墦鍗伴€傞厤','print-helper/','鈻?],]},{key:'demo',title:'娲诲姩 Demo',icon:'鈻?,count:'3 涓垱鎰忛」鐩?,desc:'浠庢兂娉曞埌钀藉湴锛屾帰绱㈡湁瓒ｇ殑浜у搧瀹為獙銆?,tone:'#ed936f',tint:'#fff0e8',cls:'c-peach',items:[['AI 澶氭柟妗堝姣?,'杈撳叆闇€姹傦紝鐢熸垚澶氱浼橀€夋柟妗?,'/08/web/compare/','鈿?],['FATE TRIP','鍒嗕韩琛岀▼涓嶅彧鏄彂閾炬帴鈥斺€旂洸鐩掔炕绛久楀懡杩愮璇椼€屾垜涔熸兂鍘汇€嶅績鍔ㄥ弽棣?,'/08/activity/travel-sign/','鉁?],['鎵嬪娍濉旂綏','鐢ㄦ墜鍔跨炕寮€涓撳睘浣犵殑濉旂綏鐗岋紝瑙ｈ鍛借繍瀵嗚','/08/web/tarot/','馃儚']]}];
+const groups=[{key:'daily',title:'日常提效',icon:'▦',count:'2 个实验工具',desc:'解决高频日常场景，提升个人与团队效率。',tone:'#4a7bff',tint:'#e8f1ff',cls:'c-blue',items:[['每日 Todo 和复盘','引导反思总结，持续成长','recap/','✓'],['打印机识别黑白','快速识别文档打印适配','print-helper/','▣'],]},{key:'demo',title:'活动 Demo',icon:'▣',count:'3 个创意项目',desc:'从想法到落地，探索有趣的产品实验。',tone:'#ed936f',tint:'#fff0e8',cls:'c-peach',items:[['AI 多方案对比','输入需求，生成多种优选方案','/08/web/compare/','⚖'],['FATE TRIP','分享行程不只是发链接——盲盒翻签×命运签语×「我也想去」心动反馈','/08/activity/travel-sign/','✦'],['手势塔罗','用手势翻开专属你的塔罗牌，解读命运密语','/08/web/tarot/','🃏']]}];
 
-// 鈹€鈹€ 娓愬彉鑹查厤缃?
+// ── 渐变色配置
 const GRADS=[
   'linear-gradient(135deg,#dce8ff,#b8cfff)',
   'linear-gradient(135deg,#d5f0e8,#a8e0c5)',
@@ -602,25 +489,25 @@ const GRADS=[
   'linear-gradient(135deg,#d5f5ff,#aaecff)',
 ];
 
-// 鈹€鈹€ 褰撳墠娲昏穬 section
+// ── 当前活跃 section
 let activeSection='home';
 
-// 鈹€鈹€ navTo: 鍒囨崲 section
+// ── navTo: 切换 section
 function navTo(id){
   activeSection=id;
   const sc=document.getElementById('sc');
   const el=document.getElementById(id);
   if(el&&sc) sc.scrollTo({top:el.offsetTop,behavior:'instant'});
-  // 鏇存柊 nav active
+  // 更新 nav active
   document.querySelectorAll('.navlinks button').forEach(b=>{
     b.classList.toggle('on',b.dataset.target===id);
   });
-  // 濡傛灉鏄?details 椤碉紝娓叉煋 coverflow
+  // 如果是 details 页，渲染 coverflow
   if(id==='details') setTimeout(renderAllCards,50);
   if(id==='tools') setTimeout(renderTools,50);
 }
 
-// 鈹€鈹€ Scroll spy
+// ── Scroll spy
 (function(){
   const sc=document.getElementById('sc');
   if(!sc)return;
@@ -643,7 +530,7 @@ function navTo(id){
   });
 })();
 
-// 鈹€鈹€ Nav 缁戝畾
+// ── Nav 绑定
 document.querySelectorAll('.navlinks button[data-target]').forEach(b=>{
   b.onclick=()=>navTo(b.dataset.target);
 });
@@ -651,11 +538,11 @@ document.querySelectorAll('[data-goto]').forEach(el=>{
   el.onclick=()=>navTo(el.dataset.goto);
 });
 
-// 鈹€鈹€ Coverflow
+// ── Coverflow
 let cfReady=false;
 let toolsReady=false;
 
-// 鈹€鈹€ renderTools锛欰I宸ュ叿椤?鏃堕棿杞翠究鍒╄创
+// ── renderTools：AI工具页 时间轴便利贴
 function renderTools(){
   if(toolsReady)return;
   const wrap=document.getElementById('tlWrap');
@@ -669,11 +556,11 @@ function renderTools(){
     {bg:'#f0fdf4',pin:'#4ade80'},
   ];
   const WHY=[
-    '澶嶇洏鏄垚闀垮紩鎿庯紝浣嗗ぇ澶氭暟浜烘病鏈変範鎯€斺€旀兂缁欒嚜宸变竴涓瘡澶?鍒嗛挓娌夋穩鐨勭悊鐢便€?,
-    '姣忔鍦ㄥ叕鍙告墦鏂囦欢閮借鐚滄墦鍗版満鑳戒笉鑳借瘑鍒鑹诧紝绱㈡€у仛涓伐鍏蜂竴閿娴嬨€?,
-    '鎵嬪姩姣旇緝澶氫釜AI鏂规澶垂鏃堕棿锛屾兂鎶?杈撳叆闇€姹傗啋澶氭柟妗堣緭鍑?鍙樻垚涓€閿祦绋嬨€?,
-    '鍒嗕韩琛岀▼涓轰粈涔堝彧鑳藉彂涓€鏉￠摼鎺ワ紵鎯宠瀵规柟浠?琚姩鐪?鍙樻垚"涓诲姩鎷?鈥斺€斿儚姹傜涓€鏍锋娊鍑哄睘浜庤嚜宸辩殑璺嚎銆?,
-    '鎯冲彲瑙嗗寲鑷繁鍘昏繃鐨勫湴鏂癸紝鐢熸垚涓€寮犳湁娓╁害鐨勮冻杩瑰崱锛屼笉鍙槸涓湴鍥俱€?,
+    '复盘是成长引擎，但大多数人没有习惯——想给自己一个每天5分钟沉淀的理由。',
+    '每次在公司打文件都要猜打印机能不能识别颜色，索性做个工具一键检测。',
+    '手动比较多个AI方案太费时间，想把"输入需求→多方案输出"变成一键流程。',
+    '分享行程为什么只能发一条链接？想让对方从"被动看"变成"主动拆"——像求签一样抽出属于自己的路线。',
+    '想可视化自己去过的地方，生成一张有温度的足迹卡，不只是个地图。',
     
   ];
 
@@ -684,7 +571,7 @@ function renderTools(){
   const scroll=document.createElement('div');
   scroll.className='tl-scroll';
 
-  // 涓婁笅鎺掔殑 stem 楂樺害
+  // 上下排的 stem 高度
   const UP_H=[72,88,64,80,76,92,68,84,70];
   const DN_H=[58,70,62,68,74,60,66,72,64];
 
@@ -712,11 +599,11 @@ function renderTools(){
     dot.className='tl-dot';
     dot.style.background=note.pin;
 
-    // grid 5琛? [涓婅创绾竇 [涓妏in] [杞磀ot] [涓媝in] [涓嬭创绾竇
+    // grid 5行: [上贴纸] [上pin] [轴dot] [下pin] [下贴纸]
     const emptyTop=document.createElement('div');
     const emptyBot=document.createElement('div');
     if(isUp){
-      // 璐寸焊鍦ㄤ笂鍗婏細card鈫抪in鈫抎ot鈫抏mpty鈫抏mpty
+      // 贴纸在上半：card→pin→dot→empty→empty
       item.appendChild(card);
       item.appendChild(pin);
       dot.style.gridRow='3';
@@ -724,7 +611,7 @@ function renderTools(){
       item.appendChild(emptyTop);
       item.appendChild(emptyBot);
     }else{
-      // 璐寸焊鍦ㄤ笅鍗婏細empty鈫抏mpty鈫抎ot鈫抪in鈫抍ard
+      // 贴纸在下半：empty→empty→dot→pin→card
       item.appendChild(emptyTop);
       item.appendChild(emptyBot);
       dot.style.gridRow='3';
@@ -743,11 +630,11 @@ function renderTools(){
   wrap.appendChild(scroll);
   wrap.appendChild(axisRow);
 
-  // 瑙︽帶鏉挎í鍚戞粴鍔紙涓昏浜や簰鏂瑰紡锛?
+  // 触控板横向滚动（主要交互方式）
   scroll.addEventListener('wheel',e=>{
     if(Math.abs(e.deltaX)>Math.abs(e.deltaY)*0.3){e.preventDefault();scroll.scrollLeft+=e.deltaX;}
   },{passive:false});
-  // 榧犳爣鎷栨嫿锛氬彧鍦ㄩ潪 <a> 鍖哄煙鍝嶅簲锛屼笉骞叉壈渚垮埄璐寸偣鍑?
+  // 鼠标拖拽：只在非 <a> 区域响应，不干扰便利贴点击
   let sx=0,drag=false,sl=0;
   scroll.addEventListener('pointerdown',e=>{
     if(e.target.closest('a')) return;
@@ -764,7 +651,7 @@ function renderTools(){
   toolsReady=true;
 }
 
-// 鈹€鈹€ renderAllCards锛氬伐鍏疯鎯呴〉 coverflow
+// ── renderAllCards：工具详情页 coverflow
 function renderAllCards(){
   if(cfReady)return;
   const stage=document.getElementById('cfStage');
@@ -839,22 +726,22 @@ function initCoverflow(stage,dots,total){
 
   place(); layout(0);
 
-  // 鐐瑰嚮渚у崱鍒囨崲
+  // 点击侧卡切换
   stage.querySelectorAll('.tool-card').forEach(card=>{
     card.addEventListener('click',e=>{
       const idx=+card.dataset.idx;
       if(Math.abs(idx-cur)<0.5){
-        // 褰撳墠涓績鍗★細鐩存帴璺宠浆锛堜笉鎷︽埅锛?
+        // 当前中心卡：直接跳转（不拦截）
         return;
       }
-      // 渚ц竟鍗★細鍏堝眳涓紝闃绘璺宠浆
+      // 侧边卡：先居中，阻止跳转
       e.preventDefault();
       cur=idx; isSnapping=true; dragOffset=0; layout(0);
       setTimeout(()=>isSnapping=false,520);
     });
   });
 
-  // 瑙︽帶鏉挎í鍚戞粴鍔紙wheel锛夆€?瀹炴椂璺熸墜
+  // 触控板横向滚动（wheel）— 实时跟手
   let wheelAcc=0,wheelTimer=null;
   stage.addEventListener('wheel',e=>{
     if(Math.abs(e.deltaX)<Math.abs(e.deltaY)*0.5) return;
@@ -874,7 +761,7 @@ function initCoverflow(stage,dots,total){
     },130);
   },{passive:false});
 
-  // 鎸囬拡/瑙︽懜鎷栨嫿
+  // 指针/触摸拖拽
   let psx=0,pdrag=false,pmoved=false,dragStart=0;
   stage.addEventListener('pointerdown',e=>{
     psx=e.clientX; pdrag=true; pmoved=false; dragStart=dragOffset;
@@ -909,7 +796,7 @@ function initCoverflow(stage,dots,total){
   window.addEventListener('resize',()=>{place();layout(dragOffset);});
 }
 
-// 鈹€鈹€ 鑷姩鍒濆鍖?
+// ── 自动初始化
 setTimeout(renderTools, 80);
 setTimeout(renderAllCards, 80);
 
