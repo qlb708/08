@@ -11,30 +11,30 @@
 }
 
 :root {
-  --bg-dark: #1a1510;
-  --bg-card: #2a2018;
-  --gold: #c8973a;
-  --gold-dim: #9a7030;
-  --gold-glow: rgba(200, 151, 58, 0.35);
-  --cyan: #d4a574;
+  --bg-dark: #f5edd8;
+  --bg-card: #efe3c8;
+  --gold: #9a6f2a;
+  --gold-dim: #7a5520;
+  --gold-glow: rgba(154, 111, 42, 0.35);
+  --cyan: #8b6340;
   --card-w: 140px;
   --card-h: 238px;
   --carousel-scale: 1;
-  --text-primary: #f5ede0;
-  --text-secondary: rgba(245, 237, 224, 0.6);
-  --text-muted: rgba(245, 237, 224, 0.38);
-  --accent-rose: #d4956a;
-  --accent-lavender: #c4a882;
-  --accent-ice: #b8a070;
-  --glass-bg: rgba(26, 18, 10, 0.80);
-  --glass-border: rgba(200, 151, 58, 0.15);
+  --text-primary: #3d2b1a;
+  --text-secondary: rgba(61, 43, 26, 0.65);
+  --text-muted: rgba(61, 43, 26, 0.42);
+  --accent-rose: #c4785a;
+  --accent-lavender: #a08060;
+  --accent-ice: #8a7050;
+  --glass-bg: rgba(245, 237, 216, 0.82);
+  --glass-border: rgba(154, 111, 42, 0.22);
 }
 
 html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: radial-gradient(ellipse at 50% 0%, #2a1f12 0%, #1a1510 45%, #0f0e0c 100%);
+  background: radial-gradient(ellipse at 50% 0%, #fdf6e8 0%, #f5edd8 50%, #ede0c0 100%);
   font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
   color: var(--text-primary);
   -webkit-tap-highlight-color: transparent;
@@ -86,7 +86,7 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: safe center;
-  background: radial-gradient(ellipse at 50% 40%, #2a1f12 0%, #1a1510 60%, #0f0e0c 100%);
+  background: radial-gradient(ellipse at 50% 40%, #fdf6e8 0%, #f5edd8 60%, #ede0c0 100%);
   z-index: 10000;
   overflow: hidden;
   padding: 16px 0;
@@ -103,8 +103,8 @@ html, body {
     radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.4), transparent),
     radial-gradient(1px 1px at 70% 50%, rgba(255,255,255,0.3), transparent),
     radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(1.5px 1.5px at 15% 85%, rgba(232,180,184,0.6), transparent),
-    radial-gradient(1.5px 1.5px at 85% 25%, rgba(184,169,201,0.5), transparent);
+    radial-gradient(1.5px 1.5px at 15% 85%, rgba(200,150,80,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 85% 25%, rgba(180,130,60,0.4), transparent);
   animation: welcomeStarsTwinkle 4s ease-in-out infinite alternate;
 }
 
@@ -139,17 +139,17 @@ html, body {
   border-radius: 50%;
   background: radial-gradient(
     circle at 35% 30%,
-    rgba(200, 180, 230, 0.15) 0%,
-    rgba(100, 70, 160, 0.08) 30%,
-    rgba(30, 20, 60, 0.6) 60%,
-    rgba(10, 5, 30, 0.85) 100%
+    rgba(255, 235, 180, 0.55) 0%,
+    rgba(220, 170, 90, 0.25) 30%,
+    rgba(180, 120, 40, 0.35) 60%,
+    rgba(120, 75, 20, 0.55) 100%
   );
-  border: 1.5px solid rgba(200, 180, 240, 0.25);
+  border: 1.5px solid rgba(210, 160, 80, 0.5);
   box-shadow:
-    0 0 60px rgba(180, 140, 220, 0.25),
-    0 0 120px rgba(140, 100, 200, 0.15),
-    inset 0 0 60px rgba(160, 120, 210, 0.1),
-    inset 0 -20px 40px rgba(100, 60, 160, 0.15);
+    0 0 60px rgba(210, 160, 60, 0.35),
+    0 0 120px rgba(180, 130, 40, 0.2),
+    inset 0 0 60px rgba(230, 180, 80, 0.2),
+    inset 0 -20px 40px rgba(160, 100, 30, 0.2);
   overflow: hidden;
 }
 
@@ -160,8 +160,8 @@ html, body {
   border-radius: 50%;
   background: radial-gradient(
     circle at center,
-    rgba(200, 170, 255, 0.35) 0%,
-    rgba(180, 140, 230, 0.15) 40%,
+    rgba(255, 220, 130, 0.55) 0%,
+    rgba(220, 170, 80, 0.25) 40%,
     transparent 70%
   );
   animation: crystalGlowPulse 3s ease-in-out infinite;
@@ -323,7 +323,7 @@ html, body {
   color: var(--text-primary);
   letter-spacing: 14px;
   margin-bottom: 12px;
-  text-shadow: 0 0 20px rgba(180, 140, 220, 0.3), 0 0 40px rgba(180, 140, 220, 0.1);
+  text-shadow: 0 2px 12px rgba(154, 111, 42, 0.25), 0 0 30px rgba(154, 111, 42, 0.1);
   animation: welcomeFadeUp 1s ease 0.3s both;
 }
 
@@ -409,23 +409,23 @@ html, body {
 }
 
 .mode-btn-gesture {
-  border-color: rgba(180,140,220,0.5);
+  border-color: rgba(154, 111, 42, 0.6);
   padding: 14px 32px;
   font-size: 16px;
   letter-spacing: 2px;
 }
 
 .mode-btn-mouse {
-  border-color: rgba(100,180,255,0.5);
+  border-color: rgba(120, 90, 50, 0.5);
   padding: 14px 32px;
   font-size: 16px;
   letter-spacing: 2px;
 }
 
 .mode-btn-mouse:hover {
-  background: rgba(100,180,255,0.1);
-  border-color: rgba(130,200,255,0.6);
-  box-shadow: 0 0 30px rgba(100,180,255,0.3), 0 0 60px rgba(100,180,255,0.15);
+  background: rgba(154, 111, 42, 0.08);
+  border-color: rgba(154, 111, 42, 0.7);
+  box-shadow: 0 0 30px rgba(154,111,42,0.25), 0 0 60px rgba(154,111,42,0.12);
   transform: translateY(-2px);
 }
 
