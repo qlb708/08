@@ -75,24 +75,42 @@
   <!-- ✦ 开场欢迎页 — 魔法球/灵珠风格 ✦ -->
   <div id="welcome-screen">
     <div class="welcome-stars"></div>
-    <div class="crystal-ball-wrapper">
-      <div class="crystal-base">
-        <div class="base-rune">✦</div>
+    <!-- 花瓣漂浮层 -->
+    <div class="petals-container" id="petals-container"></div>
+
+    <!-- 核心：卷轴 + 符文光盘组合 -->
+    <div class="scroll-rune-wrapper">
+      <!-- 外层光晕 -->
+      <div class="rune-outer-glow"></div>
+      <!-- 符文旋转圆盘 -->
+      <div class="rune-disk">
+        <div class="rune-ring ring-1"></div>
+        <div class="rune-ring ring-2"></div>
+        <div class="rune-ring ring-3"></div>
+        <div class="rune-center">
+          <span class="rune-symbol">☽</span>
+          <div class="rune-sparkles">
+            <span class="rs s1">✦</span>
+            <span class="rs s2">✧</span>
+            <span class="rs s3">✦</span>
+            <span class="rs s4">✧</span>
+          </div>
+        </div>
       </div>
-      <div class="crystal-ball">
-        <div class="crystal-glow"></div>
-        <div class="crystal-mist"></div>
-        <div class="crystal-mist mist-2"></div>
-        <div class="crystal-sparkle s1">✧</div>
-        <div class="crystal-sparkle s2">✦</div>
-        <div class="crystal-sparkle s3">☽</div>
-        <div class="crystal-sparkle s4">✧</div>
-        <div class="crystal-highlight"></div>
+      <!-- 卷轴展开 -->
+      <div class="scroll-reveal">
+        <div class="scroll-top-roll"></div>
+        <div class="scroll-body">
+          <div class="scroll-text-inner">
+            <span class="scroll-line l1">每张牌，藏着一段未走的路</span>
+          </div>
+        </div>
+        <div class="scroll-bottom-roll"></div>
       </div>
-      <div class="crystal-ring"></div>
     </div>
+
     <h1 class="welcome-title">命运旅途</h1>
-    <p class="welcome-subtitle">想一万次，不如出发一次<br/>翻开塔罗，奔赴属于你的远方</p>
+    <p class="welcome-subtitle">世界很大，答案在牌里<br/>翻开它，出发</p>
     <div class="mode-btns">
       <button type="button" id="btn-start-ritual" class="welcome-start-btn mode-btn-gesture">
         <span class="btn-glow"></span>
