@@ -284,9 +284,11 @@ class CardCarousel {
     this._isStacked = false;
 
     // 倾斜整个轮盘，产生图2扇形弧面视觉效果
-    if (this.container) {
-      this.container.style.transition = 'transform 1s cubic-bezier(0.2,0.8,0.2,1)';
-      this.container.style.transform = 'rotateX(-52deg)';
+    const _wrapper = document.getElementById('carousel-wrapper');
+    if (_wrapper) {
+      _wrapper.style.transition = 'transform 1s cubic-bezier(0.2,0.8,0.2,1)';
+      _wrapper.style.transform = 'scale(var(--carousel-scale)) translateY(28%) rotateX(-52deg)';
+      _wrapper.style.transformOrigin = '50% 100%';
     }
 
     this.cards.forEach((el, i) => {
@@ -310,9 +312,11 @@ class CardCarousel {
     this._isAnimating = false;
     this.currentAngle = 0;
 
-    if (this.container) {
-      this.container.style.transition = 'transform 0.6s cubic-bezier(0.2,0.8,0.2,1)';
-      this.container.style.transform = 'rotateX(0deg)';
+    const _wrapper2 = document.getElementById('carousel-wrapper');
+    if (_wrapper2) {
+      _wrapper2.style.transition = 'transform 0.6s cubic-bezier(0.2,0.8,0.2,1)';
+      _wrapper2.style.transform = 'scale(var(--carousel-scale)) translateY(0%) rotateX(0deg)';
+      _wrapper2.style.transformOrigin = '50% 100%';
     }
 
     this.cards.forEach((el) => {
