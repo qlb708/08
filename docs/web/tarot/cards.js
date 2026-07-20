@@ -283,12 +283,12 @@ class CardCarousel {
     if (!this._isStacked) return;
     this._isStacked = false;
 
-    // 倾斜整个轮盘，产生图2扇形弧面视觉效果
+    // 倾斜整个轮盘，产生图2扇形弧面视觉效果（用 class 避免 inline style 冲突）
     const _wrapper = document.getElementById('carousel-wrapper');
     if (_wrapper) {
-      _wrapper.style.transition = 'transform 1s cubic-bezier(0.2,0.8,0.2,1)';
-      _wrapper.style.transform = 'scale(var(--carousel-scale)) translateY(-5%) rotateX(-38deg)';
-      _wrapper.style.transformOrigin = '50% 70%';
+      _wrapper.classList.remove('arc-reset');
+      _wrapper.classList.add('arc-spread');
+    }
     }
 
     this.cards.forEach((el, i) => {
