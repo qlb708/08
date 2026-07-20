@@ -684,13 +684,14 @@ html, body {
 /* ===== 占卜收集区域 — 顶部居中 ===== */
 #tarot-collection {
   position: fixed;
-  top: max(44px, calc(env(safe-area-inset-top, 0px) + 32px));
+  top: max(36px, calc(env(safe-area-inset-top, 0px) + 24px));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 16px;
+  gap: 80px;
   z-index: 100;
   transition: opacity 0.3s ease;
+  align-items: center;
 }
 
 .collection-slot {
@@ -1101,10 +1102,10 @@ html, body {
   inset: 0;
   border-radius: 8px;
   overflow: hidden;
-  border: 2px solid rgba(200, 151, 58, 0.55);
-  box-shadow: 0 0 18px rgba(200,151,58,0.18), inset 0 0 24px rgba(180,130,40,0.10);
+  border: 1.5px solid rgba(184, 148, 96, 0.50);
+  box-shadow: 0 4px 20px rgba(160,130,80,0.15), inset 0 0 20px rgba(200,185,145,0.10);
   backface-visibility: hidden;
-  background: linear-gradient(160deg, #f5ede0 0%, #ede0cc 40%, #e8d5b8 100%);
+  background: linear-gradient(160deg, #f2f0e4 0%, #eceadb 40%, #e6e2d0 100%);
 }
 
 .card-back-img {
