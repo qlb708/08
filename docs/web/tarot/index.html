@@ -24,6 +24,48 @@
   pointer-events: none;
 }
 </style>
+<style id="parchment-override">
+/* 强制覆盖：羊皮纸暖色调 */
+.theme-btn {
+  background: rgba(200, 160, 80, 0.12) !important;
+  border: 1px solid rgba(180, 130, 60, 0.4) !important;
+  color: #7a5520 !important;
+}
+.theme-btn:hover {
+  background: rgba(200, 160, 80, 0.25) !important;
+  border-color: rgba(180, 130, 60, 0.7) !important;
+  color: #5a3a10 !important;
+}
+.theme-btn.active {
+  background: linear-gradient(135deg, #c8973a, #9a6f2a) !important;
+  border-color: #e0b860 !important;
+  color: #fff8ee !important;
+  box-shadow: 0 0 14px rgba(200, 150, 60, 0.45) !important;
+}
+.question-theme-label {
+  color: #8a6030 !important;
+}
+.nav-dot {
+  background: rgba(154, 111, 42, 0.3) !important;
+}
+.nav-dot.active {
+  background: #c8973a !important;
+  box-shadow: 0 0 8px rgba(200, 151, 58, 0.5) !important;
+}
+/* 翻牌展示背景 */
+#card-selected-view {
+  background: rgba(250, 242, 220, 0.94) !important;
+}
+/* question panel */
+#question-panel, .question-panel {
+  background: rgba(253, 246, 232, 0.95) !important;
+  border-color: rgba(200, 160, 80, 0.25) !important;
+}
+.question-panel-title, #question-panel h2, #question-panel .panel-title {
+  color: #3d2b1a !important;
+}
+/* 底部导航点 */
+</style>
 </head>
 <body>
   <!-- ✦ 开场欢迎页 — 魔法球/灵珠风格 ✦ -->
