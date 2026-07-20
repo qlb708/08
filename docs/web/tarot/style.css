@@ -1045,6 +1045,18 @@ html, body {
   transform-origin: 50% 60%;
 }
 
+
+/* 弧形扇面展开状态 */
+#carousel-wrapper.arc-spread {
+  transform: scale(var(--carousel-scale)) perspective(900px) rotateX(-42deg) translateY(-8%);
+  transform-origin: 50% 65%;
+  transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+#carousel-wrapper.arc-reset {
+  transform: scale(var(--carousel-scale));
+  transform-origin: 50% 60%;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 @media (max-width: 520px) {
   #carousel-wrapper {
     perspective: 1180px;
