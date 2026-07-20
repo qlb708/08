@@ -76,9 +76,11 @@
   function spawn() {
     var c = document.getElementById('petals-container');
     if (!c) return;
-    var emojis = ['🌸','🌺','✿','❀','🌼','✦','✧'];
+    var emojis = ['✿','✦','✧','❋','✼','❊','✽','✾','✩','✫'];
     var el = document.createElement('span');
     el.className = 'petal';
+    var colors = ['rgba(210,140,110,0.7)','rgba(230,160,120,0.6)','rgba(200,130,100,0.65)','rgba(240,180,150,0.55)','rgba(180,120,90,0.6)'];
+    el.style.color = colors[Math.floor(Math.random() * colors.length)];
     el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
     el.style.left = (Math.random() * 100) + '%';
     el.style.fontSize = (12 + Math.random() * 14) + 'px';
