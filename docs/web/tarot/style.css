@@ -694,33 +694,30 @@ html, body {
 }
 
 .collection-slot {
-  width: 54px;
-  height: 82px;
-  border: 1px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
+  width: 60px;
+  height: 20px;
+  border: none;
+  border-radius: 0;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.03);
+  background: transparent;
   transition: all 0.3s;
 }
 
 .collection-slot .slot-label {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-  font-weight: 400;
+  position: static;
+  font-size: 15px;
+  color: var(--text-secondary);
+  letter-spacing: 4px;
+  font-weight: 300;
   white-space: nowrap;
+  text-align: center;
 }
 
 .collection-slot.filled {
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
+  border: none;
 }
 
 .collection-slot .slot-content {
