@@ -44,10 +44,10 @@ const CARDS = [
   { id: 'Sw08', name: '宝剑八',   nameEn: 'Eight of Swords',     symbol: '🪢', color: '#607d8b', meaning: '困境、自我限制、无力感、思维牢笼', element: 'wind',  spell: '剑之囚笼', spellSub: 'Sword of Restriction',image: 'cards/swords/sword08.jpg' },
   { id: 'Sw09', name: '宝剑九',   nameEn: 'Nine of Swords',      symbol: '😰', color: '#37474f', meaning: '焦虑、噩梦、过度担忧、心理压力',   element: 'wind',  spell: '剑之忧思', spellSub: 'Sword of Anxiety',    image: 'cards/swords/sword09.jpg' },
   { id: 'Sw10', name: '宝剑十',   nameEn: 'Ten of Swords',       symbol: '🔚', color: '#263238', meaning: '终结、触底、放手、黎明前的黑暗',   element: 'wind',  spell: '剑之终局', spellSub: 'Sword of Ending',     image: 'cards/swords/sword10.jpg' },
-  { id: 'SwPa', name: '宝剑侍从', nameEn: 'Page of Swords',      symbol: '🧐', color: '#80cbc4', meaning: '好奇、观察、新想法、信息收集',     element: 'wind',  spell: '剑之使者', spellSub: 'Page of Swords',      image: 'cards/swords/swordPage.jpg' },
-  { id: 'SwKn', name: '宝剑骑士', nameEn: 'Knight of Swords',    symbol: '⚡', color: '#4db6ac', meaning: '快速行动、直言不讳、冲劲十足',     element: 'wind',  spell: '剑之疾风', spellSub: 'Knight of Swords',    image: 'cards/swords/swordKnight.jpg' },
-  { id: 'SwQu', name: '宝剑王后', nameEn: 'Queen of Swords',     symbol: '👸', color: '#26a69a', meaning: '独立、敏锐、清醒、边界分明',       element: 'wind',  spell: '剑之女王', spellSub: 'Queen of Swords',     image: 'cards/swords/swordQueen.jpg' },
-  { id: 'SwKi', name: '宝剑国王', nameEn: 'King of Swords',      symbol: '🗡️', color: '#00897b', meaning: '权威、逻辑、公正、理性决策',       element: 'wind',  spell: '剑之王者', spellSub: 'King of Swords',      image: 'cards/swords/swordKing.jpg' },
+  { id: 'SwPa', name: '宝剑侍从', nameEn: 'Page of Swords',      symbol: '🧐', color: '#80cbc4', meaning: '好奇、观察、新想法、信息收集',     element: 'wind',  spell: '剑之使者', spellSub: 'Page of Swords',      image: 'cards/swords/sword07.jpg' },
+  { id: 'SwKn', name: '宝剑骑士', nameEn: 'Knight of Swords',    symbol: '⚡', color: '#4db6ac', meaning: '快速行动、直言不讳、冲劲十足',     element: 'wind',  spell: '剑之疾风', spellSub: 'Knight of Swords',    image: 'cards/swords/sword08.jpg' },
+  { id: 'SwQu', name: '宝剑王后', nameEn: 'Queen of Swords',     symbol: '👸', color: '#26a69a', meaning: '独立、敏锐、清醒、边界分明',       element: 'wind',  spell: '剑之女王', spellSub: 'Queen of Swords',     image: 'cards/swords/sword09.jpg' },
+  { id: 'SwKi', name: '宝剑国王', nameEn: 'King of Swords',      symbol: '🗡️', color: '#00897b', meaning: '权威、逻辑、公正、理性决策',       element: 'wind',  spell: '剑之王者', spellSub: 'King of Swords',      image: 'cards/swords/sword10.jpg' },
 
   // ============================================================
   // === 权杖 (Wands) — 火元素 ===
@@ -62,10 +62,10 @@ const CARDS = [
   { id: 'Wa08', name: '权杖八',   nameEn: 'Eight of Wands',      symbol: '🚀', color: '#ff5722', meaning: '迅速、行动力、推进、好消息',       element: 'fire',  spell: '焰之飞矢', spellSub: 'Fire of Arrows',      image: 'cards/wands/wand08.jpg' },
   { id: 'Wa09', name: '权杖九',   nameEn: 'Nine of Wands',       symbol: '💪', color: '#bf360c', meaning: '坚韧、警觉、最后防线、不放弃',     element: 'fire',  spell: '焰之坚韧', spellSub: 'Fire of Resilience',  image: 'cards/wands/wand09.jpg' },
   { id: 'Wa10', name: '权杖十',   nameEn: 'Ten of Wands',        symbol: '🏋️', color: '#8d6e63', meaning: '重负、压力、责任过重、需要放权',   element: 'fire',  spell: '焰之重担', spellSub: 'Fire of Burden',      image: 'cards/wands/wand10.jpg' },
-  { id: 'WaPa', name: '权杖侍从', nameEn: 'Page of Wands',       symbol: '🌟', color: '#ffab40', meaning: '热情、探索、新消息、冒险精神',     element: 'fire',  spell: '焰之使者', spellSub: 'Page of Wands',       image: 'cards/wands/wandPage.jpg' },
-  { id: 'WaKn', name: '权杖骑士', nameEn: 'Knight of Wands',     symbol: '🐎', color: '#ff6d00', meaning: '冲劲、大胆、冒险、追求激情',       element: 'fire',  spell: '焰之骑士', spellSub: 'Knight of Wands',     image: 'cards/wands/wandKnight.jpg' },
-  { id: 'WaQu', name: '权杖王后', nameEn: 'Queen of Wands',      symbol: '🔥', color: '#ff9100', meaning: '自信、魅力、独立、温暖领导力',     element: 'fire',  spell: '焰之女王', spellSub: 'Queen of Wands',      image: 'cards/wands/wandQueen.jpg' },
-  { id: 'WaKi', name: '权杖国王', nameEn: 'King of Wands',       symbol: '👑', color: '#e65100', meaning: '领袖、远见、企业家精神、掌控力',   element: 'fire',  spell: '焰之王者', spellSub: 'King of Wands',       image: 'cards/wands/wandKing.jpg' },
+  { id: 'WaPa', name: '权杖侍从', nameEn: 'Page of Wands',       symbol: '🌟', color: '#ffab40', meaning: '热情、探索、新消息、冒险精神',     element: 'fire',  spell: '焰之使者', spellSub: 'Page of Wands',       image: 'cards/wands/wand07.jpg' },
+  { id: 'WaKn', name: '权杖骑士', nameEn: 'Knight of Wands',     symbol: '🐎', color: '#ff6d00', meaning: '冲劲、大胆、冒险、追求激情',       element: 'fire',  spell: '焰之骑士', spellSub: 'Knight of Wands',     image: 'cards/wands/wand08.jpg' },
+  { id: 'WaQu', name: '权杖王后', nameEn: 'Queen of Wands',      symbol: '🔥', color: '#ff9100', meaning: '自信、魅力、独立、温暖领导力',     element: 'fire',  spell: '焰之女王', spellSub: 'Queen of Wands',      image: 'cards/wands/wand09.jpg' },
+  { id: 'WaKi', name: '权杖国王', nameEn: 'King of Wands',       symbol: '👑', color: '#e65100', meaning: '领袖、远见、企业家精神、掌控力',   element: 'fire',  spell: '焰之王者', spellSub: 'King of Wands',       image: 'cards/wands/wand10.jpg' },
 
   // ============================================================
   // === 圣杯 (Cups) — 水元素 ===
@@ -80,10 +80,10 @@ const CARDS = [
   { id: 'Cu08', name: '圣杯八',   nameEn: 'Eight of Cups',       symbol: '🚶', color: '#5c6bc0', meaning: '离开、放弃、追寻更深意义',         element: 'water', spell: '水之远行', spellSub: 'Water of Departure',  image: 'cards/cups/cup08.jpg' },
   { id: 'Cu09', name: '圣杯九',   nameEn: 'Nine of Cups',        symbol: '🌟', color: '#ffd54f', meaning: '满足、愿望成真、幸福、享乐',       element: 'water', spell: '水之圆满', spellSub: 'Water of Fulfillment',image: 'cards/cups/cup09.jpg' },
   { id: 'Cu10', name: '圣杯十',   nameEn: 'Ten of Cups',         symbol: '🌈', color: '#81d4fa', meaning: '幸福美满、家庭和睦、情感圆满',     element: 'water', spell: '水之至福', spellSub: 'Water of Bliss',      image: 'cards/cups/cup10.jpg' },
-  { id: 'CuPa', name: '圣杯侍从', nameEn: 'Page of Cups',        symbol: '🧚', color: '#80cbc4', meaning: '创意、直觉、新感情、惊喜',         element: 'water', spell: '水之使者', spellSub: 'Page of Water',       image: 'cards/cups/cupPage.jpg' },
-  { id: 'CuKn', name: '圣杯骑士', nameEn: 'Knight of Cups',      symbol: '🤴', color: '#7986cb', meaning: '浪漫、追求、理想主义、感性',       element: 'water', spell: '水之骑士', spellSub: 'Knight of Water',     image: 'cards/cups/cupKnight.jpg' },
-  { id: 'CuQu', name: '圣杯王后', nameEn: 'Queen of Cups',       symbol: '👸', color: '#4db6ac', meaning: '温柔、共情、直觉、情感疗愈',       element: 'water', spell: '水之女王', spellSub: 'Queen of Water',      image: 'cards/cups/cupQueen.jpg' },
-  { id: 'CuKi', name: '圣杯国王', nameEn: 'King of Cups',        symbol: '🔱', color: '#26a69a', meaning: '情感成熟、慷慨、外交手腕、从容',   element: 'water', spell: '水之王者', spellSub: 'King of Water',       image: 'cards/cups/cupKing.jpg' },
+  { id: 'CuPa', name: '圣杯侍从', nameEn: 'Page of Cups',        symbol: '🧚', color: '#80cbc4', meaning: '创意、直觉、新感情、惊喜',         element: 'water', spell: '水之使者', spellSub: 'Page of Water',       image: 'cards/cups/cup07.jpg' },
+  { id: 'CuKn', name: '圣杯骑士', nameEn: 'Knight of Cups',      symbol: '🤴', color: '#7986cb', meaning: '浪漫、追求、理想主义、感性',       element: 'water', spell: '水之骑士', spellSub: 'Knight of Water',     image: 'cards/cups/cup08.jpg' },
+  { id: 'CuQu', name: '圣杯王后', nameEn: 'Queen of Cups',       symbol: '👸', color: '#4db6ac', meaning: '温柔、共情、直觉、情感疗愈',       element: 'water', spell: '水之女王', spellSub: 'Queen of Water',      image: 'cards/cups/cup09.jpg' },
+  { id: 'CuKi', name: '圣杯国王', nameEn: 'King of Cups',        symbol: '🔱', color: '#26a69a', meaning: '情感成熟、慷慨、外交手腕、从容',   element: 'water', spell: '水之王者', spellSub: 'King of Water',       image: 'cards/cups/cup10.jpg' },
 
   // ============================================================
   // === 星币 (Pentacles) — 光/地元素 ===
@@ -98,10 +98,10 @@ const CARDS = [
   { id: 'Pe08', name: '星币八',   nameEn: 'Eight of Pentacles',  symbol: '🔨', color: '#bcaaa4', meaning: '勤奋、精进、学习、专注',           element: 'light', spell: '金之磨砺', spellSub: 'Gold of Practice',    image: 'cards/pentacles/pentacle08.jpg' },
   { id: 'Pe09', name: '星币九',   nameEn: 'Nine of Pentacles',   symbol: '🦚', color: '#c5e1a5', meaning: '成就、独立、富足、自给自足',       element: 'light', spell: '金之丰裕', spellSub: 'Gold of Abundance',   image: 'cards/pentacles/pentacle09.jpg' },
   { id: 'Pe10', name: '星币十',   nameEn: 'Ten of Pentacles',    symbol: '🏰', color: '#ffd700', meaning: '传承、财富、家族、长久稳定',       element: 'light', spell: '金之传承', spellSub: 'Gold of Legacy',      image: 'cards/pentacles/pentacle10.jpg' },
-  { id: 'PePa', name: '星币侍从', nameEn: 'Page of Pentacles',   symbol: '📚', color: '#dce775', meaning: '学习、新技能、脚踏实地、好奇',     element: 'light', spell: '金之使者', spellSub: 'Page of Gold',        image: 'cards/pentacles/pentaclePage.jpg' },
-  { id: 'PeKn', name: '星币骑士', nameEn: 'Knight of Pentacles',  symbol: '🐎', color: '#8d6e63', meaning: '稳健、可靠、耐心、务实',           element: 'light', spell: '金之骑士', spellSub: 'Knight of Gold',      image: 'cards/pentacles/pentacleKnight.jpg' },
-  { id: 'PeQu', name: '星币王后', nameEn: 'Queen of Pentacles',  symbol: '👸', color: '#a5d6a7', meaning: '务实、慷慨、安全感、生活品质',     element: 'light', spell: '金之女王', spellSub: 'Queen of Gold',       image: 'cards/pentacles/pentacleQueen.jpg' },
-  { id: 'PeKi', name: '星币国王', nameEn: 'King of Pentacles',   symbol: '🏛️', color: '#8d6e63', meaning: '财富、稳定、商业头脑、慷慨',       element: 'light', spell: '金之王者', spellSub: 'King of Gold',        image: 'cards/pentacles/pentacleKing.jpg' },
+  { id: 'PePa', name: '星币侍从', nameEn: 'Page of Pentacles',   symbol: '📚', color: '#dce775', meaning: '学习、新技能、脚踏实地、好奇',     element: 'light', spell: '金之使者', spellSub: 'Page of Gold',        image: 'cards/pentacles/pentacle07.jpg' },
+  { id: 'PeKn', name: '星币骑士', nameEn: 'Knight of Pentacles',  symbol: '🐎', color: '#8d6e63', meaning: '稳健、可靠、耐心、务实',           element: 'light', spell: '金之骑士', spellSub: 'Knight of Gold',      image: 'cards/pentacles/pentacle08.jpg' },
+  { id: 'PeQu', name: '星币王后', nameEn: 'Queen of Pentacles',  symbol: '👸', color: '#a5d6a7', meaning: '务实、慷慨、安全感、生活品质',     element: 'light', spell: '金之女王', spellSub: 'Queen of Gold',       image: 'cards/pentacles/pentacle09.jpg' },
+  { id: 'PeKi', name: '星币国王', nameEn: 'King of Pentacles',   symbol: '🏛️', color: '#8d6e63', meaning: '财富、稳定、商业头脑、慷慨',       element: 'light', spell: '金之王者', spellSub: 'King of Gold',        image: 'cards/pentacles/pentacle10.jpg' },
 ];
 
 /* ========================================
