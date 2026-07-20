@@ -1039,10 +1039,10 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1000px;
+  perspective: 1400px;
   overflow: visible;
   transform: scale(var(--carousel-scale));
-  transform-origin: 50% 48%;
+  transform-origin: 50% 60%;
 }
 
 @media (max-width: 520px) {
@@ -1069,6 +1069,7 @@ html, body {
   pointer-events: auto;
   transition: filter 0.4s, opacity 0.4s;
   will-change: transform;
+  transform-origin: center bottom;
   /* Safari 3D 合成层提升 */
   -webkit-transform-style: preserve-3d;
   backface-visibility: hidden;
