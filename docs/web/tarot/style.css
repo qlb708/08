@@ -1087,29 +1087,11 @@ html, body {
 }
 
 .card-back-img {
-  display: none;
-}
-/* 奶油牌背金色纹样 — CSS 伪元素绘制 */
-.card-back::before {
-  content: '';
-  position: absolute;
-  inset: 7px;
-  border: 1.5px solid rgba(200,151,58,0.6);
-  border-radius: 4px;
-  background:
-    radial-gradient(ellipse at 50% 50%, rgba(200,151,58,0.08) 0%, transparent 70%);
-}
-.card-back::after {
-  content: '✦';
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42px;
-  color: rgba(200,151,58,0.55);
-  text-shadow: 0 0 18px rgba(200,151,58,0.4);
-  letter-spacing: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 6px;
 }
 
 /* 正对用户的牌 — 增强发光效果 */
