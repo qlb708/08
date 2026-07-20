@@ -25,49 +25,38 @@
 }
 </style>
 <style id="parchment-override">
-/* 强制覆盖：粉橙暖日落色调 */
+/* 浅米色统一主题 */
+body, #welcome-screen {
+  background: radial-gradient(ellipse at 50% 30%, #f8f4ec 0%, #f3ede0 55%, #ede5d4 100%) !important;
+}
 .theme-btn {
-  background: rgba(240, 190, 160, 0.15) !important;
-  border: 1px solid rgba(210, 150, 120, 0.40) !important;
-  color: #8a4030 !important;
+  background: rgba(200, 175, 135, 0.14) !important;
+  border: 1px solid rgba(180, 148, 100, 0.38) !important;
+  color: #7a5c30 !important;
 }
 .theme-btn:hover {
-  background: rgba(230, 170, 140, 0.28) !important;
-  border-color: rgba(200, 140, 110, 0.75) !important;
-  color: #6a2818 !important;
+  background: rgba(200, 175, 135, 0.26) !important;
+  border-color: rgba(180, 148, 100, 0.68) !important;
+  color: #5a3c18 !important;
 }
 .theme-btn.active {
-  background: linear-gradient(135deg, #d4907a, #b87060) !important;
-  border-color: #e8a888 !important;
-  color: #fff8f5 !important;
-  box-shadow: 0 0 14px rgba(210, 140, 110, 0.50) !important;
+  background: linear-gradient(135deg, #b89060, #9a7040) !important;
+  border-color: #d4b080 !important;
+  color: #fff8ee !important;
+  box-shadow: 0 0 14px rgba(184,144,96,0.42) !important;
 }
-.question-theme-label {
-  color: #9a5040 !important;
-}
-.nav-dot {
-  background: rgba(200, 130, 100, 0.28) !important;
-}
-.nav-dot.active {
-  background: #c8845a !important;
-  box-shadow: 0 0 8px rgba(200, 132, 90, 0.45) !important;
-}
-#card-selected-view {
-  background: rgba(253, 242, 236, 0.94) !important;
-}
+.question-theme-label { color: #8a6838 !important; }
+.nav-dot { background: rgba(184,144,96,0.28) !important; }
+.nav-dot.active { background: #b89060 !important; box-shadow: 0 0 8px rgba(184,144,96,0.40) !important; }
+#card-selected-view { background: rgba(248,244,236,0.95) !important; }
 #question-panel, .question-panel {
-  background: rgba(253, 246, 242, 0.95) !important;
-  border-color: rgba(210, 150, 120, 0.22) !important;
+  background: rgba(250,246,238,0.96) !important;
+  border-color: rgba(184,144,96,0.20) !important;
 }
-.question-panel-title, #question-panel h2, #question-panel .panel-title {
-  color: #3a2418 !important;
-}
-.welcome-start-btn {
-  border-color: rgba(210, 140, 110, 0.65) !important;
-}
-.mode-btn-gesture, .mode-btn-mouse {
-  border-color: rgba(210, 140, 110, 0.55) !important;
-  color: #6a3020 !important;
+.welcome-start-btn { border-color: rgba(184,144,96,0.60) !important; color: #5a3c18 !important; }
+.mode-btn-gesture, .mode-btn-mouse { border-color: rgba(184,144,96,0.50) !important; color: #5a3c18 !important; }
+.rune-outer-glow {
+  background: radial-gradient(circle, rgba(190,160,110,0.20) 0%, rgba(200,175,135,0.08) 45%, transparent 70%) !important;
 }
 </style>
 <script>
