@@ -284,19 +284,13 @@ class CardCarousel {
     if (!this._isStacked) return;
     this._isStacked = false;
 
-    // 倾斜旋转盘实现近大远小弧形效果
-    this._tiltX = 0;
-    const _tiltTarget = -42;
-    const _tiltStart = performance.now();
-    const _tiltDur = 1100;
-    const _tiltFn = (now) => {
-      const t = Math.min(1, (now - _tiltStart) / _tiltDur);
-      const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-      this._tiltX = _tiltTarget * ease;
-      this._applyRotation();
-      if (t < 1) requestAnimationFrame(_tiltFn);
-    };
-    requestAnimationFrame(_tiltFn);
+    // 倾斜 carousel-tilt 层实现近大远小弧形效果
+    const _tiltEl = document.getElementById('carousel-tilt');
+    if (_tiltEl) {
+      _tiltEl.style.transition = 'transform 1.1s cubic-bezier(0.2,0.8,0.2,1)';
+      _tiltEl.style.transform = 'perspective(1000px) rotateX(-42deg) translateY(-12%)';
+      _tiltEl.style.transformOrigin = '50% 68%';
+    }
     }
 
     this.cards.forEach((el, i) => {
@@ -320,17 +314,12 @@ class CardCarousel {
     this._isAnimating = false;
     this.currentAngle = 0;
 
-    // 复位倾斜
-    const _tiltBack = performance.now();
-    const _startTilt = this._tiltX || 0;
-    const _backFn = (now) => {
-      const t = Math.min(1, (now - _tiltBack) / 600);
-      const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-      this._tiltX = _startTilt * (1 - ease);
-      if (t < 1) requestAnimationFrame(_backFn);
-      else this._tiltX = 0;
-    };
-    requestAnimationFrame(_backFn);
+    // 复位 tilt 层
+    const _tiltEl2 = document.getElementById('carousel-tilt');
+    if (_tiltEl2) {
+      _tiltEl2.style.transition = 'transform 0.7s cubic-bezier(0.2,0.8,0.2,1)';
+      _tiltEl2.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0%)';
+    }
 
     this.cards.forEach((el) => {
       el.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
@@ -451,9 +440,7 @@ class CardCarousel {
 
   _applyRotation() {
     this.container.style.transition = 'none';
-    const tilt = this._tiltX || 0;
-    const perspStr = tilt !== 0 ? 'perspective(900px) ' : '';
-    this.container.style.transform = `${perspStr}rotateX(${tilt}deg) rotateY(${this.currentAngle}deg)`;
+    this.container.style.transform = `rotateY(${this.currentAngle}deg)`;
   }
 
   _updateFrontCard() {
