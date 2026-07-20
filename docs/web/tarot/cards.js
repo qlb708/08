@@ -314,9 +314,8 @@ class CardCarousel {
 
     const _wrapper2 = document.getElementById('carousel-wrapper');
     if (_wrapper2) {
-      _wrapper2.style.transition = 'transform 0.6s cubic-bezier(0.2,0.8,0.2,1)';
-      _wrapper2.style.transform = 'scale(var(--carousel-scale)) translateY(0%) rotateX(0deg)';
-      _wrapper2.style.transformOrigin = '50% 70%';
+      _wrapper2.classList.remove('arc-spread');
+      _wrapper2.classList.add('arc-reset');
     }
 
     this.cards.forEach((el) => {
