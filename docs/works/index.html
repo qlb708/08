@@ -175,24 +175,32 @@
   const ctx=cv.getContext('2d');
   let W,H,mouse={x:.5,y:.5},target={x:.5,y:.5};
 
-  // ── 漂浮粒子（鼠标聚拢效果）──
-  const NPTS = 220;
+  // ── 光粒子系统：跟随鼠标聚拢 ──
+  const NPTS = 350;
   const pts = [];
-  // 彩虹色相区间：青蓝/蓝紫/粉紫/玫红/金橙/薄荷绿
-  const hRanges=[[175,210],[220,260],[270,310],[320,345],[35,55],[140,175]];
   (function initPts(){
     for(let i=0;i<NPTS;i++){
+      // 初始散布在整个页面
       const ox=Math.random(), oy=Math.random();
-      const hr=hRanges[Math.floor(Math.random()*hRanges.length)];
-      const h=hr[0]+Math.random()*(hr[1]-hr[0]);
+      // 颜色：冰蓝(185-210) 为主，30% 薄荷绿(155-180)，10% 浅紫蓝(220-240)
+      const rnd=Math.random();
+      const h = rnd<.6 ? 185+Math.random()*25
+               : rnd<.9 ? 155+Math.random()*25
+               :           220+Math.random()*20;
       pts.push({
-        x:ox, y:oy, ox, oy,
-        vx:(Math.random()-.5)*.0003,
-        vy:(Math.random()-.5)*.0003,
-        r: Math.random()*2.2+.7,
-        alpha: Math.random()*.4+.12,
-        h, s: 75+Math.random()*20,   // 高饱和度，绚烂
-        l: 62+Math.random()*18,
+        x: ox, y: oy,   // 当前位置
+        tx: ox, ty: oy, // 目标位置（随鼠标更新）
+        vx:0, vy:0,
+        r: Math.random()*2.8+.6,
+        alpha: Math.random()*.5+.15,
+        h,
+        s: 70+Math.random()*25,
+        l: 65+Math.random()*22,
+        // 每个粒子有自己的漂移偏移量，让聚拢后也有微微抖动感
+        driftX:(Math.random()-.5)*.08,
+        driftY:(Math.random()-.5)*.08,
+        driftSpeed: .008+Math.random()*.012,
+        driftPhase: Math.random()*Math.PI*2,
       });
     }
   })();
@@ -340,72 +348,60 @@
     }
     ctx.restore();
 
-    // ── 粒子聚拢渲染 ──
+    // ── 光粒子渲染：跟随鼠标 ──
     ctx.save();
+    const t=frame*.016; // 时间参数，用于漂移动画
     pts.forEach(p=>{
-      // 随机漂浮（轻微布朗运动）
-      p.vx += (Math.random()-.5)*.00005;
-      p.vy += (Math.random()-.5)*.00005;
+      // 目标 = 鼠标位置 + 各自的漂移偏移（Lissajous小圆）
+      const spread = 0.12; // 聚拢范围半径（归一化），鼠标为中心散布
+      p.tx = mouse.x + p.driftX * Math.sin(t*p.driftSpeed + p.driftPhase);
+      p.ty = mouse.y + p.driftY * Math.cos(t*p.driftSpeed + p.driftPhase*1.3);
 
+      // 弹簧追踪：越远越快追，极速响应
+      const ex=p.tx-p.x, ey=p.ty-p.y;
+      p.vx += ex*.18;   // spring stiffness，非常高
+      p.vy += ey*.18;
+      p.vx *= .72;      // damping，快速收敛
+      p.vy *= .72;
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // 距鼠标的实际距离，用于发光强度
       const dx=mouse.x-p.x, dy=mouse.y-p.y;
       const dist=Math.sqrt(dx*dx+dy*dy);
-      const pullR=.28;
+      const glow=Math.max(0, 1-dist/.18);
+      const alpha=Math.min(.95, p.alpha*(0.5+glow*.8));
+      const radius=p.r*(0.6+glow*1.6);
 
-      if(dist < pullR){
-        // 更强的吸引：二次方加速，近距离极速聚拢
-        const t=1-dist/pullR;
-        const force=t*t*.022;        // 比之前大6倍
-        p.vx += dx*force;
-        p.vy += dy*force;
-        p.vx *= .82; p.vy *= .82;   // 阻尼降低，更灵敏
-      } else {
-        p.vx *= .96; p.vy *= .96;
-        // 缓慢回归原位
-        p.vx += (p.ox-p.x)*.00015;
-        p.vy += (p.oy-p.y)*.00015;
-      }
+      if(alpha<.03||radius<.2) return;
 
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<-.02)p.x=1.02; if(p.x>1.02)p.x=-.02;
-      if(p.y<-.02)p.y=1.02; if(p.y>1.02)p.y=-.02;
+      // bokeh 光晕（模糊大圆，营造景深感）
+      const bokehR=radius*5+glow*18;
+      const bg2=ctx.createRadialGradient(p.x*W,p.y*H,0,p.x*W,p.y*H,bokehR);
+      bg2.addColorStop(0,`hsla(${p.h},85%,80%,${.22+glow*.35})`);
+      bg2.addColorStop(.5,`hsla(${p.h},75%,75%,${.08+glow*.12})`);
+      bg2.addColorStop(1,'transparent');
+      ctx.fillStyle=bg2;
+      ctx.globalAlpha=1;
+      ctx.beginPath();
+      ctx.arc(p.x*W,p.y*H,bokehR,0,Math.PI*2);
+      ctx.fill();
 
-      const glow=Math.max(0,1-dist/.15);
-      const alpha=Math.min(.98, p.alpha + glow*.6);
-      const radius=p.r*(1+glow*2.8);
-
-      // 常态下也画小光晕（让粒子自带发光感）
-      {
-        const baseGlow=p.r*3.5;
-        const pg=ctx.createRadialGradient(p.x*W,p.y*H,0,p.x*W,p.y*H,baseGlow);
-        pg.addColorStop(0,`hsla(${p.h},90%,75%,${.18+glow*.4})`);
-        pg.addColorStop(1,'transparent');
-        ctx.fillStyle=pg;
-        ctx.globalAlpha=.6+glow*.4;
-        ctx.beginPath();
-        ctx.arc(p.x*W,p.y*H,baseGlow,0,Math.PI*2);
-        ctx.fill();
-      }
-      // 聚拢时额外大光晕
-      if(glow>.04){
-        const pg2=ctx.createRadialGradient(p.x*W,p.y*H,0,p.x*W,p.y*H,radius*5);
-        pg2.addColorStop(0,`hsla(${p.h},95%,80%,.55)`);
-        pg2.addColorStop(.5,`hsla(${p.h+30},80%,70%,.2)`);
-        pg2.addColorStop(1,'transparent');
-        ctx.fillStyle=pg2;
-        ctx.globalAlpha=glow*.5;
-        ctx.beginPath();
-        ctx.arc(p.x*W,p.y*H,radius*5,0,Math.PI*2);
-        ctx.fill();
-      }
-      // 粒子本体（高饱和亮色）
+      // 粒子核心：小亮点
       ctx.globalAlpha=alpha;
-      ctx.fillStyle=`hsl(${p.h},${p.s}%,${p.l+glow*12}%)`;
-      ctx.shadowColor=`hsl(${p.h},100%,70%)`;
-      ctx.shadowBlur=radius*4;
+      ctx.fillStyle=`hsl(${p.h},${p.s}%,${Math.min(95,p.l+glow*20)}%)`;
       ctx.beginPath();
       ctx.arc(p.x*W,p.y*H,radius,0,Math.PI*2);
       ctx.fill();
-      ctx.shadowBlur=0;
+
+      // 高光：最中心白色小点（让粒子有晶体感）
+      if(radius>1.2){
+        ctx.globalAlpha=alpha*.7;
+        ctx.fillStyle='rgba(255,255,255,.9)';
+        ctx.beginPath();
+        ctx.arc(p.x*W-radius*.2,p.y*H-radius*.2,radius*.35,0,Math.PI*2);
+        ctx.fill();
+      }
     });
     ctx.restore();
 
