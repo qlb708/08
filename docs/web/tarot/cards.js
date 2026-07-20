@@ -129,6 +129,7 @@ class CardCarousel {
     this._friction = 0.92;
     this._isAnimating = false;
     this._isStacked = true;
+    this._tiltX = 0;  // 展开时设为 -42 度
     this._resizeTid = null;
     this._bindResize();
   }
@@ -283,13 +284,19 @@ class CardCarousel {
     if (!this._isStacked) return;
     this._isStacked = false;
 
-    // 倾斜整个轮盘 — perspective() 内联在 transform 里，不依赖父级 perspective 属性
-    const _wrapper = document.getElementById('carousel-wrapper');
-    if (_wrapper) {
-      _wrapper.style.transition = 'transform 1.1s cubic-bezier(0.2,0.8,0.2,1)';
-      _wrapper.style.transform = 'perspective(900px) rotateX(-42deg) translateY(-8%)';
-      _wrapper.style.transformOrigin = '50% 65%';
-    }
+    // 倾斜旋转盘实现近大远小弧形效果
+    this._tiltX = 0;
+    const _tiltTarget = -42;
+    const _tiltStart = performance.now();
+    const _tiltDur = 1100;
+    const _tiltFn = (now) => {
+      const t = Math.min(1, (now - _tiltStart) / _tiltDur);
+      const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+      this._tiltX = _tiltTarget * ease;
+      this._applyRotation();
+      if (t < 1) requestAnimationFrame(_tiltFn);
+    };
+    requestAnimationFrame(_tiltFn);
     }
 
     this.cards.forEach((el, i) => {
@@ -313,12 +320,17 @@ class CardCarousel {
     this._isAnimating = false;
     this.currentAngle = 0;
 
-    const _wrapper2 = document.getElementById('carousel-wrapper');
-    if (_wrapper2) {
-      _wrapper2.style.transition = 'transform 0.7s cubic-bezier(0.2,0.8,0.2,1)';
-      _wrapper2.style.transform = '';
-      _wrapper2.style.transformOrigin = '';
-    }
+    // 复位倾斜
+    const _tiltBack = performance.now();
+    const _startTilt = this._tiltX || 0;
+    const _backFn = (now) => {
+      const t = Math.min(1, (now - _tiltBack) / 600);
+      const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+      this._tiltX = _startTilt * (1 - ease);
+      if (t < 1) requestAnimationFrame(_backFn);
+      else this._tiltX = 0;
+    };
+    requestAnimationFrame(_backFn);
 
     this.cards.forEach((el) => {
       el.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
@@ -439,7 +451,9 @@ class CardCarousel {
 
   _applyRotation() {
     this.container.style.transition = 'none';
-    this.container.style.transform = `rotateY(${this.currentAngle}deg)`;
+    const tilt = this._tiltX || 0;
+    const perspStr = tilt !== 0 ? 'perspective(900px) ' : '';
+    this.container.style.transform = `${perspStr}rotateX(${tilt}deg) rotateY(${this.currentAngle}deg)`;
   }
 
   _updateFrontCard() {
