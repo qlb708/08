@@ -61,6 +61,7 @@ function showLoading(ws){
 
     if(chosenMode === 'mouse'){
       // 鼠标版：直接跳过手势模型
+      window.__MS_MODE = 'mouse';
       setStatus('正在启动鼠标占卜模式…');
       await new App().boot();
     } else {
