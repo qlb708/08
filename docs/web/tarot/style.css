@@ -1062,6 +1062,15 @@ html, body {
   }
 }
 
+#carousel-tilt {
+  /* 此层只负责 X 轴倾斜，perspective 在自身（内联形式） */
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  transform-style: preserve-3d;
+  transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 #carousel {
   position: relative;
   width: var(--card-w);
