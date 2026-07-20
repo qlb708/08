@@ -287,7 +287,7 @@ class CardCarousel {
     const _wrapper = document.getElementById('carousel-wrapper');
     if (_wrapper) {
       _wrapper.style.transition = 'transform 1s cubic-bezier(0.2,0.8,0.2,1)';
-      _wrapper.style.transform = 'scale(var(--carousel-scale)) translateY(-15%) rotateX(-38deg)';
+      _wrapper.style.transform = 'scale(var(--carousel-scale)) translateY(-5%) rotateX(-38deg)';
       _wrapper.style.transformOrigin = '50% 70%';
     }
 
