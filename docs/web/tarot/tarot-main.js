@@ -1179,33 +1179,34 @@ class App {
   _injectMouseDrag() {
     const stage = document.getElementById('carousel-stage');
     if (!stage) return;
+    // 确保 stage 能接收鼠标事件
+    stage.style.pointerEvents = 'auto';
     let dragging = false, startX = 0, lastX = 0;
-    stage.addEventListener('mousedown', (e) => {{
+    window.addEventListener('mousedown', (e) => {
       dragging = true; startX = e.clientX; lastX = e.clientX;
-      e.preventDefault();
-    }});
-    window.addEventListener('mousemove', (e) => {{
+    });
+    window.addEventListener('mousemove', (e) => {
       if (!dragging) return;
       const dx = e.clientX - lastX; lastX = e.clientX;
       if (this.carousel) this.carousel.addVelocity(-dx * 2);
-    }});
-    window.addEventListener('mouseup', (e) => {{
+    });
+    window.addEventListener('mouseup', (e) => {
       if (!dragging) return;
       const moved = Math.abs(e.clientX - startX);
       dragging = false;
       if (moved < 8) this._mousePickCard();
-    }});
+    });
     let touchStartX = 0;
-    stage.addEventListener('touchstart', (e) => {{ touchStartX = e.touches[0].clientX; }}, {{passive:true}});
-    stage.addEventListener('touchmove', (e) => {{
+    stage.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, {passive:true});
+    stage.addEventListener('touchmove', (e) => {
       const dx = e.touches[0].clientX - touchStartX;
       touchStartX = e.touches[0].clientX;
       if (this.carousel) this.carousel.addVelocity(-dx * 2);
-    }}, {{passive:true}});
-    stage.addEventListener('touchend', (e) => {{
+    }, {passive:true});
+    stage.addEventListener('touchend', (e) => {
       if (e.changedTouches[0] && Math.abs(e.changedTouches[0].clientX - touchStartX) < 12) this._mousePickCard();
-    }});
-  }}
+    });
+  }
 
   _mousePickCard() {{
     try {{
