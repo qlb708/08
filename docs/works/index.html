@@ -106,14 +106,17 @@
 }
 .polaroid-img-box{
   width:100%;
+  aspect-ratio:1/1;
   overflow:hidden;
   border-radius:2px;
   background:#f0f4f8;
 }
 .polaroid-img-box img{
   width:100%;
-  height:auto;
+  height:100%;
   display:block;
+  object-fit:cover;
+  object-position:center;
   border-radius:2px;
 }
 .polaroid-caption{
@@ -578,7 +581,7 @@
   <div class="polaroid-wrap">
     <div class="polaroid">
       <div class="polaroid-img-box">
-        <img src="hero-qin.png" alt="Qin 的数字工作台">
+        <img src="hero-qin-square.png" alt="Qin 的数字工作台">
       </div>
       <div class="polaroid-caption">AI Product Ops &amp; Vibe Coder ✦</div>
     </div>
