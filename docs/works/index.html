@@ -1260,7 +1260,7 @@ setTimeout(renderAllCards, 80);
         <div class="t3d-name">${t.name}</div>
         <div class="t3d-desc">${t.desc}</div>
         <div class="t3d-footer">
-          <span class="t3d-tag ${t.tag==='活动 Demo'?'demo':''}">${t.tag}</span>
+          <span class="t3d-tag ${t.catLabel==='活动 Demo'?'demo':''}">${t.catLabel}</span>
           <button class="t3d-flip-btn" title="查看详情">💡</button>
         </div>
       </div>
@@ -1277,7 +1277,16 @@ setTimeout(renderAllCards, 80);
     el.querySelector('.t3d-back-close').addEventListener('click', e => {
       e.stopPropagation(); unflip(i);
     });
-    el.addEventListener('click', () => { if(!flipped.has(i)) goTo(i); });
+    el.addEventListener('click', ev => {
+      if(ev.target.closest('.t3d-flip-btn,.t3d-back-close')) return;
+      if(flipped.has(i)) return;
+      if(i === target) {
+        // 中央牌：有 url 则跳转
+        if(t.url && t.url !== '#') window.open(t.url.startsWith('http') ? t.url : 'https://qlb708.github.io' + t.url, '_blank');
+      } else {
+        goTo(i);
+      }
+    });
     stage.appendChild(el);
     return el;
   });
