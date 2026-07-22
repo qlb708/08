@@ -781,7 +781,7 @@
   <div class="t3d-header">
     <h2 class="t3d-title">AI工具 <em>✦</em></h2>
     <p class="t3d-sub">从真实问题出发，把工具做成可复用能力。</p>
-    <div class="t3d-hint"><span class="t3d-hint-key">← →</span> 键盘切换 &nbsp;·&nbsp; <span class="t3d-hint-key">触控板</span> 横滑 &nbsp;·&nbsp; <span class="t3d-hint-key">💡</span> 翻转详情</div>
+    <div class="t3d-hint"><span class="t3d-hint-key">💡</span> 翻转查看详情</div>
   </div>
   <div class="t3d-stage" id="t3dStage"></div>
   <div class="t3d-dots" id="t3dDots"></div>
@@ -1294,7 +1294,7 @@ setTimeout(renderAllCards, 80);
     if(!isDragging) return;
     isDragging=false;
     const dx = ev.clientX - dragStart;
-    if(Math.abs(dx)>50) goTo(current+(dx<0?1:-1));
+    if(Math.abs(dx)>40) goTo(current+(dx<0?1:-1));
   });
 
   // ── 触控板 wheel（横向滑动）──────────────────────────────────
@@ -1302,11 +1302,12 @@ setTimeout(renderAllCards, 80);
   stage.addEventListener('wheel', ev => {
     ev.preventDefault();
     if(wheelLock) return;
-    const d = Math.abs(ev.deltaX)>Math.abs(ev.deltaY) ? ev.deltaX : 0;
-    if(Math.abs(d)<20) return;
-    wheelLock=true;
-    goTo(current+(d>0?1:-1));
-    setTimeout(()=>{ wheelLock=false; }, 600);
+    // 取 deltaX 或 deltaY（触控板横滑两种情况都有）
+    const dx = Math.abs(ev.deltaX) >= Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
+    if(Math.abs(dx) < 15) return;
+    wheelLock = true;
+    goTo(current + (dx > 0 ? 1 : -1));
+    setTimeout(() => { wheelLock = false; }, 500);
   }, {passive:false});
 
   // ── 触摸 ────────────────────────────────────────────────────
