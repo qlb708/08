@@ -426,6 +426,7 @@
 /* 背面 */
 .t3d-back {
   transform: rotateY(180deg);
+  transform: rotateY(180deg);
   background: linear-gradient(145deg, #1a2540 0%, #0f1829 60%, #1a1f38 100%);
   border: 1px solid rgba(100,140,220,.25);
   box-shadow: 0 8px 40px rgba(10,20,60,.40);
@@ -1252,7 +1253,7 @@ setTimeout(renderAllCards, 80);
     const el = document.createElement('div');
     el.className = 't3d-card';
     el.innerHTML = `
-      <div class="t3d-front">
+      <div class="t3d-face t3d-front">
         <div class="t3d-accent"></div>
         <div class="t3d-icon">${t.icon}</div>
         <div class="t3d-name">${t.name}</div>
@@ -1262,7 +1263,7 @@ setTimeout(renderAllCards, 80);
           <button class="t3d-flip-btn" title="查看详情">💡</button>
         </div>
       </div>
-      <div class="t3d-back">
+      <div class="t3d-face t3d-back">
         <div class="t3d-back-title">${t.name}</div>
         <div class="t3d-back-row"><span class="t3d-back-label">PAIN</span><span>${t.pain}</span></div>
         <div class="t3d-back-row"><span class="t3d-back-label">HOW</span><span>${t.solution}</span></div>
