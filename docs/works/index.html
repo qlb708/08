@@ -317,6 +317,34 @@
 @media(max-width:900px){.about-v2{padding:28px 22px!important;overflow:visible!important}.about-shell{grid-template-columns:1fr;height:auto}.about-sticky{position:relative;height:auto}.about-main{min-height:auto}.timeline{overflow:visible;padding-left:24px}.about-main-head{display:block}.about-legend{margin-top:12px}}
 @media(max-width:640px){.about-v2{padding:22px 16px!important}.about-sticky{padding:18px;border-radius:24px}.about-avatar-wrap img{width:64px;height:64px;border-radius:20px}.about-name{font-size:21px}.about-loc{grid-template-columns:1fr}.t-card{padding:16px}.t-title{font-size:16px}.t-top{flex-direction:column;gap:8px}.t-time{align-self:flex-start}.about-legend{gap:6px}.data-badge{padding:7px 9px}}
 
+
+/* ═══ AI工具 精美卡片网格 ═══ */
+.tools-v2{justify-content:flex-start!important;padding:32px 46px 28px!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;gap:0!important}
+.tv2-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;flex-shrink:0}
+.tv2-title{font-size:clamp(28px,3.2vw,42px);font-weight:850;letter-spacing:-.05em;margin:0 0 4px;color:#182843}
+.tv2-title em{font-style:normal;color:var(--blue)}
+.tv2-sub{margin:0;color:#64748d;font-size:13px}
+.tv2-legend{display:flex;gap:8px}
+.tv2-badge{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:999px;font-size:11px;font-weight:750;border:1px solid transparent}
+.tv2-badge.blue{background:linear-gradient(135deg,#e8f0ff,#d4e4ff);color:#4268d0;border-color:rgba(100,150,255,.2)}
+.tv2-badge.peach{background:linear-gradient(135deg,#fff0e6,#ffd8bf);color:#c0673a;border-color:rgba(220,140,80,.2)}
+
+.tv2-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));grid-auto-rows:1fr;gap:16px;overflow-y:auto;padding-bottom:8px;align-content:start;scrollbar-width:none}
+.tv2-grid::-webkit-scrollbar{display:none}
+
+.tv2-card{position:relative;border-radius:22px;padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,.75);border:1px solid rgba(220,232,250,.85);box-shadow:0 4px 18px rgba(55,83,130,.07),0 1px 3px rgba(55,83,130,.05);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s,border-color .28s;text-decoration:none;color:inherit;backdrop-filter:blur(16px);overflow:hidden}
+.tv2-card::after{content:'';position:absolute;inset:0;border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.40) 0%,transparent 60%);pointer-events:none}
+.tv2-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(55,83,130,.14),0 3px 10px rgba(55,83,130,.08);border-color:rgba(190,215,255,.90)}
+.tv2-card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:22px 22px 0 0}
+.tv2-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.tv2-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.tv2-arrow{font-size:14px;color:#a0b4cc;margin-top:2px;transition:transform .2s,color .2s}
+.tv2-card:hover .tv2-arrow{transform:translate(3px,-3px);color:var(--blue)}
+.tv2-name{font-size:15px;font-weight:780;color:#1d2d48;line-height:1.3;letter-spacing:-.02em;flex:1}
+.tv2-desc{font-size:12px;color:#64748d;line-height:1.65;flex:1}
+.tv2-cat{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em;margin-top:auto;align-self:flex-start}
+.tv2-cat.blue{background:rgba(74,123,255,.10);color:#4a7bff;border:1px solid rgba(74,123,255,.18)}
+.tv2-cat.peach{background:rgba(237,147,111,.12);color:#d07040;border:1px solid rgba(237,147,111,.22)}
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
 <script>
@@ -576,7 +604,7 @@
   setTimeout(()=>addWave(.5,.38,0.8),800);
 })();
 </script>
-<div id="sc"><nav class="nav glass"><a class="brand" href="#home"><img class="avatar" src="hero-qin-square.png" alt="Qin">08's Portfolio</a><div class="navlinks"><button class="on" data-target="home">首页</button><button data-target="about">自我介绍</button><button data-target="tools">AI工具</button><button data-target="details">工具详情</button><button data-target="summary">总结</button></div><a class="contact" href="mailto:qinlinbo5@gmail.com">联系我　↗</a></nav>
+<div id="sc"><nav class="nav glass"><a class="brand" href="#home"><img class="avatar" src="hero-qin-square.png" alt="Qin">08's Portfolio</a><div class="navlinks"><button class="on" data-target="home">首页</button><button data-target="about">自我介绍</button><button data-target="tools">AI工具</button></div><a class="contact" href="mailto:qinlinbo5@gmail.com">联系我　↗</a></nav>
 <div class="snap-frame" id="home"><section class="page hero glass" ><div><span class="eyebrow">AI Product Ops &amp; Travel Tech Builder</span><h1>把重复动作，<br>变成 <em>可复用的能力</em></h1><p class="lead">旅行规划产品方向 · Vibe Coding 实践</p><div class="chips"><span class="chip">ϟ AI Ops</span><span class="chip">▥ Data Insight</span><span class="chip">&lt;/&gt; Vibe Coding</span><span class="chip">✈ Travel Tech</span></div><div class="stats glass"><div class="stat"><b>8+</b><span>实验工具</span></div><div class="stat"><b>200+</b><span>运营场景沉淀</span></div><div class="stat"><b>∞</b><span>持续迭代中</span></div></div></div><div class="hero-art">
   <div class="polaroid-wrap">
     <div class="polaroid">
@@ -645,9 +673,20 @@
     </main>
   </div>
 </section></div>
-<div class="snap-frame" id="tools"><section class="page tools-page glass" style="overflow:hidden;justify-content:flex-start;padding:32px 50px 0"><div class="page-head" style="margin-bottom:4px;flex-shrink:0"><div><h2>AI工具 <em>✦</em></h2><p>从真实问题出发，把工具做成可复用能力。</p></div></div><div class="tl-wrap" id="tlWrap" style="flex:1;position:relative;min-height:0"></div></section></div>
-<div class="snap-frame" id="details"><section class="page details glass"><div class="page-head"><div><h2>工具详情</h2><p>共 8 个项目，点击卡片直接体验。</p></div></div><div class="cf-stage" id="cfStage"></div><div class="cf-dots" id="cfDots"></div></section></div>
-<div class="snap-frame" id="summary"><section class="page summary glass" ><div class="summary-main"><div><h2>谢谢看到这里 <em>Thanks for stopping by</em></h2><p>感谢你的时间与关注。希望我的产品思维、数据洞察与 AI 能力，<br>能为团队创造价值，也期待与更多有趣的人一起做有意义的事。</p></div><div class="summary-art"><img src="hero-qin.png" alt="Qin"></div></div><div class="summary-cards"><article class="sum-card"><b>▦ 核心能力</b><p>产品运营全流程把控<br>数据洞察驱动决策<br>AI 工具应用与自动化</p></article><article class="sum-card"><b>▣ 实习亮点</b><p>洞察用户需求<br>推动产品优化<br>产出可落地方案</p></article><article class="sum-card"><b>&lt;/&gt; 工具方法论</b><p>Vibe Coding 原型开发<br>AI 自动化提升人效<br>结构化复盘持续优化</p></article><article class="sum-card"><b>◎ 关注方向</b><p>产品与数据深度结合<br>旅行与生活方式创新<br>AI 在产品中的落地</p></article><article class="sum-card"><b>☎ 联系方式</b><p>qinlinbo5@gmail.com<br>github.com/qlb708<br>欢迎交流与合作</p></article></div></section></div>
+<div class="snap-frame" id="tools"><section class="page tools-v2 glass">
+  <div class="tv2-head">
+    <div>
+      <h2 class="tv2-title">AI工具 <em>✦</em></h2>
+      <p class="tv2-sub">从真实问题出发，把工具做成可复用能力。</p>
+    </div>
+    <div class="tv2-legend">
+      <span class="tv2-badge blue">日常提效</span>
+      <span class="tv2-badge peach">活动 Demo</span>
+    </div>
+  </div>
+  <div class="tv2-grid" id="tv2Grid"></div>
+</section></div>
+</div>
 <footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
 <script>
 const groups=[{key:'daily',title:'日常提效',icon:'▦',count:'2 个实验工具',desc:'解决高频日常场景，提升个人与团队效率。',tone:'#4a7bff',tint:'#e8f1ff',cls:'c-blue',items:[['每日 Todo 和复盘','引导反思总结，持续成长','recap/','✓'],['打印机识别黑白','快速识别文档打印适配','print-helper/','▣'],]},{key:'demo',title:'活动 Demo',icon:'▣',count:'3 个创意项目',desc:'从想法到落地，探索有趣的产品实验。',tone:'#ed936f',tint:'#fff0e8',cls:'c-peach',items:[['AI 多方案对比','输入需求，生成多种优选方案','/08/web/compare/','⚖'],['FATE TRIP','分享行程不只是发链接——盲盒翻签×命运签语×「我也想去」心动反馈','/08/activity/travel-sign/','✦'],['手势塔罗','用手势翻开专属你的塔罗牌，解读命运密语','/08/web/tarot/','🃏']]}];
@@ -977,5 +1016,40 @@ function initCoverflow(stage,dots,total){
 // ── 自动初始化
 setTimeout(renderTools, 80);
 setTimeout(renderAllCards, 80);
+
+
+// ── AI工具 精美卡片网格渲染 ──
+(function(){
+  const TOOLS = [
+    // 日常提效
+    { name:'每日 Todo 和复盘', desc:'引导反思总结，结构化日记助手，持续成长。', icon:'✓', url:'recap/', cat:'blue', catLabel:'日常提效', grad:'linear-gradient(135deg,#dce8ff,#b8cfff)', accent:'linear-gradient(90deg,#6396ff,#4a7bff)' },
+    { name:'打印机识别黑白', desc:'快速识别文档能否彩色打印，适配各类打印场景。', icon:'▣', url:'print-helper/', cat:'blue', catLabel:'日常提效', grad:'linear-gradient(135deg,#d5eeff,#a0d4ff)', accent:'linear-gradient(90deg,#5aaeff,#3a8de0)' },
+    // 活动 Demo
+    { name:'AI 多方案对比', desc:'输入需求，AI 生成多种优选方案，一键对比决策。', icon:'⚖', url:'/08/web/compare/', cat:'peach', catLabel:'活动 Demo', grad:'linear-gradient(135deg,#ffe8d5,#ffc9a0)', accent:'linear-gradient(90deg,#ff9a6c,#ed7040)' },
+    { name:'FATE TRIP', desc:'分享行程不只是发链接——盲盒翻签×命运签语×「我也想去」心动反馈。', icon:'✦', url:'/08/activity/travel-sign/', cat:'peach', catLabel:'活动 Demo', grad:'linear-gradient(135deg,#ffd5e8,#ffaacc)', accent:'linear-gradient(90deg,#ff7eb3,#e040a0)' },
+    { name:'手势塔罗', desc:'用手势翻开专属你的塔罗牌，解读命运密语。', icon:'🃏', url:'/08/web/tarot/', cat:'peach', catLabel:'活动 Demo', grad:'linear-gradient(135deg,#ead5ff,#ccaaff)', accent:'linear-gradient(90deg,#b07eff,#8a50f0)' },
+  ];
+
+  const grid = document.getElementById('tv2Grid');
+  if(!grid) return;
+
+  TOOLS.forEach(t => {
+    const a = document.createElement('a');
+    a.className = 'tv2-card';
+    a.href = t.url;
+    if(t.url.startsWith('/') || t.url.startsWith('http')) a.target = '_blank';
+    a.innerHTML = `
+      <div class="tv2-card-accent" style="background:${t.accent}"></div>
+      <div class="tv2-card-top">
+        <div class="tv2-icon" style="background:${t.grad}">${t.icon}</div>
+        <span class="tv2-arrow">↗</span>
+      </div>
+      <div class="tv2-name">${t.name}</div>
+      <div class="tv2-desc">${t.desc}</div>
+      <span class="tv2-cat ${t.cat}">${t.catLabel}</span>
+    `;
+    grid.appendChild(a);
+  });
+})();
 
 </script></div></body><!-- deployed:1783952655 --></html>
