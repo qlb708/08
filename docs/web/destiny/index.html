@@ -432,9 +432,38 @@ animation:slideUp 0.4s ease;
 .mode-card{width:100%;max-width:none}
 .dayzhu-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+/* 返回按钮 */
+.back-btn{
+position:fixed;top:18px;left:18px;z-index:999;
+display:flex;align-items:center;gap:6px;
+padding:7px 14px 7px 10px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:20px;
+color:var(--text2);font-size:13px;
+text-decoration:none;
+transition:all 0.2s ease;
+cursor:pointer;
+backdrop-filter:blur(8px);
+}
+.back-btn:hover{
+background:rgba(231,190,116,0.1);
+border-color:rgba(231,190,116,0.35);
+color:var(--gold);
+transform:translateX(-2px);
+}
+.back-btn svg{width:14px;height:14px;flex-shrink:0}
 </style>
 </head>
 <body>
+
+<a class="back-btn" href="/08/works/" title="返回 AI 工具页">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 12L6 8l4-4"/>
+  </svg>
+  返回工具库
+</a>
 
 <!-- 幕0 首页 -->
 <div class="scene active" id="scene0">
