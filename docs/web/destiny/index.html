@@ -149,22 +149,22 @@ opacity:0;transition:opacity 0.3s;
 
 /* === 幕2 产品登记（左右分栏） === */
 #scene-register{flex-direction:row;align-items:stretch;padding:clamp(16px,2vh,24px);gap:clamp(16px,2vw,24px)}
-.register-left{flex:0.6;display:flex;flex-direction:column;justify-content:flex-start;gap:clamp(12px,1.8vh,20px);overflow:hidden;padding-top:clamp(8px,1.5vh,16px)}
+.register-left{flex:0.6;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;overflow:hidden;padding-top:4px}
 .register-right{flex:0.4;display:flex;align-items:center;justify-content:center}
 /* === 答题页产品头部 === */
-.product-header{display:flex;align-items:center;gap:16px;padding:14px 18px;background:linear-gradient(135deg,rgba(231,190,116,0.07),rgba(154,143,200,0.04));border:1px solid rgba(231,190,116,0.22);border-radius:14px}
-.product-logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,rgba(231,190,116,0.15),rgba(154,143,200,0.1));display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden;border:1px solid rgba(231,190,116,0.2)}
-.product-logo img{width:100%;height:100%;object-fit:cover;border-radius:12px}
-.product-info{flex:1;min-width:0}
-.product-info .p-name{font-size:clamp(18px,2.2vw,26px);font-weight:700;color:var(--gold);font-family:Georgia,serif;line-height:1.1;margin-bottom:4px}
-.product-info .p-type{font-size:12px;color:var(--text2);margin-bottom:7px}
-.product-info .p-tags{display:flex;gap:7px;flex-wrap:wrap}
-.product-info .p-tag{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid;white-space:nowrap}
-.product-info .p-tag.dayzhu{background:rgba(231,190,116,0.1);border-color:rgba(231,190,116,0.5);color:#E7BE74}
-.product-info .p-tag.cat{background:rgba(154,143,200,0.1);border-color:rgba(154,143,200,0.35);color:#9A8FC8}
-.product-baseline{background:rgba(255,255,255,0.025);border-left:3px solid rgba(231,190,116,0.55);padding:11px 15px;border-radius:0 10px 10px 0;font-size:13px;line-height:1.7}
-.product-baseline .bl-title{font-size:10px;color:rgba(231,190,116,0.7);letter-spacing:2px;margin-bottom:5px;font-weight:600}
-.product-baseline .bl-text{color:var(--text)}
+.product-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(231,190,116,0.18);border-radius:10px;flex-shrink:0}
+.product-logo{width:36px;height:36px;border-radius:8px;background:rgba(231,190,116,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;border:1px solid rgba(231,190,116,0.15)}
+.product-logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.product-info{flex:1;min-width:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.product-info .p-name{font-size:clamp(15px,1.8vw,18px);font-weight:700;color:var(--gold);font-family:Georgia,serif;white-space:nowrap}
+.product-info .p-type{font-size:11px;color:var(--text2);white-space:nowrap}
+.product-info .p-tags{display:flex;gap:5px}
+.product-info .p-tag{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid;white-space:nowrap}
+.product-info .p-tag.dayzhu{background:rgba(231,190,116,0.1);border-color:rgba(231,190,116,0.45);color:#E7BE74}
+.product-info .p-tag.cat{background:rgba(154,143,200,0.1);border-color:rgba(154,143,200,0.3);color:#9A8FC8}
+.product-baseline{display:flex;align-items:baseline;gap:8px;padding:7px 12px;background:rgba(255,255,255,0.02);border-left:2px solid rgba(231,190,116,0.5);border-radius:0 6px 6px 0;flex-shrink:0}
+.product-baseline .bl-title{font-size:10px;color:rgba(231,190,116,0.6);letter-spacing:1.5px;white-space:nowrap;flex-shrink:0}
+.product-baseline .bl-text{font-size:12px;color:var(--text2);line-height:1.5}
 .register-right-header{text-align:center;font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:1px}
 
 .progress-bar{
@@ -454,6 +454,24 @@ color:var(--gold);
 transform:translateX(-2px);
 }
 .back-btn svg{width:14px;height:14px;flex-shrink:0}
+
+/* === 打分页布局 === */
+#scene4{padding:clamp(16px,2vh,24px) clamp(16px,2vw,32px)}
+.score-section{display:flex;flex-direction:column;height:100%;width:100%}
+.score-top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:clamp(10px,1.5vh,16px);flex-shrink:0}
+.score-top-bar h2{font-family:Georgia,serif;font-size:clamp(16px,2vw,22px);color:var(--gold);margin:0}
+.score-product-strip{display:flex;align-items:center;gap:8px}
+.score-product-strip .sp-logo{width:28px;height:28px;border-radius:6px;background:rgba(231,190,116,0.1);display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid rgba(231,190,116,0.2)}
+.score-product-strip .sp-name{font-size:14px;font-weight:700;color:var(--gold);font-family:Georgia,serif}
+.score-product-strip .sp-dz{font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(231,190,116,0.1);border:1px solid rgba(231,190,116,0.4);color:#E7BE74}
+.score-body{display:flex;gap:clamp(16px,2vw,24px);flex:1;min-height:0}
+.score-left-panel{width:clamp(200px,30%,280px);display:flex;flex-direction:column;gap:12px;flex-shrink:0}
+.score-context-card{background:rgba(255,255,255,0.03);border:1px solid rgba(231,190,116,0.15);border-radius:12px;padding:14px;flex-shrink:0}
+.score-context-card .sc-title{font-size:10px;color:rgba(231,190,116,0.6);letter-spacing:2px;margin-bottom:8px}
+.score-context-card .sc-text{font-size:12px;color:var(--text2);line-height:1.6}
+.score-context-card .sc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.score-context-card .sc-tag{font-size:10px;padding:2px 7px;border-radius:12px;background:rgba(154,143,200,0.1);border:1px solid rgba(154,143,200,0.25);color:#9A8FC8}
+.score-right-panel{flex:1;display:flex;flex-direction:column;gap:clamp(10px,1.5vh,14px);min-width:0;overflow-y:auto}
 </style>
 </head>
 <body>
@@ -562,19 +580,35 @@ transform:translateX(-2px);
 <!-- 幕4 打分 -->
 <div class="scene" id="scene4">
 <div class="score-section">
+<div class="score-top-bar">
 <h2 class="serif">八维命盘</h2>
+<div class="score-product-strip" id="scoreProductStrip">
+<div class="sp-logo" id="scoreProductLogo">🔮</div>
+<span class="sp-name" id="scoreProductName">—</span>
+<span class="sp-dz" id="scoreProductDz"></span>
+</div>
 <div class="score-modes">
 <button class="score-mode-btn" onclick="setScoreMode('manual',this)">✋ 我自己看</button>
 <button class="score-mode-btn" onclick="setScoreMode('ai',this)">🤖 AI帮我排</button>
 <button class="score-mode-btn active" onclick="setScoreMode('hybrid',this)">⚖️ 人机合盘</button>
 </div>
-<div class="score-layout">
-<div class="score-radar"><canvas id="radarCanvas" width="400" height="400"></canvas></div>
-<div class="score-sliders" id="scoreSliders"></div>
 </div>
+<div class="score-body">
+<div class="score-left-panel">
+<div class="score-context-card">
+<div class="sc-title">命理初判</div>
+<div class="sc-text" id="scoreBaselineText">根据五行属性推算中...</div>
+<div class="sc-tags" id="scoreProductTags"></div>
+</div>
+<div class="score-radar"><canvas id="radarCanvas" width="300" height="300"></canvas></div>
+</div>
+<div class="score-right-panel">
+<div id="scoreSliders"></div>
 <div class="score-alert" id="scoreAlert"></div>
 <div class="score-submit">
-<button class="btn btn-primary" onclick="openFortune()" style="margin-top:16px">开命书 →</button>
+<button class="btn btn-primary" onclick="openFortune()">开命书 →</button>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1371,6 +1405,21 @@ showScene(4);initScoring();
 
 // === 幕4 打分 ===
 function initScoring(){
+// 注入产品信息到打分页顶部
+(()=>{
+const name=state.productName||'—';
+const dzKey=state.dayzhu||state.recognizedDayzhu||'bing';
+const dz=DAYZHU_DATA.find(d=>d.key===dzKey)||DAYZHU_DATA[0];
+const rec=PRODUCT_RECOGNITION[name]||{};
+document.getElementById('scoreProductName').textContent=name;
+document.getElementById('scoreProductDz').textContent=dz.icon+' '+dz.name;
+const cat=rec.category||state.productCat||'';
+document.getElementById('scoreProductLogo').textContent=getCategoryEmoji(cat);
+const baselineMap={ren:'壬水：个性化推荐驱动，信息分发型。',gui:'癸水：情绪陪伴，私域渗透型。',jia:'甲木：内容生态积累，越用越有价值。',yi:'乙木：柔性社区，创作者生态。',bing:'丙火：注意力经济，情绪价值爆发。',ding:'丁火：垂直深度社区，兴趣黏性。',wu:'戊土：基础设施，底层依赖型。',ji:'己土：数据+关系沉淀，习惯迁移成本高。',geng:'庚金：效率工具，精准替代人工。',xin:'辛金：精细化体验，品质敏感型。'};
+document.getElementById('scoreBaselineText').textContent=baselineMap[dzKey]||'';
+const type=rec.type||state.productType||'';
+document.getElementById('scoreProductTags').innerHTML=[type,cat.replace(/[🤖📱💬🛠️🛒📍🎓🎮💼]/u,'').trim()].filter(Boolean).map(t=>`<span class="sc-tag">${t}</span>`).join('');
+})();
 const aiBase=AI_SCORES[state.dayzhu]||[5,5,5,5,5,5,5,5];
 state.scores=aiBase.map(s=>s+Math.round((Math.random()-0.5)*2));
 state.scores=state.scores.map(s=>Math.max(1,Math.min(10,s)));
