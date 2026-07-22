@@ -1174,9 +1174,11 @@ setTimeout(renderAllCards, 80);
   // ── 布局：全正面，Z轴近大远小 ──────────────────────────────
   function layout(pos, stageW) {
     const abs = Math.abs(pos);
-    // 间距：保证最远牌(pos±2)的中心在屏幕内
-    // 最远牌中心 = stageW/2 + 2*spread，需要 < stageW - 卡宽/2
-    const spread = Math.min(200, (stageW - 240) / 4);
+    // spread: 最远牌(pos=±2)中心距stage中心 = spread*2
+    // 保证最远牌完整可见: spread*2 + CW/2 < stageW/2
+    // 即 spread < (stageW/2 - CW/2) / 2 = (stageW - CW) / 4
+    // 取 85% 安全系数
+    const spread = Math.floor((stageW - 220) / 4 * 0.82);
     return {
       x:       pos * spread,
       z:      -abs * 140,
