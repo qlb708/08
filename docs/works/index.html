@@ -380,7 +380,7 @@
 .t3d-card {
   position: absolute;
   width: 256px; height: 378px;
-  top: 50%; left: 50%;
+  top: 0; left: 0;
   transform-style: preserve-3d;
   transition: transform .50s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
   cursor: pointer;
@@ -1241,19 +1241,33 @@ setTimeout(renderAllCards, 80);
     return d;
   });
 
-  // ── 渲染 ───────────────────────────────────────────────────
+  // ── 渲染：以 stage 中心为基准，绝对像素定位 ──────────────────
   function render() {
+    const sw = stage.offsetWidth  || 800;
+    const sh = stage.offsetHeight || 500;
+    const cx = sw / 2;   // stage 水平中心
+    const cy = sh * 0.42; // 垂直中心偏上 (42%)
+    const CW = 256, CH = 378; // 卡牌尺寸
+
     cards.forEach((el, i) => {
       let pos = ((i - current + N + Math.round(N/2)) % N) - Math.round(N/2);
       const {x, z, scale, opacity, blur, zIndex} = layout(pos);
       const isFlipped = flipped.has(i);
-      el.style.transform = `translateX(calc(-128px + ${x}px)) translateY(-189px) translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
+      // 卡牌左上角坐标 = 中心点 + 偏移 - 半张卡
+      const cardLeft = cx - CW/2 + x;
+      const cardTop  = cy - CH/2;
+      el.style.left      = cardLeft + 'px';
+      el.style.top       = cardTop  + 'px';
+      el.style.transform = `translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
       el.style.opacity   = opacity;
       el.style.filter    = blur>0 ? `blur(${blur}px)` : 'none';
       el.style.zIndex    = zIndex;
     });
     dots.forEach((d,i) => d.classList.toggle('active', i===current));
   }
+
+  // stage resize 时重渲染
+  window.addEventListener('resize', render);
 
   function goTo(idx) {
     if(flipped.has(current)) unflip(current);
