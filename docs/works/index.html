@@ -1178,7 +1178,7 @@ setTimeout(renderAllCards, 80);
     // 保证最远牌完整可见: spread*2 + CW/2 < stageW/2
     // 即 spread < (stageW/2 - CW/2) / 2 = (stageW - CW) / 4
     // 取 85% 安全系数
-    const spread = Math.floor((stageW - 220) / 4 * 0.82);
+    const spread = Math.floor(stageW * 0.24);
     return {
       x:       pos * spread,
       z:      -abs * 140,
