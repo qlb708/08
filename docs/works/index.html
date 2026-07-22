@@ -1180,10 +1180,10 @@ setTimeout(renderAllCards, 80);
     const spread = Math.floor(stageW * 0.24);
     return {
       x:       pos * spread,
-      z:      -abs * 140,
-      scale:   1 - abs * 0.13,
-      opacity: 1 - abs * 0.18,
-      blur:    abs * 1.0,
+      z:      -abs * 60,         // 深度差压缩，减少近大远小的突兀感
+      scale:   1 - abs * 0.065, // 每级只缩6.5%，最远牌约80%，过渡顺滑
+      opacity: 1 - abs * 0.14,
+      blur:    abs * 0.6,
       zIndex:  10 - Math.round(abs),
     };
   }
@@ -1230,7 +1230,7 @@ setTimeout(renderAllCards, 80);
       rafId = null;
       return;
     }
-    currentF += diff * 0.13;   // 缓动系数：越小越慢越丝滑
+    currentF += diff * 0.10;   // 缓动系数：越小越慢越丝滑
     render();
     rafId = requestAnimationFrame(animate);
   }
