@@ -353,28 +353,29 @@
   display: flex !important;
   flex-direction: column !important;
   justify-content: flex-start !important;
-  padding: 28px 40px 24px !important;
+  padding: 28px 40px 20px !important;
   overflow: hidden !important;
   user-select: none;
 }
-.t3d-header { flex-shrink: 0; margin-bottom: 18px; }
+.t3d-header { flex-shrink: 0; margin-bottom: 12px; }
 .t3d-title  { font-size: clamp(26px,3vw,40px); font-weight: 860; letter-spacing: -.05em; margin: 0 0 4px; color: #182843; }
 .t3d-title em { font-style: normal; color: #4a7bff; }
-.t3d-sub    { margin: 0 0 10px; color: #64748d; font-size: 13px; }
+.t3d-sub    { margin: 0 0 8px; color: #64748d; font-size: 13px; }
 .t3d-hint   { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #8fa4bc; }
 .t3d-hint-key { background: rgba(74,123,255,.10); border: 1px solid rgba(74,123,255,.22); border-radius: 6px; padding: 2px 7px; font-size: 10px; color: #4a7bff; font-weight: 700; }
 
-/* 舞台 */
-.t3d-stage  { flex: 1; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; perspective: 1400px; perspective-origin: 50% 45%; }
-.t3d-fan    { position: relative; width: 280px; height: 380px; transform-style: preserve-3d; }
+/* 舞台：撑满剩余高度，宽度100% */
+.t3d-stage  { flex: 1; min-height: 0; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; perspective: 1400px; perspective-origin: 50% 50%; cursor: grab; }
+.t3d-stage:active { cursor: grabbing; }
+.t3d-fan    { position: relative; width: 0; height: 0; transform-style: preserve-3d; }
 
-/* 单张卡牌容器 */
+/* 单张卡牌容器：尺寸跟随舞台高度 */
 .t3d-card {
   position: absolute;
-  width: 260px; height: 360px;
-  top: 0; left: 0;
+  width: 230px; height: 340px;
+  top: -170px; left: -115px;
   transform-style: preserve-3d;
-  transition: transform .55s cubic-bezier(.22,.8,.2,1), filter .45s, opacity .45s, z-index 0s;
+  transition: transform .52s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
   cursor: pointer;
   will-change: transform;
 }
@@ -1229,9 +1230,6 @@ setTimeout(renderAllCards, 80);
   let current = 2; // 默认中间
   let flipped  = new Set();
   let dragging = false, dragX = 0, dragStart = 0;
-  let tiltTarget = {rx:0, ry:0};
-  let tiltCurrent= {rx:0, ry:0};
-  let rafId;
 
   // ── 位置布局 (弧形) ─────────────────────────────
   function posLayout(pos) {
@@ -1312,81 +1310,45 @@ setTimeout(renderAllCards, 80);
     cards.forEach((el, i) => {
       const pos = ((i - current + N + Math.round(N/2)) % N) - Math.round(N/2);
       const {x, y, ry, rz, scale} = posLayout(pos);
-      const isCenter = pos === 0;
       const isFlipped = flipped.has(i);
-
-      let tiltRx = 0, tiltRy = 0;
-      if(isCenter && !isFlipped) {
-        tiltRx = extraRx;
-        tiltRy = extraRy;
-      }
-
       const flipDeg = isFlipped ? 180 : 0;
+
       el.style.transform = `
         translateX(${x}px) translateY(${y}px)
-        rotateY(${ry + tiltRy + flipDeg}deg)
+        rotateY(${ry + flipDeg}deg)
         rotateZ(${rz}deg)
-        rotateX(${tiltRx}deg)
         scale(${scale})
       `;
       el.dataset.pos = pos;
-
-      // 光影
-      if(isCenter && !isFlipped) {
-        const shine = el.querySelector('.t3d-shine');
-        if(shine) {
-          const px = 50 + extraRy * 3;
-          const py = 50 - extraRx * 3;
-          shine.style.background = `radial-gradient(circle at ${px}% ${py}%, rgba(255,255,255,.42) 0%, transparent 60%)`;
-        }
-      }
     });
     dots.forEach((d,i)=> d.classList.toggle('active', i===current));
   }
 
-  // ── 平滑 tilt 动画 ───────────────────────────────
-  function tiltLoop() {
-    const EASE = 0.12;
-    tiltCurrent.rx += (tiltTarget.rx - tiltCurrent.rx) * EASE;
-    tiltCurrent.ry += (tiltTarget.ry - tiltCurrent.ry) * EASE;
-    render(tiltCurrent.rx, tiltCurrent.ry);
-    rafId = requestAnimationFrame(tiltLoop);
-  }
-  rafId = requestAnimationFrame(tiltLoop);
-
-  // ── 鼠标 tilt ───────────────────────────────────
-  stage.addEventListener('mousemove', ev => {
-    if(dragging) return;
-    const r = stage.getBoundingClientRect();
-    const mx = (ev.clientX - r.left) / r.width  - 0.5; // -0.5 ~ 0.5
-    const my = (ev.clientY - r.top)  / r.height - 0.5;
-    tiltTarget.ry =  mx * 14;
-    tiltTarget.rx = -my * 10;
-  });
-  stage.addEventListener('mouseleave', () => {
-    tiltTarget.rx = tiltTarget.ry = 0;
-  });
+  // ── 渲染（无tilt）───────────────────────────────
+  function renderNow() { render(0, 0); }
 
   // ── 拖拽切换 ────────────────────────────────────
   function goTo(idx) {
     if(flipped.has(current)) unflip(current);
     current = (idx + N) % N;
-    render(tiltCurrent.rx, tiltCurrent.ry);
+    render(0, 0);
   }
 
+  // 拖拽：绑在 stage 上（stage 现在占满 flex:1）
   stage.addEventListener('mousedown', ev => {
+    if(ev.target.closest('.t3d-flip-btn,.t3d-back-close')) return;
     dragging = true; dragStart = dragX = ev.clientX;
-    tiltTarget.rx = tiltTarget.ry = 0;
+    ev.preventDefault();
   });
   window.addEventListener('mousemove', ev => {
     if(!dragging) return;
     dragX = ev.clientX;
   });
-  window.addEventListener('mouseup', ev => {
+  window.addEventListener('mouseup', () => {
     if(!dragging) return;
     dragging = false;
     const dx = dragX - dragStart;
-    if(Math.abs(dx) > 48) goTo(current + (dx < 0 ? 1 : -1));
+    if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
   });
 
   // 触摸
@@ -1410,14 +1372,15 @@ setTimeout(renderAllCards, 80);
   }
   function doFlip(i) {
     flipped.add(i);
-    tiltTarget.rx = tiltTarget.ry = 0;
+    render();
   }
   function unflip(i) {
     flipped.delete(i);
+    render();
   }
 
   // 初始渲染
-  render(0, 0);
+  render();
 })();
 
 </script></div></body><!-- deployed:1783952655 --></html>
