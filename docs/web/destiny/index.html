@@ -1185,6 +1185,16 @@ const i=[...options].indexOf(el);
 state.scores[idx[type]]=Math.min(9,Math.max(2,3+i));
 drawMiniMingpan();
 }
+// 自动跳到下一步
+setTimeout(()=>{
+const steps=getQASteps();
+if(qaStep_current>=steps.length-1){
+showScene(3);initDayzhu();
+}else{
+qaStep_current++;
+renderQA();
+}
+},350);
 }
 
 // === 幕3 日主 ===
