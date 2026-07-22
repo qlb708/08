@@ -68,7 +68,7 @@ font-size:clamp(14px,1.8vw,16px);font-weight:600;cursor:pointer;transition:all 0
 width:40%;height:100%;display:flex;align-items:center;justify-content:center;
 opacity:1;z-index:0;flex-shrink:0;
 }
-.mingpan-bg svg{width:min(380px,90%);height:min(380px,90%);animation:rotateSlow 30s linear infinite;opacity:0.5}
+.mingpan-bg svg{width:min(360px,90%);height:min(360px,90%);animation:rotateSlow 30s linear infinite;opacity:0.65}
 @keyframes rotateSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .hero-content{position:relative;z-index:1;text-align:left;width:50%;padding:0 5%;box-sizing:border-box}
 .hero-content h1{
@@ -80,7 +80,7 @@ background:linear-gradient(135deg,var(--text),var(--gold));
 -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
 }
 .hero-content .subtitle{
-color:var(--text2);font-size:clamp(13px,2vw,18px);margin-bottom:clamp(24px,4vh,40px)
+color:var(--text2);font-size:clamp(13px,1.5vw,16px);margin-bottom:clamp(20px,3vh,32px);line-height:1.5
 }
 .hero-input{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(12px,2vh,16px)}
 .hero-input input{
@@ -806,7 +806,7 @@ const a=Math.PI*2*i/8-Math.PI/2;
 const lx=cx+(r+20)*Math.cos(a);
 const ly=cy+(r+20)*Math.sin(a);
 const anchor=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end');
-html+=`<text x="${lx}" y="${ly}" text-anchor="${anchor}" dominant-baseline="middle" style="font-size:11px;fill:#B8B2C0">${DIMENSIONS[i]}</text>`;
+html+=`<text x="${lx}" y="${ly}" text-anchor="${anchor}" dominant-baseline="middle" style="font-size:10px;fill:rgba(184,178,192,0.8)">${DIMENSIONS[i]}</text>`;
 }
 svg.innerHTML=html;
 }
