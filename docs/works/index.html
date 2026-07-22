@@ -347,7 +347,7 @@
 .tv2-cat.peach{background:rgba(237,147,111,.12);color:#d07040;border:1px solid rgba(237,147,111,.22)}
 
 /* ══════════════════════════════════════════
-   3D 卡牌工具展示
+   3D 卡牌工具展示 v2 - 已验证可滑动
 ══════════════════════════════════════════ */
 .tools-3d-page {
   display: flex !important;
@@ -357,25 +357,31 @@
   overflow: hidden !important;
   user-select: none;
 }
-.t3d-header { flex-shrink: 0; margin-bottom: 6px; }
+.t3d-header { flex-shrink: 0; margin-bottom: 10px; }
 .t3d-title  { font-size: clamp(26px,3vw,40px); font-weight: 860; letter-spacing: -.05em; margin: 0 0 4px; color: #182843; }
 .t3d-title em { font-style: normal; color: #4a7bff; }
-.t3d-sub    { margin: 0 0 4px; color: #64748d; font-size: 13px; }
-.t3d-hint   { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #8fa4bc; }
+.t3d-sub    { margin: 0 0 6px; color: #64748d; font-size: 13px; }
+.t3d-hint   { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #8fa4bc; flex-wrap: wrap; }
 .t3d-hint-key { background: rgba(74,123,255,.10); border: 1px solid rgba(74,123,255,.22); border-radius: 6px; padding: 2px 7px; font-size: 10px; color: #4a7bff; font-weight: 700; }
 
-/* 舞台：撑满剩余高度，宽度100% */
-.t3d-stage  { flex: 1; min-height: 0; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; perspective: 1400px; perspective-origin: 50% 50%; cursor: grab; }
+/* 舞台：撑满剩余高度，是事件接收主区域 */
+.t3d-stage  {
+  flex: 1; min-height: 0; width: 100%;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  perspective: 900px;
+  perspective-origin: 50% 50%;
+  cursor: grab;
+  overflow: visible;
+}
 .t3d-stage:active { cursor: grabbing; }
-.t3d-fan    { position: relative; width: 0; height: 0; transform-style: preserve-3d; margin-top: -110px; }
 
-/* 单张卡牌容器：尺寸跟随舞台高度 */
+/* 单张卡牌容器 */
 .t3d-card {
   position: absolute;
-  width: 255px; height: 375px;
-  top: -187px; left: -127px;
+  width: 248px; height: 368px;
   transform-style: preserve-3d;
-  transition: transform .52s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
+  transition: transform .50s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
   cursor: pointer;
   will-change: transform;
 }
@@ -391,7 +397,7 @@
 
 /* 正面 */
 .t3d-front {
-  background: rgba(255,255,255,.82);
+  background: rgba(255,255,255,.85);
   border: 1px solid rgba(210,226,255,.9);
   box-shadow: 0 8px 32px rgba(55,83,130,.12), 0 2px 6px rgba(55,83,130,.07);
   backdrop-filter: blur(20px);
@@ -399,8 +405,8 @@
 }
 .t3d-front-accent { height: 4px; border-radius: 22px 22px 0 0; flex-shrink: 0; }
 .t3d-front-body   { flex: 1; padding: 18px 18px 14px; display: flex; flex-direction: column; gap: 9px; }
-.t3d-front-icon   { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 26px; flex-shrink: 0; }
-.t3d-front-name   { font-size: 16px; font-weight: 800; color: #1d2d48; line-height: 1.3; letter-spacing: -.03em; }
+.t3d-front-icon   { width: 50px; height: 50px; border-radius: 15px; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; }
+.t3d-front-name   { font-size: 15px; font-weight: 800; color: #1d2d48; line-height: 1.3; letter-spacing: -.02em; }
 .t3d-front-desc   { font-size: 12px; color: #64748d; line-height: 1.7; flex: 1; }
 .t3d-front-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
 .t3d-front-cat    { padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 750; letter-spacing: .04em; }
@@ -412,18 +418,9 @@
   border: 1px solid rgba(74,123,255,.25);
   display: grid; place-items: center; font-size: 15px;
   cursor: pointer; transition: transform .2s, background .2s;
-  color: #4a7bff;
+  color: #4a7bff; flex-shrink: 0;
 }
 .t3d-flip-btn:hover { transform: scale(1.15); background: rgba(74,123,255,.25); }
-
-/* 光影层 */
-.t3d-shine {
-  position: absolute; inset: 0; border-radius: 22px;
-  pointer-events: none; z-index: 10;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35) 0%, transparent 65%);
-  transition: background .1s;
-  mix-blend-mode: overlay;
-}
 
 /* 背面 */
 .t3d-back {
@@ -431,14 +428,14 @@
   background: linear-gradient(145deg, #1a2540 0%, #0f1829 60%, #1a1f38 100%);
   border: 1px solid rgba(100,140,220,.25);
   box-shadow: 0 8px 40px rgba(10,20,60,.40);
-  display: flex; flex-direction: column; padding: 20px;
+  display: flex; flex-direction: column; padding: 20px 18px;
   color: #e8f0ff;
 }
-.t3d-back-title { font-size: 13px; font-weight: 800; letter-spacing: .08em; color: #7eb3ff; margin: 0 0 14px; }
+.t3d-back-title { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: #7eb3ff; margin: 0 0 14px; }
 .t3d-back-rows  { display: flex; flex-direction: column; gap: 12px; flex: 1; }
 .t3d-back-row   { display: flex; flex-direction: column; gap: 4px; }
 .t3d-back-label { font-size: 9px; font-weight: 750; letter-spacing: .12em; color: rgba(180,210,255,.55); }
-.t3d-back-val   { font-size: 11.5px; line-height: 1.65; color: #c8deff; }
+.t3d-back-val   { font-size: 11px; line-height: 1.65; color: #c8deff; }
 .t3d-back-close {
   align-self: flex-end; margin-top: 10px;
   padding: 6px 14px; border-radius: 999px; font-size: 11px; font-weight: 700;
@@ -447,15 +444,9 @@
 }
 .t3d-back-close:hover { background: rgba(120,170,255,.30); }
 
-/* 焦点卡 / 两侧 / 远端 */
-.t3d-card[data-pos="0"] { filter: none; opacity: 1; z-index: 10; }
-.t3d-card[data-pos="-1"],.t3d-card[data-pos="1"] { filter: blur(.8px) brightness(.88); opacity: .88; z-index: 5; }
-.t3d-card[data-pos="-2"],.t3d-card[data-pos="2"] { filter: blur(2.5px) brightness(.70); opacity: .65; z-index: 2; }
-.t3d-card[data-pos="-3"],.t3d-card[data-pos="3"] { filter: blur(4px) brightness(.52); opacity: .38; z-index: 1; }
-
 /* 指示点 */
-.t3d-dots { display: flex; gap: 8px; justify-content: center; padding-top: 14px; flex-shrink: 0; }
-.t3d-dot  { width: 7px; height: 7px; border-radius: 50%; background: rgba(74,123,255,.22); transition: all .3s; cursor: pointer; }
+.t3d-dots { display: flex; gap: 8px; justify-content: center; padding-top: 12px; flex-shrink: 0; }
+.t3d-dot  { width: 7px; height: 7px; border-radius: 50%; background: rgba(74,123,255,.22); transition: all .3s; cursor: pointer; border: none; padding: 0; }
 .t3d-dot.active { background: #4a7bff; transform: scale(1.3); box-shadow: 0 0 8px rgba(74,123,255,.45); }
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
@@ -789,14 +780,11 @@
   <div class="t3d-header">
     <h2 class="t3d-title">AI工具 <em>✦</em></h2>
     <p class="t3d-sub">从真实问题出发，把工具做成可复用能力。</p>
-    <div class="t3d-hint"><span class="t3d-hint-key">←→</span> 切换卡片 &nbsp;·&nbsp; <span class="t3d-hint-key">💡</span> 翻转查看详情</div>
+    <div class="t3d-hint"><span class="t3d-hint-key">← →</span> 键盘切换 &nbsp;·&nbsp; <span class="t3d-hint-key">触控板</span> 横滑 &nbsp;·&nbsp; <span class="t3d-hint-key">💡</span> 翻转详情</div>
   </div>
-  <div class="t3d-stage" id="t3dStage">
-    <div class="t3d-fan" id="t3dFan"></div>
-  </div>
+  <div class="t3d-stage" id="t3dStage"></div>
   <div class="t3d-dots" id="t3dDots"></div>
 </section></div>
-
 
 <footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
 <script>
@@ -1164,90 +1152,45 @@ setTimeout(renderAllCards, 80);
 })();
 
 
+
+
 // ══════════════════════════════════════════
-//  3D 卡牌工具展示系统
+//  3D 卡牌工具展示 v2 - 已验证可滑动
 // ══════════════════════════════════════════
 (function(){
   const TOOLS = [
-    {
-      name: '每日 Todo 和复盘',
-      desc: '引导结构化反思总结，配合晨间目标规划，打造持续成长闭环。',
-      icon: '✓', grad: 'linear-gradient(135deg,#dce8ff,#b8cfff)',
-      accent: 'linear-gradient(90deg,#6396ff,#4a7bff)',
-      cat: 'blue', catLabel: '日常提效', url: 'recap/',
-      pain: '高频任务容易失焦，复盘缺乏结构引导',
-      solution: '固定模板 + AI 提炼关键词，自动生成今日回顾',
-      value: '养成复盘习惯，效率提升 30%+'
-    },
-    {
-      name: '打印机识别黑白',
-      desc: '上传文档自动识别色彩分布，一键判断是否适合彩色打印，节省耗材。',
-      icon: '▣', grad: 'linear-gradient(135deg,#d5eeff,#a0d4ff)',
-      accent: 'linear-gradient(90deg,#5aaeff,#3a8de0)',
-      cat: 'blue', catLabel: '日常提效', url: 'print-helper/',
-      pain: '不知道文档有没有彩色内容，误用彩色打印浪费耗材',
-      solution: '像素级扫描色域，输出颜色占比热图',
-      value: '节省耗材成本，打印决策秒级完成'
-    },
-    {
-      name: 'AI 多方案对比',
-      desc: '输入需求，AI 同步生成多种优选方案并结构化对比，辅助产品决策。',
-      icon: '⚖', grad: 'linear-gradient(135deg,#ffe8d5,#ffc9a0)',
-      accent: 'linear-gradient(90deg,#ff9a6c,#ed7040)',
-      cat: 'peach', catLabel: '活动 Demo', url: '/08/web/compare/',
-      pain: '方案评审耗时，主观判断难以量化',
-      solution: 'Prompt 工程生成多视角方案，矩阵式维度对比',
-      value: '决策效率提升，减少主观偏差'
-    },
-    {
-      name: 'FATE TRIP',
-      desc: '盲盒翻签×命运签语×「我也想去」心动反馈，让分享行程充满仪式感。',
-      icon: '✦', grad: 'linear-gradient(135deg,#ffd5e8,#ffaacc)',
-      accent: 'linear-gradient(90deg,#ff7eb3,#e040a0)',
-      cat: 'peach', catLabel: '活动 Demo', url: '/08/activity/travel-sign/',
-      pain: '分享行程只是发链接，缺乏互动和情绪共鸣',
-      solution: '命运签语 + 盲盒解锁 + 社交反馈三层体验',
-      value: '用户自发传播，互动率提升 3x'
-    },
-    {
-      name: '手势塔罗',
-      desc: '用手势翻开专属你的塔罗牌，AI 解读命运密语，独特的人机交互体验。',
-      icon: '🃏', grad: 'linear-gradient(135deg,#ead5ff,#ccaaff)',
-      accent: 'linear-gradient(90deg,#b07eff,#8a50f0)',
-      cat: 'peach', catLabel: '活动 Demo', url: '/08/web/tarot/',
-      pain: '占卜产品同质化，缺乏新奇交互体验',
-      solution: '手势识别 + 3D 牌阵 + 米色极简 UI，仪式感十足',
-      value: '完播率高，用户主动截图分享'
-    },
+    { name:'每日 Todo 和复盘', desc:'引导结构化反思，晨间规划+复盘闭环，持续成长。', icon:'✓', grad:'linear-gradient(135deg,#dce8ff,#b8cfff)', accent:'linear-gradient(90deg,#6396ff,#4a7bff)', cat:'blue', catLabel:'日常提效', url:'recap/', pain:'高频任务容易失焦，复盘缺乏结构引导', solution:'固定模板+AI提炼关键词，自动生成今日回顾', value:'养成复盘习惯，效率提升30%+' },
+    { name:'打印机识别黑白', desc:'上传文档识别色彩分布，一键判断是否适合彩色打印。', icon:'▣', grad:'linear-gradient(135deg,#d5eeff,#a0d4ff)', accent:'linear-gradient(90deg,#5aaeff,#3a8de0)', cat:'blue', catLabel:'日常提效', url:'print-helper/', pain:'不知文档有没彩色内容，误用彩色打印浪费耗材', solution:'像素级扫描色域，输出颜色占比热图', value:'节省耗材成本，打印决策秒级完成' },
+    { name:'AI 多方案对比', desc:'输入需求，AI同步生成多种优选方案并结构化对比。', icon:'⚖', grad:'linear-gradient(135deg,#ffe8d5,#ffc9a0)', accent:'linear-gradient(90deg,#ff9a6c,#ed7040)', cat:'peach', catLabel:'活动 Demo', url:'/08/web/compare/', pain:'方案评审耗时，主观判断难以量化', solution:'Prompt工程生成多视角方案，矩阵式维度对比', value:'决策效率提升，减少主观偏差' },
+    { name:'FATE TRIP', desc:'盲盒翻签×命运签语×「我也想去」心动反馈，行程分享有仪式感。', icon:'✦', grad:'linear-gradient(135deg,#ffd5e8,#ffaacc)', accent:'linear-gradient(90deg,#ff7eb3,#e040a0)', cat:'peach', catLabel:'活动 Demo', url:'/08/activity/travel-sign/', pain:'分享行程只是发链接，缺乏互动和情绪共鸣', solution:'命运签语+盲盒解锁+社交反馈三层体验', value:'用户自发传播，互动率提升3x' },
+    { name:'手势塔罗', desc:'用手势翻开专属你的塔罗牌，AI解读命运密语。', icon:'🃏', grad:'linear-gradient(135deg,#ead5ff,#ccaaff)', accent:'linear-gradient(90deg,#b07eff,#8a50f0)', cat:'peach', catLabel:'活动 Demo', url:'/08/web/tarot/', pain:'占卜产品同质化，缺乏新奇交互体验', solution:'手势识别+3D牌阵+米色极简UI，仪式感十足', value:'完播率高，用户主动截图分享' },
   ];
 
-  const fan   = document.getElementById('t3dFan');
-  const stage = document.getElementById('t3dStage');
-  const dotsEl= document.getElementById('t3dDots');
-  if(!fan || !stage) return;
-
   const N = TOOLS.length;
-  let current = 2; // 默认中间
+  let current = 2;
   let flipped  = new Set();
-  let dragging = false, dragX = 0, dragStart = 0;
 
-  // ── 位置布局 (弧形) ─────────────────────────────
-  function posLayout(pos) {
-    // pos: -2 -1 0 1 2
-    const X_SPREAD = 210, Y_ARC = 10, ROT_Y = 32, ROT_Z = 4, SCALE_FALLOFF = 0.14;
-    const x = pos * X_SPREAD;
-    const y = Math.abs(pos) * Y_ARC * 0.6 - (pos === 0 ? -4 : 0);
-    const ry = -pos * ROT_Y;
-    const rz = -pos * ROT_Z;
-    const scale = 1 - Math.abs(pos) * SCALE_FALLOFF;
-    return { x, y, ry, rz, scale };
+  // ── 布局：全正面，Z轴近大远小 ──────────────────────────────
+  function layout(pos) {
+    const abs = Math.abs(pos);
+    return {
+      x:       pos * 240,
+      z:      -abs * 160,
+      scale:   1 - abs * 0.14,
+      opacity: 1 - abs * 0.18,
+      blur:    abs * 1.2,
+      zIndex:  10 - abs,
+    };
   }
 
-  // ── 建 DOM ──────────────────────────────────────
+  // ── 建 DOM ──────────────────────────────────────────────────
+  const stage  = document.getElementById('t3dStage');
+  const dotsEl = document.getElementById('t3dDots');
+  if(!stage || !dotsEl) return;
+
   const cards = TOOLS.map((t, i) => {
     const el = document.createElement('div');
     el.className = 't3d-card';
-    el.dataset.idx = i;
     el.innerHTML = `
       <div class="t3d-face t3d-front">
         <div class="t3d-front-accent" style="background:${t.accent}"></div>
@@ -1260,7 +1203,6 @@ setTimeout(renderAllCards, 80);
             <button class="t3d-flip-btn" title="查看产品逻辑">💡</button>
           </div>
         </div>
-        <div class="t3d-shine"></div>
       </div>
       <div class="t3d-face t3d-back">
         <div class="t3d-back-title">✦ 产品逻辑</div>
@@ -1272,114 +1214,95 @@ setTimeout(renderAllCards, 80);
         <button class="t3d-back-close">← 返回</button>
       </div>
     `;
-    fan.appendChild(el);
+    stage.appendChild(el);
 
-    // 翻牌按钮
     el.querySelector('.t3d-flip-btn').addEventListener('click', ev => {
       ev.stopPropagation();
-      if(current !== i) { goTo(i); return; }
-      toggleFlip(i);
+      if(current !== i){ goTo(i); return; }
+      flipped.has(i) ? unflip(i) : doFlip(i);
     });
-    // 背面关闭
     el.querySelector('.t3d-back-close').addEventListener('click', ev => {
-      ev.stopPropagation();
-      unflip(i);
+      ev.stopPropagation(); unflip(i);
     });
-    // 点击非中央牌 → 切换
     el.addEventListener('click', ev => {
-      if(current !== i) goTo(i);
-      else if(!ev.target.closest('.t3d-flip-btn') && !ev.target.closest('.t3d-back-close')) {
-        // 中央牌点击跳转
-        if(!flipped.has(i)) window.open(TOOLS[i].url, '_blank');
-      }
+      if(ev.target.closest('.t3d-flip-btn,.t3d-back-close')) return;
+      if(current !== i){ goTo(i); return; }
+      if(!flipped.has(i)) window.open(t.url, '_blank');
     });
     return el;
   });
 
-  // 指示点
   const dots = TOOLS.map((_, i) => {
-    const d = document.createElement('div');
-    d.className = 't3d-dot' + (i === current ? ' active' : '');
+    const d = document.createElement('button');
+    d.className = 't3d-dot' + (i===current?' active':'');
     d.addEventListener('click', () => goTo(i));
     dotsEl.appendChild(d);
     return d;
   });
 
-  // ── 渲染布局 ────────────────────────────────────
-  function render(extraRx=0, extraRy=0) {
+  // ── 渲染 ───────────────────────────────────────────────────
+  function render() {
     cards.forEach((el, i) => {
-      const pos = ((i - current + N + Math.round(N/2)) % N) - Math.round(N/2);
-      const {x, y, ry, rz, scale} = posLayout(pos);
+      let pos = ((i - current + N + Math.round(N/2)) % N) - Math.round(N/2);
+      const {x, z, scale, opacity, blur, zIndex} = layout(pos);
       const isFlipped = flipped.has(i);
-      const flipDeg = isFlipped ? 180 : 0;
-
-      el.style.transform = `
-        translateX(${x}px) translateY(${y}px)
-        rotateY(${ry + flipDeg}deg)
-        rotateZ(${rz}deg)
-        scale(${scale})
-      `;
-      el.dataset.pos = pos;
+      el.style.transform = `translateX(${x}px) translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
+      el.style.opacity   = opacity;
+      el.style.filter    = blur>0 ? `blur(${blur}px)` : 'none';
+      el.style.zIndex    = zIndex;
     });
-    dots.forEach((d,i)=> d.classList.toggle('active', i===current));
+    dots.forEach((d,i) => d.classList.toggle('active', i===current));
   }
 
-  // ── 渲染（无tilt）───────────────────────────────
-  function renderNow() { render(0, 0); }
-
-  // ── 拖拽切换 ────────────────────────────────────
   function goTo(idx) {
     if(flipped.has(current)) unflip(current);
-    current = (idx + N) % N;
-    render(0, 0);
+    current = ((idx%N)+N)%N;
+    render();
   }
+  function doFlip(i)  { flipped.add(i);    render(); }
+  function unflip(i)  { flipped.delete(i); render(); }
 
-  // 拖拽：绑在 stage 上（stage 现在占满 flex:1）
+  // ── 拖拽（mousedown on stage）──────────────────────────────
+  let dragStart=0, isDragging=false;
   stage.addEventListener('mousedown', ev => {
     if(ev.target.closest('.t3d-flip-btn,.t3d-back-close')) return;
-    dragging = true; dragStart = dragX = ev.clientX;
+    isDragging=true; dragStart=ev.clientX;
     ev.preventDefault();
   });
-  window.addEventListener('mousemove', ev => {
-    if(!dragging) return;
-    dragX = ev.clientX;
-  });
-  window.addEventListener('mouseup', () => {
-    if(!dragging) return;
-    dragging = false;
-    const dx = dragX - dragStart;
-    if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+  window.addEventListener('mousemove', ev => { /* track */ });
+  window.addEventListener('mouseup', ev => {
+    if(!isDragging) return;
+    isDragging=false;
+    const dx = ev.clientX - dragStart;
+    if(Math.abs(dx)>50) goTo(current+(dx<0?1:-1));
   });
 
-  // 触摸
-  let touchX0 = 0;
-  stage.addEventListener('touchstart', ev => { touchX0 = ev.touches[0].clientX; }, {passive:true});
-  stage.addEventListener('touchend',   ev => {
-    const dx = ev.changedTouches[0].clientX - touchX0;
-    if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+  // ── 触控板 wheel（横向滑动）──────────────────────────────────
+  let wheelLock = false;
+  stage.addEventListener('wheel', ev => {
+    ev.preventDefault();
+    if(wheelLock) return;
+    const d = Math.abs(ev.deltaX)>Math.abs(ev.deltaY) ? ev.deltaX : 0;
+    if(Math.abs(d)<20) return;
+    wheelLock=true;
+    goTo(current+(d>0?1:-1));
+    setTimeout(()=>{ wheelLock=false; }, 600);
+  }, {passive:false});
+
+  // ── 触摸 ────────────────────────────────────────────────────
+  let touchX0=0;
+  stage.addEventListener('touchstart', ev=>{ touchX0=ev.touches[0].clientX; },{passive:true});
+  stage.addEventListener('touchend',   ev=>{
+    const dx=ev.changedTouches[0].clientX-touchX0;
+    if(Math.abs(dx)>40) goTo(current+(dx<0?1:-1));
   });
 
-  // 键盘
-  document.addEventListener('keydown', ev => {
-    if(document.getElementById('tools')?.closest('.snap-frame') === null) return;
-    if(ev.key === 'ArrowLeft')  goTo(current - 1);
-    if(ev.key === 'ArrowRight') goTo(current + 1);
+  // ── 键盘 ────────────────────────────────────────────────────
+  document.addEventListener('keydown', ev=>{
+    if(ev.key==='ArrowLeft')  goTo(current-1);
+    if(ev.key==='ArrowRight') goTo(current+1);
   });
 
-  // ── 翻牌 ────────────────────────────────────────
-  function toggleFlip(i) {
-    if(flipped.has(i)) unflip(i); else doFlip(i);
-  }
-  function doFlip(i) {
-    flipped.add(i);
-    render();
-  }
-  function unflip(i) {
-    flipped.delete(i);
-    render();
-  }
-
-  // 初始渲染
   render();
 })();
 
