@@ -365,15 +365,15 @@
 .t3d-hint-key { background: rgba(74,123,255,.10); border: 1px solid rgba(74,123,255,.22); border-radius: 6px; padding: 2px 7px; font-size: 10px; color: #4a7bff; font-weight: 700; }
 
 /* 舞台：撑满剩余高度，宽度100% */
-.t3d-stage  { flex: 1; min-height: 0; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; perspective: 1400px; perspective-origin: 50% 50%; cursor: grab; }
+.t3d-stage  { flex: 1; min-height: 0; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; padding-top: 0; perspective: 1400px; perspective-origin: 50% 42%; cursor: grab; }
 .t3d-stage:active { cursor: grabbing; }
 .t3d-fan    { position: relative; width: 0; height: 0; transform-style: preserve-3d; }
 
 /* 单张卡牌容器：尺寸跟随舞台高度 */
 .t3d-card {
   position: absolute;
-  width: 230px; height: 340px;
-  top: -170px; left: -115px;
+  width: 255px; height: 375px;
+  top: -187px; left: -127px;
   transform-style: preserve-3d;
   transition: transform .52s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
   cursor: pointer;
@@ -398,7 +398,7 @@
   display: flex; flex-direction: column;
 }
 .t3d-front-accent { height: 4px; border-radius: 22px 22px 0 0; flex-shrink: 0; }
-.t3d-front-body   { flex: 1; padding: 20px 20px 16px; display: flex; flex-direction: column; gap: 10px; }
+.t3d-front-body   { flex: 1; padding: 18px 18px 14px; display: flex; flex-direction: column; gap: 9px; }
 .t3d-front-icon   { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 26px; flex-shrink: 0; }
 .t3d-front-name   { font-size: 16px; font-weight: 800; color: #1d2d48; line-height: 1.3; letter-spacing: -.03em; }
 .t3d-front-desc   { font-size: 12px; color: #64748d; line-height: 1.7; flex: 1; }
@@ -1234,7 +1234,7 @@ setTimeout(renderAllCards, 80);
   // ── 位置布局 (弧形) ─────────────────────────────
   function posLayout(pos) {
     // pos: -2 -1 0 1 2
-    const X_SPREAD = 190, Y_ARC = 18, ROT_Y = 28, ROT_Z = 5, SCALE_FALLOFF = 0.13;
+    const X_SPREAD = 210, Y_ARC = 10, ROT_Y = 32, ROT_Z = 4, SCALE_FALLOFF = 0.14;
     const x = pos * X_SPREAD;
     const y = Math.abs(pos) * Y_ARC * 0.6 - (pos === 0 ? -4 : 0);
     const ry = -pos * ROT_Y;
