@@ -1255,7 +1255,7 @@ setTimeout(renderAllCards, 80);
     const CW = 220, CH = 340; // 卡牌尺寸
 
     cards.forEach((el, i) => {
-      let pos = ((i - current + N + Math.round(N/2)) % N) - Math.round(N/2);
+      let pos = ((i - current + N + Math.floor(N/2)) % N) - Math.floor(N/2);
       const {x, z, scale, opacity, blur, zIndex} = layout(pos, sw);
       const isFlipped = flipped.has(i);
       // 卡牌左上角坐标 = 中心点 + 偏移 - 半张卡
