@@ -1168,16 +1168,14 @@ setTimeout(renderAllCards, 80);
   ];
 
   const N = TOOLS.length;
-  let current = 2;
+  let target  = 2;          // 目标整数索引
+  let currentF = 2.0;       // 浮点插值索引（驱动动画）
   let flipped  = new Set();
+  let rafId    = null;
 
   // ── 布局：全正面，Z轴近大远小 ──────────────────────────────
   function layout(pos, stageW) {
     const abs = Math.abs(pos);
-    // spread: 最远牌(pos=±2)中心距stage中心 = spread*2
-    // 保证最远牌完整可见: spread*2 + CW/2 < stageW/2
-    // 即 spread < (stageW/2 - CW/2) / 2 = (stageW - CW) / 4
-    // 取 85% 安全系数
     const spread = Math.floor(stageW * 0.24);
     return {
       x:       pos * spread,
@@ -1185,9 +1183,64 @@ setTimeout(renderAllCards, 80);
       scale:   1 - abs * 0.13,
       opacity: 1 - abs * 0.18,
       blur:    abs * 1.0,
-      zIndex:  10 - abs,
+      zIndex:  10 - Math.round(abs),
     };
   }
+
+  // ── 渲染：以 stage 中心为基准，绝对像素定位 ──────────────────
+  function render() {
+    const sw = stage.offsetWidth  || 800;
+    const sh = stage.offsetHeight || 500;
+    const cx = sw / 2;
+    const cy = sh * 0.42;
+    const CW = 220, CH = 340;
+
+    cards.forEach((el, i) => {
+      // 浮点 pos：用 currentF（插值中）计算，保证过渡连续
+      let rawPos = i - currentF;
+      // 循环修正：让 rawPos 落在 [-N/2, N/2]
+      while (rawPos >  N/2) rawPos -= N;
+      while (rawPos < -N/2) rawPos += N;
+
+      const {x, z, scale, opacity, blur, zIndex} = layout(rawPos, sw);
+      const isFlipped = flipped.has(i);
+      const cardLeft = cx - CW/2 + x;
+      const cardTop  = cy - CH/2;
+      el.style.left      = cardLeft + 'px';
+      el.style.top       = cardTop  + 'px';
+      el.style.transform = `translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
+      el.style.opacity   = opacity;
+      el.style.filter    = blur > 0 ? `blur(${blur.toFixed(1)}px)` : 'none';
+      el.style.zIndex    = zIndex;
+    });
+    dots.forEach((d, i) => d.classList.toggle('active', i === target));
+  }
+
+  // ── 动画循环：缓动插值 currentF → target ──────────────────────
+  function animate() {
+    // 取最短路径差值（考虑循环）
+    let diff = target - currentF;
+    while (diff >  N/2) diff -= N;
+    while (diff < -N/2) diff += N;
+
+    if (Math.abs(diff) < 0.002) {
+      currentF = target;
+      render();
+      rafId = null;
+      return;
+    }
+    currentF += diff * 0.13;   // 缓动系数：越小越慢越丝滑
+    render();
+    rafId = requestAnimationFrame(animate);
+  }
+
+  function goTo(idx) {
+    if (flipped.has(target)) unflip(target);
+    target = ((idx % N) + N) % N;
+    if (!rafId) rafId = requestAnimationFrame(animate);
+  }
+  function doFlip(i)  { flipped.add(i);    render(); }
+  function unflip(i)  { flipped.delete(i); render(); }
 
   // ── 建 DOM ──────────────────────────────────────────────────
   const stage  = document.getElementById('t3dStage');
@@ -1198,89 +1251,41 @@ setTimeout(renderAllCards, 80);
     const el = document.createElement('div');
     el.className = 't3d-card';
     el.innerHTML = `
-      <div class="t3d-face t3d-front">
-        <div class="t3d-front-accent" style="background:${t.accent}"></div>
-        <div class="t3d-front-body">
-          <div class="t3d-front-icon" style="background:${t.grad}">${t.icon}</div>
-          <div class="t3d-front-name">${t.name}</div>
-          <div class="t3d-front-desc">${t.desc}</div>
-          <div class="t3d-front-footer">
-            <span class="t3d-front-cat ${t.cat}">${t.catLabel}</span>
-            <button class="t3d-flip-btn" title="查看产品逻辑">💡</button>
-          </div>
+      <div class="t3d-front">
+        <div class="t3d-accent"></div>
+        <div class="t3d-icon">${t.icon}</div>
+        <div class="t3d-name">${t.name}</div>
+        <div class="t3d-desc">${t.desc}</div>
+        <div class="t3d-footer">
+          <span class="t3d-tag ${t.tag==='活动 Demo'?'demo':''}">${t.tag}</span>
+          <button class="t3d-flip-btn" title="查看详情">💡</button>
         </div>
       </div>
-      <div class="t3d-face t3d-back">
-        <div class="t3d-back-title">✦ 产品逻辑</div>
-        <div class="t3d-back-rows">
-          <div class="t3d-back-row"><div class="t3d-back-label">PAIN POINT · 痛点</div><div class="t3d-back-val">${t.pain}</div></div>
-          <div class="t3d-back-row"><div class="t3d-back-label">SOLUTION · 方案</div><div class="t3d-back-val">${t.solution}</div></div>
-          <div class="t3d-back-row"><div class="t3d-back-label">VALUE · 价值</div><div class="t3d-back-val">${t.value}</div></div>
-        </div>
+      <div class="t3d-back">
+        <div class="t3d-back-title">${t.name}</div>
+        <div class="t3d-back-row"><span class="t3d-back-label">PAIN</span><span>${t.pain}</span></div>
+        <div class="t3d-back-row"><span class="t3d-back-label">HOW</span><span>${t.solution}</span></div>
+        <div class="t3d-back-row"><span class="t3d-back-label">VALUE</span><span>${t.value}</span></div>
         <button class="t3d-back-close">← 返回</button>
-      </div>
-    `;
+      </div>`;
+    el.querySelector('.t3d-flip-btn').addEventListener('click', e => {
+      e.stopPropagation(); goTo(i); doFlip(i);
+    });
+    el.querySelector('.t3d-back-close').addEventListener('click', e => {
+      e.stopPropagation(); unflip(i);
+    });
+    el.addEventListener('click', () => { if(!flipped.has(i)) goTo(i); });
     stage.appendChild(el);
-
-    el.querySelector('.t3d-flip-btn').addEventListener('click', ev => {
-      ev.stopPropagation();
-      if(current !== i){ goTo(i); return; }
-      flipped.has(i) ? unflip(i) : doFlip(i);
-    });
-    el.querySelector('.t3d-back-close').addEventListener('click', ev => {
-      ev.stopPropagation(); unflip(i);
-    });
-    el.addEventListener('click', ev => {
-      if(ev.target.closest('.t3d-flip-btn,.t3d-back-close')) return;
-      if(current !== i){ goTo(i); return; }
-      if(!flipped.has(i)) window.open(t.url, '_blank');
-    });
     return el;
   });
 
   const dots = TOOLS.map((_, i) => {
-    const d = document.createElement('button');
-    d.className = 't3d-dot' + (i===current?' active':'');
+    const d = document.createElement('div');
+    d.className = 't3d-dot';
     d.addEventListener('click', () => goTo(i));
     dotsEl.appendChild(d);
     return d;
   });
-
-  // ── 渲染：以 stage 中心为基准，绝对像素定位 ──────────────────
-  function render() {
-    const sw = stage.offsetWidth  || 800;
-    const sh = stage.offsetHeight || 500;
-    const cx = sw / 2;   // stage 水平中心
-    const cy = sh * 0.42; // 垂直中心偏上 (42%)
-    const CW = 220, CH = 340; // 卡牌尺寸
-
-    cards.forEach((el, i) => {
-      let pos = ((i - current + N + Math.floor(N/2)) % N) - Math.floor(N/2);
-      const {x, z, scale, opacity, blur, zIndex} = layout(pos, sw);
-      const isFlipped = flipped.has(i);
-      // 卡牌左上角坐标 = 中心点 + 偏移 - 半张卡
-      const cardLeft = cx - CW/2 + x;
-      const cardTop  = cy - CH/2;
-      el.style.left      = cardLeft + 'px';
-      el.style.top       = cardTop  + 'px';
-      el.style.transform = `translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
-      el.style.opacity   = opacity;
-      el.style.filter    = blur>0 ? `blur(${blur}px)` : 'none';
-      el.style.zIndex    = zIndex;
-    });
-    dots.forEach((d,i) => d.classList.toggle('active', i===current));
-  }
-
-  // stage resize 时重渲染
-  window.addEventListener('resize', render);
-
-  function goTo(idx) {
-    if(flipped.has(current)) unflip(current);
-    current = ((idx%N)+N)%N;
-    render();
-  }
-  function doFlip(i)  { flipped.add(i);    render(); }
-  function unflip(i)  { flipped.delete(i); render(); }
 
   // ── 拖拽（mousedown on stage）──────────────────────────────
   let dragStart=0, isDragging=false;
@@ -1294,7 +1299,7 @@ setTimeout(renderAllCards, 80);
     if(!isDragging) return;
     isDragging=false;
     const dx = ev.clientX - dragStart;
-    if(Math.abs(dx)>40) goTo(current+(dx<0?1:-1));
+    if(Math.abs(dx)>40) goTo(target+(dx<0?1:-1));
   });
 
   // ── 触控板 wheel（横向滑动）──────────────────────────────────
@@ -1302,28 +1307,28 @@ setTimeout(renderAllCards, 80);
   stage.addEventListener('wheel', ev => {
     ev.preventDefault();
     if(wheelLock) return;
-    // 取 deltaX 或 deltaY（触控板横滑两种情况都有）
     const dx = Math.abs(ev.deltaX) >= Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
     if(Math.abs(dx) < 15) return;
     wheelLock = true;
-    goTo(current + (dx > 0 ? 1 : -1));
+    goTo(target + (dx > 0 ? 1 : -1));
     setTimeout(() => { wheelLock = false; }, 500);
   }, {passive:false});
 
   // ── 触摸 ────────────────────────────────────────────────────
   let touchX0=0;
-  stage.addEventListener('touchstart', ev=>{ touchX0=ev.touches[0].clientX; },{passive:true});
+  stage.addEventListener('touchstart', ev=>{ touchX0=ev.touches[0].clientX; });
   stage.addEventListener('touchend',   ev=>{
     const dx=ev.changedTouches[0].clientX-touchX0;
-    if(Math.abs(dx)>40) goTo(current+(dx<0?1:-1));
+    if(Math.abs(dx)>40) goTo(target+(dx<0?1:-1));
   });
 
   // ── 键盘 ────────────────────────────────────────────────────
-  document.addEventListener('keydown', ev=>{
-    if(ev.key==='ArrowLeft')  goTo(current-1);
-    if(ev.key==='ArrowRight') goTo(current+1);
+  window.addEventListener('keydown', ev=>{
+    if(ev.key==='ArrowLeft')  goTo(target-1);
+    if(ev.key==='ArrowRight') goTo(target+1);
   });
 
+  window.addEventListener('resize', render);
   render();
 })();
 
