@@ -381,7 +381,6 @@
   position: absolute;
   width: 256px; height: 378px;
   top: 50%; left: 50%;
-  margin-top: -189px; margin-left: -128px;
   transform-style: preserve-3d;
   transition: transform .50s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
   cursor: pointer;
@@ -1248,7 +1247,7 @@ setTimeout(renderAllCards, 80);
       let pos = ((i - current + N + Math.round(N/2)) % N) - Math.round(N/2);
       const {x, z, scale, opacity, blur, zIndex} = layout(pos);
       const isFlipped = flipped.has(i);
-      el.style.transform = `translateX(${x}px) translateY(-8%) translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
+      el.style.transform = `translateX(calc(-128px + ${x}px)) translateY(-189px) translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
       el.style.opacity   = opacity;
       el.style.filter    = blur>0 ? `blur(${blur}px)` : 'none';
       el.style.zIndex    = zIndex;
