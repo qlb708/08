@@ -368,9 +368,10 @@
 .t3d-stage  {
   flex: 1; min-height: 0; width: 100%;
   position: relative;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: clamp(30px, 6%, 60px);
   perspective: 900px;
-  perspective-origin: 50% 50%;
+  perspective-origin: 50% 30%;
   cursor: grab;
   overflow: visible;
 }
@@ -379,7 +380,7 @@
 /* 单张卡牌容器 */
 .t3d-card {
   position: absolute;
-  width: 248px; height: 368px;
+  width: 256px; height: 378px;
   transform-style: preserve-3d;
   transition: transform .50s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
   cursor: pointer;
