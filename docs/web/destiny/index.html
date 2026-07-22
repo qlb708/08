@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔮 Product Destiny｜产品命理局</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#17121F;--card:#241C2E;--red:#E35D6A;--teal:#65C2B6;
+  --gold:#F2C879;--text:#F5F0E8;--card-border:rgba(245,240,232,0.12);
+}
+@font-face{font-family:'Serif';src:local('Noto Serif SC'),local('Source Han Serif SC'),local('SimSun'),local('STSong');font-display:swap}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:-apple-system,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;
+  position:relative;
+}
+.serif{font-family:'Serif','Noto Serif SC','Source Han Serif SC','SimSun','STSong',serif}
+/* BG particles */
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+/* Layout */
+.app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+.scene{display:none;animation:fadeIn .5s ease}
+.scene.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* Cards */
+.card{
+  background:var(--card);border:1px solid var(--card-border);border-radius:20px;
+  padding:28px 24px;backdrop-filter:blur(6px);
+  transition:transform .3s,box-shadow .3s;
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(100,60,140,0.25)}
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:12px 28px;border:none;border-radius:14px;cursor:pointer;
+  font-size:1rem;font-weight:600;transition:all .25s;
+}
+.btn-primary{background:var(--red);color:#fff}
+.btn-primary:hover{background:#c94d5a;transform:scale(1.03)}
+.btn-secondary{background:rgba(255,255,255,0.08);color:var(--text);border:1px solid var(--card-border)}
+.btn-secondary:hover{background:rgba(255,255,255,0.14)}
+.btn-gold{background:var(--gold);color:#1a1a1a}
+.btn-gold:hover{background:#e0b660}
+.btn-teal{background:var(--teal);color:#1a1a1a}
+.btn-teal:hover{background:#55b0a5}
+/* Input */
+.input-lg{
+  width:100%;padding:14px 20px;border-radius:14px;border:1px solid var(--card-border);
+  background:rgba(255,255,255,0.06);color:var(--text);font-size:1.05rem;
+  outline:none;transition:border .3s;
+}
+.input-lg:focus{border-color:var(--gold)}
+.input-lg::placeholder{color:rgba(245,240,232,0.35)}
+
+/* ===== SCENE 0: Landing ===== */
+.landing{text-align:center;padding-top:8vh}
+.landing h1{font-size:2.4rem;margin-bottom:8px;letter-spacing:2px}
+.landing .sub{color:rgba(245,240,232,0.6);font-size:1.05rem;margin-bottom:40px}
+.octagon-wrap{position:relative;width:280px;height:280px;margin:0 auto 36px}
+.octagon-wrap canvas{width:100%;height:100%}
+.oct-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:1.05rem;color:var(--gold);text-align:center;pointer-events:none;
+  width:120px;line-height:1.5;
+}
+.landing-input{max-width:420px;margin:0 auto 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.landing-input .input-lg{flex:1;min-width:220px}
+.landing-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+/* Fortune slip */
+.fortune-btn{
+  position:fixed;bottom:28px;right:28px;z-index:50;
+  background:var(--gold);color:#1a1a1a;border:none;border-radius:50%;
+  width:56px;height:56px;font-size:1.5rem;cursor:pointer;
+  box-shadow:0 4px 20px rgba(242,200,121,0.3);transition:transform .3s;
+}
+.fortune-btn:hover{transform:scale(1.1)}
+.modal-overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;
+  background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;
+}
+.modal-overlay.show{display:flex}
+.modal-box{
+  background:var(--card);border:1px solid var(--card-border);border-radius:20px;
+  padding:36px 32px;max-width:380px;width:90%;text-align:center;
+  animation:modalIn .4s ease;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+.modal-box .sign-level{font-size:1.3rem;font-weight:700;margin-bottom:12px}
+.modal-box .sign-text{font-size:1rem;line-height:1.7;color:rgba(245,240,232,0.8);margin-bottom:20px}
+
+/* ===== SCENE 1: Day Master ===== */
+.dm-title{text-align:center;margin-bottom:8px}
+.dm-title h2{font-size:1.7rem}
+.dm-title .sub{color:rgba(245,240,232,0.55);margin-top:6px}
+.dm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin:32px 0}
+.dm-card{
+  cursor:pointer;padding:22px 20px;border-radius:18px;
+  background:var(--card);border:2px solid transparent;
+  transition:all .3s;position:relative;
+}
+.dm-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(100,60,140,0.2)}
+.dm-card.selected{border-color:var(--gold);box-shadow:0 0 24px rgba(242,200,121,0.15)}
+.dm-card .emoji{font-size:2rem;margin-bottom:8px}
+.dm-card .name{font-size:1.15rem;font-weight:700;margin-bottom:4px}
+.dm-card .keywords{font-size:0.85rem;color:var(--teal);margin-bottom:6px}
+.dm-card .feel{font-size:0.85rem;color:rgba(245,240,232,0.55);line-height:1.5}
+.dm-footer{text-align:center;margin-top:24px}
+.dm-selected{
+  text-align:center;margin-top:20px;padding:14px;border-radius:14px;
+  background:rgba(242,200,121,0.08);color:var(--gold);font-weight:600;
+  display:none;
+}
+.dm-selected.show{display:block}
+
+/* ===== SCENE 2: Scoring ===== */
+.score-header{text-align:center;margin-bottom:20px}
+.score-header h2{font-size:1.5rem;margin-bottom:14px}
+.mode-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.mode-tab{
+  padding:8px 18px;border-radius:12px;cursor:pointer;
+  background:rgba(255,255,255,0.06);border:1px solid var(--card-border);
+  font-size:0.9rem;color:rgba(245,240,232,0.7);transition:all .25s;
+}
+.mode-tab.active{background:var(--gold);color:#1a1a1a;border-color:var(--gold);font-weight:600}
+.score-body{display:flex;gap:24px;margin-top:28px;flex-wrap:wrap}
+.radar-col{flex:0 0 320px;display:flex;align-items:center;justify-content:center}
+.radar-col canvas{width:320px;height:320px}
+.sliders-col{flex:1;min-width:280px}
+.slider-item{margin-bottom:18px}
+.slider-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:0.9rem}
+.slider-label .dim-name{font-weight:600}
+.slider-label .dim-val{color:var(--gold);font-weight:700;min-width:24px;text-align:right}
+.slider-meta{display:flex;justify-content:space-between;font-size:0.75rem;color:rgba(245,240,232,0.35);margin-bottom:2px}
+.slider-comment{font-size:0.8rem;color:var(--teal);margin-top:2px;min-height:1.2em}
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.1);outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--gold);cursor:pointer;border:2px solid var(--bg);
+}
+input[type=range]::-moz-range-thumb{
+  width:20px;height:20px;border-radius:50%;background:var(--gold);
+  cursor:pointer;border:2px solid var(--bg);
+}
+.score-footer{text-align:center;margin-top:28px}
+
+/* ===== SCENE 3: Result ===== */
+.result-overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;
+  background:#000;display:none;align-items:center;justify-content:center;
+}
+.result-overlay.show{display:flex}
+.result-overlay .gold-line{
+  width:0;height:2px;background:var(--gold);
+  animation:lineExpand 1.2s ease forwards;
+}
+@keyframes lineExpand{0%{width:0}60%{width:60vw}100%{width:60vw;opacity:0}}
+.result-content{animation:fadeIn .8s ease .8s both;max-width:1000px;width:95%;padding:20px 0}
+.result-grid{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:20px}
+@media(max-width:768px){.result-grid{grid-template-columns:1fr}}
+/* Left col */
+.id-card .product-name{font-size:2rem;font-weight:800;margin-bottom:4px}
+.id-card .meta{color:rgba(245,240,232,0.55);font-size:0.9rem;margin-bottom:16px}
+.id-card .stage{
+  display:inline-block;padding:4px 14px;border-radius:10px;
+  background:rgba(242,200,121,0.12);color:var(--gold);font-weight:600;
+  margin-bottom:12px;font-size:0.95rem;
+}
+.id-card .stars{font-size:1.3rem;letter-spacing:2px;margin-bottom:12px;color:var(--gold)}
+.id-card .yiji{font-size:0.9rem;line-height:1.8}
+.id-card .yi{color:var(--teal)}
+.id-card .ji{color:var(--red)}
+/* Mid col */
+.mid-col .reading{line-height:1.8;font-size:0.95rem;color:rgba(245,240,232,0.8);margin-bottom:20px}
+.flip-card{
+  perspective:600px;margin:16px 0 24px;cursor:pointer;
+}
+.flip-inner{
+  position:relative;transition:transform .6s;transform-style:preserve-3d;
+  min-height:80px;
+}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{
+  position:absolute;top:0;left:0;width:100%;backface-visibility:hidden;
+  border-radius:14px;padding:16px;font-size:0.9rem;line-height:1.7;
+}
+.flip-front{background:rgba(255,255,255,0.06);color:rgba(245,240,232,0.7)}
+.flip-back{
+  background:rgba(101,194,182,0.1);color:var(--teal);
+  transform:rotateY(180deg);
+}
+.flip-hint{font-size:0.75rem;color:rgba(245,240,232,0.35);margin-top:4px;text-align:right}
+/* Timeline */
+.timeline{display:flex;gap:0;margin:20px 0;position:relative;overflow-x:auto;padding-bottom:8px}
+.timeline::before{
+  content:'';position:absolute;top:14px;left:20px;right:20px;height:2px;
+  background:rgba(255,255,255,0.1);
+}
+.tl-node{
+  flex:1;text-align:center;position:relative;min-width:80px;
+}
+.tl-dot{
+  width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.2);
+  margin:8px auto 6px;position:relative;z-index:1;
+}
+.tl-node.current .tl-dot{
+  background:var(--gold);box-shadow:0 0 12px var(--gold);
+  animation:breathe 2s infinite;
+}
+@keyframes breathe{0%,100%{box-shadow:0 0 8px var(--gold)}50%{box-shadow:0 0 20px var(--gold)}}
+.tl-label{font-size:0.75rem;color:rgba(245,240,232,0.5)}
+.tl-node.current .tl-label{color:var(--gold);font-weight:600}
+/* Liunian */
+.liunian{margin-top:16px}
+.ln-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:0.9rem;border-bottom:1px solid rgba(255,255,255,0.05)}
+.ln-level{padding:2px 10px;border-radius:8px;font-size:0.8rem;font-weight:600}
+.ln-level.wang{background:rgba(227,93,106,0.15);color:var(--red)}
+.ln-level.zhong{background:rgba(242,200,121,0.15);color:var(--gold)}
+.ln-level.weak{background:rgba(255,255,255,0.08);color:rgba(245,240,232,0.5)}
+.ln-words{font-size:0.8rem;color:rgba(245,240,232,0.5);margin-top:10px;line-height:1.6;font-style:italic}
+/* Right col */
+.guiren-list,.xiaoren-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.tag{padding:5px 14px;border-radius:10px;font-size:0.85rem;font-weight:500}
+.tag-guiren{background:rgba(101,194,182,0.12);color:var(--teal);border:1px solid rgba(101,194,182,0.2)}
+.tag-xiaoren{background:rgba(227,93,106,0.12);color:var(--red);border:1px solid rgba(227,93,106,0.2)}
+/* Gaiming */
+.gaiming-btn{width:100%;margin-top:8px}
+.gaiming-result{
+  margin-top:16px;padding:16px;border-radius:14px;
+  background:rgba(242,200,121,0.06);display:none;
+  animation:fadeIn .5s ease;
+}
+.gaiming-result.show{display:block}
+.gaiming-result .gm-level{font-weight:700;font-size:1.05rem;margin-bottom:8px}
+.gaiming-result .gm-myth{font-size:0.9rem;line-height:1.7;color:rgba(245,240,232,0.7);margin-bottom:8px}
+.gaiming-result .gm-real{font-size:0.85rem;color:var(--teal);line-height:1.6}
+/* Seal */
+.seal{
+  display:inline-block;color:var(--red);border:3px solid var(--red);
+  padding:8px 14px;border-radius:8px;font-weight:900;font-size:1.1rem;
+  transform:rotate(-8deg);opacity:0;
+  animation:sealStamp .4s ease 1.6s forwards;
+}
+@keyframes sealStamp{
+  0%{opacity:0;transform:rotate(-8deg) scale(2)}
+  60%{opacity:1;transform:rotate(-8deg) scale(0.9)}
+  80%{transform:rotate(-8deg) scale(1.05)}
+  100%{opacity:1;transform:rotate(-8deg) scale(1)}
+}
+/* Shake animation for gaiming */
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  10%,30%,50%,70%,90%{transform:translateX(-4px)}
+  20%,40%,60%,80%{transform:translateX(4px)}
+}
+.shaking{animation:shake .5s ease}
+
+/* Responsive */
+@media(max-width:680px){
+  .landing h1{font-size:1.7rem}
+  .octagon-wrap{width:220px;height:220px}
+  .score-body{flex-direction:column}
+  .radar-col{flex:none;width:100%}
+  .radar-col canvas{width:260px;height:260px;margin:0 auto}
+  .dm-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<div class="app">
+  <!-- SCENE 0: Landing -->
+  <div class="scene active" id="scene0">
+    <div class="landing">
+      <h1 class="serif">🔮 Product Destiny｜产品命理局</h1>
+      <p class="sub">用八字的方式，看产品的命</p>
+      <div class="octagon-wrap">
+        <canvas id="octCanvas" width="560" height="560"></canvas>
+        <div class="oct-center serif">今日想给<br>谁算一卦？</div>
+      </div>
+      <div class="landing-input">
+        <input class="input-lg" id="productInput" placeholder="输入产品名称，例如：豆包、Perplexity、微信读书" maxlength="30">
+      </div>
+      <div class="landing-btns">
+        <button class="btn btn-primary" onclick="startReading()">开始排盘</button>
+        <button class="btn btn-secondary" onclick="randomProduct()">🎲 随机一个</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 1: Day Master -->
+  <div class="scene" id="scene1">
+    <div class="dm-title">
+      <h2 class="serif">产品没有出生时辰，但它有自己的核心命格</h2>
+      <p class="sub">先告诉我：你觉得它靠什么活着？</p>
+    </div>
+    <div class="dm-grid" id="dmGrid"></div>
+    <div class="dm-selected" id="dmSelected"></div>
+    <div class="dm-footer">
+      <button class="btn btn-secondary" onclick="randomDayMaster()" style="margin-bottom:12px">🎲 不确定，让系统替我判断</button>
+      <br>
+      <button class="btn btn-primary" id="dmNext" onclick="goScene(2)" style="display:none">下一步 →</button>
+    </div>
+  </div>
+
+  <!-- SCENE 2: Scoring -->
+  <div class="scene" id="scene2">
+    <div class="score-header">
+      <h2 class="serif">八维命盘打分</h2>
+      <div class="mode-tabs">
+        <div class="mode-tab" onclick="setMode(0)">✋ 我自己看</div>
+        <div class="mode-tab" onclick="setMode(1)">🤖 AI 帮我排</div>
+        <div class="mode-tab active" onclick="setMode(2)">⚖️ 人机合盘</div>
+      </div>
+    </div>
+    <div class="score-body">
+      <div class="radar-col"><canvas id="radarCanvas" width="640" height="640"></canvas></div>
+      <div class="sliders-col" id="slidersCol"></div>
+    </div>
+    <div class="score-footer">
+      <button class="btn btn-primary" onclick="openFortune()">开命书 →</button>
+    </div>
+  </div>
+
+  <!-- SCENE 3: Result -->
+  <div class="scene" id="scene3">
+    <div class="result-overlay" id="resultOverlay">
+      <div style="text-align:center">
+        <div class="gold-line" id="goldLine"></div>
+        <div class="result-content" id="resultContent" style="display:none">
+          <div style="text-align:center;margin-bottom:24px">
+            <div class="serif" style="font-size:1.5rem;color:var(--gold);margin-bottom:8px" id="rTitle"></div>
+            <div class="serif" style="font-size:1rem;color:rgba(245,240,232,0.5)" id="rSub"></div>
+          </div>
+          <div class="result-grid" id="resultGrid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fortune Modal -->
+<button class="fortune-btn" id="fortuneBtn" onclick="showFortune()">🎋</button>
+<div class="modal-overlay" id="fortuneModal" onclick="closeFortune(event)">
+  <div class="modal-box">
+    <div style="font-size:1.5rem;margin-bottom:12px">🎋</div>
+    <div class="sign-level" id="fortuneLevel"></div>
+    <div class="sign-text" id="fortuneText"></div>
+    <button class="btn btn-secondary" onclick="closeFortune()">知道了</button>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const PRODUCTS = ['ChatGPT','豆包','小红书','即梦','Lovable','Notion','微信读书','Duolingo','Keep','淘宝闪购'];
+const DAY_MASTERS = [
+  {id:'甲木',emoji:'🌳',name:'甲木型',desc:'生长型产品',keywords:'社区/内容/用户关系/长期积累',feel:'越多人使用，生态越茂盛'},
+  {id:'丙火',emoji:'🔥',name:'丙火型',desc:'注意力产品',keywords:'热点/娱乐/传播/情绪价值',feel:'靠被看见而生'},
+  {id:'戊土',emoji:'🏔️',name:'戊土型',desc:'基础设施产品',keywords:'稳定/工具/平台/信任',feel:'平时不起眼，但离不开'},
+  {id:'庚金',emoji:'⚡',name:'庚金型',desc:'效率工具产品',keywords:'快/准/自动化/替代人工',feel:'不讲感情，只解决问题'},
+  {id:'壬水',emoji:'🌊',name:'壬水型',desc:'信息流产品',keywords:'搜索/推荐/连接/信息分发',feel:'哪里有信息，它就流向哪里'},
+  {id:'癸水',emoji:'🌙',name:'癸水型',desc:'陪伴型AI产品',keywords:'对话/个性化/情绪/私人助理',feel:'看似轻柔，实际渗透生活'}
+];
+const DIMS = [
+  {name:'产品价值',low:'弱用',mid:'正用',high:'用旺（得众）'},
+  {name:'技术能力',low:'弱印',mid:'正印',high:'偏印过旺'},
+  {name:'用户增长',low:'微萌',mid:'增势稳',high:'势如破竹'},
+  {name:'内容传播',low:'食神隐',mid:'食神透',high:'伤官透出'},
+  {name:'商业化',low:'财弱',mid:'财平',high:'财旺'},
+  {name:'用户留存',low:'留存弱',mid:'留存稳',high:'黏性极强'},
+  {name:'竞争压力',low:'独行',mid:'比肩',high:'比劫成群'},
+  {name:'行业时机',low:'时运未至',mid:'时机尚可',high:'大势所趋'}
+];
+const AI_SCORES = [8,7,6,7,4,5,8,9];
+const FORTUNES = [
+  {level:'上上签',text:'不要再加功能，真正的问题在首次使用。'},
+  {level:'上签',text:'用户不是不需要，只是不知道该从哪里开始。'},
+  {level:'中签',text:'本周宜优化转化，不宜讨论品牌升级。'},
+  {level:'下签',text:'数据看起来增长，可能只是入口曝光变多。'},
+  {level:'下下签',text:'需求不是需求，是老板的一句话。'}
+];
+const GUAREN_MAP = {
+  '甲木':['好雨知时','春风化雨','厚土培根','阳光普照'],
+  '丙火':['木柴充足','东风助势','聚光灯','舞台搭建'],
+  '戊土':['基石稳固','供应链强','合规支持','长线资金'],
+  '庚金':['数据驱动','自动化工具','精准需求','效率专家'],
+  '壬水':['信息源丰富','算法优化','跨界连接','开源社区'],
+  '癸水':['情感数据','个性化引擎','隐私保护','用户信任']
+};
+const GAIMING = [
+  {level:'上签',myth:'天干透财，贵人暗助。',real:'找到核心用户，做一次深度访谈，胜过十次头脑风暴。'},
+  {level:'中签',myth:'运势平稳，宜守不宜攻。',real:'先把现有功能打磨好，别急着开新坑。'},
+  {level:'下签',myth:'比劫争财，口舌纷扰。',real:'内部对齐优先级，停止同时推进五条产品线。'},
+  {level:'上上签',myth:'食神生财，万事亨通。',real:'现在是最好的时机，大胆发布，快速迭代。'},
+  {level:'下下签',myth:'印旺身弱，力不从心。',real:'团队过载了，砍需求比加需求更重要。'},
+  {level:'上签',myth:'偏印逢合，灵感突现。',real:'让一线同学参与决策，最好的想法往往来自最近距离。'},
+  {level:'中签',myth:'七杀临身，压力即动力。',real:'竞品动态值得关注，但不要因焦虑而失去节奏。'}
+];
+
+// ===== STATE =====
+let productName = '';
+let selectedDM = -1;
+let scores = [5,5,5,5,5,5,5,5];
+let currentMode = 2;
+let octAngle = 0;
+let mouseX = 0.5, mouseY = 0.5;
+
+// ===== BG CANVAS =====
+const bgC = document.getElementById('bgCanvas');
+const bgCtx = bgC.getContext('2d');
+let bgParticles = [];
+function initBg(){
+  bgC.width = window.innerWidth;
+  bgC.height = window.innerHeight;
+  bgParticles = [];
+  for(let i=0;i<60;i++){
+    bgParticles.push({
+      x:Math.random()*bgC.width, y:Math.random()*bgC.height,
+      r:Math.random()*1.5+0.5, a:Math.random()*0.3+0.1,
+      dx:(Math.random()-0.5)*0.2, dy:(Math.random()-0.5)*0.2
+    });
+  }
+}
+function drawBg(){
+  bgCtx.clearRect(0,0,bgC.width,bgC.height);
+  // grid lines
+  bgCtx.strokeStyle='rgba(245,240,232,0.02)';
+  bgCtx.lineWidth=0.5;
+  for(let i=0;i<bgC.width;i+=60){bgCtx.beginPath();bgCtx.moveTo(i,0);bgCtx.lineTo(i,bgC.height);bgCtx.stroke();}
+  for(let i=0;i<bgC.height;i+=60){bgCtx.beginPath();bgCtx.moveTo(0,i);bgCtx.lineTo(bgC.width,i);bgCtx.stroke();}
+  // particles
+  const mx = mouseX*bgC.width, my = mouseY*bgC.height;
+  bgParticles.forEach(p=>{
+    p.x+=p.dx; p.y+=p.dy;
+    if(p.x<0)p.x=bgC.width; if(p.x>bgC.width)p.x=0;
+    if(p.y<0)p.y=bgC.height; if(p.y>bgC.height)p.y=0;
+    const ddx=p.x-mx, ddy=p.y-my;
+    const dist=Math.sqrt(ddx*ddx+ddy*ddy);
+    const offX = dist<200 ? ddx/dist*8 : 0;
+    const offY = dist<200 ? ddy/dist*8 : 0;
+    bgCtx.beginPath();
+    bgCtx.arc(p.x+offX,p.y+offY,p.r,0,Math.PI*2);
+    bgCtx.fillStyle=`rgba(242,200,121,${p.a})`;
+    bgCtx.fill();
+  });
+  requestAnimationFrame(drawBg);
+}
+window.addEventListener('mousemove',e=>{mouseX=e.clientX/window.innerWidth;mouseY=e.clientY/window.innerHeight});
+window.addEventListener('resize',initBg);
+initBg(); drawBg();
+
+// ===== OCTAGON CANVAS =====
+const octC = document.getElementById('octCanvas');
+const octCtx = octC.getContext('2d');
+const OCT_LABELS = ['用户','技术','内容','增长','商业','竞争','时机','生态'];
+function drawOct(){
+  octCtx.clearRect(0,0,560,560);
+  const cx=280,cy=280,r=200;
+  octCtx.save();
+  octCtx.translate(cx,cy);
+  octCtx.rotate(octAngle);
+  // outer
+  octCtx.beginPath();
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2/8*i-Math.PI/2;
+    const x=Math.cos(a)*r, y=Math.sin(a)*r;
+    i===0?octCtx.moveTo(x,y):octCtx.lineTo(x,y);
+  }
+  octCtx.closePath();
+  octCtx.strokeStyle='rgba(242,200,121,0.25)';
+  octCtx.lineWidth=1.5;
+  octCtx.stroke();
+  // inner circles
+  for(let s=0.3;s<=0.9;s+=0.3){
+    octCtx.beginPath();
+    for(let i=0;i<8;i++){
+      const a=Math.PI*2/8*i-Math.PI/2;
+      const x=Math.cos(a)*r*s, y=Math.sin(a)*r*s;
+      i===0?octCtx.moveTo(x,y):octCtx.lineTo(x,y);
+    }
+    octCtx.closePath();
+    octCtx.strokeStyle='rgba(245,240,232,0.06)';
+    octCtx.lineWidth=0.5;
+    octCtx.stroke();
+  }
+  // spokes
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2/8*i-Math.PI/2;
+    octCtx.beginPath();
+    octCtx.moveTo(0,0);
+    octCtx.lineTo(Math.cos(a)*r,Math.sin(a)*r);
+    octCtx.strokeStyle='rgba(245,240,232,0.06)';
+    octCtx.stroke();
+  }
+  octCtx.restore();
+  // labels (not rotated)
+  octCtx.font='600 13px sans-serif';
+  octCtx.fillStyle='rgba(245,240,232,0.55)';
+  octCtx.textAlign='center';
+  octCtx.textBaseline='middle';
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2/8*i-Math.PI/2;
+    const lx=cx+Math.cos(a)*(r+28);
+    const ly=cy+Math.sin(a)*(r+28);
+    octCtx.fillText(OCT_LABELS[i],lx,ly);
+  }
+  octAngle+=0.003;
+  requestAnimationFrame(drawOct);
+}
+drawOct();
+
+// ===== SCENES =====
+function goScene(n){
+  document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scene'+n).classList.add('active');
+  if(n===2) initSliders();
+  if(n===3) showResult();
+}
+
+// ===== LANDING =====
+function randomProduct(){
+  document.getElementById('productInput').value=PRODUCTS[Math.floor(Math.random()*PRODUCTS.length)];
+}
+function startReading(){
+  const v=document.getElementById('productInput').value.trim();
+  if(!v){document.getElementById('productInput').focus();return}
+  productName=v;
+  goScene(1);
+}
+
+// ===== FORTUNE MODAL =====
+function showFortune(){
+  const f=FORTUNES[Math.floor(Math.random()*FORTUNES.length)];
+  document.getElementById('fortuneLevel').textContent=f.level;
+  document.getElementById('fortuneLevel').style.color=
+    f.level.includes('上上')?'var(--gold)':f.level.includes('上')?'var(--teal)':
+    f.level==='中签'?'var(--text)':f.level.includes('下下')?'var(--red)':'var(--red)';
+  document.getElementById('fortuneText').textContent=f.text;
+  document.getElementById('fortuneModal').classList.add('show');
+}
+function closeFortune(e){
+  if(e && e.target!==e.currentTarget && !e.target.closest('.btn')) return;
+  document.getElementById('fortuneModal').classList.remove('show');
+}
+
+// ===== DAY MASTER =====
+function initDM(){
+  const grid=document.getElementById('dmGrid');
+  grid.innerHTML='';
+  DAY_MASTERS.forEach((dm,i)=>{
+    const d=document.createElement('div');
+    d.className='dm-card';
+    d.innerHTML=`<div class="emoji">${dm.emoji}</div>
+      <div class="name serif">${dm.name}</div>
+      <div class="keywords">${dm.desc}</div>
+      <div class="feel">${dm.keywords}<br>感觉：${dm.feel}</div>`;
+    d.onclick=()=>selectDM(i);
+    grid.appendChild(d);
+  });
+}
+function selectDM(i){
+  selectedDM=i;
+  document.querySelectorAll('.dm-card').forEach((c,j)=>c.classList.toggle('selected',j===i));
+  const dm=DAY_MASTERS[i];
+  const sel=document.getElementById('dmSelected');
+  sel.textContent='日主：'+dm.id+' · '+dm.desc+'产品';
+  sel.classList.add('show');
+  document.getElementById('dmNext').style.display='inline-flex';
+}
+function randomDayMaster(){selectDM(Math.floor(Math.random()*6))}
+initDM();
+
+// ===== SCORING =====
+function initSliders(){
+  const col=document.getElementById('slidersCol');
+  col.innerHTML='';
+  if(currentMode===1){scores=[...AI_SCORES]}
+  else if(currentMode===2){scores=[...AI_SCORES]}
+  else{scores=[5,5,5,5,5,5,5,5]}
+  DIMS.forEach((dim,i)=>{
+    const val=scores[i];
+    const comment=getComment(i,val);
+    const div=document.createElement('div');
+    div.className='slider-item';
+    div.innerHTML=`
+      <div class="slider-label"><span class="dim-name">${dim.name}</span><span class="dim-val" id="sv${i}">${val}</span></div>
+      <div class="slider-meta"><span>${dim.low}</span><span>${dim.mid}</span><span>${dim.high}</span></div>
+      <input type="range" min="1" max="10" value="${val}" id="sr${i}" oninput="updateSlider(${i})">
+      <div class="slider-comment" id="sc${i}">${comment}</div>`;
+    col.appendChild(div);
+  });
+  drawRadar();
+}
+function setMode(m){
+  currentMode=m;
+  document.querySelectorAll('.mode-tab').forEach((t,j)=>t.classList.toggle('active',j===m));
+  initSliders();
+}
+function getComment(i,v){
+  const comments=[
+    ['用户视而不见','有一定需求基础','刚需，众人追捧'],
+    ['技术薄弱','技术扎实','技术过度，反成负担'],
+    ['增长乏力','稳步上升','势不可挡'],
+    ['无人问津','口碑传播','出圈爆款'],
+    ['入不敷出','收支平衡','财源广进'],
+    ['来去自如','稳定留存','铁杆用户'],
+    ['无竞对','群雄并起','红海厮杀'],
+    ['时机不对','窗口期','风口之上']
+  ];
+  const idx=v<=3?0:v<=7?1:2;
+  return comments[i][idx];
+}
+function updateSlider(i){
+  const v=parseInt(document.getElementById('sr'+i).value);
+  scores[i]=v;
+  document.getElementById('sv'+i).textContent=v;
+  document.getElementById('sc'+i).textContent=getComment(i,v);
+  drawRadar();
+}
+function drawRadar(){
+  const c=document.getElementById('radarCanvas');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  const cx=320,cy=320,maxR=240;
+  ctx.clearRect(0,0,640,640);
+  // bg octagons
+  for(let s=0.25;s<=1;s+=0.25){
+    ctx.beginPath();
+    for(let i=0;i<8;i++){
+      const a=Math.PI*2/8*i-Math.PI/2;
+      const x=cx+Math.cos(a)*maxR*s, y=cy+Math.sin(a)*maxR*s;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle='rgba(245,240,232,0.08)';
+    ctx.lineWidth=1;
+    ctx.stroke();
+  }
+  // spokes
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2/8*i-Math.PI/2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(a)*maxR,cy+Math.sin(a)*maxR);
+    ctx.strokeStyle='rgba(245,240,232,0.06)';
+    ctx.stroke();
+  }
+  // data polygon
+  ctx.beginPath();
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2/8*i-Math.PI/2;
+    const r=maxR*(scores[i]/10);
+    const x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle='rgba(227,93,106,0.15)';
+  ctx.fill();
+  ctx.strokeStyle='rgba(227,93,106,0.7)';
+  ctx.lineWidth=2;
+  ctx.stroke();
+  // dots
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2/8*i-Math.PI/2;
+    const r=maxR*(scores[i]/10);
+    const x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r;
+    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle='var(--red)';ctx.fillStyle='#E35D6A';ctx.fill();
+  }
+  // labels
+  ctx.font='600 13px sans-serif';
+  ctx.fillStyle='rgba(245,240,232,0.6)';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2/8*i-Math.PI/2;
+    ctx.fillText(DIMS[i].name,cx+Math.cos(a)*(maxR+24),cy+Math.sin(a)*(maxR+24));
+  }
+}
+
+// ===== RESULT =====
+function getPattern(s){
+  if(s[1]>=8 && s[3]>=7) return '偏印伤官格';
+  if(s[3]>=8 && s[5]>=8) return '食神生财格';
+  if(s[4]>=8 && s[5]>=7) return '财官双美格';
+  if(s[2]>=8 && s[5]<=4) return '火旺土虚格';
+  if(s[1]>=8 && s[0]<=5) return '印旺身弱格';
+  if(s[6]>=8 && s[4]<=5) return '比劫夺财格';
+  return '中和稳命格';
+}
+function getStage(total){
+  if(total>=70) return '少年得志';
+  if(total>=55) return '厚积薄发';
+  if(total>=40) return '蓄势待发';
+  return '命途多舛';
+}
+function getStars(total){
+  const n=Math.round(total/80*5);
+  return '★'.repeat(n)+'☆'.repeat(5-n);
+}
+function showResult(){
+  const overlay=document.getElementById('resultOverlay');
+  overlay.classList.add('show');
+  overlay.style.display='flex';
+  const line=document.getElementById('goldLine');
+  const content=document.getElementById('resultContent');
+  line.style.display='block';
+  content.style.display='none';
+  setTimeout(()=>{
+    line.style.display='none';
+    content.style.display='block';
+    buildResult();
+  },1400);
+}
+function buildResult(){
+  const dm=DAY_MASTERS[selectedDM>=0?selectedDM:0];
+  const pattern=getPattern(scores);
+  const total=scores.reduce((a,b)=>a+b,0);
+  const stage=getStage(total);
+  const stars=getStars(total);
+  const maxI=scores.indexOf(Math.max(...scores));
+  const minI=scores.indexOf(Math.min(...scores));
+  
+  document.getElementById('rTitle').textContent='🔮 '+productName+' 产品命书';
+  document.getElementById('rSub').innerHTML=dm.id+' · '+pattern+' <span class="seal serif">命定如此</span>';
+
+  // Liunian levels
+  const lnLevels = (v) => v>=7?'旺':v>=4?'中':'弱';
+  const lnClass = (v) => v>=7?'wang':v>=4?'zhong':'weak';
+
+  // Reading text
+  const readingText = `${dm.id}之${productName}，${dm.desc}也。${
+    pattern==='偏印伤官格'?'技术精湛，传播力强，偏印伤官成格，才华横溢但需防过度消耗。':
+    pattern==='食神生财格'?'内容出众，用户黏性高，食神生财，自然运转，是上等格局。':
+    pattern==='财官双美格'?'商业化成熟，留存稳固，财官双美，经营有道。':
+    pattern==='火旺土虚格'?'增长迅猛但留存堪忧，火旺土虚，需补根基。':
+    pattern==='印旺身弱格'?'技术实力强但产品价值未显，印旺身弱，需找准用户。':
+    pattern==='比劫夺财格'?'竞争激烈且商业化不足，比劫夺财，需差异化突围。':
+    '五行均衡，中和稳健，不偏不倚，是可长久经营的格局。'
+  }`;
+  const plainText = `「翻译成人话」：这个产品${
+    pattern==='偏印伤官格'?'技术很强、传播也不差，但要注意别只顾着炫技，真正用好的人才是关键。':
+    pattern==='食神生财格'?'内容和留存都做得好，用户愿意留下来，商业化也水到渠成。':
+    pattern==='财官双美格'?'赚钱能力不错，用户也稳定，是个健康的产品。':
+    pattern==='火旺土虚格'?'增长快但留不住人，得回头看看产品本身是不是真解决问题。':
+    pattern==='印旺身弱格'?'技术很牛，但用户不一定买账，需要更贴近需求。':
+    pattern==='比劫夺财格'?'竞争太激烈了，而且赚钱模式还不够清晰，得赶紧找差异化。':
+    '各方面比较均衡，没有明显短板，稳扎稳打就好。'
+  }`;
+
+  // Guiren
+  const guiren=GUAREN_MAP[dm.id]||GUAREN_MAP['壬水'];
+  // Xiaoren based on lowest dim
+  const xiaorenNames=['产品力弱','技术不足','增长停滞','传播乏力','变现困难','用户流失','竞争白热化','时机不佳'];
+  const xiaoren=[];
+  xiaoren.push(xiaorenNames[minI]);
+  if(scores[minI]<=3){
+    const sorted=scores.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
+    xiaoren.push(xiaorenNames[sorted[1].i]);
+  }
+  xiaoren.push('团队分歧','预算紧缩');
+
+  const grid=document.getElementById('resultGrid');
+  grid.innerHTML=`
+  <!-- LEFT -->
+  <div class="card id-card">
+    <div class="product-name serif">${productName}</div>
+    <div class="meta">${dm.id} · ${dm.emoji} ${dm.desc} · ${pattern}</div>
+    <div class="stage">${stage}</div>
+    <div class="stars">${stars}</div>
+    <div class="yiji">
+      <div class="yi">宜：${DIMS[maxI].name}——${getComment(maxI,scores[maxI])}</div>
+      <div class="ji">忌：${DIMS[minI].name}——${getComment(minI,scores[minI])}</div>
+    </div>
+    <div style="margin-top:16px;font-size:0.85rem;color:rgba(245,240,232,0.4)">总分：${total}/80</div>
+  </div>
+  <!-- MID -->
+  <div class="card mid-col">
+    <h3 class="serif" style="margin-bottom:10px">📜 先天命格</h3>
+    <div class="reading">${readingText}</div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner" style="position:relative;min-height:90px">
+        <div class="flip-front">${plainText}<br><span style="font-size:0.75rem;color:rgba(245,240,232,0.3)">点击翻转</span></div>
+        <div class="flip-back">💡 ${plainText.replace('「翻译成人话」：','')}</div>
+      </div>
+      <div class="flip-hint">👆 点击翻转</div>
+    </div>
+    <h3 class="serif" style="margin-bottom:6px">🕐 大运时间轴</h3>
+    <div class="timeline">
+      ${['萌芽运','出圈运','争位运','生财运','守成运'].map((n,i)=>
+        `<div class="tl-node${i===2?' current':''}"><div class="tl-dot"></div><div class="tl-label">${n}</div></div>`
+      ).join('')}
+    </div>
+    <h3 class="serif" style="margin:16px 0 8px">📅 流年 2026</h3>
+    <div class="liunian">
+      <div class="ln-row"><span>天时</span><span class="ln-level ${lnClass(scores[7])}">${lnLevels(scores[7])}</span></div>
+      <div class="ln-row"><span>地利</span><span class="ln-level ${lnClass(scores[1])}">${lnLevels(scores[1])}</span></div>
+      <div class="ln-row"><span>人和</span><span class="ln-level ${lnClass(scores[0])}">${lnLevels(scores[0])}</span></div>
+      <div class="ln-words">
+        ${scores[7]>=7?'天时已到，顺势而为。':scores[7]>=4?'时机尚可，稳步前行。':'时机未到，韬光养晦。'}
+        ${scores[1]>=7?'技术壁垒是最大护城河。':scores[1]>=4?'技术够用，但需持续投入。':'技术是短板，需补强。'}
+        ${scores[0]>=7?'用户基础扎实，可乘势扩张。':scores[0]>=4?'用户有需求，但需更精准的触达。':'用户价值尚未充分验证。'}
+      </div>
+    </div>
+  </div>
+  <!-- RIGHT -->
+  <div class="card">
+    <h3 class="serif" style="margin-bottom:10px;color:var(--teal)">🤝 贵人</h3>
+    <div class="guiren-list">
+      ${guiren.map(g=>`<span class="tag tag-guiren">${g}</span>`).join('')}
+    </div>
+    <h3 class="serif" style="margin-bottom:10px;color:var(--red)">👹 小人</h3>
+    <div class="xiaoren-list">
+      ${xiaoren.slice(0,4).map(x=>`<span class="tag tag-xiaoren">${x}</span>`).join('')}
+    </div>
+    <h3 class="serif" style="margin:16px 0 8px">🎋 改命签</h3>
+    <button class="btn btn-gold gaiming-btn" id="gaimingBtn" onclick="drawGaiming()">抽一支改命签</button>
+    <div class="gaiming-result" id="gaimingResult"></div>
+  </div>`;
+}
+function drawGaiming(){
+  const btn=document.getElementById('gaimingBtn');
+  const res=document.getElementById('gaimingResult');
+  btn.classList.add('shaking');
+  res.classList.remove('show');
+  setTimeout(()=>{
+    btn.classList.remove('shaking');
+    const g=GAIMING[Math.floor(Math.random()*GAIMING.length)];
+    res.innerHTML=`
+      <div class="gm-level" style="color:${g.level.includes('上')?'var(--gold)':g.level.includes('下')?'var(--red)':'var(--text)'}">${g.level}</div>
+      <div class="gm-myth serif">${g.myth}</div>
+      <div class="gm-real">🗣 ${g.real}</div>`;
+    res.classList.add('show');
+  },600);
+}
+</script>
+</body>
+</html>
