@@ -368,10 +368,9 @@
 .t3d-stage  {
   flex: 1; min-height: 0; width: 100%;
   position: relative;
-  display: flex; align-items: flex-start; justify-content: center;
-  padding-top: clamp(30px, 6%, 60px);
+  display: flex; align-items: center; justify-content: center;
   perspective: 900px;
-  perspective-origin: 50% 30%;
+  perspective-origin: 50% 50%;
   cursor: grab;
   overflow: visible;
 }
@@ -381,6 +380,8 @@
 .t3d-card {
   position: absolute;
   width: 256px; height: 378px;
+  top: 50%; left: 50%;
+  margin-top: -189px; margin-left: -128px;
   transform-style: preserve-3d;
   transition: transform .50s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
   cursor: pointer;
@@ -1247,7 +1248,7 @@ setTimeout(renderAllCards, 80);
       let pos = ((i - current + N + Math.round(N/2)) % N) - Math.round(N/2);
       const {x, z, scale, opacity, blur, zIndex} = layout(pos);
       const isFlipped = flipped.has(i);
-      el.style.transform = `translateX(${x}px) translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
+      el.style.transform = `translateX(${x}px) translateY(-8%) translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
       el.style.opacity   = opacity;
       el.style.filter    = blur>0 ? `blur(${blur}px)` : 'none';
       el.style.zIndex    = zIndex;
