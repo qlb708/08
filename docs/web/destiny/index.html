@@ -490,7 +490,7 @@ animation:slideUp 0.4s ease;
 <p class="dayzhu-recommend" id="dzRecommend"></p>
 <div class="dayzhu-grid" id="dzGrid"></div>
 <div style="margin-top:clamp(16px,2vh,30px)">
-<button class="btn btn-primary" id="dzConfirm" onclick="confirmDayzhu()" style="display:none">确认日主 →</button>
+<!-- dzConfirm removed -->
 </div>
 </div>
 <div class="dayzhu-stamp" id="dzStamp">
@@ -1238,13 +1238,16 @@ function selectDayzhu(key,el){
 state.dayzhu=key;
 document.querySelectorAll('.dayzhu-card').forEach(c=>c.classList.remove('selected'));
 el.classList.add('selected');
-document.getElementById('dzConfirm').style.display='inline-flex';
 
 const dz=DAYZHU_DATA.find(d=>d.key===key);
 document.getElementById('dzStampText').textContent=`${dz.name} · 日主已定`;
 const stamp=document.getElementById('dzStamp');
 stamp.classList.add('show');
-setTimeout(()=>{stamp.classList.remove('show')},1800);
+// 自动跳到打分页，不需要手动确认
+setTimeout(()=>{
+stamp.classList.remove('show');
+showScene(4);initScoring();
+},1200);
 }
 
 function confirmDayzhu(){
