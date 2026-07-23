@@ -3,443 +3,1226 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>智能打印助手 · 产品运营工具集</title>
+<title>智能混合打印 Skill · 产品运营工具集</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#fff;--bg2:#fafafa;--blue:#4f46e5;--blue-dark:#3730a3;
-  --blue-light:rgba(79,70,229,.08);--blue-border:rgba(79,70,229,.2);
-  --text:#0f0f23;--soft:#6b7280;--muted:#9ca3af;
-  --bd:rgba(0,0,0,.07);--sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
-  --r:16px;--pill:999px;--font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+  --bg:#F5F4F1;--bg2:#EDECEA;--card:#fff;
+  --ink:#20242C;--ink2:#2D3440;--ink3:#4A5060;
+  --soft:#6B7280;--muted:#9CA3AF;--light:#C8CCD4;
+  --bd:rgba(32,36,44,.08);--bd2:rgba(32,36,44,.12);
+  --ai:#6E72E8;--ai2:#8D8FF2;--ai-bg:rgba(110,114,232,.06);--ai-bd:rgba(110,114,232,.18);
+  --save:#87A88F;--save-bg:rgba(135,168,143,.08);--save-bd:rgba(135,168,143,.2);
+  --cyan:#00BCD4;--magenta:#E91E63;--yellow:#FFC107;--key:#333;
+  --color-badge:#E85D5D;--bw-badge:#6B7280;--confirm-badge:#D4A000;
+  --sh:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.03);
+  --sh2:0 2px 8px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.04);
+  --r:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
 }
-body{font-family:var(--font);background:var(--bg2);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh;line-height:1.6;
+  background-image:url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='.5' fill='%23000' opacity='.015'/%3E%3C/svg%3E")}
 a{text-decoration:none;color:inherit}
-nav{position:fixed;top:0;inset-x:0;height:52px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
+
+/* Nav */
+nav{position:fixed;top:0;inset:0;height:52px;background:rgba(245,244,241,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);z-index:100;display:flex;align-items:center}
 .nw{max-width:1200px;margin:0 auto;padding:0 32px;width:100%;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:16px;font-weight:800;letter-spacing:-.02em}
-.logo em{color:var(--blue);font-style:normal}
 .back{display:flex;align-items:center;gap:5px;font-size:14px;color:var(--soft);transition:color .2s}
-.back:hover{color:var(--text)}
-.back svg{width:16px;height:16px;flex-shrink:0}.nav-tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill)}
-.hero{padding:70px 32px 16px;max-width:1200px;margin:0 auto}
-.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px}.tool-num{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em}.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);background:var(--blue-light);border:1px solid var(--blue-border);padding:4px 12px;border-radius:var(--pill);margin-bottom:10px}
-.hero h1{font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
-.hero p{font-size:14px;color:var(--soft)}
-.ws{max-width:1200px;margin:0 auto;padding:8px 32px 80px;display:grid;grid-template-columns:400px 1fr;gap:16px;align-items:start}
-.panel{background:#fff;border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
-.ip{position:sticky;top:60px}
-.ph{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
-.pi{width:28px;height:28px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.pi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pt{font-size:13px;font-weight:700}
-.ps{font-size:11px;color:var(--soft)}
-.pb{padding:16px}
-.f{margin-bottom:13px}
-.f label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
-.fn{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
-.f input[type=number]{width:100%;padding:8px 11px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
-.f input[type=number]:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light);background:#fff}
-.price-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.back:hover{color:var(--ink)}
+.back svg{width:16px;height:16px;flex-shrink:0}
+.nav-tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ai);background:var(--ai-bg);border:1px solid var(--ai-bd);padding:4px 12px;border-radius:var(--pill)}
 
-/* 上传区 */
-.drop-zone{border:2px dashed var(--bd);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2);position:relative;margin-bottom:13px}
-.drop-zone:hover,.drop-zone.drag{border-color:var(--blue);background:var(--blue-light)}
-.drop-zone svg{width:32px;height:32px;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:8px}
-.drop-zone .dz-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
-.drop-zone .dz-sub{font-size:11px;color:var(--soft)}
-.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.drop-zone.has-file{border-color:var(--blue);background:var(--blue-light)}
-.drop-zone.has-file svg{stroke:var(--blue)}
-.drop-zone.has-file .dz-title{color:var(--blue)}
+/* Hero */
+.hero{padding:80px 32px 48px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.hero-left h1{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.2;margin-bottom:12px}
+.hero-left h1 span{color:var(--ai)}
+.hero-sub{font-size:15px;color:var(--ink3);line-height:1.7;margin-bottom:20px;max-width:440px}
+.hero-tags{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.hero-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--ink3);background:var(--card);border:1px solid var(--bd2);padding:6px 14px;border-radius:var(--pill)}
+.hero-tag svg{width:14px;height:14px;stroke:var(--ai);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:var(--pill);background:var(--ink);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:all .2s}
+.btn-primary:hover{background:var(--ink2);transform:translateY(-1px)}
+.btn-primary svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:var(--pill);background:var(--card);color:var(--ink);font-size:14px;font-weight:600;border:1.5px solid var(--bd2);cursor:pointer;font-family:var(--font);transition:all .2s}
+.btn-secondary:hover{border-color:var(--ai-bd);color:var(--ai)}
+.hero-assist{font-size:12px;color:var(--muted);margin-top:12px}
 
-/* 文件类型说明 */
-.file-types{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px}
-.ft{padding:3px 9px;border-radius:var(--pill);background:var(--bg2);border:1px solid var(--bd);font-size:11px;color:var(--soft);font-weight:600}
+/* Printer Animation */
+.hero-right{display:flex;justify-content:center;align-items:center;min-height:320px}
+.printer-demo{position:relative;width:340px;height:300px}
+.printer-body{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);width:200px;height:80px;background:var(--ink);border-radius:12px 12px 8px 8px;display:flex;align-items:center;justify-content:center}
+.printer-slot{width:160px;height:6px;background:var(--ink2);border-radius:3px;position:relative;overflow:hidden}
+.printer-slot::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,var(--ai),transparent);animation:scanSlot 2s infinite}
+.printer-output{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);width:140px;height:4px;background:var(--light);border-radius:2px}
+.printer-label{position:absolute;bottom:50px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.1em;white-space:nowrap}
 
-.gbtn{width:auto;min-width:180px;margin-top:8px;padding:13px 24px;border-radius:var(--pill);background:#0D0D0D;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:none;transition:all .2s}
-.gbtn:hover:not(:disabled){background:#333;transform:translateY(-1px)}
-.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.gbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+/* Pages in animation */
+.ani-pages{position:absolute;top:20px;left:50%;transform:translateX(-50%);display:flex;gap:3px;perspective:600px}
+.ani-page{width:20px;height:28px;border-radius:2px;background:#fff;border:1px solid var(--bd2);transition:all .3s;position:relative}
+.ani-page.scanning{border-color:var(--ai);box-shadow:0 0 8px rgba(110,114,232,.3)}
+.ani-page.is-color{background:linear-gradient(135deg,#fff 70%,var(--cyan) 70%);border-color:var(--cyan)}
+.ani-page.is-color::after{content:'';position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--magenta)}
+.ani-page.is-bw{background:#e8e8e8;border-color:#ccc}
 
-.op{min-height:480px;display:flex;flex-direction:column}
-.ob{flex:1;padding:20px;overflow-y:auto}
+.ani-result{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap;opacity:0;transition:opacity .5s}
+.ani-result.show{opacity:1}
 
-/* 费用摘要卡 */
-.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;background:var(--bg2);border-radius:12px;padding:16px;margin-bottom:16px}
-.sum-item .sum-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:3px}
-.sum-item .sum-val{font-size:22px;font-weight:800}
-.save-badge{background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.2);border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:16px}
-.save-badge strong{color:#34c759}
+@keyframes scanSlot{0%{left:-60%}100%{left:100%}}
+@keyframes pageFeed{0%{transform:translateY(0);opacity:1}50%{transform:translateY(30px);opacity:.6}100%{transform:translateY(0);opacity:1}}
 
-/* 建议表格 */
-.rec-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px}
-.rec-table th{background:var(--bg2);padding:7px 10px;text-align:left;font-weight:600;border:1px solid var(--bd);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--soft)}
-.rec-table td{padding:7px 10px;border:1px solid var(--bd);vertical-align:middle}
-.badge-color{display:inline-flex;align-items:center;gap:4px;background:rgba(255,59,48,.08);color:#ff3b30;border:1px solid rgba(255,59,48,.2);padding:2px 8px;border-radius:var(--pill);font-weight:700;font-size:11px}
-.badge-bw{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);color:var(--soft);border:1px solid var(--bd);padding:2px 8px;border-radius:var(--pill);font-weight:700;font-size:11px}
+@media(prefers-reduced-motion:reduce){
+  .printer-slot::after,.ani-page,.ani-result{animation:none!important;transition:none!important}
+}
 
-/* AI建议 */
-.ai-tip{background:var(--blue-light);border:1px solid var(--blue-border);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.7;margin-top:4px}
-.ai-tip strong{color:var(--blue)}
+/* Section shared */
+.section{padding:64px 32px;max-width:1200px;margin:0 auto}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ai);margin-bottom:8px}
+.section-title{font-size:clamp(20px,2.5vw,28px);font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.section-desc{font-size:14px;color:var(--soft);max-width:560px;margin-bottom:36px}
 
-.skel{display:flex;flex-direction:column;gap:10px;opacity:.4}
-.sl{height:12px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:5px}
-.sb{height:80px;background:linear-gradient(90deg,#ebebf5 25%,#f8f8fc 50%,#ebebf5 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:8px}
-@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.think{display:flex;align-items:center;gap:10px;padding:28px 0;color:var(--soft);font-size:13px}
-.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bou 1.4s infinite ease-in-out;margin:0 2px}
-.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
-@keyframes bou{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
-.ebar{padding:12px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}
-.ebtn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--pill);border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
-.ebtn:hover{border-color:var(--blue-border);color:var(--blue)}
-.ebtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
-@media(max-width:900px){.ws{grid-template-columns:1fr}.ip{position:static}}
-@media(max-width:600px){.ws{padding:8px 16px 60px}.hero{padding:68px 16px 16px}}
+/* Workflow Cards */
+.workflow{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.wf-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:28px 24px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+.wf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--ai),var(--ai2))}
+.wf-num{font-size:36px;font-weight:900;color:rgba(110,114,232,.08);position:absolute;top:12px;right:16px;line-height:1}
+.wf-icon{width:40px;height:40px;border-radius:10px;background:var(--ai-bg);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.wf-icon svg{width:20px;height:20px;stroke:var(--ai);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.wf-card h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.wf-card p{font-size:13px;color:var(--soft);line-height:1.7}
+.wf-note{margin-top:24px;text-align:center;font-size:13px;color:var(--ink3);background:var(--ai-bg);border:1px solid var(--ai-bd);border-radius:10px;padding:12px 20px}
+
+/* Demo Workspace */
+.demo-workspace{display:grid;grid-template-columns:200px 1fr 260px;gap:16px;min-height:520px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh2)}
+.demo-left{border-right:1px solid var(--bd);overflow-y:auto;max-height:600px;background:var(--bg)}
+.demo-left-header{padding:12px 14px;border-bottom:1px solid var(--bd);font-size:11px;font-weight:700;color:var(--soft);letter-spacing:.06em;text-transform:uppercase;background:var(--card)}
+.thumb-list{padding:8px}
+.thumb-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:2px;font-size:12px}
+.thumb-item:hover{background:rgba(0,0,0,.03)}
+.thumb-item.active{background:var(--ai-bg)}
+.thumb-preview{width:32px;height:42px;border-radius:3px;background:#fff;border:1px solid var(--bd2);position:relative;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.thumb-preview .tp-content{font-size:6px;color:var(--muted);text-align:center;padding:2px;line-height:1.2;word-break:break-all}
+.thumb-badge{position:absolute;top:0;right:0;width:10px;height:10px;border-radius:0 2px 0 3px}
+.thumb-badge.color{background:var(--color-badge)}
+.thumb-badge.bw{background:var(--bw-badge)}
+.thumb-badge.confirm{background:var(--confirm-badge)}
+.thumb-info{flex:1;min-width:0}
+.thumb-info .tn{font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thumb-info .ts{font-size:10px;color:var(--muted)}
+
+.demo-center{padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.page-preview{width:100%;max-width:380px;aspect-ratio:3/4;background:#fff;border:1px solid var(--bd2);border-radius:6px;box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;overflow:hidden;display:flex;flex-direction:column;padding:24px}
+.page-preview .pp-header{font-size:10px;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.page-preview .pp-title{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--ink)}
+.page-preview .pp-text{font-size:11px;color:var(--soft);line-height:1.8}
+.page-preview .pp-chart{margin-top:12px;height:80px;position:relative;display:flex;align-items:flex-end;gap:6px;padding:0 8px}
+.page-preview .pp-bar{flex:1;border-radius:3px 3px 0 0;transition:height .3s}
+.page-annotation{margin-top:12px;font-size:12px;color:var(--ink3);background:var(--ai-bg);border:1px solid var(--ai-bd);border-radius:8px;padding:10px 14px;max-width:380px;width:100%;line-height:1.6}
+.page-annotation strong{color:var(--ai)}
+
+.demo-right{border-left:1px solid var(--bd);padding:20px;overflow-y:auto;background:var(--card)}
+.decision-card{margin-bottom:16px}
+.dc-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.dc-page{font-size:18px;font-weight:800;margin-bottom:4px}
+.dc-suggest{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--pill);font-size:12px;font-weight:700;margin-bottom:16px}
+.dc-suggest.color{background:rgba(232,93,93,.08);color:var(--color-badge);border:1px solid rgba(232,93,93,.2)}
+.dc-suggest.bw{background:rgba(107,114,128,.06);color:var(--bw-badge);border:1px solid var(--bd2)}
+.dc-suggest.confirm{background:rgba(212,160,0,.08);color:var(--confirm-badge);border:1px solid rgba(212,160,0,.2)}
+.dc-reasons{margin-bottom:16px}
+.dc-reason{font-size:12px;color:var(--ink3);padding:6px 0;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.dc-reason svg{width:14px;height:14px;flex-shrink:0;stroke:var(--ai);fill:none;stroke-width:2;margin-top:2px}
+.dc-confidence{margin-bottom:20px}
+.dc-conf-bar{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-top:6px}
+.dc-conf-fill{height:100%;border-radius:3px;transition:width .5s}
+.dc-conf-fill.high{background:var(--save)}
+.dc-conf-fill.mid{background:var(--yellow)}
+.dc-conf-fill.low{background:var(--color-badge)}
+.dc-actions{display:flex;flex-direction:column;gap:8px}
+.dc-btn{padding:9px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);border:1.5px solid var(--bd2);background:var(--card);color:var(--ink3);transition:all .15s;text-align:center}
+.dc-btn:hover{border-color:var(--ai);color:var(--ai)}
+.dc-btn.primary{background:var(--ai);color:#fff;border-color:var(--ai)}
+.dc-btn.primary:hover{background:var(--ai2)}
+
+/* CMYK Animation */
+.cmyk-demo{position:relative;width:120px;height:160px;margin:0 auto 20px}
+.cmyk-layer{position:absolute;inset:0;border-radius:4px;opacity:0;transition:all .6s}
+.cmyk-layer.c{background:var(--cyan);mix-blend-mode:multiply}
+.cmyk-layer.m{background:var(--magenta);mix-blend-mode:multiply}
+.cmyk-layer.y{background:var(--yellow);mix-blend-mode:multiply}
+.cmyk-layer.k{background:var(--key);mix-blend-mode:multiply}
+.cmyk-demo.play .cmyk-layer{opacity:.7}
+.cmyk-demo.play .c{transform:translate(-4px,-4px)}
+.cmyk-demo.play .m{transform:translate(4px,-4px)}
+.cmyk-demo.play .y{transform:translate(-4px,4px)}
+.cmyk-demo.play .k{transform:translate(4px,4px)}
+.cmyk-demo.merge .cmyk-layer{opacity:.8;transform:translate(0,0)!important}
+.cmyk-demo.to-bw .c,.cmyk-demo.to-bw .m,.cmyk-demo.to-bw .y{opacity:0}
+.cmyk-demo.to-bw .k{opacity:.9;transform:translate(0,0)}
+
+/* Sequence Preview */
+.seq-container{position:relative}
+.seq-toggle{display:flex;gap:0;margin-bottom:20px;background:var(--card);border:1px solid var(--bd2);border-radius:var(--pill);padding:3px;width:fit-content}
+.seq-toggle button{padding:7px 18px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--soft);cursor:pointer;border-radius:var(--pill);font-family:var(--font);transition:all .15s}
+.seq-toggle button.active{background:var(--ink);color:#fff}
+.seq-label{font-size:13px;font-weight:600;color:var(--ink3);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.seq-label svg{width:16px;height:16px;stroke:var(--save);fill:none;stroke-width:2}
+.seq-row{display:flex;gap:0;overflow-x:auto;padding:16px 0 20px;align-items:flex-end}
+.seq-page{flex-shrink:0;width:56px;height:72px;background:#fff;border:1px solid var(--bd2);border-radius:4px;position:relative;margin-right:8px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .3s}
+.seq-page .sp-num{position:absolute;top:4px;left:5px;font-size:8px;font-weight:700;color:var(--muted)}
+.seq-page.is-color::after{content:'';position:absolute;bottom:0;left:0;right:0;height:8px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow))}
+.seq-page.is-bw.print-effect{filter:grayscale(1);background:#f0f0f0}
+.seq-page.is-color.print-effect::after{opacity:1}
+.seq-connector{flex-shrink:0;width:12px;height:1px;background:var(--light);align-self:center;margin-bottom:20px}
+
+/* Savings Bill */
+.bill{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:32px;box-shadow:var(--sh);max-width:640px}
+.bill-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px dashed var(--bd2)}
+.bill-title{font-size:16px;font-weight:800}
+.bill-date{font-size:11px;color:var(--muted)}
+.bill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.bill-item{text-align:center}
+.bill-item .bi-val{font-size:24px;font-weight:800;margin-bottom:2px}
+.bill-item .bi-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.bill-compare{background:var(--bg);border-radius:10px;padding:16px;margin-bottom:20px}
+.bill-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px}
+.bill-row:not(:last-child){border-bottom:1px solid var(--bd)}
+.bill-row.total{font-weight:800;font-size:15px;color:var(--ink)}
+.bill-save{text-align:center;padding:16px;background:var(--save-bg);border:1px solid var(--save-bd);border-radius:10px;margin-bottom:16px}
+.bill-save .bs-pct{font-size:28px;font-weight:900;color:var(--save)}
+.bill-save .bs-text{font-size:12px;color:var(--ink3);margin-top:4px}
+.bill-eco{font-size:12px;color:var(--soft);text-align:center;padding:12px;background:var(--bg);border-radius:8px}
+
+/* Upload Section */
+.upload-section{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:24px;box-shadow:var(--sh)}
+.drop-zone{border:2px dashed var(--bd2);border-radius:12px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);position:relative}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--ai);background:var(--ai-bg)}
+.drop-zone svg{width:36px;height:36px;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
+.drop-zone .dz-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.drop-zone .dz-sub{font-size:12px;color:var(--soft)}
+.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.file-badges{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+.fb{padding:4px 10px;border-radius:var(--pill);background:var(--bg2);border:1px solid var(--bd);font-size:11px;color:var(--soft);font-weight:600}
+
+/* File Status Card */
+.file-status{display:none;background:var(--bg);border-radius:10px;padding:16px;margin-top:16px}
+.file-status.show{display:block}
+.fs-info{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.fs-icon{width:36px;height:36px;border-radius:8px;background:rgba(232,93,93,.08);display:flex;align-items:center;justify-content:center}
+.fs-icon svg{width:18px;height:18px;stroke:var(--color-badge);fill:none;stroke-width:2}
+.fs-name{font-size:13px;font-weight:600}
+.fs-meta{font-size:11px;color:var(--muted)}
+.fs-progress{margin-top:12px}
+.fs-step{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12px;color:var(--soft)}
+.fs-step .fs-dot{width:8px;height:8px;border-radius:50%;background:var(--bd2);flex-shrink:0}
+.fs-step.done .fs-dot{background:var(--save)}
+.fs-step.active .fs-dot{background:var(--ai);animation:pulse 1.5s infinite}
+.fs-step .fs-pct{margin-left:auto;font-weight:600;font-size:11px;color:var(--ai)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Price Settings */
+.price-settings{margin-top:20px}
+.price-toggle{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--soft);cursor:pointer;padding:8px 0;border:none;background:none;font-family:var(--font)}
+.price-toggle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;transition:transform .2s}
+.price-toggle.open svg{transform:rotate(90deg)}
+.price-body{display:none;padding:12px 0 0;animation:fadeIn .2s}
+.price-body.show{display:block}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.price-field label{display:block;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.price-field input,.price-field select{width:100%;padding:7px 10px;border:1.5px solid var(--bd);border-radius:8px;font-size:12px;font-family:var(--font);background:var(--bg);color:var(--ink);outline:none}
+.price-field input:focus,.price-field select:focus{border-color:var(--ai)}
+.price-note{font-size:10px;color:var(--muted);margin-top:8px;font-style:italic}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Purpose Selector */
+.purpose-section{margin-top:20px;padding:16px;background:var(--bg);border-radius:10px}
+.purpose-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.purpose-desc{font-size:11px;color:var(--soft);margin-bottom:12px}
+.purpose-chips{display:flex;gap:6px;flex-wrap:wrap}
+.purpose-chip{padding:7px 14px;border-radius:var(--pill);border:1.5px solid var(--bd2);background:var(--card);font-size:12px;font-weight:600;color:var(--soft);cursor:pointer;font-family:var(--font);transition:all .15s}
+.purpose-chip:hover{border-color:var(--ai-bd);color:var(--ai)}
+.purpose-chip.active{background:var(--ai);border-color:var(--ai);color:#fff}
+
+/* Safety Check */
+.safety-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:20px;box-shadow:var(--sh);margin-top:20px}
+.safety-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.safety-header svg{width:20px;height:20px;stroke:var(--yellow);fill:none;stroke-width:2}
+.safety-header h4{font-size:13px;font-weight:700}
+.safety-badge-mvp{font-size:9px;font-weight:700;color:var(--muted);border:1px solid var(--bd2);padding:2px 6px;border-radius:4px;margin-left:auto}
+.safety-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.safety-item:last-child{border-bottom:none}
+.safety-count{font-weight:700;color:var(--ink)}
+.safety-actions{display:flex;gap:6px}
+.safety-btn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;border:1px solid var(--bd2);background:var(--card);color:var(--soft);cursor:pointer;font-family:var(--font)}
+.safety-btn:hover{border-color:var(--ai);color:var(--ai)}
+
+/* Responsive */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;gap:24px;padding:72px 16px 32px}
+  .hero-right{min-height:240px}
+  .workflow{grid-template-columns:1fr}
+  .demo-workspace{grid-template-columns:1fr;min-height:auto}
+  .demo-left{max-height:200px;border-right:none;border-bottom:1px solid var(--bd)}
+  .demo-right{border-left:none;border-top:1px solid var(--bd)}
+  .bill-grid{grid-template-columns:repeat(2,1fr)}
+  .section{padding:40px 16px}
+  .seq-row{padding-bottom:12px}
+  .price-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .hero-btns{flex-direction:column}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center}
+  .bill-grid{grid-template-columns:1fr 1fr}
+  .seq-page{width:44px;height:56px}
+}
+
+/* Utility */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 </style>
 </head>
 <body>
+
 <nav>
   <div class="nw">
-    <a href="/08/works/#tools" class="back">
+    <a href='/08/works/#tools' class='back'>
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
       产品运营工具集
     </a>
-    <span class="nav-tag">办公效率</span>
+    <span class="nav-tag">Print Helper</span>
   </div>
 </nav>
 
-<div class="hero">
-  <div class="hero-meta"><div class="tag">办公效率</div><span class="tool-num">#11</span></div>
-  <h1>智能打印助手</h1>
-  <p>上传文件，AI 自动识别每页内容，给出彩印 / 黑白建议单，帮你省打印费。</p>
-</div>
+<!-- Screen 1: Hero -->
+<section class="hero" id="hero">
+  <div class="hero-left">
+    <h1>智能混合打印<br><span>Skill</span></h1>
+    <p class="hero-sub">自动识别真正需要保留颜色的页面，其余转为黑白打印，页码和顺序始终不变。</p>
+    <div class="hero-tags">
+      <span class="hero-tag">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        逐页智能识别
+      </span>
+      <span class="hero-tag">
+        <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        保持原始顺序
+      </span>
+      <span class="hero-tag">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        自动计算节省金额
+      </span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-primary" id="heroUpload">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        上传文档开始识别
+      </button>
+      <button class="btn-secondary" id="heroExample">查看示例</button>
+    </div>
+    <p class="hero-assist">逐页分析 · 可人工调整 · 自动计算节省金额</p>
+  </div>
+  <div class="hero-right">
+    <div class="printer-demo" id="printerDemo">
+      <div class="ani-pages" id="aniPages"></div>
+      <div class="printer-body">
+        <div class="printer-slot"></div>
+      </div>
+      <div class="printer-label">SCANNING...</div>
+      <div class="ani-result" id="aniResult">彩印 3 页 · 黑白 9 页</div>
+    </div>
+  </div>
+</section>
 
-<div class="ws">
-  <div class="panel ip">
-    <div class="ph">
-      <div class="pi">
+<!-- Screen 2: Workflow -->
+<section class="section" id="workflow">
+  <div class="section-label">Workflow</div>
+  <div class="section-title">三步完成混合打印</div>
+  <div class="section-desc">无需把彩色页和黑白页拆成两个文件，一次生成可直接执行的打印方案。</div>
+  <div class="workflow">
+    <div class="wf-card">
+      <div class="wf-num">01</div>
+      <div class="wf-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <h3>上传文件</h3>
+      <p>支持 PDF、Word、PPT、图片格式，多文件合并分析，自动识别总页数。</p>
+    </div>
+    <div class="wf-card">
+      <div class="wf-num">02</div>
+      <div class="wf-icon">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>
+      </div>
+      <h3>AI 逐页识别</h3>
+      <p>分析每页的图表、地图、照片、批注、品牌色，判断颜色是否承载信息价值。</p>
+    </div>
+    <div class="wf-card">
+      <div class="wf-num">03</div>
+      <div class="wf-icon">
         <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
       </div>
-      <div><div class="pt">上传文件</div><div class="ps">自动识别页面内容</div></div>
+      <h3>确认并打印</h3>
+      <p>保持页码顺序不变，生成彩色/黑白混合打印任务，直接发送到打印机。</p>
     </div>
-    <div class="pb">
-      <div class="drop-zone" id="dropZone">
-        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" multiple>
+  </div>
+  <div class="wf-note">💡 核心优势：不拆文件、不手动记页码 — 系统自动按原始顺序生成混合打印任务</div>
+</section>
+
+<!-- Screen 3: Interactive Demo -->
+<section class="section" id="demo">
+  <div class="section-label">Interactive Demo</div>
+  <div class="section-title">文档工作台</div>
+  <div class="section-desc">点击左侧缩略图浏览每页识别结果，右侧显示判定依据和置信度。</div>
+  
+  <!-- CMYK Animation -->
+  <div class="cmyk-demo" id="cmykDemo">
+    <div class="cmyk-layer c"></div>
+    <div class="cmyk-layer m"></div>
+    <div class="cmyk-layer y"></div>
+    <div class="cmyk-layer k"></div>
+  </div>
+
+  <div class="demo-workspace" id="demoWorkspace">
+    <div class="demo-left">
+      <div class="demo-left-header">文档页面 (32)</div>
+      <div class="thumb-list" id="thumbList"></div>
+    </div>
+    <div class="demo-center">
+      <div class="page-preview" id="pagePreview">
+        <div class="pp-header" id="ppHeader">第 1 页</div>
+        <div class="pp-title" id="ppTitle">封面</div>
+        <div class="pp-text" id="ppText">季度复盘报告 · 2024 Q3</div>
+        <div class="pp-chart" id="ppChart"></div>
+      </div>
+      <div class="page-annotation" id="pageAnnotation">
+        <strong>判定依据：</strong><span id="annotationText">检测到品牌色大面积使用，包含 Logo 和视觉规范色块</span>
+      </div>
+    </div>
+    <div class="demo-right">
+      <div class="decision-card" id="decisionCard">
+        <div class="dc-label">打印决策</div>
+        <div class="dc-page" id="dcPage">第 1 页</div>
+        <div class="dc-suggest color" id="dcSuggest">建议彩印</div>
+        <div class="dc-reasons" id="dcReasons"></div>
+        <div class="dc-confidence">
+          <div style="display:flex;justify-content:space-between;font-size:11px"><span>置信度</span><span id="dcConfVal">94%</span></div>
+          <div class="dc-conf-bar"><div class="dc-conf-fill high" id="dcConfBar" style="width:94%"></div></div>
+        </div>
+        <div class="dc-actions">
+          <button class="dc-btn primary" id="dcKeep">保持彩色</button>
+          <button class="dc-btn" id="dcChange">改为黑白</button>
+          <button class="dc-btn" id="dcApply">应用于相似页面</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Screen 4: Sequence Preview -->
+<section class="section" id="sequence">
+  <div class="section-label">Print Order</div>
+  <div class="section-title">混合打印顺序预览</div>
+  <div class="section-desc">原始页码顺序始终保留，系统按 1→2→3... 生成混合打印任务。</div>
+  
+  <div class="seq-container">
+    <div class="seq-toggle" id="seqToggle">
+      <button class="active" data-mode="original">原始页面</button>
+      <button data-mode="effect">打印效果</button>
+    </div>
+    <div class="seq-label">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      原始顺序已保留 · 无需拆分文件
+    </div>
+    <div class="seq-row" id="seqRow"></div>
+  </div>
+</section>
+
+<!-- Screen 5: Savings Bill -->
+<section class="section" id="savings">
+  <div class="section-label">Cost Analysis</div>
+  <div class="section-title">打印优化账单</div>
+  <div class="section-desc">基于智能混合方案，计算本次打印的实际成本与节省金额。</div>
+  
+  <div class="bill" id="billCard">
+    <div class="bill-header">
+      <div class="bill-title">📄 打印优化账单</div>
+      <div class="bill-date">2024 Q3 · 季度复盘报告</div>
+    </div>
+    <div class="bill-grid">
+      <div class="bill-item"><div class="bi-val">32</div><div class="bi-label">总页数</div></div>
+      <div class="bill-item"><div class="bi-val" style="color:var(--color-badge)">7</div><div class="bi-label">建议彩印</div></div>
+      <div class="bill-item"><div class="bi-val" style="color:var(--bw-badge)">23</div><div class="bi-label">建议黑白</div></div>
+      <div class="bill-item"><div class="bi-val" style="color:var(--confirm-badge)">2</div><div class="bi-label">待确认</div></div>
+    </div>
+    <div class="bill-compare">
+      <div class="bill-row"><span>全部彩印 (32页 × ¥1.00)</span><span>¥32.00</span></div>
+      <div class="bill-row"><span>智能混合 (7彩 × ¥1.00 + 23黑白 × ¥0.20 + 2确认 × ¥0.20)</span><span>¥13.25</span></div>
+      <div class="bill-row total"><span>本次节省</span><span style="color:var(--save)">¥18.75</span></div>
+    </div>
+    <div class="bill-save">
+      <div class="bs-pct">58.6%</div>
+      <div class="bs-text">比全部彩印节省</div>
+    </div>
+    <div class="bill-eco">🌱 减少 25 页不必要的彩色耗材使用</div>
+  </div>
+
+  <!-- Safety Check -->
+  <div class="safety-card">
+    <div class="safety-header">
+      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <h4>打印前安全检查</h4>
+      <span class="safety-badge-mvp">扩展功能</span>
+    </div>
+    <div class="safety-item">
+      <span>空白页</span>
+      <span class="safety-count">2 页</span>
+      <div class="safety-actions">
+        <button class="safety-btn">保留</button>
+        <button class="safety-btn">跳过</button>
+      </div>
+    </div>
+    <div class="safety-item">
+      <span>内容超边界</span>
+      <span class="safety-count">1 页</span>
+      <div class="safety-actions">
+        <button class="safety-btn">保留</button>
+        <button class="safety-btn">返回修改</button>
+      </div>
+    </div>
+    <div class="safety-item">
+      <span>字体过小 (可能无法阅读)</span>
+      <span class="safety-count">3 页</span>
+      <div class="safety-actions">
+        <button class="safety-btn">保留</button>
+        <button class="safety-btn">返回修改</button>
+      </div>
+    </div>
+    <div class="safety-item">
+      <span>疑似重复页</span>
+      <span class="safety-count">1 页</span>
+      <div class="safety-actions">
+        <button class="safety-btn">保留</button>
+        <button class="safety-btn">跳过</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Screen 6: Upload & Settings -->
+<section class="section" id="upload">
+  <div class="section-label">Get Started</div>
+  <div class="section-title">上传你的文档</div>
+  <div class="section-desc">支持常见文档格式，系统会自动解析并生成打印方案。</div>
+  
+  <div style="max-width:560px">
+    <div class="upload-section">
+      <div class="drop-zone" id="mainDropZone">
+        <input type="file" id="mainFileInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.webp' multiple">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <div class="dz-title">拖拽文件到此处 / 点击选择</div>
-        <div class="dz-sub">支持 PDF · 图片 · Word · PPT · Excel · 文本</div>
+        <div class="dz-sub">支持 PDF · Word · PPT · 图片</div>
+        <div class="file-badges">
+          <span class="fb">PDF</span>
+          <span class="fb">DOC/DOCX</span>
+          <span class="fb">PPT/PPTX</span>
+          <span class="fb">JPG/PNG</span>
+        </div>
       </div>
 
-      <div class="file-types">
-        <span class="ft">PDF</span><span class="ft">JPG/PNG</span><span class="ft">Word</span><span class="ft">PPT</span><span class="ft">Excel</span><span class="ft">TXT</span>
-      </div>
-
-      <div class="f">
-        <label>打印单价（元/页）</label>
-        <div class="price-row">
-          <div>
-            <div style="font-size:11px;color:var(--soft);margin-bottom:4px">🔴 彩印</div>
-            <input type="number" id="colorPrice" value="1.5" step="0.1" min="0.1">
+      <!-- File Status (shown after upload) -->
+      <div class="file-status" id="fileStatus">
+        <div class="fs-info">
+          <div class="fs-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           </div>
           <div>
-            <div style="font-size:11px;color:var(--soft);margin-bottom:4px">⚫ 黑白</div>
-            <input type="number" id="bwPrice" value="0.1" step="0.1" min="0.05">
+            <div class="fs-name">季度复盘报告.pdf</div>
+            <div class="fs-meta">32 页 · 8.6 MB</div>
           </div>
         </div>
+        <div class="fs-progress" id="fsProgress">
+          <div class="fs-step active" data-step="1">
+            <div class="fs-dot"></div>
+            <span>正在解析文档结构</span>
+            <span class="fs-pct" id="fsPct1">0%</span>
+          </div>
+          <div class="fs-step" data-step="2">
+            <div class="fs-dot"></div>
+            <span>正在识别页面颜色用途</span>
+            <span class="fs-pct" id="fsPct2"></span>
+          </div>
+          <div class="fs-step" data-step="3">
+            <div class="fs-dot"></div>
+            <span>正在生成打印方案</span>
+            <span class="fs-pct" id="fsPct3"></span>
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%;margin-top:16px;justify-content:center" id="analyzeBtn" disabled>
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          生成混合打印方案
+        </button>
       </div>
 
-      <div class="f">
-        <label>文档用途 <span class="fn">选填，帮助AI判断</span></label>
-        <div style="display:flex;flex-wrap:wrap;gap:6px" id="purposeChips">
-          <button class="chip sel" data-v="普通打印">普通打印</button>
-          <button class="chip" data-v="会议资料">会议资料</button>
-          <button class="chip" data-v="客户展示">客户展示</button>
-          <button class="chip" data-v="内部存档">内部存档</button>
+      <!-- Purpose Selector -->
+      <div class="purpose-section">
+        <div class="purpose-title">这份文档准备怎么使用？</div>
+        <div class="purpose-desc">不同用途会影响系统对颜色价值的判断</div>
+        <div class="purpose-chips" id="purposeChips">
+          <button class="purpose-chip active" data-purpose="daily">日常阅读</button>
+          <button class="purpose-chip" data-purpose="meeting">内部会议</button>
+          <button class="purpose-chip" data-purpose="presentation">对外展示</button>
+          <button class="purpose-chip" data-purpose="archive">资料存档</button>
         </div>
       </div>
 
-      <button class="gbtn" id="gbtn" onclick="analyze()" disabled>
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        开始分析
-      </button>
-    </div>
-  </div>
-
-  <div class="panel op">
-    <div class="ph">
-      <div class="pi" style="background:rgba(52,199,89,.1)">
-        <svg viewBox="0 0 24 24" style="stroke:#34c759"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      </div>
-      <div><div class="pt">打印建议单</div><div class="ps" id="outSub">上传文件后点击分析</div></div>
-    </div>
-    <div class="ob" id="ob">
-      <div id="examplePreview" style="font-size:12.5px;line-height:1.8;color:#555;background:#fafafa;border-radius:10px;padding:14px 16px;border:1px solid #eee">
-  <p style="font-size:11px;font-weight:600;color:#999;margin-bottom:10px;text-align:center">— 示例效果 —</p>
-  <p style="font-weight:600;color:#0D0D0D">AI 将在这里生成结构化输出</p>
-  <p>填写左侧表单后点击生成按钮，AI 将给出专业的分析结果，支持复制和导出。</p>
-  <p style="margin-top:8px;font-size:11px;color:#aaa">↑ 每个工具都有针对真实工作场景优化的 Prompt 模板</p>
-</div></div>
-          <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
-          <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
-          <div><div class="sl" style="width:60%;margin-bottom:6px"></div><div class="sl" style="width:40%;height:20px"></div></div>
+      <!-- Price Settings -->
+      <div class="price-settings">
+        <button class="price-toggle" id="priceToggle">
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          打印成本设置
+        </button>
+        <div class="price-body" id="priceBody">
+          <div class="price-grid">
+            <div class="price-field">
+              <label>黑白单价</label>
+              <input type="number" value="0.20" step="0.05" min="0.05" id="bwPrice">
+            </div>
+            <div class="price-field">
+              <label>彩色单价</label>
+              <input type="number" value="1.00" step="0.1" min="0.1" id="colorPrice">
+            </div>
+            <div class="price-field">
+              <label>纸张</label>
+              <select id="paperSize"><option>A4</option><option>A3</option><option>B5</option></select>
+            </div>
+            <div class="price-field">
+              <label>双面</label>
+              <select id="duplex"><option>否</option><option>是</option></select>
+            </div>
+            <div class="price-field">
+              <label>份数</label>
+              <input type="number" value="1" min="1" id="copies">
+            </div>
+          </div>
+          <div class="price-note">* 用于估算节省金额，不影响识别结果</div>
         </div>
-        <div class="sb" style="height:40px"></div>
-        <div class="sb"></div>
       </div>
     </div>
   </div>
+</section>
+
+<div style="text-align:center;padding:40px 32px 60px;font-size:12px;color:var(--muted)">
+  智能混合打印 Skill · Print Helper · 自动识别彩色页面<br>
+  <span style="font-size:10px;margin-top:4px;display:inline-block">作品集 Demo · 模拟数据演示</span>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
-var PROVIDERS=[
-  {name:'智谱',url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',key:'3617e7083fb349e6bcf8dff86e65e967.Ab9BRVWqjsHf9a8P',model:'glm-4-flash',type:'openai'},
-  {name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',key:'sk-4f016c9639cb461db37f4f778d2eac4f',model:'deepseek-chat',type:'openai'},
-  {name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',key:['AQ.Ab8RN6Kwvan','PacRzJIFXe6Yi1Kx35q046','jXDWC8LF0dV3tKJiA'].join(''),type:'gemini'}
-];
-async function callAI(prompt){
-  for(var i=0;i<PROVIDERS.length;i++){
-    var p=PROVIDERS[i];
-    try{
-      var res,text='';
-      if(p.type==='openai'){
-        res=await fetch(p.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify({model:p.model,messages:[{role:'user',content:prompt}],max_tokens:3000,temperature:0.5}),signal:AbortSignal.timeout(25000)});
-        if(!res.ok)continue;
-        var d=await res.json();
-        text=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
-      }else{
-        res=await fetch(p.url+'?key='+p.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:3000,temperature:0.5}}),signal:AbortSignal.timeout(20000)});
-        if(!res.ok)continue;
-        var d2=await res.json();
-        text=(d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].text)||'';
-      }
-      if(text)return text;
-    }catch(err){console.warn(p.name,err.message);}
-  }
-  return '';
-}
+(function(){
+  'use strict';
 
-// 初始化
-if(typeof pdfjsLib!=='undefined'){
-  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-}
+  // ========== MOCK DATA: 32 pages ==========
+  var PAGES = [
+    {n:1,title:'封面',desc:'季度复盘报告 · 2024 Q3 · 品牌视觉',type:'color',conf:96,
+      reasons:['大面积品牌色使用','包含 Logo 与视觉规范色块','封面决定文档专业印象'],
+      annotation:'检测到品牌色大面积使用，包含 Logo 和视觉规范色块，建议保留彩色以维持品牌形象。'},
+    {n:2,title:'项目背景',desc:'纯文字段落 + 蓝色超链接',type:'bw',conf:92,
+      reasons:['仅含蓝色超链接','链接在灰度下仍可识别','无信息依赖颜色的内容'],
+      annotation:'页面中蓝色超链接在灰度模式下仍然清晰可辨，无颜色信息损失。'},
+    {n:3,title:'用户增长折线图',desc:'红色/绿色双折线对比',type:'color',conf:97,
+      reasons:['红绿双色折线承载对比信息','转灰度后无法区分两组数据','图例依赖颜色区分'],
+      annotation:'检测到红绿两组折线，转灰度后可能无法区分，建议彩印。'},
+    {n:4,title:'会议说明',desc:'纯文字列表 + 要点',type:'bw',conf:95,
+      reasons:['纯文字内容','黑色文字白色背景','无彩色元素'],
+      annotation:'纯文字内容，黑白打印完全不影响可读性。'},
+    {n:5,title:'竞品截图',desc:'竞品产品界面截图',type:'color',conf:88,
+      reasons:['截图包含品牌色对比','UI 配色是分析对象','灰度失去界面设计信息'],
+      annotation:'竞品截图中的 UI 配色是分析的关键信息，建议保留彩色。'},
+    {n:6,title:'数据表格',desc:'灰色表头 + 黑色数据',type:'bw',conf:94,
+      reasons:['表头为浅灰色底纹','数据行无颜色区分','线条边框在灰度下清晰'],
+      annotation:'表格仅有浅灰底纹，黑白打印不影响数据阅读。'},
+    {n:7,title:'区域分布地图',desc:'热力图 · 多色渐变',type:'color',conf:98,
+      reasons:['热力图颜色承载数值信息','多色渐变表示不同密度','转灰度后层级信息丢失'],
+      annotation:'地图热力图的颜色直接对应数值密度，是核心信息载体，必须彩印。'},
+    {n:8,title:'预算分析',desc:'饼图 + 柱状图',type:'bw',conf:72,
+      reasons:['图表使用区分色但非红绿','数据标签可辅助识别','中等复杂度图表'],
+      annotation:'图表配色有一定信息价值，但数据标签可辅助识别，建议确认。',confirm_alt:true},
+    {n:9,title:'季度目标',desc:'OKR 文字列表',type:'bw',conf:96,
+      reasons:['纯文字内容','黑色正文 + 灰色辅助','无颜色依赖信息'],
+      annotation:'纯文字 OKR 列表，无颜色信息依赖。'},
+    {n:10,title:'团队合影',desc:'团队照片',type:'confirm',conf:45,
+      reasons:['照片含彩色但属装饰性质','打印质量可能影响效果','用途影响是否需要彩色'],
+      annotation:'照片类内容，若用于正式展示建议彩印；若仅内部传阅可黑白。扫描质量一般，建议确认。'},
+    {n:11,title:'用户反馈摘要',desc:'用户评价文字摘录',type:'bw',conf:93,
+      reasons:['文字引用为主','高亮标记为灰色底纹','无颜色语义信息'],
+      annotation:'用户评价以文字摘录为主，灰度底纹标记不影响理解。'},
+    {n:12,title:'产品路线图',desc:'时间轴 + 色块状态',type:'color',conf:91,
+      reasons:['时间轴色块区分阶段状态','红/黄/绿表示进度','灰度无法区分状态'],
+      annotation:'路线图用红黄绿色块表示不同阶段状态，转灰度后状态信息丢失。'},
+    {n:13,title:'技术架构',desc:'架构图 + 连接线',type:'bw',conf:89,
+      reasons:['线条图为主','模块区分靠形状非颜色','连接线在灰度下清晰'],
+      annotation:'架构图以线条和形状区分模块，颜色非核心区分手段。'},
+    {n:14,title:'性能指标',desc:'仪表盘图表',type:'bw',conf:68,
+      reasons:['仪表盘有红绿区间','但数值标签可辅助','可考虑保留或黑白'],
+      annotation:'仪表盘使用红绿区间标识，但数值标签清晰，可根据用途决定。',confirm_alt:true},
+    {n:15,title:'风险分析',desc:'风险矩阵文字描述',type:'bw',conf:94,
+      reasons:['表格+文字描述','风险等级用文字标注','无颜色依赖'],
+      annotation:'风险等级通过文字明确标注（高/中/低），不依赖颜色传达。'},
+    {n:16,title:'客户案例',desc:'客户产品截图',type:'bw',conf:78,
+      reasons:['截图以界面为主','信息通过文字传达','装饰性截图'],
+      annotation:'客户案例截图主要为界面展示，核心信息通过文字描述传达。'},
+    {n:17,title:'财务摘要',desc:'财务报表 + 数字',type:'bw',conf:96,
+      reasons:['纯数字表格','黑白线条分隔','无颜色语义'],
+      annotation:'财务数据表格，数字和线条在灰度下完全清晰。'},
+    {n:18,title:'市场趋势',desc:'多条折线图',type:'bw',conf:75,
+      reasons:['多折线但用线型区分','有数据标签','灰度可辨但略影响效率'],
+      annotation:'多条折线用不同线型区分，黑白可辨但阅读效率略有下降。',confirm_alt:true},
+    {n:19,title:'竞品对比',desc:'对比表格',type:'bw',conf:93,
+      reasons:['表格形式','勾叉标记','黑白足够清晰'],
+      annotation:'功能对比表格，使用 ✓/✗ 标记，黑白打印完全清晰。'},
+    {n:20,title:'下季度计划',desc:'甘特图 + 文字',type:'bw',conf:82,
+      reasons:['甘特图用色块区分任务','但任务名在色块内','可借助位置区分'],
+      annotation:'甘特图色块区分任务，但每个色块内有任务名称，黑白仍可识别。'},
+    {n:21,title:'品牌视觉稿',desc:'品牌色规范 + Logo',type:'color',conf:99,
+      reasons:['品牌色规范文件','颜色本身就是内容','Logo 色彩不可丢失'],
+      annotation:'品牌视觉稿的颜色就是核心内容，必须彩印。'},
+    {n:22,title:'用户画像',desc:'信息图表',type:'bw',conf:85,
+      reasons:['信息图以图标为主','图标用形状区分','文字描述充分'],
+      annotation:'用户画像信息图以线性图标和文字为主，灰度不影响理解。'},
+    {n:23,title:'A/B测试结果',desc:'对比柱状图 · 红绿',type:'color',conf:95,
+      reasons:['红绿对比柱状图','颜色是组间区分唯一手段','转灰度无法区分AB组'],
+      annotation:'A/B 测试用红绿柱状图对比，颜色是区分实验组的唯一手段。'},
+    {n:24,title:'运营数据',desc:'Dashboard 截图',type:'bw',conf:80,
+      reasons:['Dashboard 以数据为主','数值用标签显示','装饰性颜色'],
+      annotation:'运营 Dashboard 截图，核心是数字指标，颜色为装饰性。'},
+    {n:25,title:'合作伙伴',desc:'Logo 墙',type:'bw',conf:70,
+      reasons:['Logo 含品牌色','但识别靠形状','黑白可辨大部分 Logo'],
+      annotation:'合作伙伴 Logo 主要靠形状识别，黑白基本可辨。'},
+    {n:26,title:'内部批注页',desc:'文档 + 红色修订标记',type:'confirm',conf:52,
+      reasons:['红色批注标记修订内容','修订信息有价值','但扫描质量影响识别'],
+      annotation:'检测到红色修订批注，但扫描质量较差，建议确认批注内容是否关键。'},
+    {n:27,title:'附录数据',desc:'补充数据表格',type:'bw',conf:95,
+      reasons:['补充性数据表','纯数字+线条','黑白完全可读'],
+      annotation:'附录数据表为补充参考，黑白打印清晰可读。'},
+    {n:28,title:'参考文档',desc:'参考文献列表',type:'bw',conf:97,
+      reasons:['纯文字列表','无颜色元素','标准文献格式'],
+      annotation:'参考文献列表，纯文字内容。'},
+    {n:29,title:'扫描页(模糊)',desc:'扫描质量较差的页面',type:'confirm',conf:38,
+      reasons:['扫描分辨率低','无法准确判断颜色用途','可能存在彩色内容'],
+      annotation:'该页扫描质量较差，系统无法准确判断是否含有关键彩色信息，建议人工确认。'},
+    {n:30,title:'空白页',desc:'无明显内容',type:'bw',conf:99,
+      reasons:['页面几乎空白','无内容需要打印','可考虑跳过'],
+      annotation:'检测到该页几乎为空白，建议打印时跳过此页。'},
+    {n:31,title:'总结',desc:'总结文字 + 简单图表',type:'bw',conf:88,
+      reasons:['文字总结为主','简单柱状图用灰度填充','无颜色关键信息'],
+      annotation:'总结页以文字为主，配图用灰度填充即可。'},
+    {n:32,title:'封底',desc:'品牌标识 + 联系方式',type:'bw',conf:74,
+      reasons:['封底有品牌标识','但仅为装饰','联系方式黑白清晰'],
+      annotation:'封底品牌标识为装饰性，联系方式黑白打印清晰。'}
+  ];
 
-var selPurpose='普通打印';
-var uploadedFiles=[];
+  // Purpose thresholds - affects judgment
+  var PURPOSES = {
+    daily: {label:'日常阅读', colorBias:0.7, desc:'优先省钱，仅保留颜色承载关键信息的页面'},
+    meeting: {label:'内部会议', colorBias:0.5, desc:'平衡成本与效果，保留有信息价值的颜色'},
+    presentation: {label:'对外展示', colorBias:0.3, desc:'优先效果，更多页面建议彩印'},
+    archive: {label:'资料存档', colorBias:0.8, desc:'仅保留必要颜色，最大化节省'}
+  };
 
-// chip单选
-document.querySelectorAll('#purposeChips .chip').forEach(function(c){
-  c.addEventListener('click',function(){
-    document.querySelectorAll('#purposeChips .chip').forEach(function(x){x.classList.remove('sel');});
-    c.classList.add('sel');
-    selPurpose=c.dataset.v;
+  var currentPurpose = 'daily';
+  var currentPage = 0;
+  var pageDecisions = {};
+
+  // Initialize decisions from mock data
+  PAGES.forEach(function(p, i) {
+    pageDecisions[i] = p.type;
   });
-});
 
-// 上传区
-var dz=document.getElementById('dropZone');
-var fi=document.getElementById('fileInput');
+  // ========== PRINTER ANIMATION ==========
+  function initPrinterAnimation() {
+    var container = document.getElementById('aniPages');
+    if (!container) return;
+    container.innerHTML = '';
+    var total = 12;
+    var colorIndices = [2, 6, 9]; // 0-indexed: pages 3, 7, 10
 
-dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag');});
-dz.addEventListener('dragleave',function(){dz.classList.remove('drag');});
-dz.addEventListener('drop',function(e){
-  e.preventDefault();dz.classList.remove('drag');
-  handleFiles(e.dataTransfer.files);
-});
-fi.addEventListener('change',function(){handleFiles(fi.files);});
+    for (var i = 0; i < total; i++) {
+      var page = document.createElement('div');
+      page.className = 'ani-page';
+      page.dataset.idx = i;
+      container.appendChild(page);
+    }
 
-function handleFiles(files){
-  if(!files||!files.length)return;
-  uploadedFiles=Array.from(files);
-  var names=uploadedFiles.map(function(f){return f.name;}).join('、');
-  dz.classList.add('has-file');
-  dz.querySelector('.dz-title').textContent=names;
-  dz.querySelector('.dz-sub').textContent=uploadedFiles.length+'个文件，点击重新选择';
-  document.getElementById('gbtn').disabled=false;
-}
+    var step = 0;
+    var pages = container.querySelectorAll('.ani-page');
+    var result = document.getElementById('aniResult');
 
-// 判断单个文件类型
-function getFileType(file){
-  var name=file.name.toLowerCase();
-  var type=file.type;
-  if(type==='application/pdf'||name.endsWith('.pdf'))return 'pdf';
-  if(type.startsWith('image/')||/\.(jpg|jpeg|png|gif|bmp|webp)$/.test(name))return 'image';
-  if(/\.(doc|docx)$/.test(name))return 'word';
-  if(/\.(ppt|pptx)$/.test(name))return 'ppt';
-  if(/\.(xls|xlsx)$/.test(name))return 'excel';
-  if(/\.(txt|md|csv)$/.test(name))return 'text';
-  return 'other';
-}
+    function animate() {
+      step++;
+      // Reset
+      pages.forEach(function(p) {
+        p.className = 'ani-page';
+      });
+      result.classList.remove('show');
 
-// PDF页面分析
-async function analyzePdf(file){
-  var ab=await file.arrayBuffer();
-  var pdf=await pdfjsLib.getDocument({data:ab}).promise;
-  var pages=[];
-  for(var i=1;i<=pdf.numPages;i++){
-    var page=await pdf.getPage(i);
-    var ops=await page.getOperatorList();
-    var hasImg=ops.fnArray.some(function(fn){
-      return fn===pdfjsLib.OPS.paintImageXObject||fn===pdfjsLib.OPS.paintJpegXObject||fn===pdfjsLib.OPS.paintImageMaskXObject||fn===pdfjsLib.OPS.paintInlineImageXObject;
-    });
-    // 检查是否有彩色内容（通过颜色空间操作）
-    var hasColor=ops.fnArray.some(function(fn){
-      return fn===pdfjsLib.OPS.setFillRGBColor||fn===pdfjsLib.OPS.setStrokeRGBColor||fn===pdfjsLib.OPS.setFillColorN;
-    });
-    pages.push({page:i,hasImg:hasImg,hasColor:hasColor,needColor:hasImg||hasColor});
-  }
-  return pages;
-}
-
-// 图片文件：1页，判断是否彩色（通过canvas采样）
-async function analyzeImage(file){
-  return new Promise(function(resolve){
-    var img=new Image();
-    var url=URL.createObjectURL(file);
-    img.onload=function(){
-      var canvas=document.createElement('canvas');
-      canvas.width=Math.min(img.width,200);
-      canvas.height=Math.min(img.height,200);
-      var ctx=canvas.getContext('2d');
-      ctx.drawImage(img,0,0,canvas.width,canvas.height);
-      var data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-      var colorPixels=0;
-      for(var i=0;i<data.length;i+=4){
-        var r=data[i],g=data[i+1],b=data[i+2];
-        if(Math.abs(r-g)>20||Math.abs(g-b)>20||Math.abs(r-b)>20)colorPixels++;
-      }
-      var colorRatio=colorPixels/(canvas.width*canvas.height);
-      URL.revokeObjectURL(url);
-      resolve([{page:1,hasImg:true,hasColor:colorRatio>0.05,needColor:colorRatio>0.05,fileName:file.name}]);
-    };
-    img.onerror=function(){URL.revokeObjectURL(url);resolve([{page:1,hasImg:false,hasColor:false,needColor:false,fileName:file.name}]);};
-    img.src=url;
-  });
-}
-
-// 文字文件：1页，一般黑白即可
-function analyzeText(file){
-  return Promise.resolve([{page:1,hasImg:false,hasColor:false,needColor:false,fileName:file.name}]);
-}
-
-// Word/PPT/Excel：无法直接解析，用AI判断
-async function analyzeWithAI(file,purpose){
-  var ext=file.name.split('.').pop().toUpperCase();
-  var prompt='用户要打印一个'+ext+'文件，文件名：「'+file.name+'」，用途：'+purpose+'。\n\n请根据文件名和类型，推断这个文件可能包含的内容，估计总页数，并给出打印建议。\n\n直接输出JSON格式（不要markdown代码块）：\n{"estimatedPages":数字,"likelyColorPages":[页码数组],"reason":"判断依据","suggestion":"建议"}';
-  var resp=await callAI(prompt);
-  try{
-    // 清理可能的markdown
-    var json=resp.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-    return JSON.parse(json);
-  }catch(e){
-    return {estimatedPages:10,likelyColorPages:[1],reason:'无法精确解析，基于文件类型估算',suggestion:'建议预览后按实际情况设置打印颜色'};
-  }
-}
-
-async function analyze(){
-  if(!uploadedFiles.length)return;
-  var btn=document.getElementById('gbtn');
-  var ob=document.getElementById('ob');
-  var sub=document.getElementById('outSub');
-  var colorPrice=parseFloat(document.getElementById('colorPrice').value)||1.5;
-  var bwPrice=parseFloat(document.getElementById('bwPrice').value)||0.1;
-
-  btn.disabled=true;
-  sub.textContent='分析中…';
-  ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>正在逐页分析文件内容…</span></div>';
-
-  try{
-    var allResults=[];
-    for(var fi=0;fi<uploadedFiles.length;fi++){
-      var file=uploadedFiles[fi];
-      var ftype=getFileType(file);
-      var pages=[];
-
-      if(ftype==='pdf'&&typeof pdfjsLib!=='undefined'){
-        pages=await analyzePdf(file);
-        pages.forEach(function(p){p.fileName=file.name;});
-      }else if(ftype==='image'){
-        pages=await analyzeImage(file);
-      }else if(ftype==='text'){
-        pages=await analyzeText(file);
-        pages.forEach(function(p){p.fileName=file.name;});
-      }else{
-        // Word/PPT/Excel 用AI推断
-        ob.innerHTML='<div class="think"><div class="dots"><span></span><span></span><span></span></div><span>正在用 AI 分析 '+file.name+'…</span></div>';
-        var aiRes=await analyzeWithAI(file,selPurpose);
-        for(var p=1;p<=aiRes.estimatedPages;p++){
-          pages.push({page:p,hasImg:aiRes.likelyColorPages.includes(p),hasColor:aiRes.likelyColorPages.includes(p),needColor:aiRes.likelyColorPages.includes(p),fileName:file.name,aiReason:aiRes.reason});
+      // Scanning phase
+      var scanIdx = step % total;
+      for (var i = 0; i <= scanIdx && i < total; i++) {
+        if (colorIndices.indexOf(i) !== -1) {
+          pages[i].classList.add('is-color');
+        } else {
+          pages[i].classList.add('is-bw');
         }
       }
-      allResults=allResults.concat(pages);
-    }
+      pages[scanIdx].classList.add('scanning');
 
-    // 计算费用
-    var colorPages=allResults.filter(function(p){return p.needColor;});
-    var bwPages=allResults.filter(function(p){return !p.needColor;});
-    var totalPages=allResults.length;
-    var colorCost=colorPages.length*colorPrice;
-    var bwCost=bwPages.length*bwPrice;
-    var totalCost=colorCost+bwCost;
-    var savedCost=totalPages*colorPrice-totalCost;
-
-    // 渲染费用摘要
-    var html='<div class="summary-grid">'
-      +'<div class="sum-item"><div class="sum-label">总页数</div><div class="sum-val">'+totalPages+'</div></div>'
-      +'<div class="sum-item"><div class="sum-label">彩印页</div><div class="sum-val" style="color:#ff3b30">'+colorPages.length+'</div></div>'
-      +'<div class="sum-item"><div class="sum-label">黑白页</div><div class="sum-val" style="color:var(--soft)">'+bwPages.length+'</div></div>'
-      +'<div class="sum-item"><div class="sum-label">预估费用</div><div class="sum-val" style="color:var(--blue)">¥'+totalCost.toFixed(2)+'</div></div>'
-      +'</div>';
-
-    if(savedCost>0){
-      html+='<div class="save-badge">相比全彩印，节省 <strong>¥'+savedCost.toFixed(2)+'</strong>（省 '+(savedCost/(totalPages*colorPrice)*100).toFixed(0)+'%）</div>';
-    }
-
-    // 逐页建议表格
-    html+='<div style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">逐页打印建议</div>';
-    html+='<table class="rec-table"><thead><tr><th>文件</th><th>页码</th><th>建议</th><th>原因</th></tr></thead><tbody>';
-    allResults.forEach(function(r){
-      html+='<tr>'
-        +'<td style="color:var(--soft);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.fileName+'">'+r.fileName+'</td>'
-        +'<td>第 '+r.page+' 页</td>'
-        +'<td>'+(r.needColor?'<span class="badge-color">彩印</span>':'<span class="badge-bw">黑白</span>')+'</td>'
-        +'<td style="color:var(--soft)">'+(r.aiReason||r.needColor?'检测到彩色/图片元素':'纯文字内容')+'</td>'
-        +'</tr>';
-    });
-    html+='</tbody></table>';
-
-    ob.innerHTML=html;
-
-    // 请求AI给出简洁建议
-    var aiPrompt='用户要打印以下文件，用途是「'+selPurpose+'」：\n总页数'+totalPages+'页，彩印'+colorPages.length+'页，黑白'+bwPages.length+'页。\n彩印单价¥'+colorPrice+'，黑白单价¥'+bwPrice+'，总费用¥'+totalCost.toFixed(2)+'，相比全彩印节省¥'+savedCost.toFixed(2)+'。\n\n请给出3句专业的打印建议，包括：省钱建议、质量建议、打印顺序建议。不超过100字。';
-    callAI(aiPrompt).then(function(tip){
-      if(tip){
-        var tipEl=document.createElement('div');
-        tipEl.className='ai-tip';
-        tipEl.innerHTML='<strong>AI 建议：</strong>'+tip;
-        ob.appendChild(tipEl);
+      if (scanIdx === total - 1) {
+        setTimeout(function() {
+          result.classList.add('show');
+        }, 800);
       }
-    }).catch(function(){});
+    }
 
-    // 添加打印按钮
-    document.querySelector('.op').insertAdjacentHTML('beforeend',
-      '<div class="ebar"><button class="ebtn" onclick="window.print()"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>打印此建议单</button></div>'
-    );
-
-    sub.textContent='分析完成 · '+totalPages+'页';
-
-  }catch(e){
-    ob.innerHTML='<div style="padding:32px 0;text-align:center;color:var(--soft);font-size:13px">分析失败：'+e.message+'<br><span style="font-size:12px">请确认文件格式正确</span></div>';
-    sub.textContent='失败';
+    setInterval(animate, 600);
   }
-  btn.disabled=false;
-  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>重新分析';
-}
 
-// chip样式补充
-document.head.insertAdjacentHTML('beforeend','<style>.chip{padding:5px 12px;border-radius:999px;border:1.5px solid var(--bd);background:#fff;color:var(--soft);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font)}.chip.sel{background:var(--blue);border-color:var(--blue);color:#fff}.chip:hover{border-color:var(--blue-border);color:var(--blue)}</style>');
+  // ========== THUMB LIST ==========
+  function renderThumbList() {
+    var list = document.getElementById('thumbList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    PAGES.forEach(function(p, i) {
+      var item = document.createElement('div');
+      item.className = 'thumb-item' + (i === currentPage ? ' active' : '');
+      item.dataset.idx = i;
+
+      var badge = pageDecisions[i] || p.type;
+      var badgeClass = badge === 'color' ? 'color' : (badge === 'bw' ? 'bw' : 'confirm');
+
+      item.innerHTML =
+        '<div class="thumb-preview">' +
+          '<div class="tp-content">' + (i + 1) + '</div>' +
+          '<div class="thumb-badge ' + badgeClass + '"></div>' +
+        '</div>' +
+        '<div class="thumb-info">' +
+          '<div class="tn">' + String(i + 1).padStart(2, '0') + ' ' + p.title + '</div>' +
+          '<div class="ts">' + (badge === 'color' ? '建议彩印' : (badge === 'bw' ? '建议黑白' : '待确认')) + '</div>' +
+        '</div>';
+
+      item.addEventListener('click', function() {
+        currentPage = i;
+        renderThumbList();
+        renderPagePreview();
+        renderDecision();
+        // Trigger CMYK animation for color pages
+        if (pageDecisions[i] === 'color') {
+          triggerCMYK('merge');
+        } else if (pageDecisions[i] === 'bw') {
+          triggerCMYK('to-bw');
+        }
+      });
+
+      list.appendChild(item);
+    });
+  }
+
+  // ========== PAGE PREVIEW ==========
+  function renderPagePreview() {
+    var p = PAGES[currentPage];
+    document.getElementById('ppHeader').textContent = '第 ' + (currentPage + 1) + ' 页';
+    document.getElementById('ppTitle').textContent = p.title;
+    document.getElementById('ppText').textContent = p.desc;
+    document.getElementById('annotationText').textContent = p.annotation;
+
+    // Render chart mock if applicable
+    var chart = document.getElementById('ppChart');
+    chart.innerHTML = '';
+    if (p.desc.indexOf('图') !== -1 || p.desc.indexOf('chart') !== -1) {
+      var bars = 6;
+      for (var i = 0; i < bars; i++) {
+        var bar = document.createElement('div');
+        bar.className = 'pp-bar';
+        var h = 20 + Math.random() * 60;
+        bar.style.height = h + '%';
+        if (p.type === 'color') {
+          var colors = ['var(--cyan)', 'var(--magenta)', 'var(--yellow)', 'var(--ai)', 'var(--save)', 'var(--color-badge)'];
+          bar.style.background = colors[i % colors.length];
+        } else {
+          var grays = ['#666', '#888', '#aaa', '#777', '#999', '#bbb'];
+          bar.style.background = grays[i % grays.length];
+        }
+        chart.appendChild(bar);
+      }
+    }
+  }
+
+  // ========== DECISION CARD ==========
+  function renderDecision() {
+    var p = PAGES[currentPage];
+    var decision = pageDecisions[currentPage] || p.type;
+
+    document.getElementById('dcPage').textContent = '第 ' + (currentPage + 1) + ' 页 · ' + p.title;
+
+    var suggest = document.getElementById('dcSuggest');
+    suggest.className = 'dc-suggest ' + (decision === 'color' ? 'color' : (decision === 'bw' ? 'bw' : 'confirm'));
+    suggest.textContent = decision === 'color' ? '建议彩印' : (decision === 'bw' ? '建议黑白' : '建议确认');
+
+    // Reasons
+    var reasonsEl = document.getElementById('dcReasons');
+    reasonsEl.innerHTML = '';
+    p.reasons.forEach(function(r) {
+      var div = document.createElement('div');
+      div.className = 'dc-reason';
+      div.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>' + r + '</span>';
+      reasonsEl.appendChild(div);
+    });
+
+    // Confidence
+    var conf = p.conf;
+    document.getElementById('dcConfVal').textContent = conf + '%';
+    var confBar = document.getElementById('dcConfBar');
+    confBar.style.width = conf + '%';
+    confBar.className = 'dc-conf-fill ' + (conf >= 85 ? 'high' : (conf >= 60 ? 'mid' : 'low'));
+
+    // Actions
+    var keepBtn = document.getElementById('dcKeep');
+    var changeBtn = document.getElementById('dcChange');
+    keepBtn.textContent = decision === 'color' ? '保持彩色' : (decision === 'bw' ? '保持黑白' : '确认彩印');
+    changeBtn.textContent = decision === 'color' ? '改为黑白' : '改为彩色';
+  }
+
+  // ========== DECISION BUTTONS ==========
+  function initDecisionButtons() {
+    document.getElementById('dcKeep').addEventListener('click', function() {
+      // Keep current decision
+      var p = PAGES[currentPage];
+      pageDecisions[currentPage] = p.type;
+      renderThumbList();
+      renderDecision();
+      updateSequence();
+      updateBill();
+    });
+
+    document.getElementById('dcChange').addEventListener('click', function() {
+      var current = pageDecisions[currentPage];
+      pageDecisions[currentPage] = current === 'color' ? 'bw' : 'color';
+      renderThumbList();
+      renderDecision();
+      updateSequence();
+      updateBill();
+    });
+
+    document.getElementById('dcApply').addEventListener('click', function() {
+      var currentType = pageDecisions[currentPage];
+      var currentDesc = PAGES[currentPage].desc;
+      var applied = 0;
+
+      // Apply to pages with similar content type
+      PAGES.forEach(function(p, i) {
+        if (i === currentPage) return;
+        // Simple similarity: both have charts, both are text, etc.
+        var similar = false;
+        if (currentDesc.indexOf('图') !== -1 && p.desc.indexOf('图') !== -1) similar = true;
+        if (currentDesc.indexOf('文字') !== -1 && p.desc.indexOf('文字') !== -1) similar = true;
+        if (currentDesc.indexOf('表格') !== -1 && p.desc.indexOf('表格') !== -1) similar = true;
+
+        if (similar) {
+          pageDecisions[i] = currentType;
+          applied++;
+        }
+      });
+
+      if (applied > 0) {
+        alert('已应用于 ' + applied + ' 个相似页面');
+        renderThumbList();
+        updateSequence();
+        updateBill();
+      } else {
+        alert('未找到相似页面');
+      }
+    });
+  }
+
+  // ========== SEQUENCE PREVIEW ==========
+  function updateSequence() {
+    var row = document.getElementById('seqRow');
+    if (!row) return;
+    row.innerHTML = '';
+
+    PAGES.forEach(function(p, i) {
+      if (i > 0) {
+        var conn = document.createElement('div');
+        conn.className = 'seq-connector';
+        row.appendChild(conn);
+      }
+
+      var page = document.createElement('div');
+      var decision = pageDecisions[i] || p.type;
+      page.className = 'seq-page ' + (decision === 'color' ? 'is-color' : 'is-bw');
+      page.innerHTML = '<span class="sp-num">' + String(i + 1).padStart(2, '0') + '</span>';
+      row.appendChild(page);
+    });
+  }
+
+  function initSequenceToggle() {
+    var toggle = document.getElementById('seqToggle');
+    if (!toggle) return;
+    var btns = toggle.querySelectorAll('button');
+    btns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        btns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        var mode = btn.dataset.mode;
+        var pages = document.querySelectorAll('.seq-page');
+        pages.forEach(function(p) {
+          if (mode === 'effect') {
+            p.classList.add('print-effect');
+          } else {
+            p.classList.remove('print-effect');
+          }
+        });
+      });
+    });
+  }
+
+  // ========== BILL UPDATE ==========
+  function updateBill() {
+    var colorCount = 0, bwCount = 0, confirmCount = 0;
+    PAGES.forEach(function(p, i) {
+      var d = pageDecisions[i] || p.type;
+      if (d === 'color') colorCount++;
+      else if (d === 'bw') bwCount++;
+      else confirmCount++;
+    });
+
+    var total = PAGES.length;
+    var bwPrice = parseFloat(document.getElementById('bwPrice').value) || 0.20;
+    var colorPrice = parseFloat(document.getElementById('colorPrice').value) || 1.00;
+
+    var allColorCost = total * colorPrice;
+    var mixedCost = colorCount * colorPrice + bwCount * bwPrice + confirmCount * bwPrice;
+    var saved = allColorCost - mixedCost;
+    var savedPct = allColorCost > 0 ? (saved / allColorCost * 100) : 0;
+
+    // Update bill grid
+    var billItems = document.querySelectorAll('.bill-item .bi-val');
+    if (billItems.length >= 4) {
+      billItems[0].textContent = total;
+      billItems[1].textContent = colorCount;
+      billItems[2].textContent = bwCount;
+      billItems[3].textContent = confirmCount;
+    }
+
+    // Update comparison
+    var billRows = document.querySelectorAll('.bill-compare .bill-row');
+    if (billRows.length >= 3) {
+      billRows[0].innerHTML = '<span>全部彩印 (' + total + '页 × ¥' + colorPrice.toFixed(2) + ')</span><span>¥' + allColorCost.toFixed(2) + '</span>';
+      billRows[1].innerHTML = '<span>智能混合 (' + colorCount + '彩 × ¥' + colorPrice.toFixed(2) + ' + ' + bwCount + '黑白 × ¥' + bwPrice.toFixed(2) + ' + ' + confirmCount + '确认 × ¥' + bwPrice.toFixed(2) + ')</span><span>¥' + mixedCost.toFixed(2) + '</span>';
+      billRows[2].innerHTML = '<span>本次节省</span><span style="color:var(--save)">¥' + saved.toFixed(2) + '</span>';
+    }
+
+    // Update percentage
+    var pctEl = document.querySelector('.bs-pct');
+    if (pctEl) pctEl.textContent = savedPct.toFixed(1) + '%';
+
+    // Update eco
+    var ecoEl = document.querySelector('.bill-eco');
+    if (ecoEl) ecoEl.textContent = '🌱 减少 ' + (bwCount + confirmCount) + ' 页不必要的彩色耗材使用';
+  }
+
+  // ========== CMYK ANIMATION ==========
+  var cmykTimer = null;
+  function triggerCMYK(mode) {
+    var demo = document.getElementById('cmykDemo');
+    if (!demo) return;
+
+    // Reset
+    demo.className = 'cmyk-demo';
+
+    // Check reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    if (mode === 'merge') {
+      // Play: separate -> merge
+      setTimeout(function() { demo.classList.add('play'); }, 100);
+      setTimeout(function() { demo.classList.remove('play'); demo.classList.add('merge'); }, 800);
+      setTimeout(function() { demo.className = 'cmyk-demo'; }, 2000);
+    } else if (mode === 'to-bw') {
+      // Play: separate -> merge -> CMY fade, keep K
+      setTimeout(function() { demo.classList.add('play'); }, 100);
+      setTimeout(function() { demo.classList.remove('play'); demo.classList.add('merge'); }, 800);
+      setTimeout(function() { demo.classList.remove('merge'); demo.classList.add('to-bw'); }, 1400);
+      setTimeout(function() { demo.className = 'cmyk-demo'; }, 2500);
+    }
+  }
+
+  // ========== UPLOAD SIMULATION ==========
+  function initUpload() {
+    var dropZone = document.getElementById('mainDropZone');
+    var fileInput = document.getElementById('mainFileInput');
+    var fileStatus = document.getElementById('fileStatus');
+    var analyzeBtn = document.getElementById('analyzeBtn');
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      dropZone.classList.add('drag');
+    });
+    dropZone.addEventListener('dragleave', function() {
+      dropZone.classList.remove('drag');
+    });
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('drag');
+      showFileStatus();
+    });
+    fileInput.addEventListener('change', function() {
+      if (fileInput.files.length > 0) {
+        showFileStatus();
+      }
+    });
+
+    function showFileStatus() {
+      fileStatus.classList.add('show');
+      simulateProgress();
+    }
+
+    function simulateProgress() {
+      var steps = document.querySelectorAll('.fs-step');
+      var pcts = [document.getElementById('fsPct1'), document.getElementById('fsPct2'), document.getElementById('fsPct3')];
+      var progress = [0, 0, 0];
+      var current = 0;
+
+      analyzeBtn.disabled = true;
+
+      var interval = setInterval(function() {
+        progress[current] += Math.random() * 15 + 5;
+        if (progress[current] >= 100) {
+          progress[current] = 100;
+          steps[current].classList.remove('active');
+          steps[current].classList.add('done');
+          current++;
+          if (current < 3) {
+            steps[current].classList.add('active');
+          }
+        }
+        if (pcts[current]) pcts[current].textContent = Math.min(100, Math.round(progress[current])) + '%';
+
+        if (current >= 3) {
+          clearInterval(interval);
+          analyzeBtn.disabled = false;
+          analyzeBtn.style.opacity = '1';
+        }
+      }, 300);
+    }
+
+    analyzeBtn.addEventListener('click', function() {
+      // Scroll to demo
+      document.getElementById('demo').scrollIntoView({behavior: 'smooth'});
+    });
+  }
+
+  // ========== HERO BUTTONS ==========
+  function initHeroButtons() {
+    document.getElementById('heroUpload').addEventListener('click', function() {
+      document.getElementById('upload').scrollIntoView({behavior: 'smooth'});
+    });
+    document.getElementById('heroExample').addEventListener('click', function() {
+      document.getElementById('demo').scrollIntoView({behavior: 'smooth'});
+    });
+  }
+
+  // ========== PURPOSE CHIPS ==========
+  function initPurpose() {
+    var chips = document.querySelectorAll('.purpose-chip');
+    chips.forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        chips.forEach(function(c) { c.classList.remove('active'); });
+        chip.classList.add('active');
+        currentPurpose = chip.dataset.purpose;
+        applyPurposeThreshold();
+      });
+    });
+  }
+
+  function applyPurposeThreshold() {
+    var purpose = PURPOSES[currentPurpose];
+    if (!purpose) return;
+
+    // Adjust decisions based on purpose
+    PAGES.forEach(function(p, i) {
+      var baseType = p.type;
+      var conf = p.conf;
+
+      // For pages with confirm_alt, purpose affects the decision
+      if (p.confirm_alt) {
+        if (currentPurpose === 'presentation') {
+          pageDecisions[i] = 'color';
+        } else if (currentPurpose === 'archive') {
+          pageDecisions[i] = 'bw';
+        } else if (currentPurpose === 'daily') {
+          pageDecisions[i] = 'bw';
+        } else {
+          pageDecisions[i] = baseType === 'confirm' ? 'confirm' : baseType;
+        }
+      }
+    });
+
+    renderThumbList();
+    renderDecision();
+    updateSequence();
+    updateBill();
+  }
+
+  // ========== PRICE TOGGLE ==========
+  function initPriceToggle() {
+    var toggle = document.getElementById('priceToggle');
+    var body = document.getElementById('priceBody');
+    if (!toggle || !body) return;
+
+    toggle.addEventListener('click', function() {
+      toggle.classList.toggle('open');
+      body.classList.toggle('show');
+    });
+
+    // Update bill when prices change
+    var bwPrice = document.getElementById('bwPrice');
+    var colorPrice = document.getElementById('colorPrice');
+    if (bwPrice) bwPrice.addEventListener('change', updateBill);
+    if (colorPrice) colorPrice.addEventListener('change', updateBill);
+  }
+
+  // ========== INIT ==========
+  function init() {
+    initPrinterAnimation();
+    renderThumbList();
+    renderPagePreview();
+    renderDecision();
+    updateSequence();
+    initDecisionButtons();
+    initSequenceToggle();
+    initUpload();
+    initHeroButtons();
+    initPurpose();
+    initPriceToggle();
+
+    // Trigger CMYK on first color page hover
+    var firstColorThumb = document.querySelector('.thumb-badge.color');
+    if (firstColorThumb) {
+      var parent = firstColorThumb.closest('.thumb-item');
+      if (parent) {
+        parent.addEventListener('mouseenter', function() {
+          triggerCMYK('merge');
+        }, {once: true});
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 </script>
 </body>
 </html>
