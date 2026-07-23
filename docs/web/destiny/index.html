@@ -473,6 +473,27 @@ transform:translateX(-2px);
 .score-context-card .sc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
 .score-context-card .sc-tag{font-size:10px;padding:2px 7px;border-radius:12px;background:rgba(154,143,200,0.1);border:1px solid rgba(154,143,200,0.25);color:#9A8FC8}
 .score-right-panel{flex:1;display:flex;flex-direction:column;gap:clamp(10px,1.5vh,14px);min-width:0;overflow-y:auto}
+
+/* === 首页 Logo 滚动背景墙 === */
+.logo-wall{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+  -webkit-mask-image:radial-gradient(ellipse 75% 85% at 50% 50%, transparent 25%, black 65%);
+  mask-image:radial-gradient(ellipse 75% 85% at 50% 50%, transparent 25%, black 65%);
+}
+.logo-row{
+  display:flex;gap:18px;align-items:center;width:max-content;
+  margin-bottom:14px;
+  animation:scrollLeft var(--spd,40s) linear infinite;
+}
+.logo-row:nth-child(even){animation-direction:reverse}
+@keyframes scrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.logo-item{
+  width:54px;height:54px;border-radius:13px;flex-shrink:0;overflow:hidden;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-item img{width:40px;height:40px;object-fit:contain;border-radius:6px}
+
 </style>
 </head>
 <body>
@@ -486,6 +507,7 @@ transform:translateX(-2px);
 
 <!-- 幕0 首页 -->
 <div class="scene active" id="scene0">
+<div class="logo-wall" id="logoWall"></div>
 <div class="mingpan-bg"><svg viewBox="0 0 320 320" id="mingpanSvg"></svg></div>
 <div class="hero-content">
 <h1 class="serif">你的产品，命里缺什么？</h1>
@@ -988,6 +1010,7 @@ recognizedDayzhu:''
 // === INIT ===
 document.addEventListener('DOMContentLoaded',()=>{
 drawMingpan();drawMiniMingpan();
+buildLogoWall();
 setupPlaceholderRotation();
 setupProductRecognition();
 });
@@ -1770,6 +1793,53 @@ document.getElementById('gaimingResult').innerHTML=`
 <div class="gaiming-task"><strong>🚀 下阶段：</strong>${g.next}</div>`;
 },700);
 }
+
+// === Logo 滚动背景墙 ===
+(function buildLogoWall(){
+const DOMAINS=[
+  ['chatgpt.com','ChatGPT'],['claude.ai','Claude'],['gemini.google.com','Gemini'],
+  ['doubao.com','豆包'],['kimi.ai','Kimi'],['deepseek.com','DeepSeek'],
+  ['perplexity.ai','Perplexity'],['cursor.sh','Cursor'],['figma.com','Figma'],
+  ['notion.so','Notion'],['github.com','GitHub'],['linear.app','Linear'],
+  ['xiaohongshu.com','小红书'],['douyin.com','抖音'],['bilibili.com','B站'],
+  ['weibo.com','微博'],['zhihu.com','知乎'],['iqiyi.com','爱奇艺'],
+  ['netflix.com','Netflix'],['spotify.com','Spotify'],['music.163.com','网易云'],
+  ['discord.com','Discord'],['slack.com','Slack'],['linkedin.com','LinkedIn'],
+  ['taobao.com','淘宝'],['jd.com','京东'],['pinduoduo.com','拼多多'],
+  ['meituan.com','美团'],['eleme.cn','饿了么'],['trip.com','携程'],
+  ['airbnb.com','Airbnb'],['didiglobal.com','滴滴'],['amap.com','高德'],
+  ['duolingo.com','Duolingo'],['gotokeep.com','Keep'],['geekbang.org','极客时间'],
+  ['feishu.cn','飞书'],['dingtalk.com','钉钉'],['zoom.us','Zoom'],
+  ['vercel.com','Vercel'],['stripe.com','Stripe'],['atlassian.com','Jira'],
+  ['canva.com','Canva'],['airtable.com','Airtable'],['miro.com','Miro'],
+  ['steam.com','Steam'],['roblox.com','Roblox'],['minecraft.net','Minecraft'],
+  ['youtube.com','YouTube'],['instagram.com','Instagram'],['tiktok.com','TikTok'],
+  ['midjourney.com','Midjourney'],['lovable.dev','Lovable'],['dify.ai','Dify'],
+  ['character.ai','Character AI'],['obsidian.md','Obsidian'],['todoist.com','Todoist'],
+  ['salesforce.com','Salesforce'],['hubspot.com','HubSpot'],['amazon.com','Amazon'],
+  ['twitter.com','Twitter'],['x.ai','Grok'],['alipay.com','支付宝'],
+];
+const wall=document.getElementById('logoWall');
+if(!wall)return;
+const ROW_N=5,PER_ROW=Math.ceil(DOMAINS.length/ROW_N);
+const speeds=[38,50,44,55,42];
+const opacities=[0.38,0.28,0.35,0.25,0.32];
+for(let r=0;r<ROW_N;r++){
+  const row=document.createElement('div');
+  row.className='logo-row';
+  row.style.setProperty('--spd',speeds[r]+'s');
+  row.style.opacity=opacities[r];
+  let items='';
+  const slice=[...DOMAINS.slice(r*PER_ROW,(r+1)*PER_ROW),...DOMAINS.slice(0,4)];
+  const doubled=[...slice,...slice]; // 无缝循环
+  doubled.forEach(([d,n])=>{
+    items+=`<div class="logo-item" title="${n}"><img src="https://favicon.im/${d}?larger=true" alt="${n}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`;
+  });
+  row.innerHTML=items;
+  wall.appendChild(row);
+}
+})();
+
 </script>
 </body>
 </html>
