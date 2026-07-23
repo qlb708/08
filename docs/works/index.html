@@ -357,131 +357,819 @@
   overflow: hidden !important;
   user-select: none;
 }
-.t3d-header { flex-shrink: 0; margin-bottom: 10px; }
-.t3d-title  { font-size: clamp(26px,3vw,40px); font-weight: 860; letter-spacing: -.05em; margin: 0 0 4px; color: #182843; }
-.t3d-title em { font-style: normal; color: #4a7bff; }
-.t3d-sub    { margin: 0 0 6px; color: #64748d; font-size: 13px; }
-.t3d-hint   { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #8fa4bc; flex-wrap: wrap; }
-.t3d-hint-key { background: rgba(74,123,255,.10); border: 1px solid rgba(74,123,255,.22); border-radius: 6px; padding: 2px 7px; font-size: 10px; color: #4a7bff; font-weight: 700; }
-
-/* 舞台：撑满剩余高度，是事件接收主区域 */
-.t3d-stage  {
-  flex: 1; min-height: 0; width: 100%;
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-  perspective: 900px;
-  perspective-origin: 50% 50%;
-  cursor: grab;
-  overflow: visible;
+.t3d-stage{
+  flex:1;
+  min-height:500px;
+  position:relative;
+  perspective:1200px;
+  perspective-origin:50% 50%;
+  cursor:grab;
+  user-select:none;
 }
-.t3d-stage:active { cursor: grabbing; }
+.t3d-stage:active{cursor:grabbing}
 
-/* 单张卡牌容器 */
-.t3d-card {
-  position: absolute;
-  width: 230px; height: 384px;
-  top: 0; left: 0;
-  transform-style: preserve-3d;
-  transition: transform .50s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
-  cursor: pointer;
-  will-change: transform;
+/* ===== Card Base ===== */
+.t3d-card{
+  position:absolute;
+  width:230px;
+  height:384px;
+  border-radius:20px;
+  overflow:hidden;
+  cursor:pointer;
+  will-change:transform;
+  transition:transform .5s cubic-bezier(.22,.8,.2,1),filter .4s,opacity .4s;
+  transform-style:preserve-3d;
 }
-
-/* 正 / 背面通用 */
-.t3d-face {
-  position: absolute; inset: 0;
-  border-radius: 22px;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  overflow: hidden;
+.card-inner{
+  width:100%;
+  height:100%;
+  position:relative;
+  transition:transform .3s ease,box-shadow .3s ease;
+  border-radius:20px;
+  overflow:hidden;
+}
+.t3d-card.is-center:hover .card-inner{
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(55,83,130,.2);
 }
 
-/* 正面 */
-.t3d-front {
-  background: #fff;
-  border: 1px solid rgba(210,226,255,.9);
-  box-shadow: 0 12px 40px rgba(55,83,130,.16), 0 2px 8px rgba(55,83,130,.08);
-  display: flex; flex-direction: column;
+/* ===== Card 0: Notebook (每日Todo复盘) ===== */
+.t3d-card--nb{
+  background:#faf8f3;
+  background-image:repeating-linear-gradient(transparent,transparent 27px,#e8e4dc 27px,#e8e4dc 28px);
+  border:1px solid #e8e4dc;
+  box-shadow:0 8px 32px rgba(55,83,130,.12);
 }
-.t3d-hero {
-  position: relative; height: 168px; flex-shrink: 0; overflow: hidden;
-  border-radius: 22px 22px 0 0;
+.nb-binding{
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:28px;
+  background:linear-gradient(90deg,#d4c9b8,#e8ddd0);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-evenly;
+  padding:40px 0;
+  z-index:2;
 }
-.t3d-hero img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform .6s cubic-bezier(.22,.8,.2,1);
+.nb-hole{
+  width:10px;height:10px;
+  border-radius:50%;
+  background:#c4b8a5;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.2);
 }
-.t3d-card:hover .t3d-hero img { transform: scale(1.06); }
-.t3d-hero::after {
-  content:''; position:absolute; inset:0;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%);
+.nb-content{
+  margin-left:36px;
+  padding:28px 16px 16px 8px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
 }
-.t3d-hero-tag {
-  position: absolute; top: 12px; left: 12px; z-index: 2;
-  padding: 4px 11px; border-radius: 999px;
-  font-size: 10px; font-weight: 750; letter-spacing: .04em;
-  background: rgba(255,255,255,.92); color: #3a4c6b;
-  backdrop-filter: blur(6px); box-shadow: 0 2px 8px rgba(0,0,0,.12);
+.nb-title{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
+  color:#8fa4bc;
+  text-transform:uppercase;
+  margin-bottom:20px;
 }
-.t3d-hero-icon {
-  position: absolute; right: 12px; top: 12px; z-index: 2;
-  width: 34px; height: 34px; border-radius: 11px;
-  display: grid; place-items: center; font-size: 17px;
-  background: rgba(255,255,255,.9); backdrop-filter: blur(6px);
-  box-shadow: 0 2px 8px rgba(0,0,0,.14);
+.nb-item{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:12px;
+  color:#4a5568;
+  padding:8px 0;
+  line-height:1.5;
+  position:relative;
 }
-.t3d-hero-name {
-  position: absolute; left: 14px; bottom: 11px; right: 14px; z-index: 2;
-  color: #fff; font-size: 17px; font-weight: 820; letter-spacing: -.02em;
-  line-height: 1.25; text-shadow: 0 2px 10px rgba(0,0,0,.4);
+.nb-check{
+  width:14px;height:14px;
+  border-radius:3px;
+  border:1.5px solid #b8c8d8;
+  flex-shrink:0;
+  position:relative;
+  transition:all .3s ease;
+  margin-top:1px;
 }
-.t3d-body { flex: 1; padding: 14px 16px 15px; display: flex; flex-direction: column; gap: 8px; min-height:0; }
-.t3d-desc-txt { font-size: 12px; color: #64748d; line-height: 1.65; flex: 1; overflow: hidden; }
-.t3d-cta {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  margin-top: auto; padding: 10px; border-radius: 13px;
-  font-size: 13px; font-weight: 750; color: #fff; cursor: pointer;
-  transition: transform .2s, box-shadow .2s;
+.nb-check.checked{
+  border-color:#73b99d;
+  background:#73b99d;
 }
-.t3d-card:hover .t3d-cta { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(74,123,255,.28); }
-.t3d-flip-btn {
-  position: absolute; right: 12px; bottom: 12px; z-index: 3;
-  width: 30px; height: 30px; border-radius: 50%;
-  background: rgba(255,255,255,.9); backdrop-filter: blur(6px);
-  border: 1px solid rgba(74,123,255,.2);
-  display: grid; place-items: center; font-size: 14px;
-  cursor: pointer; transition: transform .2s, background .2s;
-  color: #4a7bff; box-shadow: 0 2px 8px rgba(0,0,0,.1);
+.nb-check.checked::after{
+  content:'✓';
+  color:white;
+  font-size:10px;
+  position:absolute;
+  top:-1px;left:1px;
+  font-weight:700;
 }
-.t3d-flip-btn:hover { transform: scale(1.15); }
+.nb-cursor{
+  display:inline-block;
+  width:1px;height:12px;
+  background:#4a7bff;
+  animation:cursor-blink 1s infinite;
+  vertical-align:middle;
+  margin-left:2px;
+}
+@keyframes cursor-blink{
+  0%,50%{opacity:1}
+  51%,100%{opacity:0}
+}
+.nb-sticky{
+  margin-top:auto;
+  background:#fef3c7;
+  padding:10px 12px;
+  border-radius:4px;
+  font-size:11px;
+  color:#92400e;
+  font-weight:600;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  transform:translateY(20px);
+  opacity:0;
+  transition:all .4s ease;
+}
+.t3d-card--nb.is-center:hover .nb-sticky{
+  transform:translateY(0);
+  opacity:1;
+}
+.t3d-card--nb.is-center:hover .nb-item.pending .nb-check{
+  border-color:#73b99d;
+  background:#73b99d;
+}
+.t3d-card--nb.is-center:hover .nb-item.pending .nb-check::after{
+  content:'✓';
+  color:white;
+  font-size:10px;
+  position:absolute;
+  top:-1px;left:1px;
+  font-weight:700;
+  animation:check-pop .3s ease;
+}
+@keyframes check-pop{
+  0%{transform:scale(0)}
+  50%{transform:scale(1.2)}
+  100%{transform:scale(1)}
+}
+.nb-cta{
+  position:absolute;
+  bottom:12px;right:12px;
+  background:#73b99d;
+  color:white;
+  font-size:10px;
+  font-weight:700;
+  padding:6px 12px;
+  border-radius:4px;
+  opacity:0;
+  transform:translateY(8px);
+  transition:all .3s ease;
+}
+.t3d-card--nb.is-center:hover .nb-cta{
+  opacity:1;
+  transform:translateY(0);
+}
 
-/* 背面 */
-.t3d-back {
-  transform: rotateY(180deg);
-  transform: rotateY(180deg);
-  background: linear-gradient(145deg, #1a2540 0%, #0f1829 60%, #1a1f38 100%);
-  border: 1px solid rgba(100,140,220,.25);
-  box-shadow: 0 8px 40px rgba(10,20,60,.40);
-  display: flex; flex-direction: column; padding: 20px 18px;
-  color: #e8f0ff;
+/* ===== Card 1: Printer (打印机识别黑白) ===== */
+.t3d-card--pr{
+  background:linear-gradient(180deg,#e8eef5 0%,#d5dfe8 100%);
+  border:1px solid #c5d0dc;
+  box-shadow:0 8px 32px rgba(55,83,130,.15);
 }
-.t3d-back-title { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: #7eb3ff; margin: 0 0 14px; }
-.t3d-back-rows  { display: flex; flex-direction: column; gap: 12px; flex: 1; }
-.t3d-back-row   { display: flex; flex-direction: column; gap: 4px; }
-.t3d-back-label { font-size: 9px; font-weight: 750; letter-spacing: .12em; color: rgba(180,210,255,.55); }
-.t3d-back-val   { font-size: 11px; line-height: 1.65; color: #c8deff; }
-.t3d-back-close {
-  align-self: flex-end; margin-top: 10px;
-  padding: 6px 14px; border-radius: 999px; font-size: 11px; font-weight: 700;
-  background: rgba(120,170,255,.15); border: 1px solid rgba(120,170,255,.30);
-  color: #90c0ff; cursor: pointer; transition: background .2s;
+.pr-screen{
+  position:absolute;
+  top:20px;left:20px;right:20px;
+  height:80px;
+  background:#1a2332;
+  border-radius:6px;
+  border:2px solid #2a3a4a;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Courier New',monospace;
+  font-size:13px;
+  color:#4a9;
+  font-weight:700;
 }
-.t3d-back-close:hover { background: rgba(120,170,255,.30); }
+.pr-scanline{
+  position:absolute;
+  left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#4a9,transparent);
+  animation:scanline 3s linear infinite;
+}
+@keyframes scanline{
+  0%{top:0}
+  100%{top:100%}
+}
+.pr-leds{
+  position:absolute;
+  top:110px;left:20px;
+  display:flex;
+  gap:8px;
+}
+.pr-led{
+  width:8px;height:8px;
+  border-radius:50%;
+  animation:led-blink 2s ease infinite;
+}
+.pr-led-r{background:#e55;animation-delay:0s}
+.pr-led-g{background:#5e5;animation-delay:.5s}
+@keyframes led-blink{
+  0%,50%{opacity:1;box-shadow:0 0 8px currentColor}
+  51%,100%{opacity:.4;box-shadow:none}
+}
+.pr-body{
+  position:absolute;
+  top:130px;left:20px;right:20px;
+  height:120px;
+  background:linear-gradient(180deg,#b8c5d5,#a0b0c0);
+  border-radius:8px;
+  border:2px solid #8a9aaa;
+}
+.pr-slot{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:80%;height:4px;
+  background:#2a3a4a;
+  border-radius:2px;
+}
+.pr-output{
+  position:absolute;
+  bottom:20px;left:20px;right:20px;
+  height:80px;
+  overflow:hidden;
+}
+.pr-paper{
+  width:100%;height:100%;
+  background:white;
+  border:1px solid #d0d8e0;
+  border-radius:4px;
+  transform:translateY(100%);
+  transition:transform .5s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+}
+.t3d-card--pr.is-center:hover .pr-paper{
+  transform:translateY(0);
+}
+.t3d-card--pr.is-center:hover .pr-screen{
+  color:#f80;
+}
+.t3d-card--pr.is-center:hover .pr-screen::after{
+  content:'B&W';
+}
+.pr-cta{
+  position:absolute;
+  bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(8px);
+  background:#5aaeff;
+  color:white;
+  font-size:10px;
+  font-weight:700;
+  padding:8px 16px;
+  border-radius:6px;
+  opacity:0;
+  transition:all .3s ease;
+  white-space:nowrap;
+}
+.t3d-card--pr.is-center:hover .pr-cta{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
 
-/* 指示点 */
-.t3d-dots { display: flex; gap: 8px; justify-content: center; padding-top: 12px; flex-shrink: 0; }
-.t3d-dot  { width: 7px; height: 7px; border-radius: 50%; background: rgba(74,123,255,.22); transition: all .3s; cursor: pointer; border: none; padding: 0; }
-.t3d-dot.active { background: #4a7bff; transform: scale(1.3); box-shadow: 0 0 8px rgba(74,123,255,.45); }
+/* ===== Card 2: Compare (AI多方案对比) ===== */
+.t3d-card--cp{
+  background:linear-gradient(135deg,#f0f5ff,#e8f0ff);
+  border:1px solid #d0dff0;
+  box-shadow:0 8px 32px rgba(55,83,130,.12);
+}
+.cp-panels{
+  position:absolute;
+  top:40px;left:20px;right:20px;
+  height:240px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:center;
+}
+.cp-panel{
+  width:60px;height:200px;
+  background:white;
+  border-radius:8px;
+  border:2px solid #d0dff0;
+  padding:8px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  transition:all .4s ease;
+  position:relative;
+}
+.cp-label{
+  font-size:18px;
+  font-weight:800;
+  text-align:center;
+  color:#4a7bff;
+}
+.cp-bar{
+  flex:1;
+  background:linear-gradient(180deg,#e0e8ff,#c0d0ff);
+  border-radius:4px;
+  position:relative;
+}
+.cp-bar::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:60%;
+  background:linear-gradient(180deg,#4a7bff,#3a6bef);
+  border-radius:4px;
+}
+.cp-panel.cp-b{
+  border-color:#ff9a6c;
+}
+.cp-panel.cp-b .cp-label{
+  color:#ff7040;
+}
+.cp-panel.cp-b .cp-bar::after{
+  background:linear-gradient(180deg,#ff9a6c,#ed7040);
+}
+.cp-recommend{
+  position:absolute;
+  top:-20px;left:50%;
+  transform:translateX(-50%);
+  background:#ff9a6c;
+  color:white;
+  font-size:9px;
+  font-weight:700;
+  padding:3px 8px;
+  border-radius:4px;
+  white-space:nowrap;
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.t3d-card--cp.is-center:hover .cp-recommend{
+  opacity:1;
+}
+.t3d-card--cp.is-center:hover .cp-panel{
+  transform:translateY(-8px);
+}
+.t3d-card--cp.is-center:hover .cp-panel.cp-b{
+  transform:translateY(-16px) scale(1.05);
+  box-shadow:0 8px 24px rgba(255,112,64,.3);
+}
+.cp-text{
+  position:absolute;
+  bottom:60px;left:20px;right:20px;
+  text-align:center;
+  font-size:11px;
+  color:#64748d;
+  font-weight:600;
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.t3d-card--cp.is-center:hover .cp-text{
+  opacity:1;
+}
+.cp-cta{
+  position:absolute;
+  bottom:20px;left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,#ff9a6c,#ed7040);
+  color:white;
+  font-size:10px;
+  font-weight:700;
+  padding:8px 16px;
+  border-radius:20px;
+  opacity:0;
+  transition:all .3s ease;
+}
+.t3d-card--cp.is-center:hover .cp-cta{
+  opacity:1;
+}
+
+/* ===== Card 3: Ticket (FATE TRIP) ===== */
+.t3d-card--tk{
+  background:linear-gradient(135deg,#fff5eb,#ffe8d5);
+  border:1px solid #f0d0b0;
+  box-shadow:0 8px 32px rgba(55,83,130,.12);
+  position:relative;
+}
+.tk-ticket{
+  position:absolute;
+  inset:20px;
+  background:white;
+  border-radius:8px;
+  border:2px solid #f0d0b0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.tk-header{
+  padding:12px 16px;
+  background:linear-gradient(135deg,#ff9a6c,#ed7040);
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.tk-brand{
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.05em;
+}
+.tk-class{
+  font-size:9px;
+  opacity:.8;
+}
+.tk-dest{
+  padding:16px;
+  border-bottom:2px dashed #f0d0b0;
+}
+.tk-dest-label{
+  display:block;
+  font-size:9px;
+  color:#8a9aaa;
+  letter-spacing:.1em;
+  margin-bottom:4px;
+}
+.tk-dest-name{
+  font-size:20px;
+  font-weight:800;
+  color:#ed7040;
+  animation:dest-cycle 4s ease infinite;
+}
+@keyframes dest-cycle{
+  0%,25%{content:'Kyoto'}
+  26%,50%{content:'Paris'}
+  51%,75%{content:'NYC'}
+  76%,100%{content:'Bali'}
+}
+.tk-fields{
+  padding:12px 16px;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+}
+.tk-field{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.tk-fl{
+  font-size:8px;
+  color:#8a9aaa;
+  letter-spacing:.1em;
+}
+.tk-fv{
+  font-size:13px;
+  font-weight:700;
+  color:#4a5568;
+}
+.tk-route{
+  margin-top:auto;
+  padding:12px 16px;
+  border-top:2px dashed #f0d0b0;
+  position:relative;
+  height:60px;
+  overflow:hidden;
+}
+.tk-route svg{
+  width:100%;height:100%;
+}
+.tk-route-path{
+  stroke:#ed7040;
+  stroke-width:2;
+  fill:none;
+  stroke-dasharray:200;
+  stroke-dashoffset:200;
+  animation:route-draw 3s ease infinite;
+}
+@keyframes route-draw{
+  0%{stroke-dashoffset:200}
+  50%{stroke-dashoffset:0}
+  100%{stroke-dashoffset:-200}
+}
+.tk-plane{
+  position:absolute;
+  top:50%;left:16px;
+  font-size:16px;
+  transition:all .5s ease;
+}
+.t3d-card--tk.is-center:hover .tk-plane{
+  left:calc(100% - 32px);
+}
+.tk-boarding{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.2em;
+  color:#ed7040;
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.t3d-card--tk.is-center:hover .tk-boarding{
+  opacity:.3;
+}
+.tk-cta{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  background:linear-gradient(135deg,#ff9a6c,#ed7040);
+  color:white;
+  font-size:11px;
+  font-weight:700;
+  padding:12px;
+  text-align:center;
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.t3d-card--tk.is-center:hover .tk-cta{
+  opacity:1;
+}
+
+/* ===== Card 4: Tarot (手势塔罗) ===== */
+.t3d-card--tr{
+  background:linear-gradient(135deg,#e8daf0,#d5c5e0);
+  border:2px solid #c0b0d0;
+  box-shadow:0 8px 32px rgba(100,80,130,.2);
+}
+.tr-border{
+  position:absolute;
+  inset:12px;
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:12px;
+  pointer-events:none;
+}
+.tr-border-inner{
+  position:absolute;
+  inset:20px;
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:8px;
+  pointer-events:none;
+}
+.tr-symbol{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:80px;
+  color:rgba(255,255,255,.8);
+  text-shadow:0 0 20px rgba(255,255,255,.5);
+  transition:transform .3s ease;
+}
+.tr-corner{
+  position:absolute;
+  font-size:20px;
+  color:rgba(255,255,255,.6);
+}
+.tr-corner.tl{top:24px;left:24px}
+.tr-corner.tr{top:24px;right:24px}
+.tr-corner.bl{bottom:24px;left:24px}
+.tr-corner.br{bottom:24px;right:24px}
+.tr-title{
+  position:absolute;
+  bottom:80px;left:0;right:0;
+  text-align:center;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.15em;
+  color:rgba(255,255,255,.9);
+}
+.tr-numeral{
+  position:absolute;
+  bottom:60px;left:0;right:0;
+  text-align:center;
+  font-size:11px;
+  color:rgba(255,255,255,.6);
+  letter-spacing:.1em;
+}
+.tr-glow{
+  position:absolute;
+  inset:0;
+  border-radius:20px;
+  box-shadow:inset 0 0 30px rgba(255,255,255,.3);
+  animation:edge-glow 3s ease infinite;
+  pointer-events:none;
+}
+@keyframes edge-glow{
+  0%,100%{opacity:.5}
+  50%{opacity:1}
+}
+.t3d-card--tr.is-center:hover .tr-symbol{
+  transform:translate(-50%,-50%) scale(1.1);
+}
+.tr-cta{
+  position:absolute;
+  top:24px;right:24px;
+  background:rgba(255,255,255,.3);
+  backdrop-filter:blur(10px);
+  color:white;
+  font-size:9px;
+  font-weight:700;
+  padding:6px 10px;
+  border-radius:4px;
+  border:1px solid rgba(255,255,255,.5);
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.t3d-card--tr.is-center:hover .tr-cta{
+  opacity:1;
+}
+
+/* ===== Card 5: Destiny (产品命理局) ===== */
+.t3d-card--dy{
+  background:linear-gradient(135deg,#fdf5f0,#f8ebe0);
+  border:1px solid #e8d0c0;
+  box-shadow:0 8px 32px rgba(130,80,60,.12);
+}
+.dy-stamp{
+  position:absolute;
+  top:16px;right:16px;
+  background:#c94455;
+  color:white;
+  font-size:9px;
+  font-weight:700;
+  padding:4px 8px;
+  border-radius:3px;
+  letter-spacing:.05em;
+}
+.dy-bagua{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:140px;height:140px;
+}
+.dy-ring{
+  position:absolute;
+  inset:0;
+  border:2px solid #c94455;
+  border-radius:50%;
+  animation:ring-breathe 4s ease infinite;
+}
+@keyframes ring-breathe{
+  0%,100%{transform:scale(1);opacity:.6}
+  50%{transform:scale(1.05);opacity:1}
+}
+.dy-yinyang{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:48px;
+  color:#c94455;
+  animation:yinyang-sway 5s ease infinite;
+}
+@keyframes yinyang-sway{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  50%{transform:translate(-50%,-50%) rotate(10deg)}
+}
+.dy-trigram{
+  position:absolute;
+  font-size:16px;
+  color:#c94455;
+  opacity:.5;
+  transition:all .3s ease;
+}
+.dy-trigram.glow{
+  opacity:1;
+  text-shadow:0 0 8px rgba(201,68,85,.5);
+}
+.dy-words{
+  position:absolute;
+  bottom:80px;left:20px;right:20px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  justify-content:center;
+}
+.dy-word{
+  font-size:10px;
+  color:#8a6050;
+  padding:3px 8px;
+  background:rgba(201,68,85,.08);
+  border-radius:3px;
+  font-weight:600;
+}
+.dy-seal{
+  position:absolute;
+  bottom:20px;left:50%;
+  transform:translateX(-50%);
+  background:#c94455;
+  color:white;
+  font-size:11px;
+  font-weight:700;
+  padding:8px 16px;
+  border-radius:4px;
+  opacity:0;
+  transition:all .3s ease;
+}
+.t3d-card--dy.is-center:hover .dy-seal{
+  opacity:1;
+}
+.t3d-card--dy.is-center:hover .dy-trigram{
+  opacity:.8;
+}
+
+/* ===== Transition Overlay ===== */
+#transition-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  pointer-events:none;
+  opacity:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:48px;
+  color:rgba(255,255,255,.8);
+  font-weight:800;
+}
+#transition-overlay.active{
+  pointer-events:auto;
+  opacity:1;
+}
+.trans-0.active{
+  animation:trans-notebook .7s ease forwards;
+  background:#faf8f3;
+}
+.trans-1.active{
+  animation:trans-printer .7s ease forwards;
+  background:#e8eef5;
+}
+.trans-2.active{
+  animation:trans-compare .7s ease forwards;
+  background:linear-gradient(135deg,#f0f5ff,#fff5eb);
+}
+.trans-3.active{
+  animation:trans-ticket .7s ease forwards;
+  background:linear-gradient(135deg,#fff5eb,#ffe8d5);
+}
+.trans-4.active{
+  animation:trans-tarot .8s ease forwards;
+  background:linear-gradient(135deg,#e8daf0,#d5c5e0);
+}
+.trans-5.active{
+  animation:trans-destiny .7s ease forwards;
+  background:linear-gradient(135deg,#fdf5f0,#f8ebe0);
+}
+@keyframes trans-notebook{
+  0%{clip-path:inset(0 100% 0 0)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+@keyframes trans-printer{
+  0%{clip-path:inset(0 0 100% 0)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+@keyframes trans-compare{
+  0%{clip-path:polygon(33% 0,33% 0,33% 100%,33% 100%,66% 100%,66% 0)}
+  100%{clip-path:polygon(0 0,100% 0,100% 100%,100% 100%,0 100%,0 0)}
+}
+@keyframes trans-ticket{
+  0%{clip-path:inset(100% 0 0 0)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+@keyframes trans-tarot{
+  0%{transform:scale(.3) rotateY(0deg);opacity:0}
+  50%{transform:scale(1) rotateY(90deg);opacity:1}
+  100%{transform:scale(1) rotateY(180deg);opacity:1}
+}
+@keyframes trans-destiny{
+  0%{clip-path:circle(0% at 50% 50%)}
+  100%{clip-path:circle(100% at 50% 50%)}
+}
+
+/* ===== Dots Navigation ===== */
+.t3d-dots{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  padding:20px 0;
+}
+.t3d-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:rgba(74,123,255,.25);
+  border:none;
+  cursor:pointer;
+  transition:all .3s ease;
+}
+.t3d-dot.active{
+  background:#4a7bff;
+  transform:scale(1.3);
+  box-shadow:0 0 8px rgba(74,123,255,.5);
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion:reduce){
+  *{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+}
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
 <script>
@@ -818,6 +1506,7 @@
   </div>
   <div class="t3d-stage" id="t3dStage"></div>
   <div class="t3d-dots" id="t3dDots"></div>
+<div id="transition-overlay"></div>
 </section></div>
 
 <footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
@@ -1199,199 +1888,435 @@ setTimeout(renderAllCards, 80);
 
 
 // ══════════════════════════════════════════
-//  3D 卡牌工具展示 v2 - 已验证可滑动
+//  3D 卡牌工具展示 v3 - 差异化特色卡片
 // ══════════════════════════════════════════
 (function(){
-  const TOOLS = [
-    { name:'每日 Todo 和复盘', desc:'引导结构化反思，晨间规划+复盘闭环，持续成长。', icon:'✓', img:'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80', cta:'linear-gradient(135deg,#6396ff,#4a7bff)', grad:'linear-gradient(135deg,#dce8ff,#b8cfff)', accent:'linear-gradient(90deg,#6396ff,#4a7bff)', cat:'blue', catLabel:'日常提效', url:'recap/', pain:'高频任务容易失焦，复盘缺乏结构引导', solution:'固定模板+AI提炼关键词，自动生成今日回顾', value:'养成复盘习惯，效率提升30%+' },
-    { name:'打印机识别黑白', desc:'上传文档识别色彩分布，一键判断是否适合彩色打印。', icon:'▣', img:'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=500&q=80', cta:'linear-gradient(135deg,#5aaeff,#3a8de0)', grad:'linear-gradient(135deg,#d5eeff,#a0d4ff)', accent:'linear-gradient(90deg,#5aaeff,#3a8de0)', cat:'blue', catLabel:'日常提效', url:'print-helper/', pain:'不知文档有没彩色内容，误用彩色打印浪费耗材', solution:'像素级扫描色域，输出颜色占比热图', value:'节省耗材成本，打印决策秒级完成' },
-    { name:'AI 多方案对比', desc:'输入需求，AI同步生成多种优选方案并结构化对比。', icon:'⚖', img:'https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=500&q=80', cta:'linear-gradient(135deg,#ff9a6c,#ed7040)', grad:'linear-gradient(135deg,#ffe8d5,#ffc9a0)', accent:'linear-gradient(90deg,#ff9a6c,#ed7040)', cat:'peach', catLabel:'活动 Demo', url:'/08/web/compare/', pain:'方案评审耗时，主观判断难以量化', solution:'Prompt工程生成多视角方案，矩阵式维度对比', value:'决策效率提升，减少主观偏差' },
-    { name:'FATE TRIP', desc:'盲盒翻签×命运签语×「我也想去」心动反馈，行程分享有仪式感。', icon:'✦', img:'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&q=80', cta:'linear-gradient(135deg,#ff7eb3,#e040a0)', grad:'linear-gradient(135deg,#ffd5e8,#ffaacc)', accent:'linear-gradient(90deg,#ff7eb3,#e040a0)', cat:'peach', catLabel:'活动 Demo', url:'/08/activity/travel-sign/', pain:'分享行程只是发链接，缺乏互动和情绪共鸣', solution:'命运签语+盲盒解锁+社交反馈三层体验', value:'用户自发传播，互动率提升3x' },
-    { name:'手势塔罗', desc:'用手势翻开专属你的塔罗牌，AI解读命运密语。', icon:'🃏', img:'https://images.unsplash.com/photo-1601987077677-5346c0c57d3f?w=500&q=80', cta:'linear-gradient(135deg,#b07eff,#8a50f0)', grad:'linear-gradient(135deg,#ead5ff,#ccaaff)', accent:'linear-gradient(90deg,#b07eff,#8a50f0)', cat:'peach', catLabel:'活动 Demo', url:'/08/web/tarot/', pain:'占卜产品同质化，缺乏新奇交互体验', solution:'手势识别+3D牌阵+米色极简UI，仪式感十足', value:'完播率高，用户主动截图分享' },
-    { name:'产品命理局', desc:'输入一个产品，生成专属命盘——伪玄学包装，真产品分析框架。', icon:'🔮', img:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80', cta:'linear-gradient(135deg,#e35d6a,#c94455)', grad:'linear-gradient(135deg,#2a1f3d,#3d2a5a)', accent:'linear-gradient(90deg,#e35d6a,#c94455)', cat:'peach', catLabel:'创意概念', url:'/08/web/destiny/', pain:'产品分析枯燥，框架难以记忆和传播', solution:'八字十神系统映射产品维度，命理话术包装产品判断，游戏化参与', value:'有梗有逻辑，用完会截图分享，顺带展示产品思维框架' },
-  ];
-
-  const N = TOOLS.length;
-  let target  = 2;          // 目标整数索引
-  let currentF = 2.0;       // 浮点插值索引（驱动动画）
-  let flipped  = new Set();
-  let rafId    = null;
-
-  // ── 布局：全正面，Z轴近大远小 ──────────────────────────────
-  function layout(pos, stageW) {
-    const abs = Math.abs(pos);
-    const spread = Math.floor(stageW * 0.24);
-    return {
-      x:       pos * spread,
-      z:      -abs * 60,         // 深度差压缩，减少近大远小的突兀感
-      scale:   1 - abs * 0.065, // 每级只缩6.5%，最远牌约80%，过渡顺滑
-      opacity: 1 - abs * 0.14,
-      blur:    abs * 0.6,
-      zIndex:  10 - Math.round(abs),
-    };
+// ===== TOOLS Data =====
+const TOOLS = [
+  {
+    name:'每日 Todo 和复盘',
+    desc:'引导结构化反思，晨间规划+复盘闭环，持续成长。',
+    icon:'✓',
+    url:'recap/',
+    catLabel:'日常提效',
+    catClass:'nb'
+  },
+  {
+    name:'打印机识别黑白',
+    desc:'上传文档识别色彩分布，一键判断是否适合彩色打印。',
+    icon:'▣',
+    url:'print-helper/',
+    catLabel:'日常提效',
+    catClass:'pr'
+  },
+  {
+    name:'AI 多方案对比',
+    desc:'输入需求，AI同步生成多种优选方案并结构化对比。',
+    icon:'⚖',
+    url:'/08/web/compare/',
+    catLabel:'活动 Demo',
+    catClass:'cp'
+  },
+  {
+    name:'FATE TRIP',
+    desc:'盲盒翻签×命运签语×「我也想去」心动反馈，行程分享有仪式感。',
+    icon:'✦',
+    url:'/08/activity/travel-sign/',
+    catLabel:'活动 Demo',
+    catClass:'tk'
+  },
+  {
+    name:'手势塔罗',
+    desc:'用手势翻开专属你的塔罗牌，AI解读命运密语。',
+    icon:'🃏',
+    url:'/08/web/tarot/',
+    catLabel:'活动 Demo',
+    catClass:'tr'
+  },
+  {
+    name:'产品命理局',
+    desc:'输入一个产品，生成专属命盘——伪玄学包装，真产品分析框架。',
+    icon:'🔮',
+    url:'/08/web/destiny/',
+    catLabel:'创意概念',
+    catClass:'dy'
   }
+];
 
-  // ── 渲染：以 stage 中心为基准，绝对像素定位 ──────────────────
-  function render() {
-    const sw = stage.offsetWidth  || 800;
-    const sh = stage.offsetHeight || 500;
-    const cx = sw / 2;
-    const cy = sh * 0.42;
-    const CW = 230, CH = 384;
-
-    cards.forEach((el, i) => {
-      // 浮点 pos：用 currentF（插值中）计算，保证过渡连续
-      let rawPos = i - currentF;
-      // 循环修正：让 rawPos 落在 [-N/2, N/2]
-      while (rawPos >  N/2) rawPos -= N;
-      while (rawPos < -N/2) rawPos += N;
-
-      const {x, z, scale, opacity, blur, zIndex} = layout(rawPos, sw);
-      const isFlipped = flipped.has(i);
-      const cardLeft = cx - CW/2 + x;
-      const cardTop  = cy - CH/2;
-      el.style.left      = cardLeft + 'px';
-      el.style.top       = cardTop  + 'px';
-      el.style.transform = `translateZ(${z}px) scale(${scale}) rotateY(${isFlipped?180:0}deg)`;
-      el.style.opacity   = opacity;
-      el.style.filter    = blur > 0 ? `blur(${blur.toFixed(1)}px)` : 'none';
-      el.style.zIndex    = zIndex;
-    });
-    dots.forEach((d, i) => d.classList.toggle('active', i === target));
-  }
-
-  // ── 动画循环：缓动插值 currentF → target ──────────────────────
-  function animate() {
-    // 取最短路径差值（考虑循环）
-    let diff = target - currentF;
-    while (diff >  N/2) diff -= N;
-    while (diff < -N/2) diff += N;
-
-    if (Math.abs(diff) < 0.002) {
-      currentF = target;
-      render();
-      rafId = null;
-      return;
-    }
-    currentF += diff * 0.10;   // 缓动系数：越小越慢越丝滑
-    render();
-    rafId = requestAnimationFrame(animate);
-  }
-
-  function goTo(idx) {
-    if (flipped.has(target)) unflip(target);
-    target = ((idx % N) + N) % N;
-    if (!rafId) rafId = requestAnimationFrame(animate);
-  }
-  function doFlip(i)  { flipped.add(i);    render(); }
-  function unflip(i)  { flipped.delete(i); render(); }
-
-  // ── 建 DOM ──────────────────────────────────────────────────
-  const stage  = document.getElementById('t3dStage');
-  const dotsEl = document.getElementById('t3dDots');
-  if(!stage || !dotsEl) return;
-
-  const cards = TOOLS.map((t, i) => {
-    const el = document.createElement('div');
-    el.className = 't3d-card';
-    el.innerHTML = `
-      <div class="t3d-face t3d-front">
-        <div class="t3d-hero">
-          <img src="${t.img}" alt="${t.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='${t.grad}'">
-          <span class="t3d-hero-tag">${t.catLabel}</span>
-          <span class="t3d-hero-icon">${t.icon}</span>
-          <div class="t3d-hero-name">${t.name}</div>
-        </div>
-        <div class="t3d-body">
-          <div class="t3d-desc-txt">${t.desc}</div>
-          <div class="t3d-cta" style="background:${t.cta}">${t.url&&t.url!=='#'?'体验一下 →':'创意概念'}</div>
-        </div>
-        <button class="t3d-flip-btn" title="查看详情">💡</button>
+// ===== Card HTML Builders =====
+function buildNotebookCard(tool) {
+  return `
+    <div class="card-inner t3d-card--nb">
+      <div class="nb-binding">
+        <div class="nb-hole"></div>
+        <div class="nb-hole"></div>
+        <div class="nb-hole"></div>
       </div>
-      <div class="t3d-face t3d-back">
-        <div class="t3d-back-title">${t.name}</div>
-        <div class="t3d-back-row"><span class="t3d-back-label">PAIN</span><span>${t.pain}</span></div>
-        <div class="t3d-back-row"><span class="t3d-back-label">HOW</span><span>${t.solution}</span></div>
-        <div class="t3d-back-row"><span class="t3d-back-label">VALUE</span><span>${t.value}</span></div>
-        <button class="t3d-back-close">← 返回</button>
-      </div>`;
-    el.querySelector('.t3d-flip-btn').addEventListener('click', e => {
-      e.stopPropagation(); goTo(i); doFlip(i);
-    });
-    el.querySelector('.t3d-back-close').addEventListener('click', e => {
-      e.stopPropagation(); unflip(i);
-    });
-    el.addEventListener('click', ev => {
-      if(ev.target.closest('.t3d-flip-btn,.t3d-back-close')) return;
-      if(flipped.has(i)) return;
-      if(i === target) {
-        // 中央牌：有 url 则跳转
-        if(t.url && t.url !== '#') {
-          let dest;
-          if(t.url.startsWith('http')) dest = t.url;
-          else if(t.url.startsWith('/')) dest = 'https://qlb708.github.io' + t.url;
-          else dest = 'https://qlb708.github.io/08/works/' + t.url; // 相对路径挂到 works/ 下
-          window.open(dest, '_blank');
-        }
-      } else {
-        goTo(i);
-      }
-    });
-    stage.appendChild(el);
-    return el;
-  });
+      <div class="nb-content">
+        <div class="nb-title">WEEKLY PLAN</div>
+        <div class="nb-item">
+          <div class="nb-check checked"></div>
+          <span>完成设计稿评审</span>
+        </div>
+        <div class="nb-item">
+          <div class="nb-check checked"></div>
+          <span>整理周报数据</span>
+        </div>
+        <div class="nb-item pending">
+          <div class="nb-check"></div>
+          <span>写复盘笔记<span class="nb-cursor"></span></span>
+        </div>
+        <div class="nb-sticky">📝 今日复盘</div>
+        <div class="nb-cta">开始今日计划 →</div>
+      </div>
+    </div>
+  `;
+}
 
-  const dots = TOOLS.map((_, i) => {
-    const d = document.createElement('div');
-    d.className = 't3d-dot';
-    d.addEventListener('click', () => goTo(i));
-    dotsEl.appendChild(d);
-    return d;
-  });
+function buildPrinterCard(tool) {
+  return `
+    <div class="card-inner t3d-card--pr">
+      <div class="pr-screen">
+        <div class="pr-scanline"></div>
+        <span>Detecting...</span>
+      </div>
+      <div class="pr-leds">
+        <div class="pr-led pr-led-r"></div>
+        <div class="pr-led pr-led-g"></div>
+      </div>
+      <div class="pr-body">
+        <div class="pr-slot"></div>
+      </div>
+      <div class="pr-output">
+        <div class="pr-paper">🖨️</div>
+      </div>
+      <div class="pr-cta">试着扫描 →</div>
+    </div>
+  `;
+}
 
-  // ── 拖拽（mousedown on stage）──────────────────────────────
-  let dragStart=0, isDragging=false;
-  stage.addEventListener('mousedown', ev => {
-    if(ev.target.closest('.t3d-flip-btn,.t3d-back-close')) return;
-    isDragging=true; dragStart=ev.clientX;
-    ev.preventDefault();
-  });
-  window.addEventListener('mousemove', ev => { /* track */ });
-  window.addEventListener('mouseup', ev => {
-    if(!isDragging) return;
-    isDragging=false;
-    const dx = ev.clientX - dragStart;
-    if(Math.abs(dx)>40) goTo(target+(dx<0?1:-1));
-  });
+function buildCompareCard(tool) {
+  return `
+    <div class="card-inner t3d-card--cp">
+      <div class="cp-panels">
+        <div class="cp-panel cp-a">
+          <div class="cp-label">A</div>
+          <div class="cp-bar"></div>
+        </div>
+        <div class="cp-panel cp-b">
+          <div class="cp-label">B</div>
+          <div class="cp-bar"></div>
+          <div class="cp-recommend">✦ 推荐</div>
+        </div>
+        <div class="cp-panel cp-c">
+          <div class="cp-label">C</div>
+          <div class="cp-bar"></div>
+        </div>
+      </div>
+      <div class="cp-text">推荐 B：成本更低，体验更完整</div>
+      <div class="cp-cta">开始比较 →</div>
+    </div>
+  `;
+}
 
-  // ── 触控板 wheel（横向滑动）──────────────────────────────────
-  let wheelLock = false;
-  stage.addEventListener('wheel', ev => {
-    ev.preventDefault();
-    if(wheelLock) return;
-    const dx = Math.abs(ev.deltaX) >= Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
-    if(Math.abs(dx) < 15) return;
-    wheelLock = true;
-    goTo(target + (dx > 0 ? 1 : -1));
-    setTimeout(() => { wheelLock = false; }, 500);
-  }, {passive:false});
+function buildTicketCard(tool) {
+  const destinations = ['Kyoto', 'Paris', 'NYC', 'Bali'];
+  return `
+    <div class="card-inner t3d-card--tk">
+      <div class="tk-ticket">
+        <div class="tk-header">
+          <span class="tk-brand">FATE TRIP</span>
+          <span class="tk-class">ECONOMY</span>
+        </div>
+        <div class="tk-dest">
+          <span class="tk-dest-label">DESTINATION</span>
+          <span class="tk-dest-name" id="tk-dest-${TOOLS.indexOf(tool)}">${destinations[0]}</span>
+        </div>
+        <div class="tk-fields">
+          <div class="tk-field">
+            <span class="tk-fl">DATE</span>
+            <span class="tk-fv">07.23</span>
+          </div>
+          <div class="tk-field">
+            <span class="tk-fl">MOOD</span>
+            <span class="tk-fv">✨</span>
+          </div>
+          <div class="tk-field">
+            <span class="tk-fl">FATE</span>
+            <span class="tk-fv">92</span>
+          </div>
+        </div>
+        <div class="tk-route">
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+            <path class="tk-route-path" d="M 10 30 Q 50 10, 100 30 T 190 30"/>
+          </svg>
+          <div class="tk-plane">✈️</div>
+          <div class="tk-boarding">BOARDING</div>
+        </div>
+      </div>
+      <div class="tk-cta">领取旅程 →</div>
+    </div>
+  `;
+}
 
-  // ── 触摸 ────────────────────────────────────────────────────
-  let touchX0=0;
-  stage.addEventListener('touchstart', ev=>{ touchX0=ev.touches[0].clientX; });
-  stage.addEventListener('touchend',   ev=>{
-    const dx=ev.changedTouches[0].clientX-touchX0;
-    if(Math.abs(dx)>40) goTo(target+(dx<0?1:-1));
+function buildTarotCard(tool) {
+  return `
+    <div class="card-inner t3d-card--tr">
+      <div class="tr-border"></div>
+      <div class="tr-border-inner"></div>
+      <div class="tr-glow"></div>
+      <div class="tr-symbol">☽</div>
+      <div class="tr-corner tl">☽</div>
+      <div class="tr-corner tr">☉</div>
+      <div class="tr-corner bl">★</div>
+      <div class="tr-corner br">♆</div>
+      <div class="tr-title">THE VISION</div>
+      <div class="tr-numeral">XII</div>
+      <div class="tr-cta">翻开一张牌 →</div>
+    </div>
+  `;
+}
+
+function buildDestinyCard(tool) {
+  const trigrams = '☰☱☲☳☴☵☶☷';
+  const words = ['用户画像','核心诉求','增长逻辑','竞争格局','产品基因','生命周期'];
+  
+  let trigramHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const angle = (i * 45 - 90) * Math.PI / 180;
+    const radius = 55;
+    const x = 50 + radius * Math.cos(angle);
+    const y = 50 + radius * Math.sin(angle);
+    trigramHTML += `<div class="dy-trigram" style="left:${x}%;top:${y}%;transform:translate(-50%,-50%)">${trigrams[i]}</div>`;
+  }
+  
+  const wordsHTML = words.map(w => `<span class="dy-word">${w}</span>`).join('');
+  
+  return `
+    <div class="card-inner t3d-card--dy">
+      <div class="dy-stamp">创意概念</div>
+      <div class="dy-bagua">
+        <div class="dy-ring"></div>
+        <div class="dy-yinyang">☯</div>
+        ${trigramHTML}
+      </div>
+      <div class="dy-words">${wordsHTML}</div>
+      <div class="dy-seal">开始排盘 →</div>
+    </div>
+  `;
+}
+
+// ===== 3D Carousel Engine =====
+const N = TOOLS.length;
+let target = 2;
+let currentF = 2.0;
+let rafId = null;
+
+function layout(pos, stageW) {
+  const abs = Math.abs(pos);
+  const spread = Math.floor(stageW * 0.24);
+  return {
+    x: pos * spread,
+    z: -abs * 60,
+    scale: 1 - abs * 0.065,
+    opacity: 1 - abs * 0.14,
+    blur: abs * 0.6,
+    zIndex: 10 - Math.round(abs),
+  };
+}
+
+function render() {
+  const sw = stage.offsetWidth || 800;
+  const sh = stage.offsetHeight || 500;
+  const cx = sw / 2;
+  const cy = sh * 0.42;
+  const CW = 230, CH = 384;
+
+  cards.forEach((el, i) => {
+    let rawPos = i - currentF;
+    while (rawPos > N/2) rawPos -= N;
+    while (rawPos < -N/2) rawPos += N;
+
+    const {x, z, scale, opacity, blur, zIndex} = layout(rawPos, sw);
+    const cardLeft = cx - CW/2 + x;
+    const cardTop = cy - CH/2;
+    
+    el.style.left = cardLeft + 'px';
+    el.style.top = cardTop + 'px';
+    el.style.transform = `translateZ(${z}px) scale(${scale})`;
+    el.style.opacity = opacity;
+    el.style.filter = blur > 0 ? `blur(${blur.toFixed(1)}px)` : 'none';
+    el.style.zIndex = zIndex;
+    
+    // Toggle is-center class
+    el.classList.toggle('is-center', i === target);
   });
+  
+  dots.forEach((d, i) => d.classList.toggle('active', i === target));
+}
 
-  // ── 键盘 ────────────────────────────────────────────────────
-  window.addEventListener('keydown', ev=>{
-    if(ev.key==='ArrowLeft')  goTo(target-1);
-    if(ev.key==='ArrowRight') goTo(target+1);
-  });
+function animate() {
+  let diff = target - currentF;
+  while (diff > N/2) diff -= N;
+  while (diff < -N/2) diff += N;
 
-  window.addEventListener('resize', render);
+  if (Math.abs(diff) < 0.002) {
+    currentF = target;
+    render();
+    rafId = null;
+    return;
+  }
+  currentF += diff * 0.10;
   render();
+  rafId = requestAnimationFrame(animate);
+}
+
+function goTo(idx) {
+  target = ((idx % N) + N) % N;
+  if (!rafId) rafId = requestAnimationFrame(animate);
+}
+
+// ===== DOM Setup =====
+const stage = document.getElementById('t3dStage');
+const dotsEl = document.getElementById('t3dDots');
+
+const builders = [
+  buildNotebookCard,
+  buildPrinterCard,
+  buildCompareCard,
+  buildTicketCard,
+  buildTarotCard,
+  buildDestinyCard
+];
+
+const cards = TOOLS.map((t, i) => {
+  const el = document.createElement('div');
+  el.className = 't3d-card';
+  el.innerHTML = builders[i](t);
+  el.addEventListener('click', ev => handleCardClick(i, ev));
+  stage.appendChild(el);
+  return el;
+});
+
+const dots = TOOLS.map((_, i) => {
+  const d = document.createElement('div');
+  d.className = 't3d-dot';
+  d.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(d);
+  return d;
+});
+
+// ===== Interaction Handlers =====
+function handleCardClick(index, ev) {
+  if (index === target) {
+    triggerTransition(index);
+  } else {
+    goTo(index);
+  }
+}
+
+function openUrl(url) {
+  let dest;
+  if (url.startsWith('http')) dest = url;
+  else if (url.startsWith('/')) dest = 'https://qlb708.github.io' + url;
+  else dest = 'https://qlb708.github.io/08/works/' + url;
+  window.open(dest, '_blank');
+}
+
+// ===== Transition System =====
+function triggerTransition(index) {
+  const tool = TOOLS[index];
+  const overlay = document.getElementById('transition-overlay');
+  
+  const symbols = ['✓', '🖨️', '⚖️', '✈️', '☽', '☯'];
+  overlay.textContent = symbols[index];
+  overlay.className = `trans-${index} active`;
+  
+  setTimeout(() => {
+    openUrl(tool.url);
+    setTimeout(() => {
+      overlay.classList.remove('active');
+      overlay.textContent = '';
+    }, 400);
+  }, 600);
+}
+
+// ===== Navigation (drag, wheel, touch, keyboard) =====
+let dragStart = 0, isDragging = false;
+stage.addEventListener('mousedown', ev => {
+  isDragging = true;
+  dragStart = ev.clientX;
+  ev.preventDefault();
+});
+window.addEventListener('mousemove', ev => {});
+window.addEventListener('mouseup', ev => {
+  if (!isDragging) return;
+  isDragging = false;
+  const dx = ev.clientX - dragStart;
+  if (Math.abs(dx) > 40) goTo(target + (dx < 0 ? 1 : -1));
+});
+
+let wheelLock = false;
+stage.addEventListener('wheel', ev => {
+  ev.preventDefault();
+  if (wheelLock) return;
+  const dx = Math.abs(ev.deltaX) >= Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
+  if (Math.abs(dx) < 15) return;
+  wheelLock = true;
+  goTo(target + (dx > 0 ? 1 : -1));
+  setTimeout(() => { wheelLock = false; }, 500);
+}, {passive: false});
+
+let touchX0 = 0;
+stage.addEventListener('touchstart', ev => {
+  touchX0 = ev.touches[0].clientX;
+});
+stage.addEventListener('touchend', ev => {
+  const dx = ev.changedTouches[0].clientX - touchX0;
+  if (Math.abs(dx) > 40) goTo(target + (dx < 0 ? 1 : -1));
+});
+
+window.addEventListener('keydown', ev => {
+  if (ev.key === 'ArrowLeft') goTo(target - 1);
+  if (ev.key === 'ArrowRight') goTo(target + 1);
+});
+
+// ===== Tarot Parallax (center card only) =====
+stage.addEventListener('mousemove', ev => {
+  if (target !== 4) return;
+  const rect = cards[4].getBoundingClientRect();
+  const mx = (ev.clientX - rect.left) / rect.width - 0.5;
+  const my = (ev.clientY - rect.top) / rect.height - 0.5;
+  const symbol = cards[4].querySelector('.tr-symbol');
+  if (symbol && cards[4].classList.contains('is-center')) {
+    symbol.style.transform = `translate(calc(-50% + ${mx * 15}px), calc(-50% + ${my * 15}px))`;
+  }
+});
+
+// ===== Destiny Trigram Glow (random) =====
+setInterval(() => {
+  if (target !== 5) return;
+  const trigrams = cards[5].querySelectorAll('.dy-trigram');
+  trigrams.forEach(t => t.classList.remove('glow'));
+  const random = Math.floor(Math.random() * trigrams.length);
+  trigrams[random].classList.add('glow');
+}, 2000);
+
+// ===== Ticket Destination Cycle =====
+setInterval(() => {
+  const destinations = ['Kyoto', 'Paris', 'NYC', 'Bali'];
+  const destEl = document.getElementById('tk-dest-3');
+  if (destEl) {
+    const current = destEl.textContent;
+    const idx = destinations.indexOf(current);
+    const next = (idx + 1) % destinations.length;
+    destEl.textContent = destinations[next];
+  }
+}, 2500);
+
+// ===== Init =====
+window.addEventListener('resize', render);
+render();
 })();
 
 </script></div></body><!-- deployed:1783952655 --></html>
