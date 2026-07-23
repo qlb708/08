@@ -2405,6 +2405,215 @@
 .jm-card-result{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(127,114,232,.08);border:1px solid rgba(127,114,232,.18);font-size:11px;color:#4a4270;line-height:1.7}
 .jm-card-result b{color:#7F72E8;font-size:13px}
 
+/* ═══ Journey Map Animation System ═══ */
+.jm-route-anim-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.jm-route-main-path {
+  fill: none;
+  stroke: url(#jm-anim-gradient);
+  stroke-width: 0.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.jm-route-main-path.jm-draw-anim {
+  stroke-dasharray: var(--path-len);
+  stroke-dashoffset: var(--path-len);
+  animation: jm-draw-route 1.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes jm-draw-route {
+  to { stroke-dashoffset: 0; }
+}
+
+.jm-route-locked-path {
+  fill: none;
+  stroke: rgba(180, 195, 215, 0.5);
+  stroke-width: 0.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1.5 2;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.jm-route-locked-path.jm-locked-visible {
+  opacity: 1;
+}
+
+.jm-plane-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.jm-plane-group {
+  filter: drop-shadow(0 0 4px rgba(111,145,234,0.5));
+}
+
+.jm-node.jm-node-unlocking {
+  animation: jm-node-appear 0.4s ease-out forwards;
+}
+
+@keyframes jm-node-appear {
+  from { opacity: 0; transform: translate(-50%,-50%) scale(0.6); }
+  to { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+}
+
+.jm-ripple {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(111,145,234,0.6);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) scale(0);
+  pointer-events: none;
+  animation: jm-ripple-wave 0.8s ease-out forwards;
+}
+
+@keyframes jm-ripple-wave {
+  0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(2.5); opacity: 0; }
+}
+
+.jm-node.jm-node-current.jm-node-unlocked .jm-node-label {
+  position: relative;
+}
+
+.jm-node.jm-node-current.jm-node-unlocked .jm-node-label::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  border: 2px solid rgba(127,114,232,0.4);
+  top: 0;
+  left: 0;
+  animation: jm-pulse-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes jm-pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.jm-mist-cloud {
+  position: absolute;
+  left: 80%;
+  top: 23%;
+  transform: translate(-50%,-50%);
+  width: 80px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.jm-mist-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  filter: blur(12px);
+}
+
+.jm-mist-layer-1 {
+  animation: jm-mist-drift-1 10s ease-in-out infinite;
+}
+
+.jm-mist-layer-2 {
+  animation: jm-mist-drift-2 12s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+@keyframes jm-mist-drift-1 {
+  0%, 100% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+}
+
+@keyframes jm-mist-drift-2 {
+  0%, 100% { transform: translateX(6px) translateY(-3px); }
+  50% { transform: translateX(-6px) translateY(3px); }
+}
+
+.jm-node-locked .jm-node-mist {
+  animation: jm-mist-breathe 3s ease-in-out infinite;
+}
+
+@keyframes jm-mist-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.jm-sea-texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 40px,
+    rgba(111,145,234,0.15) 40px,
+    rgba(111,145,234,0.15) 41px
+  );
+  animation: jm-sea-drift 12s linear infinite;
+}
+
+@keyframes jm-sea-drift {
+  from { background-position: 0 0; }
+  to { background-position: 200px 0; }
+}
+
+.jm-wave-breath {
+  position: absolute;
+  width: 30px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(160,195,230,0.2);
+  pointer-events: none;
+  z-index: 1;
+  animation: jm-wave-breathe 4s ease-in-out infinite;
+}
+
+@keyframes jm-wave-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.3); opacity: 0.15; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jm-route-main-path.jm-draw-anim {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .jm-plane-svg { display: none; }
+  .jm-ripple { display: none; }
+  .jm-mist-layer-1, .jm-mist-layer-2 { animation: none; }
+  .jm-sea-texture { animation: none; }
+  .jm-wave-breath { animation: none; }
+  .jm-node.jm-node-unlocking { animation: none; opacity: 1; }
+  .jm-node-locked .jm-node-mist { animation: none; }
+  .jm-node.jm-node-current.jm-node-unlocked .jm-node-label::after { animation: none; }
+}
+
+@media (max-width: 900px) {
+  .jm-plane-svg { display: none; }
+  .jm-mist-cloud { width: 50px; height: 40px; }
+}
+
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
 <script>
@@ -2758,6 +2967,51 @@
       <!-- Route Container: SVG with hardcoded coordinates -->
       <div class="jm-route-container" id="jmRouteContainer">
         <!-- watercolor map is background image -->
+
+        <!-- Sea texture drift (P1) -->
+        <div class="jm-sea-texture"></div>
+
+        <!-- Wave breathing accents (P1) -->
+        <div class="jm-wave-breath" style="left:22%;top:68%;"></div>
+        <div class="jm-wave-breath" style="left:48%;top:52%;animation-delay:1.2s;"></div>
+        <div class="jm-wave-breath" style="left:70%;top:58%;animation-delay:2.4s;"></div>
+
+        <!-- Animation overlay SVG - route path -->
+        <svg class="jm-route-anim-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="jm-anim-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#6F91EA"/>
+              <stop offset="100%" stop-color="#83B7A1"/>
+            </linearGradient>
+            <filter id="jm-plane-glow">
+              <feGaussianBlur stdDeviation="0.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Main route path (solid, to xiaohongshu) -->
+          <path class="jm-route-main-path" id="jmAnimPath"
+            d="M 17 72 C 17.5 69 19 65 20 63 C 23 59 27 53 30 50 C 35 47 42 54 46 56 C 52 59 60 65 66 63 C 70 58 73 46 76 40"/>
+          <!-- Locked segment (dashed, to mist island) -->
+          <path class="jm-route-locked-path" id="jmAnimLockedPath"
+            d="M 76 40 C 77 35 79 27 80 23"/>
+        </svg>
+
+        <!-- Paper plane SVG -->
+        <svg class="jm-plane-svg" id="jmPlaneSvg" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <g class="jm-plane-group" filter="url(#jm-plane-glow)" opacity="0">
+            <path d="M-3,-2 L4,0 L-3,2 L-1,0 Z" fill="rgba(255,255,255,0.92)" stroke="#6F91EA" stroke-width="0.25"/>
+            <line x1="-1" y1="0" x2="4" y2="0" stroke="#6F91EA" stroke-width="0.15"/>
+            <animateMotion id="jmPlaneMotion" dur="1.8s" fill="freeze" begin="indefinite"
+              path="M 17 72 C 17.5 69 19 65 20 63 C 23 59 27 53 30 50 C 35 47 42 54 46 56 C 52 59 60 65 66 63 C 70 58 73 46 76 40"
+              rotate="auto"/>
+          </g>
+        </svg>
+
+        <!-- Mist cloud for locked island -->
+        <div class="jm-mist-cloud" id="jmMistCloud">
+          <div class="jm-mist-layer jm-mist-layer-1"></div>
+          <div class="jm-mist-layer jm-mist-layer-2"></div>
+        </div>
 
         <!-- HTML Overlay: Node Labels positioned by percentage of viewBox (1000x700) -->
         <!-- Node positions: SJTU(180,560), Lab(330,420), Transsion(550,290), XHS(740,370), vNext(890,170) -->
@@ -3735,77 +3989,92 @@ render();
 
 })();
 
-/* Journey Map Animation & Interaction IIFE (Fixed - no DOM measurement needed) */
+/* Journey Map Animation & Interaction IIFE (Enhanced with route animation) */
 (function() {
   var container = document.getElementById('jmRouteContainer');
-  var svg = document.getElementById('jmRouteSvg');
-  var path = document.getElementById('jmRoutePath');
-  var glow = document.getElementById('jmRouteGlow');
+  var animPath = document.getElementById('jmAnimPath');
+  var lockedPath = document.getElementById('jmAnimLockedPath');
+  var planeSvg = document.getElementById('jmPlaneSvg');
+  var planeMotion = document.getElementById('jmPlaneMotion');
+  var mistCloud = document.getElementById('jmMistCloud');
+  
   if (!container) return;
 
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var animated = false;
   var nodes = Array.from(container.querySelectorAll('.jm-node'));
-  var svgNodeGroups = svg ? Array.from(svg.querySelectorAll('.jm-svg-node-group')) : [];
+  
+  // Timing for each node unlock (ms)
+  var nodeTimings = [100, 350, 650, 1000, 1350, 1800];
 
-  // Animate route drawing (path d is hardcoded, so getTotalLength() always works)
+  function triggerRipple(node) {
+    var ripple = document.createElement('div');
+    ripple.className = 'jm-ripple';
+    node.appendChild(ripple);
+    setTimeout(function() {
+      if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+    }, 800);
+  }
+
+  function unlockNode(node, index) {
+    node.classList.add('jm-node-unlocking', 'jm-node-unlocked');
+    node.style.opacity = '1';
+    triggerRipple(node);
+    
+    // Special handling for xiaohongshu (current)
+    if (node.classList.contains('jm-node-current')) {
+      setTimeout(function() {
+        node.classList.add('jm-node-current-active');
+      }, 400);
+    }
+  }
+
   function animateRoute() {
     if (animated) return;
     animated = true;
-
-    // Route is now part of the background image; skip SVG path animation if no path element
-    if (!path) {
-      nodes.forEach(function(node) { node.style.opacity = '1'; });
-      return;
-    }
-
-    // Set route length as CSS variable for stroke animation
-    var pathLength = (path ? path.getTotalLength() : 0);
-    path.style.setProperty('--route-length', pathLength);
-    if (glow) glow.style.setProperty('--route-length', pathLength);
 
     if (reducedMotion) {
       // Show everything immediately
       nodes.forEach(function(node) {
         node.style.opacity = '1';
+        node.classList.add('jm-node-unlocked');
       });
-      svgNodeGroups.forEach(function(g) {
-        g.style.opacity = '1';
-      });
-      path.style.strokeDashoffset = '0';
-      if (glow) glow.style.opacity = '0';
+      if (animPath) {
+        animPath.style.strokeDasharray = 'none';
+        animPath.style.strokeDashoffset = '0';
+      }
+      if (lockedPath) lockedPath.classList.add('jm-locked-visible');
       return;
     }
 
     // Animate route path drawing
-    path.style.strokeDasharray = pathLength;
-    path.style.strokeDashoffset = pathLength;
-    path.classList.add('jm-route-animated');
+    if (animPath) {
+      var pathLen = animPath.getTotalLength();
+      animPath.style.setProperty('--path-len', pathLen);
+      animPath.classList.add('jm-draw-anim');
+    }
 
-    requestAnimationFrame(function() {
-      path.style.transition = 'stroke-dashoffset 2.2s cubic-bezier(.4,0,.2,1)';
-      path.style.strokeDashoffset = '0';
-    });
+    // Show locked segment after main route draws
+    setTimeout(function() {
+      if (lockedPath) lockedPath.classList.add('jm-locked-visible');
+    }, 1800);
 
-    // Animate nodes appearing sequentially
+    // Animate paper plane
+    if (planeMotion && !reducedMotion) {
+      var planeGroup = planeSvg ? planeSvg.querySelector('.jm-plane-group') : null;
+      if (planeGroup) {
+        planeGroup.setAttribute('opacity', '1');
+        planeMotion.beginElement();
+      }
+    }
+
+    // Sequentially unlock nodes
     nodes.forEach(function(node, index) {
-      setTimeout(function() {
-        node.style.opacity = '1';
-        node.classList.add('jm-node-active');
-
-        // If current node (xiaohongshu), keep it expanded
-        if (node.classList.contains('jm-node-current')) {
-          var card = node.querySelector('.jm-node-card');
-          if (card) card.classList.add('jm-card-expanded');
-        }
-      }, 400 + index * 350);
-    });
-
-    // Highlight SVG nodes sequentially
-    svgNodeGroups.forEach(function(g, index) {
-      setTimeout(function() {
-        g.style.opacity = '1';
-      }, 500 + index * 350);
+      if (index < nodeTimings.length) {
+        setTimeout(function() {
+          unlockNode(node, index);
+        }, nodeTimings[index]);
+      }
     });
   }
 
@@ -3817,7 +4086,6 @@ render();
       var card = node.querySelector('.jm-node-card');
       if (card) card.classList.add('jm-card-expanded');
       node.classList.add('jm-node-active');
-      if (glow) glow.classList.add('jm-glow-active');
     }
 
     function collapseCard(node) {
@@ -3825,7 +4093,6 @@ render();
       var card = node.querySelector('.jm-node-card');
       if (card) card.classList.remove('jm-card-expanded');
       node.classList.remove('jm-node-active');
-      if (glow) glow.classList.remove('jm-glow-active');
     }
 
     function dimOthers(activeNode) {
@@ -3835,19 +4102,13 @@ render();
           n.style.opacity = '0.55';
         }
       });
-      svgNodeGroups.forEach(function(g) {
-        if (g.getAttribute('data-order') !== order) {
-          g.style.opacity = '0.4';
-        }
-      });
     }
 
     function restoreAll() {
       nodes.forEach(function(n) {
-        n.style.opacity = '1';
-      });
-      svgNodeGroups.forEach(function(g) {
-        g.style.opacity = '1';
+        if (n.classList.contains('jm-node-unlocked')) {
+          n.style.opacity = '1';
+        }
       });
     }
 
@@ -3869,6 +4130,11 @@ render();
         hoveredNodeId = nodeId;
         expandCard(node);
         dimOthers(node);
+        
+        // Mist scatter on hover near locked island
+        if (mistCloud && nodeId === 'vnext') {
+          mistCloud.style.opacity = '0.5';
+        }
       } else if (nodeId !== hoveredNodeId) {
         // Left all nodes (moving to empty area)
         if (hoveredNodeId) {
@@ -3877,8 +4143,12 @@ render();
             collapseCard(prevNode);
           }
           restoreAll();
-          if (glow) glow.classList.remove('jm-glow-active');
           hoveredNodeId = null;
+        }
+        
+        // Restore mist
+        if (mistCloud) {
+          mistCloud.style.opacity = '';
         }
       }
     });
@@ -3910,8 +4180,37 @@ render();
     window.__jmReady = true;
   }
 
-  // Init immediately after DOM is ready (no observer dependency, so hover/click always works)
-  animateRoute();
+  // Use IntersectionObserver to trigger animation when about section enters viewport
+  function initAnimation() {
+    var aboutSection = document.getElementById('about');
+    if (!aboutSection) {
+      // Fallback: animate immediately if no about section found
+      animateRoute();
+      return;
+    }
+
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !animated) {
+            animateRoute();
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        root: null,
+        threshold: 0.3
+      });
+
+      observer.observe(aboutSection);
+    } else {
+      // Fallback for browsers without IntersectionObserver
+      animateRoute();
+    }
+  }
+
+  // Init
+  initAnimation();
   setupNodeInteractions();
 })();
 
