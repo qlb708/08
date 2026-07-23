@@ -1900,7 +1900,15 @@
   flex: 1;
   position: relative;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
+  background-image: url('assets/journey-map.jpg');
+  background-size: contain;
+  background-position: center top;
+  background-repeat: no-repeat;
+  aspect-ratio: 1564 / 1498;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 /* Sea Background with Watercolor Texture */
@@ -2127,7 +2135,7 @@
 /* Node Card (Ticket Style) */
 .jm-node-card {
   position: absolute;
-  width: 260px;
+  width: 230px;
   border-radius: 16px;
   padding: 16px 18px;
   background: linear-gradient(135deg, rgba(252,253,254,.97) 0%, rgba(244,248,252,.94) 100%);
@@ -2148,7 +2156,7 @@
 }
 
 .jm-node-card.jm-card-current {
-  width: 300px;
+  width: 260px;
   background: linear-gradient(135deg, rgba(240,236,255,.98) 0%, rgba(232,228,255,.95) 100%);
   border-color: rgba(127,114,232,.4);
   box-shadow: 0 12px 36px rgba(127,114,232,.15), 0 4px 12px rgba(55,83,130,.08);
@@ -2754,289 +2762,20 @@
 
     <!-- Right: Journey Map -->
     <main class="jm-map">
-      <!-- Map Header -->
-      <div class="jm-map-header">
-        <div>
-          <h2>我的<em>成长旅迹</em></h2>
-          <p>从科研训练启程，在真实产品场景中持续验证与成长。</p>
-          <div class="jm-map-sub">Qin's Product Journey</div>
-        </div>
-      </div>
+      <!-- Map Header hidden: background image already contains the title -->
 
       <!-- Route Container: SVG with hardcoded coordinates -->
       <div class="jm-route-container" id="jmRouteContainer">
-        <svg class="jm-route-svg" id="jmRouteSvg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <defs>
-            <!-- Sea gradient -->
-            <radialGradient id="jm-sea-gradient" cx="50%" cy="50%" r="70%">
-              <stop offset="0%" stop-color="#EEF4FA" />
-              <stop offset="40%" stop-color="#E4EEF8" />
-              <stop offset="100%" stop-color="#D4E4F4" />
-            </radialGradient>
-            <!-- Route gradient -->
-            <linearGradient id="jm-route-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#6F91EA" />
-              <stop offset="100%" stop-color="#83B7A1" />
-            </linearGradient>
-            <!-- Glow gradient for active route -->
-            <linearGradient id="jm-route-glow-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#6F91EA" stop-opacity=".55" />
-              <stop offset="100%" stop-color="#83B7A1" stop-opacity=".55" />
-            </linearGradient>
-            <!-- Node gradient -->
-            <radialGradient id="jm-node-grad">
-              <stop offset="0%" stop-color="#fff" />
-              <stop offset="100%" stop-color="#eef4ff" />
-            </radialGradient>
-            <!-- Current node gradient -->
-            <radialGradient id="jm-node-current-grad">
-              <stop offset="0%" stop-color="#fff" />
-              <stop offset="100%" stop-color="#f0ecff" />
-            </radialGradient>
-            <!-- Locked node gradient -->
-            <radialGradient id="jm-node-locked-grad">
-              <stop offset="0%" stop-color="#e8ecf2" />
-              <stop offset="100%" stop-color="#d8dde6" />
-            </radialGradient>
-          </defs>
-
-          <!-- Sea Background -->
-          <g class="jm-sea-bg">
-            <rect x="0" y="0" width="1000" height="700" rx="0" />
-          </g>
-
-          <!-- Watercolor Waves -->
-          <g class="jm-waves">
-            <path class="jm-wave" d="M 0 200 Q 100 190, 200 200 T 400 200 T 600 200 T 800 200 T 1000 200" />
-            <path class="jm-wave" d="M 0 350 Q 150 340, 300 350 T 600 350 T 900 350 T 1000 350" style="stroke-opacity:.12" />
-            <path class="jm-wave" d="M 0 500 Q 120 492, 240 500 T 480 500 T 720 500 T 1000 500" style="stroke-opacity:.15" />
-            <path class="jm-wave" d="M 50 100 Q 200 92, 350 100 T 650 100 T 950 100" style="stroke-opacity:.08" />
-            <path class="jm-wave" d="M 0 620 Q 180 610, 360 620 T 720 620 T 1000 620" style="stroke-opacity:.1" />
-          </g>
-
-          <!-- Watercolor Islands at each node -->
-          <!-- Island 1: SJTU (bottom-left) - campus green -->
-          <g class="jm-island" transform="translate(170, 560)">
-            <path d="M -45 10 C -50 -15, -20 -35, 10 -30 C 40 -25, 55 -5, 50 15 C 45 35, 20 40, -5 35 C -30 30, -45 25, -45 10Z" fill="#C5E0C4" opacity=".7" />
-            <path class="jm-island-contour" d="M -30 5 C -32 -8, -12 -20, 8 -16 C 28 -12, 36 0, 33 10 C 30 20, 14 24, 0 22 C -18 20, -28 15, -30 5Z" stroke="#A8C89A" />
-            <path class="jm-island-contour" d="M -15 0 C -16 -5, -5 -10, 5 -8 C 14 -6, 18 2, 16 6 C 14 10, 6 11, 0 10 C -10 9, -14 5, -15 0Z" stroke="#A8C89A" style="opacity:.25" />
-          </g>
-
-          <!-- Island 2: AI Lab (mid-left) - warm sand -->
-          <g class="jm-island" transform="translate(330, 420)">
-            <path d="M -35 8 C -40 -12, -15 -28, 12 -24 C 38 -20, 45 0, 40 14 C 35 28, 15 32, -2 28 C -20 24, -33 20, -35 8Z" fill="#F0E5C5" opacity=".65" />
-            <path class="jm-island-contour" d="M -22 4 C -25 -6, -8 -16, 8 -13 C 24 -10, 28 2, 25 10 C 22 18, 10 20, 0 18 C -12 16, -20 12, -22 4Z" stroke="#D4C8A0" />
-          </g>
-
-          <!-- Island 3: Transsion (center) - pale teal -->
-          <g class="jm-island" transform="translate(550, 290)">
-            <path d="M -40 6 C -48 -18, -18 -32, 15 -28 C 45 -24, 52 -2, 46 16 C 40 34, 18 38, -4 34 C -26 30, -38 22, -40 6Z" fill="#B8D8D0" opacity=".6" />
-            <path class="jm-island-contour" d="M -26 2 C -32 -10, -10 -20, 10 -17 C 30 -14, 34 2, 30 12 C 26 22, 12 24, 0 22 C -16 20, -24 14, -26 2Z" stroke="#96BBA8" />
-            <path class="jm-island-contour" d="M -12 -2 C -16 -8, -4 -12, 6 -10 C 16 -8, 18 2, 15 6 C 12 10, 4 11, -2 9 C -8 7, -10 3, -12 -2Z" stroke="#96BBA8" style="opacity:.2" />
-          </g>
-
-          <!-- Island 4: Xiaohongshu (right-center) - light purple/lavender -->
-          <g class="jm-island" transform="translate(740, 370)">
-            <path d="M -42 8 C -50 -16, -18 -34, 16 -30 C 48 -26, 55 -4, 48 16 C 42 36, 20 40, -2 36 C -24 32, -40 24, -42 8Z" fill="#D8D0E8" opacity=".6" />
-            <path class="jm-island-contour" d="M -28 4 C -34 -8, -10 -20, 12 -17 C 32 -14, 36 2, 32 12 C 28 22, 14 25, 0 23 C -16 20, -26 14, -28 4Z" stroke="#B8A8D0" />
-          </g>
-
-          <!-- Island 5: vNext (top-right) - misty gray -->
-          <g class="jm-island" transform="translate(890, 170)">
-            <path d="M -38 6 C -44 -14, -14 -28, 14 -24 C 40 -20, 46 0, 40 14 C 34 28, 16 32, -2 28 C -20 24, -36 18, -38 6Z" fill="#D0D5E0" opacity=".55" />
-            <path class="jm-island-contour" d="M -24 2 C -28 -8, -8 -16, 10 -13 C 26 -10, 30 2, 26 10 C 22 18, 10 20, 0 18 C -14 16, -22 10, -24 2Z" stroke="#B0B8C8" />
-          </g>
-
-          <!-- Decorative: Small extra islands scattered -->
-          <g class="jm-island" transform="translate(100, 300)" style="opacity:.3">
-            <path d="M -20 4 C -24 -8, -8 -16, 8 -12 C 22 -8, 24 2, 20 8 C 16 14, 6 16, -4 14 C -14 12, -18 8, -20 4Z" fill="#D5E8D4" />
-          </g>
-          <g class="jm-island" transform="translate(650, 520)" style="opacity:.25">
-            <path d="M -18 3 C -22 -6, -6 -14, 8 -10 C 20 -6, 22 2, 18 8 C 14 14, 4 14, -4 12 C -12 10, -16 6, -18 3Z" fill="#F5ECD7" />
-          </g>
-          <g class="jm-island" transform="translate(450, 150)" style="opacity:.2">
-            <path d="M -16 2 C -20 -5, -5 -12, 7 -9 C 18 -6, 20 2, 16 6 C 12 10, 4 10, -4 8 C -10 6, -14 4, -16 2Z" fill="#C8E0D8" />
-          </g>
-
-          <!-- Route Path (hardcoded S-curve through 5 nodes) -->
-          <path class="jm-route-glow" id="jmRouteGlow" d="M 180 560 C 220 520, 260 470, 330 420 C 400 370, 470 330, 550 290 C 610 270, 670 320, 740 370 C 800 310, 850 230, 890 170" />
-          <path class="jm-route-path" id="jmRoutePath" d="M 180 560 C 220 520, 260 470, 330 420 C 400 370, 470 330, 550 290 C 610 270, 670 320, 740 370 C 800 310, 850 230, 890 170" />
-
-          <!-- SVG Node Circles -->
-          <!-- Node 1: SJTU -->
-          <g class="jm-svg-node-group" data-order="0">
-            <circle class="jm-svg-node" cx="180" cy="560" r="10" fill="url(#jm-node-grad)" stroke="#a8c0e0" stroke-width="3" />
-            <circle cx="180" cy="560" r="4" fill="#6F91EA" opacity=".6" />
-          </g>
-          <!-- Node 2: AI Lab -->
-          <g class="jm-svg-node-group" data-order="1">
-            <circle class="jm-svg-node" cx="330" cy="420" r="10" fill="url(#jm-node-grad)" stroke="#a8c0e0" stroke-width="3" />
-            <circle cx="330" cy="420" r="4" fill="#6F91EA" opacity=".6" />
-          </g>
-          <!-- Node 3: Transsion -->
-          <g class="jm-svg-node-group" data-order="2">
-            <circle class="jm-svg-node" cx="550" cy="290" r="10" fill="url(#jm-node-grad)" stroke="#a8c0e0" stroke-width="3" />
-            <circle cx="550" cy="290" r="4" fill="#6F91EA" opacity=".6" />
-          </g>
-          <!-- Node 4: Xiaohongshu (current) -->
-          <g class="jm-svg-node-group" data-order="3">
-            <circle class="jm-svg-node jm-svg-node-current" cx="740" cy="370" r="12" fill="url(#jm-node-current-grad)" stroke="#7F72E8" stroke-width="3" />
-            <circle cx="740" cy="370" r="5" fill="#7F72E8" opacity=".7" />
-            <!-- Pulse ring -->
-            <circle cx="740" cy="370" r="12" fill="none" stroke="#7F72E8" stroke-width="2" opacity="0">
-              <animate attributeName="r" values="12;28" dur="2s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.6;0" dur="2s" repeatCount="indefinite" />
-            </circle>
-          </g>
-          <!-- Node 5: vNext (locked) -->
-          <g class="jm-svg-node-group" data-order="4">
-            <circle class="jm-svg-node jm-svg-node-locked" cx="890" cy="170" r="10" fill="url(#jm-node-locked-grad)" stroke="#BCC6D5" stroke-width="3" stroke-dasharray="4 3" />
-            <!-- Lock icon -->
-            <g transform="translate(890, 170)" opacity=".5">
-              <rect x="-5" y="-1" width="10" height="8" rx="2" fill="none" stroke="#BCC6D5" stroke-width="1.5" />
-              <path d="M -3 -1 L -3 -5 C -3 -8, 3 -8, 3 -5 L 3 -1" fill="none" stroke="#BCC6D5" stroke-width="1.5" />
-            </g>
-          </g>
-
-          <!-- Node Icons (SVG line art) -->
-          <!-- Icon 1: SJTU - Campus dome/building -->
-          <g transform="translate(180, 530)" class="jm-decoration" opacity=".7">
-            <path d="M -14 0 L -14 -18 L 0 -26 L 14 -18 L 14 0 Z" fill="none" stroke="#7A9AB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M -8 0 L -8 -10 L 0 -16 L 8 -10 L 8 0" fill="none" stroke="#7A9AB8" stroke-width="1" opacity=".5" />
-            <path d="M -3 0 L -3 -6 L 0 -9 L 3 -6 L 3 0" fill="none" stroke="#7A9AB8" stroke-width="1" opacity=".55" />
-            <!-- Dome on top -->
-            <path d="M -6 -18 C -6 -24, 6 -24, 6 -18" fill="none" stroke="#7A9AB8" stroke-width="1.2" />
-            <circle cx="0" cy="-25" r="2" fill="none" stroke="#7A9AB8" stroke-width="1" />
-          </g>
-
-          <!-- Icon 2: AI Lab - Flask/beaker -->
-          <g transform="translate(330, 390)" class="jm-decoration" opacity=".65">
-            <path d="M -6 -16 L -6 -6 L -12 8 C -13 12, -8 14, 0 14 C 8 14, 13 12, 12 8 L 6 -6 L 6 -16" fill="none" stroke="#7A9AB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M -8 -16 L 8 -16" fill="none" stroke="#7A9AB8" stroke-width="1.5" stroke-linecap="round" />
-            <!-- Bubbles -->
-            <circle cx="-3" cy="4" r="2" fill="none" stroke="#7A9AB8" stroke-width=".8" opacity=".5" />
-            <circle cx="4" cy="0" r="1.5" fill="none" stroke="#7A9AB8" stroke-width=".8" opacity=".55" />
-            <circle cx="1" cy="8" r="1" fill="none" stroke="#7A9AB8" stroke-width=".8" opacity=".3" />
-          </g>
-
-          <!-- Icon 3: Transsion - Terminal/tower -->
-          <g transform="translate(550, 260)" class="jm-decoration" opacity=".6">
-            <path d="M -4 10 L -4 -10 L -10 -16 L 10 -16 L 4 -10 L 4 10" fill="none" stroke="#7A9AB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M -10 -16 L -14 -20" fill="none" stroke="#7A9AB8" stroke-width="1.2" />
-            <path d="M 10 -16 L 14 -20" fill="none" stroke="#7A9AB8" stroke-width="1.2" />
-            <!-- Antenna -->
-            <path d="M 0 -16 L 0 -24" fill="none" stroke="#7A9AB8" stroke-width="1.2" />
-            <circle cx="0" cy="-25" r="1.5" fill="#7A9AB8" opacity=".55" />
-            <!-- Windows -->
-            <rect x="-2" y="-8" width="4" height="4" rx="1" fill="none" stroke="#7A9AB8" stroke-width=".8" opacity=".5" />
-            <rect x="-2" y="-2" width="4" height="4" rx="1" fill="none" stroke="#7A9AB8" stroke-width=".8" opacity=".5" />
-            <rect x="-2" y="4" width="4" height="4" rx="1" fill="none" stroke="#7A9AB8" stroke-width=".8" opacity=".5" />
-          </g>
-
-          <!-- Icon 4: Xiaohongshu - Location pin (already implied, add compass) -->
-          <g transform="translate(740, 338)" class="jm-decoration" opacity=".6">
-            <circle cx="0" cy="0" r="10" fill="none" stroke="#7F72E8" stroke-width="1.2" opacity=".5" />
-            <path d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z" fill="none" stroke="#7F72E8" stroke-width="1" opacity=".6" />
-            <circle cx="0" cy="0" r="2" fill="#7F72E8" opacity=".4" />
-          </g>
-
-          <!-- Icon 5: vNext - Palm tree + question mark -->
-          <g transform="translate(890, 140)" class="jm-decoration" opacity=".45">
-            <!-- Palm trunk -->
-            <path d="M 0 12 C 2 4, 1 -4, -1 -10" fill="none" stroke="#9AA6BA" stroke-width="1.5" stroke-linecap="round" />
-            <!-- Palm leaves -->
-            <path d="M -1 -10 C -8 -16, -12 -12, -10 -8" fill="none" stroke="#9AA6BA" stroke-width="1.2" stroke-linecap="round" />
-            <path d="M -1 -10 C -4 -18, 0 -20, 2 -16" fill="none" stroke="#9AA6BA" stroke-width="1.2" stroke-linecap="round" />
-            <path d="M -1 -10 C 6 -16, 10 -14, 8 -10" fill="none" stroke="#9AA6BA" stroke-width="1.2" stroke-linecap="round" />
-            <path d="M -1 -10 C 4 -20, 8 -18, 6 -14" fill="none" stroke="#9AA6BA" stroke-width="1.2" stroke-linecap="round" />
-            <!-- Question mark -->
-            <text x="6" y="6" font-size="14" fill="#BCC6D5" opacity=".6" font-weight="700">?</text>
-          </g>
-
-          <!-- Decorative: Sailboats -->
-          <!-- Sailboat 1 -->
-          <g class="jm-decoration jm-sailboat" transform="translate(440, 520)" opacity=".4">
-            <path d="M -12 4 L 12 4 L 8 10 L -8 10 Z" fill="none" stroke="#7A9AB8" stroke-width="1.2" stroke-linejoin="round" />
-            <path d="M 0 4 L 0 -12" fill="none" stroke="#7A9AB8" stroke-width="1" />
-            <path d="M 0 -12 L 10 2 L 0 4 Z" fill="rgba(255,255,255,.3)" stroke="#7A9AB8" stroke-width="1" stroke-linejoin="round" />
-            <path d="M 0 -8 L -7 2 L 0 4 Z" fill="rgba(255,255,255,.2)" stroke="#7A9AB8" stroke-width=".8" stroke-linejoin="round" />
-          </g>
-
-          <!-- Sailboat 2 -->
-          <g class="jm-decoration jm-sailboat" transform="translate(820, 450)" opacity=".5" style="animation-delay: -4s">
-            <path d="M -10 3 L 10 3 L 7 8 L -7 8 Z" fill="none" stroke="#7A9AB8" stroke-width="1" stroke-linejoin="round" />
-            <path d="M 0 3 L 0 -10" fill="none" stroke="#7A9AB8" stroke-width=".8" />
-            <path d="M 0 -10 L 8 2 L 0 3 Z" fill="rgba(255,255,255,.3)" stroke="#7A9AB8" stroke-width=".8" stroke-linejoin="round" />
-            <path d="M 0 -7 L -5 2 L 0 3 Z" fill="rgba(255,255,255,.2)" stroke="#7A9AB8" stroke-width=".6" stroke-linejoin="round" />
-          </g>
-
-          <!-- Sailboat 3 (tiny, far) -->
-          <g class="jm-decoration jm-sailboat" transform="translate(250, 200)" opacity=".4" style="animation-delay: -8s">
-            <path d="M -7 2 L 7 2 L 5 5 L -5 5 Z" fill="none" stroke="#7A9AB8" stroke-width=".8" stroke-linejoin="round" />
-            <path d="M 0 2 L 0 -7" fill="none" stroke="#7A9AB8" stroke-width=".6" />
-            <path d="M 0 -7 L 5 1 L 0 2 Z" fill="rgba(255,255,255,.3)" stroke="#7A9AB8" stroke-width=".6" stroke-linejoin="round" />
-          </g>
-
-          <!-- Decorative: Whale -->
-          <g class="jm-decoration jm-whale" transform="translate(600, 550)" opacity=".5">
-            <path d="M -18 0 C -18 -10, -8 -14, 0 -12 C 8 -10, 14 -4, 18 0 C 22 4, 20 8, 14 6 C 8 4, 2 2, -4 4 C -10 6, -16 6, -18 0Z" fill="none" stroke="#7A9AB8" stroke-width="1.5" stroke-linecap="round" />
-            <!-- Tail -->
-            <path d="M -18 0 C -22 -4, -24 -8, -20 -10 C -18 -8, -16 -4, -18 0" fill="none" stroke="#7A9AB8" stroke-width="1.2" stroke-linecap="round" />
-            <path d="M -18 0 C -22 4, -24 8, -20 10 C -18 8, -16 4, -18 0" fill="none" stroke="#7A9AB8" stroke-width="1.2" stroke-linecap="round" />
-            <!-- Eye -->
-            <circle cx="8" cy="-4" r="1.5" fill="#7A9AB8" opacity=".5" />
-            <!-- Water spout -->
-            <path d="M 2 -12 C 0 -18, 4 -20, 2 -22" fill="none" stroke="#7A9AB8" stroke-width=".8" opacity=".4" stroke-linecap="round" />
-            <path d="M 4 -12 C 6 -17, 3 -20, 5 -21" fill="none" stroke="#7A9AB8" stroke-width=".8" opacity=".3" stroke-linecap="round" />
-          </g>
-
-          <!-- Decorative: Birds -->
-          <g class="jm-decoration jm-bird" transform="translate(300, 120)" opacity=".4">
-            <path d="M -8 0 C -4 -5, 0 -3, 0 0 C 0 -3, 4 -5, 8 0" fill="none" stroke="#7A9AB8" stroke-width="1" stroke-linecap="round" />
-          </g>
-          <g class="jm-decoration jm-bird" transform="translate(330, 100)" opacity=".3" style="animation-delay: -1s">
-            <path d="M -6 0 C -3 -4, 0 -2, 0 0 C 0 -2, 3 -4, 6 0" fill="none" stroke="#7A9AB8" stroke-width=".8" stroke-linecap="round" />
-          </g>
-          <g class="jm-decoration jm-bird" transform="translate(270, 110)" opacity=".4" style="animation-delay: -2.5s">
-            <path d="M -5 0 C -2 -3, 0 -2, 0 0 C 0 -2, 2 -3, 5 0" fill="none" stroke="#7A9AB8" stroke-width=".7" stroke-linecap="round" />
-          </g>
-          <g class="jm-decoration jm-bird" transform="translate(700, 100)" opacity=".3" style="animation-delay: -3s">
-            <path d="M -7 0 C -3 -4, 0 -2, 0 0 C 0 -2, 3 -4, 7 0" fill="none" stroke="#7A9AB8" stroke-width=".9" stroke-linecap="round" />
-          </g>
-
-          <!-- Paper Plane animated along route -->
-          <g id="jmPaperPlane">
-            <path class="jm-paper-plane" d="M -8 0 L 6 -5 L 2 0 L 6 5 Z" />
-            <animateMotion dur="8s" repeatCount="indefinite" rotate="auto">
-              <mpath href="#jmRoutePath" />
-            </animateMotion>
-          </g>
-
-          <!-- Dotted trail for paper plane -->
-          <path class="jm-paper-plane-trail" d="M 180 560 C 220 520, 260 470, 330 420 C 400 370, 470 330, 550 290 C 610 270, 670 320, 740 370 C 800 310, 850 230, 890 170" opacity=".3">
-            <animate attributeName="stroke-dashoffset" values="0;-24" dur="2s" repeatCount="indefinite" />
-          </path>
-
-          <!-- Lighthouse decoration (near SJTU island) -->
-          <g transform="translate(130, 530)" class="jm-decoration" opacity=".4">
-            <rect x="-3" y="-18" width="6" height="18" rx="1" fill="none" stroke="#7A9AB8" stroke-width="1.2" />
-            <path d="M -5 -18 L 5 -18 L 3 -22 L -3 -22 Z" fill="none" stroke="#7A9AB8" stroke-width="1" stroke-linejoin="round" />
-            <circle cx="0" cy="-24" r="2" fill="none" stroke="#7A9AB8" stroke-width=".8" />
-            <!-- Light beam -->
-            <path d="M 0 -24 L 15 -30" fill="none" stroke="#7A9AB8" stroke-width=".5" opacity=".3" />
-            <path d="M 0 -24 L 12 -26" fill="none" stroke="#7A9AB8" stroke-width=".5" opacity=".2" />
-          </g>
-
-        </svg>
+        <!-- watercolor map is background image -->
 
         <!-- HTML Overlay: Node Labels positioned by percentage of viewBox (1000x700) -->
         <!-- Node positions: SJTU(180,560), Lab(330,420), Transsion(550,290), XHS(740,370), vNext(890,170) -->
         <!-- left% = x/1000*100, top% = y/700*100 -->
 
         <!-- Node 1: SJTU - left:18%, top:80% -->
-        <div class="jm-node jm-node-start" data-node-id="sjtu" data-order="0" style="left:18%; top:80%; transform:translate(-50%,-100%);">
+        <div class="jm-node jm-node-start" data-node-id="sjtu" data-order="0" style="left:18%; top:73%; transform:translate(-50%,-50%);">
           <div class="jm-node-label">上海交通大学<br>生物医学工程</div>
-          <div class="jm-node-card jm-card-start" style="left:10px; top:10px;">
+          <div class="jm-node-card jm-card-start" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">ENTRY VISA · 护照签注页</div>
               <div class="jm-card-icon"></div>
@@ -3056,9 +2795,9 @@
         </div>
 
         <!-- Node 2: AI Lab - left:33%, top:60% -->
-        <div class="jm-node jm-node-lab" data-node-id="lab" data-order="1" style="left:33%; top:60%; transform:translate(-50%,-100%);">
+        <div class="jm-node jm-node-lab" data-node-id="lab" data-order="1" style="left:45%; top:51%; transform:translate(-50%,-50%);">
           <div class="jm-node-label">AI工具作品集<br>个人实验室</div>
-          <div class="jm-node-card jm-card-lab" style="left:10px; top:10px;">
+          <div class="jm-node-card jm-card-lab" style="right:24px; top:50%; transform:translateY(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">LAB PASS · 实验通行证</div>
               <div class="jm-card-icon">🧪</div>
@@ -3078,9 +2817,9 @@
         </div>
 
         <!-- Node 3: Transsion - left:55%, top:41.4% -->
-        <div class="jm-node jm-node-transsion" data-node-id="transsion" data-order="2" style="left:55%; top:42%; transform:translate(-50%,-100%);">
+        <div class="jm-node jm-node-transsion" data-node-id="transsion" data-order="2" style="left:64%; top:34%; transform:translate(-50%,-50%);">
           <div class="jm-node-label">传音控股<br>AI产品运营</div>
-          <div class="jm-node-card jm-card-transsion" style="left:10px; top:10px;">
+          <div class="jm-node-card jm-card-transsion" style="left:50%; bottom:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">BOARDING PASS · 国际登机牌</div>
               <div class="jm-card-icon">✈</div>
@@ -3100,9 +2839,9 @@
         </div>
 
         <!-- Node 4: Xiaohongshu (current) - left:74%, top:52.8% -->
-        <div class="jm-node jm-node-current" data-node-id="xiaohongshu" data-order="3" style="left:74%; top:53%; transform:translate(-50%,-100%);">
+        <div class="jm-node jm-node-current" data-node-id="xiaohongshu" data-order="3" style="left:70%; top:45%; transform:translate(-50%,-50%);">
           <div class="jm-node-label">小红书<br>AI产品运营</div>
-          <div class="jm-node-card jm-card-current jm-card-expanded" style="right:10px; top:10px;">
+          <div class="jm-node-card jm-card-current jm-card-expanded" style="left:24px; top:50%; transform:translateY(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type jm-type-current">LIVE JOURNEY · 当前行程卡</div>
               <div class="jm-card-icon">📍</div>
@@ -3129,9 +2868,9 @@
         </div>
 
         <!-- Node 5: vNext (locked) - left:89%, top:24.3% -->
-        <div class="jm-node jm-node-locked" data-node-id="vnext" data-order="4" style="left:89%; top:24%; transform:translate(-50%,-100%);">
+        <div class="jm-node jm-node-locked" data-node-id="vnext" data-order="4" style="left:95%; top:13%; transform:translate(-50%,-50%);">
           <div class="jm-node-label">vNext<br>迷雾中的下一站</div>
-          <div class="jm-node-card jm-card-locked" style="right:10px; top:10px;">
+          <div class="jm-node-card jm-card-locked" style="right:0; top:24px;">
             <div class="jm-card-header">
               <div class="jm-card-type">FUTURE · 未解锁</div>
               <div class="jm-card-icon"></div>
@@ -4006,20 +3745,26 @@ render();
   var svg = document.getElementById('jmRouteSvg');
   var path = document.getElementById('jmRoutePath');
   var glow = document.getElementById('jmRouteGlow');
-  if (!container || !svg || !path) return;
+  if (!container) return;
 
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var animated = false;
   var nodes = Array.from(container.querySelectorAll('.jm-node'));
-  var svgNodeGroups = Array.from(svg.querySelectorAll('.jm-svg-node-group'));
+  var svgNodeGroups = svg ? Array.from(svg.querySelectorAll('.jm-svg-node-group')) : [];
 
   // Animate route drawing (path d is hardcoded, so getTotalLength() always works)
   function animateRoute() {
     if (animated) return;
     animated = true;
 
+    // Route is now part of the background image; skip SVG path animation if no path element
+    if (!path) {
+      nodes.forEach(function(node) { node.style.opacity = '1'; });
+      return;
+    }
+
     // Set route length as CSS variable for stroke animation
-    var pathLength = path.getTotalLength();
+    var pathLength = (path ? path.getTotalLength() : 0);
     path.style.setProperty('--route-length', pathLength);
     if (glow) glow.style.setProperty('--route-length', pathLength);
 
