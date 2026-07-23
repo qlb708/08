@@ -1580,7 +1580,7 @@
 
 .jm-shell {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 260px minmax(0, 1fr);
   gap: 24px;
   width: 100%;
   flex: 1;
@@ -1847,12 +1847,10 @@
 
 /* ===== Right: Journey Map ===== */
 .jm-map {
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
   position: relative;
   overflow: hidden;
   border-radius: 24px;
+  display: block;
   background: linear-gradient(135deg, #EAF2FB 0%, #DCEAF7 40%, #E4EEF8 70%, #EEF4FA 100%);
   border: 1px solid rgba(200,218,240,.5);
 }
@@ -1897,17 +1895,17 @@
 
 /* Route Container */
 .jm-route-container {
-  flex: 1;
   position: relative;
-  min-height: 0;
+  width: 100%;
+  padding-bottom: 75%;
+  height: 0;
   overflow: visible;
   background-image: url('assets/journey-map.png');
-  background-size: contain;
-  background-position: center top;
+  background-size: 100% 100%;
+  background-position: center;
   background-repeat: no-repeat;
-  aspect-ratio: 1448 / 1086;
-  width: 100%;
-  max-width: 900px;
+  border-radius: 20px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -2399,6 +2397,13 @@
     display: none;
   }
 }
+
+.jm-node-mist{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.55);border:2px dashed #BCC6D5;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#9AA6BA;backdrop-filter:blur(4px);box-shadow:0 4px 14px rgba(120,140,170,.18)}
+.jm-card-link{color:#5E82F4;font-weight:700;text-decoration:none;font-size:12px}
+.jm-card-link:hover{text-decoration:underline}
+.jm-card-result{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(127,114,232,.08);border:1px solid rgba(127,114,232,.18);font-size:11px;color:#4a4270;line-height:1.7}
+.jm-card-result b{color:#7F72E8;font-size:13px}
+
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
 <script>
@@ -2757,64 +2762,88 @@
         <!-- Node positions: SJTU(180,560), Lab(330,420), Transsion(550,290), XHS(740,370), vNext(890,170) -->
         <!-- left% = x/1000*100, top% = y/700*100 -->
 
-        <!-- Node 1: SJTU - left:18%, top:80% -->
-        <div class="jm-node jm-node-start" data-node-id="sjtu" data-order="0" style="left:18%; top:82%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">上海交通大学<br>生物医学工程</div>
+        <!-- Journey nodes: 6 stations + 1 locked mist -->
+
+        <!-- Node 1: 上海科技大学 (lighthouse+castle) 17%/72% -->
+        <div class="jm-node jm-node-start" data-node-id="ustc" data-order="0" style="left:17%; top:72%; transform:translate(-50%,-50%);">
+          <div class="jm-node-label">上海科技大学<br>生物医学工程</div>
           <div class="jm-node-card jm-card-start" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
-              <div class="jm-card-type">ENTRY VISA · 护照签注页</div>
-              <div class="jm-card-icon"></div>
+              <div class="jm-card-type">ENTRY VISA · 起点港</div>
+              <div class="jm-card-icon">🎓</div>
             </div>
-            <div class="jm-card-title">上海交通大学</div>
-            <div class="jm-card-subtitle">生物医学工程 硕士在读<br>2021.09 – 至今</div>
+            <div class="jm-card-title">上海科技大学</div>
+            <div class="jm-card-subtitle">生物医学工程 · 推免硕士<br>2024.09 – 2027.07</div>
             <ul class="jm-card-list">
-              <li>数据分析与建模</li>
-              <li>实验设计与验证</li>
-              <li>真实问题拆解与长周期推进</li>
+              <li>上海理工大学 · 医学影像技术</li>
+              <li>2020.09 – 2024.06 · 本科</li>
+              <li>数据分析 · 实验设计 · 复杂问题拆解</li>
             </ul>
             <div class="jm-card-footer">
               <span class="jm-card-stamp">VERIFIED</span>
-              <span>2021.09</span>
+              <span>2020 – 2027</span>
             </div>
           </div>
         </div>
 
-        <!-- Node 2: AI Lab - left:33%, top:60% -->
-        <div class="jm-node jm-node-lab" data-node-id="lab" data-order="1" style="left:68%; top:68%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">AI工具作品集<br>个人实验室</div>
-          <div class="jm-node-card jm-card-lab" style="right:24px; top:50%; transform:translateY(-50%);">
+        <!-- Node 2: 垂直足球自媒体矩阵 (soccer) 20%/63% -->
+        <div class="jm-node jm-node-soccer" data-node-id="soccer" data-order="1" style="left:20%; top:63%; transform:translate(-50%,-50%);">
+          <div class="jm-node-label">垂直足球自媒体<br>17w 粉丝</div>
+          <div class="jm-node-card jm-card-soccer" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
-              <div class="jm-card-type">LAB PASS · 实验通行证</div>
-              <div class="jm-card-icon">🧪</div>
+              <div class="jm-card-type">CREATOR PASS · 内容通行证</div>
+              <div class="jm-card-icon">⚽</div>
             </div>
-            <div class="jm-card-title">AI工具作品集</div>
-            <div class="jm-card-subtitle">个人产品实验室<br>2024.09 – 至今</div>
+            <div class="jm-card-title">垂直足球自媒体矩阵</div>
+            <div class="jm-card-subtitle">全网 17w+ 粉丝<br>2022.12 – 2024.06</div>
             <ul class="jm-card-list">
-              <li>6+ 个AI工具原型设计与落地</li>
-              <li>Vibe Coding 快速开发</li>
-              <li>真实问题验证与持续迭代</li>
+              <li>从 0 到 17w 粉丝内容运营</li>
+              <li>垂直赛道选题与爆款方法论</li>
+              <li>多平台账号矩阵搭建</li>
             </ul>
             <div class="jm-card-footer">
-              <span class="jm-card-stamp">ACTIVE</span>
-              <span>2024.09</span>
+              <span class="jm-card-stamp">17W FANS</span>
+              <span>2022 – 2024</span>
             </div>
           </div>
         </div>
 
-        <!-- Node 3: Transsion - left:55%, top:41.4% -->
-        <div class="jm-node jm-node-transsion" data-node-id="transsion" data-order="2" style="left:22%; top:69%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">传音控股<br>AI产品运营</div>
-          <div class="jm-node-card jm-card-transsion" style="left:50%; bottom:24px; transform:translateX(-50%);">
+        <!-- Node 3: BenQ明基 (camera-tripod+screen) 30%/50% -->
+        <div class="jm-node jm-node-benq" data-node-id="benq" data-order="2" style="left:30%; top:50%; transform:translate(-50%,-50%);">
+          <div class="jm-node-label">BenQ 明基<br>增长运营</div>
+          <div class="jm-node-card jm-card-benq" style="left:50%; top:24px; transform:translateX(-50%);">
+            <div class="jm-card-header">
+              <div class="jm-card-type">TRANSIT PASS · 增长站</div>
+              <div class="jm-card-icon">📈</div>
+            </div>
+            <div class="jm-card-title">BenQ 明基</div>
+            <div class="jm-card-subtitle">增长运营<br>2025.12 – 2026.02</div>
+            <ul class="jm-card-list">
+              <li>用户增长策略设计与执行</li>
+              <li>渠道投放与转化优化</li>
+              <li>数据驱动的运营复盘</li>
+            </ul>
+            <div class="jm-card-footer">
+              <span class="jm-card-stamp">GROWTH</span>
+              <span>2025.12</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 4: 传音控股 (smartphone) 46%/56% -->
+        <div class="jm-node jm-node-transsion" data-node-id="transsion" data-order="3" style="left:46%; top:56%; transform:translate(-50%,-50%);">
+          <div class="jm-node-label">传音控股<br>AI 产品运营</div>
+          <div class="jm-node-card jm-card-transsion" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">BOARDING PASS · 国际登机牌</div>
               <div class="jm-card-icon">✈</div>
             </div>
-            <div class="jm-card-title">TRANSSION 传音控股</div>
-            <div class="jm-card-subtitle">AI产品运营实习生<br>Ella AI 手机助手·世界杯场景运营<br>2026.03 – 2026.06</div>
+            <div class="jm-card-title">传音控股 TRANSSION</div>
+            <div class="jm-card-subtitle">AI 产品运营 · Ella AI 手机助手<br>2026.03 – 2026.06</div>
             <ul class="jm-card-list">
-              <li>设计并落地世界杯足球Agent场景运营</li>
-              <li>搭建海外投放路径与AI能力迁移方案</li>
-              <li>AIGC内容玩法设计与本地化运营</li>
+              <li>世界杯足球 Agent 场景运营</li>
+              <li>海外投放路径与 AI 能力迁移</li>
+              <li>AIGC 内容玩法与本地化运营</li>
             </ul>
             <div class="jm-card-footer">
               <span class="jm-card-stamp">CHECKED IN</span>
@@ -2823,56 +2852,59 @@
           </div>
         </div>
 
-        <!-- Node 4: Xiaohongshu (current) - left:74%, top:52.8% -->
-        <div class="jm-node jm-node-current" data-node-id="xiaohongshu" data-order="3" style="left:79%; top:44%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">小红书<br>AI产品运营</div>
+        <!-- Node 5: AI工具集 (AI-robot+laptop) 66%/63% -->
+        <div class="jm-node jm-node-lab" data-node-id="lab" data-order="4" style="left:66%; top:63%; transform:translate(-50%,-50%);">
+          <div class="jm-node-label">AI 工具作品集<br>个人实验室</div>
+          <div class="jm-node-card jm-card-lab" style="left:50%; top:24px; transform:translateX(-50%);">
+            <div class="jm-card-header">
+              <div class="jm-card-type">LAB PASS · 实验通行证</div>
+              <div class="jm-card-icon">🧪</div>
+            </div>
+            <div class="jm-card-title">AI 工具作品集</div>
+            <div class="jm-card-subtitle">个人产品实验室<br>2026.04 – 至今</div>
+            <ul class="jm-card-list">
+              <li>6+ 个 AI 工具原型设计与落地</li>
+              <li>Vibe Coding 快速开发</li>
+              <li>真实问题验证与持续迭代</li>
+            </ul>
+            <div class="jm-card-footer">
+              <a class="jm-card-link" href="#tools">进入工具页 →</a>
+              <span>2026.04</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 6: 小红书 (villa+camera) 76%/40% -->
+        <div class="jm-node jm-node-current" data-node-id="xhs" data-order="5" style="left:76%; top:40%; transform:translate(-50%,-50%);">
+          <div class="jm-node-label">小红书<br>AI 产品运营</div>
           <div class="jm-node-card jm-card-current" style="left:24px; top:50%; transform:translateY(-50%);">
             <div class="jm-card-header">
-              <div class="jm-card-type jm-type-current">LIVE JOURNEY · 当前行程卡</div>
-              <div class="jm-card-icon">📍</div>
+              <div class="jm-card-type">♥ LIVE JOURNEY · 当前行程卡</div>
+              <div class="jm-card-icon">📕</div>
             </div>
             <div class="jm-card-title">小红书</div>
-            <div class="jm-card-subtitle">AI旅行规划产品·产品运营实习生<br>STATUS <b style="color:#7F72E8;">进行中</b><br>2026.06 – 2026.08</div>
+            <div class="jm-card-subtitle">AI 旅行规划产品 · 产品运营<br>2026.06 – 2026.08 · <b style="color:#7F72E8">进行中</b></div>
             <ul class="jm-card-list">
-              <li>推动地点合集功能冷启动与用户路径运营</li>
+              <li>地点合集功能冷启动与用户路径运营</li>
               <li>场景增长策略与内容供给建设</li>
               <li>达人合作与内容生态搭建</li>
             </ul>
-            <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #dce3ee;">
-              <div style="font-size:10px;color:#9aa6ba;margin-bottom:5px;font-weight:700;">核心成果</div>
-              <div style="font-size:11px;color:#62728e;line-height:1.6;">
-                UV渗透率 <b style="color:#E6B283;font-size:13px;">12.64% → 17.16%</b><br>
-                日新增用户峰值 <b style="color:#E6B283;font-size:13px;">3.94w</b>
-              </div>
+            <div class="jm-card-result">
+              <div>探索页 UV 渗透率 <b>12.64% → 17.16%</b></div>
+              <div>日新增用户峰值 <b>3.94w</b></div>
             </div>
             <div class="jm-card-footer">
-              <span class="jm-card-stamp jm-stamp-current">你在这里</span>
+              <span class="jm-card-stamp">IN PROGRESS</span>
               <span>2026.06</span>
             </div>
           </div>
         </div>
 
-        <!-- Node 5: vNext (locked) - left:89%, top:24.3% -->
-        <div class="jm-node jm-node-locked" data-node-id="vnext" data-order="4" style="left:82%; top:26%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">vNext<br>迷雾中的下一站</div>
-          <div class="jm-node-card jm-card-locked" style="right:0; top:24px;">
-            <div class="jm-card-header">
-              <div class="jm-card-type">FUTURE · 未解锁</div>
-              <div class="jm-card-icon"></div>
-            </div>
-            <div class="jm-card-title" style="color:#9aa6ba;">vNext</div>
-            <div class="jm-card-subtitle" style="color:#BCC6D5;">迷雾中的下一站</div>
-            <ul class="jm-card-list">
-              <li>更深入的AI产品与运营</li>
-              <li>探索可验证、可复用的产品机制</li>
-              <li>未解锁</li>
-            </ul>
-            <div class="jm-card-footer">
-              <span class="jm-card-stamp" style="color:#BCC6D5;">LOCKED</span>
-              <span>?</span>
-            </div>
-          </div>
+        <!-- Node 7: vNext locked (misty mountain) 80%/23% -->
+        <div class="jm-node jm-node-locked" data-node-id="vnext" data-order="6" style="left:80%; top:23%; transform:translate(-50%,-50%);">
+          <div class="jm-node-mist">?</div>
         </div>
+
       </div>
 
       <!-- journey journal removed -->
