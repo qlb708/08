@@ -1853,6 +1853,7 @@
   overflow: hidden;
   border-radius: 24px;
   display: block;
+  min-height: 0;
   background: linear-gradient(135deg, #EAF2FB 0%, #DCEAF7 40%, #E4EEF8 70%, #EEF4FA 100%);
   border: 1px solid rgba(200,218,240,.5);
 }
@@ -1899,15 +1900,13 @@
 .jm-route-container {
   position: relative;
   width: 100%;
-  padding-bottom: 75%;
-  height: 0;
+  height: 100%;
   overflow: visible;
   background-image: url('assets/journey-map.png');
-  background-size: 100% 100%;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 20px;
-  max-width: 100%;
   margin: 0 auto;
 }
 
