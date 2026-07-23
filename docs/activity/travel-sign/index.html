@@ -23,7 +23,8 @@
   --glass:rgba(74,127,212,.05);--glass2:rgba(74,127,212,.14);--glass3:rgba(74,127,212,.28);
 }
 html{scroll-behavior:smooth}
-body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(170deg,#b8d4f0 0%,#cde0f8 25%,#d8e8f8 50%,#e0e8f5 75%,#e8e0f0 100%);background-attachment:fixed;color:var(--text);line-height:1.6;overflow-x:hidden;min-height:100vh}
+body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(170deg,#b8d4f0 0%,#cde0f8 25%,#d8e8f8 50%,#e0e8f5 75%,#e8e0f0 100%);background-attachment:fixed;color:var(--text);line-height:1.6;overflow-x:hidden;overflow-y:hidden;height:100vh;min-height:100vh}
+body.show-analysis{overflow-y:auto;height:auto}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
 /* ===== NAV ===== */
@@ -37,28 +38,32 @@ body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sa
 .nav-back:hover{color:var(--text)}
 
 /* ===== STAGE (three-column) ===== */
-.stage-wrap{max-width:1360px;margin:0 auto;padding:96px 24px 40px}
-.stage-head{margin-bottom:22px}
+.stage-wrap{max-width:1360px;margin:0 auto;padding:0 24px;height:calc(100vh - 52px);display:flex;flex-direction:column;overflow:hidden}
+body.show-analysis .stage-wrap{height:auto;overflow:visible;padding:90px 24px 40px}
+.analysis,.a-scroll-hint,.footer{display:none}
+body.show-analysis .analysis,body.show-analysis .a-scroll-hint,body.show-analysis .footer{display:block}
+body.show-analysis .stage-head{margin-top:90px}
+.stage-head{margin-bottom:10px;flex-shrink:0;padding-top:8px}
 .stage-brand-line{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .stage-brand{font-size:22px;font-weight:700;letter-spacing:3px;background:linear-gradient(90deg,#4a7fd4,#7048c8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .stage-brand-tag{font-size:11px;color:var(--accent);letter-spacing:2px;padding:3px 10px;border-radius:12px;background:var(--glass);border:1px solid var(--glass2)}
 .stage-subtitle{font-size:13px;color:var(--text3);margin-top:6px;letter-spacing:.5px}
 
-.stage-grid{display:grid;grid-template-columns:300px 410px 280px;gap:48px;justify-content:center;align-items:start}
+.stage-grid{display:grid;grid-template-columns:220px 1fr 320px;gap:40px;justify-content:center;align-items:stretch;flex:1;min-height:0}
 
 /* ---- LEFT explain ---- */
-.stage-left{position:sticky;top:96px;padding-top:36px}
+.stage-left{display:flex;flex-direction:column;justify-content:center;padding-top:0}
 .sl-stepno{font-size:52px;font-weight:200;letter-spacing:2px;color:var(--accent);line-height:1;opacity:.9;transition:opacity .3s}
 .sl-title{font-size:22px;font-weight:700;letter-spacing:1px;margin-top:8px;margin-bottom:14px;color:var(--text);line-height:1.35;transition:opacity .3s}
 .sl-desc{font-size:13.5px;color:var(--text2);line-height:1.85;margin-bottom:18px;transition:opacity .3s}
 .sl-kw{display:flex;flex-wrap:wrap;gap:7px}
 .sl-kw span{font-size:11px;color:var(--accent);padding:5px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--glass2);box-shadow:var(--sh)}
-.sl-fade{animation:slFade .35s ease}
+.sl-fade{animation:slFade .35s ease forwards}
 @keyframes slFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* ---- MIDDLE phone ---- */
-.stage-mid{display:flex;flex-direction:column;align-items:center}
-.device{width:410px;height:820px;border-radius:46px;background:linear-gradient(160deg,#ffffff,#eaf2fd);border:1px solid rgba(74,127,212,.22);box-shadow:var(--sh-phone);padding:12px;position:relative;flex-shrink:0}
+.stage-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:0}
+.device{width:min(430px,calc((100vh - 130px) * 0.5));height:min(calc(100vh - 130px),860px);border-radius:46px;background:linear-gradient(160deg,#ffffff,#eaf2fd);border:1px solid rgba(74,127,212,.22);box-shadow:var(--sh-phone);padding:12px;position:relative;flex-shrink:0}
 .device-screen{position:relative;width:100%;height:100%;border-radius:36px;background:linear-gradient(175deg,#eef5ff 0%,#f6faff 40%,#ffffff 100%);overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(74,127,212,.08)}
 .device-statusbar{height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font-size:12px;font-weight:600;color:var(--text);position:relative;z-index:5}
 .device-notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:96px;height:26px;background:#1a2540;border-radius:16px;z-index:6}
@@ -87,7 +92,7 @@ body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sa
 .pma-btn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* ---- RIGHT console ---- */
-.stage-right{position:sticky;top:96px;padding-top:36px}
+.stage-right{display:flex;flex-direction:column;justify-content:center;gap:16px;padding-top:0;overflow-y:auto;max-height:100%}
 .console-card{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border:1px solid var(--glass2);border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:14px}
 .console-label{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;font-weight:600}
 .cprog{display:flex;flex-direction:column;gap:0}
@@ -448,12 +453,24 @@ body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sa
   <div class="stage-grid">
 
     <!-- LEFT explain -->
-    <aside class="stage-left">
-      <div id="slInner">
-        <div class="sl-stepno" id="slStepno">01</div>
-        <div class="sl-title" id="slTitle">制作旅行签</div>
-        <div class="sl-desc" id="slDesc">把普通行程包装成一份可以拆开的旅行互动——发起人从已有行程里选出几个地点，藏进"签"里发给朋友，而不是甩一条18个点的链接。</div>
-        <div class="sl-kw" id="slKw"><span>行程即礼物</span><span>低门槛制作</span><span>轻量分享</span></div>
+    <!-- LEFT: progress + role switch -->
+    <aside class="stage-left" id="leftProgress">
+      <div class="console-card">
+        <div class="console-label">体验进度</div>
+        <div class="cprog" id="cprog">
+          <div class="cprog-item" data-jump="1"><div class="cprog-node">1</div><div class="cprog-text">制作</div></div>
+          <div class="cprog-item" data-jump="2"><div class="cprog-node">2</div><div class="cprog-text">分享</div></div>
+          <div class="cprog-item" data-jump="3"><div class="cprog-node">3</div><div class="cprog-text">拆签</div></div>
+          <div class="cprog-item" data-jump="4"><div class="cprog-node">4</div><div class="cprog-text">路线</div></div>
+          <div class="cprog-item" data-jump="5"><div class="cprog-node">5</div><div class="cprog-text">反馈</div></div>
+        </div>
+      </div>
+      <div class="console-card">
+        <div class="console-label">当前视角</div>
+        <div class="seg" id="roleSeg">
+          <button class="seg-btn active" data-role="A">发起人 A</button>
+          <button class="seg-btn" data-role="B">接收方 B</button>
+        </div>
       </div>
     </aside>
 
@@ -655,24 +672,13 @@ body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sa
       </div>
     </div>
 
-    <!-- RIGHT console -->
+    <!-- RIGHT: explanation + demo info + focus -->
     <aside class="stage-right" id="rightConsole">
-      <div class="console-card">
-        <div class="console-label">体验进度</div>
-        <div class="cprog" id="cprog">
-          <div class="cprog-item" data-jump="1"><div class="cprog-node">1</div><div class="cprog-text">制作</div></div>
-          <div class="cprog-item" data-jump="2"><div class="cprog-node">2</div><div class="cprog-text">分享</div></div>
-          <div class="cprog-item" data-jump="3"><div class="cprog-node">3</div><div class="cprog-text">拆签</div></div>
-          <div class="cprog-item" data-jump="4"><div class="cprog-node">4</div><div class="cprog-text">路线</div></div>
-          <div class="cprog-item" data-jump="5"><div class="cprog-node">5</div><div class="cprog-text">反馈</div></div>
-        </div>
-      </div>
-      <div class="console-card">
-        <div class="console-label">当前视角</div>
-        <div class="seg" id="roleSeg">
-          <button class="seg-btn active" data-role="A">发起人 A</button>
-          <button class="seg-btn" data-role="B">接收方 B</button>
-        </div>
+      <div class="console-card" id="slInner">
+        <div class="sl-stepno" id="slStepno">01</div>
+        <div class="sl-title" id="slTitle">制作旅行签</div>
+        <div class="sl-desc" id="slDesc">把普通行程包装成一份可以拆开的旅行互动——发起人从已有行程里选出几个地点，藏进"签"里发给朋友，而不是甩一条18个点的链接。</div>
+        <div class="sl-kw" id="slKw"><span>行程即礼物</span><span>低门槛制作</span><span>轻量分享</span></div>
       </div>
       <div class="console-card">
         <div class="console-label">当前演示</div>
@@ -963,9 +969,6 @@ body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sa
     $('#slDesc').textContent = d.desc;
     $('#slKw').innerHTML = d.kw.map(function(k){ return '<span>' + k + '</span>'; }).join('');
     var inner = $('#slInner');
-    inner.classList.remove('sl-fade');
-    void inner.offsetWidth;
-    inner.classList.add('sl-fade');
   }
 
   function updateConsole(step, role){
@@ -1342,6 +1345,22 @@ body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sa
     drawerToggle.textContent = open ? '⚙️ 演示控制台 ▴' : '⚙️ 演示控制台 ▾';
   });
   window.addEventListener('resize', syncDrawer);
+
+  // ============ ANALYSIS TOGGLE (nav links) ============
+  document.querySelectorAll('.nav-links a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      document.body.classList.add('show-analysis');
+      var target = document.querySelector(a.getAttribute('href'));
+      if(target) setTimeout(function(){ target.scrollIntoView({behavior:'smooth', block:'start'}); }, 50);
+    });
+  });
+  var backBtn = document.querySelector('.nav-brand');
+  if(backBtn) backBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    document.body.classList.remove('show-analysis');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
 
   // ============ INIT ============
   currentSigns = pickSigns();
