@@ -2,1140 +2,1267 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>FATE TRIP · 旅行社交</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>FATE TRIP · 旅行签</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#dde8f5;--bg2:#f0f6ff;--white:#ffffff;
-  --blue:#4a7fd4;--blue2:#6a9be8;--blue3:#96bdf5;--blue4:#c8dcf8;--blue5:#eef5ff;
-  --ink:#1a2540;--ink2:#2a3a5c;--ink3:#506080;--ink4:#8fa8cc;--ink5:#dde8f5;
-  --pink:#d45c8a;--pink2:#f5c0d5;
-  --green:#18b87c;--green2:#d0f5e8;
-  --purple:#7048c8;--purple2:#ede6fa;
-  --gold:#c08010;--gold2:#fef0c8;
-  --r:18px;
-  --sh:0 2px 16px rgba(74,127,212,.08),0 1px 4px rgba(0,0,0,.04);
-  --sh2:0 8px 36px rgba(74,127,212,.13),0 2px 8px rgba(0,0,0,.04);
-  --sh3:0 20px 60px rgba(74,127,212,.16),0 4px 16px rgba(0,0,0,.05);
+  --bg:#0c0c1d;--bg2:#12122a;--bg3:#1a1a3a;
+  --surface:#1e1e3e;--surface2:#252550;--surface3:#2e2e5a;
+  --text:#e8e4f0;--text2:#b0a8c8;--text3:#8078a0;--text4:#5a5478;
+  --accent:#f5c542;--accent2:#ffd866;--accent3:#e8b030;
+  --gold:#d4a017;--purple:#9b6dff;--purple2:#7b4ddf;
+  --pink:#e86090;--green:#3dd68c;--blue:#5b8def;
+  --bkk-yellow:#f5c542;--bkk-gold:#d4a017;--bkk-purple:#8b4db8;--bkk-green:#2d9b6e;
+  --r:16px;--r2:12px;--r3:20px;
+  --sh:0 4px 24px rgba(0,0,0,.3);--sh2:0 8px 40px rgba(0,0,0,.4);
+  --glass:rgba(255,255,255,.06);--glass2:rgba(255,255,255,.1);--glass3:rgba(255,255,255,.15);
 }
-
-/* ══ 全局背景 ══ */
-html,body{
-  height:100%;
-  font-family:'PingFang SC','SF Pro Text',-apple-system,sans-serif;
-  color:var(--ink);overflow:hidden;
-  background:linear-gradient(170deg,#b8d4f0 0%,#cde0f8 25%,#d8e8f8 50%,#e0e8f5 75%,#e8e0f0 100%);
+html{scroll-behavior:smooth}
+body{font-family:'PingFang SC','SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;min-height:100vh}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(12,12,29,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-brand{font-size:14px;font-weight:300;letter-spacing:6px;color:var(--accent);text-decoration:none}
+.nav-brand span{font-weight:700}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:12px;color:var(--text2);text-decoration:none;letter-spacing:1px;transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-back{font-size:11px;color:var(--text3);text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .2s}
+.nav-back:hover{color:var(--text)}
+.demo-toggle{position:fixed;top:60px;right:20px;z-index:99;background:var(--surface);border:1px solid var(--glass3);border-radius:var(--r2);padding:8px 14px;cursor:pointer;font-size:11px;color:var(--text2);transition:all .2s}
+.demo-toggle:hover{background:var(--surface2);color:var(--text)}
+.demo-panel{position:fixed;top:96px;right:20px;z-index:99;background:var(--surface);border:1px solid var(--glass3);border-radius:var(--r);padding:16px;min-width:220px;display:none;box-shadow:var(--sh2)}
+.demo-panel.open{display:block}
+.demo-panel-label{font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:10px;text-transform:uppercase}
+.demo-row{display:flex;gap:6px;margin-bottom:8px}
+.demo-btn{flex:1;padding:8px 12px;border:1px solid var(--glass2);border-radius:8px;background:transparent;color:var(--text2);font-size:11px;cursor:pointer;transition:all .2s;font-family:inherit;text-align:center}
+.demo-btn:hover{border-color:var(--accent);color:var(--accent)}
+.demo-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
+.demo-note{font-size:10px;color:var(--text4);margin-top:8px;line-height:1.5}
+.section-tag{font-size:10px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.section-title{font-size:clamp(24px,4vw,36px);font-weight:300;letter-spacing:2px;margin-bottom:12px;line-height:1.4}
+.section-title strong{font-weight:700;color:var(--accent)}
+.section-desc{font-size:14px;color:var(--text2);max-width:600px;line-height:1.8}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(245,197,66,.08) 0%,transparent 60%),radial-gradient(ellipse at 30% 70%,rgba(139,77,184,.06) 0%,transparent 50%)}
+.hero-content{position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;background:var(--glass);border:1px solid var(--glass2);font-size:11px;color:var(--text2);letter-spacing:2px;margin-bottom:32px}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(28px,5vw,48px);font-weight:300;letter-spacing:3px;line-height:1.5;margin-bottom:16px}
+.hero h1 strong{font-weight:700;color:var(--accent)}
+.hero-sub{font-size:15px;color:var(--text2);margin-bottom:40px;line-height:1.8}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.btn-primary{padding:14px 32px;border-radius:30px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent3));color:var(--bg);font-size:14px;font-weight:700;letter-spacing:1px;font-family:inherit;transition:all .2s;box-shadow:0 4px 20px rgba(245,197,66,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(245,197,66,.4)}
+.btn-secondary{padding:14px 32px;border-radius:30px;border:1px solid var(--glass3);cursor:pointer;background:var(--glass);color:var(--text);font-size:14px;font-weight:500;font-family:inherit;transition:all .2s}
+.btn-secondary:hover{background:var(--glass2);border-color:var(--accent)}
+.hero-steps{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+.hero-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3)}
+.hero-step-num{width:24px;height:24px;border-radius:50%;background:var(--glass2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent)}
+.hero-visual{margin-top:60px;position:relative;width:100%;max-width:700px;height:280px;display:flex;align-items:center;justify-content:center}
+.envelope-demo{width:280px;height:180px;background:linear-gradient(145deg,#2a2050,#1a1840);border:1px solid var(--glass2);border-radius:12px;position:relative;box-shadow:var(--sh2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.envelope-flap{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(245,197,66,.15),transparent);clip-path:polygon(0 0,50% 60%,100% 0)}
+.envelope-label{font-size:10px;color:var(--text3);letter-spacing:3px;z-index:1}
+.cards-peek{position:absolute;top:-20px;right:-30px;display:flex;gap:4px;transform:rotate(8deg)}
+.card-peek{width:40px;height:56px;border-radius:6px;border:1px solid var(--glass2)}
+.card-peek:nth-child(1){background:linear-gradient(135deg,var(--bkk-yellow),var(--bkk-gold));transform:translateY(8px)}
+.card-peek:nth-child(2){background:linear-gradient(135deg,var(--bkk-purple),var(--purple));transform:translateY(4px)}
+.card-peek:nth-child(3){background:linear-gradient(135deg,var(--bkk-green),var(--green))}
+.route-line{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);display:flex;gap:8px;align-items:center}
+.route-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:.6}
+.route-connector{width:24px;height:2px;background:linear-gradient(90deg,var(--accent),transparent)}
+.problem{text-align:center;padding:60px 24px;background:linear-gradient(180deg,transparent,rgba(245,197,66,.03),transparent)}
+.problem-text{font-size:clamp(16px,2.5vw,22px);color:var(--text2);font-weight:300;letter-spacing:1px;max-width:700px;margin:0 auto;line-height:1.8}
+.problem-text strong{color:var(--accent);font-weight:600}
+.experience{padding:80px 24px}
+.exp-container{max-width:1100px;margin:0 auto}
+.exp-tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.exp-tab{padding:10px 20px;border-radius:20px;border:1px solid var(--glass2);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;font-family:inherit;letter-spacing:.5px}
+.exp-tab:hover{border-color:var(--accent);color:var(--accent)}
+.exp-tab.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
+.exp-panel{display:none;animation:fadeIn .4s ease}
+.exp-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.setup-container{max-width:520px;margin:0 auto}
+.trip-card{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r3);padding:20px;margin-bottom:20px;position:relative;overflow:hidden}
+.trip-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--bkk-yellow),var(--bkk-gold),var(--bkk-purple),var(--bkk-green))}
+.trip-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.trip-dest{font-size:20px;font-weight:700;letter-spacing:1px}
+.trip-dates{font-size:12px;color:var(--text3);margin-top:2px}
+.trip-meta{display:flex;gap:16px;font-size:12px;color:var(--text2);margin-top:8px}
+.trip-meta span{display:flex;align-items:center;gap:4px}
+.trip-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.trip-action{padding:7px 14px;border-radius:8px;border:1px solid var(--glass2);background:transparent;color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s}
+.trip-action:hover{border-color:var(--accent);color:var(--accent)}
+.trip-action.primary{background:rgba(245,197,66,.15);border-color:var(--accent);color:var(--accent)}
+.setup-group{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.setup-group-title{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.sign-count-options{display:flex;gap:8px}
+.sign-count-opt{flex:1;padding:14px 10px;border-radius:var(--r2);border:1px solid var(--glass2);background:transparent;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit}
+.sign-count-opt:hover{border-color:var(--accent)}
+.sign-count-opt.selected{border-color:var(--accent);background:rgba(245,197,66,.1)}
+.sco-num{font-size:18px;font-weight:700;color:var(--accent)}
+.sco-label{font-size:10px;color:var(--text2);margin-top:4px}
+.sco-time{font-size:10px;color:var(--text4);margin-top:2px}
+.hidden-levels{display:flex;gap:8px}
+.hl-opt{flex:1;padding:10px;border-radius:8px;border:1px solid var(--glass2);background:transparent;cursor:pointer;text-align:center;font-size:11px;color:var(--text2);transition:all .2s;font-family:inherit}
+.hl-opt:hover{border-color:var(--accent)}
+.hl-opt.selected{border-color:var(--accent);background:rgba(245,197,66,.1);color:var(--accent)}
+.fate-options{display:flex;gap:6px;flex-wrap:wrap}
+.fate-opt{padding:8px 14px;border-radius:20px;border:1px solid var(--glass2);background:transparent;cursor:pointer;font-size:11px;color:var(--text2);transition:all .2s;font-family:inherit}
+.fate-opt:hover{border-color:var(--accent)}
+.fate-opt.selected{border-color:var(--accent);background:rgba(245,197,66,.12);color:var(--accent);font-weight:600}
+.adv-toggle{width:100%;padding:12px;border:1px dashed var(--glass2);border-radius:var(--r2);background:transparent;color:var(--text3);font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:14px}
+.adv-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.adv-content{display:none;padding:14px;border:1px solid var(--glass2);border-radius:var(--r2);margin-bottom:14px;background:var(--bg2)}
+.adv-content.open{display:block}
+.pref-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.pref-tag{padding:6px 12px;border-radius:16px;border:1px solid var(--glass2);background:transparent;color:var(--text3);font-size:11px;cursor:pointer;transition:all .2s;font-family:inherit}
+.pref-tag:hover{border-color:var(--bkk-purple);color:var(--bkk-purple)}
+.pref-tag.selected{border-color:var(--bkk-purple);background:rgba(139,77,184,.15);color:var(--bkk-purple)}
+.msg-input{width:100%;padding:12px 16px;border:1px solid var(--glass2);border-radius:var(--r2);background:var(--bg2);color:var(--text);font-size:13px;font-family:inherit;resize:none;outline:none;transition:border-color .2s}
+.msg-input:focus{border-color:var(--accent)}
+.msg-input::placeholder{color:var(--text4)}
+.msg-hint{font-size:11px;color:var(--text4);margin-top:6px;font-style:italic}
+.gen-btn-main{width:100%;padding:16px;border:none;border-radius:var(--r);cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent3));color:var(--bg);font-size:15px;font-weight:700;letter-spacing:1px;font-family:inherit;transition:all .2s;box-shadow:0 4px 20px rgba(245,197,66,.25);margin-top:8px}
+.gen-btn-main:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(245,197,66,.35)}
+.share-preview-card{display:none;margin-top:20px;background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r3);padding:24px;text-align:center;position:relative;overflow:hidden}
+.share-preview-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--bkk-yellow),var(--bkk-gold))}
+.spc-envelope{width:200px;height:130px;margin:0 auto 16px;position:relative;background:linear-gradient(145deg,#2a2050,#1e1845);border:1px solid var(--glass2);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.spc-env-flap{position:absolute;top:0;left:0;right:0;height:45%;background:linear-gradient(180deg,rgba(245,197,66,.12),transparent);clip-path:polygon(0 0,50% 65%,100% 0)}
+.spc-env-text{font-size:10px;color:var(--text3);letter-spacing:2px;z-index:1}
+.spc-cards{position:absolute;top:-14px;right:-20px;display:flex;gap:3px;transform:rotate(6deg)}
+.spc-card{width:28px;height:40px;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
+.spc-card:nth-child(1){background:var(--bkk-yellow);transform:translateY(6px)}
+.spc-card:nth-child(2){background:var(--bkk-purple);transform:translateY(3px)}
+.spc-card:nth-child(3){background:var(--bkk-green)}
+.spc-info{font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:16px}
+.spc-info strong{color:var(--accent)}
+.spc-styles{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.spc-style-btn{padding:5px 12px;border-radius:12px;border:1px solid var(--glass2);background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;font-family:inherit}
+.spc-style-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(245,197,66,.1)}
+.spc-msg{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:16px;min-height:40px}
+.spc-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.spc-btn{padding:9px 18px;border-radius:10px;border:1px solid var(--glass2);background:transparent;color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s}
+.spc-btn:hover{border-color:var(--accent);color:var(--accent)}
+.spc-btn.main{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
+.receiver-container{max-width:480px;margin:0 auto}
+.opening-ceremony{text-align:center;padding:40px 20px}
+.oc-from{font-size:14px;color:var(--text2);margin-bottom:8px}
+.oc-from strong{color:var(--accent)}
+.oc-title{font-size:22px;font-weight:300;letter-spacing:2px;margin-bottom:8px}
+.oc-title strong{font-weight:700;color:var(--accent)}
+.oc-sub{font-size:13px;color:var(--text3);margin-bottom:32px}
+.oc-envelope{width:240px;height:160px;margin:0 auto 24px;position:relative;background:linear-gradient(145deg,#2a2050,#1e1845);border:1px solid var(--glass2);border-radius:12px;cursor:pointer;transition:all .3s;overflow:hidden}
+.oc-envelope:hover{transform:scale(1.02);box-shadow:0 8px 32px rgba(245,197,66,.15)}
+.oc-envelope.opening{animation:envelopeOpen .6s ease forwards}
+@keyframes envelopeOpen{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(.95);opacity:.8}}
+.oc-env-flap{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(245,197,66,.15),transparent);clip-path:polygon(0 0,50% 60%,100% 0)}
+.oc-env-label{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:11px;color:var(--text3);letter-spacing:2px}
+.oc-env-cards{position:absolute;top:-10px;right:-16px;display:flex;gap:3px;transform:rotate(8deg)}
+.oc-env-card{width:24px;height:34px;border-radius:3px;border:1px solid rgba(255,255,255,.12)}
+.oc-env-card:nth-child(1){background:var(--bkk-yellow);transform:translateY(5px)}
+.oc-env-card:nth-child(2){background:var(--bkk-purple)}
+.oc-env-card:nth-child(3){background:var(--bkk-green);transform:translateY(3px)}
+.oc-hint{font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;justify-content:center}
+.sign-reveal{display:none;text-align:center;padding:20px 0}
+.sr-progress{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.sr-dot{width:10px;height:10px;border-radius:50%;background:var(--glass2);border:1px solid var(--glass3);transition:all .3s}
+.sr-dot.done{background:var(--accent);border-color:var(--accent)}
+.sr-dot.current{background:var(--accent);border-color:var(--accent);transform:scale(1.3)}
+.sr-suspense{font-size:12px;color:var(--text3);margin-bottom:20px;font-style:italic}
+.sign-card{width:300px;max-width:90vw;margin:0 auto;min-height:380px;border-radius:var(--r3);position:relative;overflow:hidden;transition:all .5s;cursor:pointer}
+.sign-card.hidden-card{background:linear-gradient(145deg,#2a2050,#1e1845);border:1px solid var(--glass2);display:flex;align-items:center;justify-content:center;min-height:380px}
+.sign-card.hidden-card::before{content:'签';position:absolute;font-size:80px;font-weight:300;color:rgba(245,197,66,.2);letter-spacing:4px}
+.sign-card.hidden-card::after{content:'点击揭签';position:absolute;bottom:20px;font-size:11px;color:var(--text4);letter-spacing:2px}
+.corner-mark{position:absolute;width:16px;height:16px;border-color:rgba(245,197,66,.25);border-style:solid}
+.cm-tl{top:14px;left:14px;border-width:1px 0 0 1px}
+.cm-tr{top:14px;right:14px;border-width:1px 1px 0 0}
+.cm-bl{bottom:14px;left:14px;border-width:0 0 1px 1px}
+.cm-br{bottom:14px;right:14px;border-width:0 1px 1px 0}
+.sign-card.revealed{border:1px solid var(--glass2);min-height:380px}
+.card-type-night_market{background:linear-gradient(180deg,#f5f0e0,#e8e0c8);color:#333}
+.card-type-night_market .sc-inner{padding:20px;border:2px dashed rgba(0,0,0,.1);margin:10px;border-radius:4px}
+.card-type-temple{background:linear-gradient(135deg,#f5e8d0,#e8d4b0);color:#4a3520}
+.card-type-temple .sc-inner{padding:24px;text-align:center}
+.card-type-cafe{background:linear-gradient(180deg,#3a3020,#2a2418);color:#e8dcc8}
+.card-type-cafe .sc-inner{padding:20px;border:1px solid rgba(255,255,255,.1);margin:12px;border-radius:20px}
+.card-type-beach{background:linear-gradient(180deg,#f8f4f0,#e8e0d8);color:#333}
+.card-type-beach .sc-inner{padding:20px 20px 40px;border:3px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.card-type-market{background:linear-gradient(135deg,#c89040,#a87030);color:#fff}
+.card-type-market .sc-inner{padding:20px;border:2px solid rgba(255,255,255,.3);border-radius:8px;margin:12px}
+.card-type-nightlife{background:linear-gradient(135deg,#1a0a2e,#2a1040);color:#e0b0ff;border:1px solid rgba(180,100,255,.3)}
+.card-type-nightlife .sc-inner{padding:20px}
+.card-type-park{background:linear-gradient(180deg,#e8f5e8,#d0e8d0);color:#2a5a2a}
+.card-type-park .sc-inner{padding:24px;text-align:center}
+.sc-num{position:absolute;top:12px;right:16px;font-size:10px;opacity:.5;font-weight:600}
+.sc-type-badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:10px;background:rgba(0,0,0,.08);margin-bottom:12px;font-weight:600;letter-spacing:.5px}
+.card-type-nightlife .sc-type-badge,.card-type-cafe .sc-type-badge,.card-type-market .sc-type-badge{background:rgba(255,255,255,.12)}
+.sc-place-name{font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:1px}
+.sc-phrase{font-size:13px;opacity:.7;font-style:italic;margin-bottom:16px;line-height:1.8}
+.sc-why{font-size:12px;opacity:.6;padding:10px;border-radius:8px;background:rgba(0,0,0,.04);margin-bottom:14px;line-height:1.7}
+.card-type-nightlife .sc-why,.card-type-cafe .sc-why,.card-type-market .sc-why{background:rgba(255,255,255,.06)}
+.sc-trip-info{display:flex;gap:12px;justify-content:center;font-size:11px;opacity:.5;margin-bottom:16px;flex-wrap:wrap}
+.sc-trip-info span{display:flex;align-items:center;gap:3px}
+.sc-feedback{display:flex;gap:8px;justify-content:center}
+.sc-fb-btn{padding:8px 16px;border-radius:20px;border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.03);font-size:11px;cursor:pointer;transition:all .2s;font-family:inherit;color:inherit}
+.card-type-nightlife .sc-fb-btn,.card-type-cafe .sc-fb-btn,.card-type-market .sc-fb-btn{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#e0d0f0}
+.sc-fb-btn:hover{transform:scale(1.05)}
+.sc-fb-btn.liked{background:rgba(245,197,66,.2)!important;border-color:var(--accent)!important;color:var(--accent)!important}
+.sr-next-btn{display:none;margin:24px auto 0;padding:12px 28px;border-radius:20px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent3));color:var(--bg);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.sr-next-btn:hover{transform:translateY(-1px)}
+.route-result{display:none;max-width:520px;margin:0 auto}
+.rr-header{text-align:center;margin-bottom:24px}
+.rr-title{font-size:22px;font-weight:300;letter-spacing:2px;margin-bottom:4px}
+.rr-title strong{font-weight:700;color:var(--accent)}
+.rr-personality{display:inline-block;padding:6px 18px;border-radius:16px;background:rgba(245,197,66,.12);border:1px solid rgba(245,197,66,.3);font-size:12px;color:var(--accent);font-weight:600;letter-spacing:1px}
+.route-map{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r3);padding:24px;margin-bottom:20px}
+.rm-title{font-size:12px;color:var(--text3);letter-spacing:2px;margin-bottom:16px}
+.rm-route{display:flex;flex-direction:column;position:relative;padding-left:24px}
+.rm-route::before{content:'';position:absolute;left:8px;top:12px;bottom:12px;width:2px;background:linear-gradient(180deg,var(--accent),var(--bkk-purple),var(--bkk-green))}
+.rm-stop{display:flex;align-items:flex-start;gap:12px;padding:12px 0;position:relative}
+.rm-stop-dot{position:absolute;left:-20px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);z-index:1}
+.rm-stop:nth-child(2) .rm-stop-dot{background:var(--bkk-purple)}
+.rm-stop:nth-child(3) .rm-stop-dot{background:var(--bkk-green)}
+.rm-stop-icon{font-size:20px}
+.rm-stop-info{flex:1}
+.rm-stop-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.rm-stop-meta{font-size:11px;color:var(--text3)}
+.rm-stats{display:flex;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid var(--glass2);flex-wrap:wrap}
+.rm-stat{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.ai-summary{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r);padding:18px;margin-bottom:20px}
+.ai-badge{padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600;background:rgba(91,141,239,.15);color:var(--blue);letter-spacing:.5px}
+.ai-text{font-size:13px;color:var(--text2);line-height:1.8;margin-top:10px}
+.route-actions{display:flex;gap:10px;flex-wrap:wrap}
+.ra-btn{flex:1;min-width:140px;padding:14px;border-radius:var(--r2);border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center}
+.ra-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent3));color:var(--bg)}
+.ra-btn.secondary{background:var(--glass);border:1px solid var(--glass2);color:var(--text)}
+.ra-btn:hover{transform:translateY(-1px)}
+.ra-feedback{display:none;margin-top:14px;padding:14px;border-radius:var(--r2);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.2);font-size:12px;color:var(--green);line-height:1.7}
+.feedback-container{max-width:520px;margin:0 auto}
+.fb-header{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r3);padding:20px;margin-bottom:20px;text-align:center}
+.fb-header-ico{font-size:36px;margin-bottom:8px}
+.fb-header-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.fb-header-sub{font-size:12px;color:var(--text3)}
+.fb-reactions{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.fb-reaction-card{flex:1;min-width:140px;padding:16px;border-radius:var(--r);background:var(--surface);border:1px solid var(--glass2)}
+.fb-rc-label{font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:8px}
+.fb-rc-items{font-size:13px;color:var(--text);line-height:1.8}
+.fb-ai-summary{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r);padding:18px;margin-bottom:20px}
+.fb-ai-title{font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.fb-ai-text{font-size:13px;color:var(--text2);line-height:1.8}
+.fb-actions{display:flex;gap:8px;flex-wrap:wrap}
+.fb-action{flex:1;min-width:120px;padding:12px;border-radius:var(--r2);border:1px solid var(--glass2);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center}
+.fb-action:hover{border-color:var(--accent);color:var(--accent)}
+.fb-action.highlight{border-color:var(--accent);background:rgba(245,197,66,.1);color:var(--accent)}
+.algorithm{padding:80px 24px;background:linear-gradient(180deg,transparent,rgba(91,141,239,.03),transparent)}
+.algo-container{max-width:900px;margin:0 auto}
+.algo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:32px}
+.algo-card{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r);padding:20px}
+.algo-card-ico{font-size:24px;margin-bottom:10px}
+.algo-card-title{font-size:14px;font-weight:700;margin-bottom:8px}
+.algo-card-desc{font-size:12px;color:var(--text3);line-height:1.7}
+.algo-card-code{margin-top:10px;padding:10px;border-radius:8px;background:var(--bg2);font-family:'SF Mono',monospace;font-size:11px;color:var(--accent);line-height:1.6}
+.tacit{padding:80px 24px}
+.tacit-container{max-width:600px;margin:0 auto}
+.tacit-intro{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r3);padding:24px;margin-bottom:24px;text-align:center}
+.tacit-intro-ico{font-size:36px;margin-bottom:12px}
+.tacit-intro-title{font-size:18px;font-weight:700;margin-bottom:8px}
+.tacit-intro-desc{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:16px}
+.tacit-card-wrap{position:relative;min-height:320px;margin-bottom:20px}
+.tacit-card{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r3);padding:24px}
+.tc-image{width:100%;height:140px;border-radius:var(--r2);margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:48px}
+.tc-name{font-size:18px;font-weight:700;margin-bottom:4px}
+.tc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3);flex-wrap:wrap;margin-bottom:10px}
+.tc-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tc-tag{padding:4px 10px;border-radius:12px;font-size:10px;background:var(--glass);color:var(--text3);border:1px solid var(--glass2)}
+.tc-tag.warning{border-color:rgba(232,96,144,.2);color:var(--pink)}
+.tacit-votes{display:flex;gap:10px;justify-content:center}
+.tv-btn{flex:1;max-width:160px;padding:14px;border-radius:var(--r2);border:1px solid var(--glass2);background:transparent;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit}
+.tv-btn:hover{border-color:var(--accent)}
+.tv-btn .tv-ico{font-size:20px;margin-bottom:4px}
+.tv-btn .tv-label{font-size:11px;color:var(--text2)}
+.tv-btn.must-go:hover{background:rgba(61,214,140,.1);border-color:var(--green)}
+.tv-btn.maybe:hover{background:rgba(245,197,66,.1);border-color:var(--accent)}
+.tv-btn.no-go:hover{background:rgba(232,96,144,.1);border-color:var(--pink)}
+.tacit-result{display:none}
+.tr-header{text-align:center;margin-bottom:24px}
+.tr-pct{font-size:48px;font-weight:300;color:var(--accent);letter-spacing:2px}
+.tr-label{font-size:12px;color:var(--text3);letter-spacing:2px}
+.tr-type{display:inline-block;margin-top:12px;padding:8px 20px;border-radius:20px;background:rgba(245,197,66,.12);border:1px solid rgba(245,197,66,.3);font-size:14px;color:var(--accent);font-weight:600}
+.tr-details{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.tr-section-title{font-size:12px;font-weight:600;margin-bottom:10px;letter-spacing:1px}
+.tr-section-title.green{color:var(--green)}
+.tr-section-title.pink{color:var(--pink)}
+.tr-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px}
+.tr-item-status{font-size:11px;padding:2px 8px;border-radius:8px;margin-left:auto}
+.tr-agree{background:rgba(61,214,140,.12);color:var(--green)}
+.tr-disagree{background:rgba(232,96,144,.12);color:var(--pink)}
+.tr-ai-advice{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r);padding:18px;margin-bottom:16px;font-size:13px;color:var(--text2);line-height:1.8}
+.tr-action{width:100%;padding:14px;border:none;border-radius:var(--r2);cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent3));color:var(--bg);font-size:14px;font-weight:700;font-family:inherit;transition:all .2s}
+.pref-cal{padding:80px 24px;background:linear-gradient(180deg,transparent,rgba(139,77,184,.03),transparent)}
+.pref-container{max-width:600px;margin:0 auto}
+.pref-note{padding:14px 18px;border-radius:var(--r2);background:rgba(139,77,184,.08);border:1px solid rgba(139,77,184,.15);font-size:12px;color:var(--bkk-purple);line-height:1.7;margin-bottom:24px}
+.pref-step{margin-bottom:24px}
+.pref-step-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;letter-spacing:1px}
+.pref-options{display:flex;gap:8px;flex-wrap:wrap}
+.pref-opt{padding:10px 18px;border-radius:20px;border:1px solid var(--glass2);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;font-family:inherit}
+.pref-opt:hover{border-color:var(--bkk-purple);color:var(--bkk-purple)}
+.pref-opt.selected{border-color:var(--bkk-purple);background:rgba(139,77,184,.12);color:var(--bkk-purple);font-weight:600}
+.pref-calibration{display:none;background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r);padding:18px;margin-top:20px}
+.pc-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:10px}
+.pc-text{font-size:12px;color:var(--text2);line-height:1.8}
+.archive{padding:80px 24px}
+.archive-container{max-width:800px;margin:0 auto}
+.id-card{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--glass2);border-radius:var(--r3);padding:24px;margin-bottom:24px;position:relative;overflow:hidden}
+.id-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--bkk-yellow),var(--bkk-purple),var(--bkk-green))}
+.id-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.id-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--bkk-yellow),var(--bkk-gold));display:flex;align-items:center;justify-content:center;font-size:24px}
+.id-name{font-size:18px;font-weight:700}
+.id-tags{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.id-tag{font-size:10px;padding:3px 8px;border-radius:8px;background:var(--glass);color:var(--text3);border:1px solid var(--glass2)}
+.pref-radar{margin-bottom:24px}
+.pref-radar-title{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:1px;margin-bottom:14px}
+.pr-bars{display:flex;flex-direction:column;gap:10px}
+.pr-bar{display:flex;align-items:center;gap:10px}
+.pr-bar-label{width:80px;font-size:11px;color:var(--text3);text-align:right;flex-shrink:0}
+.pr-bar-track{flex:1;height:8px;border-radius:4px;background:var(--glass);overflow:hidden}
+.pr-bar-fill{height:100%;border-radius:4px}
+.pr-bar-val{width:36px;font-size:11px;color:var(--text2);font-weight:600}
+.stamp-collection{margin-bottom:24px}
+.stamp-title{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:1px;margin-bottom:14px}
+.stamps{display:flex;gap:12px;flex-wrap:wrap}
+.stamp{width:120px;height:80px;border-radius:8px;border:2px dashed var(--glass3);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--text3);position:relative;transition:all .3s}
+.stamp:hover{border-color:var(--accent);transform:scale(1.03)}
+.stamp-ico{font-size:24px;margin-bottom:4px}
+.stamp-city{font-size:11px;font-weight:600;color:var(--text2)}
+.stamp-date{font-size:9px;color:var(--text4)}
+.travel-rel{margin-bottom:24px}
+.rel-title{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:1px;margin-bottom:14px}
+.rel-cards{display:flex;flex-direction:column;gap:10px}
+.rel-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r)}
+.rel-avatar{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff}
+.rel-info{flex:1}
+.rel-name{font-size:14px;font-weight:700}
+.rel-detail{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.6}
+.rel-score{font-size:20px;font-weight:300;color:var(--accent)}
+.product-logic{padding:80px 24px;background:linear-gradient(180deg,transparent,rgba(245,197,66,.02),transparent)}
+.pl-container{max-width:900px;margin:0 auto}
+.pl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:32px}
+.pl-card{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r);padding:20px}
+.pl-card-title{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.pl-list{list-style:none;padding:0}
+.pl-list li{padding:8px 0;font-size:12px;color:var(--text2);line-height:1.7;border-bottom:1px solid var(--glass);display:flex;align-items:flex-start;gap:8px}
+.pl-list li:last-child{border-bottom:none}
+.pl-list li::before{content:'→';color:var(--accent);flex-shrink:0}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:20px}
+.metric-card{background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r2);padding:16px}
+.metric-north{border-color:rgba(245,197,66,.3);background:rgba(245,197,66,.05)}
+.metric-label{font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px}
+.metric-value{font-size:14px;font-weight:700;color:var(--text)}
+.metric-north .metric-value{color:var(--accent)}
+.roadmap{margin-top:24px}
+.roadmap-title{font-size:14px;font-weight:700;margin-bottom:14px}
+.roadmap-items{display:flex;flex-direction:column;gap:10px}
+.roadmap-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1px solid var(--glass2);border-radius:var(--r2)}
+.rm-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.rm-dot.now{background:var(--green)}
+.rm-dot.next{background:var(--accent)}
+.rm-dot.later{background:var(--glass3)}
+.rm-text{font-size:12px;color:var(--text2)}
+.rm-tag{font-size:10px;padding:2px 8px;border-radius:8px;margin-left:auto;flex-shrink:0}
+.rm-tag.done{background:rgba(61,214,140,.12);color:var(--green)}
+.rm-tag.wip{background:rgba(245,197,66,.12);color:var(--accent)}
+.rm-tag.planned{background:var(--glass);color:var(--text3)}
+.footer{text-align:center;padding:60px 24px;border-top:1px solid var(--glass)}
+.footer-brand{font-size:14px;letter-spacing:6px;color:var(--accent);font-weight:300;margin-bottom:8px}
+.footer-sub{font-size:11px;color:var(--text4);letter-spacing:1px}
+@media(max-width:900px){
+  .nav{padding:10px 16px}
+  .nav-links{gap:16px}
+  .hero{padding:100px 16px 60px}
+  .hero h1{font-size:24px}
+  .hero-visual{height:200px}
+  .envelope-demo{width:200px;height:130px}
+  .sign-count-options,.hidden-levels,.fate-options{flex-direction:column}
+  .algo-grid,.pl-grid,.metrics-grid{grid-template-columns:1fr}
+  .fb-reactions{flex-direction:column}
+  .demo-toggle{top:auto;bottom:20px;right:20px}
+  .demo-panel{top:auto;bottom:56px;right:20px}
+  .route-actions,.tacit-votes{flex-direction:column}
+  .tv-btn{max-width:100%;width:100%}
+  .exp-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px}
+  .exp-tab{white-space:nowrap;flex-shrink:0}
 }
-
-/* ══ 静态星点装饰（不动，不卡） ══ */
-.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.star-dot{position:absolute;border-radius:50%;background:#fff}
-
-/* ══ 返回按钮 ══ */
-.back-to-works{
-  position:fixed;top:14px;left:16px;z-index:1000;
-  display:flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,.55);backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.8);border-radius:30px;
-  padding:7px 14px;font-size:12px;font-weight:600;
-  color:var(--ink3);cursor:pointer;text-decoration:none;
-  box-shadow:0 2px 12px rgba(74,127,212,.10);transition:all .2s}
-.back-to-works:hover{background:rgba(255,255,255,.8);transform:translateX(-2px)}
-
-/* ══ 视图切换按钮 ══ */
-.view-toggle{
-  position:fixed;top:14px;right:16px;z-index:1000;
-  display:flex;gap:6px;
-  background:rgba(255,255,255,.55);
-  backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:30px;padding:5px;
-  box-shadow:0 2px 12px rgba(74,127,212,.12)}
-.vt-btn{padding:6px 14px;border-radius:22px;font-size:11px;font-weight:700;
-  letter-spacing:.5px;cursor:pointer;border:none;background:transparent;
-  color:var(--ink3);transition:all .22s;font-family:inherit}
-.vt-btn.active{background:var(--white);color:var(--blue);
-  box-shadow:0 2px 8px rgba(74,127,212,.15)}
-
-/* ══ 布局容器 ══ */
-/* Web 模式：全宽 */
-body.mode-web .phone-shell{
-  position:fixed;inset:0;width:100%;height:100%;
-  background:transparent;overflow:hidden}
-/* 手机模式：iPhone 比例，居中，自适应视口高度 */
-body.mode-phone .phone-shell{
-  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(390px, 96vw);
-  height:min(844px, calc(100vh - 24px));
-  background:linear-gradient(170deg,#b8d4f0 0%,#cde0f8 25%,#d8e8f8 50%,#e0e8f5 75%,#e8e0f0 100%);
-  border-radius:clamp(24px,5vw,48px);overflow:hidden;
-  box-shadow:0 0 0 9px #e8eef8,0 0 0 11px #d0daf0,0 30px 80px rgba(40,60,120,.25)}
-
-/* ══ 屏幕层 ══ */
-.screen{position:absolute;inset:0;z-index:1;
-  transition:opacity .35s,transform .35s;overflow:hidden}
-.screen.gone{opacity:0;pointer-events:none;transform:translateY(16px)}
-
-/* ══ 毛玻璃球 ══ */
-.glass-orb{
-  position:absolute;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.85) 0%,rgba(220,235,255,.5) 40%,rgba(180,210,248,.2) 70%,transparent 100%);
-  box-shadow:inset 0 0 40px rgba(255,255,255,.6),0 8px 32px rgba(100,150,220,.15);
-  pointer-events:none}
-.orb-ring{
-  position:absolute;border-radius:50%;
-  border:1px dashed rgba(255,255,255,.35);
-  pointer-events:none}
-
-/* ══ 封面页 ══ */
-#sCover{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:20px 24px;gap:0;background:transparent}
-/* 大球装饰 */
-.cover-orb{width:220px;height:220px;margin-bottom:40px}
-.cover-ring1{width:320px;height:320px;top:50%;left:50%;transform:translate(-50%,-50%) translateY(-20px)}
-.cover-ring2{width:420px;height:420px;top:50%;left:50%;transform:translate(-50%,-50%) translateY(-20px);opacity:.4}
-
-.cover-text{text-align:center;margin-bottom:36px}
-.cover-title{font-size:28px;font-weight:300;letter-spacing:8px;color:var(--ink2);margin-bottom:10px}
-.cover-title span{font-weight:700;letter-spacing:6px}
-.cover-sub{font-size:12px;letter-spacing:4px;color:var(--ink4);line-height:2}
-
-.role-btns-cover{display:flex;gap:12px}
-.rbc-btn{padding:13px 26px;border-radius:30px;border:none;cursor:pointer;
-  font-size:13px;font-weight:600;letter-spacing:1px;font-family:inherit;
-  transition:all .22s;display:flex;align-items:center;gap:7px}
-.rbc-btn:active{transform:scale(.96)}
-.rbc-a{background:rgba(255,255,255,.55);backdrop-filter:blur(12px);
-  color:var(--ink2);border:1px solid rgba(255,255,255,.8);
-  box-shadow:0 4px 16px rgba(74,127,212,.12)}
-.rbc-b{background:rgba(74,127,212,.85);backdrop-filter:blur(12px);
-  color:#fff;border:1px solid rgba(100,160,240,.6);
-  box-shadow:0 4px 20px rgba(74,127,212,.28)}
-.rbc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,127,212,.2)}
-
-/* ══ A 发起页 ══ */
-#sSetup{display:flex;flex-direction:column;background:transparent}
-.page-header{
-  flex-shrink:0;height:56px;display:flex;align-items:center;padding:0 18px;
-  background:rgba(255,255,255,.35);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(255,255,255,.5);position:relative}
-.ph-back{position:absolute;left:14px;font-size:13px;color:var(--ink2);cursor:pointer;
-  padding:8px;font-weight:500;display:flex;align-items:center;gap:4px}
-.ph-title{flex:1;text-align:center;font-size:15px;font-weight:700;
-  letter-spacing:1px;color:var(--ink)}
-
-.setup-scroll{flex:1;overflow-y:auto;padding:20px 18px 48px;
-  display:flex;flex-direction:column;gap:16px}
-.sec-title{font-size:11px;font-weight:600;color:var(--ink4);letter-spacing:2px;margin-bottom:8px}
-.sec-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:20px;padding:18px;box-shadow:var(--sh)}
-
-.dest-field{position:relative}
-.df-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px}
-.df-inp{width:100%;border:1px solid rgba(255,255,255,.6);border-radius:14px;
-  padding:13px 14px 13px 44px;font-size:15px;color:var(--ink);outline:none;
-  font-family:inherit;background:rgba(255,255,255,.7);transition:border-color .2s,box-shadow .2s}
-.df-inp:focus{border-color:var(--blue3);box-shadow:0 0 0 3px rgba(74,127,212,.10)}
-.df-inp::placeholder{color:var(--ink4)}
-
-.cnt-pills{display:flex;gap:6px;flex:1}
-.cnt-pills input{display:none}
-.cnt-pills label{flex:1;text-align:center;padding:10px 0;font-size:13px;font-weight:600;
-  color:var(--ink4);border:1px solid rgba(255,255,255,.6);border-radius:12px;cursor:pointer;
-  background:rgba(255,255,255,.5);transition:all .2s}
-.cnt-pills input:checked+label{color:var(--blue);background:rgba(255,255,255,.9);
-  border-color:var(--blue3);box-shadow:0 2px 8px rgba(74,127,212,.14)}
-.cnt-row{display:flex;align-items:center;gap:12px}
-.cnt-lbl{font-size:13px;color:var(--ink3);white-space:nowrap;flex-shrink:0}
-
-.mbti-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.mbti-btn{padding:12px 8px;border:1px solid rgba(255,255,255,.6);border-radius:14px;cursor:pointer;
-  background:rgba(255,255,255,.5);text-align:center;transition:all .2s;font-family:inherit}
-.mbti-btn:active{transform:scale(.97)}
-.mb-type{font-size:14px;font-weight:800;color:var(--ink)}
-.mb-desc{font-size:11px;color:var(--ink4);margin-top:3px}
-.mbti-btn.sel{border-color:var(--purple);background:rgba(112,72,200,.08);
-  box-shadow:0 2px 10px rgba(112,72,200,.12)}
-.mbti-btn.sel .mb-type{color:var(--purple)}
-
-.gen-btn{width:100%;padding:15px;border:none;border-radius:16px;cursor:pointer;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  color:#fff;font-size:15px;font-weight:700;letter-spacing:1px;
-  box-shadow:0 6px 20px rgba(74,127,212,.28);font-family:inherit;transition:transform .14s}
-.gen-btn:active{transform:scale(.97)}
-
-.share-preview{background:rgba(255,255,255,.7);border:1px dashed var(--blue3);
-  border-radius:16px;padding:16px;text-align:center;display:none}
-.sp-label{font-size:11px;color:var(--blue);margin-bottom:7px;font-weight:600;letter-spacing:1px}
-.sp-text{font-size:13px;font-weight:600;color:var(--ink2);line-height:1.75}
-.sp-copy{margin-top:12px;padding:10px 24px;border:none;border-radius:10px;
-  background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
-
-/* ══ 主 App ══ */
-#sApp{display:flex;flex-direction:column;background:transparent}
-
-.app-topbar{
-  flex-shrink:0;height:54px;display:flex;align-items:center;
-  padding:0 18px;
-  background:rgba(255,255,255,.35);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(255,255,255,.5);position:relative}
-/* Web模式隐藏topbar */
-body.mode-web #sApp .app-topbar{display:none}
-.at-left{position:absolute;left:14px;font-size:12px;color:var(--ink3);cursor:pointer;
-  padding:6px;font-weight:500}
-.at-title{flex:1;text-align:center;font-size:15px;font-weight:300;
-  letter-spacing:5px;color:var(--ink)}
-.at-from{position:absolute;right:14px;display:flex;align-items:center;gap:5px}
-.at-avatar{width:28px;height:28px;border-radius:50%;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800}
-.at-name{font-size:11px;color:var(--ink3);font-weight:500}
-
-.app-content{flex:1;overflow:hidden;position:relative}
-.tab-panel{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:16px 16px 76px;display:flex;flex-direction:column;align-items:center;gap:12px;
-  transition:opacity .25s;opacity:1}
-.tab-panel.hidden{opacity:0;pointer-events:none}
-
-/* ══ 底部 Tab Bar ══ */
-.tab-bar{
-  flex-shrink:0;height:68px;
-  background:rgba(255,255,255,.45);backdrop-filter:blur(20px);
-  border-top:1px solid rgba(255,255,255,.6);
-  display:flex;align-items:center;padding-bottom:2px}
-.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
-  cursor:pointer;padding:8px 0;transition:opacity .18s}
-.tab-item:active{opacity:.6}
-.tab-ico{font-size:20px;filter:grayscale(1);opacity:.3;transition:all .22s}
-.tab-lbl{font-size:10px;color:var(--ink4);font-weight:500;transition:all .22s}
-.tab-item.active .tab-ico{filter:none;opacity:1}
-.tab-item.active .tab-lbl{color:var(--blue);font-weight:700}
-
-/* ══ 通用卡片（毛玻璃） ══ */
-.card{
-  background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:22px;box-shadow:var(--sh);width:100%;max-width:358px}
-.card-head{padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.6)}
-.card-head-row{display:flex;align-items:center;justify-content:space-between}
-.ch-title{font-size:15px;font-weight:800;letter-spacing:.2px}
-.ch-sub{font-size:11px;color:var(--ink4);margin-top:3px}
-.ch-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700}
-.badge-blue{background:rgba(74,127,212,.12);color:var(--blue)}
-.badge-pink{background:rgba(212,92,138,.08);color:var(--pink)}
-.badge-green{background:var(--green2);color:var(--green)}
-.badge-purple{background:rgba(112,72,200,.1);color:var(--purple)}
-.badge-gold{background:var(--gold2);color:var(--gold)}
-
-/* ══ Tab1: 旅行签 ══ */
-.sign-cover{
-  width:100%;max-width:358px;height:120px;border-radius:22px;overflow:hidden;
-  position:relative;
-  background:linear-gradient(145deg,#3a5fc8,#5a88e0,#80b0f0,#a8ccf8);
-  box-shadow:0 8px 28px rgba(74,127,212,.22);
-  display:flex;flex-direction:column;justify-content:flex-end;padding:16px 18px}
-.sc-shine{position:absolute;inset:0;
-  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%)}
-.sc-label{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.55);margin-bottom:4px;
-  position:relative;z-index:1;font-weight:600}
-.sc-title{font-size:18px;font-weight:800;color:#fff;position:relative;z-index:1;line-height:1.3}
-.sc-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px;position:relative;z-index:1}
-
-/* 签牌区 */
-.sign-stage{width:100%;max-width:358px;display:flex;flex-direction:column;align-items:center}
-.sign-nav{width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 2px 10px}
-.sn-dest{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:.5px}
-.sn-prog{display:flex;gap:5px;align-items:center}
-.sp-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .3s}
-.sp-dot.done{background:var(--blue3)}
-.sp-dot.cur{background:var(--blue);width:18px;border-radius:3px}
-
-/* 翻牌卡 */
-.flip-wrap{width:196px;height:278px;position:relative;cursor:pointer}
-.flip-scene{width:100%;height:100%;perspective:900px}
-.flip-3d{width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.38,0,.15,1)}
-.flip-3d.flipped{transform:rotateY(180deg)}
-.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;overflow:hidden}
-
-/* 签牌背面：毛玻璃风格 */
-.f-back{
-  background:linear-gradient(155deg,
-    rgba(100,148,230,.75) 0%,
-    rgba(130,175,245,.65) 45%,
-    rgba(160,200,255,.55) 80%,
-    rgba(200,220,255,.5) 100%);
-  backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.55);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:0 12px 36px rgba(74,127,212,.22),inset 0 1px 0 rgba(255,255,255,.6)}
-.fb-tex{position:absolute;inset:0;
-  background-image:radial-gradient(circle at 30% 30%,rgba(255,255,255,.3) 0,transparent 60%)}
-.fb-sign{position:relative;z-index:1;font-size:72px;
-  color:rgba(255,255,255,.9);font-weight:300;letter-spacing:4px;
-  text-shadow:0 2px 20px rgba(74,127,212,.3),0 0 40px rgba(255,255,255,.4);
-  line-height:1}
-.fb-corner{position:absolute;width:13px;height:13px;border-color:rgba(255,255,255,.45);border-style:solid}
-.fc-tl{top:14px;left:14px;border-width:1px 0 0 1px}
-.fc-tr{top:14px;right:14px;border-width:1px 1px 0 0}
-.fc-bl{bottom:14px;left:14px;border-width:0 0 1px 1px}
-.fc-br{bottom:14px;right:14px;border-width:0 1px 1px 0}
-.fb-hint{position:absolute;bottom:14px;font-size:8px;letter-spacing:3px;
-  color:rgba(255,255,255,.45);z-index:1;font-weight:600}
-
-/* 翻牌正面 */
-.f-front{transform:rotateY(180deg);
-  background:rgba(255,255,255,.88);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.9);
-  box-shadow:0 12px 36px rgba(74,127,212,.16);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px}
-.ff-num{position:absolute;top:11px;right:13px;font-size:10px;color:var(--ink4);font-weight:600}
-.ff-ico{font-size:44px;margin-bottom:10px;line-height:1}
-.ff-name{font-size:17px;font-weight:800;color:var(--ink);text-align:center;margin-bottom:7px}
-.ff-badge{font-size:10px;padding:3px 12px;border-radius:20px;
-  background:rgba(74,127,212,.1);color:var(--blue);font-weight:700;letter-spacing:.5px}
-.ff-sep{width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--blue4),transparent);margin:12px 0}
-.ff-phrase{font-size:12px;color:var(--ink3);text-align:center;line-height:2;font-style:italic}
-
-/* 摇一摇提示 */
-.shake-hint{display:flex;align-items:center;gap:7px;margin-top:14px;
-  background:rgba(255,255,255,.65);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.8);border-radius:40px;
-  padding:8px 18px;box-shadow:var(--sh)}
-.sh-ico{font-size:14px}
-.sh-txt{font-size:11px;color:var(--ink3)}
-
-.next-sign-btn{display:none;width:100%;max-width:358px;padding:15px;border:none;
-  border-radius:16px;cursor:pointer;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  color:#fff;font-size:14px;font-weight:700;letter-spacing:.5px;
-  box-shadow:0 5px 18px rgba(74,127,212,.24);font-family:inherit;transition:transform .14s}
-.next-sign-btn:active{transform:scale(.97)}
-
-/* 结果海报 */
-.result-poster{display:none;width:100%;max-width:358px;
-  background:rgba(255,255,255,.7);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.85);
-  border-radius:22px;overflow:hidden;box-shadow:var(--sh2)}
-.rp-cover{height:90px;background:linear-gradient(145deg,#3a5fc8,#5a88e0,#80b0f0);
-  padding:14px 18px;display:flex;flex-direction:column;justify-content:flex-end}
-.rp-eyebrow{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.55);margin-bottom:3px;font-weight:600}
-.rp-title{font-size:17px;font-weight:800;color:#fff}
-.rp-list{padding:12px 16px 10px}
-.rp-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;
-  border-bottom:1px solid rgba(200,220,248,.5)}
-.rp-item:last-child{border-bottom:none}
-.rp-seq{width:22px;height:22px;border-radius:50%;background:rgba(74,127,212,.1);
-  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;
-  color:var(--blue);flex-shrink:0;margin-top:2px}
-.rp-ico{font-size:20px;flex-shrink:0}
-.rp-info .rp-name{font-size:13px;font-weight:800;color:var(--ink)}
-.rp-info .rp-phrase{font-size:11px;color:var(--ink3);font-style:italic;margin-top:2px;line-height:1.6}
-.rp-foot{padding:10px 16px 14px;border-top:1px solid rgba(200,220,248,.5);
-  display:flex;align-items:center;justify-content:space-between}
-.rp-brand{font-size:9px;font-weight:600;color:var(--blue3);letter-spacing:3px}
-.rp-stamp{font-size:9px;color:var(--gold);border:1px solid rgba(192,128,16,.25);
-  border-radius:6px;padding:2px 8px;font-weight:600}
-
-.heart-btn{width:100%;max-width:358px;padding:16px;border:none;border-radius:16px;cursor:pointer;
-  background:linear-gradient(135deg,#c84070,var(--pink));color:#fff;
-  font-size:15px;font-weight:800;letter-spacing:.5px;font-family:inherit;
-  box-shadow:0 6px 22px rgba(212,92,138,.25);transition:transform .14s;display:none}
-.heart-btn:active{transform:scale(.97)}
-.heart-btn.sent{background:linear-gradient(135deg,#5030a8,var(--purple))}
-
-.act-row{display:none;flex-direction:row;gap:8px;width:100%;max-width:358px}
-.ar-btn{flex:1;padding:12px 4px;border-radius:13px;font-size:12px;font-weight:700;
-  cursor:pointer;border:none;font-family:inherit;box-shadow:var(--sh);transition:transform .14s}
-.ar-btn:active{transform:scale(.97)}
-.ar-copy{background:rgba(74,127,212,.1);color:var(--blue)}
-.ar-save{background:rgba(192,128,16,.1);color:var(--gold)}
-.ar-again{background:rgba(255,255,255,.7);color:var(--ink3);border:1px solid rgba(255,255,255,.8)}
-
-/* ══ Tab2: 默契测试 ══ */
-.match-intro{width:100%;max-width:358px}
-.poi-swipe-wrap{width:100%;max-width:358px;position:relative;height:296px}
-.poi-swipe-card{position:absolute;inset:0;
-  background:rgba(255,255,255,.72);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.85);
-  border-radius:22px;box-shadow:var(--sh2);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;cursor:grab}
-.psc-ico{font-size:50px;margin-bottom:12px}
-.psc-name{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:7px;text-align:center}
-.psc-type{font-size:11px;padding:3px 12px;border-radius:20px;
-  background:rgba(74,127,212,.1);color:var(--blue);font-weight:700}
-.psc-desc{font-size:13px;color:var(--ink3);text-align:center;margin-top:12px;line-height:1.75}
-.swipe-hint{position:absolute;bottom:16px;left:0;right:0;
-  display:flex;justify-content:space-between;padding:0 22px}
-.swh-no{font-size:12px;color:#c04040;font-weight:700;opacity:.4}
-.swh-yes{font-size:12px;color:var(--green);font-weight:700;opacity:.4}
-
-.vote-btns{display:flex;gap:18px;width:100%;max-width:358px;justify-content:center}
-.vb{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
-  font-size:22px;display:flex;align-items:center;justify-content:center;
-  transition:transform .15s;
-  background:rgba(255,255,255,.7);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.8);box-shadow:var(--sh)}
-.vb:active{transform:scale(.88)}
-
-.match-wait{display:none;width:100%;max-width:358px}
-.mw-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:22px;padding:26px;text-align:center;box-shadow:var(--sh2)}
-.mw-title{font-size:16px;font-weight:800;margin-bottom:8px}
-.mw-sub{font-size:13px;color:var(--ink3);line-height:1.75;margin-bottom:20px}
-.mw-loader{display:flex;gap:6px;justify-content:center}
-.ml-dot{width:8px;height:8px;border-radius:50%;background:var(--blue3);
-  animation:bounce .9s ease-in-out infinite}
-.ml-dot:nth-child(2){animation-delay:.15s}
-.ml-dot:nth-child(3){animation-delay:.3s}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-
-.match-result{display:none;width:100%;max-width:358px}
-.mr-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:22px;overflow:hidden;box-shadow:var(--sh2)}
-.mr-cover{height:90px;background:linear-gradient(135deg,#5030a8,#7048c8,#9570e0);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.mr-pct{font-size:36px;font-weight:300;color:#fff;letter-spacing:2px}
-.mr-label{font-size:11px;color:rgba(255,255,255,.7);letter-spacing:2px;font-weight:600}
-.mr-body{padding:18px}
-.mr-verdict{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:8px}
-.mr-detail{font-size:13px;color:var(--ink3);line-height:1.8}
-.mr-items{margin-top:14px;display:flex;flex-direction:column}
-.mr-item{display:flex;align-items:center;gap:10px;padding:10px 0;
-  border-bottom:1px solid rgba(200,220,248,.5)}
-.mr-item:last-child{border-bottom:none}
-.mi-ico{font-size:18px}
-.mi-name{flex:1;font-size:13px;font-weight:600;color:var(--ink)}
-.mi-match{font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px}
-.match-y{background:var(--green2);color:var(--green)}
-.match-n{background:#ffe8e8;color:#c04040}
-.match-m{background:var(--gold2);color:var(--gold)}
-
-/* ══ Tab3: 性格推荐 ══ */
-.mbti-pick-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:22px;padding:18px;box-shadow:var(--sh);width:100%;max-width:358px}
-.mbti-pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.mp-btn{padding:13px 8px;border:1px solid rgba(255,255,255,.6);border-radius:14px;cursor:pointer;
-  background:rgba(255,255,255,.55);text-align:center;transition:all .2s;font-family:inherit}
-.mp-btn:active{transform:scale(.97)}
-.mp-type{font-size:14px;font-weight:800;color:var(--ink)}
-.mp-trait{font-size:11px;color:var(--ink4);margin-top:3px;line-height:1.45}
-.mp-btn.sel{border-color:var(--purple);background:rgba(112,72,200,.09);
-  box-shadow:0 2px 10px rgba(112,72,200,.12)}
-.mp-btn.sel .mp-type{color:var(--purple)}
-.mp-go{width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;margin-top:12px;
-  background:linear-gradient(135deg,var(--purple),#8050d8);color:#fff;
-  font-size:14px;font-weight:700;font-family:inherit;
-  box-shadow:0 5px 18px rgba(112,72,200,.22);transition:transform .14s}
-.mp-go:active{transform:scale(.97)}
-
-.persona-route{display:none;width:100%;max-width:358px}
-.pr-card{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:22px;overflow:hidden;box-shadow:var(--sh2)}
-.pr-cover{height:90px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px 18px}
-.pr-eyebrow{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,.6);margin-bottom:4px;font-weight:600}
-.pr-title{font-size:17px;font-weight:800;color:#fff}
-.pr-list{padding:12px 16px 10px}
-.pr-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;
-  border-bottom:1px solid rgba(200,220,248,.5)}
-.pr-item:last-child{border-bottom:none}
-.pri-ico{font-size:22px;flex-shrink:0}
-.pri-info .pri-name{font-size:13px;font-weight:800;color:var(--ink)}
-.pri-info .pri-why{font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.6;font-style:italic}
-.pr-comment{padding:12px 16px 16px;background:rgba(255,255,255,.4);
-  font-size:12px;color:var(--ink3);line-height:1.85;
-  border-top:1px solid rgba(200,220,248,.5)}
-.pr-comment b{color:var(--purple);font-weight:700}
-
-/* ══ Tab4: 我的履历 ══ */
-.profile-header{width:100%;max-width:358px;
-  background:linear-gradient(145deg,#3a5fc8,#5a88e0,#80b0f0);
-  border-radius:22px;padding:20px 18px;color:#fff;box-shadow:var(--sh2)}
-.ph-user{display:flex;align-items:center;gap:13px;margin-bottom:18px}
-.phu-avatar{width:48px;height:48px;border-radius:50%;
-  background:rgba(255,255,255,.22);
-  display:flex;align-items:center;justify-content:center;font-size:22px}
-.phu-info .phu-name{font-size:16px;font-weight:700;letter-spacing:.3px}
-.phu-info .phu-tag{font-size:11px;color:rgba(255,255,255,.7);margin-top:3px}
-.ph-stats{display:flex}
-.phs-item{flex:1;text-align:center;padding:10px 0;position:relative}
-.phs-item+.phs-item::before{content:'';position:absolute;left:0;top:15%;bottom:15%;
-  width:1px;background:rgba(255,255,255,.2)}
-.phsi-num{font-size:22px;font-weight:300;letter-spacing:1px}
-.phsi-lbl{font-size:10px;color:rgba(255,255,255,.65);margin-top:2px}
-
-.history-list{width:100%;max-width:358px;display:flex;flex-direction:column;gap:8px}
-.hl-card{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:16px;padding:14px 16px;
-  display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
-.hlc-ico{width:38px;height:38px;border-radius:11px;flex-shrink:0;
-  background:linear-gradient(145deg,#4a7fd4,#80b0f0);
-  display:flex;align-items:center;justify-content:center;font-size:18px}
-.hlc-info{flex:1}
-.hlci-dest{font-size:14px;font-weight:700;color:var(--ink)}
-.hlci-meta{font-size:11px;color:var(--ink4);margin-top:2px}
-.hlc-badge{font-size:10px;padding:3px 10px;border-radius:20px;white-space:nowrap;font-weight:700}
-
-.buddy-card{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:16px;padding:14px 16px;
-  display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
-.bc-avatar{width:42px;height:42px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff}
-.bc-info{flex:1}
-.bc-name{font-size:14px;font-weight:700;color:var(--ink)}
-.bc-match{font-size:11px;color:var(--ink4);margin-top:2px}
-.bc-score{font-size:20px;font-weight:300;letter-spacing:1px}
-
-.sec-lbl{width:100%;max-width:358px;font-size:11px;font-weight:600;
-  color:rgba(255,255,255,.7);letter-spacing:2px;padding-left:2px}
-
-/* 粒子 */
-#pcvs{position:absolute;inset:0;pointer-events:none;z-index:50}
-
-/* 飞入 */
-.fly{opacity:0;transform:translateY(14px);transition:opacity .45s,transform .45s}
-.fly.show{opacity:1;transform:none}
 </style>
 </head>
-<body class="mode-web">
+<body>
 
-<!-- 静态星点背景 -->
-<div class="stars-bg" id="starsBg"></div>
+<!-- Navigation -->
+<nav class="nav">
+  <a class="nav-back" href="/08/works/#tools">← 返回作品集</a>
+  <a class="nav-brand" href="#"><span>FATE TRIP</span></a>
+  <div class="nav-links">
+    <a href="#experience">产品体验</a>
+    <a href="#product-logic">设计说明</a>
+  </div>
+</nav>
 
-<!-- 返回 AI 工具 -->
-<a class="back-to-works" href="https://qlb708.github.io/08/works/#tools">← AI 工具</a>
-
-<!-- Web / 手机切换 -->
-<div class="view-toggle">
-  <button class="vt-btn active" id="btnWeb" onclick="setMode('web')">🖥 Web</button>
-  <button class="vt-btn" id="btnPhone" onclick="setMode('phone')">📱 iPhone</button>
+<!-- Demo Console -->
+<button class="demo-toggle" id="demoToggle">⚙️ Demo 控制台</button>
+<div class="demo-panel" id="demoPanel">
+  <div class="demo-panel-label">演示工具（非产品功能）</div>
+  <div class="demo-row">
+    <button class="demo-btn active" id="roleA" data-role="A">发起人 A</button>
+    <button class="demo-btn" id="roleB" data-role="B">接收方 B</button>
+  </div>
+  <div class="demo-row">
+    <button class="demo-btn active" id="viewDesktop">🖥 桌面</button>
+    <button class="demo-btn" id="viewMobile">📱 手机</button>
+  </div>
+  <div class="demo-note">此控制台用于演示不同视角，不是产品正式功能。</div>
 </div>
 
-<div class="phone-shell" id="phoneShell">
-<canvas id="pcvs"></canvas>
-
-<!-- ════ 封面页 ════ -->
-<div class="screen" id="sCover">
-  <!-- 装饰球 -->
-  <div class="glass-orb cover-orb" style="position:absolute;width:200px;height:200px;top:50%;left:50%;transform:translate(-50%,-58%)"></div>
-  <div class="orb-ring cover-ring1" style="position:absolute;width:310px;height:310px;top:50%;left:50%;transform:translate(-50%,-58%)"></div>
-  <div class="orb-ring cover-ring2" style="position:absolute;width:420px;height:420px;top:50%;left:50%;transform:translate(-50%,-58%)"></div>
-
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-    height:100%;padding-bottom:15%;gap:22px;position:relative;z-index:2">
-    <div class="cover-text">
-      <div class="cover-title">F A T E &nbsp; T R I P</div>
-      <div class="cover-sub">想 一 万 次 ， 不 如 出 发 一 次<br>抽 一 签 ， 奔 赴 属 于 你 的 远 方</div>
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>旅行社交实验</div>
+    <h1 id="heroTitle">把你的行程，变成一份<strong>旅行签</strong></h1>
+    <p class="hero-sub" id="heroSub">从行程里抽出几个惊喜地点，发给朋友拆一拆<br>拆完生成只属于TA的隐藏路线</p>
+    <div class="hero-actions" id="heroActions">
+      <button class="btn-primary" id="heroMainBtn">从我的行程生成旅行签</button>
+      <button class="btn-secondary" id="heroSecBtn">体验示例 ↓</button>
     </div>
-    <div class="role-btns-cover">
-      <button class="rbc-btn rbc-a" onclick="selectRole('A')">✈️ 我是发起人 A</button>
-      <button class="rbc-btn rbc-b" onclick="selectRole('B')">🎴 我是接收方 B</button>
+    <div class="hero-steps" id="heroSteps">
+      <div class="hero-step"><span class="hero-step-num">1</span>选择行程</div>
+      <div class="hero-step"><span class="hero-step-num">2</span>设置旅行签</div>
+      <div class="hero-step"><span class="hero-step-num">3</span>分享给朋友</div>
+    </div>
+    <div class="hero-visual">
+      <div class="envelope-demo">
+        <div class="envelope-flap"></div>
+        <span class="envelope-label">BANGKOK · 旅行签</span>
+        <div class="cards-peek"><div class="card-peek"></div><div class="card-peek"></div><div class="card-peek"></div></div>
+      </div>
+      <div class="route-line"><div class="route-dot"></div><div class="route-connector"></div><div class="route-dot"></div><div class="route-connector"></div><div class="route-dot"></div></div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ════ A 发起设置页 ════ -->
-<div class="screen gone" id="sSetup">
-  <div class="page-header">
-    <div class="ph-back" onclick="showScreen('sCover')">← 返回</div>
-    <div class="ph-title">设置旅行签</div>
-  </div>
-  <div class="setup-scroll">
-    <div>
-      <div class="sec-title">目的地</div>
-      <div class="dest-field">
-        <span class="df-ico">✈️</span>
-        <input class="df-inp" id="aDestInp" placeholder="曼谷、京都、大理…" maxlength="20">
+<!-- CORE PROBLEM -->
+<section class="problem">
+  <p class="problem-text">你精心规划的行程发出去，<strong>朋友看了一眼就关了</strong>——<br>不是不在意，是18个地点的链接太重了，重到没有回应的动力。</p>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience" id="experience">
+  <div class="exp-container">
+    <div class="section-tag">MVP 核心体验</div>
+    <div class="section-title">双角色完整<strong>旅行签</strong>流程</div>
+    <div class="section-desc" style="margin-bottom:32px">从制作礼物到拆签到生成路线到社交回流——完整的闭环体验</div>
+    <div class="exp-tabs" id="expTabs">
+      <button class="exp-tab active" data-panel="setup">✈️ 发起人设置</button>
+      <button class="exp-tab" data-panel="reveal">🎴 拆签仪式</button>
+      <button class="exp-tab" data-panel="route">🗺️ 隐藏路线</button>
+      <button class="exp-tab" data-panel="feedback">💌 发起人的反馈</button>
+    </div>
+
+    <!-- A Setup -->
+    <div class="exp-panel active" id="panel-setup">
+      <div class="setup-container">
+        <div class="trip-card">
+          <div class="trip-card-header">
+            <div><div class="trip-dest">🇹🇭 曼谷 5日游</div><div class="trip-dates">5月20日 - 5月24日</div></div>
+            <div style="font-size:10px;color:var(--accent);padding:4px 10px;border-radius:8px;background:rgba(245,197,66,.12)">进行中</div>
+          </div>
+          <div class="trip-meta"><span>📍 18个地点</span><span>👥 3位同行</span><span>📅 5天4晚</span></div>
+          <div class="trip-actions">
+            <button class="trip-action primary">使用这份行程</button>
+            <button class="trip-action">换一份</button>
+            <button class="trip-action">粘贴攻略链接</button>
+            <button class="trip-action">用示例</button>
+          </div>
+        </div>
+        <div class="setup-group">
+          <div class="setup-group-title">🎴 签数 · 你想让TA拆几张</div>
+          <div class="sign-count-options" id="signCountOpts">
+            <button class="sign-count-opt selected" data-count="3"><div class="sco-num">3</div><div class="sco-label">轻轻拆一下</div><div class="sco-time">私聊 · 约30秒</div></button>
+            <button class="sign-count-opt" data-count="4"><div class="sco-num">4</div><div class="sco-label">多一点惊喜</div><div class="sco-time">旅行搭子 · 约45秒</div></button>
+            <button class="sign-count-opt" data-count="5"><div class="sco-num">5</div><div class="sco-label">完整隐藏路线</div><div class="sco-time">群聊 · 约60秒</div></button>
+          </div>
+        </div>
+        <div class="setup-group">
+          <div class="setup-group-title">🎲 隐藏程度</div>
+          <div class="hidden-levels" id="hiddenLevels">
+            <button class="hl-opt selected" data-level="random">完全随机</button>
+            <button class="hl-opt" data-level="range">我选范围系统抽</button>
+            <button class="hl-opt" data-level="manual">精心安排</button>
+          </div>
+        </div>
+        <button class="adv-toggle" id="advToggle">▸ 让这份旅行签更懂TA（可选）</button>
+        <div class="adv-content" id="advContent">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px">选择TA的旅行偏好，系统会调整抽取权重：</div>
+          <div class="pref-tags" id="prefTags">
+            <button class="pref-tag" data-pref="photo">📷 喜欢拍照</button>
+            <button class="pref-tag" data-pref="food">🍜 吃货</button>
+            <button class="pref-tag" data-pref="lazy">😴 不爱早起</button>
+            <button class="pref-tag" data-pref="crowd">🙅 怕人多</button>
+            <button class="pref-tag" data-pref="budget">💰 预算有限</button>
+            <button class="pref-tag" data-pref="niche">🗺️ 小众</button>
+            <button class="pref-tag" data-pref="tired">🦵 体力一般</button>
+            <button class="pref-tag" data-pref="night">🌙 夜生活</button>
+          </div>
+          <div style="margin-top:14px;font-size:11px;color:var(--text3)">或选MBTI（趣味入口，非必选）：</div>
+          <div class="pref-tags" style="margin-top:8px" id="mbtiTags">
+            <button class="pref-tag" data-mbti="INFP">INFP 文艺</button>
+            <button class="pref-tag" data-mbti="ENTJ">ENTJ 高效</button>
+            <button class="pref-tag" data-mbti="ENFP">ENFP 活力</button>
+            <button class="pref-tag" data-mbti="ISTJ">ISTJ 严谨</button>
+          </div>
+        </div>
+        <div class="setup-group">
+          <div class="setup-group-title">🔮 命运偏移 · 调个味道</div>
+          <div class="fate-options" id="fateOpts">
+            <button class="fate-opt selected" data-fate="safe">稳妥</button>
+            <button class="fate-opt" data-fate="niche">小众</button>
+            <button class="fate-opt" data-fate="food">好吃</button>
+            <button class="fate-opt" data-fate="romantic">浪漫</button>
+            <button class="fate-opt" data-fate="crazy">疯一点</button>
+            <button class="fate-opt" data-fate="random">随机到底</button>
+          </div>
+        </div>
+        <div class="setup-group">
+          <div class="setup-group-title">💬 给TA留一句话</div>
+          <textarea class="msg-input" id="msgInput" rows="2" placeholder="例：最后一张是我最想和你去的地方"></textarea>
+          <div class="msg-hint">这句话会在TA拆完最后一张签时出现</div>
+        </div>
+        <button class="gen-btn-main" id="genBtn">生成旅行签 ✦</button>
+        <div class="share-preview-card" id="sharePreview">
+          <div class="spc-envelope">
+            <div class="spc-env-flap"></div>
+            <span class="spc-env-text">BANGKOK</span>
+            <div class="spc-cards"><div class="spc-card"></div><div class="spc-card"></div><div class="spc-card"></div></div>
+          </div>
+          <div class="spc-info"><strong>3张签</strong> · 来自曼谷5日游 · 预计30秒 · 有效期7天</div>
+          <div class="spc-styles" id="spcStyles">
+            <button class="spc-style-btn active" data-style="curious">好奇型</button>
+            <button class="spc-style-btn" data-style="friend">朋友型</button>
+            <button class="spc-style-btn" data-style="flirty">暧昧型</button>
+          </div>
+          <div class="spc-msg" id="spcMsg">给你留了份曼谷旅行签🎴 猜猜你会抽到哪家夜市？</div>
+          <div class="spc-actions">
+            <button class="spc-btn main">分享微信</button>
+            <button class="spc-btn">复制链接</button>
+            <button class="spc-btn">生成海报</button>
+            <button class="spc-btn" id="selfPreview">自己预览 →</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="sec-card">
-      <div class="sec-title">签数设置</div>
-      <div class="cnt-row" style="margin-top:8px">
-        <span class="cnt-lbl">盲盒签数</span>
-        <div class="cnt-pills">
-          <input type="radio" name="acnt" id="ac3" value="3" checked><label for="ac3">3 签</label>
-          <input type="radio" name="acnt" id="ac4" value="4"><label for="ac4">4 签</label>
-          <input type="radio" name="acnt" id="ac5" value="5"><label for="ac5">5 签</label>
-        </div>
-      </div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-title">对方的 MBTI（性格推荐用）</div>
-      <div class="mbti-grid">
-        <div class="mbti-btn sel" data-mbti="INFP" onclick="selMBTI(this)">
-          <div class="mb-type">INFP</div><div class="mb-desc">文艺 · 独立 · 感性</div>
-        </div>
-        <div class="mbti-btn" data-mbti="ENTJ" onclick="selMBTI(this)">
-          <div class="mb-type">ENTJ</div><div class="mb-desc">高效 · 目标 · 掌控</div>
-        </div>
-        <div class="mbti-btn" data-mbti="ENFP" onclick="selMBTI(this)">
-          <div class="mb-type">ENFP</div><div class="mb-desc">活力 · 探索 · 随性</div>
-        </div>
-        <div class="mbti-btn" data-mbti="ISTJ" onclick="selMBTI(this)">
-          <div class="mb-type">ISTJ</div><div class="mb-desc">严谨 · 计划 · 经典</div>
-        </div>
-      </div>
-    </div>
-    <button class="gen-btn" onclick="genShare()">生成旅行签链接</button>
-    <div class="share-preview" id="sharePreview">
-      <div class="sp-label">分享文案</div>
-      <div class="sp-text" id="shareText"></div>
-      <button class="sp-copy" onclick="copyShareLink()">复制链接</button>
-    </div>
-  </div>
-</div>
 
-<!-- ════ 主 App（B视角）════ -->
-<div class="screen gone" id="sApp">
-  <div class="app-topbar">
-    <div class="at-left" onclick="showScreen('sCover')">← 退出</div>
-    <div class="at-title">FATE TRIP</div>
-    <div class="at-from">
-      <div class="at-avatar" id="atAvatar">A</div>
-      <div class="at-name" id="atName">来自 A</div>
-    </div>
-  </div>
-
-  <div class="app-content">
-
-    <!-- Tab 1: 旅行签 -->
-    <div class="tab-panel" id="tab1">
-      <div class="sign-cover">
-        <div class="sc-shine"></div>
-        <div class="sc-label">HIDDEN ROUTE · FATE TRIP</div>
-        <div class="sc-title" id="sc-title">抽你的旅行签</div>
-        <div class="sc-sub" id="sc-sub">看看命运为你选了哪里 🎴</div>
-      </div>
-      <div class="sign-stage" id="signStage">
-        <div class="sign-nav">
-          <div class="sn-dest" id="snDest">—</div>
-          <div class="sn-prog" id="snProg"></div>
+    <!-- B Receiver -->
+    <div class="exp-panel" id="panel-reveal">
+      <div class="receiver-container">
+        <div class="opening-ceremony" id="openingCeremony">
+          <div class="oc-from"><strong>A</strong> 从曼谷行程里为你藏了签</div>
+          <div class="oc-title">一份<strong>曼谷</strong>旅行签</div>
+          <div class="oc-sub">里面藏着3个行程地点，拆完生成只属于你的隐藏路线</div>
+          <div class="oc-envelope" id="ocEnvelope">
+            <div class="oc-env-flap"></div>
+            <div class="oc-env-cards"><div class="oc-env-card"></div><div class="oc-env-card"></div><div class="oc-env-card"></div></div>
+            <div class="oc-env-label">点击揭签</div>
+          </div>
+          <div class="oc-hint"><span>📱</span><span>向上抽 · 摇一摇 · 或点击揭签</span></div>
         </div>
-        <div class="flip-wrap" id="flipWrap" onclick="flipSign()">
-          <div class="flip-scene">
-            <div class="flip-3d" id="flip3d">
-              <div class="flip-face f-back">
-                <div class="fb-tex"></div>
-                <div class="fb-sign">签</div>
-                <div class="fb-corner fc-tl"></div><div class="fb-corner fc-tr"></div>
-                <div class="fb-corner fc-bl"></div><div class="fb-corner fc-br"></div>
-                <div class="fb-hint">TAP · SHAKE</div>
-              </div>
-              <div class="flip-face f-front">
-                <div class="ff-num" id="ffNum">1/3</div>
-                <div class="ff-ico" id="ffIco">🌅</div>
-                <div class="ff-name" id="ffName">—</div>
-                <div class="ff-badge" id="ffBadge">类型</div>
-                <div class="ff-sep"></div>
-                <div class="ff-phrase" id="ffPhrase">签语</div>
-              </div>
+        <div class="sign-reveal" id="signReveal">
+          <div class="sr-progress" id="srProgress"></div>
+          <div class="sr-suspense" id="srSuspense">第1张，先热身...</div>
+          <div class="sign-card hidden-card" id="hiddenCard">
+            <div class="corner-mark cm-tl"></div><div class="corner-mark cm-tr"></div>
+            <div class="corner-mark cm-bl"></div><div class="corner-mark cm-br"></div>
+          </div>
+          <div class="sign-card revealed" id="revealedCard" style="display:none"></div>
+          <button class="sr-next-btn" id="srNextBtn">继续拆下一签 →</button>
+        </div>
+        <div class="route-result" id="routeResult">
+          <div class="rr-header">
+            <div class="rr-title">你的曼谷<strong>隐藏路线</strong>已签定</div>
+            <div class="rr-personality" id="rrPersonality">🌃 夜市漫游型</div>
+          </div>
+          <div class="route-map">
+            <div class="rm-title">📍 隐藏路线</div>
+            <div class="rm-route" id="rmRoute"></div>
+            <div class="rm-stats">
+              <div class="rm-stat">📏 总距 4.2km</div>
+              <div class="rm-stat">⏱ 约5小时</div>
+              <div class="rm-stat">🕐 建议16:00开始</div>
+              <div class="rm-stat">🚶 步行+打车</div>
+              <div class="rm-stat">✅ 适合一天</div>
             </div>
           </div>
-        </div>
-        <div class="shake-hint" id="shakeHint">
-          <span class="sh-ico">📱</span>
-          <span class="sh-txt">轻摇手机也可揭签</span>
-        </div>
-      </div>
-      <button class="next-sign-btn" id="nextSignBtn" onclick="nextSign()">—</button>
-      <div class="result-poster fly" id="resultPoster">
-        <div class="rp-cover">
-          <div class="rp-eyebrow">HIDDEN ROUTE</div>
-          <div class="rp-title" id="rpTitle">的隐藏路线</div>
-        </div>
-        <div class="rp-list" id="rpList"></div>
-        <div class="rp-foot">
-          <div class="rp-brand">FATE TRIP</div>
-          <div class="rp-stamp">命运签定 ✦</div>
-        </div>
-      </div>
-      <button class="heart-btn fly" id="heartBtn" onclick="sendHeart()">我也想去 💛</button>
-      <div class="act-row fly" id="actRow">
-        <button class="ar-btn ar-copy" onclick="copyResult()">📋 复制</button>
-        <button class="ar-btn ar-save" onclick="saveImg()">💾 保存</button>
-        <button class="ar-btn ar-again" onclick="resetSign()">重新拆</button>
-      </div>
-    </div>
-
-    <!-- Tab 2: 默契测试 -->
-    <div class="tab-panel hidden" id="tab2">
-      <div class="card match-intro" id="matchIntro">
-        <div class="card-head">
-          <div class="card-head-row">
-            <div><div class="ch-title">默契大考验</div><div class="ch-sub">看看你和 A 的旅行默契</div></div>
-            <div class="ch-badge badge-purple">Phase 2</div>
+          <div class="ai-summary">
+            <span class="ai-badge">AI 总结</span>
+            <div class="ai-text" id="aiSummaryText">你的选择偏向市集美食自由探索，相比A的完整行程减少了两个热门景点，增加了本地生活气息。你似乎更喜欢跟着味蕾走，而不是跟着攻略走。</div>
           </div>
-        </div>
-        <div style="padding:14px 18px">
-          <div style="font-size:13px;color:var(--ink3);line-height:1.85;margin-bottom:14px">
-            A 已对 <b style="color:var(--ink)">5 个地点</b> 做了选择，现在轮到你——右滑 ❤️ 想去，左滑 ❌ 不去，最后看默契度！
+          <div class="route-actions">
+            <button class="ra-btn primary" id="raGoBtn">我也想和A去 ✈️</button>
+            <button class="ra-btn secondary" id="raSaveBtn">加进我的行程</button>
           </div>
-          <button class="gen-btn" onclick="startMatch()" style="font-size:14px;padding:13px">开始测试 →</button>
-        </div>
-      </div>
-      <div class="poi-swipe-wrap" id="swipeWrap" style="display:none">
-        <div class="poi-swipe-card" id="swipeCard">
-          <div class="psc-ico" id="scIco">🛍️</div>
-          <div class="psc-name" id="scName">乍都乍市场</div>
-          <div class="psc-type" id="scType">市集</div>
-          <div class="psc-desc" id="scDesc">城市最大的周末市场，藏着无数惊喜</div>
-          <div class="swipe-hint"><span class="swh-no">❌ 不去</span><span class="swh-yes">❤️ 想去</span></div>
-        </div>
-      </div>
-      <div class="vote-btns" id="voteBtns" style="display:none">
-        <button class="vb" onclick="vote(false)">❌</button>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
-          <span style="font-size:11px;color:var(--ink4)" id="matchProgress">1 / 5</span>
-        </div>
-        <button class="vb" onclick="vote(true)">❤️</button>
-      </div>
-      <div class="match-wait" id="matchWait">
-        <div class="mw-card">
-          <div class="mw-title">等待 A 的结果 🔮</div>
-          <div class="mw-sub">你已选完！正在和 A 的选择对比中…</div>
-          <div class="mw-loader">
-            <div class="ml-dot"></div><div class="ml-dot"></div><div class="ml-dot"></div>
-          </div>
-        </div>
-      </div>
-      <div class="match-result" id="matchResult"></div>
-    </div>
-
-    <!-- Tab 3: 性格推荐 -->
-    <div class="tab-panel hidden" id="tab3">
-      <div class="mbti-pick-card" id="mbtiPick">
-        <div style="font-size:15px;font-weight:800;margin-bottom:4px">性格导向推荐</div>
-        <div style="font-size:12px;color:var(--ink3)">选你的 MBTI，看专属路线</div>
-        <div class="mbti-pick-grid">
-          <div class="mp-btn sel" data-m="INFP" onclick="selPersona(this)">
-            <div class="mp-type">INFP</div><div class="mp-trait">文艺 · 独立书店 · 小众咖啡</div>
-          </div>
-          <div class="mp-btn" data-m="ENTJ" onclick="selPersona(this)">
-            <div class="mp-type">ENTJ</div><div class="mp-trait">高效 · 地标打卡 · 米其林</div>
-          </div>
-          <div class="mp-btn" data-m="ENFP" onclick="selPersona(this)">
-            <div class="mp-type">ENFP</div><div class="mp-trait">活力 · 夜市探索 · 随机漫游</div>
-          </div>
-          <div class="mp-btn" data-m="ISTJ" onclick="selPersona(this)">
-            <div class="mp-type">ISTJ</div><div class="mp-trait">严谨 · 历史文化 · 经典路线</div>
-          </div>
-        </div>
-        <button class="mp-go" onclick="genPersona()">生成专属路线 ✦</button>
-      </div>
-      <div class="persona-route" id="personaRoute"></div>
-    </div>
-
-    <!-- Tab 4: 我的履历 -->
-    <div class="tab-panel hidden" id="tab4">
-      <div class="profile-header">
-        <div class="ph-user">
-          <div class="phu-avatar">🧳</div>
-          <div class="phu-info">
-            <div class="phu-name">旅行者 B</div>
-            <div class="phu-tag">INFP · 文艺路线偏好者</div>
-          </div>
-        </div>
-        <div class="ph-stats">
-          <div class="phs-item"><div class="phsi-num" id="statCities">3</div><div class="phsi-lbl">城市</div></div>
-          <div class="phs-item"><div class="phsi-num" id="statSigns">12</div><div class="phsi-lbl">拆过的签</div></div>
-          <div class="phs-item"><div class="phsi-num" id="statHearts">5</div><div class="phsi-lbl">心动次数</div></div>
-          <div class="phs-item"><div class="phsi-num">78%</div><div class="phsi-lbl">平均默契</div></div>
-        </div>
-      </div>
-      <div class="sec-lbl">旅行记录</div>
-      <div class="history-list">
-        <div class="hl-card">
-          <div class="hlc-ico">🏙️</div>
-          <div class="hlc-info"><div class="hlci-dest">曼谷 · 5日游</div><div class="hlci-meta">拆了 3 签 · 心动了乍都乍市场</div></div>
-          <div class="hlc-badge badge-pink">心动 💛</div>
-        </div>
-        <div class="hl-card">
-          <div class="hlc-ico">🏯</div>
-          <div class="hlc-info"><div class="hlci-dest">京都 · 4日游</div><div class="hlci-meta">拆了 3 签 · 默契度 85%</div></div>
-          <div class="hlc-badge badge-purple">高默契 💕</div>
-        </div>
-        <div class="hl-card">
-          <div class="hlc-ico">⛵</div>
-          <div class="hlc-info"><div class="hlci-dest">大理 · 3日游</div><div class="hlci-meta">拆了 4 签 · 收藏了隐藏路线</div></div>
-          <div class="hlc-badge badge-blue">已收藏</div>
-        </div>
-      </div>
-      <div class="sec-lbl">旅行搭子默契榜</div>
-      <div class="history-list">
-        <div class="buddy-card">
-          <div class="bc-avatar" style="background:linear-gradient(135deg,#4a7fd4,#80b0f0)">A</div>
-          <div class="bc-info"><div class="bc-name">旅行者 A</div><div class="bc-match">一起去过 2 个城市 · 共同心动 5 个地点</div></div>
-          <div class="bc-score" style="color:var(--purple)">85%</div>
-        </div>
-        <div class="buddy-card">
-          <div class="bc-avatar" style="background:linear-gradient(135deg,#18b87c,#50d4a0)">C</div>
-          <div class="bc-info"><div class="bc-name">旅行者 C</div><div class="bc-match">一起去过 1 个城市 · 共同心动 3 个地点</div></div>
-          <div class="bc-score" style="color:var(--green)">72%</div>
+          <div class="ra-feedback" id="raFeedback">✅ 已告诉A：你想去乍都乍市场、考山路、湄南河畔<br><span style="color:var(--text3);font-size:11px;margin-top:4px;display:block">也可以补充一句给TA...</span></div>
         </div>
       </div>
     </div>
 
-  </div><!-- /app-content -->
+    <!-- Route static -->
+    <div class="exp-panel" id="panel-route">
+      <div class="route-result" style="display:block">
+        <div class="rr-header"><div class="rr-title">你的曼谷<strong>隐藏路线</strong>已签定</div><div class="rr-personality">🌃 夜市漫游型</div></div>
+        <div class="route-map">
+          <div class="rm-title">📍 隐藏路线</div>
+          <div class="rm-route">
+            <div class="rm-stop"><div class="rm-stop-dot"></div><div class="rm-stop-icon">🛍️</div><div class="rm-stop-info"><div class="rm-stop-name">乍都乍周末市集</div><div class="rm-stop-meta">建议停留 2h · 最适合下午 · 距上站 —</div></div></div>
+            <div class="rm-stop"><div class="rm-stop-dot"></div><div class="rm-stop-icon">🍺</div><div class="rm-stop-info"><div class="rm-stop-name">考山路夜市区</div><div class="rm-stop-meta">建议停留 1.5h · 最适合傍晚 · 距上站 2.1km</div></div></div>
+            <div class="rm-stop"><div class="rm-stop-dot"></div><div class="rm-stop-icon">🌅</div><div class="rm-stop-info"><div class="rm-stop-name">湄南河畔日落点</div><div class="rm-stop-meta">建议停留 1h · 最适合日落前 · 距上站 1.8km</div></div></div>
+          </div>
+          <div class="rm-stats"><div class="rm-stat">📏 总距 4.2km</div><div class="rm-stat">⏱ 约5小时</div><div class="rm-stat">🕐 建议16:00开始</div><div class="rm-stat">🚶 步行+打车</div><div class="rm-stat">✅ 适合一天</div></div>
+        </div>
+        <div class="ai-summary"><span class="ai-badge">AI 总结</span><div class="ai-text">你的选择偏向市集美食自由探索，相比A的完整行程减少了两个热门景点，增加了本地生活气息。你似乎更喜欢跟着味蕾走，而不是跟着攻略走。</div></div>
+        <div class="route-actions"><button class="ra-btn primary">我也想和A去 ✈️</button><button class="ra-btn secondary">加进我的行程</button></div>
+      </div>
+    </div>
 
-  <div class="tab-bar">
-    <div class="tab-item active" onclick="switchTab(1)"><div class="tab-ico">🎴</div><div class="tab-lbl">旅行签</div></div>
-    <div class="tab-item" onclick="switchTab(2)"><div class="tab-ico">💕</div><div class="tab-lbl">默契测试</div></div>
-    <div class="tab-item" onclick="switchTab(3)"><div class="tab-ico">🔮</div><div class="tab-lbl">性格推荐</div></div>
-    <div class="tab-item" onclick="switchTab(4)"><div class="tab-ico">👤</div><div class="tab-lbl">我的履历</div></div>
+    <!-- A Feedback -->
+    <div class="exp-panel" id="panel-feedback">
+      <div class="feedback-container">
+        <div class="fb-header"><div class="fb-header-ico">💌</div><div class="fb-header-title">B 拆完了你分享的曼谷旅行签</div><div class="fb-header-sub">看看TA的选择和你的默契</div></div>
+        <div class="fb-reactions">
+          <div class="fb-reaction-card"><div class="fb-rc-label">B 最心动 ❤️</div><div class="fb-rc-items" style="color:var(--pink)">乍都乍市场 · 考山路</div></div>
+          <div class="fb-reaction-card"><div class="fb-rc-label">B 犹豫 🤔</div><div class="fb-rc-items" style="color:var(--accent)">湄南河畔</div></div>
+          <div class="fb-reaction-card"><div class="fb-rc-label">B 不感兴趣</div><div class="fb-rc-items" style="color:var(--text4)">卧佛寺 · 大皇宫</div></div>
+        </div>
+        <div class="fb-ai-summary">
+          <div class="fb-ai-title"><span class="ai-badge">AI 洞察</span></div>
+          <div class="fb-ai-text">你们都对夜市和本地生活感兴趣，但B对大型热门景点兴趣较低。建议：可以把大皇宫替换成附近的本地咖啡馆，保留乍都乍+考山路的夜市路线。你们更适合"慢慢逛"而不是"打卡式"旅行。</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-action highlight">📝 调整原行程</button>
+          <button class="fb-action">✏️ 邀请B一起编辑</button>
+          <button class="fb-action" id="goTacit">💕 发起默契测试</button>
+          <button class="fb-action">💬 回复B</button>
+        </div>
+      </div>
+    </div>
   </div>
-</div><!-- /sApp -->
+</section>
 
-</div><!-- /phone-shell -->
+<!-- ALGORITHM -->
+<section class="algorithm" id="algorithm">
+  <div class="algo-container">
+    <div class="section-tag">隐藏路线</div>
+    <div class="section-title">AI 如何把地点组合成<strong>可执行路线</strong></div>
+    <div class="section-desc">不是随机抽3个地点，而是综合考虑兴趣匹配、行程代表性和多样性</div>
+    <div class="algo-grid">
+      <div class="algo-card"><div class="algo-card-ico">🎯</div><div class="algo-card-title">兴趣匹配</div><div class="algo-card-desc">根据接收方的偏好标签和发起人设置的个性化参数，优先匹配高相关地点</div><div class="algo-card-code">score += pref_match * 0.35</div></div>
+      <div class="algo-card"><div class="algo-card-ico">🌈</div><div class="algo-card-title">类型多样性</div><div class="algo-card-desc">3张签至少覆盖2种类型，避免连抽3家咖啡馆。重复类型惩罚递减</div><div class="algo-card-code">score -= type_repeat * 0.25</div></div>
+      <div class="algo-card"><div class="algo-card-ico">📍</div><div class="algo-card-title">距离惩罚</div><div class="algo-card-desc">已选地点的邻近区域降低权重，确保路线有合理的空间分布</div><div class="algo-card-code">score -= distance_penalty * 0.15</div></div>
+      <div class="algo-card"><div class="algo-card-ico">⭐</div><div class="algo-card-title">行程代表性</div><div class="algo-card-desc">优先选择最能代表这次旅行的标志性地点，而非边缘选项</div><div class="algo-card-code">score += representativeness * 0.25</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TACIT TEST -->
+<section class="tacit" id="tacit">
+  <div class="tacit-container">
+    <div class="section-tag">增强互动</div>
+    <div class="section-title">默契测试 · <strong>旅行签之后</strong></div>
+    <div class="section-desc" style="margin-bottom:32px">从结果页进入："你和A有2个共同心动地点，再选5个看适不适合一起旅行"</div>
+    <div class="tacit-intro" id="tacitIntro">
+      <div class="tacit-intro-ico">💕</div>
+      <div class="tacit-intro-title">你和A的旅行默契</div>
+      <div class="tacit-intro-desc">A 已对 5 个曼谷地点做了选择<br>现在轮到你——每张卡选「必须去 / 可以去 / 不想去」<br>最后看你们的旅行默契度！</div>
+      <button class="btn-primary" id="tacitStartBtn">开始测试 →</button>
+    </div>
+    <div id="tacitGame" style="display:none">
+      <div class="tacit-card-wrap"><div class="tacit-card" id="tacitCard"></div></div>
+      <div style="text-align:center;font-size:12px;color:var(--text3);margin-bottom:14px" id="tacitProgress">1 / 5</div>
+      <div class="tacit-votes">
+        <button class="tv-btn must-go" data-vote="must"><div class="tv-ico">❤️</div><div class="tv-label">必须去</div></button>
+        <button class="tv-btn maybe" data-vote="maybe"><div class="tv-ico">🤔</div><div class="tv-label">可以去</div></button>
+        <button class="tv-btn no-go" data-vote="no"><div class="tv-ico">❌</div><div class="tv-label">不想去</div></button>
+      </div>
+    </div>
+    <div class="tacit-result" id="tacitResult"></div>
+  </div>
+</section>
+
+<!-- PREFERENCE CALIBRATION -->
+<section class="pref-cal" id="prefCal">
+  <div class="pref-container">
+    <div class="section-tag">长期沉淀</div>
+    <div class="section-title">旅行偏好<strong>小游戏</strong></div>
+    <div class="pref-note">💡 MBTI只是趣味入口，路线会结合实际选择继续调整。<br>系统会观察你的真实行为，不断校准对你的理解。</div>
+    <div class="pref-step">
+      <div class="pref-step-label">STEP 1 · 你旅行时更像哪种状态？</div>
+      <div class="pref-options" id="stateOpts">
+        <button class="pref-opt" data-state="plan">按计划打卡</button>
+        <button class="pref-opt" data-state="wander">随便走走</button>
+        <button class="pref-opt" data-state="food">为吃绕路</button>
+        <button class="pref-opt" data-state="sit">找地方坐</button>
+        <button class="pref-opt" data-state="photo">拍照最重要</button>
+        <button class="pref-opt" data-state="quiet">人少优先</button>
+      </div>
+    </div>
+    <div class="pref-step">
+      <div class="pref-step-label">STEP 2 · 你的MBTI？（可跳过）</div>
+      <div class="pref-options" id="mbtiOpts">
+        <button class="pref-opt" data-m="INFP">INFP</button>
+        <button class="pref-opt" data-m="ENTJ">ENTJ</button>
+        <button class="pref-opt" data-m="ENFP">ENFP</button>
+        <button class="pref-opt" data-m="ISTJ">ISTJ</button>
+        <button class="pref-opt" data-m="skip" style="opacity:.5">跳过</button>
+      </div>
+    </div>
+    <div class="pref-calibration" id="prefCalibration">
+      <div class="pc-title">🔍 真实选择校准</div>
+      <div class="pc-text" id="pcText">系统原本猜你偏文艺（INFP），但你连选了两个夜市相关选项，已增加「本地美食探索」偏好权重，降低了「独立书店」推荐。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<section class="archive" id="archive">
+  <div class="archive-container">
+    <div class="section-tag">旅行关系档案</div>
+    <div class="section-title">不只是数据面板，是<strong>旅行履历</strong></div>
+    <div class="section-desc" style="margin-bottom:32px">记录你的旅行偏好、拆过的签、和每位朋友的旅行关系</div>
+    <div class="id-card">
+      <div class="id-header">
+        <div class="id-avatar">🧳</div>
+        <div><div class="id-name">旅行者 B</div><div class="id-tags"><span class="id-tag">慢节奏探索者</span><span class="id-tag">夜市爱好者</span><span class="id-tag">不爱早起</span></div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text4);line-height:1.6">这些标签来自你的真实选择，不只是MBTI。系统会持续校准。</div>
+    </div>
+    <div class="pref-radar">
+      <div class="pref-radar-title">📊 旅行偏好星图（来自行为）</div>
+      <div class="pr-bars">
+        <div class="pr-bar"><div class="pr-bar-label">夜市美食</div><div class="pr-bar-track"><div class="pr-bar-fill" style="width:82%;background:var(--bkk-yellow)"></div></div><div class="pr-bar-val">82%</div></div>
+        <div class="pr-bar"><div class="pr-bar-label">小众街区</div><div class="pr-bar-track"><div class="pr-bar-fill" style="width:76%;background:var(--bkk-purple)"></div></div><div class="pr-bar-val">76%</div></div>
+        <div class="pr-bar"><div class="pr-bar-label">咖啡探店</div><div class="pr-bar-track"><div class="pr-bar-fill" style="width:68%;background:var(--bkk-gold)"></div></div><div class="pr-bar-val">68%</div></div>
+        <div class="pr-bar"><div class="pr-bar-label">地标打卡</div><div class="pr-bar-track"><div class="pr-bar-fill" style="width:35%;background:var(--blue)"></div></div><div class="pr-bar-val">35%</div></div>
+        <div class="pr-bar"><div class="pr-bar-label">早起暴走</div><div class="pr-bar-track"><div class="pr-bar-fill" style="width:18%;background:var(--pink)"></div></div><div class="pr-bar-val">18%</div></div>
+      </div>
+    </div>
+    <div class="stamp-collection">
+      <div class="stamp-title">📮 旅行签收藏册</div>
+      <div class="stamps">
+        <div class="stamp"><div class="stamp-ico">🛍️</div><div class="stamp-city">曼谷夜市签</div><div class="stamp-date">2024.05</div></div>
+        <div class="stamp"><div class="stamp-ico">🌸</div><div class="stamp-city">京都雨天签</div><div class="stamp-date">2024.03</div></div>
+        <div class="stamp"><div class="stamp-ico">⛵</div><div class="stamp-city">大理洱海签</div><div class="stamp-date">2024.01</div></div>
+        <div class="stamp" style="border-style:solid;opacity:.4"><div class="stamp-ico">🗼</div><div class="stamp-city">待解锁</div><div class="stamp-date">东京?</div></div>
+      </div>
+    </div>
+    <div class="travel-rel">
+      <div class="rel-title">👥 旅行关系</div>
+      <div class="rel-cards">
+        <div class="rel-card">
+          <div class="rel-avatar" style="background:linear-gradient(135deg,var(--bkk-yellow),var(--bkk-gold))">A</div>
+          <div class="rel-info"><div class="rel-name">旅行者 A</div><div class="rel-detail">一起拆过 3 次 · 共同心动 5 个 · 最大分歧：早起景点<br>最适合一起去的城市：<strong style="color:var(--accent)">大阪</strong></div></div>
+          <div class="rel-score">85%</div>
+        </div>
+        <div class="rel-card">
+          <div class="rel-avatar" style="background:linear-gradient(135deg,var(--bkk-green),var(--green))">C</div>
+          <div class="rel-info"><div class="rel-name">旅行者 C</div><div class="rel-detail">一起拆过 1 次 · 共同心动 3 个 · 最大分歧：夜生活<br>最适合一起去的城市：<strong style="color:var(--accent)">大理</strong></div></div>
+          <div class="rel-score">72%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT LOGIC -->
+<section class="product-logic" id="product-logic">
+  <div class="pl-container">
+    <div class="section-tag">设计说明</div>
+    <div class="section-title">产品逻辑与<strong>设计思考</strong></div>
+    <div class="pl-grid">
+      <div class="pl-card">
+        <div class="pl-card-title">🎲 地点抽取规则</div>
+        <ul class="pl-list">
+          <li>兴趣匹配权重 35%：根据接收方偏好标签</li>
+          <li>行程代表性 25%：选最能代表这次旅行的地点</li>
+          <li>类型多样性：3签至少覆盖2类型，禁止连续同类型</li>
+          <li>距离惩罚 15%：避免3个地点挤在同一条街上</li>
+          <li>命运偏移叠加：根据发起人选择的风格调整最终权重</li>
+        </ul>
+      </div>
+      <div class="pl-card">
+        <div class="pl-card-title">🗺️ 路线生成规则</div>
+        <ul class="pl-list">
+          <li>按原行程顺序排列，不重排地理位置</li>
+          <li>标注建议停留时间、最佳时段、交通方式</li>
+          <li>判断是否适合一天完成</li>
+          <li>AI总结基于实际选择生成个性化描述</li>
+          <li>路线性格名从选择模式匹配（夜市型/文艺型/暴走型等）</li>
+        </ul>
+      </div>
+      <div class="pl-card">
+        <div class="pl-card-title">⚠️ 异常状态处理</div>
+        <ul class="pl-list">
+          <li>行程不足3地点：提示补充或降级为2签</li>
+          <li>地点缺图：使用类型对应的纯色占位+图标</li>
+          <li>已停业地点：自动过滤，标记"已更新"</li>
+          <li>距离过远（>50km）：拆成两天或提示调整</li>
+          <li>链接过期（>7天）：显示"已过期"，建议重新生成</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:32px">
+      <div class="section-tag" style="margin-bottom:12px">核心数据指标</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">北极星指标：<strong style="color:var(--accent)">有效旅行互动数</strong> = 拆签完成 且 产生心动/留言/保存/编辑 之一</div>
+      <div class="metrics-grid">
+        <div class="metric-card metric-north"><div class="metric-label">🌟 北极星</div><div class="metric-value">有效旅行互动数</div></div>
+        <div class="metric-card"><div class="metric-label">分享侧</div><div class="metric-value">分享率 · 文案选择分布 · 分享后回流</div></div>
+        <div class="metric-card"><div class="metric-label">接收侧</div><div class="metric-value">拆签完成率 · 平均拆签时长 · 弃签率</div></div>
+        <div class="metric-card"><div class="metric-label">互动侧</div><div class="metric-value">心动率 · 默契测试参与率 · 留言率</div></div>
+        <div class="metric-card"><div class="metric-label">产品价值</div><div class="metric-value">路线保存率 · 二次分享率 · 回访率</div></div>
+        <div class="metric-card"><div class="metric-label">保护指标</div><div class="metric-value">不骚扰 · 不社交压力 · 可静默参与</div></div>
+      </div>
+    </div>
+    <div class="roadmap">
+      <div class="roadmap-title">🗓️ Roadmap</div>
+      <div class="roadmap-items">
+        <div class="roadmap-item"><div class="rm-dot now"></div><div class="rm-text">MVP：单人发起 → 单人拆签 → 隐藏路线 → 反馈回流</div><span class="rm-tag done">当前</span></div>
+        <div class="roadmap-item"><div class="rm-dot next"></div><div class="rm-text">双人同时拆签：双方实时看到对方拆到哪张</div><span class="rm-tag wip">计划中</span></div>
+        <div class="roadmap-item"><div class="rm-dot next"></div><div class="rm-text">群聊模式：多人同时拆，生成集体路线</div><span class="rm-tag wip">计划中</span></div>
+        <div class="roadmap-item"><div class="rm-dot later"></div><div class="rm-text">城市限定签面：曼谷版/京都版/大理版独特视觉</div><span class="rm-tag planned">远期</span></div>
+        <div class="roadmap-item"><div class="rm-dot later"></div><div class="rm-text">旅行签 × 真实预订：心动后可直接订酒店/门票</div><span class="rm-tag planned">远期</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-brand">F A T E &nbsp; T R I P</div>
+  <div class="footer-sub">想一万次，不如出发一次</div>
+</footer>
 
 <script>
-/* ════ 静态星点 ════ */
 (function(){
-  const c=document.getElementById('starsBg');
-  const pts=[[5,8],[12,22],[88,6],[92,18],[78,45],[15,55],[95,62],[8,78],[85,82],[45,4],[55,96],[30,92],[70,88],[50,50],[25,35],[65,25],[40,70]];
-  pts.forEach(([x,y])=>{
-    const d=document.createElement('div');
-    d.className='star-dot';
-    const s=1+Math.random()*2;
-    d.style.cssText=`width:${s}px;height:${s}px;top:${y}%;left:${x}%;opacity:${.15+Math.random()*.25}`;
-    c.appendChild(d);
-  });
-})();
+  'use strict';
 
-/* ════ 视图切换 ════ */
-function setMode(m){
-  document.body.className='mode-'+m;
-  document.getElementById('btnWeb').classList.toggle('active',m==='web');
-  document.getElementById('btnPhone').classList.toggle('active',m==='phone');
-  // 切换按钮在手机模式下收起
-  const vTop = m==='phone'?'calc(50% - min(422px, calc(50vh - 12px)) + 8px)':'14px';
-  document.querySelector('.view-toggle').style.top = vTop;
-  document.querySelector('.back-to-works').style.top = vTop;
-}
+  var BANGKOK_POIS = [
+    {name:'大皇宫',type:'temple',icon:'🏛️',duration:'2h',period:'上午',dist:'—',phrase:'今日宜仰望金塔，忌走马观花',why:'曼谷必去地标，A觉得你会被金色震撼'},
+    {name:'卧佛寺',type:'temple',icon:'🙏',duration:'1h',period:'上午',dist:'0.5km',phrase:'今日宜静卧冥想，忌匆忙路过',why:'离大皇宫很近，A觉得你会喜欢这种安静'},
+    {name:'乍都乍周末市集',type:'market',icon:'🛍️',duration:'3h',period:'下午',dist:'8km',phrase:'今日宜逛到迷路，忌带空行李箱回来',why:'A知道你喜欢淘东西，这里什么都有'},
+    {name:'考山路',type:'night_market',icon:'🍺',duration:'2h',period:'傍晚',dist:'2.1km',phrase:'今日宜闯一闯，忌早睡',why:'背包客天堂，A觉得你会爱上这种热闹'},
+    {name:'湄南河畔',type:'beach',icon:'🌅',duration:'1h',period:'日落前',dist:'1.8km',phrase:'今日宜驻足看河面金光，忌赶行程',why:'A最想和你一起看的地方'},
+    {name:'Or Tor Kor市场',type:'night_market',icon:'🍜',duration:'1.5h',period:'上午',dist:'3km',phrase:'今日宜大胆尝鲜，忌节食',why:'当地人才知道的美食天堂，A收藏很久了'},
+    {name:'暹罗百丽宫',type:'market',icon:'🏬',duration:'2h',period:'下午',dist:'5km',phrase:'今日宜享受冷气，忌只看价格',why:'逛累了可以去这里凉快一下'},
+    {name:'Jim Thompson故居',type:'temple',icon:'🏠',duration:'1h',period:'上午',dist:'1km',phrase:'今日宜听老故事，忌匆忙离开',why:'丝绸大王的秘密花园，A觉得你会被故事打动'},
+    {name:'Asiatique夜市',type:'night_market',icon:'🎡',duration:'2h',period:'晚上',dist:'4km',phrase:'今日宜坐摩天轮，忌不拍夜景',why:'河边夜市+摩天轮，浪漫指数满分'},
+    {name:'Lumpini公园',type:'park',icon:'🌿',duration:'1h',period:'清晨',dist:'2km',phrase:'今日宜与巨蜥对视，忌害怕',why:'城市绿肺，晨间散步的最佳选择'},
+    {name:'Terminal 21',type:'market',icon:'🛒',duration:'1.5h',period:'下午',dist:'6km',phrase:'今日宜每层都逛，忌只看顶层',why:'每层不同国家主题，A觉得像环球旅行'},
+    {name:'Rooftop Bar',type:'nightlife',icon:'🍸',duration:'1.5h',period:'夜晚',dist:'3km',phrase:'今日宜俯瞰城市灯火，忌恐高',why:'Bangkok skyline 最佳视角'},
+    {name:'Blue Elephant',type:'cafe',icon:'☕',duration:'1h',period:'下午',dist:'1.5km',phrase:'今日宜品一口泰式优雅，忌赶时间',why:'百年老宅改的餐厅，A觉得很有氛围'},
+    {name:'水上市场',type:'market',icon:'🛶',duration:'3h',period:'清晨',dist:'30km',phrase:'今日宜船上吃面，忌怕湿身',why:'虽然远但A觉得值得'},
+    {name:'街头涂鸦街',type:'park',icon:'🎨',duration:'1h',period:'下午',dist:'2km',phrase:'今日宜和墙合影，忌假装看不见',why:'曼谷最酷的拍照角落'},
+    {name:'芒果糯米饭名店',type:'night_market',icon:'🥭',duration:'0.5h',period:'下午',dist:'0.8km',phrase:'今日宜吃两份，忌减肥',why:'A排过40分钟队但值得'},
+    {name:'THONBURI运河游船',type:'beach',icon:'⛵',duration:'2h',period:'傍晚',dist:'2km',phrase:'今日宜听水声，忌看手机',why:'水上人家的慢生活'},
+    {name:'Jodd Fairs夜市',type:'night_market',icon:'🍢',duration:'2h',period:'晚上',dist:'4km',phrase:'今日宜火山排骨，忌只看不吃',why:'最新最火的夜市，A必须带你去'}
+  ];
 
-/* ════ 屏幕切换 ════ */
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('gone',s.id!==id));
-}
+  var SHARE_MSGS = {
+    curious: '给你留了份曼谷旅行签🎴 猜猜你会抽到哪家夜市？',
+    friend: '嘿！我从曼谷行程里挑了几个地方给你拆～ 看看咱俩默契怎么样 😄',
+    flirty: '偷偷从曼谷给你寄了3张签 ✉️ 最后一张是我最想和你去的地方...'
+  };
 
-/* ════ 角色选择 ════ */
-function selectRole(r){
-  setTimeout(()=>{
-    if(r==='A') showScreen('sSetup');
-    else startBExperience();
-  },180);
-}
+  var TACIT_POIS = [
+    {name:'乍都乍周末市集',icon:'🛍️',type:'市集',duration:'3h',price:'฿500',dist:'8km',tags:['人很多','适合拍照','价格友好'],bg:'linear-gradient(135deg,var(--bkk-yellow),var(--bkk-gold))'},
+    {name:'考山路夜市',icon:'🍺',type:'夜生活',duration:'2h',price:'฿800',dist:'2km',tags:['夜生活','人很多','美食多'],bg:'linear-gradient(135deg,#6030a0,#4020a0)'},
+    {name:'大皇宫',icon:'🏛️',type:'景点',duration:'2h',price:'฿500',dist:'1km',tags:['人很多','需早起','文化底蕴'],bg:'linear-gradient(135deg,var(--bkk-gold),#c09020)'},
+    {name:'Blue Elephant咖啡馆',icon:'☕',type:'咖啡',duration:'1h',price:'฿600',dist:'1.5km',tags:['小众','适合拍照','价格偏高'],bg:'linear-gradient(135deg,#3a3020,#5a4830)'},
+    {name:'湄南河日落游船',icon:'⛵',type:'自然',duration:'2h',price:'฿1200',dist:'2km',tags:['浪漫','人不多','适合拍照'],bg:'linear-gradient(135deg,var(--bkk-purple),#4030a0)'}
+  ];
 
-/* ════ A 设置 ════ */
-let aMBTI='INFP';
-function selMBTI(el){
-  document.querySelectorAll('.mbti-btn').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel'); aMBTI=el.dataset.mbti;
-}
-function genShare(){
-  const dest=document.getElementById('aDestInp').value.trim()||'曼谷';
-  const cnt=+document.querySelector('input[name=acnt]:checked').value;
-  const p=document.getElementById('sharePreview');
-  document.getElementById('shareText').textContent=`抽你的${dest}旅行签，看看抽到哪家夜市！🍜`;
-  p.style.display='block';
-}
-function copyShareLink(){
-  navigator.clipboard.writeText(document.getElementById('shareText').textContent).catch(()=>{});
-  event.target.textContent='✅ 已复制'; setTimeout(()=>event.target.textContent='复制链接',1500);
-}
+  var A_VOTES = ['must','must','no','maybe','must'];
 
-/* ════ POI 数据 ════ */
-const POIS={
-  '曼谷':[
-    {name:'乍都乍市场',type:'市集',icon:'🛍️',desc:'城市最大的周末市场，藏着无数惊喜'},
-    {name:'卧佛寺',type:'文化',icon:'🙏',desc:'镀金巨佛静卧，时间在这里慢下来'},
-    {name:'考山路',type:'夜市',icon:'🍺',desc:'背包客的精神故乡，喧嚣中的自由'},
-    {name:'湄南河畔',type:'风景',icon:'🌅',desc:'黄昏时分，河面金光，值得等待'},
-    {name:'Or Tor Kor市场',type:'美食',icon:'🍜',desc:'当地人才知道的鲜果天堂'},
-  ],
-  '京都':[
-    {name:'岚山竹林',type:'自然',icon:'🎋',desc:'晨雾中穿行，心自然清净'},
-    {name:'祗园花见小路',type:'文化',icon:'🌸',desc:'石板路上，偶遇的美最难忘'},
-    {name:'锦市场',type:'美食',icon:'🍱',desc:'京都的厨房，每一摊都是故事'},
-    {name:'伏见稻荷',type:'景点',icon:'⛩️',desc:'千本鸟居，走进去就是另一个世界'},
-    {name:'哲学之道',type:'散步',icon:'🍁',desc:'沿着水渠漫步，答案自然浮现'},
-  ],
-  default:[
-    {name:'老城漫步',type:'文化',icon:'🏛️',desc:'斑驳的墙壁记录着每个时代的故事'},
-    {name:'当地早市',type:'市集',icon:'🛒',desc:'清晨叫卖声，才是城市真实的呼吸'},
-    {name:'江边日落',type:'风景',icon:'🌅',desc:'最后一缕光收走时，旅行才真正开始'},
-    {name:'街角咖啡馆',type:'休闲',icon:'☕',desc:'转角遇见的那家，永远最好喝'},
-    {name:'夜市美食街',type:'美食',icon:'🍢',desc:'跟着人流走就对了'},
-  ]
-};
-const PHRASES={
-  '市集':p=>`今日宜逛${p.name}，忌冲动消费 🛍️`,
-  '文化':p=>`今日宜参拜${p.name}，忌走马观花 🙏`,
-  '夜市':p=>`今日宜闯${p.name}，忌早睡 🍺`,
-  '风景':p=>`今日宜在${p.name}驻足，忌赶行程 🌅`,
-  '美食':p=>`今日宜在${p.name}大胆点餐，忌节食 🍜`,
-  '自然':p=>`今日宜深入${p.name}，忌看手机 🌿`,
-  '散步':p=>`今日宜在${p.name}无目的漫游 🍁`,
-  '景点':p=>`今日宜在${p.name}认真感受，忌只拍照 ⛩️`,
-  '休闲':p=>`今日宜在${p.name}发呆，忌赶行程 ☕`,
-};
+  var signCount = 3;
+  var currentSignIdx = 0;
+  var signRevealed = false;
+  var userFeedbacks = [];
+  var tacitIdx = 0;
+  var myTacitVotes = [];
+  var currentSigns = [];
 
-/* ════ 旅行签状态 ════ */
-let appDest='曼谷',appPOIs=[],appPhrases=[],appCur=0,appFlipped=false,appCnt=3,signDone=false;
+  function $(s){ return document.querySelector(s); }
+  function $$(s){ return document.querySelectorAll(s); }
 
-function startBExperience(){
-  appDest='曼谷'; appCnt=3;
-  initSign();
-  document.getElementById('sc-title').textContent=`抽你的${appDest}旅行签`;
-  showScreen('sApp'); switchTab(1); setupShake();
-}
-
-function switchTab(n){
-  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('hidden',i+1!==n));
-  document.querySelectorAll('.tab-item').forEach((t,i)=>t.classList.toggle('active',i+1===n));
-}
-
-function pickPOIs(d,cnt){
-  let pool=POIS[d]||POIS.default;
-  return [...pool].sort(()=>Math.random()-.5).slice(0,cnt);
-}
-function mkPhrase(p){return (PHRASES[p.type]||(p=>`今日宜去${p.name} ✦`))(p)}
-
-function initSign(){
-  appPOIs=pickPOIs(appDest,appCnt);
-  appPhrases=appPOIs.map(p=>mkPhrase(p));
-  appCur=0;appFlipped=false;signDone=false;
-  document.getElementById('snDest').textContent=appDest;
-  renderProg();resetCard();
-  document.getElementById('signStage').style.display='flex';
-  ['resultPoster','heartBtn','actRow'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.style.display='none';el.classList.remove('show');
-  });
-}
-function renderProg(){
-  const pg=document.getElementById('snProg');pg.innerHTML='';
-  for(let i=0;i<appPOIs.length;i++){
-    const d=document.createElement('div');
-    d.className='sp-dot'+(i<appCur?' done':i===appCur?' cur':'');
-    pg.appendChild(d);
+  function pickSigns(){
+    return [BANGKOK_POIS[2], BANGKOK_POIS[3], BANGKOK_POIS[4]];
   }
-}
-function resetCard(){
-  const c=document.getElementById('flip3d');
-  c.classList.remove('flipped');c.style.pointerEvents='auto';
-  document.getElementById('nextSignBtn').style.display='none';
-  document.getElementById('shakeHint').style.opacity='1';
-  appFlipped=false;
-}
-function loadCard(i){
-  const p=appPOIs[i];
-  document.getElementById('ffIco').textContent=p.icon;
-  document.getElementById('ffName').textContent=p.name;
-  document.getElementById('ffBadge').textContent=p.type;
-  document.getElementById('ffPhrase').textContent=appPhrases[i];
-  document.getElementById('ffNum').textContent=`${i+1}/${appPOIs.length}`;
-}
-function flipSign(){
-  if(appFlipped||signDone)return;
-  appFlipped=true;
-  loadCard(appCur);
-  document.getElementById('flip3d').classList.add('flipped');
-  document.getElementById('flipWrap').style.pointerEvents='none';
-  burst();
-  setTimeout(()=>{
-    document.getElementById('shakeHint').style.opacity='0';
-    const nb=document.getElementById('nextSignBtn');nb.style.display='block';
-    nb.textContent=appCur<appPOIs.length-1?`还剩 ${appPOIs.length-appCur-1} 签  继续拆 →`:'查看我的命定路线 ✦';
-  },680);
-}
-function nextSign(){
-  if(appCur>=appPOIs.length-1){buildResult();return;}
-  appCur++;renderProg();resetCard();
-}
-function buildResult(){
-  signDone=true;
-  document.getElementById('signStage').style.display='none';
-  document.getElementById('nextSignBtn').style.display='none';
-  document.getElementById('rpTitle').textContent=`${appDest}的隐藏路线`;
-  const list=document.getElementById('rpList');list.innerHTML='';
-  appPOIs.forEach((p,i)=>{
-    const el=document.createElement('div');el.className='rp-item';
-    el.innerHTML=`<div class="rp-seq">${i+1}</div><div class="rp-ico">${p.icon}</div><div class="rp-info"><div class="rp-name">${p.name}</div><div class="rp-phrase">${appPhrases[i]}</div></div>`;
-    list.appendChild(el);
-  });
-  const show=(id,delay)=>setTimeout(()=>{const e=document.getElementById(id);e.style.display=id==='actRow'?'flex':'block';setTimeout(()=>e.classList.add('show'),20);},delay);
-  show('resultPoster',80);show('heartBtn',240);show('actRow',380);
-  document.getElementById('statSigns').textContent=parseInt(document.getElementById('statSigns').textContent)+appPOIs.length;
-}
-function sendHeart(){
-  const b=document.getElementById('heartBtn');
-  b.classList.add('sent');b.textContent='💙 心动通知已发送！';
-  document.getElementById('statHearts').textContent=parseInt(document.getElementById('statHearts').textContent)+1;
-}
-function copyResult(){
-  const lines=appPOIs.map((p,i)=>`${p.icon} ${p.name} — ${appPhrases[i]}`).join('\n');
-  navigator.clipboard.writeText(`摇一摇，抽你的${appDest}旅行签 🎴\n\n${lines}`).catch(()=>{});
-  event.target.textContent='✅';setTimeout(()=>event.target.textContent='📋 复制',1500);
-}
-function saveImg(){
-  const btn=event.target;btn.textContent='生成…';
-  const dpr=Math.min(window.devicePixelRatio||2,2),W=340,rowH=50,H=90+appPOIs.length*rowH+40;
-  const cv=document.createElement('canvas');cv.width=W*dpr;cv.height=H*dpr;
-  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
-  const g=ctx.createLinearGradient(0,0,W,0);
-  g.addColorStop(0,'#3a5fc8');g.addColorStop(.5,'#5a88e0');g.addColorStop(1,'#80b0f0');
-  ctx.fillStyle=g;ctx.roundRect(0,0,W,90,{topLeft:18,topRight:18});ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 9px sans-serif';
-  ctx.fillText('HIDDEN ROUTE · FATE TRIP',16,20);
-  ctx.fillStyle='#fff';ctx.font='800 17px sans-serif';
-  ctx.fillText(`${appDest}的隐藏路线`,16,70);
-  ctx.fillStyle='#fff';ctx.roundRect(0,90,W,H-90,{bottomLeft:18,bottomRight:18});ctx.fill();
-  appPOIs.forEach((p,i)=>{
-    const y=90+i*rowH;
-    if(i>0){ctx.strokeStyle='rgba(200,220,248,.6)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(16,y);ctx.lineTo(W-16,y);ctx.stroke();}
-    ctx.fillStyle='rgba(74,127,212,.1)';ctx.beginPath();ctx.arc(27,y+rowH/2,10,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#4a7fd4';ctx.font='700 9px sans-serif';ctx.textAlign='center';
-    ctx.fillText(i+1,27,y+rowH/2+3);ctx.textAlign='left';
-    ctx.font='18px sans-serif';ctx.fillText(p.icon,44,y+rowH/2+6);
-    ctx.fillStyle='#1a2540';ctx.font='700 13px sans-serif';ctx.fillText(p.name,70,y+rowH/2-2);
-    ctx.fillStyle='#506080';ctx.font='italic 11px sans-serif';
-    const ph=appPhrases[i];ctx.fillText(ph.length>30?ph.slice(0,30)+'…':ph,70,y+rowH/2+13);
-  });
-  const a=document.createElement('a');a.download=`fate-trip-${appDest}.png`;a.href=cv.toDataURL();a.click();
-  btn.textContent='💾 保存';
-}
-function resetSign(){initSign();}
 
-/* ════ 默契测试 ════ */
-const MATCH_POIS=[
-  {name:'乍都乍市场',type:'市集',icon:'🛍️',desc:'城市最大的周末市场，藏着无数惊喜'},
-  {name:'卧佛寺',type:'文化',icon:'🙏',desc:'镀金巨佛静卧，时间在这里慢下来'},
-  {name:'考山路',type:'夜市',icon:'🍺',desc:'背包客的精神故乡，喧嚣中的自由'},
-  {name:'湄南河畔',type:'风景',icon:'🌅',desc:'黄昏时分，河面金光，值得等待'},
-  {name:'Or Tor Kor市场',type:'美食',icon:'🍜',desc:'当地人才知道的鲜果天堂'},
-];
-const aVotes=[true,false,true,true,false];
-let matchCur=0,myVotes=[];
-
-function startMatch(){
-  matchCur=0;myVotes=[];
-  document.getElementById('matchIntro').style.display='none';
-  loadMatchCard();
-  document.getElementById('swipeWrap').style.display='block';
-  document.getElementById('voteBtns').style.display='flex';
-}
-function loadMatchCard(){
-  const p=MATCH_POIS[matchCur];
-  document.getElementById('scIco').textContent=p.icon;
-  document.getElementById('scName').textContent=p.name;
-  document.getElementById('scType').textContent=p.type;
-  document.getElementById('scDesc').textContent=p.desc;
-  document.getElementById('matchProgress').textContent=`${matchCur+1} / ${MATCH_POIS.length}`;
-  const card=document.getElementById('swipeCard');
-  card.style.transform='';card.style.opacity='1';
-}
-function vote(yes){
-  myVotes.push(yes);
-  const card=document.getElementById('swipeCard');
-  card.style.transition='transform .35s,opacity .35s';
-  card.style.transform=`translateX(${yes?120:-120}px) rotate(${yes?14:-14}deg)`;
-  card.style.opacity='0';
-  setTimeout(()=>{
-    card.style.transition='';
-    matchCur++;
-    if(matchCur>=MATCH_POIS.length){
-      document.getElementById('swipeWrap').style.display='none';
-      document.getElementById('voteBtns').style.display='none';
-      document.getElementById('matchWait').style.display='block';
-      setTimeout(showMatchResult,2000);
-    } else loadMatchCard();
-  },360);
-}
-function showMatchResult(){
-  document.getElementById('matchWait').style.display='none';
-  const matches=myVotes.filter((v,i)=>v===aVotes[i]).length;
-  const pct=Math.round(matches/MATCH_POIS.length*100);
-  const verdict=pct>=80?'灵魂契合型旅伴 💯':pct>=60?'求同存异型旅伴 🤝':'互补型旅伴 🤔';
-  const mr=document.getElementById('matchResult');
-  mr.innerHTML=`<div class="mr-card"><div class="mr-cover"><div class="mr-pct">${pct}%</div><div class="mr-label">旅行默契度</div></div><div class="mr-body"><div class="mr-verdict">${verdict}</div><div class="mr-detail">你们 5 个地点里 <b>${matches} 个一致</b>，${MATCH_POIS.length-matches} 个分歧。${pct>=60?'一起出发没问题！':'分歧点值得好好聊聊～'}</div><div class="mr-items">${MATCH_POIS.map((p,i)=>`<div class="mr-item"><div class="mi-ico">${p.icon}</div><div class="mi-name">${p.name}</div><div class="mi-match ${myVotes[i]===aVotes[i]?'match-y':myVotes[i]?'match-m':'match-n'}">${myVotes[i]===aVotes[i]?'💯 一致':myVotes[i]?'你想去':'A 想去'}</div></div>`).join('')}</div></div></div>`;
-  mr.style.display='block';
-}
-
-/* ════ 性格推荐 ════ */
-const PERSONA_ROUTES={
-  INFP:{color:'linear-gradient(135deg,#7048c8,#9570e0)',label:'给 INFP 的曼谷隐藏路线',tag:'文艺 · 慢游 · 独立',
-    pois:[{icon:'☕',name:'Roast咖啡馆',why:'小众独立咖啡，INFP 最爱的那种安静角落'},{icon:'📚',name:'二手书街',why:'文字是 INFP 的母语，这里有你说的那种感觉'},{icon:'🌿',name:'是隆花园',why:'人少、绿意、适合发呆——你会感谢这个选择'}],
-    comment:'太懂你了对吧？INFP 不需要景点打卡，需要<b>被某个角落真正打动</b>的瞬间。'},
-  ENTJ:{color:'linear-gradient(135deg,#2451b8,#5a88e0)',label:'给 ENTJ 的曼谷高效路线',tag:'高效 · 打卡 · 商务',
-    pois:[{icon:'🏙️',name:'曼谷天空步道',why:'360° 全景，10分钟掌握城市格局'},{icon:'⭐',name:'米其林街头小吃',why:'效率最高的美食打卡，不浪费一秒'},{icon:'🛍️',name:'暹罗百丽宫',why:'购物+商务+地标，一站搞定'}],
-    comment:'ENTJ 的旅行是<b>有目标的</b>。这条路线按优先级排序，每个地点都值得你的时间。'},
-  ENFP:{color:'linear-gradient(135deg,#c08010,#e0a030)',label:'给 ENFP 的曼谷随机路线',tag:'活力 · 探索 · 惊喜',
-    pois:[{icon:'🌃',name:'考山路夜市',why:'人多、热闹、随时能交到新朋友——ENFP 天堂'},{icon:'🎨',name:'涂鸦街区',why:'每次来都不一样，符合你对惊喜的期待'},{icon:'🛶',name:'水上市场',why:'活在当下，不知道下一个转角是什么'}],
-    comment:'ENFP 旅行的精髓是<b>不预期的相遇</b>。这条路线故意留了空白，让你自己填满。'},
-  ISTJ:{color:'linear-gradient(135deg,#186080,#3090b0)',label:'给 ISTJ 的曼谷经典路线',tag:'严谨 · 历史 · 计划',
-    pois:[{icon:'🏛️',name:'大皇宫',why:'必去历史地标，有完整的时代背景，值得认真研究'},{icon:'🙏',name:'玉佛寺',why:'宗教文化精华，有逻辑有结构，ISTJ 会欣赏'},{icon:'⛵',name:'湄南河游船',why:'城市历史脉络的最佳视角，按时刻表运行'}],
-    comment:'ISTJ 的旅行<b>要有价值感</b>。每个地点都有历史厚度，不是随便打卡，是真正看懂曼谷。'}
-};
-let selectedPersona='INFP';
-function selPersona(el){
-  document.querySelectorAll('.mp-btn').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel');selectedPersona=el.dataset.m;
-}
-function genPersona(){
-  const r=PERSONA_ROUTES[selectedPersona]||PERSONA_ROUTES.INFP;
-  const pr=document.getElementById('personaRoute');
-  pr.innerHTML=`<div class="pr-card"><div class="pr-cover" style="background:${r.color}"><div class="pr-eyebrow">${r.tag}</div><div class="pr-title">${r.label}</div></div><div class="pr-list">${r.pois.map(p=>`<div class="pr-item"><div class="pri-ico">${p.icon}</div><div class="pri-info"><div class="pri-name">${p.name}</div><div class="pri-why">${p.why}</div></div></div>`).join('')}</div><div class="pr-comment">${r.comment}</div></div><button style="width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;margin-top:10px;background:linear-gradient(135deg,var(--purple),#8050d8);color:#fff;font-size:14px;font-weight:700;font-family:inherit;box-shadow:0 5px 18px rgba(112,72,200,.22)" onclick="sendHeart()">我也想去 💛</button>`;
-  pr.style.display='block';
-  pr.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-
-/* ════ 摇一摇 ════ */
-function setupShake(){
-  let last=0;
-  window.addEventListener('devicemotion',e=>{
-    if(appFlipped||signDone)return;
-    const a=e.accelerationIncludingGravity;if(!a)return;
-    const m=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z),now=Date.now();
-    if(m>13&&now-last>900){last=now;flipSign();}
-  });
-}
-
-/* ════ 粒子（轻量，仅翻牌时） ════ */
-function burst(){
-  const cv=document.getElementById('pcvs');
-  const shell=document.getElementById('phoneShell');
-  const br=shell.getBoundingClientRect();
-  cv.width=br.width;cv.height=br.height;
-  const ctx=cv.getContext('2d');
-  const fw=document.getElementById('flipWrap').getBoundingClientRect();
-  const cx=fw.left-br.left+fw.width/2,cy=fw.top-br.top+fw.height/2;
-  const ps=[];
-  for(let i=0;i<36;i++){
-    const a=Math.random()*Math.PI*2,sp=1.5+Math.random()*3.5;
-    ps.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,
-      r:.8+Math.random()*2,alpha:1,
-      color:`hsl(${210+Math.random()*40},${70+Math.random()*20}%,${70+Math.random()*15}%)`});
+  function getTypeLabel(type){
+    var labels = {temple:'寺庙文化',night_market:'夜市美食',market:'购物市集',beach:'海边自然',cafe:'咖啡馆',nightlife:'夜生活',park:'公园'};
+    return labels[type] || type;
   }
-  let f=0;
-  (function draw(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.alpha-=.018;
-      if(p.alpha<=0)return;
-      ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+
+  // Demo console
+  var demoToggle = $('#demoToggle');
+  var demoPanel = $('#demoPanel');
+  demoToggle.addEventListener('click', function(){ demoPanel.classList.toggle('open'); });
+
+  $$('[data-role]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      $$('[data-role]').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      updateHeroForRole(btn.dataset.role);
     });
-    ctx.globalAlpha=1;
-    if(++f<65)requestAnimationFrame(draw);
-    else ctx.clearRect(0,0,cv.width,cv.height);
-  })();
-}
+  });
+
+  function updateHeroForRole(role){
+    var heroTitle = $('#heroTitle');
+    var heroSub = $('#heroSub');
+    var heroMainBtn = $('#heroMainBtn');
+    var heroSecBtn = $('#heroSecBtn');
+    var heroSteps = $('#heroSteps');
+    if(role === 'A'){
+      heroTitle.innerHTML = '把你的行程，变成一份<strong>旅行签</strong>';
+      heroSub.innerHTML = '从行程里抽出几个惊喜地点，发给朋友拆一拆<br>拆完生成只属于TA的隐藏路线';
+      heroMainBtn.textContent = '从我的行程生成旅行签';
+      heroSecBtn.textContent = '体验示例 ↓';
+      heroSteps.innerHTML = '<div class="hero-step"><span class="hero-step-num">1</span>选择行程</div><div class="hero-step"><span class="hero-step-num">2</span>设置旅行签</div><div class="hero-step"><span class="hero-step-num">3</span>分享给朋友</div>';
+    } else {
+      heroTitle.innerHTML = 'A给你留了一份<strong>曼谷旅行签</strong>';
+      heroSub.innerHTML = '里面藏着3个行程地点，拆完生成只属于你的隐藏路线';
+      heroMainBtn.textContent = '开始拆签';
+      heroSecBtn.textContent = '约30秒 · 无需登录';
+      heroSteps.innerHTML = '<div class="hero-step"><span class="hero-step-num">1</span>打开信封</div><div class="hero-step"><span class="hero-step-num">2</span>逐张揭签</div><div class="hero-step"><span class="hero-step-num">3</span>生成隐藏路线</div>';
+    }
+  }
+
+  $('#heroMainBtn').addEventListener('click', function(){
+    document.getElementById('experience').scrollIntoView({behavior:'smooth'});
+    switchExpPanel('setup');
+  });
+  $('#heroSecBtn').addEventListener('click', function(){
+    document.getElementById('experience').scrollIntoView({behavior:'smooth'});
+  });
+
+  // Exp tabs
+  function switchExpPanel(name){
+    $$('.exp-tab').forEach(function(t){ t.classList.toggle('active', t.dataset.panel === name); });
+    $$('.exp-panel').forEach(function(p){ p.classList.toggle('active', p.id === 'panel-' + name); });
+  }
+  $$('.exp-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){ switchExpPanel(tab.dataset.panel); });
+  });
+
+  var goTacit = document.getElementById('goTacit');
+  if(goTacit){ goTacit.addEventListener('click', function(){ document.getElementById('tacit').scrollIntoView({behavior:'smooth'}); }); }
+
+  // Sign count
+  $$('#signCountOpts .sign-count-opt').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      $$('#signCountOpts .sign-count-opt').forEach(function(o){ o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      signCount = parseInt(opt.dataset.count);
+    });
+  });
+
+  // Hidden level
+  $$('#hiddenLevels .hl-opt').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      $$('#hiddenLevels .hl-opt').forEach(function(o){ o.classList.remove('selected'); });
+      opt.classList.add('selected');
+    });
+  });
+
+  // Advanced
+  var advToggle = $('#advToggle');
+  var advContent = $('#advContent');
+  advToggle.addEventListener('click', function(){
+    var isOpen = advContent.classList.toggle('open');
+    advToggle.textContent = isOpen ? '▾ 让这份旅行签更懂TA（可选）' : '▸ 让这份旅行签更懂TA（可选）';
+  });
+
+  $$('#prefTags .pref-tag').forEach(function(tag){
+    tag.addEventListener('click', function(){ tag.classList.toggle('selected'); });
+  });
+
+  $$('#mbtiTags .pref-tag').forEach(function(tag){
+    tag.addEventListener('click', function(){
+      $$('#mbtiTags .pref-tag').forEach(function(t){ t.classList.remove('selected'); });
+      tag.classList.add('selected');
+    });
+  });
+
+  $$('#fateOpts .fate-opt').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      $$('#fateOpts .fate-opt').forEach(function(o){ o.classList.remove('selected'); });
+      opt.classList.add('selected');
+    });
+  });
+
+  // Generate
+  var genBtn = $('#genBtn');
+  var sharePreview = $('#sharePreview');
+  genBtn.addEventListener('click', function(){
+    sharePreview.style.display = 'block';
+    sharePreview.scrollIntoView({behavior:'smooth', block:'nearest'});
+  });
+
+  $$('#spcStyles .spc-style-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      $$('#spcStyles .spc-style-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      $('#spcMsg').textContent = SHARE_MSGS[btn.dataset.style];
+    });
+  });
+
+  $('#selfPreview').addEventListener('click', function(){
+    switchExpPanel('reveal');
+    resetRevealState();
+  });
+
+  // Reveal
+  var openingCeremony = $('#openingCeremony');
+  var ocEnvelope = $('#ocEnvelope');
+  var signRevealArea = $('#signReveal');
+  var hiddenCard = $('#hiddenCard');
+  var revealedCard = $('#revealedCard');
+  var srNextBtn = $('#srNextBtn');
+  var routeResult = $('#routeResult');
+
+  function resetRevealState(){
+    currentSignIdx = 0;
+    signRevealed = false;
+    userFeedbacks = [];
+    currentSigns = pickSigns();
+    openingCeremony.style.display = 'block';
+    ocEnvelope.classList.remove('opening');
+    signRevealArea.style.display = 'none';
+    routeResult.style.display = 'none';
+    hiddenCard.style.display = 'flex';
+    revealedCard.style.display = 'none';
+    srNextBtn.style.display = 'none';
+    renderProgress();
+  }
+
+  ocEnvelope.addEventListener('click', function(){
+    ocEnvelope.classList.add('opening');
+    setTimeout(function(){
+      openingCeremony.style.display = 'none';
+      signRevealArea.style.display = 'block';
+      currentSigns = pickSigns();
+      renderProgress();
+      updateSuspense();
+    }, 600);
+  });
+
+  function renderProgress(){
+    var prog = $('#srProgress');
+    prog.innerHTML = '';
+    for(var i = 0; i < signCount; i++){
+      var dot = document.createElement('div');
+      dot.className = 'sr-dot';
+      if(i < currentSignIdx) dot.classList.add('done');
+      if(i === currentSignIdx) dot.classList.add('current');
+      prog.appendChild(dot);
+    }
+  }
+
+  function updateSuspense(){
+    var el = $('#srSuspense');
+    if(currentSignIdx === 0) el.textContent = '第1张，先热身...';
+    else if(currentSignIdx === signCount - 1) el.textContent = '最后一张，A特别想让你看到 ✨';
+    else el.textContent = '第' + (currentSignIdx+1) + '张，越来越懂你了...';
+  }
+
+  hiddenCard.addEventListener('click', function(){
+    if(signRevealed) return;
+    signRevealed = true;
+    var poi = currentSigns[currentSignIdx];
+    hiddenCard.style.display = 'none';
+    revealedCard.style.display = 'block';
+    revealedCard.className = 'sign-card revealed card-type-' + poi.type;
+    var html = '<div class="sc-inner">';
+    html += '<div class="sc-num">' + (currentSignIdx+1) + '/' + signCount + '</div>';
+    html += '<div class="sc-type-badge">' + getTypeLabel(poi.type) + '</div>';
+    html += '<div class="sc-place-name">' + poi.icon + ' ' + poi.name + '</div>';
+    html += '<div class="sc-phrase">\u201C' + poi.phrase + '\u201D</div>';
+    html += '<div class="sc-why">\uD83D\uDCA1 ' + poi.why + '</div>';
+    html += '<div class="sc-trip-info"><span>\u23F1 ' + poi.duration + '</span><span>\uD83D\uDD50 ' + poi.period + '</span><span>\uD83D\uDCCD 距上站 ' + poi.dist + '</span></div>';
+    html += '<div class="sc-feedback">';
+    html += '<button class="sc-fb-btn" data-fb="want">\u2764\uFE0F 很想去</button>';
+    html += '<button class="sc-fb-btn" data-fb="ok">\uD83D\uDE0A 还不错</button>';
+    html += '<button class="sc-fb-btn" data-fb="skip">\uD83D\uDC4B 不太适合</button>';
+    html += '</div></div>';
+    revealedCard.innerHTML = html;
+
+    $$('#revealedCard .sc-fb-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        $$('#revealedCard .sc-fb-btn').forEach(function(b){ b.classList.remove('liked'); });
+        btn.classList.add('liked');
+        userFeedbacks[currentSignIdx] = btn.dataset.fb;
+      });
+    });
+
+    setTimeout(function(){
+      if(currentSignIdx < signCount - 1){
+        srNextBtn.textContent = '还剩 ' + (signCount - currentSignIdx - 1) + ' 签 继续拆 \u2192';
+      } else {
+        srNextBtn.textContent = '查看我的隐藏路线 \u2726';
+      }
+      srNextBtn.style.display = 'block';
+    }, 800);
+  });
+
+  srNextBtn.addEventListener('click', function(){
+    if(currentSignIdx >= signCount - 1){
+      signRevealArea.style.display = 'none';
+      routeResult.style.display = 'block';
+      buildRouteResult();
+      return;
+    }
+    currentSignIdx++;
+    signRevealed = false;
+    hiddenCard.style.display = 'flex';
+    revealedCard.style.display = 'none';
+    srNextBtn.style.display = 'none';
+    renderProgress();
+    updateSuspense();
+  });
+
+  function buildRouteResult(){
+    var route = $('#rmRoute');
+    route.innerHTML = '';
+    currentSigns.forEach(function(poi){
+      var stop = document.createElement('div');
+      stop.className = 'rm-stop';
+      stop.innerHTML = '<div class="rm-stop-dot"></div><div class="rm-stop-icon">' + poi.icon + '</div><div class="rm-stop-info"><div class="rm-stop-name">' + poi.name + '</div><div class="rm-stop-meta">建议停留 ' + poi.duration + ' \u00B7 最适合' + poi.period + ' \u00B7 距上站 ' + poi.dist + '</div></div>';
+      route.appendChild(stop);
+    });
+    var personalities = ['\uD83C\uDF03 夜市漫游型','\uD83C\uDFA8 慢悠悠文艺型','\uD83C\uDFC3 早起暴走型','\uD83C\uDF5C 吃到扶墙型','\uD83D\uDDFA\uFE0F 不走寻常路型','\uD83C\uDF05 日落追逐型'];
+    $('#rrPersonality').textContent = personalities[Math.floor(Math.random() * personalities.length)];
+  }
+
+  $('#raGoBtn').addEventListener('click', function(){
+    $('#raFeedback').style.display = 'block';
+  });
+  $('#raSaveBtn').addEventListener('click', function(){
+    var btn = $('#raSaveBtn');
+    btn.textContent = '\u2705 已加入行程';
+    btn.style.borderColor = 'var(--green)';
+    btn.style.color = 'var(--green)';
+  });
+
+  // Tacit test
+  var tacitIntro = $('#tacitIntro');
+  var tacitGame = document.getElementById('tacitGame');
+  var tacitResultEl = $('#tacitResult');
+  var tacitCard = $('#tacitCard');
+  var tacitProgressEl = $('#tacitProgress');
+
+  $('#tacitStartBtn').addEventListener('click', function(){
+    tacitIntro.style.display = 'none';
+    tacitGame.style.display = 'block';
+    tacitIdx = 0;
+    myTacitVotes = [];
+    loadTacitCard();
+  });
+
+  function loadTacitCard(){
+    var poi = TACIT_POIS[tacitIdx];
+    var tagsHtml = poi.tags.map(function(t){
+      var cls = (t.indexOf('人多') >= 0 || t.indexOf('早起') >= 0 || t.indexOf('偏高') >= 0) ? ' warning' : '';
+      return '<span class="tc-tag' + cls + '">' + t + '</span>';
+    }).join('');
+    tacitCard.innerHTML = '<div class="tc-image" style="background:' + poi.bg + '">' + poi.icon + '</div><div class="tc-name">' + poi.name + '</div><div class="tc-meta"><span>' + poi.type + '</span><span>\u23F1 ' + poi.duration + '</span><span>\uD83D\uDCB0 ' + poi.price + '</span><span>\uD83D\uDCCD ' + poi.dist + '</span></div><div class="tc-tags">' + tagsHtml + '</div>';
+    tacitProgressEl.textContent = (tacitIdx + 1) + ' / ' + TACIT_POIS.length;
+  }
+
+  $$('.tv-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      myTacitVotes.push(btn.dataset.vote);
+      tacitIdx++;
+      if(tacitIdx >= TACIT_POIS.length){
+        tacitGame.style.display = 'none';
+        showTacitResult();
+      } else {
+        loadTacitCard();
+      }
+    });
+  });
+
+  function showTacitResult(){
+    tacitResultEl.style.display = 'block';
+    var agree = 0;
+    var details = [];
+    TACIT_POIS.forEach(function(poi, i){
+      var myV = myTacitVotes[i];
+      var aV = A_VOTES[i];
+      var match = myV === aV;
+      if(match) agree++;
+      details.push({poi:poi, myV:myV, aV:aV, match:match});
+    });
+    var pct = Math.round(agree / TACIT_POIS.length * 100);
+    var type = pct >= 80 ? '灵魂契合型旅伴 \uD83D\uDCAF' : pct >= 60 ? '松弛互补型 \uD83E\uDD1D' : '求同存异型 \uD83E\uDD14';
+    var agreeHtml = details.filter(function(d){ return d.match; }).map(function(d){
+      return '<div class="tr-item"><span>' + d.poi.icon + '</span><span style="flex:1">' + d.poi.name + '</span><span class="tr-item-status tr-agree">\uD83D\uDCAF 一致</span></div>';
+    }).join('');
+    var disagreeHtml = details.filter(function(d){ return !d.match; }).map(function(d){
+      return '<div class="tr-item"><span>' + d.poi.icon + '</span><span style="flex:1">' + d.poi.name + '</span><span class="tr-item-status tr-disagree">分歧</span></div>';
+    }).join('');
+    if(!agreeHtml) agreeHtml = '<div style="font-size:12px;color:var(--text4);padding:8px 0">暂无完全一致的选项</div>';
+    if(!disagreeHtml) disagreeHtml = '<div style="font-size:12px;color:var(--text4);padding:8px 0">没有分歧！完美默契！</div>';
+    tacitResultEl.innerHTML = '<div class="tr-header"><div class="tr-pct">' + pct + '%</div><div class="tr-label">旅行默契度</div><div class="tr-type">' + type + '</div></div><div class="tr-details"><div class="tr-section-title green">\u2705 一致项</div>' + agreeHtml + '<div class="tr-section-title pink" style="margin-top:14px">\u274C 分歧项</div>' + disagreeHtml + '</div><div class="tr-ai-advice"><strong>\uD83D\uDCA1 AI 调整建议：</strong>你们在夜市和美食方面高度一致，但对文化景点偏好不同。建议行程以夜市+美食为主线，文化景点留给感兴趣的人自由安排。可以考虑安排半天"分头行动"时间。</div><button class="tr-action" id="trAdjust">根据默契结果调整行程 \u2726</button>';
+    var trAdjust = document.getElementById('trAdjust');
+    if(trAdjust){
+      trAdjust.addEventListener('click', function(){
+        trAdjust.textContent = '\u2705 已发送调整建议给A';
+        trAdjust.style.background = 'var(--green)';
+      });
+    }
+  }
+
+  // Preference calibration
+  var stateSelected = false;
+  var mbtiSelected = false;
+  function checkCalibration(){
+    if(stateSelected && mbtiSelected){
+      $('#prefCalibration').style.display = 'block';
+    }
+  }
+  $$('#stateOpts .pref-opt').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      $$('#stateOpts .pref-opt').forEach(function(o){ o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      stateSelected = true;
+      checkCalibration();
+    });
+  });
+  $$('#mbtiOpts .pref-opt').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      $$('#mbtiOpts .pref-opt').forEach(function(o){ o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      mbtiSelected = true;
+      checkCalibration();
+    });
+  });
+
+  // Close demo panel when clicking outside
+  document.addEventListener('click', function(e){
+    if(!demoPanel.contains(e.target) && e.target !== demoToggle){
+      demoPanel.classList.remove('open');
+    }
+  });
+
+  // Init
+  currentSigns = pickSigns();
+
+})();
 </script>
 </body>
 </html>
