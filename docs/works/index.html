@@ -1327,7 +1327,13 @@ setTimeout(renderAllCards, 80);
       if(flipped.has(i)) return;
       if(i === target) {
         // 中央牌：有 url 则跳转
-        if(t.url && t.url !== '#') window.open(t.url.startsWith('http') ? t.url : 'https://qlb708.github.io' + t.url, '_blank');
+        if(t.url && t.url !== '#') {
+          let dest;
+          if(t.url.startsWith('http')) dest = t.url;
+          else if(t.url.startsWith('/')) dest = 'https://qlb708.github.io' + t.url;
+          else dest = 'https://qlb708.github.io/08/works/' + t.url; // 相对路径挂到 works/ 下
+          window.open(dest, '_blank');
+        }
       } else {
         goTo(i);
       }
