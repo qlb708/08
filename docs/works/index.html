@@ -1595,38 +1595,69 @@
 .gg-contact-row a,.gg-contact-row span{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid #e4ebf6;text-decoration:none;transition:all .2s}
 .gg-contact-row a:hover{background:rgba(255,255,255,.95);border-color:#c4d3eb}
 
-/* Right: Growth Timeline */
+/* Right: Growth Timeline — Stem v2 */
 .gg-main{min-height:0;display:flex;flex-direction:column;position:relative}
-.gg-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-shrink:0;position:relative;z-index:3;background:linear-gradient(180deg,rgba(238,244,248,.96),rgba(238,244,248,.72));padding-bottom:6px}
+.gg-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;flex-shrink:0;position:relative;z-index:3;background:linear-gradient(180deg,rgba(238,244,248,.96),rgba(238,244,248,.72));padding-bottom:6px}
 .gg-header h2{margin:0;font-size:clamp(24px,2.8vw,38px);letter-spacing:-.055em;color:#1F3550;font-weight:850}
 .gg-header h2 em{font-style:normal;color:#9EB9A6}
-.gg-subtitle{margin:6px 0 0;color:#64748d;font-size:13px;line-height:1.6}
+.gg-subtitle{margin:6px 0 0;color:#64748f;font-size:13px;line-height:1.6}
 .gg-badges{display:flex;gap:8px;flex-wrap:wrap}
 .gg-badge{display:inline-flex;align-items:center;gap:5px;padding:8px 11px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.8);box-shadow:0 8px 20px rgba(55,83,130,.08)}
 .gg-badge.blue{background:#e8f0ff;color:#5E82F4}
 .gg-badge.green{background:#e6f5ed;color:#6b9c82}
 .gg-badge.peach{background:#fff0e7;color:#cc7652}
 .gg-badge.sage{background:#eef3e9;color:#657166}
-
-.gg-timeline{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;padding:8px 0 20px 80px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
-.gg-stem{position:absolute;left:60px;top:0;bottom:0;width:4px;background:linear-gradient(to bottom,#C5D9B8 0%,#9EB9A6 40%,#9EB9A6 100%);border-radius:2px;opacity:0;transform:scaleY(0);transform-origin:bottom center}
-.gg-stem.grow{animation:gg-stem-grow 1.4s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes gg-stem-grow{
-  0%{opacity:0;transform:scaleY(0)}
-  30%{opacity:1}
-  100%{opacity:1;transform:scaleY(1)}
-}
-
-/* Roots node */
-.gg-node{position:relative;margin-bottom:24px;opacity:0;transform:translateY(20px)}
-.gg-node.visible{animation:gg-node-in .6s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes gg-node-in{
-  to{opacity:1;transform:translateY(0)}
-}
-.gg-node-dot{position:absolute;left:-24px;top:20px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #9EB9A6;box-shadow:0 0 0 4px rgba(158,185,166,.2);z-index:2;transition:all .3s}
-.gg-node:hover .gg-node-dot{border-color:#C5D9B8;box-shadow:0 0 0 8px rgba(197,217,184,.3),0 0 20px rgba(197,217,184,.5)}
-
-.gg-roots{padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,rgba(238,244,248,.9),rgba(255,255,255,.7));border:1px solid rgba(158,185,166,.3);backdrop-filter:blur(20px)}
+.gg-timeline{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:0;padding:12px 0 20px 0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.gg-timeline::-webkit-scrollbar{display:none}
+.gg-trunk-svg{position:absolute;left:46px;top:0;width:40px;height:100%;pointer-events:none;z-index:0;overflow:visible}
+.gg-trunk-path{fill:none;stroke:#9EB9A6;stroke-width:3;stroke-linecap:round;opacity:0}
+.gg-trunk-path.gg-trunk-drawn{opacity:1}
+.gg-branch-path{fill:none;stroke:#9EB9A6;stroke-width:2;stroke-linecap:round;opacity:0}
+.gg-branch-path.gg-branch-drawn{opacity:.55}
+.gg-root-line{fill:none;stroke:#9EB9A6;stroke-width:1.5;stroke-linecap:round;opacity:0}
+.gg-root-line.gg-root-drawn{opacity:.35}
+.gg-svg-dot{fill:#fff;stroke:#9EB9A6;stroke-width:2.5;opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1)}
+.gg-svg-dot.gg-dot-lit{opacity:1}
+.gg-svg-dot.gg-dot-sprout{fill:#C5D9B8;stroke:#C5D9B8}
+.gg-svg-dot.gg-dot-roots{fill:#9EB9A6;stroke:#9EB9A6}
+.gg-node{position:relative;display:flex;align-items:flex-start;padding:0;opacity:0;transform:translateX(16px);z-index:1;margin-bottom:0}
+.gg-node.visible{animation:gg-node-in .55s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes gg-node-in{to{opacity:1;transform:translateX(0)}}
+.gg-stem-node{display:grid;grid-template-columns:140px 1fr;gap:14px;align-items:start;padding:10px 0 18px 92px;width:100%}
+.gg-stem-meta{display:flex;flex-direction:column;gap:3px}
+.gg-stem-time{font-size:11px;font-weight:750;color:#5E82F4;letter-spacing:.02em}
+.gg-stem-company{font-size:15px;font-weight:850;color:#1F3550;letter-spacing:-.02em}
+.gg-stem-role{font-size:12px;color:#65748f}
+.gg-stem-content{display:flex;flex-direction:column;gap:10px}
+.gg-leaf-card{padding:11px 15px;border-radius:14px;background:linear-gradient(135deg,rgba(197,217,184,.22),rgba(238,244,248,.55));border:1px solid rgba(158,185,166,.35);backdrop-filter:blur(16px);transition:all .3s}
+.gg-leaf-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(158,185,166,.2);border-color:rgba(158,185,166,.6)}
+.gg-leaf-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9EB9A6;margin-bottom:5px}
+.gg-leaf-text{font-size:13px;color:#1F3550;font-weight:600;line-height:1.5}
+.gg-specimen{position:relative;padding:15px 17px;border-radius:16px;background:rgba(255,255,255,.85);border:1px solid rgba(231,185,137,.28);backdrop-filter:blur(20px);overflow:hidden;transition:all .35s;cursor:pointer}
+.gg-specimen::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#E7B989,#f0d4a8);opacity:.7}
+.gg-specimen::after{content:'';position:absolute;top:10px;right:12px;width:10px;height:14px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:linear-gradient(160deg,rgba(231,185,137,.35),rgba(197,217,184,.25));border:1px solid rgba(231,185,137,.2)}
+.gg-specimen:hover{transform:translateY(-3px) scale(1.005);box-shadow:0 12px 36px rgba(231,185,137,.18);border-color:rgba(231,185,137,.5)}
+.gg-specimen:hover .gg-specimen-result b{color:#E7B989;text-shadow:0 0 8px rgba(231,185,137,.25)}
+.gg-specimen:hover .gg-specimen-details{opacity:1;max-height:200px}
+.gg-specimen-num{font-size:9px;font-weight:800;letter-spacing:.15em;color:#E7B989;margin-bottom:5px}
+.gg-specimen-title{font-size:14px;font-weight:800;color:#1F3550;line-height:1.4;margin-bottom:7px;padding-right:18px}
+.gg-specimen-conditions{font-size:11px;color:#7a8ca8;line-height:1.5;margin-bottom:7px}
+.gg-specimen-result{font-size:12px;color:#1F3550;font-weight:600;line-height:1.5}
+.gg-specimen-result b{color:#5E82F4;font-weight:800;transition:all .3s}
+.gg-specimen-details{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(231,185,137,.3);opacity:0;max-height:0;overflow:hidden;transition:all .4s ease}
+.gg-specimen-detail-list{list-style:none;padding:0;margin:0}
+.gg-specimen-detail-list li{font-size:11px;color:#65748f;line-height:1.6;padding:3px 0}
+.gg-specimen-detail-list li::before{content:'✦';color:#E7B989;margin-right:6px;font-size:8px}
+.gg-sprout-node{justify-content:center;padding:8px 0 10px 92px}
+.gg-sprout{text-align:center;padding:16px 20px;border-radius:20px;background:linear-gradient(135deg,rgba(197,217,184,.28),rgba(238,244,248,.5));border:1px solid rgba(197,217,184,.4);backdrop-filter:blur(16px);max-width:380px;width:100%}
+.gg-sprout-icon{font-size:26px;margin-bottom:8px;display:inline-block;animation:gg-sprout-float 3s ease-in-out infinite}
+@keyframes gg-sprout-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.gg-sprout-text{font-size:12px;color:#65748f;line-height:1.6}
+.gg-sprout-tags{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.gg-sprout-tag{padding:6px 12px;border-radius:999px;background:rgba(197,217,184,.2);border:1px solid rgba(197,217,184,.4);font-size:11px;color:#1F3550;font-weight:600;transition:all .25s}
+.gg-sprout-tag:hover{background:rgba(197,217,184,.35);transform:translateY(-1px)}
+.gg-roots-node{padding:6px 0 0 92px}
+.gg-roots{padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,rgba(238,244,248,.9),rgba(255,255,255,.7));border:1px solid rgba(158,185,166,.3);backdrop-filter:blur(20px);max-width:520px}
 .gg-roots-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .gg-roots-icon{font-size:18px;color:#9EB9A6}
 .gg-roots-title{font-size:14px;font-weight:800;color:#1F3550;letter-spacing:-.02em}
@@ -1635,64 +1666,29 @@
 .gg-roots-line{font-size:12px;color:#5e6e88;line-height:1.6}
 .gg-roots-line b{color:#1F3550;font-weight:700}
 .gg-roots-skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.gg-skill-tag{padding:6px 10px;border-radius:999px;background:rgba(158,185,166,.15);border:1px solid rgba(158,185,166,.3);font-size:10px;color:#657166;font-weight:600}
-
-/* Stem node (internship) */
-.gg-stem-node{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
-.gg-stem-meta{display:flex;flex-direction:column;gap:4px;min-width:140px}
-.gg-stem-time{font-size:11px;font-weight:750;color:#5E82F4;letter-spacing:.02em}
-.gg-stem-company{font-size:15px;font-weight:850;color:#1F3550;letter-spacing:-.02em}
-.gg-stem-role{font-size:12px;color:#65748f}
-.gg-stem-content{display:flex;flex-direction:column;gap:12px}
-.gg-leaf-card{padding:12px 16px;border-radius:16px;background:linear-gradient(135deg,rgba(197,217,184,.25),rgba(238,244,248,.6));border:1px solid rgba(158,185,166,.4);backdrop-filter:blur(16px);transition:all .3s}
-.gg-leaf-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(158,185,166,.2);border-color:rgba(158,185,166,.6)}
-.gg-leaf-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9EB9A6;margin-bottom:6px}
-.gg-leaf-text{font-size:13px;color:#1F3550;font-weight:600;line-height:1.5}
-
-/* Specimen card */
-.gg-specimen{position:relative;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.85);border:1px solid rgba(231,185,137,.3);backdrop-filter:blur(20px);overflow:hidden;transition:all .3s;cursor:pointer}
-.gg-specimen::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#E7B989,#f0d4a8);opacity:.7}
-.gg-specimen:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 12px 36px rgba(231,185,137,.2);border-color:rgba(231,185,137,.5)}
-.gg-specimen:hover .gg-specimen-details{opacity:1;max-height:200px}
-.gg-specimen-num{font-size:9px;font-weight:800;letter-spacing:.15em;color:#E7B989;margin-bottom:6px}
-.gg-specimen-title{font-size:14px;font-weight:800;color:#1F3550;line-height:1.4;margin-bottom:8px}
-.gg-specimen-conditions{font-size:11px;color:#7a8ca8;line-height:1.5;margin-bottom:8px}
-.gg-specimen-result{font-size:12px;color:#1F3550;font-weight:600;line-height:1.5}
-.gg-specimen-result b{color:#5E82F4;font-weight:800}
-.gg-specimen-details{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(231,185,137,.3);opacity:0;max-height:0;overflow:hidden;transition:all .4s ease}
-.gg-specimen-detail-list{list-style:none;padding:0;margin:0}
-.gg-specimen-detail-list li{font-size:11px;color:#65748f;line-height:1.6;padding:3px 0}
-.gg-specimen-detail-list li::before{content:'✦';color:#E7B989;margin-right:6px;font-size:8px}
-
-/* Sprout (top) */
-.gg-sprout{text-align:center;padding:16px;border-radius:20px;background:linear-gradient(135deg,rgba(197,217,184,.3),rgba(238,244,248,.5));border:1px solid rgba(197,217,184,.4);backdrop-filter:blur(16px)}
-.gg-sprout-icon{font-size:24px;color:#C5D9B8;margin-bottom:8px}
-.gg-sprout-text{font-size:12px;color:#65748f;line-height:1.6}
-.gg-sprout-tags{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
-.gg-sprout-tag{padding:6px 12px;border-radius:999px;background:rgba(197,217,184,.2);border:1px solid rgba(197,217,184,.4);font-size:11px;color:#1F3550;font-weight:600}
-
-/* Responsive */
+.gg-skill-tag{padding:6px 10px;border-radius:999px;background:rgba(158,185,166,.15);border:1px solid rgba(158,185,166,.3);font-size:10px;color:#657166;font-weight:600;transition:all .25s}
+.gg-skill-tag:hover{background:rgba(158,185,166,.28);transform:translateY(-1px)}
 @media(max-width:900px){
   .gg-about{padding:28px 22px!important;overflow:visible!important}
   .gg-shell{grid-template-columns:1fr;height:auto}
   .gg-profile{position:relative;height:auto}
   .gg-main{min-height:auto}
-  .gg-timeline{padding:20px 0 20px 60px}
-  .gg-stem{left:40px}
-  .gg-node-dot{left:-24px}
+  .gg-trunk-svg{left:20px;width:30px}
+  .gg-stem-node{padding-left:62px;grid-template-columns:1fr;gap:6px}
+  .gg-sprout-node{padding-left:62px}
+  .gg-roots-node{padding-left:62px}
   .gg-header{display:block}
   .gg-badges{margin-top:12px}
-  .gg-stem-node{grid-template-columns:1fr}
-  .gg-stem-meta{min-width:0}
 }
 @media(max-width:640px){
   .gg-about{padding:22px 16px!important}
   .gg-profile{padding:18px;border-radius:24px}
   .gg-avatar-row img{width:64px;height:64px;border-radius:20px}
   .gg-name{font-size:21px}
-  .gg-timeline{padding:20px 0 20px 50px}
-  .gg-stem{left:30px}
-  .gg-node-dot{left:-24px;width:14px;height:14px}
+  .gg-trunk-svg{left:14px;width:24px}
+  .gg-stem-node{padding-left:50px}
+  .gg-sprout-node{padding-left:50px}
+  .gg-roots-node{padding-left:50px}
   .gg-header h2{font-size:24px}
   .gg-specimen{padding:14px}
   .gg-specimen-title{font-size:13px}
@@ -2035,27 +2031,12 @@
           <span class="gg-badge sage">推免硕士</span>
         </div>
       </div>
-      
+
       <div class="gg-timeline" id="ggTimeline">
-        <div class="gg-stem" id="ggStem"></div>
-        
-        <!-- Sprout (top) -->
-        <div class="gg-node gg-sprout-node" data-delay="1.4">
-          <div class="gg-node-dot" style="background:#C5D9B8;border-color:#C5D9B8"></div>
-          <div class="gg-sprout">
-            <div class="gg-sprout-icon">🌱</div>
-            <div class="gg-sprout-text">下一步方向</div>
-            <div class="gg-sprout-tags">
-              <span class="gg-sprout-tag">AI 产品运营</span>
-              <span class="gg-sprout-tag">旅行科技</span>
-              <span class="gg-sprout-tag">AI 工具原型</span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Node 3: 小红书 (latest) -->
-        <div class="gg-node" data-delay="1.0">
-          <div class="gg-node-dot"></div>
+        <svg class="gg-trunk-svg" id="ggTrunkSvg" aria-hidden="true"></svg>
+
+        <!-- Node: 小红书 (top, latest) -->
+        <div class="gg-node gg-card-node" data-node-id="xiaohongshu" data-order="3">
           <div class="gg-stem-node">
             <div class="gg-stem-meta">
               <div class="gg-stem-time">2026.06 - 2026.08</div>
@@ -2083,10 +2064,9 @@
             </div>
           </div>
         </div>
-        
-        <!-- Node 2: AI工具作品集 -->
-        <div class="gg-node" data-delay="0.6">
-          <div class="gg-node-dot"></div>
+
+        <!-- Node: 个人产品实验室 -->
+        <div class="gg-node gg-card-node" data-node-id="lab" data-order="2">
           <div class="gg-stem-node">
             <div class="gg-stem-meta">
               <div class="gg-stem-time">2026.04 - 至今</div>
@@ -2114,10 +2094,9 @@
             </div>
           </div>
         </div>
-        
-        <!-- Node 1: 传音控股 -->
-        <div class="gg-node" data-delay="0.2">
-          <div class="gg-node-dot"></div>
+
+        <!-- Node: 传音控股 -->
+        <div class="gg-node gg-card-node" data-node-id="transsion" data-order="1">
           <div class="gg-stem-node">
             <div class="gg-stem-meta">
               <div class="gg-stem-time">2026.03 - 2026.06</div>
@@ -2145,10 +2124,22 @@
             </div>
           </div>
         </div>
-        
+
+        <!-- Sprout (top future direction) -->
+        <div class="gg-node gg-sprout-node" data-node-id="sprout" data-order="4">
+          <div class="gg-sprout">
+            <div class="gg-sprout-icon">🌱</div>
+            <div class="gg-sprout-text">下一步方向</div>
+            <div class="gg-sprout-tags">
+              <span class="gg-sprout-tag">AI 产品运营</span>
+              <span class="gg-sprout-tag">旅行科技</span>
+              <span class="gg-sprout-tag">AI 工具原型</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Roots (bottom) -->
-        <div class="gg-node gg-roots-node" data-delay="0">
-          <div class="gg-node-dot" style="background:#9EB9A6;border-color:#9EB9A6"></div>
+        <div class="gg-node gg-roots-node" data-node-id="roots" data-order="0">
           <div class="gg-roots">
             <div class="gg-roots-header">
               <div class="gg-roots-icon">🌿</div>
@@ -3003,48 +2994,187 @@ render();
 
 })();
 
-/* Growth Garden Animation IIFE */
+/* Growth Garden Stem v2 Animation IIFE */
 (function(){
   var tl = document.getElementById('ggTimeline');
-  var stem = document.getElementById('ggStem');
-  if (!tl || !stem) return;
-  
+  var svg = document.getElementById('ggTrunkSvg');
+  if (!tl || !svg) return;
+
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var nodes = tl.querySelectorAll('.gg-node');
   var animated = false;
-  
-  function playGrowth(){
+  var nodes = Array.from(tl.querySelectorAll('.gg-node'));
+  var cardNodes = Array.from(tl.querySelectorAll('.gg-card-node'));
+
+  function getTrunkX() {
+    var style = getComputedStyle(tl);
+    var w = window.innerWidth;
+    if (w <= 640) return 26;
+    if (w <= 900) return 35;
+    return 66;
+  }
+
+  function drawSVG() {
+    var tlRect = tl.getBoundingClientRect();
+    var trunkX = getTrunkX();
+    var branchEndX = trunkX + 26;
+
+    // Collect node dot centers (use card top for card nodes, center for sprout/roots)
+    var points = [];
+    nodes.forEach(function(node) {
+      var r = node.getBoundingClientRect();
+      var cy = r.top - tlRect.top + r.height * 0.5;
+      var nid = node.getAttribute('data-node-id');
+      var order = parseInt(node.getAttribute('data-order')) || 0;
+      points.push({ y: cy, id: nid, order: order, node: node });
+    });
+
+    // Sort by y ascending (top first = sprout, then cards, then roots)
+    points.sort(function(a, b) { return a.y - b.y; });
+
+    // Build trunk path (vertical with very subtle S-curve)
+    var topY = points[0].y - 20;
+    var botY = points[points.length - 1].y + 30;
+    var h = botY - topY;
+    var sway = 3;
+    var d = 'M ' + trunkX + ' ' + botY;
+    d += ' C ' + (trunkX + sway) + ' ' + (botY - h * 0.25);
+    d += ' ' + (trunkX - sway) + ' ' + (botY - h * 0.55);
+    d += ' ' + trunkX + ' ' + topY;
+
+    var svgHTML = '';
+
+    // Root decorative lines
+    var rootBase = points[points.length - 1];
+    for (var ri = 0; ri < 3; ri++) {
+      var rx = trunkX + (ri - 1) * 12;
+      var ry = botY + 8 + ri * 6;
+      svgHTML += '<path class="gg-root-line" d="M ' + trunkX + ' ' + botY +
+        ' Q ' + rx + ' ' + (botY + 10) + ' ' + (rx + (ri - 1) * 5) + ' ' + ry + '"/>';
+    }
+
+    // Trunk path
+    svgHTML += '<path class="gg-trunk-path" id="ggTrunkPath" d="' + d + '"/>';
+
+    // Branch lines + SVG dots for each node
+    points.forEach(function(p) {
+      var isCard = p.node.classList.contains('gg-card-node');
+      var isSprout = p.id === 'sprout';
+      var isRoots = p.id === 'roots';
+
+      if (isCard) {
+        // branch from trunk to card area
+        svgHTML += '<path class="gg-branch-path" d="M ' + trunkX + ' ' + p.y +
+          ' Q ' + (trunkX + 14) + ' ' + (p.y - 2) + ' ' + branchEndX + ' ' + p.y + '"/>';
+      }
+
+      // SVG dot
+      var dotR = isSprout ? 7 : (isRoots ? 6 : 5.5);
+      var cls = 'gg-svg-dot';
+      if (isSprout) cls += ' gg-dot-sprout';
+      if (isRoots) cls += ' gg-dot-roots';
+      svgHTML += '<circle class="' + cls + '" data-node-id="' + p.id +
+        '" cx="' + trunkX + '" cy="' + p.y + '" r="' + dotR + '"/>';
+    });
+
+    svg.innerHTML = svgHTML;
+    svg.style.height = tl.scrollHeight + 'px';
+  }
+
+  function animateGrowth() {
     if (animated) return;
     animated = true;
-    
+
+    var trunkPath = svg.querySelector('.gg-trunk-path');
+    if (!trunkPath) return;
+
     if (reducedMotion) {
-      stem.classList.add('grow');
-      stem.style.animationDuration = '0.01s';
-      nodes.forEach(function(n){ n.classList.add('visible'); n.style.animationDuration = '0.01s'; });
+      trunkPath.classList.add('gg-trunk-drawn');
+      svg.querySelectorAll('.gg-branch-path').forEach(function(b) { b.classList.add('gg-branch-drawn'); });
+      svg.querySelectorAll('.gg-root-line').forEach(function(r) { r.classList.add('gg-root-drawn'); });
+      svg.querySelectorAll('.gg-svg-dot').forEach(function(d) { d.classList.add('gg-dot-lit'); });
+      nodes.forEach(function(n) { n.classList.add('visible'); n.style.animationDuration = '0.01s'; });
       return;
     }
-    
-    stem.classList.add('grow');
-    nodes.forEach(function(node){
-      var delay = parseFloat(node.getAttribute('data-delay')) || 0;
-      setTimeout(function(){
+
+    // 1. Animate trunk stroke
+    var len = trunkPath.getTotalLength();
+    trunkPath.style.strokeDasharray = len;
+    trunkPath.style.strokeDashoffset = len;
+    trunkPath.classList.add('gg-trunk-drawn');
+    trunkPath.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';
+    requestAnimationFrame(function() {
+      trunkPath.style.strokeDashoffset = '0';
+    });
+
+    // 2. Roots lines after 200ms
+    var rootLines = svg.querySelectorAll('.gg-root-line');
+    setTimeout(function() {
+      rootLines.forEach(function(r, i) {
+        setTimeout(function() { r.classList.add('gg-root-drawn'); }, i * 120);
+      });
+    }, 200);
+
+    // 3. Light up dots bottom-to-top (roots first, then cards, then sprout)
+    var dots = svg.querySelectorAll('.gg-svg-dot');
+    var sortedDots = Array.from(dots).sort(function(a, b) {
+      return parseFloat(b.getAttribute('cy')) - parseFloat(a.getAttribute('cy'));
+    });
+    sortedDots.forEach(function(dot, i) {
+      setTimeout(function() {
+        dot.classList.add('gg-dot-lit');
+      }, 400 + i * 200);
+    });
+
+    // 4. Branch lines appear alongside dots
+    var branches = svg.querySelectorAll('.gg-branch-path');
+    branches.forEach(function(b, i) {
+      setTimeout(function() { b.classList.add('gg-branch-drawn'); }, 600 + i * 200);
+    });
+
+    // 5. Nodes fade in (roots first, cards next, sprout last)
+    var sortedNodes = nodes.slice().sort(function(a, b) {
+      return (parseInt(a.getAttribute('data-order')) || 0) - (parseInt(b.getAttribute('data-order')) || 0);
+    });
+    sortedNodes.forEach(function(node, i) {
+      setTimeout(function() {
         node.classList.add('visible');
-      }, delay * 1000);
+      }, 350 + i * 220);
     });
   }
-  
+
+  // Initial draw
+  drawSVG();
+
+  // Redraw on resize
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      drawSVG();
+      if (animated) {
+        // Re-apply visible classes
+        svg.querySelectorAll('.gg-trunk-path').forEach(function(p) { p.classList.add('gg-trunk-drawn'); p.style.strokeDashoffset = '0'; });
+        svg.querySelectorAll('.gg-branch-path').forEach(function(b) { b.classList.add('gg-branch-drawn'); });
+        svg.querySelectorAll('.gg-root-line').forEach(function(r) { r.classList.add('gg-root-drawn'); });
+        svg.querySelectorAll('.gg-svg-dot').forEach(function(d) { d.classList.add('gg-dot-lit'); });
+        nodes.forEach(function(n) { n.classList.add('visible'); n.style.animationDuration = '0.01s'; });
+      }
+    }, 200);
+  });
+
+  // IntersectionObserver trigger
   if ('IntersectionObserver' in window) {
-    var obs = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
         if (entry.isIntersecting) {
-          setTimeout(playGrowth, 200);
+          setTimeout(animateGrowth, 200);
           obs.disconnect();
         }
       });
-    }, {threshold: 0.2});
+    }, { threshold: 0.15 });
     obs.observe(tl);
   } else {
-    setTimeout(playGrowth, 400);
+    setTimeout(animateGrowth, 400);
   }
 })();
 
