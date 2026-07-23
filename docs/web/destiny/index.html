@@ -3,1895 +3,826 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>产品命理局 - 你的产品命里缺什么？</title>
+<title>产品命理局 — AI产品诊断 × 东方命理</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
---bg-deep:#F7F3EB;--bg-card:rgba(255,253,248,0.88);--bg-card2:rgba(247,240,228,0.9);
---red:#C15A5A;--gold:#B08D3C;--teal:#5E9488;--purple:#8579B0;
---text:#3A3229;--text2:#7A6E5F;--border:rgba(95,78,64,0.12);
---border-gold:rgba(176,141,60,0.3);
---card-shadow:0 18px 50px rgba(82,67,53,0.08);
+--bg-primary:#F6F0E7;--bg-secondary:#EFE5D8;
+--surface-primary:#FFFCF7;--surface-secondary:#F7EEE3;
+--text-primary:#3F372F;--text-secondary:#74695E;--text-muted:#A09387;
+--accent-primary:#C86458;--accent-gold:#B79038;--accent-green:#6F9C8B;
+--accent-blue:#7895AD;--accent-purple:#8E82AD;--accent-yellow:#D3AA4A;
+--border-soft:rgba(75,61,48,0.12);--border-medium:rgba(75,61,48,0.22);
+--shadow-soft:0 18px 50px rgba(78,61,45,0.08);--shadow-medium:0 12px 36px rgba(78,61,45,0.12);
+--shadow-lifted:0 24px 60px rgba(78,61,45,0.16);
+--ease-micro:cubic-bezier(0.4,0,0.2,1);--ease-card:cubic-bezier(0.25,0.46,0.45,0.94);
+--ease-enter:cubic-bezier(0.16,1,0.3,1);
+--dur-micro:150ms;--dur-card:280ms;--dur-content:420ms;
+--font-title:Georgia,'Noto Serif SC',serif;
+--font-body:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;
+--font-data:'SF Mono','Cascadia Code','Consolas',monospace;
+--font-seal:'KaiTi','STKaiti',serif;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;margin:0}
-body{
-font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB',sans-serif;
-color:var(--text);
-position:relative;
-background:
- radial-gradient(circle at 15% 20%, rgba(217,198,171,0.22), transparent 28%),
- radial-gradient(circle at 85% 70%, rgba(190,207,195,0.25), transparent 30%),
- #F7F3EB;
-}
-.serif{font-family:Georgia,'Noto Serif SC','SimSun',serif}
-
-/* 背景光点 */
-body::before{
-content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;
-background:
-radial-gradient(1px 1px at 10% 20%,rgba(176,141,60,0.12),transparent),
-radial-gradient(1px 1px at 30% 70%,rgba(133,121,176,0.1),transparent),
-radial-gradient(1px 1px at 50% 40%,rgba(94,148,136,0.1),transparent),
-radial-gradient(1px 1px at 70% 80%,rgba(193,90,90,0.08),transparent),
-radial-gradient(1px 1px at 90% 30%,rgba(176,141,60,0.1),transparent);
-animation:twinkle 8s ease-in-out infinite alternate;
-}
-@keyframes twinkle{0%{opacity:0.6}50%{opacity:1}100%{opacity:0.7}}
-
-/* Scene system - fullscreen, no scroll */
-.scene{
-position:absolute;inset:0;
-display:flex;flex-direction:column;align-items:center;justify-content:center;
-opacity:0;pointer-events:none;transition:opacity 0.4s;
-}
-.scene.active{opacity:1;pointer-events:all}
-
-/* 卡片 */
-.card{
-background:rgba(255,253,248,0.88);backdrop-filter:blur(12px);
-border:1px solid rgba(95,78,64,0.12);border-radius:clamp(16px,2vw,24px);
-padding:clamp(16px,2vw,24px);transition:all 0.3s ease;
-box-shadow:0 18px 50px rgba(82,67,53,0.08);
-}
-.card:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(82,67,53,0.14)}
-
-/* 按钮 */
-.btn{
-display:inline-flex;align-items:center;justify-content:center;
-min-height:clamp(40px,5vh,48px);padding:clamp(10px,1.5vh,12px) clamp(24px,3vw,32px);
-border-radius:clamp(12px,1.5vw,16px);border:none;
-font-size:clamp(14px,1.8vw,16px);font-weight:600;cursor:pointer;transition:all 0.3s ease;
-}
-.btn-primary{background:linear-gradient(135deg,#C9A94E,#B08D3C);color:#FFFDF8;font-weight:700}
-.btn-primary:hover{transform:scale(1.03);box-shadow:0 4px 20px rgba(231,190,116,0.3)}
-.btn-secondary{background:transparent;border:1px solid var(--border-gold);color:var(--gold)}
-.btn-secondary:hover{background:rgba(231,190,116,0.08)}
-.btn-small{min-height:clamp(36px,4vh,40px);padding:clamp(8px,1vh,8px) clamp(16px,2vw,20px);font-size:clamp(12px,1.6vw,14px)}
-
-/* === 幕0 首页 === */
-#scene0{flex-direction:row;gap:0;padding:0}
-.mingpan-bg{
-width:40%;height:100%;display:flex;align-items:center;justify-content:center;
-opacity:1;z-index:2;flex-shrink:0;
-}
-.mingpan-bg svg{width:min(340px,88%);height:min(340px,88%);animation:rotateSlow 30s linear infinite;opacity:1}
-@keyframes rotateSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.hero-content{position:relative;z-index:1;text-align:left;width:50%;padding:0 5%;box-sizing:border-box}
-.hero-content h1{
-font-family:Georgia,serif;
-font-size:clamp(28px,3.2vw,46px);
-white-space:nowrap;
-margin-bottom:clamp(12px,2vh,16px);letter-spacing:1px;
-background:linear-gradient(135deg,var(--text),var(--gold));
--webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
-}
-.hero-content .subtitle{
-color:var(--text2);font-size:clamp(13px,1.5vw,16px);margin-bottom:clamp(20px,3vh,32px);line-height:1.5
-}
-.hero-input{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(12px,2vh,16px)}
-.hero-input input{
-width:100%;height:clamp(44px,5vh,52px);
-border-radius:clamp(12px,1.5vw,16px);border:1px solid var(--border-gold);
-background:var(--bg-card);color:var(--text);padding:0 clamp(16px,2vw,20px);
-font-size:clamp(14px,1.8vw,16px);outline:none;transition:border-color 0.3s;
-}
-.hero-input input:focus{border-color:var(--gold)}
-.hero-input input::placeholder{color:var(--text2)}
-.hero-btns{display:flex;gap:clamp(8px,1vw,12px);flex-wrap:wrap;justify-content:flex-start}
-
-/* 产品识别标签 */
-.product-recognition{
-margin-top:clamp(8px,1vh,12px);padding:clamp(8px,1vh,12px) clamp(12px,1.5vw,16px);
-background:rgba(101,185,174,0.1);border:1px solid rgba(101,185,174,0.3);
-border-radius:clamp(8px,1vw,12px);font-size:clamp(12px,1.6vw,14px);color:var(--teal);
-display:none;animation:fadeIn 0.3s;
-}
-.product-recognition.show{display:block}
-.product-recognition button{
-margin-left:12px;background:var(--teal);color:#FFFDF8;
-border:none;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px;
-}
-
-/* 今日产品签 */
-.qian-btn{
-position:fixed;bottom:clamp(20px,3vh,30px);right:clamp(20px,3vw,30px);z-index:100;
-background:var(--bg-card);border:1px solid var(--border-gold);
-border-radius:clamp(16px,2vw,20px);padding:clamp(10px,1.5vh,12px) clamp(16px,2vw,20px);
-cursor:pointer;color:var(--gold);font-size:clamp(12px,1.6vw,14px);transition:all 0.3s;
-box-shadow:0 8px 24px rgba(82,67,53,0.12);
-}
-.qian-btn:hover{transform:scale(1.05);background:var(--bg-card2)}
-.qian-modal{
-position:fixed;inset:0;z-index:200;display:none;
-align-items:center;justify-content:center;
-background:rgba(247,243,235,0.92);backdrop-filter:blur(8px);
-}
-.qian-modal.show{display:flex}
-.qian-content{
-background:var(--bg-card);border:1px solid var(--border-gold);
-border-radius:clamp(16px,2vw,24px);padding:clamp(24px,3vw,40px);
-max-width:min(400px,90vw);text-align:center;animation:fadeIn 0.4s;
-}
-.qian-content p{font-family:Georgia,serif;font-size:clamp(14px,2vw,18px);color:var(--gold);line-height:1.8;margin:clamp(12px,2vh,20px) 0}
-
-/* === 幕1 模式选择 === */
-.mode-section{text-align:center;width:min(900px,95vw)}
-.mode-section h2{font-family:Georgia,serif;font-size:clamp(20px,3vw,28px);margin-bottom:clamp(24px,4vh,40px)}
+body{font-family:var(--font-body);color:var(--text-primary);background:var(--bg-primary);-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 12% 18%,rgba(200,100,88,0.04),transparent 40%),radial-gradient(circle at 88% 72%,rgba(111,156,139,0.05),transparent 35%)}
+.serif{font-family:var(--font-title)}.seal-font{font-family:var(--font-seal)}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:translateX(30px);transition:opacity var(--dur-content) var(--ease-enter),transform var(--dur-content) var(--ease-enter);z-index:1}
+.scene.active{opacity:1;pointer-events:all;transform:translateX(0);z-index:2}
+.scene.exiting{opacity:0;transform:translateX(-30px)}
+.card{background:var(--surface-primary);border:1px solid var(--border-soft);border-radius:16px;padding:clamp(16px,2vw,24px);box-shadow:var(--shadow-soft);transition:transform var(--dur-card) var(--ease-card),box-shadow var(--dur-card) var(--ease-card)}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lifted)}
+.card-data{background:var(--surface-secondary);border:1px solid var(--border-soft);border-radius:12px;padding:clamp(12px,1.5vw,16px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:clamp(40px,5vh,48px);padding:clamp(10px,1.5vh,12px) clamp(24px,3vw,32px);border-radius:12px;border:none;font-size:clamp(14px,1.6vw,15px);font-weight:600;cursor:pointer;transition:all var(--dur-micro) var(--ease-micro)}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--accent-primary);color:#FFF;box-shadow:0 4px 12px rgba(200,100,88,0.25)}
+.btn-primary:hover{background:#B85A4F;transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,var(--accent-gold),#9A7A30);color:#FFF}
+.btn-secondary{background:transparent;border:1px solid var(--border-medium);color:var(--text-secondary)}
+.btn-secondary:hover{border-color:var(--accent-gold);color:var(--accent-gold)}
+.btn-small{min-height:clamp(32px,4vh,38px);padding:6px 16px;font-size:clamp(12px,1.4vw,13px);border-radius:8px}
+.back-btn{position:fixed;top:16px;left:16px;z-index:999;display:flex;align-items:center;gap:6px;padding:7px 14px 7px 10px;background:rgba(255,252,247,0.85);backdrop-filter:blur(8px);border:1px solid var(--border-soft);border-radius:20px;color:var(--text-secondary);font-size:13px;text-decoration:none;transition:all .2s}
+.back-btn:hover{background:rgba(183,144,56,0.08);color:var(--accent-gold);transform:translateX(-2px)}
+.back-btn svg{width:14px;height:14px}
+.tag{display:inline-flex;font-size:11px;padding:3px 10px;border-radius:12px;white-space:nowrap}
+.tag-gold{background:rgba(183,144,56,0.1);border:1px solid rgba(183,144,56,0.25);color:var(--accent-gold)}
+.tag-green{background:rgba(111,156,139,0.1);border:1px solid rgba(111,156,139,0.25);color:var(--accent-green)}
+.tag-red{background:rgba(200,100,88,0.08);border:1px solid rgba(200,100,88,0.2);color:var(--accent-primary)}
+.tag-purple{background:rgba(142,130,173,0.1);border:1px solid rgba(142,130,173,0.2);color:var(--accent-purple)}
+#scene0{flex-direction:row;padding:0;gap:0}
+.hero-bagua-wrap{width:45%;height:100%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hero-bagua-wrap svg{width:min(380px,80%);height:min(380px,80%);transition:all .6s var(--ease-enter)}
+.hero-bagua-wrap svg.has-product{filter:drop-shadow(0 0 20px rgba(183,144,56,0.15))}
+.bagua-sector{transition:all .4s var(--ease-card);opacity:.5}.bagua-sector.lit{opacity:1}
+.bagua-center-text{font-family:var(--font-title);font-size:12px;fill:var(--text-muted);text-anchor:middle;dominant-baseline:middle}
+.bagua-center-text.active{fill:var(--accent-gold);font-size:14px;font-weight:700}
+.hero-content{position:relative;z-index:3;width:55%;padding:0 clamp(24px,5vw,60px);display:flex;flex-direction:column;justify-content:center}
+.hero-content h1{font-family:var(--font-title);font-size:clamp(26px,3.2vw,44px);line-height:1.3;margin-bottom:12px;color:var(--text-primary)}
+.hero-content h1 span{background:linear-gradient(135deg,var(--accent-gold),var(--accent-primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-subtitle{color:var(--text-secondary);font-size:clamp(13px,1.5vw,16px);margin-bottom:clamp(24px,3vh,36px);line-height:1.6}
+.hero-input-group{display:flex;flex-direction:column;gap:12px;max-width:420px}
+.hero-input{width:100%;height:clamp(44px,5vh,52px);border-radius:12px;border:1.5px solid var(--border-medium);background:var(--surface-primary);color:var(--text-primary);padding:0 16px;font-size:clamp(14px,1.6vw,16px);outline:none;transition:all var(--dur-micro)}
+.hero-input:focus{border-color:var(--accent-gold);box-shadow:0 0 0 3px rgba(183,144,56,0.1)}
+.hero-input::placeholder{color:var(--text-muted)}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+.product-recognition{display:none;padding:10px 14px;background:rgba(111,156,139,0.08);border:1px solid rgba(111,156,139,0.25);border-radius:10px;font-size:13px;color:var(--accent-green)}
+.product-recognition.show{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.product-recognition button{background:var(--accent-green);color:#FFF;border:none;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px}
+.example-products{margin-top:clamp(16px,2vh,24px);display:flex;flex-wrap:wrap;gap:8px;max-width:420px}
+.example-products .example-label{font-size:11px;color:var(--text-muted);width:100%;margin-bottom:2px}
+.example-product-tag{font-size:12px;padding:4px 12px;border-radius:16px;background:var(--surface-secondary);border:1px solid var(--border-soft);color:var(--text-secondary);cursor:pointer;transition:all var(--dur-micro)}
+.example-product-tag:hover{border-color:var(--accent-gold);color:var(--accent-gold)}
+.today-qian{margin-top:clamp(12px,2vh,20px);padding:10px 16px;background:var(--surface-secondary);border:1px solid var(--border-soft);border-radius:10px;font-size:13px;display:flex;align-items:center;gap:8px;max-width:420px;cursor:pointer}
+.today-qian .qian-text{flex:1;font-style:italic;color:var(--accent-gold)}
+.today-qian .qian-refresh{font-size:11px;color:var(--text-muted)}
+.mode-section{text-align:center;width:min(960px,95vw)}
+.mode-section h2{font-family:var(--font-title);font-size:clamp(20px,2.8vw,28px);margin-bottom:8px}
+.mode-subtitle{color:var(--text-secondary);font-size:14px;margin-bottom:32px}
 .mode-cards{display:flex;gap:clamp(16px,2vw,24px);justify-content:center;flex-wrap:wrap}
-.mode-card{
-cursor:pointer;padding:clamp(20px,3vw,32px);text-align:center;flex:1;min-width:200px;max-width:280px;
-border:2px solid transparent;position:relative;overflow:hidden;
-}
-.mode-card::before{
-content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(231,190,116,0.05),transparent 70%);
-opacity:0;transition:opacity 0.3s;
-}
-.mode-card:hover::before{opacity:1}
-.mode-card:hover{border-color:var(--border-gold)}
-.mode-card.selected{border-color:var(--red);box-shadow:0 0 24px rgba(221,90,103,0.15)}
-.mode-card .icon{font-size:clamp(32px,5vw,48px);margin-bottom:clamp(8px,1vh,16px)}
-.mode-card h3{font-size:clamp(16px,2.5vw,20px);margin-bottom:clamp(6px,1vh,8px);color:var(--gold)}
-.mode-card p{color:var(--text2);font-size:clamp(12px,1.6vw,14px);line-height:1.6}
-
-/* === 幕2 产品登记（左右分栏） === */
-#scene-register{flex-direction:column;align-items:center;justify-content:center;padding:clamp(56px,8vh,80px) clamp(16px,4vw,40px) clamp(16px,3vh,32px)}
-.register-wrapper{width:min(880px,90vw);display:flex;gap:clamp(20px,3vw,36px);align-items:flex-start;margin:0 auto}
-.register-left{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
-.register-right{width:clamp(220px,28%,260px);display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding-top:8px}
-/* === 答题页产品头部 === */
-.product-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,253,248,0.7);border:1px solid rgba(176,141,60,0.22);border-radius:10px;flex-shrink:0}
-.product-logo{width:36px;height:36px;border-radius:8px;background:rgba(231,190,116,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;border:1px solid rgba(231,190,116,0.15)}
-.product-logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}
-.product-info{flex:1;min-width:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.product-info .p-name{font-size:clamp(15px,1.8vw,18px);font-weight:700;color:var(--gold);font-family:Georgia,serif;white-space:nowrap}
-.product-info .p-type{font-size:11px;color:var(--text2);white-space:nowrap}
-.product-info .p-tags{display:flex;gap:5px}
-.product-info .p-tag{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid;white-space:nowrap}
-.product-info .p-tag.dayzhu{background:rgba(231,190,116,0.1);border-color:rgba(231,190,116,0.45);color:#E7BE74}
-.product-info .p-tag.cat{background:rgba(154,143,200,0.1);border-color:rgba(154,143,200,0.3);color:#9A8FC8}
-.product-baseline{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(255,253,248,0.6);border-left:2px solid rgba(176,141,60,0.55);border-radius:0 6px 6px 0;flex-shrink:0;overflow:hidden}
-.product-baseline .bl-title{font-size:10px;color:rgba(231,190,116,0.6);letter-spacing:1.5px;white-space:nowrap;flex-shrink:0}
-.product-baseline .bl-text{font-size:12px;color:var(--text2);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.register-right-header{text-align:center;font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:1px}
-
-.progress-bar{
-width:100%;height:3px;background:var(--bg-card2);border-radius:4px;margin-bottom:clamp(10px,1.5vh,16px);overflow:hidden;
-}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--teal));border-radius:4px;transition:width 0.5s ease}
-.qa-question{font-family:Georgia,serif;font-size:clamp(16px,2.2vw,20px);margin-bottom:clamp(12px,1.5vh,18px);color:var(--gold)}
-
-/* 产品类型Tab选择器 */
-.type-tabs{
-display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;
-}
-.type-tab{
-padding:6px 16px;border-radius:12px;border:1px solid var(--border);
-background:var(--bg-card);color:var(--text2);cursor:pointer;font-size:13px;
-white-space:nowrap;transition:all 0.3s;
-}
-.type-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(231,190,116,0.08)}
-.type-options{
-display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
-max-height:calc(6 * 40px);overflow:hidden;
-}
-.type-option{
-background:var(--bg-card2);border:1px solid var(--border);border-radius:12px;
-padding:8px;text-align:center;cursor:pointer;font-size:13px;transition:all 0.3s;
-}
-.type-option:hover{border-color:var(--purple);background:rgba(154,143,200,0.08)}
-.type-option.selected{border-color:var(--gold);background:rgba(231,190,116,0.1);color:var(--gold)}
-
-/* 普通选项 */
+.mode-card{cursor:pointer;padding:clamp(20px,2.5vw,28px);text-align:left;flex:1;min-width:240px;max-width:300px;position:relative;border:2px solid transparent;transition:all var(--dur-card) var(--ease-card);overflow:hidden}
+.mode-card .mode-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.mode-card[data-mode="fast"] .mode-icon{background:rgba(211,170,74,0.12)}
+.mode-card[data-mode="deep"] .mode-icon{background:rgba(120,149,173,0.12)}
+.mode-card[data-mode="hybrid"] .mode-icon{background:rgba(200,100,88,0.1)}
+.mode-card h3{font-size:clamp(16px,2vw,19px);margin-bottom:6px;color:var(--text-primary)}
+.mode-card .mode-desc{color:var(--text-secondary);font-size:13px;line-height:1.6;margin-bottom:14px}
+.mode-card .mode-meta{display:flex;flex-direction:column;gap:6px}
+.mode-card .mode-meta-item{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+.mode-card .mode-meta-item .meta-dot{width:4px;height:4px;border-radius:50%;background:var(--text-muted)}
+.mode-card .mode-badge{position:absolute;top:12px;right:12px;font-size:10px;padding:3px 8px;border-radius:8px;background:var(--accent-primary);color:#FFF;font-weight:600}
+.mode-card.selected{border-color:var(--accent-primary);background:rgba(200,100,88,0.03);transform:translateY(-4px);box-shadow:var(--shadow-lifted)}
+.mode-card.selected::after{content:'✓';position:absolute;bottom:12px;right:12px;width:24px;height:24px;border-radius:50%;background:var(--accent-primary);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:12px}
+.mode-cta{margin-top:24px;opacity:0;transform:translateY(10px);transition:all var(--dur-card) var(--ease-enter);pointer-events:none}
+.mode-cta.show{opacity:1;transform:translateY(0);pointer-events:all}
+#scene-register{padding:clamp(56px,8vh,80px) clamp(16px,4vw,40px) clamp(16px,3vh,32px)}
+.register-wrapper{width:min(900px,92vw);display:flex;gap:clamp(20px,3vw,32px);align-items:flex-start;margin:0 auto}
+.register-left{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}
+.register-right{width:clamp(200px,26%,260px);display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding-top:8px}
+.product-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface-primary);border:1px solid var(--border-soft);border-radius:12px;box-shadow:var(--shadow-soft)}
+.product-logo{width:36px;height:36px;border-radius:10px;background:var(--surface-secondary);border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden}
+.product-logo img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.product-info{flex:1;min-width:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.product-info .p-name{font-size:clamp(14px,1.7vw,17px);font-weight:700;color:var(--accent-gold);font-family:var(--font-title)}
+.product-info .p-type{font-size:11px;color:var(--text-muted)}
+.product-baseline{padding:8px 14px;background:var(--surface-secondary);border-left:3px solid var(--accent-gold);border-radius:0 8px 8px 0;font-size:12px;color:var(--text-secondary);line-height:1.6}
+.progress-bar{width:100%;height:3px;background:var(--surface-secondary);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-gold),var(--accent-green));border-radius:2px;transition:width .5s var(--ease-enter)}
+.qa-question{font-family:var(--font-title);font-size:clamp(16px,2.2vw,20px);margin-bottom:16px;color:var(--text-primary);line-height:1.4}
 .qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.qa-option{
-background:var(--bg-card2);border:1px solid var(--border);border-radius:12px;
-padding:12px;text-align:center;cursor:pointer;font-size:14px;transition:all 0.3s;
-}
-.qa-option:hover{border-color:var(--purple);background:rgba(154,143,200,0.08)}
-.qa-option.selected{border-color:var(--gold);background:rgba(231,190,116,0.1);color:var(--gold)}
-
-/* 右侧雷达图 */
-.mini-mingpan{width:clamp(150px,20vw,280px);height:clamp(150px,20vw,280px)}
-
-/* === 幕3 定日主 === */
+.qa-option{background:var(--surface-secondary);border:1.5px solid var(--border-soft);border-radius:12px;padding:12px 14px;text-align:left;cursor:pointer;font-size:13px;color:var(--text-secondary);transition:all var(--dur-micro);line-height:1.5}
+.qa-option:hover{border-color:var(--accent-purple);background:rgba(142,130,173,0.06)}
+.qa-option.selected{border-color:var(--accent-gold);background:rgba(183,144,56,0.08);color:var(--accent-gold)}
+.type-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
+.type-tab{padding:6px 14px;border-radius:10px;border:1px solid var(--border-soft);background:var(--surface-primary);color:var(--text-muted);cursor:pointer;font-size:12px;white-space:nowrap;transition:all var(--dur-micro)}
+.type-tab.active{border-color:var(--accent-gold);color:var(--accent-gold)}
+.type-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.type-option{background:var(--surface-secondary);border:1px solid var(--border-soft);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;color:var(--text-secondary);transition:all var(--dur-micro)}
+.type-option:hover{border-color:var(--accent-purple)}
+.type-option.selected{border-color:var(--accent-gold);background:rgba(183,144,56,0.08);color:var(--accent-gold)}
+.mini-mingpan{width:clamp(140px,18vw,220px);height:clamp(140px,18vw,220px)}
+.register-right-header{font-size:11px;color:var(--text-muted);margin-bottom:8px;letter-spacing:1px}
+#scene3{padding:clamp(48px,6vh,72px) clamp(16px,4vw,32px)}
 .dayzhu-section{text-align:center;width:min(1000px,95vw)}
-.dayzhu-section h2{font-family:Georgia,serif;font-size:clamp(20px,3vw,28px);margin-bottom:clamp(8px,1vh,12px)}
-.dayzhu-recommend{color:var(--teal);font-size:clamp(12px,1.6vw,14px);margin-bottom:clamp(20px,3vh,30px)}
-.dayzhu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,20px)}
-.dayzhu-card{
-cursor:pointer;padding:clamp(16px,2vw,28px);text-align:left;border:2px solid transparent;
-transition:all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
-}
-.dayzhu-card:hover{border-color:var(--border-gold);transform:translateY(-6px);box-shadow:0 12px 40px rgba(231,190,116,0.1)}
-.dayzhu-card.selected{border-color:var(--red);box-shadow:0 0 24px rgba(221,90,103,0.2)}
-.dayzhu-card .dz-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.dayzhu-card .dz-icon{font-size:clamp(24px,3vw,32px)}
-.dayzhu-card .dz-name{font-family:Georgia,serif;font-size:clamp(16px,2vw,20px);color:var(--gold)}
-.dayzhu-card .dz-type{font-size:clamp(11px,1.4vw,13px);color:var(--teal)}
-.dayzhu-card .dz-keywords{display:flex;gap:6px;margin:8px 0}
-.dayzhu-card .dz-keywords span{font-size:clamp(10px,1.2vw,11px);padding:3px 8px;background:rgba(154,143,200,0.15);border-radius:8px;color:var(--purple)}
-.dayzhu-card .dz-desc{font-size:clamp(11px,1.4vw,13px);color:var(--text2);line-height:1.6}
-.dayzhu-card .dz-reps{font-size:clamp(10px,1.3vw,12px);color:var(--teal);margin-top:6px}
-.dayzhu-stamp{
-position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
-background:rgba(255,253,248,0.9);
-}
+.dayzhu-section h2{font-family:var(--font-title);font-size:clamp(20px,2.8vw,28px);margin-bottom:8px}
+.dayzhu-process{color:var(--text-muted);font-size:13px;margin-bottom:6px;display:flex;align-items:center;gap:8px;justify-content:center}
+.dayzhu-process .pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-green);animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.dayzhu-recommend{color:var(--accent-green);font-size:13px;margin-bottom:clamp(20px,3vh,28px);display:flex;align-items:center;gap:6px;justify-content:center}
+.dayzhu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.5vw,18px)}
+.dayzhu-card{cursor:pointer;padding:clamp(16px,2vw,24px);text-align:left;border:2px solid transparent;position:relative;transition:all var(--dur-card) var(--ease-card);opacity:0;transform:translateY(20px)}
+.dayzhu-card.entered{opacity:1;transform:translateY(0)}
+.dayzhu-card.recommended{border-color:rgba(111,156,139,0.3);background:rgba(111,156,139,0.03)}
+.dayzhu-card.recommended::before{content:'系统推荐';position:absolute;top:10px;right:10px;font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(111,156,139,0.12);border:1px solid rgba(111,156,139,0.3);color:var(--accent-green);font-weight:600}
+.dayzhu-card:hover{border-color:var(--border-medium);transform:translateY(-4px);box-shadow:var(--shadow-medium)}
+.dayzhu-card.selected{border-color:var(--accent-primary);background:rgba(200,100,88,0.03)}
+.dayzhu-card .dz-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.dayzhu-card .dz-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--surface-secondary)}
+.dayzhu-card .dz-name{font-family:var(--font-title);font-size:clamp(15px,1.8vw,18px);color:var(--accent-gold)}
+.dayzhu-card .dz-type{font-size:11px;color:var(--accent-green);margin-left:auto}
+.dayzhu-card .dz-keywords{display:flex;gap:5px;margin:8px 0;flex-wrap:wrap}
+.dayzhu-card .dz-keywords span{font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(142,130,173,0.1);color:var(--accent-purple)}
+.dayzhu-card .dz-desc{font-size:12px;color:var(--text-secondary);line-height:1.6}
+.dayzhu-card .dz-reps{font-size:11px;color:var(--accent-green);margin-top:6px}
+.dayzhu-card .dz-feel{font-size:11px;color:var(--accent-purple);font-style:italic;margin-top:4px}
+.dayzhu-card .dz-risk{font-size:11px;color:var(--accent-primary);margin-top:6px}
+.dayzhu-stamp{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;background:rgba(246,240,231,0.85);backdrop-filter:blur(4px)}
 .dayzhu-stamp.show{display:flex}
-.stamp-text{
-font-family:Georgia,serif;font-size:clamp(32px,5vw,48px);color:var(--red);
-border:4px solid var(--red);padding:clamp(12px,2vh,20px) clamp(24px,4vw,40px);border-radius:8px;
-transform:scale(0.3);animation:stampDrop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
-box-shadow:0 0 40px rgba(221,90,103,0.3);letter-spacing:8px;
-}
-@keyframes stampDrop{
-0%{transform:scale(0.3) rotate(-10deg);opacity:0}
-60%{transform:scale(1.1) rotate(2deg);opacity:1}
-100%{transform:scale(1) rotate(0deg);opacity:1}
-}
-
-/* === 幕4 打分 === */
-.score-section{width:min(1100px,95vw)}
-.score-section h2{font-family:Georgia,serif;font-size:clamp(18px,2.5vw,24px);text-align:center;margin-bottom:clamp(16px,2vh,24px)}
-.score-modes{display:flex;gap:12px;justify-content:center;margin-bottom:clamp(16px,2vh,30px);flex-wrap:wrap}
-.score-mode-btn{
-padding:clamp(8px,1vh,10px) clamp(16px,2vw,20px);border-radius:12px;border:1px solid var(--border);
-background:var(--bg-card);color:var(--text2);cursor:pointer;font-size:clamp(12px,1.6vw,14px);transition:all 0.3s;
-}
-.score-mode-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(231,190,116,0.08)}
-.score-layout{display:flex;gap:clamp(20px,3vw,30px);align-items:center}
-.score-radar{flex:1;display:flex;justify-content:center}
-.score-radar canvas{width:clamp(200px,25vw,300px);height:clamp(200px,25vw,300px)}
-.score-sliders{flex:1;display:flex;flex-direction:column;gap:clamp(8px,1vh,12px)}
-.slider-group{
-background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px;
-}
+.stamp-text{font-family:var(--font-seal);font-size:clamp(28px,4.5vw,42px);color:var(--accent-primary);border:3px solid var(--accent-primary);padding:12px 32px;border-radius:6px;transform:scale(.3);opacity:0;animation:stampDrop .6s cubic-bezier(0.34,1.56,0.64,1) forwards;letter-spacing:6px}
+@keyframes stampDrop{0%{transform:scale(.3) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(1deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+#scene4{padding:clamp(48px,6vh,72px) clamp(16px,3vw,32px) clamp(16px,2vh,24px)}
+.score-section{display:flex;flex-direction:column;width:min(1100px,96vw);margin:0 auto;height:calc(100vh - clamp(80px,12vh,120px))}
+.score-top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-shrink:0;flex-wrap:wrap;gap:10px}
+.score-top-bar h2{font-family:var(--font-title);font-size:clamp(16px,2vw,22px);color:var(--accent-gold)}
+.score-product-strip{display:flex;align-items:center;gap:8px}
+.score-product-strip .sp-logo{width:28px;height:28px;border-radius:8px;background:var(--surface-secondary);display:flex;align-items:center;justify-content:center;font-size:14px}
+.score-product-strip .sp-name{font-size:14px;font-weight:700;color:var(--accent-gold);font-family:var(--font-title)}
+.score-product-strip .sp-dz{font-size:11px;padding:2px 8px;border-radius:12px;background:rgba(183,144,56,0.1);border:1px solid rgba(183,144,56,0.3);color:var(--accent-gold)}
+.score-modes{display:flex;gap:8px}
+.score-mode-btn{padding:7px 14px;border-radius:10px;border:1px solid var(--border-soft);background:var(--surface-primary);color:var(--text-muted);cursor:pointer;font-size:12px;transition:all .2s}
+.score-mode-btn.active{border-color:var(--accent-gold);color:var(--accent-gold);background:rgba(183,144,56,0.06)}
+.score-body{display:flex;gap:clamp(16px,2vw,24px);flex:1;min-height:0}
+.score-left-panel{width:clamp(260px,32%,360px);display:flex;flex-direction:column;gap:12px;flex-shrink:0;overflow-y:auto}
+.score-bagua-container{display:flex;justify-content:center;padding:12px}
+.score-bagua-svg{width:clamp(180px,20vw,260px);height:clamp(180px,20vw,260px)}
+.score-context-card{background:var(--surface-secondary);border:1px solid var(--border-soft);border-radius:12px;padding:14px}
+.score-context-card .sc-title{font-size:10px;color:var(--text-muted);letter-spacing:1.5px;margin-bottom:6px}
+.score-context-card .sc-text{font-size:12px;color:var(--text-secondary);line-height:1.6}
+.score-context-card .sc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.score-context-card .sc-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(142,130,173,0.08);border:1px solid rgba(142,130,173,0.2);color:var(--accent-purple)}
+.score-right-panel{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;overflow-y:auto;padding-right:4px}
+.score-right-panel::-webkit-scrollbar{width:3px}
+.score-right-panel::-webkit-scrollbar-thumb{background:var(--border-soft);border-radius:2px}
+.slider-group{background:var(--surface-primary);border:1px solid var(--border-soft);border-radius:12px;padding:12px 14px;transition:all var(--dur-micro);cursor:pointer}
+.slider-group:hover{border-color:var(--border-medium)}
+.slider-group.expanded{border-color:rgba(183,144,56,0.3)}
 .slider-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.slider-label{font-size:clamp(12px,1.5vw,14px);color:var(--text)}
-.slider-value{font-size:clamp(12px,1.5vw,14px);color:var(--gold);font-weight:600}
-.slider-tag{font-size:clamp(10px,1.2vw,11px);color:var(--purple);margin-left:8px}
-.slider-input{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:var(--bg-card2);border-radius:3px;outline:none}
-.slider-input::-webkit-slider-thumb{
--webkit-appearance:none;width:16px;height:16px;border-radius:50%;
-background:var(--gold);cursor:pointer;box-shadow:0 0 8px rgba(231,190,116,0.4);
-}
-.slider-feedback{font-size:clamp(11px,1.3vw,12px);color:var(--teal);margin-top:4px;min-height:14px}
-.score-alert{
-text-align:center;margin-top:16px;padding:10px;border-radius:12px;
-background:rgba(221,90,103,0.1);border:1px solid rgba(221,90,103,0.2);
-color:var(--red);font-size:clamp(12px,1.5vw,14px);display:none;
-}
+.slider-label{font-size:13px;color:var(--text-primary);font-weight:500}
+.slider-value{font-size:14px;color:var(--accent-gold);font-weight:700;font-family:var(--font-data)}
+.slider-tag{font-size:10px;color:var(--accent-purple);margin-left:6px}
+.slider-input{width:100%;height:5px;-webkit-appearance:none;appearance:none;background:var(--surface-secondary);border-radius:3px;outline:none}
+.slider-input::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent-gold);cursor:pointer;box-shadow:0 2px 6px rgba(183,144,56,0.3)}
+.slider-feedback{font-size:11px;color:var(--text-muted);margin-top:4px;min-height:14px;line-height:1.4}
+.slider-detail{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-soft);font-size:12px;color:var(--text-secondary);line-height:1.6}
+.slider-group.expanded .slider-detail{display:block}
+.score-alert{text-align:center;padding:10px;border-radius:10px;background:rgba(200,100,88,0.06);border:1px solid rgba(200,100,88,0.15);color:var(--accent-primary);font-size:13px;display:none}
 .score-alert.show{display:block}
-.score-submit{text-align:center;margin-top:clamp(16px,2vh,20px)}
-
-/* === 幕5 命书 === */
-.fortune-overlay{
-position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;
-background:rgba(255,253,248,0.96);
-}
+.score-submit{text-align:center;padding:12px 0;flex-shrink:0}
+.hybrid-panel{display:none;position:fixed;inset:0;z-index:250;background:rgba(246,240,231,0.92);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:24px}
+.hybrid-panel.show{display:flex}
+.hybrid-content{width:min(800px,95vw);max-height:85vh;overflow-y:auto;background:var(--surface-primary);border:1px solid var(--border-soft);border-radius:16px;padding:clamp(20px,3vw,32px);box-shadow:var(--shadow-lifted)}
+.hybrid-header{text-align:center;margin-bottom:24px}
+.hybrid-header h3{font-family:var(--font-title);font-size:20px;margin-bottom:6px}
+.hybrid-row{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;padding:14px;border-radius:12px;background:var(--surface-secondary);margin-bottom:10px}
+.hybrid-side{text-align:center}
+.hybrid-side .side-label{font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:1px}
+.hybrid-side .side-score{font-size:24px;font-weight:700;font-family:var(--font-data)}
+.hybrid-side .side-score.user-score{color:var(--accent-blue)}
+.hybrid-side .side-score.ai-score{color:var(--accent-purple)}
+.hybrid-center{text-align:center;min-width:60px}
+.hybrid-center .diff-val{font-size:18px;font-weight:700}
+.hybrid-center .diff-label{font-size:10px;color:var(--text-muted)}
+.hybrid-center .diff-val.high{color:var(--accent-primary)}
+.hybrid-center .diff-val.low{color:var(--accent-green)}
+.hybrid-dim-name{font-size:13px;font-weight:600;text-align:center}
+.hybrid-actions{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.hybrid-actions button{font-size:11px;padding:4px 10px;border-radius:8px;border:1px solid var(--border-soft);background:var(--surface-primary);color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.hybrid-actions button:hover{border-color:var(--accent-gold);color:var(--accent-gold)}
+.hybrid-actions button.accepted{border-color:var(--accent-green);color:var(--accent-green);background:rgba(111,156,139,0.06)}
+.hybrid-actions button.rejected{border-color:var(--accent-primary);color:var(--accent-primary)}
+.hybrid-summary{margin-top:20px;padding:16px;background:var(--surface-secondary);border-radius:12px}
+.hybrid-summary h4{font-size:14px;color:var(--accent-gold);margin-bottom:10px;font-family:var(--font-title)}
+.hybrid-summary .insight-item{font-size:12px;color:var(--text-secondary);line-height:1.6;padding:6px 0;border-bottom:1px solid var(--border-soft)}
+.fortune-overlay{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;background:rgba(63,55,47,0.6);backdrop-filter:blur(8px)}
 .fortune-overlay.show{display:flex}
-.fortune-anim{text-align:center}
-.fortune-line{
-width:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--teal),var(--gold),transparent);
-animation:expandLine 1.5s ease forwards;box-shadow:0 0 20px rgba(231,190,116,0.3);
-}
-@keyframes expandLine{from{width:0}to{width:80vw}}
-.fortune-seal{
-font-family:Georgia,serif;font-size:clamp(40px,6vw,56px);color:var(--red);
-border:5px solid var(--red);border-radius:12px;padding:clamp(12px,2vh,16px) clamp(24px,4vw,32px);
-margin-top:clamp(24px,4vh,40px);transform:scale(0.3);opacity:0;
-animation:sealDrop 0.8s 1.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
-}
-@keyframes sealDrop{
-0%{transform:scale(0.3);opacity:0}
-70%{transform:scale(1.1);opacity:1}
-100%{transform:scale(1);opacity:1}
-}
-
-.fortune-result{
-display:none;padding:clamp(20px,3vh,40px) clamp(16px,2vw,20px);width:100%;height:100%;overflow:hidden;
-}
-.fortune-result.show{display:flex;animation:fadeIn 0.8s ease;flex-direction:column}
-.fortune-grid{display:flex;gap:clamp(16px,2vw,24px);flex:1;overflow:hidden}
-.fortune-col{flex:1;display:flex;flex-direction:column;gap:clamp(12px,1.5vh,16px);overflow-y:auto}
-.fortune-col::-webkit-scrollbar{width:4px}
-.fortune-col::-webkit-scrollbar-track{background:transparent}
-.fortune-col::-webkit-scrollbar-thumb{background:var(--border-gold);border-radius:2px}
-.fortune-col h3{font-family:Georgia,serif;font-size:clamp(14px,2vw,18px);color:var(--gold);margin-bottom:8px}
-
-/* 身份卡 */
-.identity-card{padding:clamp(16px,2vw,24px);flex-shrink:0}
-.id-name{font-family:Georgia,serif;font-size:clamp(20px,3vw,28px);color:var(--gold);margin-bottom:6px;animation:slideUp 0.6s ease}
-.id-mingge{font-size:clamp(14px,1.8vw,16px);color:var(--teal);margin-bottom:12px;animation:slideUp 0.6s 0.2s ease both}
+.fortune-anim{text-align:center;position:relative}
+.fortune-scroll{width:clamp(280px,60vw,480px);padding:clamp(24px,4vw,48px);background:linear-gradient(180deg,#FFFCF7,#F9F0E3);border:1px solid rgba(183,144,56,0.3);border-radius:6px;box-shadow:0 30px 80px rgba(0,0,0,0.2);transform:translateY(40px);opacity:0;animation:scrollRise .8s .2s var(--ease-enter) forwards}
+@keyframes scrollRise{to{transform:translateY(0);opacity:1}}
+.fortune-line{width:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent-gold),transparent);margin:0 auto 20px;animation:expandLine .8s .6s ease forwards}
+@keyframes expandLine{to{width:80%}}
+.fortune-seal{font-family:var(--font-seal);font-size:clamp(32px,5vw,48px);color:var(--accent-primary);border:3px solid var(--accent-primary);border-radius:6px;padding:10px 28px;display:inline-block;transform:scale(.3) rotate(-5deg);opacity:0;animation:sealDrop .6s 1.2s cubic-bezier(0.34,1.56,0.64,1) forwards;letter-spacing:6px}
+@keyframes sealDrop{0%{transform:scale(.3) rotate(-5deg);opacity:0}70%{transform:scale(1.05) rotate(1deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+.fortune-subtitle{color:var(--text-secondary);font-size:14px;margin-top:16px;opacity:0;animation:fadeIn .4s 2s forwards}
+.fortune-skip{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,0.6);cursor:pointer;opacity:0;animation:fadeIn .3s 1.5s forwards}
+.fortune-result{display:none;position:fixed;inset:0;z-index:50;background:var(--bg-primary,#F6F0E7);padding:clamp(16px,2vh,28px) clamp(16px,2vw,24px);width:100%;height:100%;overflow-y:auto;box-sizing:border-box}
+.fortune-result.show{display:block;animation:fadeIn .6s var(--ease-enter)}
+.fortune-chapters{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(16px,2vh,24px)}
+.fortune-chapter{background:var(--surface-primary);border:1px solid var(--border-soft);border-radius:16px;padding:clamp(16px,2vw,24px);box-shadow:var(--shadow-soft)}
+.fortune-chapter-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border-soft)}
+.fortune-chapter-header .ch-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#FFF;background:var(--accent-gold)}
+.fortune-chapter-header h3{font-family:var(--font-title);font-size:clamp(15px,1.8vw,18px)}
+.fortune-chapter-header .ch-subtitle{font-size:12px;color:var(--text-muted);margin-left:auto}
+.ch-identity .id-top{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.ch-identity .id-product{font-family:var(--font-title);font-size:clamp(22px,3vw,32px);color:var(--accent-gold)}
+.ch-identity .id-mingge{font-size:clamp(14px,1.7vw,16px);color:var(--accent-green)}
+.ch-identity .id-oneliner{font-size:clamp(13px,1.5vw,15px);color:var(--text-secondary);line-height:1.6;margin-bottom:16px;padding:10px 14px;background:var(--surface-secondary);border-radius:10px;border-left:3px solid var(--accent-gold)}
+.ch-identity .id-highlights{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.id-highlight-card{padding:12px;background:var(--surface-secondary);border-radius:10px}
+.id-highlight-card .hl-label{font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:4px}
+.id-highlight-card .hl-value{font-size:13px;font-weight:600}
+.id-highlight-card.strength .hl-value{color:var(--accent-green)}
+.id-highlight-card.weakness .hl-value{color:var(--accent-primary)}
+.id-highlight-card.mission .hl-value{color:var(--accent-gold)}
 .wuxing-bars{display:flex;flex-direction:column;gap:6px;margin:12px 0}
 .wuxing-bar{display:flex;align-items:center;gap:8px}
-.wuxing-bar .label{width:30px;font-size:clamp(10px,1.3vw,12px);color:var(--text2)}
-.wuxing-bar .bar{flex:1;height:8px;background:var(--bg-card2);border-radius:4px;overflow:hidden}
-.wuxing-bar .bar-fill{height:100%;border-radius:4px;transition:width 0.5s}
-.bar-wood{background:var(--teal)}
-.bar-fire{background:var(--red)}
-.bar-earth{background:var(--gold)}
-.bar-metal{background:#ccc}
-.bar-water{background:var(--purple)}
-.id-strength{font-size:clamp(12px,1.5vw,14px);margin:8px 0}
-.id-dayun{font-size:clamp(11px,1.4vw,13px);color:var(--purple);margin:6px 0}
-.meter-row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:clamp(11px,1.4vw,13px)}
-.meter-label{width:50px;color:var(--text2)}
-.meter-bar{flex:1;height:6px;background:var(--bg-card2);border-radius:3px;overflow:hidden}
+.wuxing-bar .label{width:28px;font-size:12px;color:var(--text-secondary)}
+.wuxing-bar .bar{flex:1;height:6px;background:var(--surface-secondary);border-radius:3px;overflow:hidden}
+.wuxing-bar .bar-fill{height:100%;border-radius:3px;transition:width .5s var(--ease-enter)}
+.bar-wood{background:var(--accent-green)}.bar-fire{background:var(--accent-primary)}.bar-earth{background:var(--accent-gold)}.bar-metal{background:var(--accent-blue)}.bar-water{background:var(--accent-purple)}
+.meter-row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:12px}
+.meter-label{width:48px;color:var(--text-secondary)}
+.meter-bar{flex:1;height:5px;background:var(--surface-secondary);border-radius:3px;overflow:hidden}
 .meter-fill{height:100%;border-radius:3px}
-.meter-pct{width:36px;text-align:right;color:var(--gold);font-size:clamp(10px,1.3vw,12px)}
-.yi-ji{margin-top:12px}
-.yi{color:var(--teal);font-size:clamp(11px,1.4vw,13px);margin:3px 0}
-.ji{color:var(--red);font-size:clamp(11px,1.4vw,13px);margin:3px 0}
-
-/* 命理解读 */
-.ming-card{position:relative;perspective:800px;cursor:pointer;flex-shrink:0}
-.ming-card-inner{position:relative;width:100%;transition:transform 0.6s;transform-style:preserve-3d}
+.meter-pct{width:32px;text-align:right;color:var(--accent-gold);font-size:11px;font-family:var(--font-data)}
+.yi-ji{margin-top:12px}.yi{color:var(--accent-green);font-size:12px;margin:3px 0}.ji{color:var(--accent-primary);font-size:12px;margin:3px 0}
+.ming-card{position:relative;perspective:800px;cursor:pointer}
+.ming-card-inner{position:relative;width:100%;transition:transform .6s var(--ease-card);transform-style:preserve-3d}
 .ming-card.flipped .ming-card-inner{transform:rotateY(180deg)}
-.ming-card-front,.ming-card-back{
-backface-visibility:hidden;border-radius:16px;padding:clamp(14px,2vw,20px);
-}
-.ming-card-front{background:var(--bg-card);border:1px solid var(--border)}
-.ming-card-back{
-background:var(--bg-card2);border:1px solid var(--border-gold);
-position:absolute;top:0;left:0;width:100%;height:100%;
-transform:rotateY(180deg);
-}
-.ming-card-front p{font-family:Georgia,serif;font-size:clamp(12px,1.5vw,14px);line-height:1.8;color:var(--text)}
-.ming-card-back p{font-size:clamp(12px,1.5vw,14px);line-height:1.8;color:var(--text2)}
-.flip-btn{display:inline-block;margin-top:8px;font-size:clamp(10px,1.3vw,12px);color:var(--purple);cursor:pointer}
-
-/* 大运时间轴 */
-.dayun-timeline{display:flex;gap:0;overflow-x:auto;padding:12px 0;margin:12px 0;flex-shrink:0}
-.dayun-node{
-flex:0 0 auto;text-align:center;padding:6px 12px;cursor:pointer;position:relative;
-}
-.dayun-node::after{
-content:'';position:absolute;top:50%;right:-6px;width:12px;height:1px;background:var(--border-gold);
-}
+.ming-card-front,.ming-card-back{backface-visibility:hidden;border-radius:12px;padding:16px}
+.ming-card-front{background:var(--surface-secondary);border:1px solid var(--border-soft)}
+.ming-card-back{background:rgba(183,144,56,0.06);border:1px solid rgba(183,144,56,0.2);position:absolute;top:0;left:0;width:100%;height:100%;transform:rotateY(180deg)}
+.ming-card-front p,.ming-card-back p{font-size:13px;line-height:1.8}
+.flip-hint{font-size:11px;color:var(--accent-purple);margin-top:8px;cursor:pointer}
+.ming-risk{font-size:12px;color:var(--accent-primary);margin-top:10px;padding:8px 12px;background:rgba(200,100,88,0.05);border-radius:8px}
+.ming-advice{font-size:12px;color:var(--accent-green);margin-top:8px;padding:8px 12px;background:rgba(111,156,139,0.05);border-radius:8px}
+.dayun-timeline{display:flex;gap:0;overflow-x:auto;padding:16px 0;margin:8px 0}
+.dayun-node{flex:0 0 auto;text-align:center;padding:8px 14px;cursor:pointer;position:relative}
+.dayun-node::after{content:'';position:absolute;top:50%;right:0;width:12px;height:1px;background:var(--border-soft)}
 .dayun-node:last-child::after{display:none}
-.dayun-dot{
-width:10px;height:10px;border-radius:50%;background:var(--bg-card2);
-border:2px solid var(--text2);margin:0 auto 4px;transition:all 0.3s;
-}
-.dayun-node.current .dayun-dot{
-background:var(--gold);border-color:var(--gold);
-animation:breathe 2s ease-in-out infinite;
-}
-@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(231,190,116,0.4)}50%{box-shadow:0 0 0 8px rgba(231,190,116,0)}}
-.dayun-name{font-size:clamp(9px,1.2vw,11px);color:var(--text2)}
-.dayun-node.current .dayun-name{color:var(--gold)}
-.dayun-tooltip{
-display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
-background:var(--bg-card);border:1px solid var(--border-gold);border-radius:12px;
-padding:10px;width:160px;font-size:clamp(10px,1.3vw,12px);color:var(--text2);z-index:10;
-}
-.dayun-node:hover .dayun-tooltip{display:block}
-
-/* 流年 */
-.liunian{flex-shrink:0}
-.liunian-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
-.liunian-label{font-size:clamp(11px,1.4vw,13px);color:var(--text2);width:80px}
-.liunian-val{font-size:clamp(11px,1.4vw,13px);font-weight:600}
-.liunian-val.dj{color:var(--gold)}
-.liunian-val.xj{color:var(--teal)}
-.liunian-val.p{color:var(--text2)}
-.liunian-val.pr{color:var(--text2)}
-.liunian-val.dx{color:var(--red)}
-.liunian-duanyu{font-family:Georgia,serif;font-size:clamp(11px,1.4vw,13px);color:var(--purple);margin-top:8px;font-style:italic}
-
-/* 神煞 */
-.guiren-tags,.xiaoren-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.guiren-tag{
-font-size:clamp(10px,1.3vw,12px);padding:3px 10px;border-radius:12px;
-background:rgba(101,185,174,0.12);color:var(--teal);border:1px solid rgba(101,185,174,0.2);
-}
-.xiaoren-tag{
-font-size:clamp(10px,1.3vw,12px);padding:3px 10px;border-radius:12px;
-background:rgba(221,90,103,0.1);color:var(--red);border:1px solid rgba(221,90,103,0.2);
-}
-.gaiming-btn{width:100%;margin-top:12px}
-.gaiming-result{margin-top:12px}
-.gaiming-task{
-background:var(--bg-card2);border-radius:12px;padding:12px;margin-bottom:8px;
-font-size:clamp(11px,1.4vw,13px);color:var(--text2);line-height:1.7;border-left:3px solid var(--gold);
-animation:slideUp 0.4s ease;
-}
-.gaiming-task strong{color:var(--gold)}
-
+.dayun-dot{width:10px;height:10px;border-radius:50%;background:var(--surface-secondary);border:2px solid var(--text-muted);margin:0 auto 6px;transition:all .3s}
+.dayun-node.current .dayun-dot{background:var(--accent-gold);border-color:var(--accent-gold);animation:breathe 2s ease-in-out infinite}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(183,144,56,0.4)}50%{box-shadow:0 0 0 6px rgba(183,144,56,0)}}
+.dayun-name{font-size:11px;color:var(--text-muted)}
+.dayun-node.current .dayun-name{color:var(--accent-gold);font-weight:600}
+.dayun-detail{display:none;margin-top:12px;padding:14px;background:var(--surface-secondary);border-radius:10px;font-size:12px;color:var(--text-secondary);line-height:1.7}
+.dayun-detail.show{display:block}
+.dayun-detail .dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.dayun-detail .dd-item{font-size:11px}.dayun-detail .dd-item strong{color:var(--text-primary)}
+.liunian-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.liunian-quarter{padding:14px;background:var(--surface-secondary);border-radius:10px;border:1px solid var(--border-soft)}
+.liunian-quarter .lq-title{font-size:13px;font-weight:600;color:var(--accent-gold);margin-bottom:8px}
+.liunian-quarter .lq-item{font-size:11px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:4px;line-height:1.5;margin-bottom:3px}
+.liunian-duanyu{font-family:var(--font-title);font-size:13px;color:var(--accent-purple);margin-top:12px;padding:10px 14px;background:rgba(142,130,173,0.06);border-radius:8px;font-style:italic}
+.guiren-xiaoren{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.gx-section h4{font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.gx-tags{display:flex;flex-wrap:wrap;gap:6px}
+.gx-tag{font-size:12px;padding:5px 12px;border-radius:10px;cursor:pointer;transition:all .2s}
+.gx-tag.guiren{background:rgba(111,156,139,0.1);color:var(--accent-green);border:1px solid rgba(111,156,139,0.2)}
+.gx-tag.guiren:hover{background:rgba(111,156,139,0.18)}
+.gx-tag.xiaoren{background:rgba(200,100,88,0.08);color:var(--accent-primary);border:1px solid rgba(200,100,88,0.18)}
+.gx-tag.xiaoren:hover{background:rgba(200,100,88,0.15)}
+.gx-detail{display:none;margin-top:8px;padding:10px;background:var(--surface-secondary);border-radius:8px;font-size:11px;color:var(--text-secondary);line-height:1.6}
+.gx-tag.expanded+.gx-detail{display:block}
+.gaiming-section{text-align:center}
+.gaiming-tong{width:80px;height:120px;margin:0 auto 16px;background:linear-gradient(180deg,var(--surface-secondary),#E8DCC8);border:2px solid var(--border-medium);border-radius:8px 8px 16px 16px;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:all .2s}
+.gaiming-tong:hover{transform:scale(1.03);box-shadow:var(--shadow-medium)}
+.gaiming-tong.shaking{animation:shake .5s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px) rotate(-2deg)}40%{transform:translateX(3px) rotate(2deg)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+.gaiming-result{margin-top:16px;text-align:left}
+.gaiming-task{background:var(--surface-secondary);border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:12px;color:var(--text-secondary);line-height:1.7;border-left:3px solid var(--accent-gold);animation:slideUp .4s var(--ease-enter)}
+.gaiming-task strong{color:var(--accent-gold)}
+.fortune-actions{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-
-/* shake animation */
-@keyframes shake{
-0%,100%{transform:translateX(0)}
-10%,30%,50%,70%,90%{transform:translateX(-4px)}
-20%,40%,60%,80%{transform:translateX(4px)}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media(max-width:1023px){
+#scene0{flex-direction:column}.hero-bagua-wrap{width:100%;height:35vh;min-height:200px}.hero-content{width:100%;text-align:center;padding:0 20px;align-items:center}.hero-input-group,.example-products,.today-qian{max-width:100%}
+.score-body{flex-direction:column}.score-left-panel{width:100%;flex-direction:row;flex-wrap:wrap}.score-bagua-container,.score-context-card{flex:1;min-width:200px}
+.guiren-xiaoren{grid-template-columns:1fr}.hybrid-row{grid-template-columns:1fr;gap:8px}.hybrid-center{order:-1}
 }
-.shaking{animation:shake 0.6s ease}
-
-@media(max-width:768px){
-#scene-register{flex-direction:column}
-.register-left,.register-right{flex:none;width:100%}
-.register-right{height:200px}
-.score-layout{flex-direction:column}
-.fortune-grid{flex-direction:column}
-.mode-cards{flex-direction:column;align-items:center}
-.mode-card{width:100%;max-width:none}
-.dayzhu-grid{grid-template-columns:repeat(2,1fr)}
+@media(max-width:767px){
+.mode-cards{flex-direction:column;align-items:center}.mode-card{width:100%;max-width:none;min-width:0}
+.dayzhu-grid{grid-template-columns:repeat(2,1fr)}.register-wrapper{flex-direction:column}.register-right{width:100%}
+.qa-grid{grid-template-columns:1fr}.type-options{grid-template-columns:repeat(2,1fr)}
+.liunian-grid{grid-template-columns:1fr 1fr}
 }
-
-/* 返回按钮 */
-.back-btn{
-position:fixed;top:18px;left:18px;z-index:999;
-display:flex;align-items:center;gap:6px;
-padding:7px 14px 7px 10px;
-background:rgba(255,253,248,0.75);
-border:1px solid rgba(95,78,64,0.14);
-border-radius:20px;
-color:var(--text2);font-size:13px;
-text-decoration:none;
-transition:all 0.2s ease;
-cursor:pointer;
-backdrop-filter:blur(8px);
-}
-.back-btn:hover{
-background:rgba(231,190,116,0.1);
-border-color:rgba(231,190,116,0.35);
-color:var(--gold);
-transform:translateX(-2px);
-}
-.back-btn svg{width:14px;height:14px;flex-shrink:0}
-
-/* === 打分页布局 === */
-#scene4{padding:clamp(56px,8vh,80px) clamp(16px,4vw,40px) clamp(16px,3vh,32px)}
-.score-section{display:flex;flex-direction:column;width:min(1000px,94vw);margin:0 auto;height:calc(100vh - clamp(100px,14vh,140px))}
-.score-top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:clamp(10px,1.5vh,16px);flex-shrink:0}
-.score-top-bar h2{font-family:Georgia,serif;font-size:clamp(16px,2vw,22px);color:var(--gold);margin:0}
-.score-product-strip{display:flex;align-items:center;gap:8px}
-.score-product-strip .sp-logo{width:28px;height:28px;border-radius:6px;background:rgba(231,190,116,0.1);display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid rgba(231,190,116,0.2)}
-.score-product-strip .sp-name{font-size:14px;font-weight:700;color:var(--gold);font-family:Georgia,serif}
-.score-product-strip .sp-dz{font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(231,190,116,0.1);border:1px solid rgba(231,190,116,0.4);color:#E7BE74}
-.score-body{display:flex;gap:clamp(16px,2vw,24px);flex:1;min-height:0}
-.score-left-panel{width:clamp(200px,30%,280px);display:flex;flex-direction:column;gap:12px;flex-shrink:0}
-.score-context-card{background:rgba(255,253,248,0.7);border:1px solid rgba(176,141,60,0.2);border-radius:12px;padding:14px;flex-shrink:0}
-.score-context-card .sc-title{font-size:10px;color:rgba(231,190,116,0.6);letter-spacing:2px;margin-bottom:8px}
-.score-context-card .sc-text{font-size:12px;color:var(--text2);line-height:1.6}
-.score-context-card .sc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-.score-context-card .sc-tag{font-size:10px;padding:2px 7px;border-radius:12px;background:rgba(154,143,200,0.1);border:1px solid rgba(154,143,200,0.25);color:#9A8FC8}
-.score-right-panel{flex:1;display:flex;flex-direction:column;gap:clamp(10px,1.5vh,14px);min-width:0;overflow-y:auto}
-
-/* === 首页 Logo 滚动背景墙 === */
-.logo-wall{
-  position:absolute;left:0;right:0;bottom:0;height:auto;overflow:hidden;pointer-events:none;z-index:1;
-  padding:14px 0 18px;
-  -webkit-mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-  mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-}
-.logo-row{
-  display:flex;gap:16px;align-items:center;width:max-content;
-  animation:scrollLeft var(--spd,60s) linear infinite;
-}
-@keyframes scrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.logo-item{
-  width:40px;height:40px;border-radius:10px;flex-shrink:0;overflow:hidden;
-  background:rgba(255,253,248,0.85);border:1px solid rgba(95,78,64,0.1);
-  box-shadow:0 4px 14px rgba(82,67,53,0.06);
-  display:flex;align-items:center;justify-content:center;
-}
-.logo-item img{width:28px;height:28px;object-fit:contain;border-radius:6px}
-
+@media(max-width:374px){.dayzhu-grid{grid-template-columns:1fr}.liunian-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<a class="back-btn" href="/08/works/#tools" title="返回 AI 工具页">
-  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M10 12L6 8l4-4"/>
-  </svg>
-  返回工具库
-</a>
-
-<!-- 幕0 首页 -->
+<a class="back-btn" href="/08/works/#tools" title="返回 AI 工具页"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12L6 8l4-4"/></svg>返回工具库</a>
 <div class="scene active" id="scene0">
-<div class="logo-wall" id="logoWall"></div>
-<div class="mingpan-bg"><svg viewBox="0 0 320 320" id="mingpanSvg"></svg></div>
+<div class="hero-bagua-wrap"><svg viewBox="0 0 400 400" id="heroBagua"></svg></div>
 <div class="hero-content">
-<h1 class="serif">你的产品，命里缺什么？</h1>
-<p class="subtitle">输入一个产品，用八字拆解它的增长、商业化、竞争和未来</p>
-<div class="hero-input">
-<input type="text" id="productInput" placeholder="输入ChatGPT看财星" autocomplete="off">
-<div class="product-recognition" id="productRecognition">
-<span id="recognitionText"></span>
-<button onclick="continueWithRecognized()">继续排盘 →</button>
-</div>
+<h1 class="serif">你的产品，<span>命里缺什么</span>？</h1>
+<p class="hero-subtitle">输入一个产品名，用八维命盘诊断它的增长、商业化、竞争壁垒和未来运势。<br>东方命理 × AI产品分析，一场关于产品的深度对话。</p>
+<div class="hero-input-group">
+<input type="text" class="hero-input" id="productInput" placeholder="输入ChatGPT看财星" autocomplete="off">
+<div class="product-recognition" id="productRecognition"><span id="recognitionText"></span><button onclick="continueWithRecognized()">继续 →</button></div>
 <div class="hero-btns">
 <button class="btn btn-primary" onclick="startDivination()">开始排盘</button>
 <button class="btn btn-secondary btn-small" onclick="randomProduct()">🎲 随机一个</button>
 </div>
 </div>
+<div class="example-products">
+<div class="example-label">试试这些产品 ↓</div>
+<span class="example-product-tag" onclick="pickExample('ChatGPT')">ChatGPT</span>
+<span class="example-product-tag" onclick="pickExample('小红书')">小红书</span>
+<span class="example-product-tag" onclick="pickExample('Cursor')">Cursor</span>
+<span class="example-product-tag" onclick="pickExample('原神')">原神</span>
+<span class="example-product-tag" onclick="pickExample('飞书')">飞书</span>
+<span class="example-product-tag" onclick="pickExample('拼多多')">拼多多</span>
+<span class="example-product-tag" onclick="pickExample('Notion')">Notion</span>
+<span class="example-product-tag" onclick="pickExample('豆包')">豆包</span>
 </div>
-<button class="qian-btn" onclick="showQian()">🎋 今日产品签</button>
-<div class="qian-modal" id="qianModal">
-<div class="qian-content">
-<div style="font-size:32px;margin-bottom:12px">🎋</div>
-<p id="qianText"></p>
-<button class="btn btn-secondary btn-small" onclick="closeQian()">收签</button>
+<div class="today-qian" onclick="refreshQian()"><span>🎋</span><span class="qian-text" id="qianText"></span><span class="qian-refresh">换一支 ↻</span></div>
 </div>
 </div>
-</div>
-
-<!-- 幕1 模式选择 -->
 <div class="scene" id="scene1">
 <div class="mode-section">
 <h2 class="serif">选择排盘模式</h2>
+<p class="mode-subtitle">不同模式，不同深度的产品诊断</p>
 <div class="mode-cards">
-<div class="card mode-card" onclick="selectMode('fast',this)">
-<div class="icon">⚡</div>
-<h3>快速算命</h3>
-<p>60-90秒，6个问题<br>快速生成命格</p>
+<div class="card mode-card" data-mode="fast" onclick="selectMode('fast',this)"><div class="mode-icon">⚡</div><h3>快速算命</h3><p class="mode-desc">AI快速扫描产品核心问题，生成基础命格</p><div class="mode-meta"><div class="mode-meta-item"><span class="meta-dot"></span>约 60-90 秒</div><div class="mode-meta-item"><span class="meta-dot"></span>4 个核心问题</div><div class="mode-meta-item"><span class="meta-dot"></span>基础命格 + 宜忌</div><div class="mode-meta-item"><span class="meta-dot"></span>适合：快速验证想法</div></div></div>
+<div class="card mode-card" data-mode="deep" onclick="selectMode('deep',this)"><div class="mode-icon">🔭</div><h3>深度排盘</h3><p class="mode-desc">完整八维评分，大运流年详解，全面产品诊断</p><div class="mode-meta"><div class="mode-meta-item"><span class="meta-dot"></span>约 5-8 分钟</div><div class="mode-meta-item"><span class="meta-dot"></span>6-8 个深度问题</div><div class="mode-meta-item"><span class="meta-dot"></span>完整命书 + 改命签</div><div class="mode-meta-item"><span class="meta-dot"></span>适合：认真诊断产品</div></div></div>
+<div class="card mode-card" data-mode="hybrid" onclick="selectMode('hybrid',this)"><div class="mode-badge">推荐</div><div class="mode-icon">⚖️</div><h3>人机合盘</h3><p class="mode-desc">AI先给出判断，你来修正，发现认知差异</p><div class="mode-meta"><div class="mode-meta-item"><span class="meta-dot"></span>约 3-5 分钟</div><div class="mode-meta-item"><span class="meta-dot"></span>AI预判 + 人工校准</div><div class="mode-meta-item"><span class="meta-dot"></span>认知差异报告 + 命书</div><div class="mode-meta-item"><span class="meta-dot"></span>适合：团队讨论 / 深度洞察</div></div></div>
 </div>
-<div class="card mode-card" onclick="selectMode('deep',this)">
-<div class="icon">🔭</div>
-<h3>深度排盘</h3>
-<p>5-8分钟，完整评分<br>大运流年详解</p>
-</div>
-<div class="card mode-card selected" onclick="selectMode('hybrid',this)">
-<div class="icon">⚖️</div>
-<h3>人机合盘</h3>
-<p>AI先判断，你来修正<br>对比差异洞察</p>
+<div class="mode-cta" id="modeCta"><button class="btn btn-primary" onclick="proceedFromMode()">以此法开盘 →</button></div>
 </div>
 </div>
-</div>
-</div>
-
-<!-- 幕2 产品登记 -->
 <div class="scene" id="scene-register">
 <div class="register-wrapper">
 <div class="register-left">
-<div class="product-header" id="qaProductHeader">
-  <div class="product-logo" id="qaProductLogo"><span id="qaProductEmoji">🔮</span><img id="qaProductLogoImg" style="display:none" onerror="this.style.display='none';document.getElementById('qaProductEmoji').style.display=''"/></div>
-  <div class="product-info">
-    <div class="p-name" id="qaProductName">—</div>
-    <div class="p-type" id="qaProductTypeLabel">正在分析产品命格...</div>
-    <div class="p-tags">
-      <span class="p-tag dayzhu" id="qaProductDayzhu"></span>
-      <span class="p-tag cat" id="qaProductCat"></span>
-    </div>
-  </div>
-</div>
-<div class="product-baseline" id="qaProductBaseline">
-  <div class="bl-title">命理初判</div>
-  <div class="bl-text" id="qaProductBaselineText">根据产品类型自动推算五行属性...</div>
-</div>
+<div class="product-header" id="qaProductHeader"><div class="product-logo" id="qaProductLogo"><span id="qaProductEmoji">🔮</span><img id="qaProductLogoImg" style="display:none" onerror="this.style.display='none';document.getElementById('qaProductEmoji').style.display=''"/></div><div class="product-info"><div class="p-name" id="qaProductName">—</div><div class="p-type" id="qaProductTypeLabel">正在分析...</div><div class="p-tags"><span class="tag tag-gold" id="qaProductDayzhu"></span><span class="tag tag-purple" id="qaProductCat"></span></div></div></div>
+<div class="product-baseline"><div class="bl-text" id="qaProductBaselineText">根据产品类型自动推算五行属性...</div></div>
 <div class="progress-bar"><div class="progress-fill" id="qaProgress" style="width:0%"></div></div>
 <div id="qaMain"></div>
 </div>
-<div class="register-right">
-<div class="register-right-header">实时命盘推演</div>
-<svg class="mini-mingpan" viewBox="0 0 180 180" id="miniMingpan"></svg>
+<div class="register-right"><div class="register-right-header">实时命盘推演</div><svg class="mini-mingpan" viewBox="0 0 180 180" id="miniMingpan"></svg></div>
 </div>
-</div><!-- /register-wrapper -->
 </div>
-
-<!-- 幕3 定日主 -->
 <div class="scene" id="scene3">
 <div class="dayzhu-section">
 <h2 class="serif">定日主 · 产品五行之魂</h2>
-<p class="dayzhu-recommend" id="dzRecommend"></p>
+<div class="dayzhu-process"><span class="pulse-dot"></span>系统推演中...</div>
+<div class="dayzhu-recommend" id="dzRecommend"></div>
 <div class="dayzhu-grid" id="dzGrid"></div>
-<div style="margin-top:clamp(16px,2vh,30px)">
-<!-- dzConfirm removed -->
 </div>
+<div class="dayzhu-stamp" id="dzStamp"><div class="stamp-text" id="dzStampText">日主已定</div></div>
 </div>
-<div class="dayzhu-stamp" id="dzStamp">
-<div class="stamp-text" id="dzStampText">日主已定</div>
-</div>
-</div>
-
-<!-- 幕4 打分 -->
 <div class="scene" id="scene4">
 <div class="score-section">
 <div class="score-top-bar">
-<h2 class="serif">八维命盘</h2>
-<div class="score-product-strip" id="scoreProductStrip">
-<div class="sp-logo" id="scoreProductLogo">🔮</div>
-<span class="sp-name" id="scoreProductName">—</span>
-<span class="sp-dz" id="scoreProductDz"></span>
-</div>
-<div class="score-modes">
-<button class="score-mode-btn" onclick="setScoreMode('manual',this)">✋ 我自己看</button>
-<button class="score-mode-btn" onclick="setScoreMode('ai',this)">🤖 AI帮我排</button>
-<button class="score-mode-btn active" onclick="setScoreMode('hybrid',this)">⚖️ 人机合盘</button>
-</div>
+<div style="display:flex;align-items:center;gap:16px"><h2 class="serif">八维命盘</h2><div class="score-product-strip"><div class="sp-logo" id="scoreProductLogo">🔮</div><span class="sp-name" id="scoreProductName">—</span><span class="sp-dz" id="scoreProductDz"></span></div></div>
+<div class="score-modes"><button class="score-mode-btn" onclick="setScoreMode('manual',this)">✋ 自评</button><button class="score-mode-btn" onclick="setScoreMode('ai',this)">🤖 AI排盘</button><button class="score-mode-btn active" onclick="setScoreMode('hybrid',this)">⚖️ 人机合盘</button></div>
 </div>
 <div class="score-body">
 <div class="score-left-panel">
-<div class="score-context-card">
-<div class="sc-title">命理初判</div>
-<div class="sc-text" id="scoreBaselineText">根据五行属性推算中...</div>
-<div class="sc-tags" id="scoreProductTags"></div>
-</div>
-<div class="score-radar"><canvas id="radarCanvas" width="300" height="300"></canvas></div>
+<div class="score-bagua-container"><svg class="score-bagua-svg" viewBox="0 0 280 280" id="scoreBagua"></svg></div>
+<div class="score-context-card"><div class="sc-title">命理初判</div><div class="sc-text" id="scoreBaselineText">根据五行属性推算中...</div><div class="sc-tags" id="scoreProductTags"></div></div>
 </div>
 <div class="score-right-panel">
 <div id="scoreSliders"></div>
 <div class="score-alert" id="scoreAlert"></div>
-<div class="score-submit">
-<button class="btn btn-primary" onclick="openFortune()">开命书 →</button>
+<div class="score-submit"><button class="btn btn-primary" onclick="openFortune()">开命书 →</button></div>
 </div>
 </div>
 </div>
 </div>
-</div>
-
-<!-- 幕5 命书 -->
 <div class="fortune-overlay" id="fortuneOverlay">
 <div class="fortune-anim">
-<div class="fortune-line"></div>
-<div class="fortune-seal serif" id="fortuneSeal"></div>
-<p style="color:var(--text2);margin-top:clamp(16px,2vh,24px);font-size:clamp(12px,1.6vw,14px);opacity:0;animation:fadeIn 0.5s 2s forwards">命书已启，请细观之...</p>
+<div class="fortune-scroll"><div class="fortune-line"></div><div class="fortune-seal" id="fortuneSeal"></div><p class="fortune-subtitle">命书已启，请细观之</p></div>
+<div class="fortune-skip" onclick="skipFortuneAnim()">跳过 →</div>
 </div>
 </div>
-
 <div class="fortune-result" id="fortuneResult">
-<div style="text-align:center;margin-bottom:clamp(12px,2vh,20px);flex-shrink:0">
-<button class="btn btn-secondary btn-small" onclick="location.reload()">重新排盘</button>
-</div>
-<div class="fortune-grid">
-<!-- 左列 -->
-<div class="fortune-col">
-<div class="card identity-card">
-<div class="id-name serif" id="fName"></div>
-<div class="id-mingge" id="fMingge"></div>
-<div class="wuxing-bars" id="fWuxing"></div>
-<div class="id-strength" id="fStrength"></div>
-<div class="id-dayun" id="fDayun"></div>
-<div id="fMeters"></div>
-<div class="yi-ji" id="fYiJi"></div>
+<div style="text-align:center;margin-bottom:16px"><button class="btn btn-secondary btn-small" onclick="location.reload()">🔄 重新排盘</button></div>
+<div class="fortune-chapters" id="fortuneChapters"></div>
+<div class="fortune-actions">
+<button class="btn btn-gold btn-small" onclick="shareFortune()">📤 分享命书</button>
+<button class="btn btn-secondary btn-small" onclick="location.reload()">重排另一个</button>
 </div>
 </div>
-<!-- 中列 -->
-<div class="fortune-col">
-<div class="card" style="padding:clamp(14px,2vw,20px);flex-shrink:0">
-<h3>先天命格</h3>
-<div class="ming-card" id="mingCard" onclick="flipMingCard()">
-<div class="ming-card-inner">
-<div class="ming-card-front"><p id="mingFront"></p></div>
-<div class="ming-card-back"><p id="mingBack"></p></div>
-</div>
-<div class="flip-btn">点击「翻译成人话」</div>
-</div>
-<div style="margin:6px 0">
-<div id="mingRisk" style="font-size:clamp(11px,1.4vw,13px);color:var(--red);margin-bottom:4px"></div>
-<div id="mingAdvice" style="font-size:clamp(11px,1.4vw,13px);color:var(--teal)"></div>
-</div>
-</div>
-<div class="card" style="padding:clamp(14px,2vw,20px);flex-shrink:0">
-<h3>大运时间轴</h3>
-<div class="dayun-timeline" id="dayunTimeline"></div>
-</div>
-<div class="card" style="padding:clamp(14px,2vw,20px);flex-shrink:0">
-<h3>流年 2026</h3>
-<div class="liunian" id="liunian"></div>
-</div>
-</div>
-<!-- 右列 -->
-<div class="fortune-col">
-<div class="card" style="padding:clamp(14px,2vw,20px);flex-shrink:0">
-<h3 style="color:var(--teal)">🏷 贵人签</h3>
-<div class="guiren-tags" id="guirenTags"></div>
-<h3 style="color:var(--red);margin-top:12px">⚠ 小人签</h3>
-<div class="xiaoren-tags" id="xiaorenTags"></div>
-</div>
-<div class="card" style="padding:clamp(14px,2vw,20px);text-align:center;flex-shrink:0">
-<button class="btn btn-primary gaiming-btn" id="gaimingBtn" onclick="drawGaiming()">🎯 抽改命签</button>
-<div class="gaiming-result" id="gaimingResult"></div>
-</div>
-</div>
-</div>
-</div>
-
+<div class="hybrid-panel" id="hybridPanel"><div class="hybrid-content" id="hybridContent"></div></div>
 <script>
-// === DATA ===
+/* ═══ DATA ═══ */
 const PRODUCTS=['ChatGPT','豆包','小红书','抖音','Cursor','Notion','微信读书','Duolingo','原神','Perplexity','Figma','飞书','即梦','B站','拼多多','DeepSeek','王者荣耀','携程','Keep','Discord','Kimi','星野','Linear','Lovable'];
-const QIAN_POOL=[
-'需求不是需求，是老板今天突然想起的一句话。',
-'今日宜删功能，不宜再开脑暴会。',
-'数据增长不一定是产品变好，也可能只是入口变大。',
-'用户说想要，不代表用户会用。',
-'你缺的不是 Prompt，是一个真正需要 AI 的场景。',
-'本周财星不显，先别急着做会员中心。',
-'伤官旺而无制，传播力很强，稳定性堪忧。',
-'今天宜问用户，不宜问数据。',
-'留存比增长贵，但增长比留存好看。',
-'印星太旺：研发很开心，产品发布日期还没有。',
-'命中不缺功能，缺的是用户打开它的理由。',
-'比劫成群：赛道热闹，差异化是你唯一的路。'
-];
+const QIAN_POOL=['需求不是需求，是老板今天突然想起的一句话。','今日宜删功能，不宜再开脑暴会。','数据增长不一定是产品变好，也可能只是入口变大。','用户说想要，不代表用户会用。','你缺的不是 Prompt，是一个真正需要 AI 的场景。','本周财星不显，先别急着做会员中心。','伤官旺而无制，传播力很强，稳定性堪忧。','今天宜问用户，不宜问数据。','留存比增长贵，但增长比留存好看。','印星太旺：研发很开心，产品发布日期还没有。','命中不缺功能，缺的是用户打开它的理由。','比劫成群：赛道热闹，差异化是你唯一的路。'];
 const SEAL_TEXTS=['命里有活','财星待显','注定出圈','比劫太多','尚可改命','大器晚成','火旺留不住人','不宜再加功能'];
-
 const DIMENSIONS=['核心价值','技术数据','用户增长','内容传播','留存习惯','商业化','竞争壁垒','行业时机'];
 const DIM_TAGS_LOW=['用弱','弱印','微萌','食神隐','留存弱','财弱','无壁垒','时运未至'];
 const DIM_TAGS_MID=['正用','正印','增势稳','食神透','留存稳','财平','有壁垒','时机尚可'];
 const DIM_TAGS_HIGH=['用旺得众','偏印过旺','势如破竹','伤官透出','黏性极强','财旺','护城河深','大势所趋'];
-
-const FEEDBACK_HIGH=[
-'用旺得众，核心价值清晰，留存自然稳固。',
-'偏印过旺：研发很开心，用户可能开始迷路。',
-'势如破竹：增长很猛，记得同步建设留存。',
-'伤官透出：容易出圈，也容易因一句话翻车。',
-'黏性极强：用户习惯已形成，这是最真实的护城河。',
-'财旺：商业模式清晰，但注意不要过度变现伤用户体验。',
-'护城河深：壁垒已建，竞品难以快速复制。',
-'大势所趋：时代贵人相助，窗口期有限需快速卡位。'
-];
-const FEEDBACK_LOW=[
-'用弱：用户还没找到真正需要它的理由。',
-'弱印：技术积累不足，功能容易被对手复制。',
-'微萌：增长缓慢，需要找到更有效的获客渠道。',
-'食神隐：好用但没人说，缺少自传播钩子。',
-'留存虚弱：所有人都来过，只是没人住下。',
-'财星不显：用户可能喜欢，但暂时不愿付钱。再不收费，投资人要替你算一卦了。',
-'无壁垒：赛道热闹，功能被复制只是时间问题。',
-'时运未至：需求尚未爆发，或许需要等待或教育市场。'
-];
-const FEEDBACK_MID=[
-'核心价值平稳，还有提升空间。',
-'技术积累中规中矩，够用但不突出。',
-'增长尚可，需要持续找到突破口。',
-'传播力一般，缺少引爆点。',
-'留存稳定，但还没有形成不可替代性。',
-'商业化在路上，还需打磨变现路径。',
-'有一定壁垒，但护城河还需加深。',
-'时机尚可，但需要把握节奏。'
-];
-
-const AI_SCORES={
-'jia':[7,6,7,8,7,5,6,7],
-'bing':[7,5,9,9,4,5,7,8],
-'wu':[8,8,6,5,9,7,5,6],
-'geng':[9,9,6,5,7,6,6,7],
-'ren':[8,8,7,7,6,5,8,9],
-'gui':[8,7,6,7,8,4,5,8]
-};
-
-// 产品识别数据库
-const PRODUCT_RECOGNITION = {
-// ——— AI 产品 ———
-'ChatGPT':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'Claude':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'Gemini':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'Grok':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'豆包':{type:'AI陪伴',category:'🤖 AI产品',dayzhu:'gui'},
-'Kimi':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'文心一言':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'通义千问':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'讯飞星火':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'Perplexity':{type:'AI搜索',category:'🤖 AI产品',dayzhu:'ren'},
-'秘塔搜索':{type:'AI搜索',category:'🤖 AI产品',dayzhu:'ren'},
-'即梦':{type:'AI图片生成',category:'🤖 AI产品',dayzhu:'bing'},
-'Midjourney':{type:'AI图片生成',category:'🤖 AI产品',dayzhu:'bing'},
-'Stable Diffusion':{type:'AI图片生成',category:'🤖 AI产品',dayzhu:'bing'},
-'DALL-E':{type:'AI图片生成',category:'🤖 AI产品',dayzhu:'bing'},
-'可灵':{type:'AI视频生成',category:'🤖 AI产品',dayzhu:'bing'},
-'Sora':{type:'AI视频生成',category:'🤖 AI产品',dayzhu:'bing'},
-'Runway':{type:'AI视频生成',category:'🤖 AI产品',dayzhu:'bing'},
-'Cursor':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},
-'Lovable':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},
-'Windsurf':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},
-'Copilot':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},
-'Bolt':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},
-'星野':{type:'AI陪伴',category:'🤖 AI产品',dayzhu:'gui'},
-'Character.AI':{type:'AI陪伴',category:'🤖 AI产品',dayzhu:'gui'},
-'Replika':{type:'AI陪伴',category:'🤖 AI产品',dayzhu:'gui'},
-'DeepSeek':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},
-'Coze':{type:'AI Agent',category:'🤖 AI产品',dayzhu:'geng'},
-'Dify':{type:'AI Agent',category:'🤖 AI产品',dayzhu:'geng'},
-'Jasper':{type:'AI写作',category:'🤖 AI产品',dayzhu:'bing'},
-'Copy.ai':{type:'AI写作',category:'🤖 AI产品',dayzhu:'bing'},
-// ——— 内容产品 ———
-'小红书':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},
-'抖音':{type:'短视频',category:'📱 内容产品',dayzhu:'bing'},
-'TikTok':{type:'短视频',category:'📱 内容产品',dayzhu:'bing'},
-'快手':{type:'短视频',category:'📱 内容产品',dayzhu:'bing'},
-'微博':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},
-'B站':{type:'创作者平台',category:'📱 内容产品',dayzhu:'jia'},
-'YouTube':{type:'创作者平台',category:'📱 内容产品',dayzhu:'jia'},
-'Twitter':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},
-'X':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},
-'Instagram':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},
-'知乎':{type:'知识社区',category:'📱 内容产品',dayzhu:'jia'},
-'微信读书':{type:'知识社区',category:'📱 内容产品',dayzhu:'jia'},
-'得到':{type:'知识付费',category:'📱 内容产品',dayzhu:'jia'},
-'樊登读书':{type:'知识付费',category:'📱 内容产品',dayzhu:'jia'},
-'喜马拉雅':{type:'音频播客',category:'📱 内容产品',dayzhu:'jia'},
-'荔枝FM':{type:'音频播客',category:'📱 内容产品',dayzhu:'jia'},
-'爱奇艺':{type:'长视频',category:'📱 内容产品',dayzhu:'bing'},
-'优酷':{type:'长视频',category:'📱 内容产品',dayzhu:'bing'},
-'腾讯视频':{type:'长视频',category:'📱 内容产品',dayzhu:'bing'},
-'Netflix':{type:'长视频',category:'📱 内容产品',dayzhu:'bing'},
-'Spotify':{type:'音乐',category:'📱 内容产品',dayzhu:'bing'},
-'网易云音乐':{type:'音乐',category:'📱 内容产品',dayzhu:'bing'},
-'QQ音乐':{type:'音乐',category:'📱 内容产品',dayzhu:'bing'},
-'豆瓣':{type:'兴趣社群',category:'💬 社交产品',dayzhu:'jia'},
-// ——— 社交产品 ———
-'微信':{type:'熟人社交',category:'💬 社交产品',dayzhu:'wu'},
-'QQ':{type:'熟人社交',category:'💬 社交产品',dayzhu:'wu'},
-'微信公众号':{type:'内容平台',category:'📱 内容产品',dayzhu:'jia'},
-'陌陌':{type:'陌生人社交',category:'💬 社交产品',dayzhu:'bing'},
-'探探':{type:'陌生人社交',category:'💬 社交产品',dayzhu:'bing'},
-'Soul':{type:'陌生人社交',category:'💬 社交产品',dayzhu:'bing'},
-'Discord':{type:'兴趣社群',category:'💬 社交产品',dayzhu:'jia'},
-'脉脉':{type:'职场社交',category:'💬 社交产品',dayzhu:'geng'},
-'领英':{type:'职场社交',category:'💬 社交产品',dayzhu:'geng'},
-'LinkedIn':{type:'职场社交',category:'💬 社交产品',dayzhu:'geng'},
-'即刻':{type:'兴趣社群',category:'💬 社交产品',dayzhu:'jia'},
-// ——— 工具产品 ———
-'Notion':{type:'效率工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Obsidian':{type:'笔记工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'印象笔记':{type:'笔记工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Roam Research':{type:'笔记工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Figma':{type:'设计工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Canva':{type:'设计工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Sketch':{type:'设计工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'GitHub':{type:'开发者平台',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Linear':{type:'任务管理',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Jira':{type:'任务管理',category:'💼 企业服务',dayzhu:'wu'},
-'Todoist':{type:'任务管理',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Zapier':{type:'自动化工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Make':{type:'自动化工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'n8n':{type:'自动化工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Airtable':{type:'效率工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'Miro':{type:'效率工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'幕布':{type:'效率工具',category:'🛠️ 工具产品',dayzhu:'geng'},
-'腾讯文档':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},
-'石墨文档':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},
-// ——— 企业服务 ———
-'飞书':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},
-'钉钉':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},
-'Slack':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},
-'Teams':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},
-'Zoom':{type:'视频会议',category:'💼 企业服务',dayzhu:'wu'},
-'腾讯会议':{type:'视频会议',category:'💼 企业服务',dayzhu:'wu'},
-'Salesforce':{type:'CRM',category:'💼 企业服务',dayzhu:'wu'},
-'HubSpot':{type:'CRM',category:'💼 企业服务',dayzhu:'wu'},
-'Vercel':{type:'开发者平台',category:'💼 企业服务',dayzhu:'geng'},
-'Stripe':{type:'支付',category:'💼 企业服务',dayzhu:'wu'},
-// ——— 电商 ———
-'淘宝':{type:'综合电商',category:'🛒 电商产品',dayzhu:'wu'},
-'天猫':{type:'综合电商',category:'🛒 电商产品',dayzhu:'wu'},
-'京东':{type:'综合电商',category:'🛒 电商产品',dayzhu:'wu'},
-'拼多多':{type:'综合电商',category:'🛒 电商产品',dayzhu:'bing'},
-'得物':{type:'内容电商',category:'🛒 电商产品',dayzhu:'bing'},
-'闲鱼':{type:'二手交易',category:'🛒 电商产品',dayzhu:'jia'},
-'转转':{type:'二手交易',category:'🛒 电商产品',dayzhu:'jia'},
-'亚马逊':{type:'综合电商',category:'🛒 电商产品',dayzhu:'wu'},
-'支付宝':{type:'支付',category:'🛒 电商产品',dayzhu:'wu'},
-'微信支付':{type:'支付',category:'🛒 电商产品',dayzhu:'wu'},
-// ——— 本地生活 ———
-'美团':{type:'外卖',category:'📍 本地生活',dayzhu:'wu'},
-'饿了么':{type:'外卖',category:'📍 本地生活',dayzhu:'wu'},
-'滴滴':{type:'打车出行',category:'📍 本地生活',dayzhu:'wu'},
-'高德':{type:'地图导航',category:'📍 本地生活',dayzhu:'wu'},
-'百度地图':{type:'地图导航',category:'📍 本地生活',dayzhu:'wu'},
-'大众点评':{type:'到店团购',category:'📍 本地生活',dayzhu:'jia'},
-'携程':{type:'旅行预订',category:'📍 本地生活',dayzhu:'wu'},
-'去哪儿':{type:'旅行预订',category:'📍 本地生活',dayzhu:'wu'},
-'飞猪':{type:'旅行预订',category:'📍 本地生活',dayzhu:'wu'},
-'Airbnb':{type:'旅行预订',category:'📍 本地生活',dayzhu:'jia'},
-// ——— 教育 ———
-'Duolingo':{type:'语言学习',category:'🎓 教育产品',dayzhu:'geng'},
-'多邻国':{type:'语言学习',category:'🎓 教育产品',dayzhu:'geng'},
-'扇贝':{type:'语言学习',category:'🎓 教育产品',dayzhu:'geng'},
-'Keep':{type:'运动健身',category:'🎓 教育产品',dayzhu:'geng'},
-'作业帮':{type:'AI辅导',category:'🎓 教育产品',dayzhu:'geng'},
-'猿辅导':{type:'AI辅导',category:'🎓 教育产品',dayzhu:'geng'},
-'极客时间':{type:'在线课程',category:'🎓 教育产品',dayzhu:'jia'},
-'Coursera':{type:'在线课程',category:'🎓 教育产品',dayzhu:'jia'},
-// ——— 游戏 ———
-'王者荣耀':{type:'竞技游戏',category:'🎮 游戏产品',dayzhu:'bing'},
-'英雄联盟':{type:'竞技游戏',category:'🎮 游戏产品',dayzhu:'bing'},
-'原神':{type:'开放世界',category:'🎮 游戏产品',dayzhu:'bing'},
-'崩坏：星穹铁道':{type:'叙事游戏',category:'🎮 游戏产品',dayzhu:'bing'},
-'Steam':{type:'游戏平台',category:'🎮 游戏产品',dayzhu:'wu'},
-'Epic':{type:'游戏平台',category:'🎮 游戏产品',dayzhu:'wu'},
-'Roblox':{type:'创作者平台',category:'🎮 游戏产品',dayzhu:'jia'},
-'Minecraft':{type:'开放世界',category:'🎮 游戏产品',dayzhu:'jia'},
-// ——— 健康生活 ———
-'微信运动':{type:'运动健身',category:'🎓 教育产品',dayzhu:'geng'},
-'薄荷健康':{type:'饮食记录',category:'🎓 教育产品',dayzhu:'geng'},
-'冥想星球':{type:'冥想',category:'🎓 教育产品',dayzhu:'gui'},
-'Calm':{type:'冥想',category:'🎓 教育产品',dayzhu:'gui'},
-'小睡眠':{type:'睡眠',category:'🎓 教育产品',dayzhu:'gui'}
-};
-
-const PRODUCT_CATEGORIES={
-'🤖 AI产品':['通用AI助手','AI搜索','AI Agent','AI写作','AI图片生成','AI编程','AI陪伴','企业AI'],
-'📱 内容产品':['图文社区','短视频','长视频','音频播客','知识社区','创作者平台'],
-'💬 社交产品':['熟人社交','陌生人社交','兴趣社群','职场社交','游戏社交'],
-'🛠️ 工具产品':['效率工具','任务管理','笔记工具','设计工具','开发工具','自动化工具'],
-'🛒 电商产品':['综合电商','内容电商','二手交易','即时零售'],
-'📍 本地生活':['外卖','到店团购','打车出行','旅行预订'],
-'🎓 教育产品':['语言学习','在线课程','AI辅导','知识付费'],
-'🎮 游戏产品':['竞技游戏','休闲游戏','模拟经营','叙事游戏'],
-'💼 企业服务':['CRM','协同办公','数据分析','开发者平台']
-};
-
-const FIRST_USE_OPTIONS={
-'🤖 AI产品':['快速获得答案','完成一项任务','尝试新技术','被内容种草','工作要求','朋友推荐'],
-'📱 内容产品':['打发时间','找灵感','追热点','朋友分享','算法推荐','创作者推荐'],
-'💬 社交产品':['认识新朋友','维系老关系','找同好','工作需要','打发时间','被拉进来的'],
-'🛠️ 工具产品':['解决具体问题','提升效率','团队协作','替代旧工具','朋友推荐','看到推荐'],
-'🛒 电商产品':['有明确购物需求','逛逛看看','被种草','比价','凑单','直播带货'],
-'📍 本地生活':['饿了/出门需求','看到优惠','朋友推荐','习惯性打开','出差需要','旅游攻略'],
-'🎓 教育产品':['考试压力','工作需要','兴趣驱动','孩子学习','自我提升','朋友推荐'],
-'🎮 游戏产品':['朋友推荐','杀时间','喜欢这个类型','画面吸引','IP吸引','赛事关注'],
-'💼 企业服务':['公司采购','个人发现','领导要求','替代旧系统','行业推荐','展会了解']
-};
-
-const DAYZHU_DATA=[
-{key:'jia',name:'甲木',icon:'🌳',type:'生长型产品',desc:'靠生态和内容积累，越多人用越有价值。',reps:'知乎、GitHub',keywords:['生态积累','网络效应','长期主义'],risk:'增长缓慢期容易失去耐心',feel:'像种一棵树，急不得'},
-{key:'bing',name:'丙火',icon:'🔥',type:'注意力产品',desc:'靠热点和传播爆发，情绪价值驱动。',reps:'抖音、小红书',keywords:['爆发力','情绪价值','传播裂变'],risk:'热度消退后留不住人',feel:'像一把火，烧得快灭得也快'},
-{key:'wu',name:'戊土',icon:'🏔️',type:'基础设施产品',desc:'稳定可靠，用户形成基础依赖。',reps:'支付宝、飞书',keywords:['稳定性','基础依赖','不可替代'],risk:'创新动力不足，容易被新物种绕过',feel:'像一座山，稳但不够性感'},
-{key:'geng',name:'庚金',icon:'⚡',type:'效率工具产品',desc:'快速精准，替代人工，量化提升效率。',reps:'Cursor、Notion',keywords:['精准','效率','可量化'],risk:'AI替代风险，护城河容易被技术突破',feel:'像一把刀，锋利但需要磨'},
-{key:'ren',name:'壬水',icon:'🌊',type:'信息流产品',desc:'连接信息和需求，个性化推荐。',reps:'ChatGPT、Perplexity',keywords:['流动性','个性化','连接'],risk:'依赖数据质量，信息源被掐则干涸',feel:'像一条河，无处不在但难以聚焦'},
-{key:'gui',name:'癸水',icon:'🌙',type:'陪伴型AI产品',desc:'私人化、情绪化，渗透日常生活。',reps:'豆包、星野',keywords:['陪伴','渗透','个性化'],risk:'用户情感转移快，忠诚度低',feel:'像月光，温柔但不炽烈'}
-];
-
-const GUlREN_MAP={
-'jia':['社区KOL','内容创作者','长尾用户','生态合作'],
-'bing':['热点事件','明星效应','病毒传播','短视频平台'],
-'wu':['企业采购','政策支持','大平台合作','行业标准'],
-'geng':['效率极客','企业IT','降本需求','自动化趋势'],
-'ren':['浏览器合作','学术机构','创作者口碑','苹果生态'],
-'gui':['高频用户','情感共鸣','个性化场景','孤独经济']
-};
-
-const XIAOREN_MAP=[0,1,2,3,4,5,6,7].map(i=>{
-const m={0:['产品定位模糊','用户价值不清'],1:['技术被复制','无数据壁垒'],2:['获客成本高','渠道依赖'],3:['无自传播','缺记忆点'],4:['用完即走','高流失率'],5:['付费意愿低','免费竞品多'],6:['同质化严重','迁移成本低'],7:['市场未成熟','窗口期未到']};
-return m[i];
-});
-
-const GAIMING_MAP={
-0:{today:"约访3个真实用户，问他们'如果这个产品消失，你会怎样？'",m30:'用一句话重写产品价值主张，测试5个版本',next:'砍掉最不被使用的3个功能，聚焦核心场景'},
-1:{today:'和技术团队一起列出3个竞品无法复制的数据能力',m30:'建立独家数据集或模型微调优势',next:'构建技术品牌，让用户因为"技术信任"而来'},
-2:{today:'找到1个免费获客渠道并验证转化',m30:'设计一个用户自发推荐的机制',next:'找到PMF，让增长从推变成拉'},
-3:{today:'写一条能让用户截图分享的产品文案',m30:'策划一次有记忆点的品牌事件',next:'建立内容飞轮，让产品自带传播基因'},
-4:{today:'追踪用户第2次和第7次打开产品的路径',m30:'设计一个让用户每周回来的触发机制',next:'建立内容沉淀或社交关系，增加迁移成本'},
-5:{today:'列出产品中用户最愿意付费的一个场景',m30:'测试单点付费，不上完整会员体系',next:'找到付费率>5%的垂直场景，先做深再做宽'},
-6:{today:'分析竞品功能重叠度，找到差异化的一个点',m30:'构建数据/关系/品牌中至少一种壁垒',next:'从工具进化为平台，让用户生态自我加固'},
-7:{today:'研究目标市场未来18个月的趋势报告',m30:'提前布局基础设施，等待时机窗口',next:'成为品类定义者而非追随者'}
-};
-
+const DIM_DETAIL=[{risk:'用户价值模糊',action:'重新定义核心价值主张'},{risk:'技术积累不足',action:'建立数据壁垒或算法优势'},{risk:'获客成本高',action:'找到免费获客渠道'},{risk:'缺少传播钩子',action:'打造记忆点和传播事件'},{risk:'用户来了又走',action:'建立习惯触发机制'},{risk:'用户不愿付费',action:'找到付费意愿最高的场景'},{risk:'竞品可复制',action:'构建数据/关系/品牌壁垒'},{risk:'市场未爆发',action:'提前布局，等待时机'}];
+const FEEDBACK_HIGH=['核心价值清晰，用户离不开。','技术积累深厚，竞品难追。','增长势如破竹。','传播力强，用户自发推荐。','用户习惯已形成，黏性极强。','商业模式清晰，变现健康。','护城河深，竞品难复制。','大势所趋，窗口期把握得当。'];
+const FEEDBACK_LOW=['用户还没找到需要它的理由。','技术积累不足，易被复制。','增长缓慢，渠道待探索。','好用但没人说。','所有人都来过，没人住下。','用户喜欢但不愿付费。','赛道热闹，差异化不足。','需求尚未爆发。'];
+const FEEDBACK_MID=['核心价值平稳，还有提升空间。','技术中规中矩。','增长尚可，需找突破口。','传播力一般。','留存稳定但未不可替代。','商业化在路上。','有一定壁垒，还需加深。','时机尚可。'];
+const AI_SCORES={'jia':[7,6,7,8,7,5,6,7],'bing':[7,5,9,9,4,5,7,8],'wu':[8,8,6,5,9,7,5,6],'geng':[9,9,6,5,7,6,6,7],'ren':[8,8,7,7,6,5,8,9],'gui':[8,7,6,7,8,4,5,8]};
+const PRODUCT_RECOGNITION={'ChatGPT':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'Claude':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'Gemini':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'Grok':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'豆包':{type:'AI陪伴',category:'🤖 AI产品',dayzhu:'gui'},'Kimi':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'文心一言':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'通义千问':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'讯飞星火':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'Perplexity':{type:'AI搜索',category:'🤖 AI产品',dayzhu:'ren'},'秘塔搜索':{type:'AI搜索',category:'🤖 AI产品',dayzhu:'ren'},'即梦':{type:'AI图片生成',category:'🤖 AI产品',dayzhu:'bing'},'Midjourney':{type:'AI图片生成',category:'🤖 AI产品',dayzhu:'bing'},'Stable Diffusion':{type:'AI图片生成',category:'🤖 AI产品',dayzhu:'bing'},'DALL-E':{type:'AI图片生成',category:'🤖 AI产品',dayzhu:'bing'},'可灵':{type:'AI视频生成',category:'🤖 AI产品',dayzhu:'bing'},'Sora':{type:'AI视频生成',category:'🤖 AI产品',dayzhu:'bing'},'Runway':{type:'AI视频生成',category:'🤖 AI产品',dayzhu:'bing'},'Cursor':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},'Lovable':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},'Windsurf':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},'Copilot':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},'Bolt':{type:'AI编程',category:'🤖 AI产品',dayzhu:'geng'},'星野':{type:'AI陪伴',category:'🤖 AI产品',dayzhu:'gui'},'Character.AI':{type:'AI陪伴',category:'🤖 AI产品',dayzhu:'gui'},'Replika':{type:'AI陪伴',category:'🤖 AI产品',dayzhu:'gui'},'DeepSeek':{type:'通用AI助手',category:'🤖 AI产品',dayzhu:'ren'},'Coze':{type:'AI Agent',category:'🤖 AI产品',dayzhu:'geng'},'Dify':{type:'AI Agent',category:'🤖 AI产品',dayzhu:'geng'},'Jasper':{type:'AI写作',category:'🤖 AI产品',dayzhu:'bing'},'Copy.ai':{type:'AI写作',category:'🤖 AI产品',dayzhu:'bing'},'小红书':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},'抖音':{type:'短视频',category:'📱 内容产品',dayzhu:'bing'},'TikTok':{type:'短视频',category:'📱 内容产品',dayzhu:'bing'},'快手':{type:'短视频',category:'📱 内容产品',dayzhu:'bing'},'微博':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},'B站':{type:'创作者平台',category:'📱 内容产品',dayzhu:'jia'},'YouTube':{type:'创作者平台',category:'📱 内容产品',dayzhu:'jia'},'Twitter':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},'X':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},'Instagram':{type:'图文社区',category:'📱 内容产品',dayzhu:'bing'},'知乎':{type:'知识社区',category:'📱 内容产品',dayzhu:'jia'},'微信读书':{type:'知识社区',category:'📱 内容产品',dayzhu:'jia'},'得到':{type:'知识付费',category:'📱 内容产品',dayzhu:'jia'},'樊登读书':{type:'知识付费',category:'📱 内容产品',dayzhu:'jia'},'喜马拉雅':{type:'音频播客',category:'📱 内容产品',dayzhu:'jia'},'荔枝FM':{type:'音频播客',category:'📱 内容产品',dayzhu:'jia'},'爱奇艺':{type:'长视频',category:'📱 内容产品',dayzhu:'bing'},'优酷':{type:'长视频',category:'📱 内容产品',dayzhu:'bing'},'腾讯视频':{type:'长视频',category:'📱 内容产品',dayzhu:'bing'},'Netflix':{type:'长视频',category:'📱 内容产品',dayzhu:'bing'},'Spotify':{type:'音乐',category:'📱 内容产品',dayzhu:'bing'},'网易云音乐':{type:'音乐',category:'📱 内容产品',dayzhu:'bing'},'QQ音乐':{type:'音乐',category:'📱 内容产品',dayzhu:'bing'},'豆瓣':{type:'兴趣社群',category:'💬 社交产品',dayzhu:'jia'},'微信':{type:'熟人社交',category:'💬 社交产品',dayzhu:'wu'},'QQ':{type:'熟人社交',category:'💬 社交产品',dayzhu:'wu'},'微信公众号':{type:'内容平台',category:'📱 内容产品',dayzhu:'jia'},'陌陌':{type:'陌生人社交',category:'💬 社交产品',dayzhu:'bing'},'探探':{type:'陌生人社交',category:'💬 社交产品',dayzhu:'bing'},'Soul':{type:'陌生人社交',category:'💬 社交产品',dayzhu:'bing'},'Discord':{type:'兴趣社群',category:'💬 社交产品',dayzhu:'jia'},'脉脉':{type:'职场社交',category:'💬 社交产品',dayzhu:'geng'},'领英':{type:'职场社交',category:'💬 社交产品',dayzhu:'geng'},'LinkedIn':{type:'职场社交',category:'💬 社交产品',dayzhu:'geng'},'即刻':{type:'兴趣社群',category:'💬 社交产品',dayzhu:'jia'},'Notion':{type:'效率工具',category:'🛠️ 工具产品',dayzhu:'geng'},'Obsidian':{type:'笔记工具',category:'🛠️ 工具产品',dayzhu:'geng'},'印象笔记':{type:'笔记工具',category:'🛠️ 工具产品',dayzhu:'geng'},'Roam Research':{type:'笔记工具',category:'🛠️ 工具产品',dayzhu:'geng'},'Figma':{type:'设计工具',category:'🛠️ 工具产品',dayzhu:'geng'},'Canva':{type:'设计工具',category:'🛠️ 工具产品',dayzhu:'geng'},'Sketch':{type:'设计工具',category:'🛠️ 工具产品',dayzhu:'geng'},'GitHub':{type:'开发者平台',category:'🛠️ 工具产品',dayzhu:'geng'},'Linear':{type:'任务管理',category:'🛠️ 工具产品',dayzhu:'geng'},'Jira':{type:'任务管理',category:'💼 企业服务',dayzhu:'wu'},'Todoist':{type:'任务管理',category:'🛠️ 工具产品',dayzhu:'geng'},'Zapier':{type:'自动化工具',category:'🛠️ 工具产品',dayzhu:'geng'},'Make':{type:'自动化工具',category:'🛠️ 工具产品',dayzhu:'geng'},'n8n':{type:'自动化工具',category:'🛠️ 工具产品',dayzhu:'geng'},'Airtable':{type:'效率工具',category:'🛠️ 工具产品',dayzhu:'geng'},'Miro':{type:'效率工具',category:'🛠️ 工具产品',dayzhu:'geng'},'幕布':{type:'效率工具',category:'🛠️ 工具产品',dayzhu:'geng'},'腾讯文档':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},'石墨文档':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},'飞书':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},'钉钉':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},'Slack':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},'Teams':{type:'协同办公',category:'💼 企业服务',dayzhu:'wu'},'Zoom':{type:'视频会议',category:'💼 企业服务',dayzhu:'wu'},'腾讯会议':{type:'视频会议',category:'💼 企业服务',dayzhu:'wu'},'Salesforce':{type:'CRM',category:'💼 企业服务',dayzhu:'wu'},'HubSpot':{type:'CRM',category:'💼 企业服务',dayzhu:'wu'},'Vercel':{type:'开发者平台',category:'💼 企业服务',dayzhu:'geng'},'Stripe':{type:'支付',category:'💼 企业服务',dayzhu:'wu'},'淘宝':{type:'综合电商',category:'🛒 电商产品',dayzhu:'wu'},'天猫':{type:'综合电商',category:'🛒 电商产品',dayzhu:'wu'},'京东':{type:'综合电商',category:'🛒 电商产品',dayzhu:'wu'},'拼多多':{type:'综合电商',category:'🛒 电商产品',dayzhu:'bing'},'得物':{type:'内容电商',category:'🛒 电商产品',dayzhu:'bing'},'闲鱼':{type:'二手交易',category:'🛒 电商产品',dayzhu:'jia'},'转转':{type:'二手交易',category:'🛒 电商产品',dayzhu:'jia'},'亚马逊':{type:'综合电商',category:'🛒 电商产品',dayzhu:'wu'},'支付宝':{type:'支付',category:'🛒 电商产品',dayzhu:'wu'},'微信支付':{type:'支付',category:'🛒 电商产品',dayzhu:'wu'},'美团':{type:'外卖',category:'📍 本地生活',dayzhu:'wu'},'饿了么':{type:'外卖',category:'📍 本地生活',dayzhu:'wu'},'滴滴':{type:'打车出行',category:'📍 本地生活',dayzhu:'wu'},'高德':{type:'地图导航',category:'📍 本地生活',dayzhu:'wu'},'百度地图':{type:'地图导航',category:'📍 本地生活',dayzhu:'wu'},'大众点评':{type:'到店团购',category:'📍 本地生活',dayzhu:'jia'},'携程':{type:'旅行预订',category:'📍 本地生活',dayzhu:'wu'},'去哪儿':{type:'旅行预订',category:'📍 本地生活',dayzhu:'wu'},'飞猪':{type:'旅行预订',category:'📍 本地生活',dayzhu:'wu'},'Airbnb':{type:'旅行预订',category:'📍 本地生活',dayzhu:'jia'},'Duolingo':{type:'语言学习',category:'🎓 教育产品',dayzhu:'geng'},'多邻国':{type:'语言学习',category:'🎓 教育产品',dayzhu:'geng'},'扇贝':{type:'语言学习',category:'🎓 教育产品',dayzhu:'geng'},'Keep':{type:'运动健身',category:'🎓 教育产品',dayzhu:'geng'},'作业帮':{type:'AI辅导',category:'🎓 教育产品',dayzhu:'geng'},'猿辅导':{type:'AI辅导',category:'🎓 教育产品',dayzhu:'geng'},'极客时间':{type:'在线课程',category:'🎓 教育产品',dayzhu:'jia'},'Coursera':{type:'在线课程',category:'🎓 教育产品',dayzhu:'jia'},'王者荣耀':{type:'竞技游戏',category:'🎮 游戏产品',dayzhu:'bing'},'英雄联盟':{type:'竞技游戏',category:'🎮 游戏产品',dayzhu:'bing'},'原神':{type:'开放世界',category:'🎮 游戏产品',dayzhu:'bing'},'崩坏：星穹铁道':{type:'叙事游戏',category:'🎮 游戏产品',dayzhu:'bing'},'Steam':{type:'游戏平台',category:'🎮 游戏产品',dayzhu:'wu'},'Epic':{type:'游戏平台',category:'🎮 游戏产品',dayzhu:'wu'},'Roblox':{type:'创作者平台',category:'🎮 游戏产品',dayzhu:'jia'},'Minecraft':{type:'开放世界',category:'🎮 游戏产品',dayzhu:'jia'},'微信运动':{type:'运动健身',category:'🎓 教育产品',dayzhu:'geng'},'薄荷健康':{type:'饮食记录',category:'🎓 教育产品',dayzhu:'geng'},'冥想星球':{type:'冥想',category:'🎓 教育产品',dayzhu:'gui'},'Calm':{type:'冥想',category:'🎓 教育产品',dayzhu:'gui'},'小睡眠':{type:'睡眠',category:'🎓 教育产品',dayzhu:'gui'}};
+const PRODUCT_CATEGORIES={'🤖 AI产品':['通用AI助手','AI搜索','AI Agent','AI写作','AI图片生成','AI编程','AI陪伴','企业AI'],'📱 内容产品':['图文社区','短视频','长视频','音频播客','知识社区','创作者平台'],'💬 社交产品':['熟人社交','陌生人社交','兴趣社群','职场社交','游戏社交'],'🛠️ 工具产品':['效率工具','任务管理','笔记工具','设计工具','开发工具','自动化工具'],'🛒 电商产品':['综合电商','内容电商','二手交易','即时零售'],'📍 本地生活':['外卖','到店团购','打车出行','旅行预订'],'🎓 教育产品':['语言学习','在线课程','AI辅导','知识付费'],'🎮 游戏产品':['竞技游戏','休闲游戏','模拟经营','叙事游戏'],'💼 企业服务':['CRM','协同办公','数据分析','开发者平台']};
+const FIRST_USE_OPTIONS={'🤖 AI产品':['快速获得答案','完成一项任务','尝试新技术','被内容种草','工作要求','朋友推荐'],'📱 内容产品':['打发时间','找灵感','追热点','朋友分享','算法推荐','创作者推荐'],'💬 社交产品':['认识新朋友','维系老关系','找同好','工作需要','打发时间','被拉进来的'],'🛠️ 工具产品':['解决具体问题','提升效率','团队协作','替代旧工具','朋友推荐','看到推荐'],'🛒 电商产品':['有明确购物需求','逛逛看看','被种草','比价','凑单','直播带货'],'📍 本地生活':['饿了/出门需求','看到优惠','朋友推荐','习惯性打开','出差需要','旅游攻略'],'🎓 教育产品':['考试压力','工作需要','兴趣驱动','孩子学习','自我提升','朋友推荐'],'🎮 游戏产品':['朋友推荐','杀时间','喜欢这个类型','画面吸引','IP吸引','赛事关注'],'💼 企业服务':['公司采购','个人发现','领导要求','替代旧系统','行业推荐','展会了解']};
+const DAYZHU_DATA=[{key:'jia',name:'甲木',icon:'🌳',type:'生长型产品',desc:'靠生态和内容积累，越多人用越有价值。',reps:'知乎、GitHub',keywords:['生态积累','网络效应','长期主义'],risk:'增长缓慢期容易失去耐心',feel:'像种一棵树，急不得'},{key:'bing',name:'丙火',icon:'🔥',type:'注意力产品',desc:'靠热点和传播爆发，情绪价值驱动。',reps:'抖音、小红书',keywords:['爆发力','情绪价值','传播裂变'],risk:'热度消退后留不住人',feel:'像一把火，烧得快灭得也快'},{key:'wu',name:'戊土',icon:'🏔️',type:'基础设施产品',desc:'稳定可靠，用户形成基础依赖。',reps:'支付宝、飞书',keywords:['稳定性','基础依赖','不可替代'],risk:'创新动力不足，容易被新物种绕过',feel:'像一座山，稳但不够性感'},{key:'geng',name:'庚金',icon:'⚡',type:'效率工具产品',desc:'快速精准，替代人工，量化提升效率。',reps:'Cursor、Notion',keywords:['精准','效率','可量化'],risk:'AI替代风险，护城河容易被技术突破',feel:'像一把刀，锋利但需要磨'},{key:'ren',name:'壬水',icon:'🌊',type:'信息流产品',desc:'连接信息和需求，个性化推荐。',reps:'ChatGPT、Perplexity',keywords:['流动性','个性化','连接'],risk:'依赖数据质量，信息源被掐则干涸',feel:'像一条河，无处不在但难以聚焦'},{key:'gui',name:'癸水',icon:'🌙',type:'陪伴型AI产品',desc:'私人化、情绪化，渗透日常生活。',reps:'豆包、星野',keywords:['陪伴','渗透','个性化'],risk:'用户情感转移快，忠诚度低',feel:'像月光，温柔但不炽烈'}];
+const GUlREN_MAP={'jia':['社区KOL','内容创作者','长尾用户','生态合作'],'bing':['热点事件','明星效应','病毒传播','短视频平台'],'wu':['企业采购','政策支持','大平台合作','行业标准'],'geng':['效率极客','企业IT','降本需求','自动化趋势'],'ren':['浏览器合作','学术机构','创作者口碑','苹果生态'],'gui':['高频用户','情感共鸣','个性化场景','孤独经济']};
+const GUlREN_DETAIL={'社区KOL':'为什么是贵人：KOL带来高质量内容和用户。|带来什么：初始用户群和内容沉淀。|如何借力：建立创作者激励计划。','内容创作者':'为什么是贵人：创作者是内容生态的核心供给方。|带来什么：持续的内容产出。|如何借力：降低创作门槛。','长尾用户':'为什么是贵人：长尾用户贡献80%使用时长。|带来什么：稳定的DAU。|如何借力：优化新手引导。','生态合作':'为什么是贵人：合作伙伴扩大产品边界。|带来什么：新的流量入口。|如何借力：建立开放API。','热点事件':'为什么是贵人：热点带来爆发式曝光。|带来什么：短时间内大量新用户。|如何借力：建立快速响应机制。','明星效应':'为什么是贵人：明星背书快速建立信任。|带来什么：品牌认知。|如何借力：寻找自然契合的代言人。','病毒传播':'为什么是贵人：用户自发传播是最低成本获客。|带来什么：指数级增长。|如何借力：设计可分享的机制。','短视频平台':'为什么是贵人：短视频是最大流量入口。|带来什么：海量曝光。|如何借力：制作原生内容。','企业采购':'为什么是贵人：B端带来稳定收入。|带来什么：可预测的ARR。|如何借力：建立企业版功能。','政策支持':'为什么是贵人：政策红利打开市场。|带来什么：准入门槛降低。|如何借力：紧跟政策方向。','大平台合作':'为什么是贵人：大平台导流。|带来什么：用户量和背书。|如何借力：找到互补场景。','行业标准':'为什么是贵人：成为标准意味着不可替代。|带来什么：长期壁垒。|如何借力：参与标准制定。','效率极客':'为什么是贵人：早期深度用户贡献口碑。|带来什么：迭代方向。|如何借力：建立beta社区。','企业IT':'为什么是贵人：IT决策者推动采购。|带来什么：大单。|如何借力：提供POC工具。','降本需求':'为什么是贵人：降本需求旺盛。|带来什么：明确的价值主张。|如何借力：量化节省的成本。','自动化趋势':'为什么是贵人：自动化是不可逆趋势。|带来什么：持续增长。|如何借力：连接更多工具。','浏览器合作':'为什么是贵人：默认入口带来流量。|带来什么：极低获客成本。|如何借力：申请预装。','学术机构':'为什么是贵人：学术背书建立信任。|带来什么：高知用户群。|如何借力：提供教育版。','创作者口碑':'为什么是贵人：创作者推荐比广告有效。|带来什么：高质量转化。|如何借力：提供创作者工具。','苹果生态':'为什么是贵人：App Store推荐带来下载。|带来什么：下载量暴增。|如何借力：优化ASO。','高频用户':'为什么是贵人：日活是产品命脉。|带来什么：稳定习惯和数据。|如何借力：设计每日触达。','情感共鸣':'为什么是贵人：情感连接比功能更持久。|带来什么：用户忠诚。|如何借力：塑造人格化品牌。','个性化场景':'为什么是贵人：个性化是高留存基础。|带来什么：高迁移成本。|如何借力：积累偏好数据。','孤独经济':'为什么是贵人：独居人群增长是趋势。|带来什么：庞大用户基数。|如何借力：打造陪伴感。'};
+const XIAOREN_MAP=[0,1,2,3,4,5,6,7].map(i=>({0:['产品定位模糊','用户价值不清'],1:['技术被复制','无数据壁垒'],2:['获客成本高','渠道依赖'],3:['无自传播','缺记忆点'],4:['用完即走','高流失率'],5:['付费意愿低','免费竞品多'],6:['同质化严重','迁移成本低'],7:['市场未成熟','窗口期未到']})[i]);
+const XIAOREN_DETAIL={'产品定位模糊':'为什么是小人：用户不知道产品是干什么的。|风险：传播无效。|如何规避：一句话说清价值。','用户价值不清':'为什么是小人：用户感觉不到独特价值。|风险：随时被替代。|如何规避：放大差异化。','技术被复制':'为什么是小人：竞品可快速复制功能。|风险：护城河消失。|如何规避：建立数据壁垒。','无数据壁垒':'为什么是小人：没有独家数据。|风险：能力被追赶。|如何规避：设计数据飞轮。','获客成本高':'为什么是小人：增长全靠买量。|风险：停投就萎缩。|如何规避：找免费渠道。','渠道依赖':'为什么是小人：过度依赖单一渠道。|风险：政策变化影响大。|如何规避：多渠道布局。','无自传播':'为什么是小人：用户不会主动推荐。|风险：增长全靠推力。|如何规避：设计分享机制。','缺记忆点':'为什么是小人：产品没有记忆点。|风险：用户想不起来。|如何规避：打造品牌记忆点。','用完即走':'为什么是小人：用户完成目标就离开。|风险：无法形成习惯。|如何规避：增加内容沉淀。','高流失率':'为什么是小人：留存率持续走低。|风险：增长被流失抵消。|如何规避：优化新手体验。','付费意愿低':'为什么是小人：用户不愿付费。|风险：无法自负盈亏。|如何规避：找付费场景。','免费竞品多':'为什么是小人：大量免费替代品。|风险：定价被压缩。|如何规避：做深做专。','同质化严重':'为什么是小人：和竞品高度重叠。|风险：陷入价格战。|如何规避：找差异化。','迁移成本低':'为什么是小人：用户随时可换。|风险：留存脆弱。|如何规避：建立壁垒。','市场未成熟':'为什么是小人：需求尚未爆发。|风险：教育成本高。|如何规避：小范围验证。','窗口期未到':'为什么是小人：过早入场浪费资源。|风险：资金链断裂。|如何规避：最小成本验证。'};
+const GAIMING_MAP={0:{today:"约访3个真实用户，问'如果产品消失你会怎样？'",m30:'重写产品价值主张，测试5个版本',next:'砍掉最不被使用的3个功能',week:'每天记录一个用户反馈'},1:{today:'列出3个竞品无法复制的数据能力',m30:'建立独家数据集或模型优势',next:'构建技术品牌',week:'研究竞品技术架构'},2:{today:'找到1个免费获客渠道并验证',m30:'设计用户自发推荐机制',next:'找到PMF',week:'测试3种获客文案'},3:{today:'写一条能让用户截图分享的文案',m30:'策划有记忆点的品牌事件',next:'建立内容飞轮',week:'分析5个刷屏案例'},4:{today:'追踪用户第2次和第7次打开的路径',m30:'设计每周回来的触发机制',next:'增加迁移成本',week:'统计7日留存关键行为'},5:{today:'列出用户最愿付费的一个场景',m30:'测试单点付费',next:'找到付费率>5%的场景',week:'设计付费A/B测试'},6:{today:'分析竞品功能重叠度',m30:'构建至少一种壁垒',next:'从工具进化为平台',week:'绘制竞品对比矩阵'},7:{today:'研究目标市场未来18月趋势',m30:'提前布局基础设施',next:'成为品类定义者',week:'采访3个潜在用户'}};
 const DAYUN_NODES=['萌芽运','出圈运','增长运','争位运','生财运','守成运','转命运'];
-const DAYUN_DESC=[
-'产品刚诞生，寻找第一批种子用户。此时最重要的是验证需求，不要急着扩张。',
-'产品开始被人知道，口碑初建。传播力和品牌认知是关键。',
-'用户量快速增长，资源大量投入。要同步建设基础设施和留存机制。',
-'竞品出现，需要明确差异化定位。价格战和功能战都是下策。',
-'找到可持续的盈利模式。从烧钱增长转向健康营收。',
-'巩固市场地位，防守为主。护城河的深度决定了能守多久。',
-'寻找第二曲线或重大转型。在主营业务还健康时就开始布局。'
-];
-
+const DAYUN_DESC=['产品刚诞生，寻找第一批种子用户。','产品开始被人知道，口碑初建。','用户量快速增长，资源大量投入。','竞品出现，需要明确差异化。','找到可持续的盈利模式。','巩固市场地位，防守为主。','寻找第二曲线或重大转型。'];
+const DAYUN_DETAIL=[{do:'验证需求，找种子用户',notDo:'大规模推广',metric:'种子用户满意度>80%',risk:'需求伪命题'},{do:'制造话题，建立品牌认知',notDo:'只关注功能',metric:'自然增长率>30%',risk:'有名无实'},{do:'优化获客，建设留存',notDo:'只看新增',metric:'7日留存>40%',risk:'增长泡沫'},{do:'明确差异化',notDo:'价格战',metric:'NPS>50',risk:'定位失焦'},{do:'测试付费场景',notDo:'全面收费',metric:'付费率>5%',risk:'用户流失'},{do:'加固壁垒',notDo:'忽视竞品',metric:'市场份额稳定',risk:'被绕过'},{do:'探索第二曲线',notDo:'放弃主营',metric:'新业务PMF',risk:'两头落空'}];
 const YI_MAP=['深耕用户核心场景','将技术转化为用户感知体验','快速扩大市场认知','制造话题引爆传播','建立用户无法迁移的壁垒','优化付费转化路径','开放生态扩大护城河','快速卡位建立先发优势'];
 const JI_MAP=['盲目扩大功能边界','过度宣传技术忽视体验','在增长未解决前急着商业化','默默做好产品等用户发现','靠买量掩盖留存问题','先建复杂会员体系','正面对抗头部竞品','逆势强推不成熟市场'];
+const MINGGE_CONTENT={'伤官配印格':{text:'伤官配印，技术为骨，传播为翼。产品天生带话题，但也容易因过度追求创新而偏离用户真实需求。',plain:'技术和传播双强，但小心别为了秀技术忽略用户体验。',risk:'过度追求技术炫技',advice:'把技术翻译成用户能感知的价值'},'食神生财格':{text:'食神生财，以内容养商业，以口碑带增长。产品自带传播基因，但留存是隐忧。',plain:'传播和留存都强，商业化有望。要把流量变留量。',risk:'留存跟不上增长',advice:'先建留存机制再扩大传播'},'财官双美格':{text:'财官双美，商业清晰，用户黏性强。赚钱且不伤用户体验。',plain:'赚钱模式清晰，用户愿意留下。需要寻找新的增长曲线。',risk:'陷入舒适区',advice:'探索第二增长曲线'},'火旺土虚格':{text:'火旺土虚，增长凶猛但根基不稳。用户来得快去得也快。',plain:'增长数据好看，但用户留不住。',risk:'增长泡沫破裂',advice:'暂停拉新，全力做留存'},'印旺身弱格':{text:'印旺身弱，技术积累深厚但核心价值不明。',plain:'技术很强但用户不买单。用户不知道这跟自己有什么关系。',risk:'自嗨式创新',advice:'用用户听得懂的语言重新定义产品价值'},'身强财弱格':{text:'身强财弱，壁垒很高但不赚钱。',plain:'产品有壁垒但没赚到钱。',risk:'持续烧钱',advice:'找到一个用户愿意付费的切入点'},'木火通明格':{text:'木火通明，时机正好但商业化还没跟上。',plain:'风口来了但还没想好怎么赚钱。',risk:'错过窗口期',advice:'先用最简模式验证付费意愿'},'中和稳命格':{text:'中和稳命，各项均衡但无明显优势。',plain:'什么都还行，但什么都不够突出。',risk:'平庸陷阱',advice:'砍掉不重要的功能，集中打透一个场景'},'比劫夺财格':{text:'比劫夺财，赛道热闹但差异化不足。',plain:'赛道太卷了，用户没理由选你。',risk:'陷入价格战',advice:'找到只有你能做的差异化'}};
 
-// === 状态管理 ===
-let state={
-productName:'',
-mode:'hybrid',
-step:0,
-productType:'',
-productCat:'',
-answers:{},
-dayzhu:'',
-scores:[5,5,5,5,5,5,5,5],
-scoreMode:'hybrid',
-recognized:false,
-recognizedType:'',
-recognizedDayzhu:''
-};
+/* ═══ STATE ═══ */
+let state={productName:'',mode:'hybrid',step:0,productType:'',productCat:'',answers:{},dayzhu:'',scores:[5,5,5,5,5,5,5,5],aiScores:[5,5,5,5,5,5,5,5],scoreMode:'hybrid',recognized:false,recognizedType:'',recognizedDayzhu:'',hybridDecisions:{},expandedSlider:-1};
 
-// === INIT ===
-document.addEventListener('DOMContentLoaded',()=>{
-drawMingpan();drawMiniMingpan();
-buildLogoWall();
-setupPlaceholderRotation();
-setupProductRecognition();
-});
+/* ═══ ANALYTICS (埋点) ═══ */
+function trackEvent(event,data={}){try{const k='destiny_analytics',e=JSON.parse(localStorage.getItem(k)||'[]');e.push({event,data,ts:Date.now(),product:state.productName});localStorage.setItem(k,JSON.stringify(e.slice(-200)))}catch(e){}}
 
-function drawMingpan(){
-const svg=document.getElementById('mingpanSvg');
-const cx=160,cy=160;
-// 后天八卦方位（乾兑离震坤艮坎巽）
-const GUAS=[
-  {sym:'☰',name:'乾',wx:'金'},
-  {sym:'☱',name:'兑',wx:'金'},
-  {sym:'☲',name:'离',wx:'火'},
-  {sym:'☳',name:'震',wx:'木'},
-  {sym:'☷',name:'坤',wx:'土'},
-  {sym:'☶',name:'艮',wx:'土'},
-  {sym:'☵',name:'坎',wx:'水'},
-  {sym:'☴',name:'巽',wx:'木'},
-];
-const GOLD='176,141,60', BROWN='95,78,64';
-let h='';
-// 最外层：虚线装饰环
-h+=`<circle cx="${cx}" cy="${cy}" r="152" fill="none" stroke="rgba(${GOLD},0.35)" stroke-width="1" stroke-dasharray="3 5"/>`;
-// 外实环
-const R_OUT=138, R_IN=98;
-h+=`<circle cx="${cx}" cy="${cy}" r="${R_OUT}" fill="none" stroke="rgba(${GOLD},0.55)" stroke-width="1.4"/>`;
-h+=`<circle cx="${cx}" cy="${cy}" r="${R_IN}" fill="none" stroke="rgba(${GOLD},0.4)" stroke-width="1"/>`;
-// 8个扭分隔线 + 扭区卡片
-for(let i=0;i<8;i++){
-  const a1=Math.PI*2*i/8-Math.PI/2 - Math.PI/8;
-  const a2=a1+Math.PI*2/8;
-  const x1o=cx+R_OUT*Math.cos(a1),y1o=cy+R_OUT*Math.sin(a1);
-  const x2o=cx+R_OUT*Math.cos(a2),y2o=cy+R_OUT*Math.sin(a2);
-  const x1i=cx+R_IN*Math.cos(a1),y1i=cy+R_IN*Math.sin(a1);
-  const x2i=cx+R_IN*Math.cos(a2),y2i=cy+R_IN*Math.sin(a2);
-  const fill=i%2===0?`rgba(${GOLD},0.06)`:`rgba(${BROWN},0.04)`;
-  h+=`<path d="M${x1i},${y1i} L${x1o},${y1o} A${R_OUT},${R_OUT} 0 0,1 ${x2o},${y2o} L${x2i},${y2i} A${R_IN},${R_IN} 0 0,0 ${x1i},${y1i} Z" fill="${fill}" stroke="rgba(${GOLD},0.28)" stroke-width="0.6"/>`;
-}
-// 卦符 + 卦名 + 五行
-const R_SYM=126, R_NAME=110;
-GUAS.forEach((g,i)=>{
-  const am=Math.PI*2*i/8-Math.PI/2;
-  const sx=cx+R_SYM*Math.cos(am),sy=cy+R_SYM*Math.sin(am);
-  const nx=cx+R_NAME*Math.cos(am),ny=cy+R_NAME*Math.sin(am);
-  h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:15px;fill:rgba(${GOLD},0.9)">${g.sym}</text>`;
-  h+=`<text x="${nx}" y="${ny}" text-anchor="middle" dominant-baseline="middle" style="font-size:9px;fill:rgba(${BROWN},0.75);letter-spacing:1px">${g.name}<tspan style="font-size:7px;fill:rgba(${GOLD},0.6)"> ${g.wx}</tspan></text>`;
-});
-// 内环：五行维度蓝图（根据scores）
-const R_MID=72;
-h+=`<circle cx="${cx}" cy="${cy}" r="${R_MID}" fill="rgba(255,253,248,0.5)" stroke="rgba(${GOLD},0.5)" stroke-width="1.2"/>`;
-const sc=(typeof state!=='undefined'&&state&&state.scores)?state.scores:[6,5,7,5,6,5,6,5];
-// 网格线
-for(let i=0;i<8;i++){
-  const a=Math.PI*2*i/8-Math.PI/2;
-  h+=`<line x1="${cx}" y1="${cy}" x2="${cx+R_MID*Math.cos(a)}" y2="${cy+R_MID*Math.sin(a)}" stroke="rgba(${GOLD},0.15)" stroke-width="0.6"/>`;
-}
-let pts=sc.map((s,i)=>{
-  const a=Math.PI*2*i/8-Math.PI/2, r2=R_MID*0.82*(s/10);
-  return [cx+r2*Math.cos(a),cy+r2*Math.sin(a)];
-});
-h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(${GOLD},0.14)" stroke="rgba(${GOLD},0.6)" stroke-width="1.3"/>`;
-// 中心太极阴阳鱼（真正的 S 形）
-const TR=26;
-const dark=`rgba(${BROWN},0.72)`, light='rgba(255,253,248,0.95)';
-// 外圈底 = 阳（亮）
-h+=`<circle cx="${cx}" cy="${cy}" r="${TR}" fill="${light}" stroke="rgba(${GOLD},0.55)" stroke-width="1"/>`;
-// 阴半（暗）：半圆 + 上下两个小半圆拼出 S
-h+=`<path d="M${cx},${cy-TR} A${TR},${TR} 0 0,1 ${cx},${cy+TR} A${TR/2},${TR/2} 0 0,1 ${cx},${cy} A${TR/2},${TR/2} 0 0,0 ${cx},${cy-TR} Z" fill="${dark}"/>`;
-// 两个鱼眼
-h+=`<circle cx="${cx}" cy="${cy-TR/2}" r="${TR/6}" fill="${light}"/>`;
-h+=`<circle cx="${cx}" cy="${cy+TR/2}" r="${TR/6}" fill="${dark}"/>`;
+/* ═══ INIT ═══ */
+document.addEventListener('DOMContentLoaded',()=>{drawHeroBagua();drawMiniMingpan();setupPlaceholderRotation();setupProductRecognition();refreshQian()});
+
+/* ═══ BAGUA DRAWING ═══ */
+function drawHeroBagua(active=false){
+const svg=document.getElementById('heroBagua');const cx=200,cy=200;
+const GUAS=[{sym:'☰',name:'乾',wx:'金',dim:'竞争壁垒'},{sym:'☱',name:'兑',wx:'金',dim:'商业化'},{sym:'☲',name:'离',wx:'火',dim:'内容传播'},{sym:'☳',name:'震',wx:'木',dim:'用户增长'},{sym:'☷',name:'坤',wx:'土',dim:'留存习惯'},{sym:'☶',name:'艮',wx:'土',dim:'行业时机'},{sym:'☵',name:'坎',wx:'水',dim:'核心价值'},{sym:'☴',name:'巽',wx:'木',dim:'技术数据'}];
+const G='183,144,56',B='75,61,48';let h='';
+h+=`<circle cx="${cx}" cy="${cy}" r="190" fill="none" stroke="rgba(${G},0.15)" stroke-width="0.8" stroke-dasharray="4 6"><animate attributeName="r" values="188;192;188" dur="6s" repeatCount="indefinite"/></circle>`;
+const RO=175,RI=125;
+h+=`<circle cx="${cx}" cy="${cy}" r="${RO}" fill="none" stroke="rgba(${G},0.4)" stroke-width="1.5"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="${RI}" fill="none" stroke="rgba(${G},0.3)" stroke-width="1"/>`;
+for(let i=0;i<8;i++){const a1=Math.PI*2*i/8-Math.PI/2-Math.PI/8,a2=a1+Math.PI*2/8;
+const x1o=cx+RO*Math.cos(a1),y1o=cy+RO*Math.sin(a1),x2o=cx+RO*Math.cos(a2),y2o=cy+RO*Math.sin(a2);
+const x1i=cx+RI*Math.cos(a1),y1i=cy+RI*Math.sin(a1),x2i=cx+RI*Math.cos(a2),y2i=cy+RI*Math.sin(a2);
+const f=i%2===0?`rgba(${G},0.04)`:`rgba(${B},0.03)`;
+h+=`<path class="bagua-sector ${active?'lit':''}" data-idx="${i}" d="M${x1i},${y1i} L${x1o},${y1o} A${RO},${RO} 0 0,1 ${x2o},${y2o} L${x2i},${y2i} A${RI},${RI} 0 0,0 ${x1i},${y1i} Z" fill="${f}" stroke="rgba(${G},0.2)" stroke-width="0.6"/>`}
+const RS=158,RN=138;
+GUAS.forEach((g,i)=>{const am=Math.PI*2*i/8-Math.PI/2;
+const sx=cx+RS*Math.cos(am),sy=cy+RS*Math.sin(am),nx=cx+RN*Math.cos(am),ny=cy+RN*Math.sin(am);
+h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:18px;fill:rgba(${G},${active?'0.95':'0.7'})" class="bagua-sector" data-idx="${i}">${g.sym}</text>`;
+h+=`<text x="${nx}" y="${ny-6}" text-anchor="middle" dominant-baseline="middle" style="font-size:10px;fill:rgba(${B},0.7)">${g.name}·${g.wx}</text>`;
+h+=`<text x="${nx}" y="${ny+7}" text-anchor="middle" dominant-baseline="middle" style="font-size:8px;fill:rgba(${B},0.45)">${g.dim}</text>`});
+const RM=95;
+h+=`<circle cx="${cx}" cy="${cy}" r="${RM}" fill="rgba(255,252,247,0.5)" stroke="rgba(${G},0.4)" stroke-width="1.2"/>`;
+for(let i=0;i<8;i++){const a=Math.PI*2*i/8-Math.PI/2;h+=`<line x1="${cx}" y1="${cy}" x2="${cx+RM*Math.cos(a)}" y2="${cy+RM*Math.sin(a)}" stroke="rgba(${G},0.1)" stroke-width="0.5"/>`}
+const sc=state.scores;
+let pts=sc.map((s,i)=>{const a=Math.PI*2*i/8-Math.PI/2,r=RM*0.8*(s/10);return[cx+r*Math.cos(a),cy+r*Math.sin(a)]});
+h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(${G},0.1)" stroke="rgba(${G},0.5)" stroke-width="1.2"/>`;
+const TR=30;
+h+=`<circle cx="${cx}" cy="${cy}" r="${TR}" fill="rgba(255,252,247,0.95)" stroke="rgba(${G},0.4)" stroke-width="1"/>`;
+h+=`<path d="M${cx},${cy-TR} A${TR},${TR} 0 0,1 ${cx},${cy+TR} A${TR/2},${TR/2} 0 0,1 ${cx},${cy} A${TR/2},${TR/2} 0 0,0 ${cx},${cy-TR} Z" fill="rgba(${B},0.65)"/>`;
+h+=`<circle cx="${cx}" cy="${cy-TR/2}" r="${TR/6}" fill="rgba(255,252,247,0.95)"/>`;
+h+=`<circle cx="${cx}" cy="${cy+TR/2}" r="${TR/6}" fill="rgba(${B},0.65)"/>`;
+const ct=active?state.productName:'日主未定';
+h+=`<text x="${cx}" y="${cy+TR+18}" class="bagua-center-text ${active?'active':''}" style="font-size:${active?'12':'11'}px">${ct}</text>`;
 svg.innerHTML=h;
+if(active)svg.classList.add('has-product');else svg.classList.remove('has-product');
 }
 
 function drawMiniMingpan(){
-const svg=document.getElementById('miniMingpan');
-if(!svg)return;
-const cx=90,cy=90;
-const GUAS2=['☰','☱','☲','☳','☷','☶','☵','☴'];
-const R2=72,RS=60,RN=48,RM=32;
-let h='';
-h+=`<circle cx="${cx}" cy="${cy}" r="${R2}" fill="none" stroke="rgba(176,141,60,0.35)" stroke-width="1"/>`;
-for(let i=0;i<8;i++){
-  const a1=Math.PI*2*i/8-Math.PI/2, a2=a1+Math.PI*2/8;
-  const am=a1+Math.PI/8;
-  const x1=cx+R2*Math.cos(a1),y1=cy+R2*Math.sin(a1);
-  const x2=cx+R2*Math.cos(a2),y2=cy+R2*Math.sin(a2);
-  h+=`<path d="M${cx},${cy} L${x1},${y1} A${R2},${R2} 0 0,1 ${x2},${y2} Z" fill="${i%2?'rgba(95,78,64,0.05)':'rgba(176,141,60,0.06)'}" stroke="rgba(176,141,60,0.15)" stroke-width="0.5"/>`;
-  const sx=cx+RS*Math.cos(am),sy=cy+RS*Math.sin(am);
-  h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;fill:rgba(176,141,60,0.8)">${GUAS2[i]}</text>`;
-}
-h+=`<circle cx="${cx}" cy="${cy}" r="${RM}" fill="rgba(255,253,248,0.6)" stroke="rgba(176,141,60,0.5)" stroke-width="1.2"/>`;
-const sc=state&&state.scores?state.scores:[5,5,5,5,5,5,5,5];
-let pts=sc.map((s,i)=>{
-  const a=Math.PI*2*i/8-Math.PI/2, r2=RM*0.85*(s/10);
-  return [cx+r2*Math.cos(a),cy+r2*Math.sin(a)];
-});
-h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(176,141,60,0.15)" stroke="rgba(176,141,60,0.7)" stroke-width="1.2"/>`;
-for(let i=0;i<8;i++){
-  const a=Math.PI*2*i/8-Math.PI/2;
-  h+=`<line x1="${cx}" y1="${cy}" x2="${cx+RM*Math.cos(a)}" y2="${cy+RM*Math.sin(a)}" stroke="rgba(176,141,60,0.2)" stroke-width="0.6"/>`;
-}
-h+=`<circle cx="${cx}" cy="${cy}" r="5" fill="rgba(176,141,60,0.5)"/>`;
-svg.innerHTML=h;
+const svg=document.getElementById('miniMingpan');if(!svg)return;
+const cx=90,cy=90,R2=72,RS=60,RM=32;const G2=['☰','☱','☲','☳','☷','☶','☵','☴'];let h='';
+h+=`<circle cx="${cx}" cy="${cy}" r="${R2}" fill="none" stroke="rgba(183,144,56,0.3)" stroke-width="1"/>`;
+for(let i=0;i<8;i++){const a1=Math.PI*2*i/8-Math.PI/2,a2=a1+Math.PI*2/8,am=a1+Math.PI/8;
+const x1=cx+R2*Math.cos(a1),y1=cy+R2*Math.sin(a1),x2=cx+R2*Math.cos(a2),y2=cy+R2*Math.sin(a2);
+h+=`<path d="M${cx},${cy} L${x1},${y1} A${R2},${R2} 0 0,1 ${x2},${y2} Z" fill="${i%2?'rgba(75,61,48,0.04)':'rgba(183,144,56,0.05)'}" stroke="rgba(183,144,56,0.12)" stroke-width="0.5"/>`;
+const sx=cx+RS*Math.cos(am),sy=cy+RS*Math.sin(am);
+h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;fill:rgba(183,144,56,0.7)">${G2[i]}</text>`}
+h+=`<circle cx="${cx}" cy="${cy}" r="${RM}" fill="rgba(255,252,247,0.5)" stroke="rgba(183,144,56,0.4)" stroke-width="1"/>`;
+const sc=state.scores;let pts=sc.map((s,i)=>{const a=Math.PI*2*i/8-Math.PI/2,r=RM*0.82*(s/10);return[cx+r*Math.cos(a),cy+r*Math.sin(a)]});
+h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(183,144,56,0.12)" stroke="rgba(183,144,56,0.6)" stroke-width="1.2"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="4" fill="rgba(183,144,56,0.4)"/>`;svg.innerHTML=h;
 }
 
+function drawScoreBagua(){
+const svg=document.getElementById('scoreBagua');if(!svg)return;
+const cx=140,cy=140,RO=130,RI=85,RS=115;
+const GUAS=[{sym:'☰',dim:'壁垒'},{sym:'☱',dim:'商业'},{sym:'☲',dim:'传播'},{sym:'☳',dim:'增长'},{sym:'☷',dim:'留存'},{sym:'☶',dim:'时机'},{sym:'☵',dim:'价值'},{sym:'☴',dim:'技术'}];
+const G='183,144,56';let h='';
+h+=`<circle cx="${cx}" cy="${cy}" r="${RO}" fill="none" stroke="rgba(${G},0.3)" stroke-width="1"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="${RI}" fill="none" stroke="rgba(${G},0.2)" stroke-width="0.8"/>`;
+for(let i=0;i<8;i++){const a1=Math.PI*2*i/8-Math.PI/2-Math.PI/8,a2=a1+Math.PI*2/8;
+const x1o=cx+RO*Math.cos(a1),y1o=cy+RO*Math.sin(a1),x2o=cx+RO*Math.cos(a2),y2o=cy+RO*Math.sin(a2);
+const x1i=cx+RI*Math.cos(a1),y1i=cy+RI*Math.sin(a1),x2i=cx+RI*Math.cos(a2),y2i=cy+RI*Math.sin(a2);
+const s=state.scores[i];let f=s>=8?'rgba(111,156,139,0.12)':s>=5?'rgba(183,144,56,0.06)':'rgba(200,100,88,0.08)';
+h+=`<path d="M${x1i},${y1i} L${x1o},${y1o} A${RO},${RO} 0 0,1 ${x2o},${y2o} L${x2i},${y2i} A${RI},${RI} 0 0,0 ${x1i},${y1i} Z" fill="${f}" stroke="rgba(${G},0.15)" stroke-width="0.5" style="cursor:pointer" onclick="expandSlider(${i})"/>`}
+GUAS.forEach((g,i)=>{const am=Math.PI*2*i/8-Math.PI/2;const sx=cx+RS*Math.cos(am),sy=cy+RS*Math.sin(am);
+h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:14px;fill:rgba(${G},0.8)">${g.sym}</text>`;
+h+=`<text x="${sx}" y="${sy+14}" text-anchor="middle" dominant-baseline="middle" style="font-size:8px;fill:rgba(75,61,48,0.5)">${g.dim}</text>`});
+const RM=55;
+h+=`<circle cx="${cx}" cy="${cy}" r="${RM}" fill="rgba(255,252,247,0.4)" stroke="rgba(${G},0.35)" stroke-width="1"/>`;
+let pts=state.scores.map((s,i)=>{const a=Math.PI*2*i/8-Math.PI/2,r=RM*0.85*(s/10);return[cx+r*Math.cos(a),cy+r*Math.sin(a)]});
+h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(${G},0.08)" stroke="rgba(${G},0.5)" stroke-width="1.2"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="4" fill="rgba(${G},0.4)"/>`;svg.innerHTML=h;
+}
+
+/* ═══ PLACEHOLDER ROTATION ═══ */
 let placeholderIdx=0;
 const placeholders=['输入ChatGPT看财星','输入小红书看木火','输入原神看五行','输入Cursor看效率命','输入你正在做的产品...','输入飞书看土性','输入豆包看水命','输入B站看木火通明'];
-function setupPlaceholderRotation(){
-const input=document.getElementById('productInput');
-setInterval(()=>{
-placeholderIdx=(placeholderIdx+1)%placeholders.length;
-input.placeholder=placeholders[placeholderIdx];
-},2500);
-}
+function setupPlaceholderRotation(){const input=document.getElementById('productInput');setInterval(()=>{placeholderIdx=(placeholderIdx+1)%placeholders.length;input.placeholder=placeholders[placeholderIdx]},2500)}
 
-// === 产品识别 ===
+/* ═══ PRODUCT RECOGNITION ═══ */
 function setupProductRecognition(){
-const input=document.getElementById('productInput');
-const recDiv=document.getElementById('productRecognition');
-const recText=document.getElementById('recognitionText');
-
-input.addEventListener('input',(e)=>{
-const val=e.target.value.trim();
-if(!val){
-recDiv.classList.remove('show');
-state.recognized=false;
-return;
-}
-
-// 模糊匹配
+const input=document.getElementById('productInput'),recDiv=document.getElementById('productRecognition'),recText=document.getElementById('recognitionText');
+input.addEventListener('input',(e)=>{const val=e.target.value.trim();
+if(!val){recDiv.classList.remove('show');state.recognized=false;drawHeroBagua(false);return}
 const matched=findProductMatch(val);
-if(matched){
-const info=PRODUCT_RECOGNITION[matched];
-const dzItem=DAYZHU_DATA.find(d=>d.key===info.dayzhu);
-recText.textContent=`已识别：${matched} → ${info.type} · ${dzItem.name}型产品`;
-recDiv.classList.add('show');
-state.recognized=true;
-state.recognizedType=info.type;
-state.recognizedDayzhu=info.dayzhu;
-state.productCat=info.category;
-state.productType=info.type;
-}else{
-recText.textContent='新产品？选择最接近的类型 ↓';
-recDiv.classList.add('show');
-state.recognized=false;
+if(matched){const info=PRODUCT_RECOGNITION[matched],dz=DAYZHU_DATA.find(d=>d.key===info.dayzhu);
+recText.textContent=`已识别：${matched} → ${info.type} · ${dz.name}型`;recDiv.classList.add('show');
+state.recognized=true;state.recognizedType=info.type;state.recognizedDayzhu=info.dayzhu;state.productCat=info.category;state.productType=info.type;
+drawHeroBagua(true)}else{recText.textContent='新产品？选择最接近的类型 ↓';recDiv.classList.add('show');state.recognized=false;drawHeroBagua(false)}})
 }
-});
-}
+function findProductMatch(input){const l=input.toLowerCase();for(const n of Object.keys(PRODUCT_RECOGNITION)){if(n.toLowerCase()===l)return n}for(const n of Object.keys(PRODUCT_RECOGNITION)){if(n.toLowerCase().includes(l)||l.includes(n.toLowerCase()))return n}return null}
+function continueWithRecognized(){const name=document.getElementById('productInput').value.trim();if(!name)return;state.productName=name;if(state.recognized){state.productType=state.recognizedType;const info=PRODUCT_RECOGNITION[findProductMatch(name)];state.productCat=info.category;state.dayzhu=info.dayzhu}trackEvent('continue_recognized');showScene(1)}
 
-function findProductMatch(input){
-const inputLower=input.toLowerCase();
-// 精确匹配
-for(const name of Object.keys(PRODUCT_RECOGNITION)){
-if(name.toLowerCase()===inputLower)return name;
-}
-// 模糊匹配
-for(const name of Object.keys(PRODUCT_RECOGNITION)){
-if(name.toLowerCase().includes(inputLower)||inputLower.includes(name.toLowerCase())){
-return name;
-}
-}
-return null;
-}
+/* ═══ NAVIGATION ═══ */
+function showScene(n){document.querySelectorAll('.scene').forEach(s=>{s.classList.remove('active');s.classList.add('exiting')});setTimeout(()=>{document.querySelectorAll('.scene').forEach(s=>s.classList.remove('exiting'));const id=n===2?'scene-register':'scene'+n;document.getElementById(id).classList.add('active')},50)}
 
-function continueWithRecognized(){
-const name=document.getElementById('productInput').value.trim();
-if(!name)return;
-state.productName=name;
-if(state.recognized){
-state.productType=state.recognizedType;
-state.productCat=state.recognizedCategory||Object.values(PRODUCT_CATEGORIES).flat().find(c=>c===state.recognizedType)?
-Object.keys(PRODUCT_CATEGORIES).find(k=>PRODUCT_CATEGORIES[k].includes(state.recognizedType)):'';
-state.dayzhu=state.recognizedDayzhu;
-}
-showScene(1);
-}
-
-// === NAVIGATION ===
-function showScene(n){
-document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
-const sceneId=n===2?'scene-register':'scene'+n;
-document.getElementById(sceneId).classList.add('active');
-}
-
-// === 幕0 ===
-function randomProduct(){
-const p=PRODUCTS[Math.floor(Math.random()*PRODUCTS.length)];
-document.getElementById('productInput').value=p;
-document.getElementById('productInput').dispatchEvent(new Event('input'));
-}
-function showQian(){
-document.getElementById('qianText').textContent=QIAN_POOL[Math.floor(Math.random()*QIAN_POOL.length)];
-document.getElementById('qianModal').classList.add('show');
-}
-function closeQian(){document.getElementById('qianModal').classList.remove('show')}
+/* ═══ SCENE 0 ═══ */
+function randomProduct(){const p=PRODUCTS[Math.floor(Math.random()*PRODUCTS.length)];document.getElementById('productInput').value=p;document.getElementById('productInput').dispatchEvent(new Event('input'))}
+function pickExample(name){document.getElementById('productInput').value=name;document.getElementById('productInput').dispatchEvent(new Event('input'));trackEvent('pick_example',{name})}
+function refreshQian(){document.getElementById('qianText').textContent=QIAN_POOL[Math.floor(Math.random()*QIAN_POOL.length)]}
 
 function startDivination(){
 const name=document.getElementById('productInput').value.trim();
-if(!name){document.getElementById('productInput').style.borderColor='var(--red)';return}
-state.productName=name;
-
-if(state.recognized){
-// 已识别，跳过类型选择
-state.productType=state.recognizedType;
-const info=PRODUCT_RECOGNITION[findProductMatch(name)];
-state.productCat=info.category;
-state.dayzhu=info.dayzhu;
-showScene(1);
-}else{
+if(!name){document.getElementById('productInput').style.borderColor='var(--accent-primary)';return}
+state.productName=name;trackEvent('start_divination',{product:name,recognized:state.recognized});
+if(state.recognized){state.productType=state.recognizedType;const info=PRODUCT_RECOGNITION[findProductMatch(name)];state.productCat=info.category;state.dayzhu=info.dayzhu}
 showScene(1);
 }
-}
 
-// === 幕1 ===
+/* ═══ SCENE 1 - MODE ═══ */
 function selectMode(mode,el){
-state.mode=mode;
-document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
-el.classList.add('selected');
-setTimeout(()=>{showScene(2);initQA()},500);
+state.mode=mode;document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');
+document.getElementById('modeCta').classList.add('show');trackEvent('select_mode',{mode});
 }
+function proceedFromMode(){showScene(2);initQA()}
 
-// === 幕2 QA ===
+/* ═══ SCENE 2 - QA ═══ */
 let qaStep_current=0;
-function getQASteps(){
-const steps=[];
-
-// 如果未识别产品，先选类型
-if(!state.recognized){
-steps.push({type:'product_type',q:'这是什么类型的产品？'});
-}
-
+function getQASteps(){const steps=[];if(!state.recognized)steps.push({type:'product_type',q:'这是什么类型的产品？'});
 steps.push({type:'first_use',q:'用户为什么第一次打开它？',options:getFirstUseOptions()});
 steps.push({type:'return_reason',q:'用户为什么会再次回来？',options:['已经形成习惯','数据和内容沉淀','结果质量好','社区关系','工作流程离不开','没有更好替代']});
 steps.push({type:'monetization',q:'它主要靠什么赚钱？',options:['订阅','广告','交易佣金','企业付费','增值服务','暂时不赚钱']});
+if(state.mode!=='fast'){steps.push({type:'fear',q:'它最怕什么？',options:['免费竞品替代','大厂复制','用户迁移','政策变化','算法失效','热度消退']});
+steps.push({type:'stage',q:'它现在处于哪个阶段？',options:['刚出生','小范围有人用','开始出圈','快速增长','增长放缓','商业化关键期']})}return steps}
+function getFirstUseOptions(){if(state.productCat&&FIRST_USE_OPTIONS[state.productCat])return FIRST_USE_OPTIONS[state.productCat];return['解决具体问题','打发时间','朋友推荐','工作需要','被种草','尝试新技术']}
 
-if(state.mode!=='fast'){
-steps.push({type:'fear',q:'它最怕什么？',options:['免费竞品替代','大厂复制','用户迁移','政策变化','算法失效','热度消退']});
-steps.push({type:'stage',q:'它现在处于哪个阶段？',options:['刚出生','小范围有人用','开始出圈','快速增长','增长放缓','商业化关键期']});
-}
-return steps;
-}
-
-function getFirstUseOptions(){
-if(state.productCat&&FIRST_USE_OPTIONS[state.productCat]){
-return FIRST_USE_OPTIONS[state.productCat];
-}
-return ['解决具体问题','打发时间','朋友推荐','工作需要','被种草','尝试新技术'];
-}
-
-function initQA(){
-qaStep_current=0;
-state.answers={};
-updateQAProductHeader();
-renderQA();
-}
-
+function initQA(){qaStep_current=0;state.answers={};updateQAProductHeader();renderQA()}
 function updateQAProductHeader(){
-const name=state.productName||'未命名产品';
-const rec=PRODUCT_RECOGNITION[name]||{};
-const type=rec.type||state.productType||'自定义产品';
-const cat=rec.category||state.productCat||'🛠️ 工具产品';
-const dzKey=rec.dayzhu||state.recognizedDayzhu||recommendDayzhu();
-const dz=DAYZHU_DATA.find(d=>d.key===dzKey)||DAYZHU_DATA[0];
-
-// 更新头部
+const name=state.productName||'未命名产品',rec=PRODUCT_RECOGNITION[name]||{};
+const type=rec.type||state.productType||'自定义产品',cat=rec.category||state.productCat||'🛠️ 工具产品';
+const dzKey=rec.dayzhu||state.recognizedDayzhu||recommendDayzhu(),dz=DAYZHU_DATA.find(d=>d.key===dzKey)||DAYZHU_DATA[0];
 document.getElementById('qaProductName').textContent=name;
-document.getElementById('qaProductTypeLabel').textContent=type+'  ·  '+cat.replace(/[🤖📱💬🛠️🛒📍🎓🎮💼]/u,'').trim();
+document.getElementById('qaProductTypeLabel').textContent=type+' · '+cat.replace(/[^\u4e00-\u9fa5a-zA-Z\s]/g,'').trim();
 document.getElementById('qaProductDayzhu').textContent=dz.icon+' '+dz.name+'型';
-document.getElementById('qaProductCat').textContent=cat.match(/[🤖📱💬🛠️🛒📍🎓🎮💼]/u)?.[0]||'🔮';
-
-// 尝试加载 Favicon
-const emoji=getCategoryEmoji(cat);
-document.getElementById('qaProductEmoji').textContent=emoji;
+document.getElementById('qaProductCat').textContent=(cat.match(/[🤖📱💬🛠️🛒📍🎓🎮💼]/u)||['🔮'])[0];
+const emoji=getCategoryEmoji(cat);document.getElementById('qaProductEmoji').textContent=emoji;
 const logoImg=document.getElementById('qaProductLogoImg');
-const faviconUrl=`https://favicon.im/${name.toLowerCase().replace(/\s+/g,'')}.com?larger=true`;
-logoImg.src=faviconUrl;
-logoImg.onload=()=>{ logoImg.style.display=''; document.getElementById('qaProductEmoji').style.display='none'; };
-logoImg.onerror=()=>{ logoImg.style.display='none'; document.getElementById('qaProductEmoji').style.display=''; };
-
-// 命理初判
-const baselineMap={
-'ren':'壬水命格：个性化推荐与信息分发驱动，流动性强但聚焦难。核心在于提升信息匹配精度和用户主动性。',
-'gui':'癸水命格：情绪陪伴与私域渗透，温柔但依赖用户情感投入。忠诚度受情感转移影响大。',
-'jia':'甲木命格：内容生态积累型，越用越有价值。需要时间和耐心，忌急于求成。',
-'yi':'乙木命格：柔性内容社区，依赖创作者生态。创作者流失是核心风险。',
-'bing':'丙火命格：注意力经济驱动，情绪价值爆发强。需防热度消退后的用户流失。',
-'ding':'丁火命格：垂直深度社区，用户黏性靠共同兴趣维系。规模扩张有天花板。',
-'wu':'戊土命格：基础设施型，用户形成底层依赖。稳定可靠，但创新节奏偏慢。',
-'ji':'己土命格：数据沉淀与关系沉淀并重，黏性来自习惯。迁移成本高是护城河。',
-'geng':'庚金命格：效率工具属性，精准替代人工流程。AI替代风险是长期威胁。',
-'xin':'辛金命格：精细化体验产品，用户对品质敏感。品牌溢价是核心资产。'
-};
-document.getElementById('qaProductBaselineText').textContent=baselineMap[dzKey]||dz.desc||'根据五行属性推算中...';
+logoImg.src=`https://favicon.im/${name.toLowerCase().replace(/\s+/g,'')}.com?larger=true`;
+logoImg.onload=()=>{logoImg.style.display='';document.getElementById('qaProductEmoji').style.display='none'};
+logoImg.onerror=()=>{logoImg.style.display='none';document.getElementById('qaProductEmoji').style.display=''};
+const bm={'ren':'壬水命格：信息分发型，流动性强但聚焦难。','gui':'癸水命格：情绪陪伴型，忠诚度受情感转移影响。','jia':'甲木命格：内容生态积累型，需时间和耐心。','bing':'丙火命格：注意力经济驱动，需防热度消退。','wu':'戊土命格：基础设施型，稳定但创新偏慢。','geng':'庚金命格：效率工具属性，AI替代是长期威胁。'};
+document.getElementById('qaProductBaselineText').textContent=bm[dzKey]||dz.desc||'推算中...';
 }
-
-function getCategoryEmoji(cat){
-if(cat.includes('AI'))return '🤖';
-if(cat.includes('内容'))return '📱';
-if(cat.includes('社交'))return '💬';
-if(cat.includes('工具'))return '🛠️';
-if(cat.includes('电商'))return '🛒';
-if(cat.includes('本地'))return '📍';
-if(cat.includes('教育'))return '🎓';
-if(cat.includes('游戏'))return '🎮';
-if(cat.includes('企业'))return '💼';
-return '🔮';
-}
+function getCategoryEmoji(cat){if(cat.includes('AI'))return'🤖';if(cat.includes('内容'))return'📱';if(cat.includes('社交'))return'💬';if(cat.includes('工具'))return'🛠️';if(cat.includes('电商'))return'🛒';if(cat.includes('本地'))return'📍';if(cat.includes('教育'))return'🎓';if(cat.includes('游戏'))return'🎮';if(cat.includes('企业'))return'💼';return'🔮'}
 
 function renderQA(){
-const steps=getQASteps();
-const step=steps[qaStep_current];
-const total=steps.length;
+const steps=getQASteps(),step=steps[qaStep_current],total=steps.length;
 document.getElementById('qaProgress').style.width=((qaStep_current+1)/total*100)+'%';
+const main=document.getElementById('qaMain');let html=`<div class="qa-question">${step.q}</div>`;
+if(step.type==='product_type'){html+=renderTypeSelector()}else{html+=`<div class="qa-grid">`;step.options.forEach(opt=>{const sel=state.answers[step.type]===opt?'selected':'';html+=`<div class="qa-option ${sel}" onclick="selectQAOption('${step.type}','${opt}',this)">${opt}</div>`});html+=`</div>`}
+main.innerHTML=html;drawMiniMingpan();
+if(step.type!=='product_type')setTimeout(()=>{if(state.answers[step.type]){if(qaStep_current>=steps.length-1){showScene(3);initDayzhu()}else{qaStep_current++;renderQA()}}},300);
+}
+function renderTypeSelector(){const cats=Object.keys(PRODUCT_CATEGORIES);let html='<div class="type-tabs">';cats.forEach((c,i)=>{html+=`<div class="type-tab ${i===0?'active':''}" onclick="switchTypeTab('${c}',this)">${c}</div>`});html+='</div><div class="type-options" id="typeOptions">';html+=renderTypeOptions(cats[0]);html+='</div>';return html}
+function renderTypeOptions(cat){const opts=PRODUCT_CATEGORIES[cat]||[];let h='';opts.forEach(o=>{const sel=state.productType===o?'selected':'';h+=`<div class="type-option ${sel}" onclick="selectProductType('${cat}','${o}',this)">${o}</div>`});return h}
+function switchTypeTab(cat,el){document.querySelectorAll('.type-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('typeOptions').innerHTML=renderTypeOptions(cat)}
+function selectProductType(cat,opt,el){state.productCat=cat;state.productType=opt;document.querySelectorAll('.type-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');setTimeout(()=>{if(qaStep_current>=getQASteps().length-1){showScene(3);initDayzhu()}else{qaStep_current++;renderQA()}},300)}
+function selectQAOption(type,val,el){state.answers[type]=val;el.parentElement.querySelectorAll('.qa-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');
+const idx={'first_use':2,'return_reason':4,'monetization':5,'fear':6,'stage':7};if(idx[type]!==undefined){const opts=[...el.parentElement.querySelectorAll('.qa-option')];const i=opts.indexOf(el);state.scores[idx[type]]=Math.min(9,Math.max(2,3+i));drawMiniMingpan()}
+trackEvent('answer_qa',{type,val});
+setTimeout(()=>{const steps=getQASteps();if(qaStep_current>=steps.length-1){showScene(3);initDayzhu()}else{qaStep_current++;renderQA()}},350)}
 
-const main=document.getElementById('qaMain');
-let html=`<div class="qa-question">${step.q}</div>`;
-
-if(step.type==='product_type'){
-html+=renderTypeSelector();
-}else{
-html+=`<div class="qa-grid">`;
-step.options.forEach((opt)=>{
-const sel=state.answers[step.type]===opt?'selected':'';
-html+=`<div class="qa-option ${sel}" onclick="selectQAOption('${step.type}','${opt}',this)">${opt}</div>`;
-});
-html+=`</div>`;
-}
-main.innerHTML=html;
-drawMiniMingpan();
-
-// 自动跳转逻辑
-if(step.type!=='product_type'){
-setTimeout(()=>{
-if(state.answers[step.type]){
-if(qaStep_current>=steps.length-1){
-showScene(3);initDayzhu();
-}else{
-qaStep_current++;
-renderQA();
-}
-}
-},300);
-}
-}
-
-function renderTypeSelector(){
-const categories=Object.keys(PRODUCT_CATEGORIES);
-let html='<div class="type-tabs">';
-categories.forEach((cat,i)=>{
-html+=`<div class="type-tab ${i===0?'active':''}" onclick="switchTypeTab('${cat}',this)">${cat}</div>`;
-});
-html+='</div>';
-html+='<div class="type-options" id="typeOptions">';
-html+=renderTypeOptions(categories[0]);
-html+='</div>';
-return html;
-}
-
-function renderTypeOptions(category){
-const options=PRODUCT_CATEGORIES[category]||[];
-let html='';
-options.forEach(opt=>{
-const sel=state.productType===opt?'selected':'';
-html+=`<div class="type-option ${sel}" onclick="selectProductType('${category}','${opt}',this)">${opt}</div>`;
-});
-return html;
-}
-
-function switchTypeTab(category,el){
-document.querySelectorAll('.type-tab').forEach(t=>t.classList.remove('active'));
-el.classList.add('active');
-document.getElementById('typeOptions').innerHTML=renderTypeOptions(category);
-}
-
-function selectProductType(cat,opt,el){
-state.productCat=cat;state.productType=opt;
-document.querySelectorAll('.type-option').forEach(o=>o.classList.remove('selected'));
-el.classList.add('selected');
-
-// 自动跳转
-setTimeout(()=>{
-if(qaStep_current>=getQASteps().length-1){
-showScene(3);initDayzhu();
-}else{
-qaStep_current++;
-renderQA();
-}
-},300);
-}
-
-function selectQAOption(type,val,el){
-state.answers[type]=val;
-el.parentElement.querySelectorAll('.qa-option').forEach(o=>o.classList.remove('selected'));
-el.classList.add('selected');
-const idx={'first_use':2,'return_reason':4,'monetization':5,'fear':6,'stage':7};
-if(idx[type]!==undefined){
-const options=el.parentElement.querySelectorAll('.qa-option');
-const i=[...options].indexOf(el);
-state.scores[idx[type]]=Math.min(9,Math.max(2,3+i));
-drawMiniMingpan();
-}
-// 自动跳到下一步
-setTimeout(()=>{
-const steps=getQASteps();
-if(qaStep_current>=steps.length-1){
-showScene(3);initDayzhu();
-}else{
-qaStep_current++;
-renderQA();
-}
-},350);
-}
-
-// === 幕3 日主 ===
-function recommendDayzhu(){
-if(state.recognizedDayzhu)return state.recognizedDayzhu;
-const cat=state.productCat||'';
-if(cat.includes('AI'))return'ren';
-if(cat.includes('内容')||cat.includes('社交'))return'bing';
-if(cat.includes('工具'))return'geng';
-if(cat.includes('企业服务'))return'wu';
-if(cat.includes('教育'))return'jia';
-return'gui';
-}
-
+/* ═══ SCENE 3 - DAYZHU ═══ */
+function recommendDayzhu(){if(state.recognizedDayzhu)return state.recognizedDayzhu;const c=state.productCat||'';if(c.includes('AI'))return'ren';if(c.includes('内容')||c.includes('社交'))return'bing';if(c.includes('工具'))return'geng';if(c.includes('企业'))return'wu';if(c.includes('教育'))return'jia';return'gui'}
 function initDayzhu(){
-const rec=recommendDayzhu();
-const recItem=DAYZHU_DATA.find(d=>d.key===rec);
-document.getElementById('dzRecommend').textContent=`系统推荐：${recItem.icon} ${recItem.name} · ${recItem.type}`;
-state.dayzhu='';
-
-let html='';
-DAYZHU_DATA.forEach(dz=>{
-html+=`<div class="card dayzhu-card" onclick="selectDayzhu('${dz.key}',this)">
-<div class="dz-header">
-<span class="dz-icon">${dz.icon}</span>
-<span class="dz-name serif">${dz.name}</span>
-<span class="dz-type">${dz.type}</span>
-</div>
+const rec=recommendDayzhu(),recItem=DAYZHU_DATA.find(d=>d.key===rec);
+document.getElementById('dzRecommend').innerHTML=`<span class="rec-badge">系统推荐</span> ${recItem.icon} ${recItem.name} · ${recItem.type}`;
+state.dayzhu='';let html='';
+DAYZHU_DATA.forEach((dz,idx)=>{const isRec=dz.key===rec;
+html+=`<div class="card dayzhu-card ${isRec?'recommended':''}" onclick="selectDayzhu('${dz.key}',this)">
+<div class="dz-header"><span class="dz-icon">${dz.icon}</span><span class="dz-name serif">${dz.name}</span><span class="dz-type">${dz.type}</span></div>
 <div class="dz-keywords">${dz.keywords.map(k=>`<span>${k}</span>`).join('')}</div>
 <div class="dz-desc">${dz.desc}</div>
 <div class="dz-reps">代表：${dz.reps}</div>
-<div class="dz-desc" style="margin-top:6px;font-style:italic;color:var(--purple)">"${dz.feel}"</div>
-<div style="font-size:11px;color:var(--red);margin-top:6px">⚠ ${dz.risk}</div>
-</div>`;
-});
+<div class="dz-feel">"${dz.feel}"</div>
+<div class="dz-risk">⚠ ${dz.risk}</div></div>`});
 document.getElementById('dzGrid').innerHTML=html;
-document.getElementById('dzConfirm').style.display='none';
+/* Staggered entry animation */
+const cards=document.querySelectorAll('.dayzhu-card');
+cards.forEach((c,i)=>{setTimeout(()=>c.classList.add('entered'),100+i*80)});
 }
-
 function selectDayzhu(key,el){
-state.dayzhu=key;
-document.querySelectorAll('.dayzhu-card').forEach(c=>c.classList.remove('selected'));
-el.classList.add('selected');
-
+state.dayzhu=key;trackEvent('select_dayzhu',{dayzhu:key});
+document.querySelectorAll('.dayzhu-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');
 const dz=DAYZHU_DATA.find(d=>d.key===key);
 document.getElementById('dzStampText').textContent=`${dz.name} · 日主已定`;
-const stamp=document.getElementById('dzStamp');
-stamp.classList.add('show');
-// 自动跳到打分页，不需要手动确认
-setTimeout(()=>{
-stamp.classList.remove('show');
-showScene(4);initScoring();
-},1200);
+const stamp=document.getElementById('dzStamp');stamp.classList.add('show');
+setTimeout(()=>{stamp.classList.remove('show');showScene(4);initScoring()},1200);
 }
 
-function confirmDayzhu(){
-if(!state.dayzhu)return;
-showScene(4);initScoring();
-}
-
-// === 幕4 打分 ===
+/* ═══ SCENE 4 - SCORING ═══ */
 function initScoring(){
-// 注入产品信息到打分页顶部
-(()=>{
-const name=state.productName||'—';
-const dzKey=state.dayzhu||state.recognizedDayzhu||'bing';
+const name=state.productName||'—',dzKey=state.dayzhu||state.recognizedDayzhu||'bing';
 const dz=DAYZHU_DATA.find(d=>d.key===dzKey)||DAYZHU_DATA[0];
 const rec=PRODUCT_RECOGNITION[name]||{};
 document.getElementById('scoreProductName').textContent=name;
 document.getElementById('scoreProductDz').textContent=dz.icon+' '+dz.name;
-const cat=rec.category||state.productCat||'';
-document.getElementById('scoreProductLogo').textContent=getCategoryEmoji(cat);
-const baselineMap={ren:'壬水：个性化推荐驱动，信息分发型。',gui:'癸水：情绪陪伴，私域渗透型。',jia:'甲木：内容生态积累，越用越有价值。',yi:'乙木：柔性社区，创作者生态。',bing:'丙火：注意力经济，情绪价值爆发。',ding:'丁火：垂直深度社区，兴趣黏性。',wu:'戊土：基础设施，底层依赖型。',ji:'己土：数据+关系沉淀，习惯迁移成本高。',geng:'庚金：效率工具，精准替代人工。',xin:'辛金：精细化体验，品质敏感型。'};
-document.getElementById('scoreBaselineText').textContent=baselineMap[dzKey]||'';
+document.getElementById('scoreProductLogo').textContent=getCategoryEmoji(rec.category||state.productCat||'');
+const bm={'ren':'壬水：个性化推荐驱动，信息分发型。','gui':'癸水：情绪陪伴，私域渗透型。','jia':'甲木：内容生态积累型。','bing':'丙火：注意力经济，情绪价值爆发。','wu':'戊土：基础设施，底层依赖型。','geng':'庚金：效率工具，精准替代人工。'};
+document.getElementById('scoreBaselineText').textContent=bm[dzKey]||'';
 const type=rec.type||state.productType||'';
-document.getElementById('scoreProductTags').innerHTML=[type,cat.replace(/[🤖📱💬🛠️🛒📍🎓🎮💼]/u,'').trim()].filter(Boolean).map(t=>`<span class="sc-tag">${t}</span>`).join('');
-})();
+document.getElementById('scoreProductTags').innerHTML=[type,(rec.category||state.productCat||'').replace(/[^\u4e00-\u9fa5a-zA-Z\s]/g,'').trim()].filter(Boolean).map(t=>`<span class="sc-tag">${t}</span>`).join('');
 const aiBase=AI_SCORES[state.dayzhu]||[5,5,5,5,5,5,5,5];
+state.aiScores=[...aiBase];
 state.scores=aiBase.map(s=>s+Math.round((Math.random()-0.5)*2));
 state.scores=state.scores.map(s=>Math.max(1,Math.min(10,s)));
-
-let html='';
-for(let i=0;i<8;i++){
-html+=`<div class="slider-group">
-<div class="slider-header">
-<span class="slider-label">${DIMENSIONS[i]}</span>
-<span><span class="slider-value" id="sv${i}">${state.scores[i]}</span><span class="slider-tag" id="st${i}">${getDimTag(i,state.scores[i])}</span></span>
-</div>
-<input type="range" class="slider-input" min="1" max="10" value="${state.scores[i]}" oninput="updateSlider(${i},this.value)">
+renderSliders();drawScoreBagua();checkDivergence();
+}
+function renderSliders(){
+let html='';for(let i=0;i<8;i++){
+const detail=DIM_DETAIL[i];
+html+=`<div class="slider-group" id="sg${i}" onclick="expandSlider(${i})">
+<div class="slider-header"><span class="slider-label">${DIMENSIONS[i]}</span><span><span class="slider-value" id="sv${i}">${state.scores[i]}</span><span class="slider-tag" id="st${i}">${getDimTag(i,state.scores[i])}</span></span></div>
+<input type="range" class="slider-input" min="1" max="10" value="${state.scores[i]}" oninput="updateSlider(${i},this.value)" onclick="event.stopPropagation()">
 <div class="slider-feedback" id="sf${i}">${getFeedback(i,state.scores[i])}</div>
-</div>`;
-}
+<div class="slider-detail"><strong>关键风险：</strong>${detail.risk}<br><strong>可改进：</strong>${detail.action}</div>
+</div>`}
 document.getElementById('scoreSliders').innerHTML=html;
-drawRadar();
-checkDivergence();
 }
-
-function getDimTag(i,v){
-if(v<=3)return DIM_TAGS_LOW[i];
-if(v>=8)return DIM_TAGS_HIGH[i];
-return DIM_TAGS_MID[i];
-}
-
-function getFeedback(i,v){
-if(v>=8)return FEEDBACK_HIGH[i];
-if(v<=3)return FEEDBACK_LOW[i];
-return FEEDBACK_MID[i];
-}
-
-function updateSlider(i,val){
-val=parseInt(val);
-state.scores[i]=val;
-document.getElementById('sv'+i).textContent=val;
-document.getElementById('st'+i).textContent=getDimTag(i,val);
-document.getElementById('sf'+i).textContent=getFeedback(i,val);
-drawRadar();
-checkDivergence();
-}
-
-function setScoreMode(mode,el){
-state.scoreMode=mode;
-document.querySelectorAll('.score-mode-btn').forEach(b=>b.classList.remove('active'));
-el.classList.add('active');
-if(mode==='ai'){
-const aiBase=AI_SCORES[state.dayzhu]||[5,5,5,5,5,5,5,5];
-state.scores=[...aiBase];
-let sliders=document.querySelectorAll('.slider-input');
-for(let i=0;i<8;i++){sliders[i].value=state.scores[i];updateSlider(i,state.scores[i])}
-}
-drawRadar();
-}
-
-function drawRadar(){
-const canvas=document.getElementById('radarCanvas');
-const ctx=canvas.getContext('2d');
-const W=canvas.width,H=canvas.height;
-const cx=W/2,cy=H/2,R=150;
-ctx.clearRect(0,0,W,H);
-
-for(let ring=1;ring<=5;ring++){
-ctx.beginPath();
-const r=R*ring/5;
-for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
-i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-}
-ctx.closePath();
-ctx.strokeStyle='rgba(244,239,231,0.08)';
-ctx.stroke();
-}
-
-for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-ctx.beginPath();
-ctx.moveTo(cx,cy);
-ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));
-ctx.strokeStyle='rgba(244,239,231,0.06)';
-ctx.stroke();
-}
-
-ctx.font='11px sans-serif';ctx.fillStyle='#B8B2C0';ctx.textAlign='center';ctx.textBaseline='middle';
-for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-const lx=cx+(R+24)*Math.cos(a),ly=cy+(R+24)*Math.sin(a);
-ctx.fillText(DIMENSIONS[i],lx,ly);
-}
-
-if(state.scoreMode==='hybrid'){
-const aiBase=AI_SCORES[state.dayzhu]||[5,5,5,5,5,5,5,5];
-ctx.beginPath();
-for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-const r=R*aiBase[i]/10;
-const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
-i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-}
-ctx.closePath();
-ctx.fillStyle='rgba(154,143,200,0.1)';ctx.fill();
-ctx.strokeStyle='rgba(154,143,200,0.5)';ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);
-}
-
-ctx.beginPath();
-for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-const r=R*state.scores[i]/10;
-const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
-i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-}
-ctx.closePath();
-ctx.fillStyle='rgba(221,90,103,0.15)';ctx.fill();
-ctx.strokeStyle='#DD5A67';ctx.lineWidth=2;ctx.stroke();
-
-for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-const r=R*state.scores[i]/10;
-ctx.beginPath();
-ctx.arc(cx+r*Math.cos(a),cy+r*Math.sin(a),4,0,Math.PI*2);
-ctx.fillStyle='#DD5A67';ctx.fill();
-}
-}
-
-function checkDivergence(){
-if(state.scoreMode!=='hybrid')return;
-const aiBase=AI_SCORES[state.dayzhu]||[5,5,5,5,5,5,5,5];
-let maxDiff=0,maxIdx=0;
-for(let i=0;i<8;i++){
-const diff=Math.abs(state.scores[i]-aiBase[i]);
-if(diff>maxDiff){maxDiff=diff;maxIdx=i}
-}
+function getDimTag(i,v){if(v<=3)return DIM_TAGS_LOW[i];if(v>=8)return DIM_TAGS_HIGH[i];return DIM_TAGS_MID[i]}
+function getFeedback(i,v){if(v>=8)return FEEDBACK_HIGH[i];if(v<=3)return FEEDBACK_LOW[i];return FEEDBACK_MID[i]}
+function updateSlider(i,val){val=parseInt(val);state.scores[i]=val;
+document.getElementById('sv'+i).textContent=val;document.getElementById('st'+i).textContent=getDimTag(i,val);document.getElementById('sf'+i).textContent=getFeedback(i,val);
+drawScoreBagua();checkDivergence()}
+function expandSlider(i){document.querySelectorAll('.slider-group').forEach(g=>g.classList.remove('expanded'));const el=document.getElementById('sg'+i);if(el)el.classList.toggle('expanded');state.expandedSlider=i}
+function setScoreMode(mode,el){state.scoreMode=mode;
+document.querySelectorAll('.score-mode-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');
+if(mode==='ai'){state.scores=[...state.aiScores];renderSliders()}
+if(mode==='hybrid'){showHybridPanel()}
+drawScoreBagua();trackEvent('set_score_mode',{mode})}
+function checkDivergence(){if(state.scoreMode!=='hybrid')return;
+let maxDiff=0,maxIdx=0;for(let i=0;i<8;i++){const d=Math.abs(state.scores[i]-state.aiScores[i]);if(d>maxDiff){maxDiff=d;maxIdx=i}}
 const alert=document.getElementById('scoreAlert');
-if(maxDiff>3){
-alert.textContent=`你与AI在「${DIMENSIONS[maxIdx]}」上的判断差异最大（差${maxDiff}分）`;
-alert.classList.add('show');
-}else{
-alert.classList.remove('show');
-}
-}
+if(maxDiff>3){alert.textContent=`你与AI在「${DIMENSIONS[maxIdx]}」上的判断差异最大（差${maxDiff}分）`;alert.classList.add('show')}else{alert.classList.remove('show')}}
 
-// === 幕5 命书 ===
+/* ═══ HYBRID PANEL ═══ */
+function showHybridPanel(){
+const panel=document.getElementById('hybridPanel'),content=document.getElementById('hybridContent');
+let html=`<div class="hybrid-header"><h3>⚖️ 人机合盘</h3><p>对比你的判断和AI的判断，发现认知差异</p></div>`;
+const diffs=[];
+for(let i=0;i<8;i++){const uS=state.scores[i],aS=state.aiScores[i],diff=uS-aS;
+diffs.push({idx:i,user:uS,ai:aS,diff:Math.abs(diff),sign:diff});
+html+=`<div class="hybrid-dim-name">${DIMENSIONS[i]}</div>`;
+html+=`<div class="hybrid-row"><div class="hybrid-side"><div class="side-label">你的判断</div><div class="side-score user-score">${uS}</div></div>`;
+html+=`<div class="hybrid-center"><div class="diff-val ${Math.abs(diff)>3?'high':'low'}">${diff>0?'+'+diff:diff===0?'=':diff}</div><div class="diff-label">差值</div></div>`;
+html+=`<div class="hybrid-side"><div class="side-label">AI判断</div><div class="side-score ai-score">${aS}</div></div></div>`;
+html+=`<div class="hybrid-actions" id="ha${i}">`;
+html+=`<button onclick="hybridAccept(${i},this)">AI说得对</button>`;
+html+=`<button onclick="hybridReject(${i},this)">保留我的</button>`;
+html+=`</div>`}
+/* Summary */
+diffs.sort((a,b)=>b.diff-a.diff);
+const top3=diffs.slice(0,3).filter(d=>d.diff>2);
+if(top3.length>0){html+=`<div class="hybrid-summary"><h4>最大认知差异</h4>`;
+top3.forEach(d=>{const risk=d.user>d.ai?'你可能过于乐观':'AI可能低估了这个维度';
+html+=`<div class="insight-item">「${DIMENSIONS[d.idx]}」差异${d.diff}分 — ${risk}。${d.user>d.ai?'建议参考AI的保守估计，设定更谨慎的目标。':'建议坚持你的判断，你可能看到了AI没看到的优势。'}</div>`});
+html+=`</div>`}
+html+=`<div style="text-align:center;margin-top:20px"><button class="btn btn-primary" onclick="closeHybrid()">确认，继续看命盘</button></div>`;
+content.innerHTML=html;panel.classList.add('show');trackEvent('open_hybrid');
+}
+function hybridAccept(i,btn){state.scores[i]=state.aiScores[i];state.hybridDecisions[i]='accept';
+btn.classList.add('accepted');btn.parentElement.querySelectorAll('button').forEach(b=>b.disabled=true);
+renderSliders();drawScoreBagua();trackEvent('hybrid_decision',{dim:i,decision:'accept'})}
+function hybridReject(i,btn){state.hybridDecisions[i]='reject';
+btn.classList.add('rejected');btn.parentElement.querySelectorAll('button').forEach(b=>b.disabled=true);
+trackEvent('hybrid_decision',{dim:i,decision:'reject'})}
+function closeHybrid(){document.getElementById('hybridPanel').classList.remove('show');renderSliders();drawScoreBagua();checkDivergence()}
+
+/* ═══ SCENE 5 - FORTUNE ═══ */
 function openFortune(){
+trackEvent('open_fortune');
 const seal=SEAL_TEXTS[Math.floor(Math.random()*SEAL_TEXTS.length)];
 document.getElementById('fortuneSeal').textContent=seal;
-const overlay=document.getElementById('fortuneOverlay');
-overlay.classList.add('show');
-setTimeout(()=>{
-overlay.classList.remove('show');
-renderFortuneResult(seal);
-},3000);
+const overlay=document.getElementById('fortuneOverlay');overlay.classList.add('show');
+setTimeout(()=>{overlay.classList.remove('show');renderFortuneResult(seal)},2800);
 }
+function skipFortuneAnim(){document.getElementById('fortuneOverlay').classList.remove('show');renderFortuneResult('尚可改命')}
 
-function determineMingge(scores){
-const[t,d,g,c,l,m,b,s]=scores;
-if(d>=8&&c>=7)return'伤官配印格';
-if(c>=8&&l>=8)return'食神生财格';
-if(m>=8&&l>=7)return'财官双美格';
-if(g>=8&&l<=4)return'火旺土虚格';
-if(d>=8&&t<=5)return'印旺身弱格';
-if(b>=8&&m<=4)return'身强财弱格';
-if(s>=8&&m<=5)return'木火通明格';
-const avg=scores.reduce((a,b)=>a+b,0)/8;
-const std=Math.sqrt(scores.reduce((a,v)=>a+(v-avg)**2,0)/8);
-if(std<1.5)return'中和稳命格';
-return'比劫夺财格';
-}
+function determineMingge(s){const[t,d,g,c,l,m,b,ti]=s;
+if(d>=8&&c>=7)return'伤官配印格';if(c>=8&&l>=8)return'食神生财格';if(m>=8&&l>=7)return'财官双美格';
+if(g>=8&&l<=4)return'火旺土虚格';if(d>=8&&t<=5)return'印旺身弱格';if(b>=8&&m<=4)return'身强财弱格';
+if(ti>=8&&m<=5)return'木火通明格';const avg=s.reduce((a,b)=>a+b,0)/8;const std=Math.sqrt(s.reduce((a,v)=>a+(v-avg)**2,0)/8);
+if(std<1.5)return'中和稳命格';return'比劫夺财格'}
 
-const MINGGE_CONTENT={
-'伤官配印格':{
-text:'伤官配印，技术为骨，传播为翼。产品天生带话题，但也容易因过度追求创新而偏离用户真实需求。印星护体，研发底蕴深厚，但伤官之性，不安分是常态。',
-plain:'技术和传播双强，但小心别为了秀技术忽略用户体验。你的产品有实力出圈，但也容易因一句话翻车。',
-risk:'过度追求技术炫技，忽视用户实际感受',
-advice:'把技术优势翻译成用户能感知的价值，控制传播节奏，避免用力过猛'
-},
-'食神生财格':{
-text:'食神生财，以内容养商业，以口碑带增长。产品自带传播基因，用户愿意自发推荐，但留存是隐忧——热闹之后，能否留住人？',
-plain:'传播和留存都强，商业化有望。但别忘了，热闹不等于可持续，要把流量变留量。',
-risk:'留存跟不上增长，来了又走',
-advice:'先建留存机制再扩大传播，否则只是热闹一场'
-},
-'财官双美格':{
-text:'财官双美，商业清晰，用户黏性强。最让人羡慕的命格——赚钱且不伤用户体验。但要警惕舒适区，别让稳定变成停滞。',
-plain:'赚钱模式清晰，用户也愿意留下来。你现在最需要的不是优化，而是寻找新的增长曲线。',
-risk:'陷入舒适区，创新动力不足',
-advice:'在稳定变现的基础上，探索第二增长曲线'
-},
-'火旺土虚格':{
-text:'火旺土虚，增长凶猛但根基不稳。用户来得快去得也快，像烟花灿烂但转瞬即逝。急需补足留存和产品深度。',
-plain:'增长数据好看，但用户留不住。别被增长冲昏头，先看看产品本身够不够硬。',
-risk:'增长泡沫破裂后一地鸡毛',
-advice:'暂停拉新，全力做留存，找到用户留下来的真正理由'
-},
-'印旺身弱格':{
-text:'印旺身弱，技术积累深厚但核心价值不明。研发团队自嗨，用户却不知道这个产品到底能帮他们做什么。需要把技术翻译成人话。',
-plain:'技术很强但用户不买单。问题不是技术不好，而是用户不知道这跟自己有什么关系。',
-risk:'自嗨式创新，投入大产出小',
-advice:'用用户听得懂的语言重新定义产品价值，从技术导向转为价值导向'
-},
-'身强财弱格':{
-text:'身强财弱，壁垒很高但不赚钱。像一座坚固的城堡，城里却没粮。需要尽快找到商业化突破口，否则再强的壁垒也撑不住。',
-plain:'产品有壁垒，竞品打不进来，但也没赚到钱。再不变现，投资人要比竞品更急了。',
-risk:'持续烧钱无法自负盈亏',
-advice:'找到一个用户愿意付费的切入点，哪怕是小场景先跑通'
-},
-'木火通明格':{
-text:'木火通明，时机正好但商业化还没跟上。时代给了你一个窗口，但你的变现能力还没准备好接住这波红利。',
-plain:'风口来了，你的产品方向对了，但还没想好怎么赚钱。窗口期有限，先跑通再说。',
-risk:'错过最佳窗口期',
-advice:'先用最简模式验证付费意愿，不要追求完美商业模式'
-},
-'中和稳命格':{
-text:'中和稳命，各项均衡但无明显优势。不温不火，安全但也缺少爆发力。需要找到一个尖刀场景，集中突破。',
-plain:'什么都还行，但什么都不够突出。需要找到一个点打穿，而不是面面俱到。',
-risk:'平庸陷阱，没有记忆点',
-advice:'砍掉不重要的功能，集中资源打透一个场景'
-},
-'比劫夺财格':{
-text:'比劫夺财，赛道热闹但差异化不足。竞品众多，商业化受阻。需要在同质化中找到独特定位，否则只会被淹没。',
-plain:'赛道太卷了，你和竞品太像了。用户没有理由选你而不是别人。',
-risk:'陷入价格战或功能战，利润被压缩',
-advice:'找到只有你能做的差异化，哪怕是一个小场景的深度'
-}
-};
+function calcWuxing(s){return[Math.min(100,Math.round((s[2]+s[3])/2*10)),Math.min(100,s[3]*10),Math.min(100,s[4]*10),Math.min(100,s[1]*10),Math.min(100,Math.round((s[0]+s[5])/2*10))]}
+function getStageIndex(){const st=state.answers.stage;if(!st)return 0;return{'刚出生':0,'小范围有人用':1,'开始出圈':2,'快速增长':3,'增长放缓':4,'商业化关键期':5}[st]||0}
 
 function renderFortuneResult(seal){
-const result=document.getElementById('fortuneResult');
-result.classList.add('show');
-
-document.getElementById('fName').textContent=state.productName;
-const mingge=determineMingge(state.scores);
-const dz=DAYZHU_DATA.find(d=>d.key===state.dayzhu);
-document.getElementById('fMingge').textContent=`${dz.icon} ${dz.name} · ${mingge}`;
-
-const wuxingData=calcWuxing(state.scores);
-let whtml='';
-const wxNames=['木','火','土','金','水'];
-const wxClasses=['bar-wood','bar-fire','bar-earth','bar-metal','bar-water'];
-wuxingData.forEach((v,i)=>{
-whtml+=`<div class="wuxing-bar"><span class="label">${wxNames[i]}</span><div class="bar"><div class="bar-fill ${wxClasses[i]}" style="width:${v}%"></div></div></div>`;
-});
-document.getElementById('fWuxing').innerHTML=whtml;
-
+document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+document.getElementById('fortuneResult').classList.add('show');
+const mingge=determineMingge(state.scores),dz=DAYZHU_DATA.find(d=>d.key===state.dayzhu)||DAYZHU_DATA[0];
+const mc=MINGGE_CONTENT[mingge]||MINGGE_CONTENT['中和稳命格'];
+const maxIdx=state.scores.indexOf(Math.max(...state.scores)),minIdx=state.scores.indexOf(Math.min(...state.scores));
 const strength=state.scores[0]+state.scores[4];
-document.getElementById('fStrength').innerHTML=strength>=14?
-'<span style="color:var(--gold)">⬆ 身强</span> — 核心价值和留存都够硬':
-'<span style="color:var(--red)">⬇ 身弱</span> — 需要补强核心价值或留存';
-
 const stageIdx=getStageIndex();
-document.getElementById('fDayun').textContent=`当前大运：${DAYUN_NODES[stageIdx]}`;
+const wuxing=calcWuxing(state.scores);const wxNames=['木','火','土','金','水'],wxClasses=['bar-wood','bar-fire','bar-earth','bar-metal','bar-water'];
+/* Build chapters HTML */
+let ch='';
+/* Ch1: Identity */
+ch+=`<div class="fortune-chapter ch-identity"><div class="fortune-chapter-header"><span class="ch-num">壹</span><h3>命格总览</h3><span class="ch-subtitle">${seal}</span></div>`;
+ch+=`<div class="id-top"><span class="id-product">${state.productName}</span><span class="id-mingge">${dz.icon} ${dz.name} · ${mingge}</span></div>`;
+ch+=`<div class="id-oneliner">${mc.text.substring(0,60)}...</div>`;
+ch+=`<div class="id-highlights">`;
+ch+=`<div class="id-highlight-card strength"><div class="hl-label">最大优势</div><div class="hl-value">${DIMENSIONS[maxIdx]}（${state.scores[maxIdx]}分）</div></div>`;
+ch+=`<div class="id-highlight-card weakness"><div class="hl-label">最大短板</div><div class="hl-value">${DIMENSIONS[minIdx]}（${state.scores[minIdx]}分）</div></div>`;
+ch+=`<div class="id-highlight-card mission"><div class="hl-label">当前关键命题</div><div class="hl-value">${DAYUN_NODES[stageIdx]}</div></div>`;
+ch+=`<div class="id-highlight-card"><div class="hl-label">身强身弱</div><div class="hl-value" style="color:${strength>=14?'var(--accent-green)':'var(--accent-primary)'}">${strength>=14?'⬆ 身强':'⬇ 身弱'}</div></div>`;
+ch+=`</div>`;
+ch+=`<div class="wuxing-bars">${wuxing.map((v,i)=>`<div class="wuxing-bar"><span class="label">${wxNames[i]}</span><div class="bar"><div class="bar-fill ${wxClasses[i]}" style="width:${v}%"></div></div></div>`).join('')}</div>`;
+const meters=[{n:'核心力',v:state.scores[0]*10,c:'var(--accent-gold)'},{n:'出圈值',v:state.scores[3]*10,c:'var(--accent-purple)'},{n:'生财值',v:state.scores[5]*10,c:'var(--accent-primary)'},{n:'回魂值',v:state.scores[7]*10,c:'var(--accent-green)'}];
+ch+=`<div style="margin-top:12px">${meters.map(m=>`<div class="meter-row"><span class="meter-label">${m.n}</span><div class="meter-bar"><div class="meter-fill" style="width:${Math.min(100,m.v)}%;background:${m.c}"></div></div><span class="meter-pct">${Math.min(100,m.v)}%</span></div>`).join('')}</div>`;
+ch+=`<div class="yi-ji"><div class="yi">✅ 今日宜：${YI_MAP[maxIdx]}</div><div class="ji">❌ 今日忌：${JI_MAP[minIdx]}</div></div>`;
+ch+=`</div>`;
+/* Ch2: 先天命格 */
+ch+=`<div class="fortune-chapter"><div class="fortune-chapter-header"><span class="ch-num">贰</span><h3>先天命格</h3></div>`;
+ch+=`<div class="ming-card" id="mingCard" onclick="flipMingCard()"><div class="ming-card-inner"><div class="ming-card-front"><p>${mc.text}</p></div><div class="ming-card-back"><p>${mc.plain}</p></div></div><div class="flip-hint">👆 点击「翻译成人话」</div></div>`;
+ch+=`<div class="ming-risk">⚠ 核心风险：${mc.risk}</div>`;
+ch+=`<div class="ming-advice">💡 改命建议：${mc.advice}</div></div>`;
+/* Ch3: 大运 */
+ch+=`<div class="fortune-chapter"><div class="fortune-chapter-header"><span class="ch-num">叁</span><h3>大运时间轴</h3><span class="ch-subtitle">当前：${DAYUN_NODES[stageIdx]}</span></div>`;
+ch+=`<div class="dayun-timeline">`;DAYUN_NODES.forEach((n,i)=>{ch+=`<div class="dayun-node ${i===stageIdx?'current':''}" onclick="toggleDayunDetail(${i})"><div class="dayun-dot"></div><div class="dayun-name">${n}</div></div>`});ch+=`</div>`;
+ch+=`<div id="dayunDetail"></div></div>`;
+/* Ch4: 流年 */
+const tS=state.scores[7],bS=state.scores[6];function gl(s){if(s>=9)return{l:'大吉',c:'tag-gold'};if(s>=7)return{l:'小吉',c:'tag-green'};if(s>=5)return{l:'平',c:'tag-purple'};return{l:'偏弱',c:'tag-red'}}
+const tianShi=gl(tS),diLi=gl(bS),renHe=gl(Math.round((state.scores[3]+state.scores[4])/2));
+const lAvg=(tS+bS+state.scores[3]+state.scores[4])/4;
+const duanyu=lAvg>=8?'天时地利人和齐备，2026是爆发之年。':lAvg>=6?'运势尚可，顺势而为可有所得。':lAvg>=4?'运势平平，宜修内功等待时机。':'流年不利，宜守不宜攻。';
+ch+=`<div class="fortune-chapter"><div class="fortune-chapter-header"><span class="ch-num">肆</span><h3>流年 2026</h3></div>`;
+ch+=`<div class="liunian-grid">`;
+const qData=[{q:'Q1 春季',items:[{i:'📋',t:`产品：${state.scores[2]>6?'扩大获客':'验证需求'}`},{i:'📣',t:`运营：${state.scores[3]>6?'制造话题':'打磨内容'}`},{i:'📊',t:`指标：${state.scores[4]>6?'关注留存':'关注激活'}`}]},{q:'Q2 夏季',items:[{i:'📋',t:`产品：${state.scores[0]>6?'深化价值':'重新定位'}`},{i:'📣',t:`运营：${state.scores[5]>6?'测试付费':'免费增长'}`},{i:'⚠',t:`风险：${XIAOREN_MAP[minIdx][0]}`}]},{q:'Q3 秋季',items:[{i:'📋',t:`产品：${state.scores[6]>6?'加固壁垒':'找差异化'}`},{i:'📣',t:`运营：${state.scores[7]>6?'快速卡位':'耐心等待'}`},{i:'📊',t:`指标：关注竞品动态`}]},{q:'Q4 冬季',items:[{i:'📋',t:`产品：${lAvg>=6?'冲刺增长':'积蓄力量'}`},{i:'📣',t:`运营：年终复盘，调整方向`},{i:'🎯',t:`目标：为2027布局`}]}];
+qData.forEach(qd=>{ch+=`<div class="liunian-quarter"><div class="lq-title">${qd.q}</div><div class="lq-items">${qd.items.map(it=>`<div class="lq-item"><span class="lq-icon">${it.i}</span>${it.t}</div>`).join('')}</div></div>`});
+ch+=`</div><div class="liunian-duanyu">${duanyu}</div></div>`;
+/* Ch5: 贵人/小人 */
+const gTags=GUlREN_MAP[state.dayzhu]||[],xTags=XIAOREN_MAP[minIdx]||[];
+ch+=`<div class="fortune-chapter"><div class="fortune-chapter-header"><span class="ch-num">伍</span><h3>贵人签 · 小人签</h3></div>`;
+ch+=`<div class="guiren-xiaoren"><div class="gx-section"><h4>🏷 贵人签</h4><div class="gx-tags">`;
+gTags.forEach(t=>{const detail=GUlREN_DETAIL[t]||'';ch+=`<span class="gx-tag guiren" onclick="toggleGxTag(this)">${t}</span><div class="gx-detail">${detail.split('|').join('<br>')}</div>`});
+ch+=`</div></div><div class="gx-section"><h4>⚠ 小人签</h4><div class="gx-tags">`;
+xTags.forEach(t=>{const detail=XIAOREN_DETAIL[t]||'';ch+=`<span class="gx-tag xiaoren" onclick="toggleGxTag(this)">${t}</span><div class="gx-detail">${detail.split('|').join('<br>')}</div>`});
+ch+=`</div></div></div></div>`;
+/* Ch6: 改命签 */
+ch+=`<div class="fortune-chapter"><div class="fortune-chapter-header"><span class="ch-num">陆</span><h3>抽改命签</h3><span class="ch-subtitle">点击签筒求签</span></div>`;
+ch+=`<div class="gaiming-section"><div class="gaiming-tong" id="gaimingTong" onclick="drawGaiming()">🎯</div>`;
+ch+=`<div class="gaiming-result" id="gaimingResult"></div></div></div>`;
 
-const meters=[
-{name:'核心力',val:state.scores[0]*10,color:'var(--gold)'},
-{name:'出圈值',val:state.scores[3]*10,color:'var(--purple)'},
-{name:'生财值',val:state.scores[5]*10,color:'var(--red)'},
-{name:'回魂值',val:state.scores[7]*10,color:'var(--teal)'}
-];
-let mhtml='';
-meters.forEach(m=>{
-const pct=Math.min(100,Math.max(0,m.val));
-mhtml+=`<div class="meter-row"><span class="meter-label">${m.name}</span><div class="meter-bar"><div class="meter-fill" style="width:${pct}%;background:${m.color}"></div></div><span class="meter-pct">${pct}%</span></div>`;
-});
-document.getElementById('fMeters').innerHTML=mhtml;
-
-const maxIdx=state.scores.indexOf(Math.max(...state.scores));
-const minIdx=state.scores.indexOf(Math.min(...state.scores));
-document.getElementById('fYiJi').innerHTML=`<div class="yi">✅ 今日宜：${YI_MAP[maxIdx]}</div><div class="ji">❌ 今日忌：${JI_MAP[minIdx]}</div>`;
-
-const mc=MINGGE_CONTENT[mingge];
-document.getElementById('mingFront').textContent=mc.text;
-document.getElementById('mingBack').textContent=mc.plain;
-document.getElementById('mingRisk').textContent=`⚠ 核心风险：${mc.risk}`;
-document.getElementById('mingAdvice').textContent=`💡 改命建议：${mc.advice}`;
-
-let dhtml='';
-DAYUN_NODES.forEach((name,i)=>{
-const cur=i===stageIdx?'current':'';
-dhtml+=`<div class="dayun-node ${cur}"><div class="dayun-dot"></div><div class="dayun-name">${name}</div><div class="dayun-tooltip">${DAYUN_DESC[i]}</div></div>`;
-});
-document.getElementById('dayunTimeline').innerHTML=dhtml;
-
-const timingScore=state.scores[7];
-const barrierScore=state.scores[6];
-function getLiangLevel(score){
-if(score>=9)return{label:'大吉',cls:'dj'};
-if(score>=7)return{label:'小吉',cls:'xj'};
-if(score>=5)return{label:'平',cls:'p'};
-if(score>=3)return{label:'偏弱',cls:'pr'};
-return{label:'大凶',cls:'dx'};
-}
-const tianShi=getLiangLevel(timingScore);
-const diLi=getLiangLevel(barrierScore);
-const renHe=getLiangLevel((state.scores[3]+state.scores[4])/2);
-let lhtml=`
-<div class="liunian-item"><span class="liunian-label">天时（行业趋势）</span><span class="liunian-val ${tianShi.cls}">${tianShi.label}</span></div>
-<div class="liunian-item"><span class="liunian-label">地利（平台渠道）</span><span class="liunian-val ${diLi.cls}">${diLi.label}</span></div>
-<div class="liunian-item"><span class="liunian-label">人和（口碑社区）</span><span class="liunian-val ${renHe.cls}">${renHe.label}</span></div>`;
-const liunianAvg=(timingScore+barrierScore+state.scores[3]+state.scores[4])/4;
-let duanyu='';
-if(liunianAvg>=8)duanyu='天时地利人和齐备，2026是爆发之年。';
-else if(liunianAvg>=6)duanyu='运势尚可，顺势而为可有所得。';
-else if(liunianAvg>=4)duanyu='运势平平，宜修内功等待时机。';
-else duanyu='流年不利，宜守不宜攻，积蓄力量。';
-lhtml+=`<div class="liunian-duanyu">${duanyu}</div>`;
-document.getElementById('liunian').innerHTML=lhtml;
-
-const gTags=GUlREN_MAP[state.dayzhu]||[];
-document.getElementById('guirenTags').innerHTML=gTags.map(t=>`<span class="guiren-tag">${t}</span>`).join('');
-
-const xTags=XIAOREN_MAP[minIdx]||[];
-document.getElementById('xiaorenTags').innerHTML=xTags.map(t=>`<span class="xiaoren-tag">${t}</span>`).join('');
+document.getElementById('fortuneChapters').innerHTML=ch;
+trackEvent('render_fortune',{mingge,seal});
 }
 
-function calcWuxing(scores){
-const wood=Math.min(100,((scores[2]+scores[3])/2)*10);
-const fire=Math.min(100,(scores[3]*10));
-const earth=Math.min(100,(scores[4]*10));
-const metal=Math.min(100,(scores[1]*10));
-const water=Math.min(100,((scores[0]+scores[5])/2)*10);
-return[Math.round(wood),Math.round(fire),Math.round(earth),Math.round(metal),Math.round(water)];
-}
-
-function getStageIndex(){
-const stage=state.answers.stage;
-if(!stage)return 0;
-const stageMap={'刚出生':0,'小范围有人用':1,'开始出圈':2,'快速增长':3,'增长放缓':4,'商业化关键期':5,'平台化':5,'转型期':6};
-return stageMap[stage]||0;
-}
-
-function flipMingCard(){
-document.getElementById('mingCard').classList.toggle('flipped');
-}
+function flipMingCard(){document.getElementById('mingCard').classList.toggle('flipped');trackEvent('flip_ming_card')}
+function toggleDayunDetail(i){const el=document.getElementById('dayunDetail');const d=DAYUN_DETAIL[i];
+if(el.classList.contains('show')&&el.dataset.idx==i){el.classList.remove('show');return}
+el.innerHTML=`<div class="dayun-detail show"><div class="dd-title">${DAYUN_NODES[i]}</div><p style="margin-bottom:8px">${DAYUN_DESC[i]}</p><div class="dd-grid"><div class="dd-item"><strong>适合做：</strong>${d.do}</div><div class="dd-item"><strong>不适合：</strong>${d.notDo}</div><div class="dd-item"><strong>关键指标：</strong>${d.metric}</div><div class="dd-item"><strong>风险：</strong>${d.risk}</div></div></div>`;
+el.dataset.idx=i;el.classList.add('show');trackEvent('view_dayun',{idx:i})}
+function toggleGxTag(el){el.classList.toggle('expanded');trackEvent('toggle_gx_tag',{text:el.textContent})}
 
 function drawGaiming(){
-const btn=document.getElementById('gaimingBtn');
-btn.classList.add('shaking');
-setTimeout(()=>{
-btn.classList.remove('shaking');
-const minIdx=state.scores.indexOf(Math.min(...state.scores));
-const g=GAIMING_MAP[minIdx];
+const tong=document.getElementById('gaimingTong');tong.classList.add('shaking');trackEvent('draw_gaiming');
+setTimeout(()=>{tong.classList.remove('shaking');
+const minIdx=state.scores.indexOf(Math.min(...state.scores));const g=GAIMING_MAP[minIdx];
 document.getElementById('gaimingResult').innerHTML=`
-<div class="gaiming-task"><strong>🎯 今日可做：</strong>${g.today}</div>
-<div class="gaiming-task"><strong>📅 30天内：</strong>${g.m30}</div>
-<div class="gaiming-task"><strong>🚀 下阶段：</strong>${g.next}</div>`;
-},700);
-}
+<div class="gaiming-task"><div class="gt-time">🎯 今日可做</div>${g.today}</div>
+<div class="gaiming-task"><div class="gt-time">📅 七日之内</div>${g.week}</div>
+<div class="gaiming-task"><div class="gt-time">📅 30天内</div>${g.m30}</div>
+<div class="gaiming-task"><div class="gt-time">🚀 下阶段</div>${g.next}</div>`},600)}
 
-// === Logo 滚动背景墙 ===
-(function buildLogoWall(){
-const DOMAINS=[
-  ['chatgpt.com','ChatGPT'],['claude.ai','Claude'],['gemini.google.com','Gemini'],
-  ['doubao.com','豆包'],['kimi.ai','Kimi'],['deepseek.com','DeepSeek'],
-  ['perplexity.ai','Perplexity'],['cursor.sh','Cursor'],['figma.com','Figma'],
-  ['notion.so','Notion'],['github.com','GitHub'],['linear.app','Linear'],
-  ['xiaohongshu.com','小红书'],['douyin.com','抖音'],['bilibili.com','B站'],
-  ['weibo.com','微博'],['zhihu.com','知乎'],['iqiyi.com','爱奇艺'],
-  ['netflix.com','Netflix'],['spotify.com','Spotify'],['music.163.com','网易云'],
-  ['discord.com','Discord'],['slack.com','Slack'],['linkedin.com','LinkedIn'],
-  ['taobao.com','淘宝'],['jd.com','京东'],['pinduoduo.com','拼多多'],
-  ['meituan.com','美团'],['eleme.cn','饿了么'],['trip.com','携程'],
-  ['airbnb.com','Airbnb'],['didiglobal.com','滴滴'],['amap.com','高德'],
-  ['duolingo.com','Duolingo'],['gotokeep.com','Keep'],['geekbang.org','极客时间'],
-  ['feishu.cn','飞书'],['dingtalk.com','钉钉'],['zoom.us','Zoom'],
-  ['vercel.com','Vercel'],['stripe.com','Stripe'],['atlassian.com','Jira'],
-  ['canva.com','Canva'],['airtable.com','Airtable'],['miro.com','Miro'],
-  ['steam.com','Steam'],['roblox.com','Roblox'],['minecraft.net','Minecraft'],
-  ['youtube.com','YouTube'],['instagram.com','Instagram'],['tiktok.com','TikTok'],
-  ['midjourney.com','Midjourney'],['lovable.dev','Lovable'],['dify.ai','Dify'],
-  ['character.ai','Character AI'],['obsidian.md','Obsidian'],['todoist.com','Todoist'],
-  ['salesforce.com','Salesforce'],['hubspot.com','HubSpot'],['amazon.com','Amazon'],
-  ['twitter.com','Twitter'],['x.ai','Grok'],['alipay.com','支付宝'],
-];
-const wall=document.getElementById('logoWall');
-if(!wall)return;
-// 单行横向滚动，同页无重复 app（全集只出现一次，再复制一份仅用于无缝循环）
-const row=document.createElement('div');
-row.className='logo-row';
-row.style.setProperty('--spd','90s');
-let items='';
-DOMAINS.forEach(([d,n])=>{
-  items+=`<div class="logo-item" title="${n}"><img src="https://favicon.im/${d}?larger=true" alt="${n}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`;
-});
-row.innerHTML=items+items; // 两份拼接实现无缝，视觉上同时只有一个屏幕宽度的内容可见
-wall.appendChild(row);
-})();
-
+function shareFortune(){trackEvent('share_fortune');
+const text=`【产品命理局】${state.productName} 的命格报告：${DAYZHU_DATA.find(d=>d.key===state.dayzhu)?.name||''}命 · 最大优势「${DIMENSIONS[state.scores.indexOf(Math.max(...state.scores))]}」· 最大短板「${DIMENSIONS[state.scores.indexOf(Math.min(...state.scores))]}」`;
+if(navigator.share){navigator.share({title:'产品命理局',text})}else{navigator.clipboard.writeText(text).then(()=>alert('命书摘要已复制到剪贴板'))}}
 </script>
 </body>
 </html>
