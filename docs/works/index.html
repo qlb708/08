@@ -384,54 +384,92 @@
   width:100%;
   height:100%;
   position:relative;
-  transition:transform .3s ease,box-shadow .3s ease;
+  transition:transform .35s cubic-bezier(.22,.8,.2,1),box-shadow .35s ease;
   border-radius:20px;
   overflow:hidden;
 }
 .t3d-card.is-center:hover .card-inner{
   transform:translateY(-6px);
-  box-shadow:0 20px 60px rgba(55,83,130,.2);
+  box-shadow:0 24px 64px rgba(55,83,130,.22),0 8px 24px rgba(55,83,130,.12);
 }
 
 /* ===== Card 0: Notebook (每日Todo复盘) ===== */
 .t3d-card--nb{
   background:#faf8f3;
-  background-image:repeating-linear-gradient(transparent,transparent 27px,#e8e4dc 27px,#e8e4dc 28px);
+  background-image:
+    repeating-linear-gradient(transparent,transparent 27px,#e8e4dc 27px,#e8e4dc 28px),
+    linear-gradient(90deg,rgba(0,0,0,.02) 0%,transparent 3%,transparent 97%,rgba(0,0,0,.02) 100%);
   border:1px solid #e8e4dc;
-  box-shadow:0 8px 32px rgba(55,83,130,.12);
+  box-shadow:
+    0 1px 3px rgba(139,119,90,.08),
+    0 8px 24px rgba(55,83,130,.10),
+    0 20px 48px rgba(55,83,130,.08),
+    inset 0 1px 0 rgba(255,255,255,.8);
+}
+/* Paper noise texture overlay */
+.t3d-card--nb::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(201,68,85,.01) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 20%,rgba(74,123,255,.01) 0%,transparent 40%);
+  pointer-events:none;
+  z-index:0;
+}
+/* Page curl corner */
+.nb-page-curl{
+  position:absolute;
+  bottom:0;right:0;
+  width:32px;height:32px;
+  background:linear-gradient(135deg,#faf8f3 45%,#e8e4dc 46%,#d8d4cc 50%,#f0ece4 51%,#faf8f3 100%);
+  transform:translate(100%,100%);
+  transition:transform .4s cubic-bezier(.22,.8,.2,1);
+  z-index:5;
+  box-shadow:-2px -2px 4px rgba(0,0,0,.06);
+}
+.t3d-card--nb.is-center:hover .nb-page-curl{
+  transform:translate(0,0);
 }
 .nb-binding{
   position:absolute;
   left:0;top:0;bottom:0;
-  width:28px;
-  background:linear-gradient(90deg,#d4c9b8,#e8ddd0);
+  width:30px;
+  background:linear-gradient(90deg,#c8bda8 0%,#d8cfc0 40%,#e0d8cc 70%,#d4c9b8 100%);
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:space-evenly;
   padding:40px 0;
   z-index:2;
+  box-shadow:inset -1px 0 3px rgba(0,0,0,.08);
 }
 .nb-hole{
-  width:10px;height:10px;
+  width:11px;height:11px;
   border-radius:50%;
-  background:#c4b8a5;
-  box-shadow:inset 0 1px 2px rgba(0,0,0,.2);
+  background:radial-gradient(circle at 40% 40%,#b8a890,#a09080);
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,.25),
+    0 0.5px 1px rgba(255,255,255,.4);
 }
 .nb-content{
-  margin-left:36px;
-  padding:28px 16px 16px 8px;
+  margin-left:38px;
+  padding:28px 14px 14px 8px;
   height:100%;
   display:flex;
   flex-direction:column;
+  position:relative;
+  z-index:1;
 }
 .nb-title{
   font-size:10px;
   font-weight:700;
-  letter-spacing:.12em;
+  letter-spacing:.15em;
   color:#8fa4bc;
   text-transform:uppercase;
-  margin-bottom:20px;
+  margin-bottom:18px;
+  padding-bottom:8px;
+  border-bottom:1px solid rgba(143,164,188,.15);
 }
 .nb-item{
   display:flex;
@@ -439,38 +477,41 @@
   gap:8px;
   font-size:12px;
   color:#4a5568;
-  padding:8px 0;
+  padding:7px 0;
   line-height:1.5;
   position:relative;
 }
 .nb-check{
-  width:14px;height:14px;
-  border-radius:3px;
+  width:15px;height:15px;
+  border-radius:4px;
   border:1.5px solid #b8c8d8;
   flex-shrink:0;
   position:relative;
   transition:all .3s ease;
   margin-top:1px;
+  background:rgba(255,255,255,.6);
 }
 .nb-check.checked{
   border-color:#73b99d;
-  background:#73b99d;
+  background:linear-gradient(135deg,#73b99d,#5fa88a);
+  box-shadow:0 1px 3px rgba(115,185,157,.3);
 }
 .nb-check.checked::after{
   content:'✓';
   color:white;
   font-size:10px;
   position:absolute;
-  top:-1px;left:1px;
+  top:-1px;left:1.5px;
   font-weight:700;
 }
 .nb-cursor{
   display:inline-block;
-  width:1px;height:12px;
+  width:1.5px;height:13px;
   background:#4a7bff;
   animation:cursor-blink 1s infinite;
   vertical-align:middle;
   margin-left:2px;
+  border-radius:1px;
 }
 @keyframes cursor-blink{
   0%,50%{opacity:1}
@@ -478,68 +519,91 @@
 }
 .nb-sticky{
   margin-top:auto;
-  background:#fef3c7;
+  background:linear-gradient(135deg,#fef3c7,#fde68a);
   padding:10px 12px;
-  border-radius:4px;
+  border-radius:4px 4px 4px 0;
   font-size:11px;
   color:#92400e;
   font-weight:600;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-  transform:translateY(20px);
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.08),
+    0 1px 2px rgba(0,0,0,.06);
+  transform:translateY(24px) rotate(0deg);
   opacity:0;
-  transition:all .4s ease;
+  transition:all .45s cubic-bezier(.22,.8,.2,1);
+}
+.nb-sticky::before{
+  content:'';
+  position:absolute;
+  top:-6px;left:12px;
+  width:24px;height:6px;
+  background:rgba(200,180,140,.3);
+  border-radius:2px;
 }
 .t3d-card--nb.is-center:hover .nb-sticky{
-  transform:translateY(0);
+  transform:translateY(0) rotate(-1.5deg);
   opacity:1;
 }
 .t3d-card--nb.is-center:hover .nb-item.pending .nb-check{
   border-color:#73b99d;
-  background:#73b99d;
+  background:linear-gradient(135deg,#73b99d,#5fa88a);
+  box-shadow:0 1px 3px rgba(115,185,157,.3);
 }
 .t3d-card--nb.is-center:hover .nb-item.pending .nb-check::after{
   content:'✓';
   color:white;
   font-size:10px;
   position:absolute;
-  top:-1px;left:1px;
+  top:-1px;left:1.5px;
   font-weight:700;
-  animation:check-pop .3s ease;
+  animation:check-pop .35s cubic-bezier(.22,.8,.2,1);
 }
 @keyframes check-pop{
-  0%{transform:scale(0)}
-  50%{transform:scale(1.2)}
-  100%{transform:scale(1)}
+  0%{transform:scale(0) rotate(-20deg)}
+  60%{transform:scale(1.3) rotate(5deg)}
+  100%{transform:scale(1) rotate(0deg)}
 }
+/* CTA: Sticky note button */
 .nb-cta{
   position:absolute;
-  bottom:12px;right:12px;
-  background:#73b99d;
+  bottom:12px;right:10px;
+  background:linear-gradient(135deg,#73b99d,#5fa88a);
   color:white;
   font-size:10px;
   font-weight:700;
-  padding:6px 12px;
-  border-radius:4px;
+  padding:7px 12px;
+  border-radius:3px 8px 3px 8px;
   opacity:0;
-  transform:translateY(8px);
-  transition:all .3s ease;
+  transform:translateY(10px) rotate(2deg);
+  transition:all .35s cubic-bezier(.22,.8,.2,1);
+  box-shadow:0 2px 8px rgba(115,185,157,.25);
+  letter-spacing:.02em;
 }
 .t3d-card--nb.is-center:hover .nb-cta{
   opacity:1;
-  transform:translateY(0);
+  transform:translateY(0) rotate(-1deg);
 }
 
 /* ===== Card 1: Printer (打印机识别黑白) ===== */
 .t3d-card--pr{
-  background:linear-gradient(180deg,#e8eef5 0%,#d5dfe8 100%);
+  background:
+    linear-gradient(180deg,#e8eef5 0%,#dce4ed 40%,#d0dae5 100%);
+  background-image:
+    repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(255,255,255,.03) 2px,rgba(255,255,255,.03) 3px),
+    linear-gradient(180deg,#e8eef5 0%,#dce4ed 40%,#d0dae5 100%);
   border:1px solid #c5d0dc;
-  box-shadow:0 8px 32px rgba(55,83,130,.15);
+  box-shadow:
+    0 1px 3px rgba(55,83,130,.06),
+    0 8px 28px rgba(55,83,130,.12),
+    0 20px 48px rgba(55,83,130,.08),
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(0,0,0,.04);
 }
 .pr-screen{
   position:absolute;
-  top:20px;left:20px;right:20px;
-  height:80px;
-  background:#1a2332;
+  top:20px;left:18px;right:18px;
+  height:82px;
+  background:linear-gradient(180deg,#0d1820,#1a2832);
   border-radius:6px;
   border:2px solid #2a3a4a;
   overflow:hidden;
@@ -550,91 +614,178 @@
   font-size:13px;
   color:#4a9;
   font-weight:700;
+  box-shadow:
+    inset 0 2px 8px rgba(0,0,0,.4),
+    0 1px 0 rgba(255,255,255,.1);
+  text-shadow:0 0 8px rgba(68,170,153,.6);
+}
+.pr-screen-text{
+  transition:all .3s ease;
 }
 .pr-scanline{
   position:absolute;
   left:0;right:0;
   height:2px;
-  background:linear-gradient(90deg,transparent,#4a9,transparent);
+  background:linear-gradient(90deg,transparent,rgba(68,170,153,.6),transparent);
   animation:scanline 3s linear infinite;
 }
 @keyframes scanline{
-  0%{top:0}
+  0%{top:-2px}
   100%{top:100%}
+}
+/* LCD pixel grid overlay */
+.pr-screen::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.1) 2px,
+    rgba(0,0,0,.1) 3px
+  );
+  pointer-events:none;
 }
 .pr-leds{
   position:absolute;
-  top:110px;left:20px;
+  top:112px;left:20px;
   display:flex;
-  gap:8px;
+  gap:10px;
+  align-items:center;
 }
 .pr-led{
   width:8px;height:8px;
   border-radius:50%;
-  animation:led-blink 2s ease infinite;
+  transition:all .3s ease;
 }
-.pr-led-r{background:#e55;animation-delay:0s}
-.pr-led-g{background:#5e5;animation-delay:.5s}
-@keyframes led-blink{
-  0%,50%{opacity:1;box-shadow:0 0 8px currentColor}
-  51%,100%{opacity:.4;box-shadow:none}
+.pr-led-r{
+  background:radial-gradient(circle at 35% 35%,#ff6666,#cc3333);
+  box-shadow:0 0 6px rgba(255,80,80,.5);
+}
+.pr-led-g{
+  background:radial-gradient(circle at 35% 35%,#66ee66,#33aa33);
+  box-shadow:0 0 6px rgba(80,255,80,.5);
+  animation:led-pulse 2s ease infinite;
+}
+@keyframes led-pulse{
+  0%,50%{box-shadow:0 0 6px rgba(80,255,80,.5)}
+  51%,100%{box-shadow:0 0 2px rgba(80,255,80,.2)}
+}
+/* LED label */
+.pr-led-label{
+  font-size:7px;
+  color:#8a9aaa;
+  letter-spacing:.08em;
+  margin-left:4px;
+  font-weight:600;
 }
 .pr-body{
   position:absolute;
-  top:130px;left:20px;right:20px;
-  height:120px;
-  background:linear-gradient(180deg,#b8c5d5,#a0b0c0);
+  top:130px;left:18px;right:18px;
+  height:124px;
+  background:linear-gradient(180deg,#bcc8d8 0%,#a8b8c8 50%,#98aaba 100%);
   border-radius:8px;
-  border:2px solid #8a9aaa;
+  border:1.5px solid #8a9aaa;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.3),
+    inset 0 -2px 4px rgba(0,0,0,.08),
+    0 2px 8px rgba(0,0,0,.06);
+}
+/* Ventilation lines on printer body */
+.pr-body::before{
+  content:'';
+  position:absolute;
+  top:10px;left:12px;right:12px;
+  height:20px;
+  background:repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 6px,
+    rgba(0,0,0,.06) 6px,
+    rgba(0,0,0,.06) 7px
+  );
 }
 .pr-slot{
   position:absolute;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:80%;height:4px;
-  background:#2a3a4a;
+  width:82%;height:4px;
+  background:linear-gradient(180deg,#1a2a3a,#2a3a4a);
   border-radius:2px;
+  box-shadow:0 1px 2px rgba(0,0,0,.2);
 }
 .pr-output{
   position:absolute;
-  bottom:20px;left:20px;right:20px;
+  bottom:24px;left:18px;right:18px;
   height:80px;
   overflow:hidden;
 }
 .pr-paper{
-  width:100%;height:100%;
+  width:85%;height:80%;
+  margin:0 auto;
   background:white;
   border:1px solid #d0d8e0;
-  border-radius:4px;
-  transform:translateY(100%);
-  transition:transform .5s ease;
+  border-radius:3px;
+  transform:translateY(110%);
+  transition:transform .6s cubic-bezier(.22,.8,.2,1);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:32px;
+  font-size:28px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  position:relative;
+}
+/* Paper content icons - grayscale on hover */
+.pr-paper-icons{
+  display:flex;
+  gap:4px;
+  font-size:14px;
+}
+.pr-paper-icons span{
+  filter:saturate(1);
+  transition:filter .8s ease;
 }
 .t3d-card--pr.is-center:hover .pr-paper{
   transform:translateY(0);
 }
-.t3d-card--pr.is-center:hover .pr-screen{
+.t3d-card--pr.is-center:hover .pr-paper-icons span{
+  filter:saturate(0);
+}
+.t3d-card--pr.is-center:hover .pr-screen-text{
   color:#f80;
 }
-.t3d-card--pr.is-center:hover .pr-screen::after{
-  content:'B&W';
+/* Hover: LED blink faster */
+.t3d-card--pr.is-center:hover .pr-led-g{
+  animation:led-blink-fast .4s ease infinite;
 }
+@keyframes led-blink-fast{
+  0%,50%{box-shadow:0 0 8px rgba(80,255,80,.8)}
+  51%,100%{box-shadow:0 0 2px rgba(80,255,80,.2)}
+}
+/* CTA: Physical button */
 .pr-cta{
   position:absolute;
-  bottom:24px;left:50%;
-  transform:translateX(-50%) translateY(8px);
-  background:#5aaeff;
+  bottom:20px;left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:linear-gradient(180deg,#6ab8ff,#4a9aee);
   color:white;
   font-size:10px;
   font-weight:700;
-  padding:8px 16px;
+  padding:8px 18px;
   border-radius:6px;
   opacity:0;
-  transition:all .3s ease;
+  transition:all .35s cubic-bezier(.22,.8,.2,1);
   white-space:nowrap;
+  box-shadow:
+    0 2px 0 #3a7acc,
+    0 4px 8px rgba(74,154,238,.3),
+    inset 0 1px 0 rgba(255,255,255,.3);
+  letter-spacing:.03em;
+}
+.pr-cta:active{
+  box-shadow:0 1px 0 #3a7acc;
+  transform:translateX(-50%) translateY(1px);
 }
 .t3d-card--pr.is-center:hover .pr-cta{
   opacity:1;
@@ -643,42 +794,60 @@
 
 /* ===== Card 2: Compare (AI多方案对比) ===== */
 .t3d-card--cp{
-  background:linear-gradient(135deg,#f0f5ff,#e8f0ff);
+  background:
+    linear-gradient(135deg,#f4f8ff 0%,#edf2ff 40%,#f8f5ff 100%);
   border:1px solid #d0dff0;
-  box-shadow:0 8px 32px rgba(55,83,130,.12);
+  box-shadow:
+    0 1px 3px rgba(55,83,130,.06),
+    0 8px 28px rgba(55,83,130,.10),
+    0 20px 48px rgba(55,83,130,.06),
+    inset 0 1px 0 rgba(255,255,255,.9);
+}
+.cp-header{
+  position:absolute;
+  top:16px;left:20px;right:20px;
+  text-align:center;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.15em;
+  color:#8a9abb;
+  text-transform:uppercase;
 }
 .cp-panels{
   position:absolute;
-  top:40px;left:20px;right:20px;
-  height:240px;
+  top:36px;left:16px;right:16px;
+  height:248px;
   display:flex;
-  gap:8px;
+  gap:7px;
   align-items:center;
   justify-content:center;
 }
 .cp-panel{
-  width:60px;height:200px;
+  width:62px;height:210px;
   background:white;
-  border-radius:8px;
-  border:2px solid #d0dff0;
-  padding:8px;
+  border-radius:10px;
+  border:1.5px solid #d0dff0;
+  padding:8px 6px;
   display:flex;
   flex-direction:column;
   gap:6px;
-  transition:all .4s ease;
+  transition:all .45s cubic-bezier(.22,.8,.2,1);
   position:relative;
+  box-shadow:0 2px 6px rgba(55,83,130,.04);
 }
 .cp-label{
-  font-size:18px;
+  font-size:16px;
   font-weight:800;
   text-align:center;
   color:#4a7bff;
+  letter-spacing:.02em;
 }
 .cp-bar{
   flex:1;
-  background:linear-gradient(180deg,#e0e8ff,#c0d0ff);
-  border-radius:4px;
+  background:linear-gradient(180deg,#e8eeff,#d0dcff);
+  border-radius:5px;
   position:relative;
+  overflow:hidden;
 }
 .cp-bar::after{
   content:'';
@@ -686,90 +855,147 @@
   bottom:0;left:0;right:0;
   height:60%;
   background:linear-gradient(180deg,#4a7bff,#3a6bef);
-  border-radius:4px;
+  border-radius:5px;
+  animation:bar-float 4s ease infinite;
+  transition:height .4s ease;
+}
+@keyframes bar-float{
+  0%,100%{height:60%}
+  50%{height:63%}
 }
 .cp-panel.cp-b{
   border-color:#ff9a6c;
+  box-shadow:0 2px 8px rgba(255,112,64,.08);
 }
 .cp-panel.cp-b .cp-label{
   color:#ff7040;
 }
 .cp-panel.cp-b .cp-bar::after{
   background:linear-gradient(180deg,#ff9a6c,#ed7040);
+  animation:bar-float-b 3.5s ease infinite;
+}
+@keyframes bar-float-b{
+  0%,100%{height:72%}
+  50%{height:75%}
 }
 .cp-recommend{
   position:absolute;
-  top:-20px;left:50%;
-  transform:translateX(-50%);
-  background:#ff9a6c;
+  top:-22px;left:50%;
+  transform:translateX(-50%) scale(.8);
+  background:linear-gradient(135deg,#ff9a6c,#ed7040);
   color:white;
   font-size:9px;
   font-weight:700;
-  padding:3px 8px;
-  border-radius:4px;
+  padding:3px 10px;
+  border-radius:10px;
   white-space:nowrap;
   opacity:0;
-  transition:opacity .3s ease;
+  transition:all .35s cubic-bezier(.22,.8,.2,1);
+  box-shadow:0 2px 8px rgba(255,112,64,.3);
 }
 .t3d-card--cp.is-center:hover .cp-recommend{
   opacity:1;
+  transform:translateX(-50%) scale(1);
 }
 .t3d-card--cp.is-center:hover .cp-panel{
-  transform:translateY(-8px);
+  transform:translateY(-6px);
+  transition-delay:.05s;
+}
+.t3d-card--cp.is-center:hover .cp-panel.cp-a{
+  transition-delay:0s;
 }
 .t3d-card--cp.is-center:hover .cp-panel.cp-b{
-  transform:translateY(-16px) scale(1.05);
-  box-shadow:0 8px 24px rgba(255,112,64,.3);
+  transform:translateY(-18px) scale(1.08);
+  box-shadow:0 12px 28px rgba(255,112,64,.25);
+  transition-delay:.1s;
+}
+.t3d-card--cp.is-center:hover .cp-panel.cp-c{
+  transition-delay:.15s;
 }
 .cp-text{
   position:absolute;
-  bottom:60px;left:20px;right:20px;
+  bottom:56px;left:20px;right:20px;
   text-align:center;
   font-size:11px;
   color:#64748d;
   font-weight:600;
   opacity:0;
-  transition:opacity .3s ease;
+  transform:translateY(6px);
+  transition:all .4s ease .15s;
 }
 .t3d-card--cp.is-center:hover .cp-text{
   opacity:1;
+  transform:translateY(0);
 }
+/* CTA: Capsule pill */
 .cp-cta{
   position:absolute;
-  bottom:20px;left:50%;
-  transform:translateX(-50%);
+  bottom:18px;left:50%;
+  transform:translateX(-50%) translateY(6px);
   background:linear-gradient(135deg,#ff9a6c,#ed7040);
   color:white;
   font-size:10px;
   font-weight:700;
-  padding:8px 16px;
-  border-radius:20px;
+  padding:8px 20px;
+  border-radius:22px;
   opacity:0;
-  transition:all .3s ease;
+  transition:all .35s cubic-bezier(.22,.8,.2,1);
+  box-shadow:0 3px 12px rgba(255,112,64,.25);
+  letter-spacing:.03em;
 }
 .t3d-card--cp.is-center:hover .cp-cta{
   opacity:1;
+  transform:translateX(-50%) translateY(0);
 }
 
 /* ===== Card 3: Ticket (FATE TRIP) ===== */
 .t3d-card--tk{
-  background:linear-gradient(135deg,#fff5eb,#ffe8d5);
+  background:linear-gradient(145deg,#fff8f2,#ffedd8);
+  background-image:
+    radial-gradient(ellipse at 30% 20%,rgba(255,154,108,.06) 0%,transparent 50%),
+    radial-gradient(ellipse at 70% 80%,rgba(237,112,64,.04) 0%,transparent 50%),
+    linear-gradient(145deg,#fff8f2,#ffedd8);
   border:1px solid #f0d0b0;
-  box-shadow:0 8px 32px rgba(55,83,130,.12);
+  box-shadow:
+    0 1px 3px rgba(130,80,30,.06),
+    0 8px 28px rgba(55,83,130,.10),
+    0 20px 48px rgba(55,83,130,.06),
+    inset 0 1px 0 rgba(255,255,255,.9);
   position:relative;
 }
 .tk-ticket{
   position:absolute;
-  inset:20px;
+  inset:16px;
   background:white;
-  border-radius:8px;
-  border:2px solid #f0d0b0;
+  border-radius:10px;
+  border:1.5px solid #f0d0b0;
   overflow:hidden;
   display:flex;
   flex-direction:column;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+/* Perforated tear lines */
+.tk-tear-top{
+  height:0;
+  border-top:2px dashed #f0d0b0;
+  margin:0 8px;
+  transition:all .4s ease;
+}
+.tk-tear-bottom{
+  height:0;
+  border-top:2px dashed #f0d0b0;
+  margin:0 8px;
+  transition:all .4s ease;
+}
+.t3d-card--tk.is-center:hover .tk-tear-top{
+  border-color:#ed7040;
+  letter-spacing:4px;
+}
+.t3d-card--tk.is-center:hover .tk-tear-bottom{
+  border-color:#ed7040;
 }
 .tk-header{
-  padding:12px 16px;
+  padding:10px 14px;
   background:linear-gradient(135deg,#ff9a6c,#ed7040);
   color:white;
   display:flex;
@@ -779,40 +1005,39 @@
 .tk-brand{
   font-size:12px;
   font-weight:800;
-  letter-spacing:.05em;
+  letter-spacing:.08em;
+  text-shadow:0 1px 2px rgba(0,0,0,.1);
 }
 .tk-class{
-  font-size:9px;
-  opacity:.8;
+  font-size:8px;
+  opacity:.85;
+  letter-spacing:.1em;
+  background:rgba(255,255,255,.15);
+  padding:2px 6px;
+  border-radius:3px;
 }
 .tk-dest{
-  padding:16px;
-  border-bottom:2px dashed #f0d0b0;
+  padding:14px;
 }
 .tk-dest-label{
   display:block;
-  font-size:9px;
+  font-size:8px;
   color:#8a9aaa;
-  letter-spacing:.1em;
-  margin-bottom:4px;
+  letter-spacing:.12em;
+  margin-bottom:3px;
+  font-weight:600;
 }
 .tk-dest-name{
-  font-size:20px;
+  font-size:22px;
   font-weight:800;
   color:#ed7040;
-  animation:dest-cycle 4s ease infinite;
-}
-@keyframes dest-cycle{
-  0%,25%{content:'Kyoto'}
-  26%,50%{content:'Paris'}
-  51%,75%{content:'NYC'}
-  76%,100%{content:'Bali'}
+  letter-spacing:.02em;
 }
 .tk-fields{
-  padding:12px 16px;
+  padding:10px 14px;
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
+  gap:6px;
 }
 .tk-field{
   display:flex;
@@ -820,9 +1045,10 @@
   gap:2px;
 }
 .tk-fl{
-  font-size:8px;
+  font-size:7px;
   color:#8a9aaa;
-  letter-spacing:.1em;
+  letter-spacing:.12em;
+  font-weight:600;
 }
 .tk-fv{
   font-size:13px;
@@ -831,10 +1057,9 @@
 }
 .tk-route{
   margin-top:auto;
-  padding:12px 16px;
-  border-top:2px dashed #f0d0b0;
+  padding:10px 14px;
   position:relative;
-  height:60px;
+  height:56px;
   overflow:hidden;
 }
 .tk-route svg{
@@ -855,27 +1080,33 @@
 }
 .tk-plane{
   position:absolute;
-  top:50%;left:16px;
-  font-size:16px;
-  transition:all .5s ease;
+  top:50%;left:14px;
+  font-size:14px;
+  transition:all .6s cubic-bezier(.22,.8,.2,1);
+  transform:translateY(-50%);
 }
 .t3d-card--tk.is-center:hover .tk-plane{
-  left:calc(100% - 32px);
+  left:calc(100% - 30px);
 }
 .tk-boarding{
   position:absolute;
   top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  font-size:14px;
-  font-weight:800;
-  letter-spacing:.2em;
+  transform:translate(-50%,-50%) rotate(-8deg) scale(.8);
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:.15em;
   color:#ed7040;
+  border:3px solid #ed7040;
+  padding:4px 12px;
+  border-radius:4px;
   opacity:0;
-  transition:opacity .3s ease;
+  transition:all .4s cubic-bezier(.22,.8,.2,1);
 }
 .t3d-card--tk.is-center:hover .tk-boarding{
-  opacity:.3;
+  opacity:.35;
+  transform:translate(-50%,-50%) rotate(-8deg) scale(1);
 }
+/* CTA: Tear-off strip */
 .tk-cta{
   position:absolute;
   bottom:0;left:0;right:0;
@@ -886,7 +1117,9 @@
   padding:12px;
   text-align:center;
   opacity:0;
-  transition:opacity .3s ease;
+  transition:all .35s ease;
+  letter-spacing:.05em;
+  box-shadow:0 -2px 8px rgba(237,112,64,.15);
 }
 .t3d-card--tk.is-center:hover .tk-cta{
   opacity:1;
@@ -894,114 +1127,202 @@
 
 /* ===== Card 4: Tarot (手势塔罗) ===== */
 .t3d-card--tr{
-  background:linear-gradient(135deg,#e8daf0,#d5c5e0);
-  border:2px solid #c0b0d0;
-  box-shadow:0 8px 32px rgba(100,80,130,.2);
+  background:linear-gradient(145deg,#e2d4ee,#d0c0dc,#c8b8d4);
+  background-image:
+    radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.15) 0%,transparent 60%),
+    radial-gradient(ellipse at 20% 80%,rgba(100,60,130,.08) 0%,transparent 40%),
+    linear-gradient(145deg,#e2d4ee,#d0c0dc,#c8b8d4);
+  border:2px solid #b8a0c8;
+  box-shadow:
+    0 1px 3px rgba(100,80,130,.08),
+    0 8px 28px rgba(100,80,130,.18),
+    0 20px 48px rgba(100,80,130,.10),
+    inset 0 1px 0 rgba(255,255,255,.4);
 }
 .tr-border{
   position:absolute;
-  inset:12px;
-  border:1px solid rgba(255,255,255,.6);
-  border-radius:12px;
+  inset:10px;
+  border:1.5px solid rgba(255,255,255,.5);
+  border-radius:14px;
   pointer-events:none;
 }
 .tr-border-inner{
   position:absolute;
-  inset:20px;
-  border:1px solid rgba(255,255,255,.4);
-  border-radius:8px;
+  inset:18px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:10px;
   pointer-events:none;
 }
+/* Ornamental corner decorations */
+.tr-ornament{
+  position:absolute;
+  width:24px;height:24px;
+  pointer-events:none;
+  opacity:.5;
+}
+.tr-ornament::before,.tr-ornament::after{
+  content:'';
+  position:absolute;
+  background:rgba(255,255,255,.6);
+}
+.tr-ornament.tl{top:24px;left:24px}
+.tr-ornament.tl::before{top:0;left:0;width:12px;height:1px}
+.tr-ornament.tl::after{top:0;left:0;width:1px;height:12px}
+.tr-ornament.tr{top:24px;right:24px}
+.tr-ornament.tr::before{top:0;right:0;width:12px;height:1px}
+.tr-ornament.tr::after{top:0;right:0;width:1px;height:12px}
+.tr-ornament.bl{bottom:24px;left:24px}
+.tr-ornament.bl::before{bottom:0;left:0;width:12px;height:1px}
+.tr-ornament.bl::after{bottom:0;left:0;width:1px;height:12px}
+.tr-ornament.br{bottom:24px;right:24px}
+.tr-ornament.br::before{bottom:0;right:0;width:12px;height:1px}
+.tr-ornament.br::after{bottom:0;right:0;width:1px;height:12px}
+
 .tr-symbol{
   position:absolute;
-  top:50%;left:50%;
+  top:46%;left:50%;
   transform:translate(-50%,-50%);
-  font-size:80px;
-  color:rgba(255,255,255,.8);
-  text-shadow:0 0 20px rgba(255,255,255,.5);
-  transition:transform .3s ease;
+  font-size:72px;
+  color:rgba(255,255,255,.85);
+  text-shadow:
+    0 0 20px rgba(255,255,255,.5),
+    0 0 40px rgba(200,180,220,.3);
+  transition:transform .4s cubic-bezier(.22,.8,.2,1);
 }
 .tr-corner{
   position:absolute;
-  font-size:20px;
-  color:rgba(255,255,255,.6);
+  font-size:18px;
+  color:rgba(255,255,255,.55);
+  transition:all .3s ease;
 }
-.tr-corner.tl{top:24px;left:24px}
-.tr-corner.tr{top:24px;right:24px}
-.tr-corner.bl{bottom:24px;left:24px}
-.tr-corner.br{bottom:24px;right:24px}
+.tr-corner.tl{top:28px;left:28px}
+.tr-corner.tr{top:28px;right:28px}
+.tr-corner.bl{bottom:28px;left:28px}
+.tr-corner.br{bottom:28px;right:28px}
+.t3d-card--tr.is-center:hover .tr-corner{
+  color:rgba(255,255,255,.85);
+  text-shadow:0 0 8px rgba(255,255,255,.4);
+}
 .tr-title{
   position:absolute;
   bottom:80px;left:0;right:0;
   text-align:center;
-  font-size:14px;
+  font-size:13px;
   font-weight:800;
-  letter-spacing:.15em;
+  letter-spacing:.18em;
   color:rgba(255,255,255,.9);
+  text-shadow:0 1px 4px rgba(100,80,130,.3);
 }
 .tr-numeral{
   position:absolute;
   bottom:60px;left:0;right:0;
   text-align:center;
   font-size:11px;
-  color:rgba(255,255,255,.6);
-  letter-spacing:.1em;
+  color:rgba(255,255,255,.55);
+  letter-spacing:.12em;
 }
 .tr-glow{
   position:absolute;
   inset:0;
   border-radius:20px;
-  box-shadow:inset 0 0 30px rgba(255,255,255,.3);
+  box-shadow:inset 0 0 30px rgba(255,255,255,.2);
   animation:edge-glow 3s ease infinite;
   pointer-events:none;
 }
 @keyframes edge-glow{
-  0%,100%{opacity:.5}
-  50%{opacity:1}
+  0%,100%{opacity:.5;box-shadow:inset 0 0 30px rgba(255,255,255,.2)}
+  50%{opacity:1;box-shadow:inset 0 0 40px rgba(255,255,255,.35)}
 }
+/* Hover: card tilt + glow intensify */
 .t3d-card--tr.is-center:hover .tr-symbol{
-  transform:translate(-50%,-50%) scale(1.1);
+  transform:translate(-50%,-50%) scale(1.12);
+  text-shadow:
+    0 0 30px rgba(255,255,255,.7),
+    0 0 60px rgba(200,180,220,.4);
 }
+.t3d-card--tr.is-center:hover .tr-glow{
+  animation:edge-glow-intense 1.5s ease infinite;
+}
+@keyframes edge-glow-intense{
+  0%,100%{box-shadow:inset 0 0 40px rgba(255,255,255,.35)}
+  50%{box-shadow:inset 0 0 60px rgba(255,255,255,.5)}
+}
+/* Hover: slight card rotation for flip effect */
+.t3d-card--tr.is-center:hover .card-inner{
+  transform:translateY(-6px) perspective(600px) rotateY(8deg);
+}
+/* CTA: Frosted glass corner badge */
 .tr-cta{
   position:absolute;
-  top:24px;right:24px;
-  background:rgba(255,255,255,.3);
-  backdrop-filter:blur(10px);
+  top:24px;right:20px;
+  background:rgba(255,255,255,.2);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
   color:white;
   font-size:9px;
   font-weight:700;
-  padding:6px 10px;
-  border-radius:4px;
-  border:1px solid rgba(255,255,255,.5);
+  padding:7px 12px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,.4);
   opacity:0;
-  transition:opacity .3s ease;
+  transform:translateX(8px);
+  transition:all .35s cubic-bezier(.22,.8,.2,1);
+  letter-spacing:.03em;
+  box-shadow:0 2px 8px rgba(100,80,130,.15);
 }
 .t3d-card--tr.is-center:hover .tr-cta{
   opacity:1;
+  transform:translateX(0);
 }
 
 /* ===== Card 5: Destiny (产品命理局) ===== */
 .t3d-card--dy{
-  background:linear-gradient(135deg,#fdf5f0,#f8ebe0);
-  border:1px solid #e8d0c0;
-  box-shadow:0 8px 32px rgba(130,80,60,.12);
+  background:linear-gradient(145deg,#fdf5f0,#f5e6d8);
+  background-image:
+    radial-gradient(ellipse at 50% 40%,rgba(201,68,85,.03) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 80%,rgba(180,140,80,.04) 0%,transparent 40%),
+    linear-gradient(145deg,#fdf5f0,#f5e6d8);
+  border:1px solid #e0c8b0;
+  box-shadow:
+    0 1px 3px rgba(130,80,60,.06),
+    0 8px 28px rgba(130,80,60,.10),
+    0 20px 48px rgba(130,80,60,.06),
+    inset 0 1px 0 rgba(255,255,255,.8);
+}
+/* Texture: subtle rice paper feel */
+.t3d-card--dy::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(201,68,85,.008) 8px,
+      rgba(201,68,85,.008) 9px
+    );
+  pointer-events:none;
+  z-index:0;
 }
 .dy-stamp{
   position:absolute;
-  top:16px;right:16px;
-  background:#c94455;
+  top:14px;right:14px;
+  background:linear-gradient(135deg,#c94455,#b03848);
   color:white;
-  font-size:9px;
+  font-size:8px;
   font-weight:700;
   padding:4px 8px;
   border-radius:3px;
-  letter-spacing:.05em;
+  letter-spacing:.08em;
+  box-shadow:0 1px 3px rgba(201,68,85,.3);
+  z-index:2;
 }
 .dy-bagua{
   position:absolute;
-  top:50%;left:50%;
+  top:48%;left:50%;
   transform:translate(-50%,-50%);
-  width:140px;height:140px;
+  width:150px;height:150px;
 }
 .dy-ring{
   position:absolute;
@@ -1009,68 +1330,131 @@
   border:2px solid #c94455;
   border-radius:50%;
   animation:ring-breathe 4s ease infinite;
+  opacity:.6;
+}
+.dy-ring-inner{
+  position:absolute;
+  inset:12px;
+  border:1px solid rgba(201,68,85,.3);
+  border-radius:50%;
+  animation:ring-breathe 4s ease infinite .5s;
 }
 @keyframes ring-breathe{
-  0%,100%{transform:scale(1);opacity:.6}
-  50%{transform:scale(1.05);opacity:1}
+  0%,100%{transform:scale(1);opacity:.5}
+  50%{transform:scale(1.04);opacity:.9}
 }
 .dy-yinyang{
   position:absolute;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
-  font-size:48px;
+  font-size:44px;
   color:#c94455;
   animation:yinyang-sway 5s ease infinite;
+  text-shadow:0 2px 4px rgba(201,68,85,.15);
 }
 @keyframes yinyang-sway{
   0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
-  50%{transform:translate(-50%,-50%) rotate(10deg)}
+  25%{transform:translate(-50%,-50%) rotate(8deg)}
+  75%{transform:translate(-50%,-50%) rotate(-5deg)}
 }
 .dy-trigram{
   position:absolute;
   font-size:16px;
   color:#c94455;
-  opacity:.5;
-  transition:all .3s ease;
+  opacity:.4;
+  transition:all .4s cubic-bezier(.22,.8,.2,1);
 }
 .dy-trigram.glow{
   opacity:1;
-  text-shadow:0 0 8px rgba(201,68,85,.5);
+  text-shadow:0 0 10px rgba(201,68,85,.5);
+}
+/* Hover: sequential trigram glow */
+.t3d-card--dy.is-center:hover .dy-trigram{
+  opacity:.9;
+}
+.t3d-card--dy.is-center:hover .dy-trigram:nth-child(3){transition-delay:.0s}
+.t3d-card--dy.is-center:hover .dy-trigram:nth-child(4){transition-delay:.05s}
+.t3d-card--dy.is-center:hover .dy-trigram:nth-child(5){transition-delay:.1s}
+.t3d-card--dy.is-center:hover .dy-trigram:nth-child(6){transition-delay:.15s}
+.t3d-card--dy.is-center:hover .dy-trigram:nth-child(7){transition-delay:.2s}
+.t3d-card--dy.is-center:hover .dy-trigram:nth-child(8){transition-delay:.25s}
+.t3d-card--dy.is-center:hover .dy-trigram:nth-child(9){transition-delay:.3s}
+.t3d-card--dy.is-center:hover .dy-trigram:nth-child(10){transition-delay:.35s}
+.t3d-card--dy.is-center:hover .dy-ring{
+  animation:ring-breathe-intense 2s ease infinite;
+  border-color:#d04a5a;
+}
+@keyframes ring-breathe-intense{
+  0%,100%{transform:scale(1);opacity:.7;box-shadow:0 0 8px rgba(201,68,85,.2)}
+  50%{transform:scale(1.06);opacity:1;box-shadow:0 0 16px rgba(201,68,85,.3)}
+}
+/* Hover: yinyang swings more */
+.t3d-card--dy.is-center:hover .dy-yinyang{
+  animation:yinyang-sway-hover 2s ease infinite;
+}
+@keyframes yinyang-sway-hover{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  25%{transform:translate(-50%,-50%) rotate(15deg)}
+  75%{transform:translate(-50%,-50%) rotate(-10deg)}
 }
 .dy-words{
   position:absolute;
-  bottom:80px;left:20px;right:20px;
+  bottom:72px;left:16px;right:16px;
   display:flex;
   flex-wrap:wrap;
-  gap:6px;
+  gap:5px;
   justify-content:center;
 }
 .dy-word{
-  font-size:10px;
+  font-size:9px;
   color:#8a6050;
-  padding:3px 8px;
-  background:rgba(201,68,85,.08);
-  border-radius:3px;
+  padding:3px 7px;
+  background:rgba(201,68,85,.06);
+  border-radius:4px;
   font-weight:600;
+  border:1px solid rgba(201,68,85,.08);
+  transition:all .3s ease;
 }
+.t3d-card--dy.is-center:hover .dy-word{
+  background:rgba(201,68,85,.1);
+  border-color:rgba(201,68,85,.15);
+}
+/* CTA: Round cinnabar seal */
 .dy-seal{
   position:absolute;
-  bottom:20px;left:50%;
-  transform:translateX(-50%);
-  background:#c94455;
+  bottom:16px;left:50%;
+  transform:translateX(-50%) translateY(12px) scale(.8);
+  width:52px;height:52px;
+  background:radial-gradient(circle at 40% 40%,#d04a5a,#b03040);
   color:white;
-  font-size:11px;
+  font-size:9px;
   font-weight:700;
-  padding:8px 16px;
-  border-radius:4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:1.3;
+  border-radius:50%;
   opacity:0;
-  transition:all .3s ease;
+  transition:all .4s cubic-bezier(.22,.8,.2,1);
+  box-shadow:
+    0 2px 8px rgba(201,68,85,.3),
+    inset 0 1px 0 rgba(255,255,255,.2);
+  letter-spacing:.05em;
+  border:2px solid rgba(255,255,255,.15);
 }
 .t3d-card--dy.is-center:hover .dy-seal{
   opacity:1;
+  transform:translateX(-50%) translateY(0) scale(1);
 }
-.t3d-card--dy.is-center:hover .dy-trigram{
-  opacity:.8;
+/* Seal stamp animation */
+.t3d-card--dy.is-center:hover .dy-seal{
+  animation:seal-stamp .5s cubic-bezier(.22,.8,.2,1);
+}
+@keyframes seal-stamp{
+  0%{transform:translateX(-50%) translateY(-20px) scale(1.3);opacity:0}
+  60%{transform:translateX(-50%) translateY(2px) scale(.95);opacity:1}
+  100%{transform:translateX(-50%) translateY(0) scale(1);opacity:1}
 }
 
 /* ===== Transition Overlay ===== */
@@ -1151,7 +1535,7 @@
 .t3d-dot{
   width:8px;height:8px;
   border-radius:50%;
-  background:rgba(74,123,255,.25);
+  background:rgba(74,123,255,.2);
   border:none;
   cursor:pointer;
   transition:all .3s ease;
@@ -1159,16 +1543,159 @@
 .t3d-dot.active{
   background:#4a7bff;
   transform:scale(1.3);
-  box-shadow:0 0 8px rgba(74,123,255,.5);
+  box-shadow:0 0 8px rgba(74,123,255,.4);
 }
 
 /* ===== Reduced Motion ===== */
 @media (prefers-reduced-motion:reduce){
-  *{
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
+  .t3d-card--nb .nb-cursor,
+  .t3d-card--pr .pr-scanline,
+  .t3d-card--cp .cp-bar::after,
+  .t3d-card--tr .tr-glow,
+  .t3d-card--tk .tk-route-path,
+  .t3d-card--dy .dy-ring,
+  .t3d-card--dy .dy-yinyang{
+    animation:none !important;
   }
+  .t3d-card.is-center:hover .card-inner{
+    transform:translateY(-4px) !important;
+  }
+  .t3d-card--tr.is-center:hover .card-inner{
+    transform:translateY(-4px) !important;
+  }
+}
+
+
+/* ===== Growth Garden - Growth Timeline ===== */
+.gg-about{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;padding:26px 38px!important;overflow:hidden!important;height:100%;box-sizing:border-box}
+.gg-shell{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;width:100%;flex:1;min-height:0;align-items:stretch}
+/* Left: Growth Profile */
+.gg-profile{position:relative;align-self:stretch;min-height:0;border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(236,245,255,.62));border:1px solid rgba(255,255,255,.95);box-shadow:0 8px 32px rgba(55,83,130,.10),0 1px 4px rgba(55,83,130,.06);backdrop-filter:blur(28px);overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.gg-profile::-webkit-scrollbar{display:none}
+.gg-avatar-row{display:flex;align-items:center;gap:14px}
+.gg-avatar-row img{width:76px;height:76px;aspect-ratio:1/1;border-radius:24px;object-fit:cover;object-position:center;border:3px solid rgba(255,255,255,.95);box-shadow:0 16px 34px rgba(75,105,160,.16)}
+.gg-name{font-size:24px;font-weight:850;letter-spacing:-.04em;color:#1F3550}
+.gg-role{margin-top:4px;color:#65748f;font-size:13px;line-height:1.55}
+.gg-role b{color:#5E82F4}
+.gg-positioning{margin-top:6px;font-size:12px;color:#7a8ca8;font-style:italic;line-height:1.5}
+.gg-seeds-section{padding:15px;border-radius:22px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85)}
+.gg-seeds-section h3{margin:0 0 10px;font-size:13px;color:#24324d;font-weight:700}
+.gg-seed-list{display:flex;flex-wrap:wrap;gap:8px}
+.gg-seed{position:relative;padding:8px 12px;border-radius:999px;background:rgba(237,243,255,.78);border:1px solid #dfe8f7;font-size:11px;color:#395277;cursor:pointer;transition:all .3s ease}
+.gg-seed.hot{background:linear-gradient(135deg,#e9f0ff,#dce8ff);color:#5E82F4;font-weight:750}
+.gg-seed-tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);padding:8px 12px;border-radius:12px;background:rgba(31,53,80,.95);color:#fff;font-size:11px;white-space:nowrap;opacity:0;pointer-events:none;transition:all .25s ease;z-index:10}
+.gg-seed-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(31,53,80,.95)}
+.gg-seed:hover .gg-seed-tooltip{opacity:1;transform:translateX(-50%) translateY(0)}
+.gg-growing-section{padding:15px;border-radius:22px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85)}
+.gg-growing-section h3{margin:0 0 10px;font-size:13px;color:#24324d;font-weight:700}
+.gg-growing-list{display:grid;gap:8px}
+.gg-growing-item{display:flex;align-items:center;gap:8px;color:#53637d;font-size:12px}
+.gg-growing-dot{width:8px;height:8px;border-radius:50%;background:#C5D9B8;flex-shrink:0}
+.gg-contact-row{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:#425371}
+.gg-contact-row a,.gg-contact-row span{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid #e4ebf6;text-decoration:none;transition:all .2s}
+.gg-contact-row a:hover{background:rgba(255,255,255,.95);border-color:#c4d3eb}
+
+/* Right: Growth Timeline */
+.gg-main{min-height:0;display:flex;flex-direction:column;position:relative}
+.gg-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-shrink:0;position:relative;z-index:3;background:linear-gradient(180deg,rgba(238,244,248,.96),rgba(238,244,248,.72));padding-bottom:6px}
+.gg-header h2{margin:0;font-size:clamp(24px,2.8vw,38px);letter-spacing:-.055em;color:#1F3550;font-weight:850}
+.gg-header h2 em{font-style:normal;color:#9EB9A6}
+.gg-subtitle{margin:6px 0 0;color:#64748d;font-size:13px;line-height:1.6}
+.gg-badges{display:flex;gap:8px;flex-wrap:wrap}
+.gg-badge{display:inline-flex;align-items:center;gap:5px;padding:8px 11px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.8);box-shadow:0 8px 20px rgba(55,83,130,.08)}
+.gg-badge.blue{background:#e8f0ff;color:#5E82F4}
+.gg-badge.green{background:#e6f5ed;color:#6b9c82}
+.gg-badge.peach{background:#fff0e7;color:#cc7652}
+.gg-badge.sage{background:#eef3e9;color:#657166}
+
+.gg-timeline{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;padding:8px 0 20px 80px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.gg-stem{position:absolute;left:60px;top:0;bottom:0;width:4px;background:linear-gradient(to bottom,#C5D9B8 0%,#9EB9A6 40%,#9EB9A6 100%);border-radius:2px;opacity:0;transform:scaleY(0);transform-origin:bottom center}
+.gg-stem.grow{animation:gg-stem-grow 1.4s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes gg-stem-grow{
+  0%{opacity:0;transform:scaleY(0)}
+  30%{opacity:1}
+  100%{opacity:1;transform:scaleY(1)}
+}
+
+/* Roots node */
+.gg-node{position:relative;margin-bottom:24px;opacity:0;transform:translateY(20px)}
+.gg-node.visible{animation:gg-node-in .6s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes gg-node-in{
+  to{opacity:1;transform:translateY(0)}
+}
+.gg-node-dot{position:absolute;left:-24px;top:20px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #9EB9A6;box-shadow:0 0 0 4px rgba(158,185,166,.2);z-index:2;transition:all .3s}
+.gg-node:hover .gg-node-dot{border-color:#C5D9B8;box-shadow:0 0 0 8px rgba(197,217,184,.3),0 0 20px rgba(197,217,184,.5)}
+
+.gg-roots{padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,rgba(238,244,248,.9),rgba(255,255,255,.7));border:1px solid rgba(158,185,166,.3);backdrop-filter:blur(20px)}
+.gg-roots-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.gg-roots-icon{font-size:18px;color:#9EB9A6}
+.gg-roots-title{font-size:14px;font-weight:800;color:#1F3550;letter-spacing:-.02em}
+.gg-roots-sub{font-size:11px;color:#65748f;margin-left:auto}
+.gg-roots-info{display:grid;gap:8px;margin-bottom:12px}
+.gg-roots-line{font-size:12px;color:#5e6e88;line-height:1.6}
+.gg-roots-line b{color:#1F3550;font-weight:700}
+.gg-roots-skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.gg-skill-tag{padding:6px 10px;border-radius:999px;background:rgba(158,185,166,.15);border:1px solid rgba(158,185,166,.3);font-size:10px;color:#657166;font-weight:600}
+
+/* Stem node (internship) */
+.gg-stem-node{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.gg-stem-meta{display:flex;flex-direction:column;gap:4px;min-width:140px}
+.gg-stem-time{font-size:11px;font-weight:750;color:#5E82F4;letter-spacing:.02em}
+.gg-stem-company{font-size:15px;font-weight:850;color:#1F3550;letter-spacing:-.02em}
+.gg-stem-role{font-size:12px;color:#65748f}
+.gg-stem-content{display:flex;flex-direction:column;gap:12px}
+.gg-leaf-card{padding:12px 16px;border-radius:16px;background:linear-gradient(135deg,rgba(197,217,184,.25),rgba(238,244,248,.6));border:1px solid rgba(158,185,166,.4);backdrop-filter:blur(16px);transition:all .3s}
+.gg-leaf-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(158,185,166,.2);border-color:rgba(158,185,166,.6)}
+.gg-leaf-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9EB9A6;margin-bottom:6px}
+.gg-leaf-text{font-size:13px;color:#1F3550;font-weight:600;line-height:1.5}
+
+/* Specimen card */
+.gg-specimen{position:relative;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.85);border:1px solid rgba(231,185,137,.3);backdrop-filter:blur(20px);overflow:hidden;transition:all .3s;cursor:pointer}
+.gg-specimen::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#E7B989,#f0d4a8);opacity:.7}
+.gg-specimen:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 12px 36px rgba(231,185,137,.2);border-color:rgba(231,185,137,.5)}
+.gg-specimen:hover .gg-specimen-details{opacity:1;max-height:200px}
+.gg-specimen-num{font-size:9px;font-weight:800;letter-spacing:.15em;color:#E7B989;margin-bottom:6px}
+.gg-specimen-title{font-size:14px;font-weight:800;color:#1F3550;line-height:1.4;margin-bottom:8px}
+.gg-specimen-conditions{font-size:11px;color:#7a8ca8;line-height:1.5;margin-bottom:8px}
+.gg-specimen-result{font-size:12px;color:#1F3550;font-weight:600;line-height:1.5}
+.gg-specimen-result b{color:#5E82F4;font-weight:800}
+.gg-specimen-details{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(231,185,137,.3);opacity:0;max-height:0;overflow:hidden;transition:all .4s ease}
+.gg-specimen-detail-list{list-style:none;padding:0;margin:0}
+.gg-specimen-detail-list li{font-size:11px;color:#65748f;line-height:1.6;padding:3px 0}
+.gg-specimen-detail-list li::before{content:'✦';color:#E7B989;margin-right:6px;font-size:8px}
+
+/* Sprout (top) */
+.gg-sprout{text-align:center;padding:16px;border-radius:20px;background:linear-gradient(135deg,rgba(197,217,184,.3),rgba(238,244,248,.5));border:1px solid rgba(197,217,184,.4);backdrop-filter:blur(16px)}
+.gg-sprout-icon{font-size:24px;color:#C5D9B8;margin-bottom:8px}
+.gg-sprout-text{font-size:12px;color:#65748f;line-height:1.6}
+.gg-sprout-tags{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.gg-sprout-tag{padding:6px 12px;border-radius:999px;background:rgba(197,217,184,.2);border:1px solid rgba(197,217,184,.4);font-size:11px;color:#1F3550;font-weight:600}
+
+/* Responsive */
+@media(max-width:900px){
+  .gg-about{padding:28px 22px!important;overflow:visible!important}
+  .gg-shell{grid-template-columns:1fr;height:auto}
+  .gg-profile{position:relative;height:auto}
+  .gg-main{min-height:auto}
+  .gg-timeline{padding:20px 0 20px 60px}
+  .gg-stem{left:40px}
+  .gg-node-dot{left:-24px}
+  .gg-header{display:block}
+  .gg-badges{margin-top:12px}
+  .gg-stem-node{grid-template-columns:1fr}
+  .gg-stem-meta{min-width:0}
+}
+@media(max-width:640px){
+  .gg-about{padding:22px 16px!important}
+  .gg-profile{padding:18px;border-radius:24px}
+  .gg-avatar-row img{width:64px;height:64px;border-radius:20px}
+  .gg-name{font-size:21px}
+  .gg-timeline{padding:20px 0 20px 50px}
+  .gg-stem{left:30px}
+  .gg-node-dot{left:-24px;width:14px;height:14px}
+  .gg-header h2{font-size:24px}
+  .gg-specimen{padding:14px}
+  .gg-specimen-title{font-size:13px}
 }
 </style></head><body>
 <canvas id="bg-canvas"></canvas>
@@ -1455,45 +1982,193 @@
     </div>
   </div>
 </div></section></div>
-<div class="snap-frame" id="about"><section class="page about about-v2 glass">
-  <div class="about-shell">
-    <aside class="about-sticky">
-      <div class="about-avatar-wrap">
+<div class="snap-frame" id="about"><section class="page gg-about glass">
+  <div class="gg-shell">
+    <aside class="gg-profile">
+      <div class="gg-avatar-row">
         <img src="hero-qin-square.png" alt="Qin">
         <div>
-          <div class="about-name">Qin</div>
-          <div class="about-role"><b>AI 产品运营</b><br>Travel Tech | Vibe Coding</div>
+          <div class="gg-name">Qin</div>
+          <div class="gg-role"><b>AI 产品运营</b><br>Travel Tech | Vibe Coding</div>
+          <div class="gg-positioning">把模糊需求变成可验证的产品动作</div>
         </div>
       </div>
-      <div class="about-loc">
-        <div class="about-pill"><b>上海</b>当前城市</div>
-        <div class="about-pill"><b>硕士在读</b>生物医学工程</div>
+      
+      <div class="gg-seeds-section">
+        <h3>我的能力种子</h3>
+        <div class="gg-seed-list">
+          <span class="gg-seed hot">用户洞察<span class="gg-seed-tooltip">从数据中发现真实需求，而非表面诉求</span></span>
+          <span class="gg-seed hot">数据验证<span class="gg-seed-tooltip">用实验思维验证假设，拒绝拍脑袋决策</span></span>
+          <span class="gg-seed">场景增长<span class="gg-seed-tooltip">找到产品与用户场景的匹配点</span></span>
+          <span class="gg-seed">Vibe Coding<span class="gg-seed-tooltip">用代码快速构建产品原型，验证想法</span></span>
+          <span class="gg-seed">AI产品设计<span class="gg-seed-tooltip">理解AI能力边界，设计可用产品</span></span>
+          <span class="gg-seed">内容传播<span class="gg-seed-tooltip">17w+粉丝的内容运营经验</span></span>
+        </div>
       </div>
-      <div class="about-side-section">
-        <h3>核心标签</h3>
-        <div class="about-tag-list"><span class="hot">Vibe Coding</span><span class="hot">数据驱动</span><span>用户洞察</span><span>内容增长</span><span>旅行产品</span></div>
+      
+      <div class="gg-growing-section">
+        <h3>目前正在生长</h3>
+        <div class="gg-growing-list">
+          <div class="gg-growing-item"><span class="gg-growing-dot"></span>AI 产品运营方向深耕</div>
+          <div class="gg-growing-item"><span class="gg-growing-dot"></span>旅行科技产品探索</div>
+          <div class="gg-growing-item"><span class="gg-growing-dot"></span>AI 工具原型持续迭代</div>
+        </div>
       </div>
-      <div class="about-side-section">
-        <h3>联系我</h3>
-        <div class="about-contact-list"><span>Tel 18735585229</span><a href="mailto:qinlinbo5@gmail.com">Mail qinlinbo5@gmail.com</a><a href="https://github.com/qlb708" target="_blank" rel="noreferrer">GitHub -></a></div>
-      </div>
-      <div class="about-side-section">
-        <h3>生活里的我</h3>
-        <div class="about-life-list"><span><i>*</i>旅行探索，收集城市体验</span><span><i>*</i>足球爱好者，长期内容运营</span><span><i>*</i>持续学习 AI、产品与市场</span></div>
+      
+      <div class="gg-contact-row">
+        <span>Tel 18735585229</span>
+        <a href="mailto:qinlinbo5@gmail.com">Mail qinlinbo5@gmail.com</a>
+        <a href="https://github.com/qlb708" target="_blank" rel="noreferrer">GitHub →</a>
       </div>
     </aside>
-    <main class="about-main">
-      <div class="about-main-head">
-        <div><h2>自我介绍 <em>Timeline</em></h2><p>按时间倒序整合实习经历、项目成果与教育背景，重点信息一眼可扫。</p></div>
-        <div class="about-legend"><span class="data-badge blue">小红书</span><span class="data-badge green">传音控股</span><span class="data-badge peach">17w+ 粉丝</span><span class="data-badge sage">推免硕士</span></div>
+    
+    <main class="gg-main">
+      <div class="gg-header">
+        <div>
+          <h2>我的生长路径 <em>Growth Timeline</em></h2>
+          <p class="gg-subtitle">用科研训练理解复杂问题，用产品方法验证真实需求。</p>
+        </div>
+        <div class="gg-badges">
+          <span class="gg-badge blue">小红书</span>
+          <span class="gg-badge green">传音控股</span>
+          <span class="gg-badge peach">17w+ 粉丝</span>
+          <span class="gg-badge sage">推免硕士</span>
+        </div>
       </div>
-      <div class="timeline">
-        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Internship - Latest</div><h3 class="t-title">小红书 | AI 产品运营实习生</h3></div><span class="t-time">2026.06 - 2026.08</span></div><p class="t-desc">围绕 AI 旅行规划产品，参与内容供给、冷启动与场景运营，把用户需求转化为产品可验证的增长动作。</p><div class="t-badges"><span class="data-badge blue">小红书</span><span class="data-badge green">AI 旅行规划</span><span class="data-badge sage">内容供给策略</span></div><ul class="t-list"><li>负责地点合集新功能上线运营，搭建内容供给与分发策略</li><li>参与世界杯、暑期等重点场景增长项目，沉淀 AI 规划转化链路</li></ul></div></article>
-        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Internship</div><h3 class="t-title">传音控股 | AI 产品运营实习生</h3></div><span class="t-time">2026.03 - 2026.06</span></div><p class="t-desc">围绕 Ella AI 手机助手与足球 Agent 场景，设计本地化运营玩法和赛事互动链路。</p><div class="t-badges"><span class="data-badge green">传音控股</span><span class="data-badge blue">AI 助手</span><span class="data-badge peach">足球 Agent</span></div><ul class="t-list"><li>负责足球 Agent 世界杯场景运营，搭建赛事互动链路与端内运营阵地</li><li>设计 AIGC 图生视频玩法，结合热点本地化运营提升用户活跃</li></ul></div></article>
-        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Project - Vibe Coding</div><h3 class="t-title">AI 工具作品集 | 个人产品实验室</h3></div><span class="t-time">2026.04 - 至今</span></div><p class="t-desc">从真实运营问题出发，用 Vibe Coding 快速构建 AI 工具原型，把重复动作沉淀成可复用能力。</p><div class="t-badges"><span class="data-badge blue">8+ 工具原型</span><span class="data-badge green">数据洞察</span><span class="data-badge sage">可点击 Demo</span></div></div></article>
-        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Project - Content Growth</div><h3 class="t-title">垂直足球资讯自媒体矩阵</h3></div><span class="t-time">2022.12 - 2024.06</span></div><p class="t-desc">长期运营垂直足球资讯内容矩阵，沉淀选题、分发、复盘与用户增长方法。</p><div class="t-badges"><span class="data-badge peach">17w+ 粉丝</span><span class="data-badge blue">内容增长</span><span class="data-badge green">用户洞察</span></div></div></article>
-        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Education</div><h3 class="t-title">上海科技大学 | 生物医学工程 硕士</h3></div><span class="t-time">硕士在读</span></div><p class="t-desc">跨学科背景训练数据分析、研究拆解与结构化表达能力，为产品与 AI 场景判断提供理工科底层方法。</p><div class="t-badges"><span class="data-badge sage">推免硕士</span><span class="data-badge blue">上海科技大学</span></div></div></article>
-        <article class="t-item"><span class="t-dot"></span><div class="t-card"><div class="t-top"><div><div class="t-kicker">Education</div><h3 class="t-title">上海理工大学 | 医学影像技术 本科</h3></div><span class="t-time">本科</span></div><p class="t-desc">医学影像与工程训练带来对复杂信息的拆解能力，也塑造了后续做数据洞察与 AI 工具原型的基础。</p><div class="t-badges"><span class="data-badge blue">工程背景</span><span class="data-badge green">数据分析</span></div></div></article>
+      
+      <div class="gg-timeline" id="ggTimeline">
+        <div class="gg-stem" id="ggStem"></div>
+        
+        <!-- Sprout (top) -->
+        <div class="gg-node gg-sprout-node" data-delay="1.4">
+          <div class="gg-node-dot" style="background:#C5D9B8;border-color:#C5D9B8"></div>
+          <div class="gg-sprout">
+            <div class="gg-sprout-icon">🌱</div>
+            <div class="gg-sprout-text">下一步方向</div>
+            <div class="gg-sprout-tags">
+              <span class="gg-sprout-tag">AI 产品运营</span>
+              <span class="gg-sprout-tag">旅行科技</span>
+              <span class="gg-sprout-tag">AI 工具原型</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Node 3: 小红书 (latest) -->
+        <div class="gg-node" data-delay="1.0">
+          <div class="gg-node-dot"></div>
+          <div class="gg-stem-node">
+            <div class="gg-stem-meta">
+              <div class="gg-stem-time">2026.06 - 2026.08</div>
+              <div class="gg-stem-company">小红书</div>
+              <div class="gg-stem-role">AI 产品运营实习生</div>
+            </div>
+            <div class="gg-stem-content">
+              <div class="gg-leaf-card">
+                <div class="gg-leaf-label">能力叶片</div>
+                <div class="gg-leaf-text">AI 旅行规划 · 功能冷启动 · 场景增长验证 · 用户路径运营</div>
+              </div>
+              <div class="gg-specimen">
+                <div class="gg-specimen-num">SPECIMEN 01</div>
+                <div class="gg-specimen-title">地点合集功能冷启动</div>
+                <div class="gg-specimen-conditions">生长条件：暑期场景 · 创作者供给 · Push 触达</div>
+                <div class="gg-specimen-result">关键结果：探索页 UV 渗透率 <b>12.64% → 17.16%</b> (+4.52pt)</div>
+                <div class="gg-specimen-details">
+                  <ul class="gg-specimen-detail-list">
+                    <li>负责地点合集新功能上线运营，搭建内容供给与分发策略</li>
+                    <li>参与世界杯、暑期等重点场景增长项目，沉淀 AI 规划转化链路</li>
+                    <li>围绕 AI 旅行规划产品，把用户需求转化为产品可验证的增长动作</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Node 2: AI工具作品集 -->
+        <div class="gg-node" data-delay="0.6">
+          <div class="gg-node-dot"></div>
+          <div class="gg-stem-node">
+            <div class="gg-stem-meta">
+              <div class="gg-stem-time">2026.04 - 至今</div>
+              <div class="gg-stem-company">个人产品实验室</div>
+              <div class="gg-stem-role">AI 工具作品集</div>
+            </div>
+            <div class="gg-stem-content">
+              <div class="gg-leaf-card">
+                <div class="gg-leaf-label">能力叶片</div>
+                <div class="gg-leaf-text">Vibe Coding · 工具原型 · 数据洞察 · 可复用能力沉淀</div>
+              </div>
+              <div class="gg-specimen">
+                <div class="gg-specimen-num">SPECIMEN 02</div>
+                <div class="gg-specimen-title">从真实运营问题出发的 AI 工具矩阵</div>
+                <div class="gg-specimen-conditions">生长条件：真实痛点 · 快速验证 · 持续迭代</div>
+                <div class="gg-specimen-result">关键结果：<b>8+ 工具原型</b>，覆盖数据洞察、内容运营等场景</div>
+                <div class="gg-specimen-details">
+                  <ul class="gg-specimen-detail-list">
+                    <li>从真实运营问题出发，用 Vibe Coding 快速构建 AI 工具原型</li>
+                    <li>把重复动作沉淀成可复用能力，提升工作效率</li>
+                    <li>工具作品集可点击 Demo 查看实际效果</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Node 1: 传音控股 -->
+        <div class="gg-node" data-delay="0.2">
+          <div class="gg-node-dot"></div>
+          <div class="gg-stem-node">
+            <div class="gg-stem-meta">
+              <div class="gg-stem-time">2026.03 - 2026.06</div>
+              <div class="gg-stem-company">传音控股</div>
+              <div class="gg-stem-role">AI 产品运营实习生</div>
+            </div>
+            <div class="gg-stem-content">
+              <div class="gg-leaf-card">
+                <div class="gg-leaf-label">能力叶片</div>
+                <div class="gg-leaf-text">AI 助手场景 · 本地化运营 · 赛事互动链路 · AIGC 玩法</div>
+              </div>
+              <div class="gg-specimen">
+                <div class="gg-specimen-num">SPECIMEN 03</div>
+                <div class="gg-specimen-title">Ella AI 手机助手与足球 Agent 场景运营</div>
+                <div class="gg-specimen-conditions">生长条件：世界杯场景 · 本地化运营 · 赛事互动</div>
+                <div class="gg-specimen-result">关键结果：搭建<b>赛事互动链路与端内运营阵地</b>，提升用户活跃</div>
+                <div class="gg-specimen-details">
+                  <ul class="gg-specimen-detail-list">
+                    <li>负责足球 Agent 世界杯场景运营，搭建赛事互动链路与端内运营阵地</li>
+                    <li>设计 AIGC 图生视频玩法，结合热点本地化运营提升用户活跃</li>
+                    <li>围绕 Ella AI 手机助手与足球 Agent 场景，设计本地化运营玩法</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Roots (bottom) -->
+        <div class="gg-node gg-roots-node" data-delay="0">
+          <div class="gg-node-dot" style="background:#9EB9A6;border-color:#9EB9A6"></div>
+          <div class="gg-roots">
+            <div class="gg-roots-header">
+              <div class="gg-roots-icon">🌿</div>
+              <div class="gg-roots-title">ROOTS · 我的基础土壤</div>
+              <div class="gg-roots-sub">硕士在读 | 生物医学工程</div>
+            </div>
+            <div class="gg-roots-info">
+              <div class="gg-roots-line"><b>研究训练：</b>数据分析、实验设计、复杂问题拆解</div>
+              <div class="gg-roots-line"><b>迁移能力：</b>从科研逻辑迁移到 AI 产品与运营</div>
+              <div class="gg-roots-line"><b>跨学科背景：</b>上海科技大学（硕士）/ 上海理工大学（本科）</div>
+            </div>
+            <div class="gg-roots-skills">
+              <span class="gg-skill-tag">数据分析</span>
+              <span class="gg-skill-tag">假设验证</span>
+              <span class="gg-skill-tag">复杂问题拆解</span>
+              <span class="gg-skill-tag">结构化研究</span>
+              <span class="gg-skill-tag">长周期项目推进</span>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -1883,12 +2558,8 @@ setTimeout(renderAllCards, 80);
     grid.appendChild(a);
   });
 })();
-
-
-
-
 // ══════════════════════════════════════════
-//  3D 卡牌工具展示 v3 - 差异化特色卡片
+//  3D 卡牌工具展示 v4 - 精致打磨版
 // ══════════════════════════════════════════
 (function(){
 // ===== TOOLS Data =====
@@ -1969,6 +2640,7 @@ function buildNotebookCard(tool) {
         <div class="nb-sticky">📝 今日复盘</div>
         <div class="nb-cta">开始今日计划 →</div>
       </div>
+      <div class="nb-page-curl"></div>
     </div>
   `;
 }
@@ -1978,17 +2650,20 @@ function buildPrinterCard(tool) {
     <div class="card-inner t3d-card--pr">
       <div class="pr-screen">
         <div class="pr-scanline"></div>
-        <span>Detecting...</span>
+        <span class="pr-screen-text">Detecting...</span>
       </div>
       <div class="pr-leds">
         <div class="pr-led pr-led-r"></div>
         <div class="pr-led pr-led-g"></div>
+        <span class="pr-led-label">STATUS</span>
       </div>
       <div class="pr-body">
         <div class="pr-slot"></div>
       </div>
       <div class="pr-output">
-        <div class="pr-paper">🖨️</div>
+        <div class="pr-paper">
+          <div class="pr-paper-icons"><span>🔴</span><span>🟢</span><span>🔵</span></div>
+        </div>
       </div>
       <div class="pr-cta">试着扫描 →</div>
     </div>
@@ -1998,6 +2673,7 @@ function buildPrinterCard(tool) {
 function buildCompareCard(tool) {
   return `
     <div class="card-inner t3d-card--cp">
+      <div class="cp-header">AI RECOMMENDATION</div>
       <div class="cp-panels">
         <div class="cp-panel cp-a">
           <div class="cp-label">A</div>
@@ -2028,6 +2704,7 @@ function buildTicketCard(tool) {
           <span class="tk-brand">FATE TRIP</span>
           <span class="tk-class">ECONOMY</span>
         </div>
+        <div class="tk-tear-top"></div>
         <div class="tk-dest">
           <span class="tk-dest-label">DESTINATION</span>
           <span class="tk-dest-name" id="tk-dest-${TOOLS.indexOf(tool)}">${destinations[0]}</span>
@@ -2046,6 +2723,7 @@ function buildTicketCard(tool) {
             <span class="tk-fv">92</span>
           </div>
         </div>
+        <div class="tk-tear-bottom"></div>
         <div class="tk-route">
           <svg viewBox="0 0 200 60" preserveAspectRatio="none">
             <path class="tk-route-path" d="M 10 30 Q 50 10, 100 30 T 190 30"/>
@@ -2064,6 +2742,10 @@ function buildTarotCard(tool) {
     <div class="card-inner t3d-card--tr">
       <div class="tr-border"></div>
       <div class="tr-border-inner"></div>
+      <div class="tr-ornament tl"></div>
+      <div class="tr-ornament tr"></div>
+      <div class="tr-ornament bl"></div>
+      <div class="tr-ornament br"></div>
       <div class="tr-glow"></div>
       <div class="tr-symbol">☽</div>
       <div class="tr-corner tl">☽</div>
@@ -2097,11 +2779,12 @@ function buildDestinyCard(tool) {
       <div class="dy-stamp">创意概念</div>
       <div class="dy-bagua">
         <div class="dy-ring"></div>
+        <div class="dy-ring-inner"></div>
         <div class="dy-yinyang">☯</div>
         ${trigramHTML}
       </div>
       <div class="dy-words">${wordsHTML}</div>
-      <div class="dy-seal">开始排盘 →</div>
+      <div class="dy-seal">开始<br>排盘</div>
     </div>
   `;
 }
@@ -2317,6 +3000,52 @@ setInterval(() => {
 // ===== Init =====
 window.addEventListener('resize', render);
 render();
+
+})();
+
+/* Growth Garden Animation IIFE */
+(function(){
+  var tl = document.getElementById('ggTimeline');
+  var stem = document.getElementById('ggStem');
+  if (!tl || !stem) return;
+  
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var nodes = tl.querySelectorAll('.gg-node');
+  var animated = false;
+  
+  function playGrowth(){
+    if (animated) return;
+    animated = true;
+    
+    if (reducedMotion) {
+      stem.classList.add('grow');
+      stem.style.animationDuration = '0.01s';
+      nodes.forEach(function(n){ n.classList.add('visible'); n.style.animationDuration = '0.01s'; });
+      return;
+    }
+    
+    stem.classList.add('grow');
+    nodes.forEach(function(node){
+      var delay = parseFloat(node.getAttribute('data-delay')) || 0;
+      setTimeout(function(){
+        node.classList.add('visible');
+      }, delay * 1000);
+    });
+  }
+  
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          setTimeout(playGrowth, 200);
+          obs.disconnect();
+        }
+      });
+    }, {threshold: 0.2});
+    obs.observe(tl);
+  } else {
+    setTimeout(playGrowth, 400);
+  }
 })();
 
 </script></div></body><!-- deployed:1783952655 --></html>
