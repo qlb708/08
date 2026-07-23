@@ -379,7 +379,7 @@
 /* 单张卡牌容器 */
 .t3d-card {
   position: absolute;
-  width: 220px; height: 340px;
+  width: 230px; height: 384px;
   top: 0; left: 0;
   transform-style: preserve-3d;
   transition: transform .50s cubic-bezier(.22,.8,.2,1), filter .40s, opacity .40s;
@@ -398,30 +398,62 @@
 
 /* 正面 */
 .t3d-front {
-  background: rgba(255,255,255,.85);
+  background: #fff;
   border: 1px solid rgba(210,226,255,.9);
-  box-shadow: 0 8px 32px rgba(55,83,130,.12), 0 2px 6px rgba(55,83,130,.07);
-  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(55,83,130,.16), 0 2px 8px rgba(55,83,130,.08);
   display: flex; flex-direction: column;
 }
-.t3d-front-accent { height: 4px; border-radius: 22px 22px 0 0; flex-shrink: 0; }
-.t3d-front-body   { flex: 1; padding: 18px 18px 14px; display: flex; flex-direction: column; gap: 9px; }
-.t3d-front-icon   { width: 50px; height: 50px; border-radius: 15px; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; }
-.t3d-front-name   { font-size: 15px; font-weight: 800; color: #1d2d48; line-height: 1.3; letter-spacing: -.02em; }
-.t3d-front-desc   { font-size: 12px; color: #64748d; line-height: 1.7; flex: 1; }
-.t3d-front-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
-.t3d-front-cat    { padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 750; letter-spacing: .04em; }
-.t3d-front-cat.blue  { background: rgba(74,123,255,.12); color: #4a7bff; border: 1px solid rgba(74,123,255,.20); }
-.t3d-front-cat.peach { background: rgba(237,147,111,.13); color: #c86030; border: 1px solid rgba(237,147,111,.24); }
-.t3d-flip-btn {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg,rgba(74,123,255,.15),rgba(74,123,255,.08));
-  border: 1px solid rgba(74,123,255,.25);
-  display: grid; place-items: center; font-size: 15px;
-  cursor: pointer; transition: transform .2s, background .2s;
-  color: #4a7bff; flex-shrink: 0;
+.t3d-hero {
+  position: relative; height: 168px; flex-shrink: 0; overflow: hidden;
+  border-radius: 22px 22px 0 0;
 }
-.t3d-flip-btn:hover { transform: scale(1.15); background: rgba(74,123,255,.25); }
+.t3d-hero img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .6s cubic-bezier(.22,.8,.2,1);
+}
+.t3d-card:hover .t3d-hero img { transform: scale(1.06); }
+.t3d-hero::after {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%);
+}
+.t3d-hero-tag {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  padding: 4px 11px; border-radius: 999px;
+  font-size: 10px; font-weight: 750; letter-spacing: .04em;
+  background: rgba(255,255,255,.92); color: #3a4c6b;
+  backdrop-filter: blur(6px); box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+.t3d-hero-icon {
+  position: absolute; right: 12px; top: 12px; z-index: 2;
+  width: 34px; height: 34px; border-radius: 11px;
+  display: grid; place-items: center; font-size: 17px;
+  background: rgba(255,255,255,.9); backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0,0,0,.14);
+}
+.t3d-hero-name {
+  position: absolute; left: 14px; bottom: 11px; right: 14px; z-index: 2;
+  color: #fff; font-size: 17px; font-weight: 820; letter-spacing: -.02em;
+  line-height: 1.25; text-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.t3d-body { flex: 1; padding: 14px 16px 15px; display: flex; flex-direction: column; gap: 8px; min-height:0; }
+.t3d-desc-txt { font-size: 12px; color: #64748d; line-height: 1.65; flex: 1; overflow: hidden; }
+.t3d-cta {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin-top: auto; padding: 10px; border-radius: 13px;
+  font-size: 13px; font-weight: 750; color: #fff; cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.t3d-card:hover .t3d-cta { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(74,123,255,.28); }
+.t3d-flip-btn {
+  position: absolute; right: 12px; bottom: 12px; z-index: 3;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,.9); backdrop-filter: blur(6px);
+  border: 1px solid rgba(74,123,255,.2);
+  display: grid; place-items: center; font-size: 14px;
+  cursor: pointer; transition: transform .2s, background .2s;
+  color: #4a7bff; box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+.t3d-flip-btn:hover { transform: scale(1.15); }
 
 /* 背面 */
 .t3d-back {
@@ -856,6 +888,16 @@ document.querySelectorAll('[data-goto]').forEach(el=>{
   el.onclick=()=>navTo(el.dataset.goto);
 });
 
+// ── 支持 URL hash 直达指定 section（如从 destiny 返回 #tools）
+(function(){
+  function goHash(){
+    const h=(location.hash||'').replace('#','');
+    if(h && document.getElementById(h)){ setTimeout(()=>navTo(h),120); }
+  }
+  window.addEventListener('hashchange',goHash);
+  goHash();
+})();
+
 // ── Coverflow
 let cfReady=false;
 let toolsReady=false;
@@ -1161,13 +1203,13 @@ setTimeout(renderAllCards, 80);
 // ══════════════════════════════════════════
 (function(){
   const TOOLS = [
-    { name:'每日 Todo 和复盘', desc:'引导结构化反思，晨间规划+复盘闭环，持续成长。', icon:'✓', grad:'linear-gradient(135deg,#dce8ff,#b8cfff)', accent:'linear-gradient(90deg,#6396ff,#4a7bff)', cat:'blue', catLabel:'日常提效', url:'recap/', pain:'高频任务容易失焦，复盘缺乏结构引导', solution:'固定模板+AI提炼关键词，自动生成今日回顾', value:'养成复盘习惯，效率提升30%+' },
-    { name:'打印机识别黑白', desc:'上传文档识别色彩分布，一键判断是否适合彩色打印。', icon:'▣', grad:'linear-gradient(135deg,#d5eeff,#a0d4ff)', accent:'linear-gradient(90deg,#5aaeff,#3a8de0)', cat:'blue', catLabel:'日常提效', url:'print-helper/', pain:'不知文档有没彩色内容，误用彩色打印浪费耗材', solution:'像素级扫描色域，输出颜色占比热图', value:'节省耗材成本，打印决策秒级完成' },
-    { name:'AI 多方案对比', desc:'输入需求，AI同步生成多种优选方案并结构化对比。', icon:'⚖', grad:'linear-gradient(135deg,#ffe8d5,#ffc9a0)', accent:'linear-gradient(90deg,#ff9a6c,#ed7040)', cat:'peach', catLabel:'活动 Demo', url:'/08/web/compare/', pain:'方案评审耗时，主观判断难以量化', solution:'Prompt工程生成多视角方案，矩阵式维度对比', value:'决策效率提升，减少主观偏差' },
-    { name:'FATE TRIP', desc:'盲盒翻签×命运签语×「我也想去」心动反馈，行程分享有仪式感。', icon:'✦', grad:'linear-gradient(135deg,#ffd5e8,#ffaacc)', accent:'linear-gradient(90deg,#ff7eb3,#e040a0)', cat:'peach', catLabel:'活动 Demo', url:'/08/activity/travel-sign/', pain:'分享行程只是发链接，缺乏互动和情绪共鸣', solution:'命运签语+盲盒解锁+社交反馈三层体验', value:'用户自发传播，互动率提升3x' },
-    { name:'手势塔罗', desc:'用手势翻开专属你的塔罗牌，AI解读命运密语。', icon:'🃏', grad:'linear-gradient(135deg,#ead5ff,#ccaaff)', accent:'linear-gradient(90deg,#b07eff,#8a50f0)', cat:'peach', catLabel:'活动 Demo', url:'/08/web/tarot/', pain:'占卜产品同质化，缺乏新奇交互体验', solution:'手势识别+3D牌阵+米色极简UI，仪式感十足', value:'完播率高，用户主动截图分享' },
-    { name:'旅行搭子记账', desc:'一人建本链接拉人，随手记消费；多币种实时汇率 + 智能轧差，告别多人旅行的糊涂账。', icon:'🧳', grad:'linear-gradient(135deg,#d5f0e8,#a8ddc5)', accent:'linear-gradient(90deg,#4ec8a0,#2aaa7e)', cat:'blue', catLabel:'创意概念', url:'#', pain:'多人出行AA算账混乱，跨币种换算易出错，最终互相转账一团糟', solution:'链接入组零门槛 + 多币种汇率自动换算 + 最少笔数轧差结算算法', value:'人人随手记，结算一键清，再复杂的行程也能账务清零' },
-    { name:'产品命理局', desc:'输入一个产品，生成专属命盘——伪玄学包装，真产品分析框架。', icon:'🔮', grad:'linear-gradient(135deg,#2a1f3d,#3d2a5a)', accent:'linear-gradient(90deg,#e35d6a,#c94455)', cat:'peach', catLabel:'创意概念', url:'/08/web/destiny/', pain:'产品分析枯燥，框架难以记忆和传播', solution:'八字十神系统映射产品维度，命理话术包装产品判断，游戏化参与', value:'有梗有逻辑，用完会截图分享，顺带展示产品思维框架' },
+    { name:'每日 Todo 和复盘', desc:'引导结构化反思，晨间规划+复盘闭环，持续成长。', icon:'✓', img:'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80', cta:'linear-gradient(135deg,#6396ff,#4a7bff)', grad:'linear-gradient(135deg,#dce8ff,#b8cfff)', accent:'linear-gradient(90deg,#6396ff,#4a7bff)', cat:'blue', catLabel:'日常提效', url:'recap/', pain:'高频任务容易失焦，复盘缺乏结构引导', solution:'固定模板+AI提炼关键词，自动生成今日回顾', value:'养成复盘习惯，效率提升30%+' },
+    { name:'打印机识别黑白', desc:'上传文档识别色彩分布，一键判断是否适合彩色打印。', icon:'▣', img:'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=500&q=80', cta:'linear-gradient(135deg,#5aaeff,#3a8de0)', grad:'linear-gradient(135deg,#d5eeff,#a0d4ff)', accent:'linear-gradient(90deg,#5aaeff,#3a8de0)', cat:'blue', catLabel:'日常提效', url:'print-helper/', pain:'不知文档有没彩色内容，误用彩色打印浪费耗材', solution:'像素级扫描色域，输出颜色占比热图', value:'节省耗材成本，打印决策秒级完成' },
+    { name:'AI 多方案对比', desc:'输入需求，AI同步生成多种优选方案并结构化对比。', icon:'⚖', img:'https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=500&q=80', cta:'linear-gradient(135deg,#ff9a6c,#ed7040)', grad:'linear-gradient(135deg,#ffe8d5,#ffc9a0)', accent:'linear-gradient(90deg,#ff9a6c,#ed7040)', cat:'peach', catLabel:'活动 Demo', url:'/08/web/compare/', pain:'方案评审耗时，主观判断难以量化', solution:'Prompt工程生成多视角方案，矩阵式维度对比', value:'决策效率提升，减少主观偏差' },
+    { name:'FATE TRIP', desc:'盲盒翻签×命运签语×「我也想去」心动反馈，行程分享有仪式感。', icon:'✦', img:'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&q=80', cta:'linear-gradient(135deg,#ff7eb3,#e040a0)', grad:'linear-gradient(135deg,#ffd5e8,#ffaacc)', accent:'linear-gradient(90deg,#ff7eb3,#e040a0)', cat:'peach', catLabel:'活动 Demo', url:'/08/activity/travel-sign/', pain:'分享行程只是发链接，缺乏互动和情绪共鸣', solution:'命运签语+盲盒解锁+社交反馈三层体验', value:'用户自发传播，互动率提升3x' },
+    { name:'手势塔罗', desc:'用手势翻开专属你的塔罗牌，AI解读命运密语。', icon:'🃏', img:'https://images.unsplash.com/photo-1601987077677-5346c0c57d3f?w=500&q=80', cta:'linear-gradient(135deg,#b07eff,#8a50f0)', grad:'linear-gradient(135deg,#ead5ff,#ccaaff)', accent:'linear-gradient(90deg,#b07eff,#8a50f0)', cat:'peach', catLabel:'活动 Demo', url:'/08/web/tarot/', pain:'占卜产品同质化，缺乏新奇交互体验', solution:'手势识别+3D牌阵+米色极简UI，仪式感十足', value:'完播率高，用户主动截图分享' },
+    { name:'旅行搭子记账', desc:'一人建本链接拉人，随手记消费；多币种实时汇率 + 智能轧差，告别多人旅行的糊涂账。', icon:'🧳', img:'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=500&q=80', cta:'linear-gradient(135deg,#4ec8a0,#2aaa7e)', grad:'linear-gradient(135deg,#d5f0e8,#a8ddc5)', accent:'linear-gradient(90deg,#4ec8a0,#2aaa7e)', cat:'blue', catLabel:'创意概念', url:'#', pain:'多人出行AA算账混乱，跨币种换算易出错，最终互相转账一团糟', solution:'链接入组零门槛 + 多币种汇率自动换算 + 最少笔数轧差结算算法', value:'人人随手记，结算一键清，再复杂的行程也能账务清零' },
+    { name:'产品命理局', desc:'输入一个产品，生成专属命盘——伪玄学包装，真产品分析框架。', icon:'🔮', img:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80', cta:'linear-gradient(135deg,#e35d6a,#c94455)', grad:'linear-gradient(135deg,#2a1f3d,#3d2a5a)', accent:'linear-gradient(90deg,#e35d6a,#c94455)', cat:'peach', catLabel:'创意概念', url:'/08/web/destiny/', pain:'产品分析枯燥，框架难以记忆和传播', solution:'八字十神系统映射产品维度，命理话术包装产品判断，游戏化参与', value:'有梗有逻辑，用完会截图分享，顺带展示产品思维框架' },
   ];
 
   const N = TOOLS.length;
@@ -1196,7 +1238,7 @@ setTimeout(renderAllCards, 80);
     const sh = stage.offsetHeight || 500;
     const cx = sw / 2;
     const cy = sh * 0.42;
-    const CW = 220, CH = 340;
+    const CW = 230, CH = 384;
 
     cards.forEach((el, i) => {
       // 浮点 pos：用 currentF（插值中）计算，保证过渡连续
@@ -1255,14 +1297,17 @@ setTimeout(renderAllCards, 80);
     el.className = 't3d-card';
     el.innerHTML = `
       <div class="t3d-face t3d-front">
-        <div class="t3d-accent"></div>
-        <div class="t3d-icon">${t.icon}</div>
-        <div class="t3d-name">${t.name}</div>
-        <div class="t3d-desc">${t.desc}</div>
-        <div class="t3d-footer">
-          <span class="t3d-tag ${t.catLabel==='活动 Demo'?'demo':''}">${t.catLabel}</span>
-          <button class="t3d-flip-btn" title="查看详情">💡</button>
+        <div class="t3d-hero">
+          <img src="${t.img}" alt="${t.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='${t.grad}'">
+          <span class="t3d-hero-tag">${t.catLabel}</span>
+          <span class="t3d-hero-icon">${t.icon}</span>
+          <div class="t3d-hero-name">${t.name}</div>
         </div>
+        <div class="t3d-body">
+          <div class="t3d-desc-txt">${t.desc}</div>
+          <div class="t3d-cta" style="background:${t.cta}">${t.url&&t.url!=='#'?'体验一下 →':'创意概念'}</div>
+        </div>
+        <button class="t3d-flip-btn" title="查看详情">💡</button>
       </div>
       <div class="t3d-face t3d-back">
         <div class="t3d-back-title">${t.name}</div>
