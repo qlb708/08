@@ -7,16 +7,21 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
---bg-deep:#15111B;--bg-card:#1E1A28;--bg-card2:#241C2E;
---red:#DD5A67;--gold:#E7BE74;--teal:#65B9AE;--purple:#9A8FC8;
---text:#F4EFE7;--text2:#B8B2C0;--border:rgba(244,239,231,0.08);
---border-gold:rgba(231,190,116,0.25);
+--bg-deep:#F7F3EB;--bg-card:rgba(255,253,248,0.88);--bg-card2:rgba(247,240,228,0.9);
+--red:#C15A5A;--gold:#B08D3C;--teal:#5E9488;--purple:#8579B0;
+--text:#3A3229;--text2:#7A6E5F;--border:rgba(95,78,64,0.12);
+--border-gold:rgba(176,141,60,0.3);
+--card-shadow:0 18px 50px rgba(82,67,53,0.08);
 }
 html,body{height:100%;overflow:hidden;margin:0}
 body{
 font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB',sans-serif;
-background:var(--bg-deep);color:var(--text);
+color:var(--text);
 position:relative;
+background:
+ radial-gradient(circle at 15% 20%, rgba(217,198,171,0.22), transparent 28%),
+ radial-gradient(circle at 85% 70%, rgba(190,207,195,0.25), transparent 30%),
+ #F7F3EB;
 }
 .serif{font-family:Georgia,'Noto Serif SC','SimSun',serif}
 
@@ -24,11 +29,11 @@ position:relative;
 body::before{
 content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;
 background:
-radial-gradient(1px 1px at 10% 20%,rgba(231,190,116,0.15),transparent),
-radial-gradient(1px 1px at 30% 70%,rgba(154,143,200,0.12),transparent),
-radial-gradient(1px 1px at 50% 40%,rgba(101,185,174,0.1),transparent),
-radial-gradient(1px 1px at 70% 80%,rgba(221,90,103,0.08),transparent),
-radial-gradient(1px 1px at 90% 30%,rgba(231,190,116,0.1),transparent);
+radial-gradient(1px 1px at 10% 20%,rgba(176,141,60,0.12),transparent),
+radial-gradient(1px 1px at 30% 70%,rgba(133,121,176,0.1),transparent),
+radial-gradient(1px 1px at 50% 40%,rgba(94,148,136,0.1),transparent),
+radial-gradient(1px 1px at 70% 80%,rgba(193,90,90,0.08),transparent),
+radial-gradient(1px 1px at 90% 30%,rgba(176,141,60,0.1),transparent);
 animation:twinkle 8s ease-in-out infinite alternate;
 }
 @keyframes twinkle{0%{opacity:0.6}50%{opacity:1}100%{opacity:0.7}}
@@ -43,11 +48,12 @@ opacity:0;pointer-events:none;transition:opacity 0.4s;
 
 /* 卡片 */
 .card{
-background:rgba(30,26,40,0.8);backdrop-filter:blur(12px);
-border:1px solid var(--border);border-radius:clamp(16px,2vw,24px);
+background:rgba(255,253,248,0.88);backdrop-filter:blur(12px);
+border:1px solid rgba(95,78,64,0.12);border-radius:clamp(16px,2vw,24px);
 padding:clamp(16px,2vw,24px);transition:all 0.3s ease;
+box-shadow:0 18px 50px rgba(82,67,53,0.08);
 }
-.card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(154,143,200,0.08)}
+.card:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(82,67,53,0.14)}
 
 /* 按钮 */
 .btn{
@@ -56,7 +62,7 @@ min-height:clamp(40px,5vh,48px);padding:clamp(10px,1.5vh,12px) clamp(24px,3vw,32
 border-radius:clamp(12px,1.5vw,16px);border:none;
 font-size:clamp(14px,1.8vw,16px);font-weight:600;cursor:pointer;transition:all 0.3s ease;
 }
-.btn-primary{background:linear-gradient(135deg,var(--gold),#c9a355);color:#1a1a2e}
+.btn-primary{background:linear-gradient(135deg,#C9A94E,#B08D3C);color:#FFFDF8;font-weight:700}
 .btn-primary:hover{transform:scale(1.03);box-shadow:0 4px 20px rgba(231,190,116,0.3)}
 .btn-secondary{background:transparent;border:1px solid var(--border-gold);color:var(--gold)}
 .btn-secondary:hover{background:rgba(231,190,116,0.08)}
@@ -68,7 +74,7 @@ font-size:clamp(14px,1.8vw,16px);font-weight:600;cursor:pointer;transition:all 0
 width:40%;height:100%;display:flex;align-items:center;justify-content:center;
 opacity:1;z-index:2;flex-shrink:0;
 }
-.mingpan-bg svg{width:min(340px,88%);height:min(340px,88%);animation:rotateSlow 30s linear infinite;opacity:0.9}
+.mingpan-bg svg{width:min(340px,88%);height:min(340px,88%);animation:rotateSlow 30s linear infinite;opacity:1}
 @keyframes rotateSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .hero-content{position:relative;z-index:1;text-align:left;width:50%;padding:0 5%;box-sizing:border-box}
 .hero-content h1{
@@ -102,7 +108,7 @@ display:none;animation:fadeIn 0.3s;
 }
 .product-recognition.show{display:block}
 .product-recognition button{
-margin-left:12px;background:var(--teal);color:var(--bg-deep);
+margin-left:12px;background:var(--teal);color:#FFFDF8;
 border:none;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px;
 }
 
@@ -112,13 +118,13 @@ position:fixed;bottom:clamp(20px,3vh,30px);right:clamp(20px,3vw,30px);z-index:10
 background:var(--bg-card);border:1px solid var(--border-gold);
 border-radius:clamp(16px,2vw,20px);padding:clamp(10px,1.5vh,12px) clamp(16px,2vw,20px);
 cursor:pointer;color:var(--gold);font-size:clamp(12px,1.6vw,14px);transition:all 0.3s;
-box-shadow:0 4px 16px rgba(0,0,0,0.3);
+box-shadow:0 8px 24px rgba(82,67,53,0.12);
 }
 .qian-btn:hover{transform:scale(1.05);background:var(--bg-card2)}
 .qian-modal{
 position:fixed;inset:0;z-index:200;display:none;
 align-items:center;justify-content:center;
-background:rgba(21,17,27,0.9);backdrop-filter:blur(8px);
+background:rgba(247,243,235,0.92);backdrop-filter:blur(8px);
 }
 .qian-modal.show{display:flex}
 .qian-content{
@@ -153,7 +159,7 @@ opacity:0;transition:opacity 0.3s;
 .register-left{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
 .register-right{width:clamp(220px,28%,260px);display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding-top:8px}
 /* === 答题页产品头部 === */
-.product-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(231,190,116,0.18);border-radius:10px;flex-shrink:0}
+.product-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,253,248,0.7);border:1px solid rgba(176,141,60,0.22);border-radius:10px;flex-shrink:0}
 .product-logo{width:36px;height:36px;border-radius:8px;background:rgba(231,190,116,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;border:1px solid rgba(231,190,116,0.15)}
 .product-logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}
 .product-info{flex:1;min-width:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -163,7 +169,7 @@ opacity:0;transition:opacity 0.3s;
 .product-info .p-tag{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid;white-space:nowrap}
 .product-info .p-tag.dayzhu{background:rgba(231,190,116,0.1);border-color:rgba(231,190,116,0.45);color:#E7BE74}
 .product-info .p-tag.cat{background:rgba(154,143,200,0.1);border-color:rgba(154,143,200,0.3);color:#9A8FC8}
-.product-baseline{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(255,255,255,0.02);border-left:2px solid rgba(231,190,116,0.5);border-radius:0 6px 6px 0;flex-shrink:0;overflow:hidden}
+.product-baseline{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(255,253,248,0.6);border-left:2px solid rgba(176,141,60,0.55);border-radius:0 6px 6px 0;flex-shrink:0;overflow:hidden}
 .product-baseline .bl-title{font-size:10px;color:rgba(231,190,116,0.6);letter-spacing:1.5px;white-space:nowrap;flex-shrink:0}
 .product-baseline .bl-text{font-size:12px;color:var(--text2);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .register-right-header{text-align:center;font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:1px}
@@ -228,7 +234,7 @@ transition:all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
 .dayzhu-card .dz-reps{font-size:clamp(10px,1.3vw,12px);color:var(--teal);margin-top:6px}
 .dayzhu-stamp{
 position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
-background:rgba(21,17,27,0.85);
+background:rgba(255,253,248,0.9);
 }
 .dayzhu-stamp.show{display:flex}
 .stamp-text{
@@ -280,7 +286,7 @@ color:var(--red);font-size:clamp(12px,1.5vw,14px);display:none;
 /* === 幕5 命书 === */
 .fortune-overlay{
 position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;
-background:rgba(21,17,27,0.95);
+background:rgba(255,253,248,0.96);
 }
 .fortune-overlay.show{display:flex}
 .fortune-anim{text-align:center}
@@ -439,8 +445,8 @@ animation:slideUp 0.4s ease;
 position:fixed;top:18px;left:18px;z-index:999;
 display:flex;align-items:center;gap:6px;
 padding:7px 14px 7px 10px;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.1);
+background:rgba(255,253,248,0.75);
+border:1px solid rgba(95,78,64,0.14);
 border-radius:20px;
 color:var(--text2);font-size:13px;
 text-decoration:none;
@@ -467,7 +473,7 @@ transform:translateX(-2px);
 .score-product-strip .sp-dz{font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(231,190,116,0.1);border:1px solid rgba(231,190,116,0.4);color:#E7BE74}
 .score-body{display:flex;gap:clamp(16px,2vw,24px);flex:1;min-height:0}
 .score-left-panel{width:clamp(200px,30%,280px);display:flex;flex-direction:column;gap:12px;flex-shrink:0}
-.score-context-card{background:rgba(255,255,255,0.03);border:1px solid rgba(231,190,116,0.15);border-radius:12px;padding:14px;flex-shrink:0}
+.score-context-card{background:rgba(255,253,248,0.7);border:1px solid rgba(176,141,60,0.2);border-radius:12px;padding:14px;flex-shrink:0}
 .score-context-card .sc-title{font-size:10px;color:rgba(231,190,116,0.6);letter-spacing:2px;margin-bottom:8px}
 .score-context-card .sc-text{font-size:12px;color:var(--text2);line-height:1.6}
 .score-context-card .sc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
@@ -476,29 +482,23 @@ transform:translateX(-2px);
 
 /* === 首页 Logo 滚动背景墙 === */
 .logo-wall{
-  position:absolute;top:0;left:0;bottom:0;width:50%;overflow:hidden;pointer-events:none;z-index:0;
-  -webkit-mask-image:
-    linear-gradient(to right, black 0%, black 50%, transparent 100%),
-    radial-gradient(ellipse 52% 45% at 38% 50%, transparent 45%, black 70%);
-  mask-image:
-    linear-gradient(to right, black 0%, black 50%, transparent 100%),
-    radial-gradient(ellipse 52% 45% at 38% 50%, transparent 45%, black 70%);
-  -webkit-mask-composite:intersect;
-  mask-composite:intersect;
+  position:absolute;left:0;right:0;bottom:0;height:auto;overflow:hidden;pointer-events:none;z-index:1;
+  padding:14px 0 18px;
+  -webkit-mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+  mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 .logo-row{
-  display:flex;gap:12px;align-items:center;width:max-content;
-  margin-bottom:10px;
-  animation:scrollLeft var(--spd,40s) linear infinite;
+  display:flex;gap:16px;align-items:center;width:max-content;
+  animation:scrollLeft var(--spd,60s) linear infinite;
 }
-.logo-row:nth-child(even){animation-direction:reverse}
 @keyframes scrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .logo-item{
-  width:38px;height:38px;border-radius:9px;flex-shrink:0;overflow:hidden;
-  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;overflow:hidden;
+  background:rgba(255,253,248,0.85);border:1px solid rgba(95,78,64,0.1);
+  box-shadow:0 4px 14px rgba(82,67,53,0.06);
   display:flex;align-items:center;justify-content:center;
 }
-.logo-item img{width:28px;height:28px;object-fit:contain;border-radius:5px}
+.logo-item img{width:28px;height:28px;object-fit:contain;border-radius:6px}
 
 </style>
 </head>
@@ -1024,66 +1024,69 @@ setupProductRecognition();
 function drawMingpan(){
 const svg=document.getElementById('mingpanSvg');
 const cx=160,cy=160;
-// 八卦符号 (乾坤震巽坎离艮兑) + 卦名
+// 后天八卦方位（乾兑离震坤艮坎巽）
 const GUAS=[
-  {sym:'☰',name:'乾',a:-Math.PI/2},
-  {sym:'☱',name:'兑',a:-Math.PI/2+Math.PI/4},
-  {sym:'☲',name:'离',a:-Math.PI/2+Math.PI/2},
-  {sym:'☳',name:'震',a:-Math.PI/2+3*Math.PI/4},
-  {sym:'☷',name:'坤',a:-Math.PI/2+Math.PI},
-  {sym:'☶',name:'艮',a:-Math.PI/2+5*Math.PI/4},
-  {sym:'☵',name:'坎',a:-Math.PI/2+3*Math.PI/2},
-  {sym:'☴',name:'巽',a:-Math.PI/2+7*Math.PI/4},
+  {sym:'☰',name:'乾',wx:'金'},
+  {sym:'☱',name:'兑',wx:'金'},
+  {sym:'☲',name:'离',wx:'火'},
+  {sym:'☳',name:'震',wx:'木'},
+  {sym:'☷',name:'坤',wx:'土'},
+  {sym:'☶',name:'艮',wx:'土'},
+  {sym:'☵',name:'坎',wx:'水'},
+  {sym:'☴',name:'巽',wx:'木'},
 ];
-const WX=['木','火','土','金','水','木','火','土'];
+const GOLD='176,141,60', BROWN='95,78,64';
 let h='';
-// 最外圈：装饰圆
-h+=`<circle cx="${cx}" cy="${cy}" r="155" fill="none" stroke="rgba(231,190,116,0.15)" stroke-width="1" stroke-dasharray="4 3"/>`;
-// 卦环圈 r=135
-const R_OUT=135,R_SYM=118,R_NAME=100,R_WX=84;
-h+=`<circle cx="${cx}" cy="${cy}" r="${R_OUT}" fill="none" stroke="rgba(231,190,116,0.35)" stroke-width="1.2"/>`;
-// 画8个扇区格
+// 最外层：虚线装饰环
+h+=`<circle cx="${cx}" cy="${cy}" r="152" fill="none" stroke="rgba(${GOLD},0.35)" stroke-width="1" stroke-dasharray="3 5"/>`;
+// 外实环
+const R_OUT=138, R_IN=98;
+h+=`<circle cx="${cx}" cy="${cy}" r="${R_OUT}" fill="none" stroke="rgba(${GOLD},0.55)" stroke-width="1.4"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="${R_IN}" fill="none" stroke="rgba(${GOLD},0.4)" stroke-width="1"/>`;
+// 8个扭分隔线 + 扭区卡片
 for(let i=0;i<8;i++){
-  const a1=Math.PI*2*i/8-Math.PI/2;
+  const a1=Math.PI*2*i/8-Math.PI/2 - Math.PI/8;
   const a2=a1+Math.PI*2/8;
-  const x1=cx+R_OUT*Math.cos(a1),y1=cy+R_OUT*Math.sin(a1);
-  const x2=cx+R_OUT*Math.cos(a2),y2=cy+R_OUT*Math.sin(a2);
-  const fill=i%2===0?'rgba(231,190,116,0.04)':'rgba(154,143,200,0.04)';
-  h+=`<path d="M${cx},${cy} L${x1},${y1} A${R_OUT},${R_OUT} 0 0,1 ${x2},${y2} Z" fill="${fill}" stroke="rgba(231,190,116,0.2)" stroke-width="0.5"/>`;
+  const x1o=cx+R_OUT*Math.cos(a1),y1o=cy+R_OUT*Math.sin(a1);
+  const x2o=cx+R_OUT*Math.cos(a2),y2o=cy+R_OUT*Math.sin(a2);
+  const x1i=cx+R_IN*Math.cos(a1),y1i=cy+R_IN*Math.sin(a1);
+  const x2i=cx+R_IN*Math.cos(a2),y2i=cy+R_IN*Math.sin(a2);
+  const fill=i%2===0?`rgba(${GOLD},0.06)`:`rgba(${BROWN},0.04)`;
+  h+=`<path d="M${x1i},${y1i} L${x1o},${y1o} A${R_OUT},${R_OUT} 0 0,1 ${x2o},${y2o} L${x2i},${y2i} A${R_IN},${R_IN} 0 0,0 ${x1i},${y1i} Z" fill="${fill}" stroke="rgba(${GOLD},0.28)" stroke-width="0.6"/>`;
 }
 // 卦符 + 卦名 + 五行
+const R_SYM=126, R_NAME=110;
 GUAS.forEach((g,i)=>{
-  const am=g.a+Math.PI/8; // 扇区中心角
+  const am=Math.PI*2*i/8-Math.PI/2;
   const sx=cx+R_SYM*Math.cos(am),sy=cy+R_SYM*Math.sin(am);
   const nx=cx+R_NAME*Math.cos(am),ny=cy+R_NAME*Math.sin(am);
-  const wx=cx+R_WX*Math.cos(am),wy=cy+R_WX*Math.sin(am);
-  h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:16px;fill:rgba(231,190,116,0.85)">${g.sym}</text>`;
-  h+=`<text x="${nx}" y="${ny}" text-anchor="middle" dominant-baseline="middle" style="font-size:9px;fill:rgba(184,178,192,0.9);letter-spacing:1px">${g.name}</text>`;
-  h+=`<text x="${wx}" y="${wy}" text-anchor="middle" dominant-baseline="middle" style="font-size:8px;fill:rgba(154,143,200,0.7)">${WX[i]}</text>`;
+  h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:15px;fill:rgba(${GOLD},0.9)">${g.sym}</text>`;
+  h+=`<text x="${nx}" y="${ny}" text-anchor="middle" dominant-baseline="middle" style="font-size:9px;fill:rgba(${BROWN},0.75);letter-spacing:1px">${g.name}<tspan style="font-size:7px;fill:rgba(${GOLD},0.6)"> ${g.wx}</tspan></text>`;
 });
-// 中圈：五行维度 r=62
-const R_MID=62;
-h+=`<circle cx="${cx}" cy="${cy}" r="${R_MID}" fill="rgba(23,18,31,0.8)" stroke="rgba(231,190,116,0.4)" stroke-width="1.5"/>`;
-// 中圈内：维度8边形（根据scores或默认5）
-const sc=state&&state.scores?state.scores:[5,5,5,5,5,5,5,5];
-let pts=sc.map((s,i)=>{
-  const a=Math.PI*2*i/8-Math.PI/2;
-  const r2=R_MID*0.85*(s/10);
-  return [cx+r2*Math.cos(a),cy+r2*Math.sin(a)];
-});
-h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(231,190,116,0.12)" stroke="rgba(231,190,116,0.6)" stroke-width="1.5"/>`;
-// 格线（八条辐射线到中圈）
+// 内环：五行维度蓝图（根据scores）
+const R_MID=72;
+h+=`<circle cx="${cx}" cy="${cy}" r="${R_MID}" fill="rgba(255,253,248,0.5)" stroke="rgba(${GOLD},0.5)" stroke-width="1.2"/>`;
+const sc=(typeof state!=='undefined'&&state&&state.scores)?state.scores:[6,5,7,5,6,5,6,5];
+// 网格线
 for(let i=0;i<8;i++){
   const a=Math.PI*2*i/8-Math.PI/2;
-  h+=`<line x1="${cx}" y1="${cy}" x2="${cx+R_MID*Math.cos(a)}" y2="${cy+R_MID*Math.sin(a)}" stroke="rgba(231,190,116,0.2)" stroke-width="0.8"/>`;
+  h+=`<line x1="${cx}" y1="${cy}" x2="${cx+R_MID*Math.cos(a)}" y2="${cy+R_MID*Math.sin(a)}" stroke="rgba(${GOLD},0.15)" stroke-width="0.6"/>`;
 }
-// 中心阴阳鱼
-const RA=14,RB=7;
-h+=`<circle cx="${cx}" cy="${cy-RA}" r="${RA}" fill="rgba(231,190,116,0.15)"/>`;
-h+=`<circle cx="${cx}" cy="${cy+RA}" r="${RA}" fill="rgba(23,18,31,0.6)" stroke="rgba(231,190,116,0.3)" stroke-width="0.5"/>`;
-h+=`<circle cx="${cx}" cy="${cy-RA}" r="${RB}" fill="rgba(231,190,116,0.4)"/>`;
-h+=`<circle cx="${cx}" cy="${cy+RA}" r="${RB}" fill="rgba(23,18,31,0.8)"/>`;
-h+=`<circle cx="${cx}" cy="${cy}" r="${RA*2}" fill="none" stroke="rgba(231,190,116,0.5)" stroke-width="1.2"/>`;
+let pts=sc.map((s,i)=>{
+  const a=Math.PI*2*i/8-Math.PI/2, r2=R_MID*0.82*(s/10);
+  return [cx+r2*Math.cos(a),cy+r2*Math.sin(a)];
+});
+h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(${GOLD},0.14)" stroke="rgba(${GOLD},0.6)" stroke-width="1.3"/>`;
+// 中心太极阴阳鱼（真正的 S 形）
+const TR=26;
+const dark=`rgba(${BROWN},0.72)`, light='rgba(255,253,248,0.95)';
+// 外圈底 = 阳（亮）
+h+=`<circle cx="${cx}" cy="${cy}" r="${TR}" fill="${light}" stroke="rgba(${GOLD},0.55)" stroke-width="1"/>`;
+// 阴半（暗）：半圆 + 上下两个小半圆拼出 S
+h+=`<path d="M${cx},${cy-TR} A${TR},${TR} 0 0,1 ${cx},${cy+TR} A${TR/2},${TR/2} 0 0,1 ${cx},${cy} A${TR/2},${TR/2} 0 0,0 ${cx},${cy-TR} Z" fill="${dark}"/>`;
+// 两个鱼眼
+h+=`<circle cx="${cx}" cy="${cy-TR/2}" r="${TR/6}" fill="${light}"/>`;
+h+=`<circle cx="${cx}" cy="${cy+TR/2}" r="${TR/6}" fill="${dark}"/>`;
 svg.innerHTML=h;
 }
 
@@ -1094,28 +1097,28 @@ const cx=90,cy=90;
 const GUAS2=['☰','☱','☲','☳','☷','☶','☵','☴'];
 const R2=72,RS=60,RN=48,RM=32;
 let h='';
-h+=`<circle cx="${cx}" cy="${cy}" r="${R2}" fill="none" stroke="rgba(231,190,116,0.3)" stroke-width="1"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="${R2}" fill="none" stroke="rgba(176,141,60,0.35)" stroke-width="1"/>`;
 for(let i=0;i<8;i++){
   const a1=Math.PI*2*i/8-Math.PI/2, a2=a1+Math.PI*2/8;
   const am=a1+Math.PI/8;
   const x1=cx+R2*Math.cos(a1),y1=cy+R2*Math.sin(a1);
   const x2=cx+R2*Math.cos(a2),y2=cy+R2*Math.sin(a2);
-  h+=`<path d="M${cx},${cy} L${x1},${y1} A${R2},${R2} 0 0,1 ${x2},${y2} Z" fill="${i%2?'rgba(154,143,200,0.06)':'rgba(231,190,116,0.06)'}" stroke="rgba(231,190,116,0.15)" stroke-width="0.5"/>`;
+  h+=`<path d="M${cx},${cy} L${x1},${y1} A${R2},${R2} 0 0,1 ${x2},${y2} Z" fill="${i%2?'rgba(95,78,64,0.05)':'rgba(176,141,60,0.06)'}" stroke="rgba(176,141,60,0.15)" stroke-width="0.5"/>`;
   const sx=cx+RS*Math.cos(am),sy=cy+RS*Math.sin(am);
-  h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;fill:rgba(231,190,116,0.8)">${GUAS2[i]}</text>`;
+  h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;fill:rgba(176,141,60,0.8)">${GUAS2[i]}</text>`;
 }
-h+=`<circle cx="${cx}" cy="${cy}" r="${RM}" fill="rgba(23,18,31,0.85)" stroke="rgba(231,190,116,0.45)" stroke-width="1.2"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="${RM}" fill="rgba(255,253,248,0.6)" stroke="rgba(176,141,60,0.5)" stroke-width="1.2"/>`;
 const sc=state&&state.scores?state.scores:[5,5,5,5,5,5,5,5];
 let pts=sc.map((s,i)=>{
   const a=Math.PI*2*i/8-Math.PI/2, r2=RM*0.85*(s/10);
   return [cx+r2*Math.cos(a),cy+r2*Math.sin(a)];
 });
-h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(231,190,116,0.15)" stroke="rgba(231,190,116,0.7)" stroke-width="1.2"/>`;
+h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(176,141,60,0.15)" stroke="rgba(176,141,60,0.7)" stroke-width="1.2"/>`;
 for(let i=0;i<8;i++){
   const a=Math.PI*2*i/8-Math.PI/2;
-  h+=`<line x1="${cx}" y1="${cy}" x2="${cx+RM*Math.cos(a)}" y2="${cy+RM*Math.sin(a)}" stroke="rgba(231,190,116,0.2)" stroke-width="0.6"/>`;
+  h+=`<line x1="${cx}" y1="${cy}" x2="${cx+RM*Math.cos(a)}" y2="${cy+RM*Math.sin(a)}" stroke="rgba(176,141,60,0.2)" stroke-width="0.6"/>`;
 }
-h+=`<circle cx="${cx}" cy="${cy}" r="5" fill="rgba(231,190,116,0.5)"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="5" fill="rgba(176,141,60,0.5)"/>`;
 svg.innerHTML=h;
 }
 
@@ -1877,23 +1880,16 @@ const DOMAINS=[
 ];
 const wall=document.getElementById('logoWall');
 if(!wall)return;
-const ROW_N=5,PER_ROW=Math.ceil(DOMAINS.length/ROW_N);
-const speeds=[38,50,44,55,42];
-const opacities=[0.38,0.28,0.35,0.25,0.32];
-for(let r=0;r<ROW_N;r++){
-  const row=document.createElement('div');
-  row.className='logo-row';
-  row.style.setProperty('--spd',speeds[r]+'s');
-  row.style.opacity=opacities[r];
-  let items='';
-  const slice=[...DOMAINS.slice(r*PER_ROW,(r+1)*PER_ROW),...DOMAINS.slice(0,4)];
-  const doubled=[...slice,...slice]; // 无缝循环
-  doubled.forEach(([d,n])=>{
-    items+=`<div class="logo-item" title="${n}"><img src="https://favicon.im/${d}?larger=true" alt="${n}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`;
-  });
-  row.innerHTML=items;
-  wall.appendChild(row);
-}
+// 单行横向滚动，同页无重复 app（全集只出现一次，再复制一份仅用于无缝循环）
+const row=document.createElement('div');
+row.className='logo-row';
+row.style.setProperty('--spd','90s');
+let items='';
+DOMAINS.forEach(([d,n])=>{
+  items+=`<div class="logo-item" title="${n}"><img src="https://favicon.im/${d}?larger=true" alt="${n}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`;
+});
+row.innerHTML=items+items; // 两份拼接实现无缝，视觉上同时只有一个屏幕宽度的内容可见
+wall.appendChild(row);
 })();
 
 </script>
