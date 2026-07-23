@@ -12,7 +12,11 @@
   <!-- v1.0.5-20260706 -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&display=swap');
-  </style>
+  
+.tarot-back-btn{position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;gap:6px;padding:8px 15px 8px 11px;background:rgba(255,252,245,0.85);border:1px solid rgba(160,120,60,0.28);border-radius:20px;color:#8a6d3b;font-size:13px;text-decoration:none;transition:all .25s ease;cursor:pointer;backdrop-filter:blur(8px);box-shadow:0 3px 12px rgba(140,110,60,0.12);font-family:inherit}
+.tarot-back-btn:hover{background:rgba(255,250,238,0.96);border-color:rgba(160,120,60,0.5);color:#6d5325;transform:translateX(-2px)}
+.tarot-back-btn svg{width:14px;height:14px;flex-shrink:0}
+</style>
   <link rel="stylesheet" href="style.css"/>
 <style>
 /* 奶油牌背 SVG 纹样覆盖层 */
@@ -135,6 +139,10 @@ body, #welcome-screen {
 </script>
 </head>
 <body>
+<a class="tarot-back-btn" href="/08/works/#tools" title="返回 AI 工具页">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12L6 8l4-4"/></svg>
+  返回工具库
+</a>
   <!-- ✦ 开场欢迎页 — 魔法球/灵珠风格 ✦ -->
   <div id="welcome-screen">
     <div class="welcome-stars"></div>
