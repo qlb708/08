@@ -476,9 +476,9 @@ transform:translateX(-2px);
 
 /* === 首页 Logo 滚动背景墙 === */
 .logo-wall{
-  position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
-  -webkit-mask-image:radial-gradient(ellipse 75% 85% at 50% 50%, transparent 25%, black 65%);
-  mask-image:radial-gradient(ellipse 75% 85% at 50% 50%, transparent 25%, black 65%);
+  position:absolute;top:0;left:0;bottom:0;width:48%;overflow:hidden;pointer-events:none;z-index:0;
+  -webkit-mask-image:linear-gradient(to right, black 0%, black 55%, transparent 100%);
+  mask-image:linear-gradient(to right, black 0%, black 55%, transparent 100%);
 }
 .logo-row{
   display:flex;gap:18px;align-items:center;width:max-content;
@@ -1017,50 +1017,100 @@ setupProductRecognition();
 
 function drawMingpan(){
 const svg=document.getElementById('mingpanSvg');
-const cx=160,cy=160,r=130,ri=95;
-let pts=[];
+const cx=160,cy=160;
+// 八卦符号 (乾坤震巽坎离艮兑) + 卦名
+const GUAS=[
+  {sym:'☰',name:'乾',a:-Math.PI/2},
+  {sym:'☱',name:'兑',a:-Math.PI/2+Math.PI/4},
+  {sym:'☲',name:'离',a:-Math.PI/2+Math.PI/2},
+  {sym:'☳',name:'震',a:-Math.PI/2+3*Math.PI/4},
+  {sym:'☷',name:'坤',a:-Math.PI/2+Math.PI},
+  {sym:'☶',name:'艮',a:-Math.PI/2+5*Math.PI/4},
+  {sym:'☵',name:'坎',a:-Math.PI/2+3*Math.PI/2},
+  {sym:'☴',name:'巽',a:-Math.PI/2+7*Math.PI/4},
+];
+const WX=['木','火','土','金','水','木','火','土'];
+let h='';
+// 最外圈：装饰圆
+h+=`<circle cx="${cx}" cy="${cy}" r="155" fill="none" stroke="rgba(231,190,116,0.15)" stroke-width="1" stroke-dasharray="4 3"/>`;
+// 卦环圈 r=135
+const R_OUT=135,R_SYM=118,R_NAME=100,R_WX=84;
+h+=`<circle cx="${cx}" cy="${cy}" r="${R_OUT}" fill="none" stroke="rgba(231,190,116,0.35)" stroke-width="1.2"/>`;
+// 画8个扇区格
 for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-pts.push([cx+r*Math.cos(a),cy+r*Math.sin(a)]);
+  const a1=Math.PI*2*i/8-Math.PI/2;
+  const a2=a1+Math.PI*2/8;
+  const x1=cx+R_OUT*Math.cos(a1),y1=cy+R_OUT*Math.sin(a1);
+  const x2=cx+R_OUT*Math.cos(a2),y2=cy+R_OUT*Math.sin(a2);
+  const fill=i%2===0?'rgba(231,190,116,0.04)':'rgba(154,143,200,0.04)';
+  h+=`<path d="M${cx},${cy} L${x1},${y1} A${R_OUT},${R_OUT} 0 0,1 ${x2},${y2} Z" fill="${fill}" stroke="rgba(231,190,116,0.2)" stroke-width="0.5"/>`;
 }
-let pathD='M'+pts.map(p=>p.join(',')).join('L')+'Z';
-let html=`<path d="${pathD}" fill="none" stroke="rgba(231,190,116,0.3)" stroke-width="1.5"/>`;
-let ptsI=[];
+// 卦符 + 卦名 + 五行
+GUAS.forEach((g,i)=>{
+  const am=g.a+Math.PI/8; // 扇区中心角
+  const sx=cx+R_SYM*Math.cos(am),sy=cy+R_SYM*Math.sin(am);
+  const nx=cx+R_NAME*Math.cos(am),ny=cy+R_NAME*Math.sin(am);
+  const wx=cx+R_WX*Math.cos(am),wy=cy+R_WX*Math.sin(am);
+  h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:16px;fill:rgba(231,190,116,0.85)">${g.sym}</text>`;
+  h+=`<text x="${nx}" y="${ny}" text-anchor="middle" dominant-baseline="middle" style="font-size:9px;fill:rgba(184,178,192,0.9);letter-spacing:1px">${g.name}</text>`;
+  h+=`<text x="${wx}" y="${wy}" text-anchor="middle" dominant-baseline="middle" style="font-size:8px;fill:rgba(154,143,200,0.7)">${WX[i]}</text>`;
+});
+// 中圈：五行维度 r=62
+const R_MID=62;
+h+=`<circle cx="${cx}" cy="${cy}" r="${R_MID}" fill="rgba(23,18,31,0.8)" stroke="rgba(231,190,116,0.4)" stroke-width="1.5"/>`;
+// 中圈内：维度8边形（根据scores或默认5）
+const sc=state&&state.scores?state.scores:[5,5,5,5,5,5,5,5];
+let pts=sc.map((s,i)=>{
+  const a=Math.PI*2*i/8-Math.PI/2;
+  const r2=R_MID*0.85*(s/10);
+  return [cx+r2*Math.cos(a),cy+r2*Math.sin(a)];
+});
+h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(231,190,116,0.12)" stroke="rgba(231,190,116,0.6)" stroke-width="1.5"/>`;
+// 格线（八条辐射线到中圈）
 for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-ptsI.push([cx+ri*Math.cos(a),cy+ri*Math.sin(a)]);
+  const a=Math.PI*2*i/8-Math.PI/2;
+  h+=`<line x1="${cx}" y1="${cy}" x2="${cx+R_MID*Math.cos(a)}" y2="${cy+R_MID*Math.sin(a)}" stroke="rgba(231,190,116,0.2)" stroke-width="0.8"/>`;
 }
-let pathI='M'+ptsI.map(p=>p.join(',')).join('L')+'Z';
-html+=`<path d="${pathI}" fill="none" stroke="rgba(154,143,200,0.2)" stroke-width="1"/>`;
-for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-const lx=cx+(r+20)*Math.cos(a);
-const ly=cy+(r+20)*Math.sin(a);
-const anchor=Math.abs(Math.cos(a))<0.3?'middle':(Math.cos(a)>0?'start':'end');
-html+=`<text x="${lx}" y="${ly}" text-anchor="${anchor}" dominant-baseline="middle" style="font-size:10px;fill:rgba(184,178,192,0.8)">${DIMENSIONS[i]}</text>`;
-}
-svg.innerHTML=html;
+// 中心阴阳鱼
+const RA=14,RB=7;
+h+=`<circle cx="${cx}" cy="${cy-RA}" r="${RA}" fill="rgba(231,190,116,0.15)"/>`;
+h+=`<circle cx="${cx}" cy="${cy+RA}" r="${RA}" fill="rgba(23,18,31,0.6)" stroke="rgba(231,190,116,0.3)" stroke-width="0.5"/>`;
+h+=`<circle cx="${cx}" cy="${cy-RA}" r="${RB}" fill="rgba(231,190,116,0.4)"/>`;
+h+=`<circle cx="${cx}" cy="${cy+RA}" r="${RB}" fill="rgba(23,18,31,0.8)"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="${RA*2}" fill="none" stroke="rgba(231,190,116,0.5)" stroke-width="1.2"/>`;
+svg.innerHTML=h;
 }
 
 function drawMiniMingpan(){
 const svg=document.getElementById('miniMingpan');
-const cx=90,cy=90,r=70;
-let pts=[];
+if(!svg)return;
+const cx=90,cy=90;
+const GUAS2=['☰','☱','☲','☳','☷','☶','☵','☴'];
+const R2=72,RS=60,RN=48,RM=32;
+let h='';
+h+=`<circle cx="${cx}" cy="${cy}" r="${R2}" fill="none" stroke="rgba(231,190,116,0.3)" stroke-width="1"/>`;
 for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-const s=state.scores[i]/10;
-pts.push([cx+r*s*Math.cos(a),cy+r*s*Math.sin(a)]);
+  const a1=Math.PI*2*i/8-Math.PI/2, a2=a1+Math.PI*2/8;
+  const am=a1+Math.PI/8;
+  const x1=cx+R2*Math.cos(a1),y1=cy+R2*Math.sin(a1);
+  const x2=cx+R2*Math.cos(a2),y2=cy+R2*Math.sin(a2);
+  h+=`<path d="M${cx},${cy} L${x1},${y1} A${R2},${R2} 0 0,1 ${x2},${y2} Z" fill="${i%2?'rgba(154,143,200,0.06)':'rgba(231,190,116,0.06)'}" stroke="rgba(231,190,116,0.15)" stroke-width="0.5"/>`;
+  const sx=cx+RS*Math.cos(am),sy=cy+RS*Math.sin(am);
+  h+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="middle" style="font-size:11px;fill:rgba(231,190,116,0.8)">${GUAS2[i]}</text>`;
 }
-let pathD='M'+pts.map(p=>p.join(',')).join('L')+'Z';
-let html=`<path d="${pathD}" fill="rgba(231,190,116,0.1)" stroke="rgba(231,190,116,0.5)" stroke-width="1.5"/>`;
+h+=`<circle cx="${cx}" cy="${cy}" r="${RM}" fill="rgba(23,18,31,0.85)" stroke="rgba(231,190,116,0.45)" stroke-width="1.2"/>`;
+const sc=state&&state.scores?state.scores:[5,5,5,5,5,5,5,5];
+let pts=sc.map((s,i)=>{
+  const a=Math.PI*2*i/8-Math.PI/2, r2=RM*0.85*(s/10);
+  return [cx+r2*Math.cos(a),cy+r2*Math.sin(a)];
+});
+h+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="rgba(231,190,116,0.15)" stroke="rgba(231,190,116,0.7)" stroke-width="1.2"/>`;
 for(let i=0;i<8;i++){
-const a=Math.PI*2*i/8-Math.PI/2;
-const lx=cx+(r+10)*Math.cos(a);
-const ly=cy+(r+10)*Math.sin(a);
-const bright=state.scores[i]>=6;
-html+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" style="font-size:9px;fill:${bright?'#E7BE74':'#B8B2C0'}">${DIMENSIONS[i]}</text>`;
+  const a=Math.PI*2*i/8-Math.PI/2;
+  h+=`<line x1="${cx}" y1="${cy}" x2="${cx+RM*Math.cos(a)}" y2="${cy+RM*Math.sin(a)}" stroke="rgba(231,190,116,0.2)" stroke-width="0.6"/>`;
 }
-svg.innerHTML=html;
+h+=`<circle cx="${cx}" cy="${cy}" r="5" fill="rgba(231,190,116,0.5)"/>`;
+svg.innerHTML=h;
 }
 
 let placeholderIdx=0;
