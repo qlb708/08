@@ -273,6 +273,48 @@
     display:inline-block;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:999px;
     background:rgba(74,123,255,.1);color:var(--blue);margin-left:8px;vertical-align:middle;
   }
+
+  /* ---------- Sync chip selectors ---------- */
+  #syncPanel{display:none;flex-direction:column;gap:9px;margin-bottom:11px;flex-shrink:0}
+  body.mode-sync #syncPanel{display:flex}
+  .chip-group{display:flex;flex-direction:column;gap:6px}
+  .chip-group .cg-label{font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .chip-group .cg-label .cg-ic{font-size:13px}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{
+    cursor:pointer;font-family:inherit;font-weight:700;font-size:12.5px;color:var(--muted);
+    background:rgba(255,255,255,.66);border:1.5px solid var(--line);
+    padding:6px 13px;border-radius:999px;transition:.2s;user-select:none;line-height:1.2;
+  }
+  .chip:hover{border-color:var(--blue);color:var(--blue)}
+  .chip.active{
+    background:linear-gradient(135deg,var(--blue),#6b93ff);color:#fff;border-color:transparent;
+    box-shadow:0 6px 15px rgba(74,123,255,.3);
+  }
+  /* sync mode: shrink textarea so page stays one screen */
+  body.mode-sync textarea.input{min-height:60px}
+
+  /* ---------- Sync result (话术) ---------- */
+  .talk-ctx{
+    display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;
+    color:var(--blue);background:rgba(74,123,255,.1);
+    padding:6px 14px;border-radius:999px;margin-bottom:14px;
+  }
+  .talk-box{
+    animation:fadeUp .5s both;
+    background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);
+    border-radius:20px;padding:20px 22px;
+    font-size:15px;line-height:1.85;color:var(--ink);white-space:pre-wrap;word-break:break-word;
+  }
+  .talk-copy{
+    margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:14.5px;color:#fff;
+    background:linear-gradient(135deg,var(--blue),#7b5bff);
+    padding:12px 26px;border-radius:14px;transition:.25s;
+    box-shadow:0 12px 28px rgba(74,123,255,.35);
+  }
+  .talk-copy:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(74,123,255,.45)}
+
   .footer{text-align:center;color:var(--muted);font-size:11px;flex-shrink:0;margin-top:8px;line-height:1.4}
 </style>
 </head>
@@ -289,13 +331,14 @@
     <header class="hero">
       <span class="kicker">Voice / Text → Structured</span>
       <h1>把零散的工作记录，<span class="grad">一键整理成结构</span></h1>
-      <p>口述或粘贴今天的会议、周报草稿，自动整理成核心决议、行动项表格与下周计划。语音实时转写 · 本地可用 · 填 Key 更智能。</p>
+      <p>口述或粘贴今天的会议、周报草稿，自动整理成结构化纪要；还能按「对象×目标」把进展改写成可直接发送的沟通话术。语音实时转写 · 本地可用 · 填 Key 更智能。</p>
     </header>
 
     <div class="modebar">
       <div class="tabs" id="tabs">
         <button class="tab active" data-mode="meeting"><span>🗂️</span>会议纪要</button>
         <button class="tab" data-mode="weekly"><span>📅</span>周报</button>
+        <button class="tab" data-mode="sync"><span>🔄</span>进展同步</button>
       </div>
     </div>
 
@@ -315,6 +358,28 @@
           <button class="ghost-btn" id="fileBtn" type="button">📎 导入 .txt</button>
           <button class="ghost-btn" id="sampleBtn" type="button">✨ 示例</button>
           <input type="file" id="fileInput" accept=".txt,text/plain" style="display:none">
+        </div>
+
+        <div id="syncPanel">
+          <div class="chip-group">
+            <div class="cg-label"><span class="cg-ic">📨</span>发送给</div>
+            <div class="chip-row" id="audienceRow">
+              <button class="chip active" type="button" data-aud="leader">直属领导</button>
+              <button class="chip" type="button" data-aud="group">项目群</button>
+              <button class="chip" type="button" data-aud="cross">跨部门同事</button>
+              <button class="chip" type="button" data-aud="client">客户/外部伙伴</button>
+            </div>
+          </div>
+          <div class="chip-group">
+            <div class="cg-label"><span class="cg-ic">🎯</span>目的</div>
+            <div class="chip-row" id="goalRow">
+              <button class="chip active" type="button" data-goal="brief">简洁同步</button>
+              <button class="chip" type="button" data-goal="collab">请求协作</button>
+              <button class="chip" type="button" data-goal="report">汇报成果</button>
+              <button class="chip" type="button" data-goal="risk">暴露风险</button>
+              <button class="chip" type="button" data-goal="push">催促进度</button>
+            </div>
+          </div>
         </div>
 
         <textarea class="input" id="inputText" placeholder="点「语音输入」边说边转文字，或直接粘贴/拖入你的会议记录、周报草稿…&#10;&#10;例如：&#10;今天定了新版首页方案，张伟负责视觉稿周五前给到；李娜跟进埋点接口，下周三前联调。风控那边接口还没确认，需要协调。"></textarea>
@@ -383,6 +448,8 @@
   /* ============ State ============ */
   var LS_KEY='worklog_ai_cfg_v1';
   var mode='meeting';
+  var syncAud='leader';   // sync 发送对象
+  var syncGoal='brief';   // sync 表达目标
   var lastResult=null;      // structured object
   var lastMarkdown='';      // raw markdown (from AI or built)
   var recognizing=false;
@@ -457,6 +524,8 @@
   }
 
   /* ============ Mode tabs ============ */
+  var MODE_LABELS={meeting:'会议纪要',weekly:'周报',sync:'进展同步'};
+  var GO_LABELS={meeting:'整理成纪要',weekly:'整理成周报',sync:'生成沟通话术'};
   var tabsWrap=$('tabs');
   tabsWrap.addEventListener('click',function(e){
     var b=e.target.closest('.tab');if(!b)return;
@@ -464,8 +533,26 @@
     for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
     b.classList.add('active');
     mode=b.getAttribute('data-mode');
-    modeBadge.textContent=(mode==='meeting')?'会议纪要':'周报';
-    goLabel.textContent=(mode==='meeting')?'整理成纪要':'整理成周报';
+    modeBadge.textContent=MODE_LABELS[mode]||MODE_LABELS.meeting;
+    goLabel.textContent=GO_LABELS[mode]||GO_LABELS.meeting;
+    document.body.classList.toggle('mode-sync',mode==='sync');
+  });
+
+  /* ============ Sync chip selectors ============ */
+  var audienceRow=$('audienceRow'), goalRow=$('goalRow');
+  audienceRow.addEventListener('click',function(e){
+    var c=e.target.closest('.chip');if(!c)return;
+    var chips=audienceRow.querySelectorAll('.chip');
+    for(var i=0;i<chips.length;i++)chips[i].classList.remove('active');
+    c.classList.add('active');
+    syncAud=c.getAttribute('data-aud');
+  });
+  goalRow.addEventListener('click',function(e){
+    var c=e.target.closest('.chip');if(!c)return;
+    var chips=goalRow.querySelectorAll('.chip');
+    for(var i=0;i<chips.length;i++)chips[i].classList.remove('active');
+    c.classList.add('active');
+    syncGoal=c.getAttribute('data-goal');
   });
 
   /* ============ Speech Recognition ============ */
@@ -570,11 +657,12 @@
   /* ============ Sample ============ */
   var SAMPLES={
     meeting:'今天开了新版首页评审会，参会：产品张伟、设计李娜、前端王芳、后端刘强。\n会上确定了首页采用卡片瀑布流方案，去掉原来的横向 banner。决定本期先上 H5 版本，App 端下个迭代再做。\n张伟负责把 PRD 更新，周三前发出来。李娜负责视觉高保真稿，周五前给到前端。王芳跟进前端框架选型，下周一同步结论。刘强需要确认推荐接口的性能，还没排期，需要和算法团队协调。\n另外埋点方案还没定，待跟进。灰度放量比例也要再讨论。',
-    weekly:'这周主要在做首页改版。完成了：需求评审、PRD 定稿、视觉稿评审通过。还搭好了前端脚手架。\n进行中的有：推荐接口联调，大概到 70%；埋点 SDK 接入在做。\n下周计划：完成接口联调、跑通全链路、开始灰度测试，另外要写一版上线方案。\n风险方面：算法那边推荐接口性能还没达标，可能影响联调进度，需要和算法团队协调资源。设计侧还有两个交互细节没敲定。'
+    weekly:'这周主要在做首页改版。完成了：需求评审、PRD 定稿、视觉稿评审通过，首页加载速度从 2.1s 优化到 1.2s。还搭好了前端脚手架。\n进行中的有：推荐接口联调，大概到 70%；埋点 SDK 接入在做。\n下周计划：完成接口联调、跑通全链路、开始灰度测试，另外要写一版上线方案。\n风险方面：算法那边推荐接口性能还没达标，可能影响联调进度，需要和算法团队协调资源。设计侧还有两个交互细节没敲定。',
+    sync:'首页改版项目进展：推荐接口联调已经完成 70%，预计周五可以全部跑通。首页加载速度从 2.1s 优化到了 1.2s。\n目前的阻塞点是算法推荐接口性能还没达标，如果本周内不解决，可能会拖延下周的灰度上线。需要算法团队周四前支持一下。'
   };
   $('sampleBtn').addEventListener('click',function(){
     inputText.value=SAMPLES[mode]||SAMPLES.meeting;
-    toast('已填入示例（'+(mode==='meeting'?'会议纪要':'周报')+'）');
+    toast('已填入示例（'+(MODE_LABELS[mode]||MODE_LABELS.meeting)+'）');
   });
 
   /* ============ Settings save ============ */
@@ -605,6 +693,10 @@
     var text=inputText.value.trim();
     if(!text){toast('请先输入或口述一些内容');inputText.focus();return;}
     if(recognizing)stopRec();
+    if(mode==='sync'){
+      if(hasKey())runAI(text);else runSyncLocal(text);
+      return;
+    }
     if(hasKey())runAI(text);else runLocal(text);
   });
 
@@ -615,32 +707,69 @@
   }
   function doneLoading(){goBtn.disabled=false;}
 
-  /* ---------- AI path ---------- */
+  /* ============ Sync label maps ============ */
+  var AUD_LABEL={leader:'直属领导',group:'项目群',cross:'跨部门同事',client:'客户/外部伙伴'};
+  var GOAL_LABEL={brief:'简洁同步',collab:'请求协作',report:'汇报成果',risk:'暴露风险',push:'催促进度'};
+
+  /* ---------- AI path: prompt ---------- */
   function buildPrompt(text){
     if(mode==='meeting'){
-      return '你是资深会议纪要整理助手。请把下面这段零散的会议口述/记录，整理成结构清晰的会议纪要，用简体中文，输出严格的 Markdown，包含且仅包含以下三个二级标题小节（没有内容的小节也保留并写“暂无”）：\n\n'+
-      '## 核心决议\n- 用要点列出会上达成的决定/确定的方案\n\n'+
+      return '你是资深会议纪要整理助手。请把下面这段零散的会议口述/记录，整理成结构清晰的会议纪要，用简体中文，输出严格的 Markdown，包含且仅包含以下四个二级标题小节（没有内容的小节也保留并写“暂无”）：\n\n'+
+      '## 核心结论\n- 用要点列出会议最关键的结论与共识\n\n'+
+      '## 决策\n- 用要点列出会上明确拍板的决定/选定的方案\n\n'+
       '## 行动项\n用 Markdown 表格，表头必须是：| 负责人 | 任务 | 截止时间 |，逐条列出。负责人未知写“待定”，截止时间未知写“待定”。\n\n'+
-      '## 待跟进事项\n- 用要点列出尚未确定、需继续跟进的事情\n\n'+
+      '## 待确认问题\n- 用要点列出尚未确定、需进一步确认或讨论的问题\n\n'+
       '不要输出多余的解释或开场白，直接给 Markdown。\n\n原始记录：\n"""\n'+text+'\n"""';
     }
-    return '你是资深周报整理助手。请把下面这段零散的工作记录整理成规范周报，用简体中文，输出严格的 Markdown，包含且仅包含以下四个二级标题小节（没有内容也保留并写“暂无”）：\n\n'+
-    '## 本周完成\n- 要点列出已完成的事项\n\n'+
-    '## 进行中\n- 要点列出正在推进、含进度的事项\n\n'+
-    '## 下周计划\n- 要点列出计划要做的事\n\n'+
-    '## 风险 / 需协调\n- 要点列出风险、阻塞、需要协调的资源\n\n'+
-    '不要输出多余的解释或开场白，直接给 Markdown。\n\n原始记录：\n"""\n'+text+'\n"""';
+    if(mode==='weekly'){
+      return '你是资深周报整理助手。请把下面这段零散的工作记录整理成规范周报，用简体中文，输出严格的 Markdown，包含且仅包含以下四个二级标题小节（没有内容也保留并写“暂无”）：\n\n'+
+      '## 本周完成\n- 要点列出已完成的事项\n\n'+
+      '## 关键结果\n- 要点列出可量化、有业务价值的成果（尽量带上数据/指标，如百分比、耗时、量级变化）\n\n'+
+      '## 风险\n- 要点列出风险、阻塞、需要协调的资源\n\n'+
+      '## 下周计划\n- 要点列出计划要做的事\n\n'+
+      '不要输出多余的解释或开场白，直接给 Markdown。\n\n原始记录：\n"""\n'+text+'\n"""';
+    }
+    // sync mode
+    return buildSyncPrompt(text);
+  }
+
+  var AUD_PREF={
+    leader:'发送对象是你的直属领导：语气简洁得体、先说结论和关键结果、不冗余、适当体现担当与对影响的评估，不堆细节流水账。',
+    group:'发送对象是项目群（多人）：明确 who / what / when，信息结构化、一目了然，可适当 @ 相关方，语气平等协作。',
+    cross:'发送对象是跨部门同事：对方不一定了解背景，需要先给足上下文再提诉求，语气尊重、客气、少用内部黑话。',
+    client:'发送对象是客户/外部伙伴：语气专业、委婉、得体，报喜不报忧但不回避问题，不暴露内部矛盾，多用“您”，体现服务意识。'
+  };
+  var GOAL_PREF={
+    brief:'这次目的是简洁同步：只讲最关键的进展，控制在两三句，不铺展。',
+    collab:'这次目的是请求协作：明确具体诉求、需要对方做什么、以及 deadline，方便对方直接接手。',
+    report:'这次目的是汇报成果：突出可量化的成果与数据贡献，体现价值，语气自信但不夸大。',
+    risk:'这次目的是暴露风险：先铺垫背景再说风险，不只抛问题，要给出已有应对方案或建议，语气冷静专业。',
+    push:'这次目的是催促进度：客气但明确，点出待办事项与时间节点，并说明拖延会带来的影响，让对方重视。'
+  };
+  function buildSyncPrompt(text){
+    return '你是资深职场沟通专家。请把下面这段原始工作信息，改写成一段可以直接发送出去的中文沟通话术。\n\n'+
+      '【发送对象】'+AUD_LABEL[syncAud]+'：'+AUD_PREF[syncAud]+'\n'+
+      '【表达目标】'+GOAL_LABEL[syncGoal]+'：'+GOAL_PREF[syncGoal]+'\n\n'+
+      '要求：\n'+
+      '1. 根据上面的“对象×目标”组合，动态调整称呼、语气、结构、详略和措辞，而不是套模板。\n'+
+      '2. 直接输出可粘贴发送的正文，包含合适的开头称呼和结尾（如适合）。\n'+
+      '3. 不要分标题分区、不要用 Markdown 标题、不要加任何解释或备注，只输出话术本身。\n'+
+      '4. 长度适中，符合中文职场 IM 沟通习惯，自然不生硬。\n\n'+
+      '原始工作信息：\n"""\n'+text+'\n"""';
   }
 
   function runAI(text){
     var cfg=loadCfg();
-    setLoading('AI 正在整理…');
+    setLoading(mode==='sync'?'AI 正在生成沟通话术…':'AI 正在整理…');
     var url=cfg.baseUrl+'/v1/chat/completions';
+    var sysMsg=(mode==='sync')
+      ?'你是专业的中文职场沟通专家，只输出可直接发送的沟通话术，不加多余寒暄或解释。'
+      :'你是专业的中文工作记录整理助手，只输出规范 Markdown，不加多余寒暄。';
     var body={
       model:cfg.model||'gpt-4o-mini',
       temperature:0.3,
       messages:[
-        {role:'system',content:'你是专业的中文工作记录整理助手，只输出规范 Markdown，不加多余寒暄。'},
+        {role:'system',content:sysMsg},
         {role:'user',content:buildPrompt(text)}
       ]
     };
@@ -656,13 +785,13 @@
       try{md=data.choices[0].message.content||'';}catch(e){md='';}
       if(!md){throw new Error('返回内容为空');}
       lastMarkdown=md.trim();
-      renderMarkdown(lastMarkdown,true);
+      if(mode==='sync'){renderTalk(lastMarkdown);}else{renderMarkdown(lastMarkdown,true);}
       doneLoading();
     }).catch(function(err){
       doneLoading();
       resultArea.innerHTML='<div class="sec"><div class="sec-h"><span class="ic">⚠️</span>AI 调用失败，已回退本地规则</div><p class="empty-note">'+escapeHtml(String(err.message||err))+'</p></div>';
       toast('AI 调用失败，已用本地规则整理');
-      setTimeout(function(){runLocal(text,true);},400);
+      setTimeout(function(){if(mode==='sync'){runSyncLocal(text,true);}else{runLocal(text,true);}},400);
     });
   }
 
@@ -697,13 +826,14 @@
 
   function localMeeting(text){
     var sents=splitSentences(text);
-    var decisions=[],actions=[],follow=[];
+    var conclusions=[],decisions=[],actions=[],follow=[];
     var seen={};
     for(var i=0;i<sents.length;i++){
       var s=sents[i];if(seen[s])continue;seen[s]=1;
       var isAction=/@|负责|跟进|来做|来推|去做|处理|对接|安排|deadline|ddl|前(完成|给到|提交|上线|交付|同步)|截止/i.test(s)&&/[\u4e00-\u9fa5]/.test(s);
-      var isDecision=/(决定|确定|定了|敲定|通过|采用|方案|选型|结论|一致同意|拍板|决议)/.test(s);
-      var isFollow=/(待|需|还没|尚未|未定|后续|待定|待跟进|需要(确认|讨论|协调|排期)|遗留|没确定|悬而未决|再(讨论|议|确认))/.test(s);
+      var isDecision=/(决定|确定|定了|敲定|通过|采用|选型|一致同意|拍板|决议)/.test(s);
+      var isFollow=/(待|需|还没|尚未|未定|待定|待跟进|需要(确认|讨论|协调|排期)|遗留|没确定|悬而未决|再(讨论|议|确认)|待确认)/.test(s);
+      var isConclusion=/(结论|共识|方向|总体上|总的来说|明确了|方案是|目标是)/.test(s);
       if(isAction){
         var owner=findOwner(s);var due=stripDue(s);
         actions.push({who:owner||'待定',task:cleanTask(s),due:due||'待定'});
@@ -711,35 +841,41 @@
         decisions.push(s);
       }else if(isFollow){
         follow.push(s);
+      }else if(isConclusion){
+        conclusions.push(s);
       }else{
-        // leftover: bucket short factual as follow? put into decisions if declarative
-        follow.push(s);
+        conclusions.push(s); // 默认归到核心结论
       }
     }
     return {type:'meeting',sections:[
-      {key:'decision',title:'核心决议',icon:'✅',list:decisions},
+      {key:'conclusion',title:'核心结论',icon:'🎯',list:conclusions},
+      {key:'decision',title:'决策',icon:'✅',list:decisions},
       {key:'action',title:'行动项',icon:'📌',table:actions},
-      {key:'follow',title:'待跟进事项',icon:'🔍',list:follow}
+      {key:'follow',title:'待确认问题',icon:'🔍',list:follow}
     ]};
   }
 
   function localWeekly(text){
     var sents=splitSentences(text);
-    var done=[],doing=[],plan=[],risk=[];
+    var done=[],kr=[],risk=[],plan=[];
     var seen={};
     for(var i=0;i<sents.length;i++){
       var s=sents[i];if(seen[s])continue;seen[s]=1;
+      var hasMetric=/[0-9]/.test(s)&&/(%|百分|倍|个|单|件|次|天|小时|分钟|s\b|ms|从.*到|提升|下降|增长|减少|优化到|达到)/i.test(s);
       if(/(风险|阻塞|卡住|blocker|需要协调|需协调|资源不足|依赖|没达标|未达标|担心|可能影响|delay|延期)/i.test(s)){risk.push(s);continue;}
       if(/(下周|下个?周|计划|准备|将要|打算|接下来|后续要|下一步|next)/i.test(s)){plan.push(s);continue;}
-      if(/(进行中|正在|在做|推进中|联调|开发中|[0-9]{1,3}%|进度|ing\b|还在)/i.test(s)){doing.push(s);continue;}
-      if(/(完成|已(完成|上线|交付|发布|搞定|做完|通过|定稿)|搭好|跑通|结束|done|finish)/i.test(s)){done.push(s);continue;}
+      if(/(完成|已(完成|上线|交付|发布|搞定|做完|通过|定稿)|搭好|跑通|结束|done|finish)/i.test(s)){
+        if(hasMetric){kr.push(s);}else{done.push(s);}
+        continue;
+      }
+      if(hasMetric){kr.push(s);continue;}
       done.push(s); // default bucket
     }
     return {type:'weekly',sections:[
       {key:'done',title:'本周完成',icon:'✅',list:done},
-      {key:'doing',title:'进行中',icon:'🚀',list:doing},
-      {key:'plan',title:'下周计划',icon:'📅',list:plan},
-      {key:'risk',title:'风险 / 需协调',icon:'⚠️',list:risk}
+      {key:'kr',title:'关键结果',icon:'📊',list:kr},
+      {key:'risk',title:'风险',icon:'⚠️',list:risk},
+      {key:'plan',title:'下周计划',icon:'📅',list:plan}
     ]};
   }
 
@@ -758,6 +894,84 @@
       }
       doneLoading();
     },fromFallback?0:280);
+  }
+
+  /* ============ Sync local (本地兜底话术) ============ */
+  var SYNC_GREET={
+    leader:'领导您好，',
+    group:'各位，同步一下：',
+    cross:'你好，打扰一下，',
+    client:'您好，'
+  };
+  var SYNC_OPEN={
+    leader:{brief:'简单同步下进展：',report:'汇报一下阶段成果：',risk:'有个情况需要向您同步，并附上我的处理方案：',collab:'有件事想争取您的支持：',push:'想跟您同步下一个待推进的事项：'},
+    group:{brief:'同步下当前进展：',report:'同步下阶段成果：',risk:'有个风险点需要大家关注：',collab:'需要相关同学配合一下：',push:'提醒一下有个事项需要推进：'},
+    cross:{brief:'向你同步一下我们这边的进展：',report:'同步一下我们这边的阶段成果：',risk:'有个情况可能会涉及到你们，先同步下背景：',collab:'有个事情想麻烦你们部门支持，先说下背景：',push:'想跟进一下之前拜托你们的事项：'},
+    client:{brief:'向您同步一下项目的最新进展：',report:'向您汇报一下阶段性成果：',risk:'关于项目，有个情况需要提前与您同步，我们已有应对方案：',collab:'为了项目顺利推进，有一事需要您这边配合：',push:'关于项目进度，想与您确认一个时间节点：'}
+  };
+  var SYNC_CLOSE={
+    leader:{brief:'有进一步进展我再同步您。',report:'后续我会继续推进，有新进展及时向您汇报。',risk:'您看这样处理是否妥当？需要您支持的地方我再同步。',collab:'麻烦您看下是否可行，谢谢您！',push:'麻烦您关注下，谢谢！'},
+    group:{brief:'有情况随时同步。',report:'感谢各位配合！',risk:'大家有想法欢迎随时招呼，一起盯下风险。',collab:'麻烦相关同学看到后回复一下，谢谢！',push:'麻烦相关同学尽量按时间节点推进，谢谢！'},
+    cross:{brief:'有需要我们配合的地方随时说。',report:'感谢之前两个部门的支持！',risk:'想和你们对齐下后续怎么配合，辛苦了。',collab:'不知道你们这边是否方便支持？期待回复，谢谢！',push:'不知道你们这边目前进度如何？麻烦同步下，谢谢！'},
+    client:{brief:'后续进展我们会及时向您同步。',report:'我们会继续全力推进，确保项目顺利交付。',risk:'我们会全力控制影响，有任何问题随时与您沟通。',collab:'麻烦您这边协助推进，非常感谢！',push:'期待您的反馈，感谢您的支持！'}
+  };
+  function localSync(text,aud,goal){
+    var sents=splitSentences(text);
+    var body='';
+    if(sents.length){
+      var bullets=[];
+      for(var i=0;i<sents.length&&i<6;i++)bullets.push(sents[i]);
+      if(aud==='group'){
+        body=bullets.map(function(x){return '• '+x+'。';}).join('\n');
+      }else if(goal==='report'){
+        body='目前的阶段成果：'+bullets.join('；')+'。';
+      }else if(goal==='risk'){
+        body='具体情况是：'+bullets.join('；')+'。针对这个风险，我的初步方案是先从影响最小的方式推进，同时同步相关方。';
+      }else if(goal==='push'){
+        body='目前待推进的是：'+bullets.join('；')+'。如果在预定时间内未推进，可能会影响后续整体节点。';
+      }else if(goal==='collab'){
+        body='具体是：'+bullets.join('；')+'。希望能得到支持，如方便，期望在本周内推进。';
+      }else{
+        body=bullets.join('；')+'。';
+      }
+    }
+    var greet=SYNC_GREET[aud]||'';
+    var open=(SYNC_OPEN[aud]&&SYNC_OPEN[aud][goal])||'';
+    var close=(SYNC_CLOSE[aud]&&SYNC_CLOSE[aud][goal])||'';
+    var parts=[];
+    if(greet)parts.push(greet);
+    if(open)parts.push(open);
+    parts.push(body);
+    if(close)parts.push(close);
+    return parts.join('\n');
+  }
+  function runSyncLocal(text,fromFallback){
+    if(!fromFallback)setLoading('正在生成沟通话术…');
+    setTimeout(function(){
+      var talk=localSync(text,syncAud,syncGoal);
+      lastMarkdown=talk;
+      renderTalk(talk);
+      if(!hasKey()){
+        var note=document.createElement('div');
+        note.className='hint';note.style.marginTop='8px';
+        note.innerHTML='（本地兜底话术，填入 API Key 可用 <b>AI 智能重写</b> 得到更自然的表达）';
+        resultArea.appendChild(note);
+      }
+      doneLoading();
+    },fromFallback?0:280);
+  }
+
+  /* ============ Render: talk (沟通话术) ============ */
+  function renderTalk(talk){
+    lastResult={type:'sync'};
+    var ctx='致：'+(AUD_LABEL[syncAud]||'')+' · '+(GOAL_LABEL[syncGoal]||'');
+    var html='<div class="talk-ctx"><span>✉️</span>'+escapeHtml(ctx)+'</div>';
+    html+='<div class="talk-box">'+escapeHtml((talk||'').trim())+'</div>';
+    html+='<button class="talk-copy" id="talkCopyBtn" type="button"><span>📋</span>复制话术</button>';
+    resultArea.innerHTML=html;
+    var tcb=$('talkCopyBtn');
+    if(tcb)tcb.addEventListener('click',function(){copyText((talk||'').trim());});
+    resultActions.style.display='none';
   }
 
   /* ============ Render: structured object ============ */
@@ -814,7 +1028,7 @@
     pushCur();
     if(!sections.length){sections=[{title:'',lines:lines}];}
 
-    var iconMap={'核心决议':'✅','行动项':'📌','待跟进事项':'🔍','本周完成':'✅','进行中':'🚀','下周计划':'📅','风险':'⚠️','风险 / 需协调':'⚠️'};
+    var iconMap={'核心结论':'🎯','决策':'✅','行动项':'📌','待确认问题':'🔍','本周完成':'✅','关键结果':'📊','风险':'⚠️','下周计划':'📅','核心决议':'✅','待跟进事项':'🔍','进行中':'🚀','风险 / 需协调':'⚠️'};
     var html='';
     for(var s=0;s<sections.length;s++){
       var sec=sections[s];
