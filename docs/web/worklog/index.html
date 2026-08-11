@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>工作记录整理器 · 语音/文字 → 结构化纪要</title>
+<title>工作复盘助手 · 记录、复盘、周报</title>
 <style>
   :root{
     --blue:#4a7bff;
@@ -276,7 +276,7 @@
 
   /* ---------- Sync chip selectors ---------- */
   #syncPanel{display:none;flex-direction:column;gap:9px;margin-bottom:11px;flex-shrink:0}
-  body.mode-sync #syncPanel{display:flex}
+  body.mode-sync #syncPanel{display:none}
   .chip-group{display:flex;flex-direction:column;gap:6px}
   .chip-group .cg-label{font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px}
   .chip-group .cg-label .cg-ic{font-size:13px}
@@ -322,23 +322,24 @@
   <nav class="nav">
     <div class="brand">
       <span class="logo">📝</span>
-      <span>工作记录整理器</span>
+      <span>工作复盘助手</span>
     </div>
     <a class="back" href="/08/works/#tools">← 返回作品集</a>
   </nav>
 
   <div class="wrap">
     <header class="hero">
-      <span class="kicker">Voice / Text → Structured</span>
-      <h1>把零散的工作记录，<span class="grad">一键整理成结构</span></h1>
-      <p>口述或粘贴今天的会议、周报草稿，自动整理成结构化纪要；还能按「对象×目标」把进展改写成可直接发送的沟通话术。语音实时转写 · 本地可用 · 填 Key 更智能。</p>
+      <span class="kicker">Capture → Review → Action</span>
+      <h1>把零散工作记录，<span class="grad">沉淀成可执行复盘</span></h1>
+      <p>把会议、日常工作和项目推进沉淀成清楚、可执行的复盘。不是只记录“做了什么”，而是明确“为什么做、效果如何、下一步怎么推进”。</p>
     </header>
 
     <div class="modebar">
       <div class="tabs" id="tabs">
-        <button class="tab active" data-mode="meeting"><span>🗂️</span>会议纪要</button>
-        <button class="tab" data-mode="weekly"><span>📅</span>周报</button>
-        <button class="tab" data-mode="sync"><span>🔄</span>进展同步</button>
+        <button class="tab active" data-mode="meeting"><span>🗂️</span>记录整理</button>
+        <button class="tab" data-mode="daily"><span>☀️</span>每日复盘</button>
+        <button class="tab" data-mode="weekly"><span>📅</span>周报生成</button>
+        <button class="tab" data-mode="sync"><span>◌</span>项目复盘</button>
       </div>
     </div>
 
@@ -346,7 +347,7 @@
       <!-- ---------- INPUT ---------- -->
       <section class="card">
         <div class="card-head">
-          <div class="card-title"><span class="dot"></span>输入<span class="badge-mode" id="modeBadge">会议纪要</span></div>
+          <div class="card-title"><span class="dot"></span>输入<span class="badge-mode" id="modeBadge">记录整理</span></div>
         </div>
 
         <div class="tools-row">
@@ -364,25 +365,25 @@
           <div class="chip-group">
             <div class="cg-label"><span class="cg-ic">📨</span>发送给</div>
             <div class="chip-row" id="audienceRow">
-              <button class="chip active" type="button" data-aud="leader">直属领导</button>
-              <button class="chip" type="button" data-aud="group">项目群</button>
-              <button class="chip" type="button" data-aud="cross">跨部门同事</button>
-              <button class="chip" type="button" data-aud="client">客户/外部伙伴</button>
+              <button class="chip active" type="button" data-aud="leader">产品负责人</button>
+              <button class="chip" type="button" data-aud="group">产品项目群</button>
+              <button class="chip" type="button" data-aud="cross">跨团队同事</button>
+              <button class="chip" type="button" data-aud="client">运营 / 设计</button>
             </div>
           </div>
           <div class="chip-group">
             <div class="cg-label"><span class="cg-ic">🎯</span>目的</div>
             <div class="chip-row" id="goalRow">
-              <button class="chip active" type="button" data-goal="brief">简洁同步</button>
+              <button class="chip active" type="button" data-goal="brief">同步进展</button>
               <button class="chip" type="button" data-goal="collab">请求协作</button>
-              <button class="chip" type="button" data-goal="report">汇报成果</button>
+              <button class="chip" type="button" data-goal="report">上线决策</button>
               <button class="chip" type="button" data-goal="risk">暴露风险</button>
-              <button class="chip" type="button" data-goal="push">催促进度</button>
+              <button class="chip" type="button" data-goal="push">推进验证</button>
             </div>
           </div>
         </div>
 
-        <textarea class="input" id="inputText" placeholder="点「语音输入」边说边转文字，或直接粘贴/拖入你的会议记录、周报草稿…&#10;&#10;例如：&#10;今天定了新版首页方案，张伟负责视觉稿周五前给到；李娜跟进埋点接口，下周三前联调。风控那边接口还没确认，需要协调。"></textarea>
+        <textarea class="input" id="inputText" placeholder="粘贴或口述今天的会议记录、工作草稿、项目进度与待办事项。&#10;&#10;例如：确认首页改版方向；小王周五前完成视觉稿；数据口径仍待确认；下周安排一次用户访谈。"></textarea>
         <div class="interim" id="interim"></div>
 
         <div class="action-row">
@@ -524,8 +525,14 @@
   }
 
   /* ============ Mode tabs ============ */
-  var MODE_LABELS={meeting:'会议纪要',weekly:'周报',sync:'进展同步'};
-  var GO_LABELS={meeting:'整理成纪要',weekly:'整理成周报',sync:'生成沟通话术'};
+  var MODE_LABELS={meeting:'记录整理',daily:'每日复盘',weekly:'周报生成',sync:'项目复盘'};
+  var GO_LABELS={meeting:'整理记录',daily:'生成每日复盘',weekly:'生成周报',sync:'生成项目复盘'};
+  var MODE_PLACEHOLDERS={
+    meeting:'粘贴会议转写、聊天记录或语音草稿…\n\n例如：今天确认了新版首页方案；张伟负责视觉稿，周五前给到；埋点接口仍待确认。',
+    daily:'写下今天做了什么、卡在哪里，以及明天最重要的事…\n\n例如：完成失败样本归类；埋点口径未对齐；明天优先确认指标定义。',
+    weekly:'粘贴一周零散工作记录、成果、数据与风险…\n\n例如：本周完成首页改版；报名转化变化待核实；下周推进用户访谈。',
+    sync:'写下项目背景、关键动作与当前结果…\n\n例如：项目要解决什么问题；你亲自做了什么；哪些结果已确认、哪些仍待核实。'
+  };
   var tabsWrap=$('tabs');
   tabsWrap.addEventListener('click',function(e){
     var b=e.target.closest('.tab');if(!b)return;
@@ -535,6 +542,7 @@
     mode=b.getAttribute('data-mode');
     modeBadge.textContent=MODE_LABELS[mode]||MODE_LABELS.meeting;
     goLabel.textContent=GO_LABELS[mode]||GO_LABELS.meeting;
+    inputText.placeholder=MODE_PLACEHOLDERS[mode]||MODE_PLACEHOLDERS.meeting;
     document.body.classList.toggle('mode-sync',mode==='sync');
   });
 
@@ -656,9 +664,10 @@
 
   /* ============ Sample ============ */
   var SAMPLES={
-    meeting:'今天开了新版首页评审会，参会：产品张伟、设计李娜、前端王芳、后端刘强。\n会上确定了首页采用卡片瀑布流方案，去掉原来的横向 banner。决定本期先上 H5 版本，App 端下个迭代再做。\n张伟负责把 PRD 更新，周三前发出来。李娜负责视觉高保真稿，周五前给到前端。王芳跟进前端框架选型，下周一同步结论。刘强需要确认推荐接口的性能，还没排期，需要和算法团队协调。\n另外埋点方案还没定，待跟进。灰度放量比例也要再讨论。',
-    weekly:'这周主要在做首页改版。完成了：需求评审、PRD 定稿、视觉稿评审通过，首页加载速度从 2.1s 优化到 1.2s。还搭好了前端脚手架。\n进行中的有：推荐接口联调，大概到 70%；埋点 SDK 接入在做。\n下周计划：完成接口联调、跑通全链路、开始灰度测试，另外要写一版上线方案。\n风险方面：算法那边推荐接口性能还没达标，可能影响联调进度，需要和算法团队协调资源。设计侧还有两个交互细节没敲定。',
-    sync:'首页改版项目进展：推荐接口联调已经完成 70%，预计周五可以全部跑通。首页加载速度从 2.1s 优化到了 1.2s。\n目前的阻塞点是算法推荐接口性能还没达标，如果本周内不解决，可能会拖延下周的灰度上线。需要算法团队周四前支持一下。'
+    meeting:'首页改版评审，参会：产品、设计、研发和运营。\n本轮确认先优化首屏信息层级与报名入口；新增页面反馈入口，便于回收用户问题。\n小王周五前完成视觉稿；小李下周一提交埋点方案；运营准备首批用户沟通内容。\n待确认：报名转化率的统计口径、灰度范围和上线后的回收节奏。',
+    daily:'今天完成了用户反馈的初步归类，并和同事确认了三类主要问题。\n卡住的地方是数据口径还没有完全对齐，目前无法判断页面调整对报名转化的影响。\n明天优先补齐指标定义，整理一版问题说明，并约相关同事确认下一轮改版范围。',
+    weekly:'本周完成首页改版的灰度上线，梳理了从进入页面到提交表单的关键路径，并完成 12 条真实用户反馈的归类。\n数据上，表单完成率较上周提升，但不同渠道用户的表现仍有波动；这部分需要结合来源与版本变更继续核实，暂不做单一归因。\n下周计划：确认问题分类，优化页面说明，与运营上线首批沟通内容并观察新用户行为。\n风险：页面加载速度与数据口径可能影响后续判断，需要在周三前对齐。',
+    sync:'项目背景：首页改版上线后，需要验证用户是否能更顺畅地理解服务并完成报名。\n关键动作：我梳理了用户路径和反馈问题，推动新增页面反馈入口，并与设计、研发共同确认优化范围。\n当前结果：表单完成率较上周提升，但不同渠道表现仍有波动；数据口径尚待核实，因此不将变化完全归因于单一动作。\n复盘：下一轮先对齐指标定义和问题分类，再判断是否扩大改版范围。'
   };
   $('sampleBtn').addEventListener('click',function(){
     inputText.value=SAMPLES[mode]||SAMPLES.meeting;
@@ -693,10 +702,6 @@
     var text=inputText.value.trim();
     if(!text){toast('请先输入或口述一些内容');inputText.focus();return;}
     if(recognizing)stopRec();
-    if(mode==='sync'){
-      if(hasKey())runAI(text);else runSyncLocal(text);
-      return;
-    }
     if(hasKey())runAI(text);else runLocal(text);
   });
 
@@ -708,29 +713,41 @@
   function doneLoading(){goBtn.disabled=false;}
 
   /* ============ Sync label maps ============ */
-  var AUD_LABEL={leader:'直属领导',group:'项目群',cross:'跨部门同事',client:'客户/外部伙伴'};
-  var GOAL_LABEL={brief:'简洁同步',collab:'请求协作',report:'汇报成果',risk:'暴露风险',push:'催促进度'};
+  var AUD_LABEL={leader:'直属负责人',group:'项目协作群',cross:'跨团队同事',client:'外部伙伴'};
+  var GOAL_LABEL={brief:'同步进展',collab:'请求协作',report:'上线决策',risk:'暴露风险',push:'推进验证'};
 
   /* ---------- AI path: prompt ---------- */
   function buildPrompt(text){
     if(mode==='meeting'){
-      return '你是资深会议纪要整理助手。请把下面这段零散的会议口述/记录，整理成结构清晰的会议纪要，用简体中文，输出严格的 Markdown，包含且仅包含以下四个二级标题小节（没有内容的小节也保留并写“暂无”）：\n\n'+
-      '## 核心结论\n- 用要点列出会议最关键的结论与共识\n\n'+
-      '## 决策\n- 用要点列出会上明确拍板的决定/选定的方案\n\n'+
+      return '你是工作复盘助手。请把下面零散的会议口述、聊天记录或工作草稿，整理成结构清晰的记录，用简体中文，输出严格的 Markdown，包含且仅包含以下四个二级标题小节（没有内容的小节也保留并写“暂无”）：\n\n'+
+      '## 关键结论\n- 列出已形成的结论、关键进展、指标变化或问题现象；不明确的数据标记“待核实”\n\n'+
+      '## 决策与行动\n- 列出已确定的决策、下一步动作及其原因\n\n'+
       '## 行动项\n用 Markdown 表格，表头必须是：| 负责人 | 任务 | 截止时间 |，逐条列出。负责人未知写“待定”，截止时间未知写“待定”。\n\n'+
-      '## 待确认问题\n- 用要点列出尚未确定、需进一步确认或讨论的问题\n\n'+
+      '## 风险与待验证\n- 列出数据口径、依赖方、资源、时间或执行风险\n\n'+
+      '不要输出多余的解释或开场白，直接给 Markdown。\n\n原始记录：\n"""\n'+text+'\n"""';
+    }
+    if(mode==='daily'){
+      return '你是工作复盘助手。请把下面今天的零散工作记录整理成简洁、可执行的每日复盘，用简体中文，输出严格的 Markdown，且仅包含以下四个二级标题：\n\n'+
+      '## 今日进展\n- 写清已完成或已推进的事项\n\n'+
+      '## 关键判断\n- 写清今天形成的判断、结论或待验证假设；不确定的信息标记“待核实”\n\n'+
+      '## 阻碍与风险\n- 写清卡点、依赖方与需要帮助的内容\n\n'+
+      '## 明日重点\n- 列出不超过 3 项优先事项\n\n'+
       '不要输出多余的解释或开场白，直接给 Markdown。\n\n原始记录：\n"""\n'+text+'\n"""';
     }
     if(mode==='weekly'){
-      return '你是资深周报整理助手。请把下面这段零散的工作记录整理成规范周报，用简体中文，输出严格的 Markdown，包含且仅包含以下四个二级标题小节（没有内容也保留并写“暂无”）：\n\n'+
-      '## 本周完成\n- 要点列出已完成的事项\n\n'+
-      '## 关键结果\n- 要点列出可量化、有业务价值的成果（尽量带上数据/指标，如百分比、耗时、量级变化）\n\n'+
-      '## 风险\n- 要点列出风险、阻塞、需要协调的资源\n\n'+
-      '## 下周计划\n- 要点列出计划要做的事\n\n'+
+      return '你是个人工作提效助手。请把下面零散记录整理成规范周报，用简体中文，输出严格的 Markdown，包含且仅包含以下四个二级标题小节（没有内容也保留并写“暂无”）：\n\n'+
+      '## 本周成果\n- 列出本周关键推进、交付、协作与已完成事项\n\n'+
+      '## 证据与判断\n- 列出指标、样本、实验或用户反馈；明确哪些是已确认事实、哪些仍待核实，避免过度归因\n\n'+
+      '## 风险与协同\n- 列出数据口径、资源、时间、依赖与需要支持的事项\n\n'+
+      '## 下周计划\n- 列出下一步任务、验证、优化和负责人\n\n'+
       '不要输出多余的解释或开场白，直接给 Markdown。\n\n原始记录：\n"""\n'+text+'\n"""';
     }
-    // sync mode
-    return buildSyncPrompt(text);
+    return '你是项目复盘助手。请只基于下面的真实项目记录，整理成可用于汇报或面试准备的项目复盘，用简体中文，输出严格的 Markdown，且仅包含以下四个二级标题：\n\n'+
+    '## 项目目标\n- 说明要解决的问题、目标与背景；不清楚处标记“待核实”\n\n'+
+    '## 关键动作\n- 区分本人具体负责的动作与团队协作，不把参与包装成主导\n\n'+
+    '## 结果与证据\n- 列出数据、用户反馈或交付结果；说明数据口径、周期或其他影响因素是否待核实，避免过度归因\n\n'+
+    '## 复盘与下一步\n- 写出遇到的困难、调整与下次优先改进项\n\n'+
+    '不要输出多余的解释或开场白，直接给 Markdown。\n\n原始记录：\n"""\n'+text+'\n"""';
   }
 
   var AUD_PREF={
@@ -760,11 +777,9 @@
 
   function runAI(text){
     var cfg=loadCfg();
-    setLoading(mode==='sync'?'AI 正在生成沟通话术…':'AI 正在整理…');
+    setLoading(mode==='sync'?'AI 正在生成项目复盘…':'AI 正在整理…');
     var url=cfg.baseUrl+'/v1/chat/completions';
-    var sysMsg=(mode==='sync')
-      ?'你是专业的中文职场沟通专家，只输出可直接发送的沟通话术，不加多余寒暄或解释。'
-      :'你是专业的中文工作记录整理助手，只输出规范 Markdown，不加多余寒暄。';
+    var sysMsg='你是专业的中文工作复盘助手，只输出规范 Markdown，不加多余寒暄。';
     var body={
       model:cfg.model||'gpt-4o-mini',
       temperature:0.3,
@@ -785,13 +800,13 @@
       try{md=data.choices[0].message.content||'';}catch(e){md='';}
       if(!md){throw new Error('返回内容为空');}
       lastMarkdown=md.trim();
-      if(mode==='sync'){renderTalk(lastMarkdown);}else{renderMarkdown(lastMarkdown,true);}
+      renderMarkdown(lastMarkdown,true);
       doneLoading();
     }).catch(function(err){
       doneLoading();
       resultArea.innerHTML='<div class="sec"><div class="sec-h"><span class="ic">⚠️</span>AI 调用失败，已回退本地规则</div><p class="empty-note">'+escapeHtml(String(err.message||err))+'</p></div>';
       toast('AI 调用失败，已用本地规则整理');
-      setTimeout(function(){if(mode==='sync'){runSyncLocal(text,true);}else{runLocal(text,true);}},400);
+      setTimeout(function(){runLocal(text,true);},400);
     });
   }
 
@@ -879,10 +894,42 @@
     ]};
   }
 
+  function localDaily(text){
+    var sents=splitSentences(text), progress=[], judgment=[], blockers=[], tomorrow=[];
+    sents.forEach(function(s){
+      if(/(卡住|阻塞|风险|依赖|待确认|待核实|还没|尚未|无法|问题)/i.test(s)){blockers.push(s);return;}
+      if(/(明天|下一步|准备|计划|优先|接下来)/i.test(s)){tomorrow.push(s);return;}
+      if(/(判断|发现|确认|认为|结论|假设|观察)/i.test(s)){judgment.push(s);return;}
+      progress.push(s);
+    });
+    return {type:'daily',sections:[
+      {key:'progress',title:'今日进展',icon:'☀️',list:progress},
+      {key:'judgment',title:'关键判断',icon:'💡',list:judgment},
+      {key:'blocker',title:'阻碍与风险',icon:'⚠️',list:blockers},
+      {key:'tomorrow',title:'明日重点',icon:'→',list:tomorrow.slice(0,3)}
+    ]};
+  }
+
+  function localProject(text){
+    var sents=splitSentences(text), goal=[], actions=[], results=[], reflection=[];
+    sents.forEach(function(s){
+      if(/(复盘|下次|如果|改进|调整|下一轮|待核实)/i.test(s)){reflection.push(s);return;}
+      if(/(结果|数据|提升|下降|增长|完成|上线|反馈|当前)/i.test(s)){results.push(s);return;}
+      if(/(动作|负责|推动|梳理|优化|新增|确认|协作)/i.test(s)){actions.push(s);return;}
+      goal.push(s);
+    });
+    return {type:'project',sections:[
+      {key:'goal',title:'项目目标',icon:'🎯',list:goal},
+      {key:'actions',title:'关键动作',icon:'🧩',list:actions},
+      {key:'result',title:'结果与证据',icon:'📊',list:results},
+      {key:'reflection',title:'复盘与下一步',icon:'↗',list:reflection}
+    ]};
+  }
+
   function runLocal(text,fromFallback){
     if(!fromFallback)setLoading('本地规则整理中…');
     setTimeout(function(){
-      var data=(mode==='meeting')?localMeeting(text):localWeekly(text);
+      var data=mode==='meeting'?localMeeting(text):mode==='daily'?localDaily(text):mode==='sync'?localProject(text):localWeekly(text);
       lastResult=data;
       lastMarkdown=structToMarkdown(data);
       renderStruct(data);

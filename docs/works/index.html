@@ -1507,12 +1507,11 @@
   pointer-events:auto;
   opacity:1;
 }
-.trans-0.active { animation:trans-notebook .7s ease forwards; background:#E8F0EA; }
-.trans-1.active { animation:trans-printer .7s ease forwards; background:#E5EEF9; }
-.trans-2.active { animation:trans-compare .7s ease forwards; background:linear-gradient(135deg,#2D5A3D,#3D7A4F); }
-.trans-3.active { animation:trans-ticket .7s ease forwards; background:linear-gradient(135deg,#FBF0F2,#F0D0D8); }
-.trans-4.active { animation:trans-tarot .8s ease forwards; background:linear-gradient(135deg,#3A2B6A,#4A3B7A); }
-.trans-5.active { animation:trans-destiny .7s ease forwards; background:linear-gradient(135deg,#F3E9D8,#E8D8C0); }
+.trans-0.active { animation:trans-printer .7s ease forwards; background:#edf2f7; }
+.trans-1.active { animation:trans-compare .7s ease forwards; background:linear-gradient(135deg,#e5f0fb,#dce9f6); }
+.trans-2.active { animation:trans-ticket .7s ease forwards; background:linear-gradient(135deg,#edf3ff,#d8e6fb); }
+.trans-3.active { animation:trans-tarot .8s ease forwards; background:linear-gradient(135deg,#3A2B6A,#4A3B7A); }
+.trans-4.active { animation:trans-destiny .7s ease forwards; background:linear-gradient(135deg,#F3E9D8,#E8D8C0); }
 
 @keyframes trans-notebook { 0%{clip-path:inset(0 100% 0 0)} 100%{clip-path:inset(0 0 0 0)} }
 @keyframes trans-printer { 0%{clip-path:inset(0 0 100% 0)} 100%{clip-path:inset(0 0 0 0)} }
@@ -1561,7 +1560,8 @@
 
 .jm-shell {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
+  /* Let the profile use the remaining room while the map hugs its 4:3 artwork. */
+  grid-template-columns: minmax(260px, 1fr) auto;
   gap: 24px;
   width: 100%;
   flex: 1;
@@ -1829,9 +1829,16 @@
 /* ===== Right: Journey Map ===== */
 .jm-map {
   position: relative;
-  overflow: hidden;
+  /* Let interaction cards escape their immediate stacking context when needed. */
+  overflow: visible;
   border-radius: 24px;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  justify-self: end;
   min-height: 0;
   background: linear-gradient(135deg, #EAF2FB 0%, #DCEAF7 40%, #E4EEF8 70%, #EEF4FA 100%);
   border: 1px solid rgba(200,218,240,.5);
@@ -1878,8 +1885,13 @@
 /* Route Container */
 .jm-route-container {
   position: relative;
+  /* The artwork is 1448 × 1086 (4:3): keep overlays in the same coordinate space. */
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 4 / 3;
+  flex: 0 1 auto;
   overflow: visible;
   background-image: url('assets/journey-map.png');
   background-size: contain;
@@ -1965,7 +1977,7 @@
 }
 
 .jm-svg-node.jm-svg-node-current {
-  filter: drop-shadow(0 0 8px rgba(127,114,232,.5));
+  filter: drop-shadow(0 0 8px rgba(111,145,234,.5));
 }
 
 .jm-svg-node.jm-svg-node-locked {
@@ -2082,10 +2094,24 @@
   transition: all .3s ease;
 }
 
+.jm-level-chip {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 3px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: #6F91EA;
+  color: #fff;
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .04em;
+  line-height: 1;
+}
+
 .jm-node.jm-node-current .jm-node-label {
-  color: #7F72E8;
-  border-color: rgba(127,114,232,.35);
-  background: rgba(240,236,255,.95);
+  color: #395277;
+  border-color: rgba(220,232,248,.7);
+  background: rgba(252,253,254,.92);
 }
 
 .jm-node.jm-node-locked .jm-node-label {
@@ -2099,7 +2125,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #7F72E8;
+  background: #6F91EA;
   margin-right: 4px;
   vertical-align: middle;
   animation: jm-label-pulse 2s ease-out infinite;
@@ -2114,6 +2140,7 @@
 .jm-node-card {
   position: absolute;
   width: 230px;
+  max-width: calc(100vw - 48px);
   border-radius: 16px;
   padding: 16px 18px;
   background: linear-gradient(135deg, rgba(252,253,254,.97) 0%, rgba(244,248,252,.94) 100%);
@@ -2135,9 +2162,9 @@
 
 .jm-node-card.jm-card-current {
   width: 260px;
-  background: linear-gradient(135deg, rgba(240,236,255,.98) 0%, rgba(232,228,255,.95) 100%);
-  border-color: rgba(127,114,232,.4);
-  box-shadow: 0 12px 36px rgba(127,114,232,.15), 0 4px 12px rgba(55,83,130,.08);
+  background: linear-gradient(135deg, rgba(252,253,254,.97) 0%, rgba(244,248,252,.94) 100%);
+  border-color: rgba(220,232,248,.85);
+  box-shadow: 0 8px 28px rgba(55,83,130,.10), 0 2px 8px rgba(55,83,130,.06);
 }
 
 /* Card Header */
@@ -2159,7 +2186,7 @@
 }
 
 .jm-card-type.jm-type-current {
-  color: #7F72E8;
+  color: #98b0d0;
 }
 
 .jm-card-icon {
@@ -2233,9 +2260,9 @@
 }
 
 .jm-card-stamp.jm-stamp-current {
-  color: #7F72E8;
-  background: rgba(240,236,255,.7);
-  border-color: rgba(127,114,232,.3);
+  color: #a8c4e0;
+  background: rgba(237,243,255,.6);
+  border-color: rgba(200,218,240,.4);
 }
 
 /* SVG Node Icon (inline in SVG) */
@@ -2250,7 +2277,7 @@
 
 .jm-node.jm-node-current ~ .jm-svg-node-icon .jm-node-icon,
 .jm-node-icon.jm-node-icon-current {
-  stroke: #7F72E8;
+  stroke: #5A7AA0;
 }
 
 /* ===== Journey Journal (Bottom Stats) ===== */
@@ -2293,6 +2320,12 @@
 }
 
 /* ===== Responsive ===== */
+@media (max-width: 1180px) and (min-width: 901px) {
+  .jm-shell { grid-template-columns: 240px minmax(0, 1fr); }
+  .jm-map { width: 100%; height: auto; justify-self: stretch; align-self: center; }
+  .jm-route-container { height: auto; }
+}
+
 @media (max-width: 900px) {
   .jm-about {
     padding: 22px 16px !important;
@@ -2308,18 +2341,22 @@
     height: auto;
   }
   .jm-map {
-    min-height: 400px;
-    height: 50vh;
+    width: 100%;
+    min-height: 0;
+    height: auto;
   }
   .jm-route-container {
-    min-height: 300px;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
   }
   .jm-node-card {
     width: 220px;
     padding: 12px 14px;
   }
   .jm-node-card.jm-card-current {
-    width: 240px;
+    width: min(240px, calc(100vw - 48px));
   }
 }
 
@@ -2381,8 +2418,8 @@
 .jm-node-mist{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.55);border:2px dashed #BCC6D5;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#9AA6BA;backdrop-filter:blur(4px);box-shadow:0 4px 14px rgba(120,140,170,.18)}
 .jm-card-link{color:#5E82F4;font-weight:700;text-decoration:none;font-size:12px}
 .jm-card-link:hover{text-decoration:underline}
-.jm-card-result{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(127,114,232,.08);border:1px solid rgba(127,114,232,.18);font-size:11px;color:#4a4270;line-height:1.7}
-.jm-card-result b{color:#7F72E8;font-size:13px}
+.jm-card-result{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(111,145,234,.08);border:1px solid rgba(111,145,234,.18);font-size:11px;color:#425371;line-height:1.7}
+.jm-card-result b{color:#5E82F4;font-size:13px}
 
 /* ═══ Journey Map Animation System ═══ */
 .jm-route-anim-svg {
@@ -2476,7 +2513,7 @@
   width: 100%;
   height: 100%;
   border-radius: 999px;
-  border: 2px solid rgba(127,114,232,0.4);
+  border: 2px solid rgba(111,145,234,0.4);
   top: 0;
   left: 0;
   animation: jm-pulse-ring 2s ease-out infinite;
@@ -2962,10 +2999,6 @@
               <stop offset="0%" stop-color="#6F91EA"/>
               <stop offset="100%" stop-color="#83B7A1"/>
             </linearGradient>
-            <filter id="jm-plane-glow">
-              <feGaussianBlur stdDeviation="0.8" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
           </defs>
           <!-- Main route path (solid, to xiaohongshu) -->
           <path class="jm-route-main-path" id="jmAnimPath"
@@ -2973,17 +3006,6 @@
           <!-- Locked segment (dashed, to mist island) -->
           <path class="jm-route-locked-path" id="jmAnimLockedPath"
             d="M 76 40 C 77 35 79 27 80 23"/>
-        </svg>
-
-        <!-- Paper plane SVG -->
-        <svg class="jm-plane-svg" id="jmPlaneSvg" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <g class="jm-plane-group" filter="url(#jm-plane-glow)" opacity="0">
-            <path d="M-3,-2 L4,0 L-3,2 L-1,0 Z" fill="rgba(255,255,255,0.92)" stroke="#6F91EA" stroke-width="0.25"/>
-            <line x1="-1" y1="0" x2="4" y2="0" stroke="#6F91EA" stroke-width="0.15"/>
-            <animateMotion id="jmPlaneMotion" dur="1.8s" fill="freeze" begin="indefinite"
-              path="M 17 72 C 17.5 69 19 65 20 63 C 23 59 27 53 30 50 C 35 47 42 54 46 56 C 52 59 60 65 66 63 C 70 58 73 46 76 40"
-              rotate="auto"/>
-          </g>
         </svg>
 
         <!-- Mist cloud for locked island -->
@@ -3000,7 +3022,7 @@
 
         <!-- Node 1: 上海科技大学 (lighthouse+castle) 17%/72% -->
         <div class="jm-node jm-node-start" data-node-id="ustc" data-order="0" style="left:17%; top:72%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">上海科技大学<br>生物医学工程</div>
+          <div class="jm-node-label"><span class="jm-level-chip">Lv.01</span>上海科技大学<br>生物医学工程</div>
           <div class="jm-node-card jm-card-start" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">ENTRY VISA · 起点港</div>
@@ -3022,7 +3044,7 @@
 
         <!-- Node 2: 垂直足球自媒体矩阵 (soccer) 20%/63% -->
         <div class="jm-node jm-node-soccer" data-node-id="soccer" data-order="1" style="left:20%; top:63%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">垂直足球自媒体<br>17w 粉丝</div>
+          <div class="jm-node-label"><span class="jm-level-chip">Lv.02</span>垂直足球自媒体<br>17w 粉丝</div>
           <div class="jm-node-card jm-card-soccer" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">CREATOR PASS · 内容通行证</div>
@@ -3044,7 +3066,7 @@
 
         <!-- Node 3: BenQ明基 (camera-tripod+screen) 30%/50% -->
         <div class="jm-node jm-node-benq" data-node-id="benq" data-order="2" style="left:30%; top:50%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">BenQ 明基<br>增长运营</div>
+          <div class="jm-node-label"><span class="jm-level-chip">Lv.03</span>BenQ 明基<br>增长运营</div>
           <div class="jm-node-card jm-card-benq" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">TRANSIT PASS · 增长站</div>
@@ -3066,7 +3088,7 @@
 
         <!-- Node 4: 传音控股 (smartphone) 46%/56% -->
         <div class="jm-node jm-node-transsion" data-node-id="transsion" data-order="3" style="left:46%; top:56%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">传音控股<br>AI 产品运营</div>
+          <div class="jm-node-label"><span class="jm-level-chip">Lv.04</span>传音控股<br>AI 产品运营</div>
           <div class="jm-node-card jm-card-transsion" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">BOARDING PASS · 国际登机牌</div>
@@ -3088,7 +3110,7 @@
 
         <!-- Node 5: AI工具集 (AI-robot+laptop) 66%/63% -->
         <div class="jm-node jm-node-lab" data-node-id="lab" data-order="4" style="left:66%; top:63%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">AI 工具作品集<br>个人实验室</div>
+          <div class="jm-node-label"><span class="jm-level-chip">Lv.05</span>AI 工具作品集<br>个人实验室</div>
           <div class="jm-node-card jm-card-lab" style="left:50%; top:24px; transform:translateX(-50%);">
             <div class="jm-card-header">
               <div class="jm-card-type">LAB PASS · 实验通行证</div>
@@ -3109,15 +3131,15 @@
         </div>
 
         <!-- Node 6: 小红书 (villa+camera) 76%/40% -->
-        <div class="jm-node jm-node-current" data-node-id="xhs" data-order="5" style="left:76%; top:40%; transform:translate(-50%,-50%);">
-          <div class="jm-node-label">小红书<br>AI 产品运营</div>
+        <div class="jm-node jm-node-current" data-node-id="xhs" data-order="5" data-card-preferred="left" style="left:76%; top:40%; transform:translate(-50%,-50%);">
+          <div class="jm-node-label"><span class="jm-level-chip">Lv.06</span>小红书<br>AI 产品运营</div>
           <div class="jm-node-card jm-card-current" style="left:24px; top:50%; transform:translateY(-50%);">
             <div class="jm-card-header">
-              <div class="jm-card-type">♥ LIVE JOURNEY · 当前行程卡</div>
+              <div class="jm-card-type">LEVEL 06 · AI 产品运营关卡</div>
               <div class="jm-card-icon">📕</div>
             </div>
             <div class="jm-card-title">小红书</div>
-            <div class="jm-card-subtitle">AI 旅行规划产品 · 产品运营<br>2026.06 - 2026.08 · <b style="color:#7F72E8">进行中</b></div>
+            <div class="jm-card-subtitle">AI 旅行规划产品 · 产品运营<br>2026.06 - 2026.08</div>
             <ul class="jm-card-list">
               <li>地点合集功能冷启动与用户路径运营</li>
               <li>场景增长策略与内容供给建设</li>
@@ -3128,7 +3150,7 @@
               <div>日新增用户峰值 <b>3.94w</b></div>
             </div>
             <div class="jm-card-footer">
-              <span class="jm-card-stamp">IN PROGRESS</span>
+              <span class="jm-card-stamp">LEVEL 06</span>
               <span>2026.06</span>
             </div>
           </div>
@@ -3158,7 +3180,7 @@
 
 <footer class="footer"><span>© 2026 Qin's Portfolio. All rights reserved.</span><span>Keep learning, keep exploring. ♡</span></footer>
 <script>
-const groups=[{key:'daily',title:'日常提效',icon:'▦',count:'3 个实验工具',desc:'解决高频日常场景,提升个人与团队效率。',tone:'#4a7bff',tint:'#e8f1ff',cls:'c-blue',items:[['每日 Todo 和复盘','引导反思总结,持续成长','recap/','✓'],['打印机识别黑白','快速识别文档打印适配','print-helper/','▣'],['工作记录整理器','语音或文字→自动整理成会议纪要和周报','/08/web/worklog/','📝'],]},{key:'demo',title:'活动 Demo',icon:'▣',count:'2 个创意项目',desc:'从想法到落地,探索有趣的产品实验。',tone:'#ed936f',tint:'#fff0e8',cls:'c-peach',items:[['AI 多方案对比','输入需求,生成多种优选方案','/08/web/compare/','⚖'],['手势塔罗','用手势翻开专属你的塔罗牌,解读命运密语','/08/web/tarot/','🃏']]}];
+const groups=[{key:'daily',title:'实用工具',icon:'▦',count:'2 个核心工具',desc:'把零散工作沉淀成清晰、可执行的下一步。',tone:'#4a7bff',tint:'#e8f1ff',cls:'c-blue',items:[['工作复盘助手','记录、复盘、周报与项目进展同步','/08/web/worklog/','📝'],['打印机识别黑白','快速识别文档打印适配','print-helper/','▣'],]},{key:'demo',title:'创意实验',icon:'▣',count:'3 个互动项目',desc:'从旅行决策到趣味交互，探索有温度的产品体验。',tone:'#ed936f',tint:'#fff0e8',cls:'c-peach',items:[['AI 旅行多方案决策','路线、预算与体验的多方案对比','/08/web/compare/','🧳'],['手势塔罗','用手势翻开专属你的塔罗牌,解读命运密语','/08/web/tarot/','🃏'],['产品命理局','伪玄学包装，真产品分析框架','/08/web/destiny/','🔮']]}];
 
 // ── 渐变色配置
 const GRADS=[
@@ -3501,6 +3523,7 @@ setTimeout(renderAllCards, 80);
 (function(){
   const TOOLS = [
     // 日常提效
+    { name:'面试追问复盘器', desc:'识别简历追问风险，逐层复盘真实经历，训练可追问的面试表达。', icon:'◎', url:'interview-review/', cat:'blue', catLabel:'求职训练', grad:'linear-gradient(135deg,#e9eff8,#cddbf0)', accent:'linear-gradient(90deg,#385b88,#6283ad)' },
     { name:'每日 Todo 和复盘', desc:'引导反思总结,结构化日记助手,持续成长。', icon:'✓', url:'recap/', cat:'blue', catLabel:'日常提效', grad:'linear-gradient(135deg,#dce8ff,#b8cfff)', accent:'linear-gradient(90deg,#6396ff,#4a7bff)' },
     { name:'打印机识别黑白', desc:'快速识别文档能否彩色打印,适配各类打印场景。', icon:'▣', url:'print-helper/', cat:'blue', catLabel:'日常提效', grad:'linear-gradient(135deg,#d5eeff,#a0d4ff)', accent:'linear-gradient(90deg,#5aaeff,#3a8de0)' },
     { name:'工作记录整理器', desc:'口述或粘贴会议/周报草稿,一键整理成核心决议、行动项与下周计划。', icon:'📝', url:'/08/web/worklog/', cat:'blue', catLabel:'日常提效', grad:'linear-gradient(135deg,#dce8ff,#aec6ff)', accent:'linear-gradient(90deg,#6396ff,#4a7bff)' },
@@ -3537,14 +3560,6 @@ setTimeout(renderAllCards, 80);
 // ===== TOOLS Data =====
 const TOOLS = [
   {
-    name:'每日 Todo 和复盘',
-    desc:'引导结构化反思,晨间规划+复盘闭环,持续成长。',
-    icon:'✓',
-    url:'recap/',
-    catLabel:'日常提效',
-    catClass:'nb'
-  },
-  {
     name:'打印机识别黑白',
     desc:'上传文档识别色彩分布,一键判断是否适合彩色打印。',
     icon:'▣',
@@ -3553,16 +3568,16 @@ const TOOLS = [
     catClass:'pr'
   },
   {
-    name:'AI 多方案对比',
-    desc:'输入需求,AI同步生成多种优选方案并结构化对比。',
+    name:'AI 旅行多方案决策',
+    desc:'输入旅行需求，生成路线、预算与体验的多方案对比。',
     icon:'⚖',
     url:'/08/web/compare/',
     catLabel:'活动 Demo',
     catClass:'cp'
   },
   {
-    name:'工作记录整理器',
-    desc:'口述或粘贴会议/周报草稿,一键整理成核心决议、行动项表格与下周计划。',
+    name:'工作复盘助手',
+    desc:'从零散记录到每日复盘、周报与项目沉淀，形成可执行工作闭环。',
     icon:'📝',
     url:'/08/web/worklog/',
     catLabel:'日常提效',
@@ -3661,8 +3676,8 @@ function buildCompareCard(tool) {
     + '<div class="cp-stars"><div class="cp-star"></div><div class="cp-star"></div><div class="cp-star"></div><div class="cp-star"></div><div class="cp-star"></div></div>'
     + '<div class="t3d-num">06</div>'
     + '<div class="t3d-cat">DECISION</div>'
-    + '<div class="t3d-title-text">AI多方案决策</div>'
-    + '<div class="t3d-subtitle">智能对比与推荐</div>'
+    + '<div class="t3d-title-text">AI旅行多方案</div>'
+    + '<div class="t3d-subtitle">路线 · 预算 · 体验</div>'
     + '<div class="cp-sub-label">方案对比中...</div>'
     + '<div class="cp-panels">'
     + '<div class="cp-panel cp-a"><div class="cp-panel-label">方案A</div><div class="cp-chart"><div class="cp-chart-line"></div></div></div>'
@@ -3681,20 +3696,20 @@ function buildCompareCard(tool) {
 
 function buildTicketCard(tool) {
   return '<div class="card-inner t3d-card--tk">'
-    + '<div class="t3d-num">05</div>'
-    + '<div class="t3d-cat">WORKLOG</div>'
+    + '<div class="t3d-num">01</div>'
+    + '<div class="t3d-cat">WORK REVIEW</div>'
     + '<div class="tk-mic">🎙</div>'
-    + '<div class="t3d-title-text">工作记录整理器</div>'
-    + '<div class="t3d-subtitle">语音·文字→结构化</div>'
+    + '<div class="t3d-title-text">工作复盘助手</div>'
+    + '<div class="t3d-subtitle">记录 · 复盘 · 周报</div>'
     + '<div class="tk-wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>'
     + '<div class="tk-sheet">'
-    + '<div class="tk-sheet-head"><span class="tk-dot"></span>会议纪要 · 已整理</div>'
-    + '<div class="tk-line tk-line-key"><span class="tk-ic">✓</span><span class="tk-lb">核心决议</span><span class="tk-bar tk-bar-1"></span></div>'
-    + '<div class="tk-line tk-line-act"><span class="tk-ic">▦</span><span class="tk-lb">行动项</span><span class="tk-badge">3</span></div>'
-    + '<div class="tk-line tk-line-plan"><span class="tk-ic">⏱</span><span class="tk-lb">下周计划</span><span class="tk-bar tk-bar-2"></span></div>'
+    + '<div class="tk-sheet-head"><span class="tk-dot"></span>本周复盘 · 已沉淀</div>'
+    + '<div class="tk-line tk-line-key"><span class="tk-ic">✓</span><span class="tk-lb">关键进展</span><span class="tk-bar tk-bar-1"></span></div>'
+    + '<div class="tk-line tk-line-act"><span class="tk-ic">▦</span><span class="tk-lb">待推进</span><span class="tk-badge">3</span></div>'
+    + '<div class="tk-line tk-line-plan"><span class="tk-ic">⏱</span><span class="tk-lb">下周重点</span><span class="tk-bar tk-bar-2"></span></div>'
     + '</div>'
-    + '<div class="tk-tags"><span class="tk-chip">实时转写</span><span class="tk-chip">纯前端</span></div>'
-    + '<button class="t3d-cta">开始整理 →</button>'
+    + '<div class="tk-tags"><span class="tk-chip">每日复盘</span><span class="tk-chip">项目沉淀</span></div>'
+    + '<button class="t3d-cta">开始复盘 →</button>'
     + '</div>';
 }
 
@@ -3751,7 +3766,6 @@ function buildDestinyCard(tool) {
 }
 
 const builders = [
-  buildNotebookCard,
   buildPrinterCard,
   buildCompareCard,
   buildTicketCard,
@@ -3761,7 +3775,7 @@ const builders = [
 
 const N = TOOLS.length;
 let target = 2;
-let currentF = 2.0;
+let currentF = 2;
 let rafId = null;
 
 function layout(pos, stageW) {
@@ -3871,7 +3885,7 @@ function triggerTransition(index) {
   const tool = TOOLS[index];
   const overlay = document.getElementById('transition-overlay');
 
-  const symbols = ['✓', '🖨️', '⚖️', '✈️', '☽', '☯'];
+  const symbols = ['📝', '🖨️', '🧳', '☽', '☯'];
   overlay.textContent = symbols[index];
   overlay.className = `trans-${index} active`;
 
@@ -3956,8 +3970,6 @@ render();
   var container = document.getElementById('jmRouteContainer');
   var animPath = document.getElementById('jmAnimPath');
   var lockedPath = document.getElementById('jmAnimLockedPath');
-  var planeSvg = document.getElementById('jmPlaneSvg');
-  var planeMotion = document.getElementById('jmPlaneMotion');
   var mistCloud = document.getElementById('jmMistCloud');
 
   if (!container) return;
@@ -4021,15 +4033,6 @@ render();
       if (lockedPath) lockedPath.classList.add('jm-locked-visible');
     }, 1800);
 
-    // Animate paper plane
-    if (planeMotion && !reducedMotion) {
-      var planeGroup = planeSvg ? planeSvg.querySelector('.jm-plane-group') : null;
-      if (planeGroup) {
-        planeGroup.setAttribute('opacity', '1');
-        planeMotion.beginElement();
-      }
-    }
-
     // Sequentially unlock nodes
     nodes.forEach(function(node, index) {
       if (index < nodeTimings.length) {
@@ -4044,8 +4047,50 @@ render();
   function setupNodeInteractions() {
     var hoveredNodeId = null;
 
+    // Keep every expanded ticket inside the artwork, regardless of screen size.
+    // The map and the coordinate overlay share the artwork's 4:3 aspect ratio.
+    function positionCard(node) {
+      var card = node.querySelector('.jm-node-card');
+      if (!card) return;
+
+      var mapRect = container.getBoundingClientRect();
+      var nodeRect = node.getBoundingClientRect();
+      var cardWidth = card.offsetWidth;
+      var cardHeight = card.offsetHeight;
+      if (!mapRect.width || !mapRect.height || !cardWidth || !cardHeight) return;
+
+      var centerX = nodeRect.left - mapRect.left + nodeRect.width / 2;
+      var centerY = nodeRect.top - mapRect.top + nodeRect.height / 2;
+      var gap = 14;
+      var margin = 8;
+      var preferred = node.getAttribute('data-card-preferred') || 'bottom';
+      var directions = [preferred, 'bottom', 'top', 'right', 'left']
+        .filter(function(direction, index, list) { return list.indexOf(direction) === index; });
+
+      function candidate(direction) {
+        if (direction === 'top') return { x: centerX - cardWidth / 2, y: centerY - gap - cardHeight };
+        if (direction === 'right') return { x: centerX + gap, y: centerY - cardHeight / 2 };
+        if (direction === 'left') return { x: centerX - gap - cardWidth, y: centerY - cardHeight / 2 };
+        return { x: centerX - cardWidth / 2, y: centerY + gap };
+      }
+
+      var position = directions.map(candidate).find(function(point) {
+        return point.x >= margin && point.y >= margin &&
+          point.x + cardWidth <= mapRect.width - margin &&
+          point.y + cardHeight <= mapRect.height - margin;
+      });
+      position = position || candidate(preferred);
+      position.x = Math.max(margin, Math.min(position.x, Math.max(margin, mapRect.width - cardWidth - margin)));
+      position.y = Math.max(margin, Math.min(position.y, Math.max(margin, mapRect.height - cardHeight - margin)));
+
+      card.style.left = Math.round(position.x - (nodeRect.left - mapRect.left)) + 'px';
+      card.style.top = Math.round(position.y - (nodeRect.top - mapRect.top)) + 'px';
+      card.style.transform = 'none';
+    }
+
     function expandCard(node) {
       var card = node.querySelector('.jm-node-card');
+      positionCard(node);
       if (card) card.classList.add('jm-card-expanded');
       node.classList.add('jm-node-active');
     }
@@ -4060,7 +4105,7 @@ render();
     function dimOthers(activeNode) {
       var order = activeNode.getAttribute('data-order');
       nodes.forEach(function(n) {
-        if (n !== activeNode && !n.classList.contains('jm-node-current')) {
+        if (n !== activeNode) {
           n.style.opacity = '0.55';
         }
       });
@@ -4085,7 +4130,7 @@ render();
         // Entering a new node
         if (hoveredNodeId) {
           var prevNode = container.querySelector('[data-node-id="' + hoveredNodeId + '"]');
-          if (prevNode && !prevNode.classList.contains('jm-node-current')) {
+          if (prevNode) {
             collapseCard(prevNode);
           }
         }
@@ -4101,7 +4146,7 @@ render();
         // Left all nodes (moving to empty area)
         if (hoveredNodeId) {
           var prevNode = container.querySelector('[data-node-id="' + hoveredNodeId + '"]');
-          if (prevNode && !prevNode.classList.contains('jm-node-current')) {
+          if (prevNode) {
             collapseCard(prevNode);
           }
           restoreAll();
@@ -4119,12 +4164,11 @@ render();
     container.addEventListener('click', function(e) {
       var node = e.target.closest ? e.target.closest('.jm-node') : null;
       if (!node) {
-        // Click on empty space - collapse all non-current cards
+        // Click on empty space - collapse all cards.
         nodes.forEach(function(n) {
-          if (!n.classList.contains('jm-node-current')) {
-            var card = n.querySelector('.jm-node-card');
-            if (card) card.classList.remove('jm-card-expanded');
-          }
+          var card = n.querySelector('.jm-node-card');
+          if (card) card.classList.remove('jm-card-expanded');
+          n.classList.remove('jm-node-active');
         });
         return;
       }
@@ -4134,8 +4178,16 @@ render();
       e.stopPropagation();
       var card = node.querySelector('.jm-node-card');
       if (card) {
+        positionCard(node);
         card.classList.toggle('jm-card-expanded');
       }
+    });
+
+    window.addEventListener('resize', function() {
+      nodes.forEach(function(node) {
+        var card = node.querySelector('.jm-node-card');
+        if (card && card.classList.contains('jm-card-expanded')) positionCard(node);
+      });
     });
 
     // Mark ready
