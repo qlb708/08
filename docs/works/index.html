@@ -3560,12 +3560,12 @@ setTimeout(renderAllCards, 80);
 // ===== TOOLS Data =====
 const TOOLS = [
   {
-    name:'打印机识别黑白',
-    desc:'上传文档识别色彩分布,一键判断是否适合彩色打印。',
-    icon:'▣',
-    url:'print-helper/',
+    name:'工作复盘助手',
+    desc:'从零散记录到每日复盘、周报与项目沉淀，形成可执行工作闭环。',
+    icon:'📝',
     catLabel:'日常提效',
-    catClass:'pr'
+    catClass:'tk',
+    url:'/08/web/worklog/'
   },
   {
     name:'AI 旅行多方案决策',
@@ -3576,20 +3576,12 @@ const TOOLS = [
     catClass:'cp'
   },
   {
-    name:'工作复盘助手',
-    desc:'从零散记录到每日复盘、周报与项目沉淀，形成可执行工作闭环。',
-    icon:'📝',
-    url:'/08/web/worklog/',
+    name:'打印机识别黑白',
+    desc:'上传文档识别色彩分布,一键判断是否适合彩色打印。',
+    icon:'▣',
+    url:'print-helper/',
     catLabel:'日常提效',
-    catClass:'tk'
-  },
-  {
-    name:'手势塔罗',
-    desc:'用手势翻开专属你的塔罗牌,AI解读命运密语。',
-    icon:'🃏',
-    url:'/08/web/tarot/',
-    catLabel:'活动 Demo',
-    catClass:'tr'
+    catClass:'pr'
   },
   {
     name:'产品命理局',
@@ -3598,6 +3590,14 @@ const TOOLS = [
     url:'/08/web/destiny/',
     catLabel:'创意概念',
     catClass:'dy'
+  },
+  {
+    name:'手势塔罗',
+    desc:'用手势翻开专属你的塔罗牌,AI解读命运密语。',
+    icon:'🃏',
+    url:'/08/web/tarot/',
+    catLabel:'活动 Demo',
+    catClass:'tr'
   }
 ];
 
@@ -3631,7 +3631,7 @@ function buildNotebookCard(tool) {
 
 function buildPrinterCard(tool) {
   return '<div class="card-inner t3d-card--pr">'
-    + '<div class="t3d-num">05</div>'
+    + '<div class="t3d-num">03</div>'
     + '<div class="t3d-cat">SCANNER</div>'
     + '<div class="t3d-title-text">打印机识别黑白</div>'
     + '<div class="t3d-subtitle">AI 文档识别工具</div>'
@@ -3674,7 +3674,7 @@ function buildCompareCard(tool) {
 
   return '<div class="card-inner t3d-card--cp">'
     + '<div class="cp-stars"><div class="cp-star"></div><div class="cp-star"></div><div class="cp-star"></div><div class="cp-star"></div><div class="cp-star"></div></div>'
-    + '<div class="t3d-num">06</div>'
+    + '<div class="t3d-num">02</div>'
     + '<div class="t3d-cat">DECISION</div>'
     + '<div class="t3d-title-text">AI旅行多方案</div>'
     + '<div class="t3d-subtitle">路线 · 预算 · 体验</div>'
@@ -3716,7 +3716,7 @@ function buildTicketCard(tool) {
 function buildTarotCard(tool) {
   return '<div class="card-inner t3d-card--tr">'
     + '<div class="tr-stars"><div class="tr-star"></div><div class="tr-star"></div><div class="tr-star"></div><div class="tr-star"></div><div class="tr-star"></div><div class="tr-star"></div><div class="tr-star"></div></div>'
-    + '<div class="t3d-num">02</div>'
+    + '<div class="t3d-num">05</div>'
     + '<div class="t3d-cat">TAROT</div>'
     + '<div class="t3d-title-text">手势塔罗</div>'
     + '<div class="t3d-subtitle">AI 占卜解读 </div>'
@@ -3747,7 +3747,7 @@ function buildDestinyCard(tool) {
   var wHTML = words.map(function(w) { return '<span class="dy-word">' + w + '</span>'; }).join('');
 
   return '<div class="card-inner t3d-card--dy">'
-    + '<div class="t3d-num">03</div>'
+    + '<div class="t3d-num">04</div>'
     + '<div class="t3d-cat">ANALYSIS</div>'
     + '<div class="t3d-title-text">产品命理局</div>'
     + '<div class="t3d-subtitle">AI 产品命理分析</div>'
@@ -3766,16 +3766,16 @@ function buildDestinyCard(tool) {
 }
 
 const builders = [
-  buildPrinterCard,
-  buildCompareCard,
   buildTicketCard,
-  buildTarotCard,
-  buildDestinyCard
+  buildCompareCard,
+  buildPrinterCard,
+  buildDestinyCard,
+  buildTarotCard
 ];
 
 const N = TOOLS.length;
-let target = 2;
-let currentF = 2;
+let target = 0;
+let currentF = 0;
 let rafId = null;
 
 function layout(pos, stageW) {
@@ -3885,7 +3885,7 @@ function triggerTransition(index) {
   const tool = TOOLS[index];
   const overlay = document.getElementById('transition-overlay');
 
-  const symbols = ['📝', '🖨️', '🧳', '☽', '☯'];
+  const symbols = ['📝', '🧳', '🖨️', '☯', '☽'];
   overlay.textContent = symbols[index];
   overlay.className = `trans-${index} active`;
 
